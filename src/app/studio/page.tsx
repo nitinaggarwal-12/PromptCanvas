@@ -93,13 +93,17 @@ export interface StudioChatMessage {
 
 // Version Arithmetic Helpers
 function getNextMicroVersion(currentVersion: string): string {
-  const match = currentVersion.match(/^v?(\d+)\.(\d+)$/);
+  if (/^v?0\.0|\bdraft\b/i.test(currentVersion.trim())) {
+    return 'v1.0';
+  }
+  const match = currentVersion.match(/^v?(\d+)\.(\d+)/);
   if (match) {
     const major = parseInt(match[1], 10);
     const minor = parseInt(match[2], 10);
+    if (major === 0) return 'v1.0';
     return `v${major}.${minor + 1}`;
   }
-  return `${currentVersion}.1`;
+  return 'v1.1';
 }
 
 function getNextMajorVersion(currentVersion: string): string {
@@ -376,6 +380,24 @@ function StudioMain() {
   ]);
   const [promptInput, setPromptInput] = useState('');
 
+  // Persist Studio Co-Pilot prompt draft in sessionStorage (UX-26)
+  useEffect(() => {
+    try {
+      const savedDraft = sessionStorage.getItem(`promptcanvas_studio_prompt_draft_${sessionId}`);
+      if (savedDraft) setPromptInput(savedDraft);
+    } catch {}
+  }, [sessionId]);
+
+  useEffect(() => {
+    try {
+      if (promptInput) {
+        sessionStorage.setItem(`promptcanvas_studio_prompt_draft_${sessionId}`, promptInput);
+      } else {
+        sessionStorage.removeItem(`promptcanvas_studio_prompt_draft_${sessionId}`);
+      }
+    } catch {}
+  }, [promptInput, sessionId]);
+
   // Auto-scroll refs for message streams (scoped to chat container, avoids scrolling parent window)
   const conciergeScrollRef = useRef<HTMLDivElement>(null);
   const editorScrollRef = useRef<HTMLDivElement>(null);
@@ -433,6 +455,19 @@ function StudioMain() {
   const [isFlowTreeTier3Open, setIsFlowTreeTier3Open] = useState<boolean>(false);
   const [flowTreeSearchQuery, setFlowTreeSearchQuery] = useState<string>('');
   const flowTreeCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!isFlowTreeOpen) return;
+    const handleEscapeTree = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsFlowTreeOpen(false);
+        setIsFlowTreeTier2Open(false);
+        setIsFlowTreeTier3Open(false);
+      }
+    };
+    window.addEventListener('keydown', handleEscapeTree);
+    return () => window.removeEventListener('keydown', handleEscapeTree);
+  }, [isFlowTreeOpen]);
   const [isNewDiagramDraft, setIsNewDiagramDraft] = useState<boolean>(false);
   const [pendingPlan, setPendingPlan] = useState<{
     prompt: string;
@@ -513,16 +548,23 @@ function StudioMain() {
         }
       }
     };
+    const sanitizeXmlAttributeValues = (raw: string): string =>
+      String(raw || '').replace(/value="([^"]*)"/g, (_m, val: string) => {
+        if (!val.includes('<') && !val.includes('>')) return _m;
+        return `value="${val.replace(/</g, '&lt;').replace(/>/g, '&gt;')}"`;
+      });
+
     const handleInlineMessage = (ev: MessageEvent) => {
       if (!isInlineDrawioEdit || !ev.data || typeof ev.data !== 'string') return;
       try {
         const msg = JSON.parse(ev.data);
         if (msg.event === 'init') {
+          const safeInlineXml = sanitizeXmlAttributeValues(latestInlineXmlRef.current || xml);
           inlineDrawioIframeRef.current?.contentWindow?.postMessage(
             JSON.stringify({
               action: 'load',
               autosave: 1,
-              xml: latestInlineXmlRef.current || xml,
+              xml: safeInlineXml,
             }),
             '*'
           );
@@ -785,7 +827,7 @@ function StudioMain() {
     const newTab: StudioTabItem = {
       id: newTabId,
       title: `Tab ${nextNum}: New Diagram`,
-      mode: 'canvas',
+      mode: 'launchpad',
       intentEngine: 'auto',
       blueprintId: '01',
       domain: 'biopharma',
@@ -794,26 +836,30 @@ function StudioMain() {
     };
     setStudioTabs((prev) => [...prev, newTab]);
     setActiveTabId(newTabId);
-    setIsLaunchpadMode(false);
+    setIsLaunchpadMode(true);
     setIsLeftDrawerCollapsed(false);
     setIsRightGovernanceOpen(false);
+    setIsInlineDrawioEdit(false);
+    setIsSideBySideCompare(false);
     setSelectedComponent(null);
     setIsNewDiagramDraft(true);
     setPendingPlan(null);
-    setSelectedDiagramMode('flowchart');
+    setSelectedDiagramMode('blueprint');
     setSelectedAbstractionLevel('L2');
     setSelectedFlowDirection('LR');
     setActiveVersionTag('v0.0 (Draft)');
-    setMessages((prev) => [
-      ...prev,
+    if (promptInput.trim()) {
+      setLaunchpadPromptInput(promptInput.trim());
+    }
+    setMessages([
       {
         id: `msg_new_${Date.now()}`,
         sender: 'assistant',
-        text: `✨ Started New Diagram Draft (v0.0). Step 1: Choose Blueprint, Flowchart, or Infographic above. Step 2: Select your Abstraction Level (L1–L4) & Direction (LR/TD), then hit Send to run Prompt Validation & Sanity Check and preview the Plan before creating v1.0.`,
+        text: `✨ **New Diagram Workspace Ready (v0.0 Draft)**.\n\nEnter your architecture, flowchart, or infographic prompt in the canvas composer or below (e.g., *"Create an AWS Cloud AI architecture"*), or click any of the 75 certified blueprints on the canvas to generate **v1.0**.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       },
     ]);
-  }, [studioTabs.length]);
+  }, [studioTabs.length, promptInput]);
 
   const handleApprovePendingPlan = useCallback(() => {
     if (!pendingPlan) return;
@@ -840,15 +886,21 @@ function StudioMain() {
       metadata: { ...prev.metadata, projectTitle: title },
     }));
 
-    const activeInfoId =
-      diagramMode === 'infographic'
-        ? infographicBlueprintId || selectedInfographicBlueprintId || '52'
-        : INFOGRAPHIC_BLUEPRINTS_LIST.some((b) => b.id === blueprintId)
-        ? blueprintId
-        : null;
+    const isZeroTemplateInfographic =
+      /4-tier\s+infographic|zero-template\s+infographic|dynamic\s+tiered\s+infographic/i.test(planPrompt) ||
+      infographicBlueprintId === 'blank';
+    const activeInfoId = isZeroTemplateInfographic
+      ? 'blank'
+      : diagramMode === 'infographic'
+      ? infographicBlueprintId || selectedInfographicBlueprintId || '52'
+      : INFOGRAPHIC_BLUEPRINTS_LIST.some((b) => b.id === blueprintId)
+      ? blueprintId
+      : null;
 
     let generatedXml = xml;
-    if (activeInfoId) {
+    if (isZeroTemplateInfographic) {
+      generatedXml = generateDynamicTieredInfographicXml(planPrompt);
+    } else if (activeInfoId) {
       generatedXml = generateInfographicBlueprintXmlById(activeInfoId, planPrompt, undefined, level);
     } else if (diagramMode === 'flowchart' || /\bflowchart\b/i.test(planPrompt)) {
       generatedXml = generateLogicalFlowchartDrawioXml(planPrompt, title, direction, level);
@@ -897,6 +949,7 @@ function StudioMain() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           blueprintId: activeInfoId,
+          noTemplate: isZeroTemplateInfographic,
           prompt: planPrompt,
           level,
         }),
@@ -1027,25 +1080,33 @@ function StudioMain() {
             ? parsed.messages.map((m: any) => m?.text || '').join('\n')
             : '';
           const targetUseCaseMatch = savedMsgText.match(/\*Target Use Case:\*\s*([^\n]+)/i);
+          const awsUserMsgMatch = savedMsgText.match(/create\s+an?\s+aws\s+[^\n]+/i);
+          const isAwsProjectWithGcpXml =
+            (projTitle.includes('aws') || Boolean(awsUserMsgMatch)) &&
+            (restoredXml.includes('id="z1_bg"') ||
+              restoredXml.includes('id="z1"') ||
+              restoredXml.includes('id="spatial_gcp_reference_arch"'));
           const extractedUseCasePrompt = targetUseCaseMatch
             ? targetUseCaseMatch[1].trim()
+            : isAwsProjectWithGcpXml
+            ? awsUserMsgMatch?.[0]?.trim() || 'AWS Cloud AI Architecture on Amazon Bedrock, SageMaker, Redshift & Claude'
             : (urlId === 'ses_6jozjki_muf7vj1y' || projTitle === 'abc')
             ? 'AWS Cloud Architecture on Bedrock and Sagemaker and Redshift and Claude'
             : '';
 
-          if (extractedUseCasePrompt && (restoredXml.includes('id="z1_bg"') || !restoredXml.includes('Generative Prompt:') || !restoredXml.includes('AWS CLOUD ARCHITECTURE'))) {
-            const displayTitle = 'AWS Cloud Architecture on Amazon Bedrock, SageMaker, Redshift & Claude';
+          if (extractedUseCasePrompt && (restoredXml.includes('id="z1_bg"') || restoredXml.includes('id="z1"') || restoredXml.includes('id="spatial_gcp_reference_arch"') || !restoredXml.includes('Generative Prompt:') || !restoredXml.includes('AWS CLOUD ARCHITECTURE'))) {
+            const displayTitle = 'AWS Cloud AI Architecture — Amazon Bedrock, SageMaker, OpenSearch & Redshift';
             restoredXml = synthesizePromptDrivenDiagramXml(
               extractedUseCasePrompt,
               displayTitle,
               parsed.ast?.metadata?.domain || 'Enterprise Cloud'
             );
-            setPromptInput(extractedUseCasePrompt);
             try {
               localStorage.setItem(
                 `promptcanvas_studio_${urlId}`,
                 JSON.stringify({
                   ...parsed,
+                  projectTitle: displayTitle,
                   xml: restoredXml,
                   selectedBlueprintId: 'custom'
                 })
@@ -1180,9 +1241,124 @@ function StudioMain() {
     }
     const blueprintParam = searchParams.get('blueprint') || searchParams.get('templateId');
     const domainParam = searchParams.get('domain') || 'enterprise';
-    if (blueprintParam && !hasLoadedUrlBlueprintRef.current) {
-      const bp = CANONICAL_TEMPLATES.find(t => t.id === blueprintParam || t.id === blueprintParam.padStart(2, '0'));
-      if (bp) {
+    const promptParam = searchParams.get('prompt');
+    const autoGenerateParam = searchParams.get('autoGenerate');
+    if ((blueprintParam || promptParam) && !hasLoadedUrlBlueprintRef.current) {
+      const bp =
+        blueprintParam && blueprintParam !== 'custom'
+          ? CANONICAL_TEMPLATES.find(t => t.id === blueprintParam || t.id === blueprintParam.padStart(2, '0'))
+          : undefined;
+
+      if (promptParam && promptParam.trim().length > 0 && (autoGenerateParam === '1' || blueprintParam === 'custom')) {
+        hasLoadedUrlBlueprintRef.current = true;
+        const cleanPrompt = promptParam.trim();
+        const domainPreset = DOMAIN_PRESETS.find(d => d.id === domainParam) || DOMAIN_PRESETS[0];
+        const rawTitle = cleanPrompt
+          .replace(/^(please\s+)?(design|architect|build|create|deploy|synthesize|generate|draw|flowchart\s+for|infographic\s+for)\s+(a\s+|an\s+|the\s+)?(full\s+|complete\s+|new\s+)?/i, '')
+          .replace(/\s+(architecture|diagram|flowchart|blueprint|topology)\.?$/i, '')
+          .replace(/\.$/, '')
+          .trim();
+        const derivedTitle = rawTitle.length > 72 ? rawTitle.slice(0, 72).replace(/\s+\S*$/, '') : rawTitle;
+        const projectTitle = bp
+          ? `#${bp.id} • ${derivedTitle || bp.name}`
+          : derivedTitle
+          ? `${derivedTitle} Architecture`
+          : 'Custom Synthesized Architecture';
+
+        const isInfographicBp = bp && INFOGRAPHIC_BLUEPRINTS_LIST.some(b => b.id === bp.id);
+        const isFlowchartPrompt =
+          /\bflowchart\b/i.test(cleanPrompt) || (bp && Number(bp.id) >= 67 && Number(bp.id) <= 74);
+
+        let synthesizedXml = '';
+        if (isInfographicBp && bp) {
+          setSelectedDiagramMode('infographic');
+          setSelectedInfographicBlueprintId(bp.id);
+          synthesizedXml = generateInfographicBlueprintXmlById(bp.id, cleanPrompt, undefined, 'L2');
+        } else if (isFlowchartPrompt) {
+          setSelectedDiagramMode('flowchart');
+          synthesizedXml = generateLogicalFlowchartDrawioXml(cleanPrompt, projectTitle, 'LR', 'L2');
+        } else {
+          setSelectedDiagramMode('blueprint');
+          synthesizedXml = synthesizePromptDrivenDiagramXml(cleanPrompt, projectTitle, domainPreset.name);
+        }
+
+        setSelectedBlueprintId(bp ? bp.id : 'custom');
+        setSelectedDomain(domainParam);
+        setXml(synthesizedXml);
+        setIsEditorMode(true);
+        setIsLaunchpadMode(false);
+        setIsLeftDrawerCollapsed(false);
+        setIsNewDiagramDraft(false);
+        setActiveVersionTag('v1.0');
+        setPromptInput('');
+
+        const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const updatedAst: ArchitectureAst = {
+          ...ast,
+          metadata: {
+            ...ast.metadata,
+            projectTitle,
+            projectId: bp ? `bp-${bp.id}-custom` : `custom-${Date.now()}`,
+            version: 'v1.0',
+            domain: domainPreset.name,
+            lastSyncTimestamp: nowTime
+          }
+        };
+        setAst(updatedAst);
+
+        setStudioTabs(prev =>
+          prev.map(t =>
+            t.id === activeTabId
+              ? {
+                  ...t,
+                  title: projectTitle.slice(0, 24),
+                  mode: 'canvas',
+                  blueprintId: bp ? bp.id : 'custom',
+                  domain: domainParam,
+                  versionTag: 'v1.0'
+                }
+              : t
+          )
+        );
+
+        setVersions([
+          {
+            id: `v_home_${Date.now()}`,
+            versionTag: 'v1.0',
+            timestamp: nowTime,
+            author: 'Home Launchpad AI',
+            actionSummary: bp
+              ? `Customized Template #${bp.id} (${bp.name}) with prompt: "${cleanPrompt}"`
+              : `Synthesized Custom Architecture from prompt: "${cleanPrompt}"`,
+            ast: updatedAst,
+            xml: synthesizedXml
+          }
+        ]);
+
+        setMessages([
+          {
+            id: `msg_home_user_${Date.now()}`,
+            sender: 'user',
+            text: cleanPrompt,
+            timestamp: nowTime
+          },
+          {
+            id: `msg_home_ai_${Date.now() + 1}`,
+            sender: 'assistant',
+            text: bp
+              ? `✨ **Synthesized v1.0 from Home Dashboard** using **Template #${bp.id} (${bp.name})** tailored to your prompt:\n\n> *"${cleanPrompt}"*\n\nAll layers, components, and Living Specifications (DOC-01 through DOC-16) are now synchronized on the Studio canvas. Ask me below to add nodes, modify tiers, or run a resilience audit!`
+              : `✨ **Synthesized Custom v1.0 Architecture from Home Dashboard** (Zero-Template Bespoke Engine):\n\n> *"${cleanPrompt}"*\n\nAll layers, components, and Living Specifications (DOC-01 through DOC-16) are now synchronized on the Studio canvas.`,
+            timestamp: nowTime,
+            actionSummary: {
+              versionTag: 'v1.0',
+              canvasDiff: bp
+                ? `Tailored Template #${bp.id} (${bp.name}) to prompt requirements.`
+                : `Synthesized bespoke multi-tier topology from prompt.`,
+              specDiff: `Synchronized DOC-01 through DOC-16 for ${projectTitle}.`
+            }
+          }
+        ]);
+      } else if (bp) {
         hasLoadedUrlBlueprintRef.current = true;
         handleSelectBlueprint(bp, domainParam);
       }
@@ -1352,7 +1528,7 @@ function StudioMain() {
       }
     }
 
-    if (promptLower.includes('infographic')) {
+    if (promptLower.includes('6-dimension research infographic')) {
       setIsHealing(true);
       fetch('/api/research-infographic', {
         method: 'POST',
@@ -1363,6 +1539,8 @@ function StudioMain() {
         .then(data => {
           const finalXml = data?.xml || generateDynamicTieredInfographicXml(cleanPrompt);
           setXml(finalXml);
+          setIsNewDiagramDraft(false);
+          setActiveVersionTag('v1.0');
           setSelectedBlueprintId('custom');
           setAst(prev => ({
             ...prev,
@@ -1382,6 +1560,8 @@ function StudioMain() {
         .catch(() => {
           const dynXml = generateDynamicTieredInfographicXml(cleanPrompt);
           setXml(dynXml);
+          setIsNewDiagramDraft(false);
+          setActiveVersionTag('v1.0');
           setSelectedBlueprintId('custom');
         })
         .finally(() => {
@@ -1430,8 +1610,8 @@ function StudioMain() {
       return;
     }
 
-    // Micro-Version Bump: v1.0 -> v1.1, v1.1 -> v1.2, or v2.0 -> v2.1
-    const newVersionTag = getNextMicroVersion(activeVersionTag);
+    // Version Tag: v1.0 for brand-new diagram drafts, or micro-version bump (v1.0 -> v1.1) for active canvas iterations
+    const newVersionTag = isNewDiagramDraft ? 'v1.0' : getNextMicroVersion(activeVersionTag);
     const updated: ArchitectureAst = {
       ...ast,
       metadata: { ...ast.metadata },
@@ -1444,6 +1624,54 @@ function StudioMain() {
     let specDiff = 'Reconciled DOC-01 through DOC-16 with updated parameters.';
     const lower = cleanPrompt.toLowerCase();
 
+    const isExplicitFlowchartPrompt = /\bflowchart\b/i.test(promptText);
+    const isExplicitInfographicPrompt = /\binfographic\b/i.test(promptText);
+    const effectiveDiagramMode = isExplicitFlowchartPrompt
+      ? 'flowchart'
+      : isExplicitInfographicPrompt
+      ? 'infographic'
+      : selectedDiagramMode;
+    if (effectiveDiagramMode !== selectedDiagramMode) {
+      setSelectedDiagramMode(effectiveDiagramMode);
+    }
+
+    const isInitialProjectTurn = versions.length <= 1 && (activeVersionTag === 'v1.0' || activeVersionTag === 'v0.0');
+    const isIncrementalVerb =
+      /^(?:please\s+)?(?:add|insert|include|attach|connect|group|upgrade|configure|scale|secure|enable|remove|delete|update)\b/i.test(
+        cleanPrompt.trim()
+      ) ||
+      Boolean(explicitPersona) ||
+      lower.includes('4 more') ||
+      lower.includes('4 component');
+
+    const isAwsPrompt =
+      /\b(aws|amazon\s+web\s+services|amazon\s+bedrock|bedrock|sagemaker|redshift|eks|dynamodb|aurora|cloudfront)\b/i.test(
+        cleanPrompt
+      );
+    const isAzurePrompt = /\b(azure|microsoft\s+azure|cosmos\s*db|aks)\b/i.test(cleanPrompt);
+    const isCurrentCanvasGcp =
+      xml.includes('id="spatial_gcp_reference_arch"') ||
+      xml.includes('id="z1_bg"') ||
+      xml.includes('id="z1"') ||
+      updated.components.some((c) => /Cloud Armor|Spanner|Vertex AI|BigQuery/i.test(c.service));
+
+    const isExplicitFullResetPrompt =
+      !isIncrementalVerb &&
+      (/^(reset\s+canvas|start\s+over|\[p[1-7]\]|\[vision\]|(?:please\s+)?(?:design|architect|build|create|synthesize|generate|draw)\b|flowchart\s+for\b|infographic\s+for\b)/i.test(
+        promptText.trim()
+      ) ||
+        ((isAwsPrompt || isAzurePrompt) && isCurrentCanvasGcp));
+
+    const isBespokeInitialDesignPrompt =
+      !isIncrementalVerb && (isNewDiagramDraft || (isInitialProjectTurn && cleanPrompt.length >= 20));
+
+    const isGenerativeDesignPrompt = isExplicitFullResetPrompt || isBespokeInitialDesignPrompt;
+
+    const isAwsContext =
+      isAwsPrompt ||
+      /\b(aws|amazon|bedrock|sagemaker)\b/i.test(updated.metadata.projectTitle) ||
+      updated.components.some((c) => /AWS|Amazon|Bedrock|SageMaker|Aurora|Redshift/i.test(c.service));
+
     const synthesizeComponentFromPrompt = (rawPrompt: string, turnNumber: number): AstComponent => {
       const cleanedSubject = rawPrompt
         .replace(/^(please\s+)?(design|architect|build|create|deploy|synthesize|add|insert|include|attach|integrate|provision|enable|upgrade|configure|scale|secure)\s+(a\s+|an\s+|the\s+|new\s+)?/i, '')
@@ -1453,22 +1681,42 @@ function StudioMain() {
         .split(/\s+/)
         .slice(0, 5)
         .map(w =>
-          w.length <= 4 && /^(waf|lb|cdn|dns|hsm|kms|vpc|api|sql|gke|iam|dlp|dr|rpo|rto|etl|rag|llm|sre|aks|eks)$/i.test(w)
+          w.length <= 4 && /^(waf|lb|cdn|dns|hsm|kms|vpc|api|sql|gke|iam|dlp|dr|rpo|rto|etl|rag|llm|sre|aks|eks|aws|s3|alb|nlb)$/i.test(w)
             ? w.toUpperCase()
             : w.charAt(0).toUpperCase() + w.slice(1)
         )
         .join(' ');
 
       const l = rawPrompt.toLowerCase();
-      const isWaf = l.includes('waf') || l.includes('firewall') || l.includes('armor') || l.includes('ddos');
-      const isLb = l.includes('load balancer') || l.includes('load-balancer') || /\blb\b/.test(l) || l.includes('apigee') || l.includes('gateway');
-      const isCache = l.includes('redis') || l.includes('cache') || l.includes('memorystore');
-      const isQueue = l.includes('kafka') || l.includes('pubsub') || l.includes('pub/sub') || l.includes('queue') || l.includes('stream') || l.includes('dataflow');
-      const isDb = l.includes('database') || l.includes('postgres') || l.includes('alloydb') || l.includes('sql') || l.includes('spanner') || l.includes('bigquery') || l.includes('lakehouse');
-      const isAi = l.includes('vertex') || l.includes('gemini') || l.includes('agent') || l.includes('rag') || l.includes('vector') || l.includes('ai');
-      const isSec = l.includes('kms') || l.includes('hsm') || l.includes('cmek') || l.includes('vpc') || l.includes('iam') || l.includes('security') || l.includes('zero-trust');
+      const isWaf = l.includes('waf') || l.includes('firewall') || l.includes('armor') || l.includes('shield') || l.includes('ddos');
+      const isLb = l.includes('load balancer') || l.includes('load-balancer') || /\b(lb|alb|nlb)\b/.test(l) || l.includes('apigee') || l.includes('gateway');
+      const isCache = l.includes('redis') || l.includes('cache') || l.includes('memorystore') || l.includes('elasticache');
+      const isQueue = l.includes('kafka') || l.includes('pubsub') || l.includes('pub/sub') || l.includes('kinesis') || l.includes('eventbridge') || l.includes('sqs') || l.includes('queue') || l.includes('stream') || l.includes('dataflow');
+      const isDb = l.includes('database') || l.includes('postgres') || l.includes('alloydb') || l.includes('aurora') || l.includes('dynamodb') || l.includes('redshift') || l.includes('sql') || l.includes('spanner') || l.includes('bigquery') || l.includes('lakehouse');
+      const isAi = l.includes('vertex') || l.includes('gemini') || l.includes('bedrock') || l.includes('sagemaker') || l.includes('claude') || l.includes('agent') || l.includes('rag') || l.includes('vector') || l.includes('ai');
+      const isSec = l.includes('kms') || l.includes('hsm') || l.includes('cmek') || l.includes('guardduty') || l.includes('vpc') || l.includes('iam') || l.includes('security') || l.includes('zero-trust');
 
-      const inferredService = isWaf
+      const inferredService = isAwsContext
+        ? isWaf
+          ? 'AWS WAF & Shield Advanced'
+          : isLb
+          ? 'Amazon API Gateway & Application Load Balancer'
+          : isCache
+          ? 'Amazon ElastiCache for Redis'
+          : isQueue
+          ? 'Amazon Kinesis Data Streams & EventBridge'
+          : isDb
+          ? l.includes('redshift') || l.includes('lakehouse')
+            ? 'Amazon Redshift Serverless & S3 Lakehouse'
+            : l.includes('dynamodb')
+            ? 'Amazon DynamoDB Global Tables'
+            : 'Amazon Aurora PostgreSQL (pgvector)'
+          : isAi
+          ? 'Amazon Bedrock & SageMaker AI Hub'
+          : isSec
+          ? 'AWS KMS HSM, IAM & GuardDuty'
+          : 'AWS Managed Cloud Service'
+        : isWaf
         ? 'Cloud Armor L7 WAF'
         : isLb
         ? l.includes('apigee')
@@ -1505,7 +1753,7 @@ function StudioMain() {
         name: titleCaseSubject,
         service: inferredService,
         tier: inferredTier,
-        region: inferredTier === 'ingress' || inferredTier === 'security' ? 'global' : 'us-central1',
+        region: inferredTier === 'ingress' || inferredTier === 'security' ? 'global' : isAwsContext ? 'us-east-1' : 'us-central1',
         role: `Prompt #${turnNumber} Synthesized Node`,
         description: `Provisioned via Studio Prompt #${turnNumber} ("${rawPrompt}") with mTLS zero-trust enforcement.`,
         sla: '99.999%',
@@ -1590,7 +1838,7 @@ function StudioMain() {
       }
       canvasDiff = '+ Added Emergency Patient Ingress Portal (Cloud Run) with 99.999% SLA gateway.';
       specDiff = 'Reconciled DOC-01 (Product Vision), DOC-02 (Personas), and DOC-04 (Architecture Overview).';
-    } else if (explicitPersona === 'Lead Cloud Architect' || lower.includes('spanner') || lower.includes('multi-region') || lower.includes('dr') || lower.includes('rpo')) {
+    } else if (explicitPersona === 'Lead Cloud Architect' || (!isGenerativeDesignPrompt && (lower.includes('spanner') || lower.includes('multi-region') || lower.includes('dr') || lower.includes('rpo')))) {
       updated.metadata = {
         ...updated.metadata,
         drRegions: ['europe-west1', 'us-east4'],
@@ -1634,7 +1882,7 @@ function StudioMain() {
       }
       canvasDiff = '🔒 Enforced Cloud KMS HSM CMEK envelope encryption and VPC-SC perimeter controls.';
       specDiff = 'Reconciled DOC-06 (Security & Threat Model) and DOC-10 (Compliance & Audit Matrix).';
-    } else if (explicitPersona === 'FinOps & SRE Lead' || lower.includes('finops') || lower.includes('cost') || lower.includes('autoscaling') || lower.includes('sre')) {
+    } else if (explicitPersona === 'FinOps & SRE Lead' || (!isGenerativeDesignPrompt && (lower.includes('finops') || lower.includes('cost') || lower.includes('autoscaling') || lower.includes('sre')))) {
       updated.metadata = {
         ...updated.metadata,
         latencyBudgetMs: 35,
@@ -1652,8 +1900,6 @@ function StudioMain() {
       specDiff = `Synchronized enclave boundary across DOC-03 (System Architecture) and DOC-06 (Security & Threat Model).`;
     }
 
-    // Guarantee that EVERY mutating prompt (Prompt 1 through Prompt 10+) appends a distinct component node
-    // so the diagram visibly and cumulatively grows across all 10+ sequential prompts within a project
     const BASELINE_DEFAULT_IDS = new Set([
       'comp_armor',
       'comp_glb',
@@ -1667,13 +1913,46 @@ function StudioMain() {
       'comp_stratum_s2',
       'comp_stratum_s3',
       'comp_stratum_s4',
+      'comp_aws_waf',
+      'comp_aws_apigw',
+      'comp_aws_eks',
+      'comp_aws_bedrock',
+      'comp_aws_opensearch',
+      'comp_aws_aurora',
+      'comp_aws_s3_redshift',
+      'comp_aws_kms',
     ]);
 
-    const isInitialProjectTurn = versions.length <= 1 && activeVersionTag === 'v1.0';
     const isVerticalStratumPrompt =
       isInitialProjectTurn &&
       /\b(vllm|h100|honeycomb)\b/i.test(promptText) &&
       /\b(stratum|vertical\s+cross-section|speculative\s+decoding)\b/i.test(promptText);
+
+    if (
+      !isVerticalStratumPrompt &&
+      (!updated.metadata.projectTitle ||
+        updated.metadata.projectTitle === 'Global Cloud Payment & Settlement Mesh' ||
+        updated.metadata.projectTitle === 'Global Real-Time Payments Mesh & Settlement Engine' ||
+        updated.metadata.projectTitle === 'Emergency Patient Ingress & Care Mesh' ||
+        updated.metadata.projectTitle.startsWith('#00') ||
+        isGenerativeDesignPrompt ||
+        /^(please\s+)?(design|architect|build|create|deploy|synthesize|generate|draw|flowchart|infographic|a\s+tiered|\[p[1-7]\]|\[fork\]|\[vision\])/i.test(promptText.trim()))
+    ) {
+      const rawTitle = promptText
+        .trim()
+        .replace(/^(please\s+)?(design|architect|build|create|deploy|synthesize|generate|draw|flowchart\s+for|infographic\s+for)\s+(a\s+|an\s+|the\s+)?(full\s+|complete\s+|new\s+)?/i, '')
+        .replace(/\s+(architecture|diagram|flowchart|blueprint|topology)\.?$/i, '')
+        .replace(/\.$/, '')
+        .trim();
+      const derivedTitle = rawTitle.length > 96 ? rawTitle.slice(0, 96).replace(/\s+\S*$/, '') : rawTitle;
+      if (derivedTitle.length > 3) {
+        const formattedTitle = derivedTitle
+          .split(/\s+/)
+          .map((w) => (/^(aws|gcp|ai|ml|rag|llm|eks|gke|aks|vpc|kms|waf|api|iot|bi)$/i.test(w) ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1)))
+          .join(' ');
+        updated.metadata.projectTitle = `${formattedTitle} Architecture`;
+      }
+    }
 
     if (isVerticalStratumPrompt) {
       updated.metadata.projectTitle = 'High-Performance Cloud AI Stack — 4-Stratum Vertical Cross-Section';
@@ -1725,6 +2004,104 @@ function StudioMain() {
       ];
       canvasDiff = '✨ Synthesized 4-Stratum Vertical Cross-Section (12 Pods across Top Stratum, Hexagonal vLLM + Laser Bridges, Honeycomb Memory & H100 Bedrock).';
       specDiff = 'Synchronized 4-Stratum Cloud AI Stack across DOC-01 through DOC-16 in Slate Gray & Vibrant Emerald-Green aesthetic.';
+    } else if (isGenerativeDesignPrompt && isAwsPrompt) {
+      updated.metadata.lastSyncTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      updated.components = [
+        {
+          id: 'comp_aws_waf',
+          name: 'AWS WAF, Shield Advanced & CloudFront',
+          service: 'AWS WAF & CloudFront',
+          tier: 'security',
+          region: 'global',
+          role: 'Global Edge Protection & Anycast CDN Ingress',
+          description: 'L7 OWASP rule enforcement, DDoS mitigation, and TLS 1.3 termination at 600+ CloudFront Edge POPs.',
+          sla: '99.99%',
+          protocols: ['HTTPS', 'TLS 1.3', 'HTTP/3']
+        },
+        {
+          id: 'comp_aws_apigw',
+          name: 'Amazon API Gateway & Application Load Balancer',
+          service: 'Amazon API Gateway & ALB',
+          tier: 'ingress',
+          region: 'us-east-1',
+          role: 'Zero-Trust Cognito OIDC & REST/WebSocket Ingress',
+          description: 'Rate-limited token-bucket ingress with AWS Cognito JWT validation and VPC PrivateLink routing.',
+          sla: '99.99%',
+          protocols: ['HTTPS REST', 'WSS', 'gRPC']
+        },
+        {
+          id: 'comp_aws_eks',
+          name: 'Amazon EKS & AWS Lambda Agent Orchestrator',
+          service: 'Amazon EKS & AWS Lambda',
+          tier: 'compute',
+          region: 'us-east-1',
+          role: 'Agentic Workflow Router & LangGraph Compute Mesh',
+          description: 'Multi-AZ Kubernetes pods and Step Functions orchestrating multi-agent reasoning, tool calls, and RAG retrieval.',
+          sla: '99.99%',
+          protocols: ['gRPC mTLS', 'AWS PrivateLink']
+        },
+        {
+          id: 'comp_aws_bedrock',
+          name: 'Amazon Bedrock & SageMaker AI Hub',
+          service: 'Amazon Bedrock (Claude 3.7 Sonnet) & SageMaker',
+          tier: 'compute',
+          region: 'us-east-1',
+          role: 'Foundation Model Inference, Guardrails & Fine-Tuning',
+          description: 'Managed Claude 3.7 Sonnet, Titan Embeddings v2, Bedrock Guardrails PII redaction, and SageMaker custom endpoints.',
+          sla: '99.99%',
+          protocols: ['Bedrock Runtime API', 'HTTPS TLS 1.3']
+        },
+        {
+          id: 'comp_aws_opensearch',
+          name: 'Amazon OpenSearch Serverless & ElastiCache Redis',
+          service: 'Amazon OpenSearch Vector Engine & ElastiCache',
+          tier: 'data',
+          region: 'us-east-1',
+          role: 'HNSW Hybrid Vector Search & Semantic KV Cache',
+          description: 'Sub-10ms ANN vector similarity search paired with ElastiCache for Redis semantic prompt caching.',
+          sla: '99.99%',
+          protocols: ['HTTPS', 'RESP3 TLS']
+        },
+        {
+          id: 'comp_aws_aurora',
+          name: 'Amazon Aurora PostgreSQL (pgvector) & DynamoDB',
+          service: 'Amazon Aurora Global DB & DynamoDB',
+          tier: 'data',
+          region: 'us-east-1',
+          role: 'Transactional State, Session Memory & Metadata Store',
+          description: 'Multi-AZ ACID relational ledger with pgvector embeddings and DynamoDB Global Tables for sub-5ms agent session state.',
+          sla: '99.999%',
+          protocols: ['PostgreSQL Wire TLS', 'DynamoDB HTTPS']
+        },
+        {
+          id: 'comp_aws_s3_redshift',
+          name: 'Amazon S3 Lakehouse, Kinesis & Redshift Serverless',
+          service: 'Amazon S3, Kinesis Data Streams & Redshift',
+          tier: 'data',
+          region: 'us-east-1',
+          role: 'Enterprise Corpus Lakehouse, CDC Streaming & Eval Warehouse',
+          description: 'Encrypted S3 document corpus feeding Bedrock Knowledge Bases, Kinesis telemetry streams, and Redshift analytics.',
+          sla: '99.999%',
+          protocols: ['S3 HTTPS', 'Kinesis gRPC']
+        },
+        {
+          id: 'comp_aws_kms',
+          name: 'AWS KMS HSM, IAM Roles Anywhere & CloudWatch',
+          service: 'AWS KMS, GuardDuty, CloudTrail & CloudWatch',
+          tier: 'security',
+          region: 'global',
+          role: 'FIPS 140-3 KMS CMK Encryption, Threat Detection & Observability',
+          description: 'Customer-managed KMS envelope encryption, GuardDuty AI runtime monitoring, and X-Ray distributed tracing.',
+          sla: '99.999%',
+          protocols: ['AWS KMS API', 'OTLP gRPC']
+        }
+      ];
+      canvasDiff = `✨ Synthesized 7-Tier AWS Cloud AI Reference Architecture (${updated.components.length} AWS Native Nodes: Amazon Bedrock, SageMaker, OpenSearch Vector DB, Aurora pgvector, S3 & Redshift).`;
+      specDiff = 'Synchronized AWS Well-Architected Cloud AI Stack across DOC-01 through DOC-16 (IAM Roles, KMS CMK, Bedrock Guardrails & Multi-AZ Resilience).';
+    } else if (isGenerativeDesignPrompt) {
+      updated.metadata.lastSyncTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      canvasDiff = `✨ Synthesized ${effectiveDiagramMode.toUpperCase()} Architecture for "${updated.metadata.projectTitle}" (${selectedAbstractionLevel}).`;
+      specDiff = `Synchronized DOC-01 through DOC-16 Living Specifications and Governance Baseline for ${updated.metadata.projectTitle}.`;
     } else if (updated.components.length === prevCompCount && !/^(connect|group)\b/i.test(cleanPrompt)) {
       const currentTurnNumber = updated.components.filter(c => !BASELINE_DEFAULT_IDS.has(c.id)).length + 1;
       const newComp = synthesizeComponentFromPrompt(cleanPrompt, currentTurnNumber);
@@ -1735,103 +2112,12 @@ function StudioMain() {
       specDiff = `Synchronized ${newComp.name} across DOC-03 (System Architecture), DOC-06 (Security), and DOC-10 (Compliance).`;
     }
 
-    if (
-      !isVerticalStratumPrompt &&
-      (!updated.metadata.projectTitle ||
-        updated.metadata.projectTitle === 'Global Cloud Payment & Settlement Mesh' ||
-        updated.metadata.projectTitle === 'Global Real-Time Payments Mesh & Settlement Engine' ||
-        updated.metadata.projectTitle === 'Emergency Patient Ingress & Care Mesh' ||
-        updated.metadata.projectTitle.startsWith('#00') ||
-        /^(please\s+)?(design|architect|build|create|deploy|synthesize|flowchart|infographic|a\s+tiered|\[p[1-7]\]|\[fork\]|\[vision\])/i.test(promptText.trim()))
-    ) {
-      const rawTitle = promptText
-        .trim()
-        .replace(/^(please\s+)?(design|architect|build|create|deploy|synthesize|flowchart\s+for|infographic\s+for)\s+(a\s+|an\s+|the\s+)?(full\s+|complete\s+)?/i, '')
-        .replace(/\s+(architecture|diagram|flowchart|blueprint|topology)\.?$/i, '')
-        .replace(/\.$/, '')
-        .trim();
-      const derivedTitle = rawTitle.length > 96 ? rawTitle.slice(0, 96).replace(/\s+\S*$/, '') : rawTitle;
-      if (derivedTitle.length > 5 && (versions.length <= 1 || /^(please\s+)?(design|architect|build|create|deploy|synthesize|flowchart|infographic)\b/i.test(promptText.trim()))) {
-        updated.metadata.projectTitle = derivedTitle.charAt(0).toUpperCase() + derivedTitle.slice(1);
-      }
-    }
-
-    const isExplicitFlowchartPrompt = /\bflowchart\b/i.test(promptText);
-    const isExplicitInfographicPrompt = /\binfographic\b/i.test(promptText);
-    const effectiveDiagramMode = isExplicitFlowchartPrompt
-      ? 'flowchart'
-      : isExplicitInfographicPrompt
-      ? 'infographic'
-      : selectedDiagramMode;
-    if (effectiveDiagramMode !== selectedDiagramMode) {
-      setSelectedDiagramMode(effectiveDiagramMode);
-    }
-
-    // Only replace the base diagram when explicitly requested on Prompt 1 or an explicit full architecture/flowchart/infographic design prompt
-    // Subsequent iterative prompts (Prompts 2..10+) within the project MUST evolve the active diagram cumulatively without wiping previous nodes!
-    const isExplicitFullResetPrompt =
-      /^(reset\s+canvas|start\s+over|\[p[1-7]\]|\[vision\]|(?:please\s+)?(?:design|architect|build|create|synthesize)\s+(?:a\s+|an\s+|the\s+)?(?:full|complete|new)\b|flowchart\s+for\b|infographic\s+for\b)/i.test(
-        promptText.trim()
-      );
-    const isBespokeInitialDesignPrompt =
-      isInitialProjectTurn && cleanPrompt.length >= 24;
-
-    // Build Prompt Validation & Sanity Check + Execution Plan for User Review & v1.0 Creation
-    const sanitizedIntent = cleanPrompt
-      .replace(/\bstratum\b/gi, 'Tier')
-      .replace(/\bhoneycomb\b/gi, 'Distributed Cluster')
-      .replace(/\bneural\b/gi, 'LLM Inference');
-    const plannedStepsList =
-      effectiveDiagramMode === 'flowchart'
-        ? [
-            `[▶ Start Trigger] ---> (❶ Ingress) ---> [Step 1: Ingress (${selectedAbstractionLevel})]`,
-            `[Step 1: Ingress] ---> (❷ Validate) ---> [◆ Decision: Policy & Safety Valid?]`,
-            `[◆ Decision Gate] ---> (✓ YES) ---> [Step 3: Core Execution (${selectedAbstractionLevel})]`,
-            `[◆ Decision Gate] ---> (✕ NO) ---> [Fallback / DLQ Retry] ---> (↩ Retry Backoff) ---> [Step 2]`,
-            `[Step 3: Execution] ---> (✓ SLA Pass) ---> [Step 4: State Commit] ---> [■ Completed (200 OK)]`,
-          ]
-        : effectiveDiagramMode === 'infographic'
-        ? (() => {
-            const ib = INFOGRAPHIC_BLUEPRINTS_LIST.find((b) => b.id === selectedInfographicBlueprintId) || INFOGRAPHIC_BLUEPRINTS_LIST[0];
-            return [
-              `Infographic Blueprint #${ib.id} (${ib.shortType} • ${selectedAbstractionLevel}): ${ib.keyComponents[0] || ''}`,
-              `Gemini Live API Customization: "${sanitizedIntent.slice(0, 54)}"`,
-              `Stages: ${ib.keyComponents.slice(1, 3).join(' → ')}`,
-            ];
-          })()
-        : [
-            `Synthesize Dynamic Domain Topology (${updated.metadata.projectTitle.slice(0, 48)})`,
-            `Apply Prompt Customization: "${sanitizedIntent.slice(0, 56)}"`,
-            `Synchronize 16 Living Specifications & Governance Baseline`,
-          ];
-
-    setPendingPlan({
-      prompt: cleanPrompt,
-      sanitizedPrompt: sanitizedIntent,
-      diagramMode: effectiveDiagramMode,
-      level: selectedAbstractionLevel,
-      direction: selectedFlowDirection,
-      blueprintId: selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId,
-      infographicBlueprintId: selectedInfographicBlueprintId,
-      plannedSteps: plannedStepsList,
-      targetVersionTag: isNewDiagramDraft ? 'v1.0' : newVersionTag,
-    });
-
+    // Clear any stale pendingPlan and transition out of New Diagram Draft immediately on prompt execution
+    setPendingPlan(null);
     if (isNewDiagramDraft) {
-      const ibName = INFOGRAPHIC_BLUEPRINTS_LIST.find((b) => b.id === selectedInfographicBlueprintId)?.shortType || 'Infographic';
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `msg_plan_${Date.now()}`,
-          sender: 'assistant',
-          text: `🔍 Prompt Validation & Sanity Check Passed (${effectiveDiagramMode.toUpperCase()}${effectiveDiagramMode === 'infographic' ? ` #${selectedInfographicBlueprintId} (${ibName})` : ''} • ${selectedAbstractionLevel}${effectiveDiagramMode === 'flowchart' ? ' • ' + selectedFlowDirection : ''}). Review the Execution Plan above and click "✓ Approve Plan & Create v1.0" to generate v1.0 via Gemini Live API.`,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        },
-      ]);
-      return;
+      setIsNewDiagramDraft(false);
     }
 
-    const isGenerativeDesignPrompt = isExplicitFullResetPrompt || isBespokeInitialDesignPrompt;
     let activeBaseXml = xml;
     if (isGenerativeDesignPrompt || effectiveDiagramMode === 'flowchart' || effectiveDiagramMode === 'infographic') {
       const synthesizedTitle = updated.metadata.projectTitle && updated.metadata.projectTitle !== 'ABC'
@@ -1846,17 +2132,22 @@ function StudioMain() {
           selectedAbstractionLevel
         );
       } else if (effectiveDiagramMode === 'infographic') {
-        activeBaseXml = generateInfographicBlueprintXmlById(
-          selectedInfographicBlueprintId,
-          cleanPrompt,
-          undefined,
-          selectedAbstractionLevel
-        );
+        const isZeroTplInfo =
+          /4-tier\s+infographic|zero-template\s+infographic|dynamic\s+tiered\s+infographic/i.test(cleanPrompt);
+        activeBaseXml = isZeroTplInfo
+          ? generateDynamicTieredInfographicXml(cleanPrompt)
+          : generateInfographicBlueprintXmlById(
+              selectedInfographicBlueprintId,
+              cleanPrompt,
+              undefined,
+              selectedAbstractionLevel
+            );
         fetch('/api/infographic-blueprint', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            blueprintId: selectedInfographicBlueprintId,
+            blueprintId: isZeroTplInfo ? 'blank' : selectedInfographicBlueprintId,
+            noTemplate: isZeroTplInfo,
             prompt: cleanPrompt,
             level: selectedAbstractionLevel,
           }),
@@ -1866,7 +2157,7 @@ function StudioMain() {
             if (data?.xml) {
               setXml(data.xml);
               setVersions((prev) =>
-                prev.map((v, i) => (i === 0 ? { ...v, xml: data.xml, actionSummary: `[GEMINI LIVE • #${selectedInfographicBlueprintId} ${data.shortType}] "${cleanPrompt}"` } : v))
+                prev.map((v, i) => (i === 0 ? { ...v, xml: data.xml, actionSummary: `[${isZeroTplInfo ? 'ZERO-TEMPLATE 4-TIER' : 'GEMINI LIVE • #' + selectedInfographicBlueprintId} ${data.shortType}] "${cleanPrompt}"` } : v))
               );
             }
           })
@@ -1889,10 +2180,14 @@ function StudioMain() {
           xml: activeBaseXml,
           comment: `Synthesized from Studio UI Prompt (${newVersionTag})`,
           prompt: promptText,
-          aiReasoning: `Synthesized 4-Stratum / Reference Architecture for: ${promptText}`,
+          aiReasoning: `Synthesized Reference Architecture for: ${promptText}`,
           businessUsecase: selectedDomain || 'Enterprise Cloud',
-          technicalUsecase: '4-Stratum Vertical Cross-Section / Reference Architecture v2.0',
-          architectureType: isVerticalStratumPrompt ? 'vertical_stratum_cross_section' : 'canonical_google_cloud_ref_v2',
+          technicalUsecase: canvasDiff,
+          architectureType: isVerticalStratumPrompt
+            ? 'vertical_stratum_cross_section'
+            : isAwsPrompt
+            ? 'aws_cloud_ai_reference'
+            : 'canonical_google_cloud_ref_v2',
           createdStudio: 'studio',
           isPrivate: false
         })
@@ -1933,7 +2228,7 @@ function StudioMain() {
         }
         const extY = maxY + 38;
         const numRows = Math.max(1, Math.ceil(customComps.length / 5));
-        const groupW = Math.max(320, Math.min(5, Math.max(1, customComps.length)) * 292 + 28);
+        const groupW = Math.max(440, Math.min(5, Math.max(1, customComps.length)) * 292 + 28);
         const groupH = 38 + numRows * 82;
 
         // Find a safe anchor node in the diagram
@@ -1947,7 +2242,7 @@ function StudioMain() {
 
         if (customComps.length > 0 || /^group\b/i.test(cleanPrompt)) {
           injectedCells.push(
-            `<mxCell id="studio_group_dmz" value="CUMULATIVE PROJECT EXTENSIONS (${customComps.length} NODES ADDED ACROSS PROMPTS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;dashPattern=6 4;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontSize=10;fontStyle=1;fontColor=#0369A1;" vertex="1" parent="1"><mxGeometry x="48" y="${extY - 26}" width="${groupW}" height="${groupH}" as="geometry"/></mxCell>`
+            `<mxCell id="studio_group_dmz" value="CUMULATIVE PROJECT EXTENSIONS (${customComps.length} ${customComps.length === 1 ? 'NODE' : 'NODES'} ADDED ACROSS PROMPTS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;dashPattern=6 4;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontSize=10;fontStyle=1;fontColor=#0369A1;" vertex="1" parent="1"><mxGeometry x="48" y="${extY - 26}" width="${groupW}" height="${groupH}" as="geometry"/></mxCell>`
           );
         }
 
@@ -1998,6 +2293,18 @@ function StudioMain() {
     setAst(updated);
     setXml(baseUpdatedXml);
     setActiveVersionTag(newVersionTag);
+    setStudioTabs((prev) =>
+      prev.map((t) =>
+        t.id === activeTabId
+          ? {
+              ...t,
+              mode: 'canvas',
+              title: updated.metadata.projectTitle || t.title,
+              versionTag: newVersionTag,
+            }
+          : t
+      )
+    );
 
     const aiMsg: StudioChatMessage = {
       id: `msg_${Date.now() + 1}`,
@@ -2021,7 +2328,7 @@ function StudioMain() {
       ast: updated,
       xml: baseUpdatedXml,
     };
-    setVersions(prev => [...prev, newSnapshot]);
+    setVersions(prev => (isNewDiagramDraft ? [newSnapshot] : [...prev, newSnapshot]));
 
     // Auto-persist newly generated/evolved prompt diagram to /api/diagrams so it is immediately visible in Architecture Library
     const isMatrix = /^\[p[1-7]\]|guided matrix/i.test(promptText.trim()) || /^\[p[1-7]\]|guided matrix/i.test(updated.metadata.projectTitle);
@@ -2036,58 +2343,65 @@ function StudioMain() {
         prompt: promptText.trim(),
         businessUsecase: updated.metadata.domain,
         technicalUsecase: canvasDiff,
-        architectureType: isMatrix ? 'matrix_lifecycle_blueprint' : isVision ? 'vision_decompiled' : 'gcp_enterprise_reference',
+        architectureType: isMatrix
+          ? 'matrix_lifecycle_blueprint'
+          : isVision
+          ? 'vision_decompiled'
+          : isAwsPrompt
+          ? 'aws_cloud_ai_reference'
+          : 'gcp_enterprise_reference',
         createdStudio: isMatrix ? 'prompt_lab' : isVision ? 'vision' : 'studio',
       }),
     })
       .then(() => setIsSavedInLibrary(true))
       .catch(() => {});
 
-    // Optional background Gemini refinement: strictly guarded by currentRequestId and cumulative node preservation
-    const allCustomIds = updated.components.filter(c => !BASELINE_DEFAULT_IDS.has(c.id)).map(c => c.id);
-    setIsHealing(true);
-    fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        prompt: cleanPrompt,
-        existingXml: baseUpdatedXml,
-        currentXml: baseUpdatedXml,
-        architectureType: isSixZoneNativeCanvas ? 'gcp_enterprise_6zone' : 'vision_decompiled',
-        isIteration: true,
-      }),
-    })
-      .then(res => (res.ok ? res.json() : null))
-      .then(data => {
-        if (latestPromptRequestIdRef.current !== currentRequestId) {
-          // A newer prompt (e.g. Prompt N+1..10) was already executed; ignore stale response!
-          return;
-        }
-        const returnedXml = data?.xml;
-        const preservesAllCustomNodes =
-          typeof returnedXml === 'string' &&
-          allCustomIds.every(cid => returnedXml.includes(cid));
-        const isSafeInPlaceEdit =
-          returnedXml &&
-          typeof returnedXml === 'string' &&
-          returnedXml.includes('<mxGraphModel') &&
-          !returnedXml.includes('serverless_eda_architecture') &&
-          preservesAllCustomNodes &&
-          (isSixZoneNativeCanvas
-            ? (returnedXml.includes('id="z1"') || returnedXml.includes('id="z1_bg"')) &&
-              (returnedXml.includes('z7_custom') || !baseUpdatedXml.includes('z7_custom'))
-            : (returnedXml.includes('studio_ext_') || returnedXml.includes('studio_conn_') || returnedXml.includes('studio_group_')));
-
-        if (isSafeInPlaceEdit) {
-          setXml(returnedXml);
-        }
+    // Optional background Gemini refinement: only for incremental in-place iterations
+    if (!isGenerativeDesignPrompt) {
+      const allCustomIds = updated.components.filter(c => !BASELINE_DEFAULT_IDS.has(c.id)).map(c => c.id);
+      setIsHealing(true);
+      fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: cleanPrompt,
+          existingXml: baseUpdatedXml,
+          currentXml: baseUpdatedXml,
+          architectureType: isSixZoneNativeCanvas ? 'gcp_enterprise_6zone' : 'vision_decompiled',
+          isIteration: true,
+        }),
       })
-      .catch(() => {})
-      .finally(() => {
-        if (latestPromptRequestIdRef.current === currentRequestId) {
-          setIsHealing(false);
-        }
-      });
+        .then(res => (res.ok ? res.json() : null))
+        .then(data => {
+          if (latestPromptRequestIdRef.current !== currentRequestId) {
+            return;
+          }
+          const returnedXml = data?.xml;
+          const preservesAllCustomNodes =
+            typeof returnedXml === 'string' &&
+            allCustomIds.every(cid => returnedXml.includes(cid));
+          const isSafeInPlaceEdit =
+            returnedXml &&
+            typeof returnedXml === 'string' &&
+            returnedXml.includes('<mxGraphModel') &&
+            !returnedXml.includes('serverless_eda_architecture') &&
+            preservesAllCustomNodes &&
+            (isSixZoneNativeCanvas
+              ? (returnedXml.includes('id="z1"') || returnedXml.includes('id="z1_bg"')) &&
+                (returnedXml.includes('z7_custom') || !baseUpdatedXml.includes('z7_custom'))
+              : (returnedXml.includes('studio_ext_') || returnedXml.includes('studio_conn_') || returnedXml.includes('studio_group_')));
+
+          if (isSafeInPlaceEdit) {
+            setXml(returnedXml);
+          }
+        })
+        .catch(() => {})
+        .finally(() => {
+          if (latestPromptRequestIdRef.current === currentRequestId) {
+            setIsHealing(false);
+          }
+        });
+    }
   }, [
     activeVersionTag,
     isEditorMode,
@@ -2219,7 +2533,11 @@ function StudioMain() {
           if (data?.xml) setXml(data.xml);
         })
         .catch(() => {});
-    } else if (config.description && config.description.trim().length > 4) {
+    } else if (
+      config.description &&
+      config.description.trim().length > 4 &&
+      (config.blueprintId === 'blank' || config.blueprintId === 'custom' || !config.blueprintId)
+    ) {
       setSelectedBlueprintId('custom');
       const fullTitle = config.title && config.title.toUpperCase() !== 'ABC'
         ? `${config.title} • ${config.description.trim().slice(0, 64)}`
@@ -2228,7 +2546,8 @@ function StudioMain() {
       newXml = synthesizePromptDrivenDiagramXml(
         config.description.trim(),
         fullTitle,
-        config.domain || 'Enterprise Cloud'
+        config.domain || 'Enterprise Cloud',
+        { noTemplate: true }
       );
       setPromptInput(config.description.trim());
       fetch('/api/diagrams', {
@@ -2237,12 +2556,12 @@ function StudioMain() {
         body: JSON.stringify({
           name: fullTitle,
           xml: newXml,
-          comment: `Created via Studio New Project Modal (v1.0)`,
+          comment: `Created via Studio New Project Modal (Zero-Template v1.0)`,
           prompt: config.description.trim(),
-          aiReasoning: `Modified Saved Reference Architecture v2.0 for: ${config.description.trim()}`,
+          aiReasoning: `Zero-Template 100% Prompt-Driven Synthesis for: ${config.description.trim()}`,
           businessUsecase: config.domain || 'Enterprise Cloud',
-          technicalUsecase: 'Modified Saved Reference Architecture v2.0',
-          architectureType: 'canonical_google_cloud_ref_v2',
+          technicalUsecase: 'Zero-Template Custom Synthesis v2.0',
+          architectureType: 'zero_template_custom_v1',
           createdStudio: 'studio',
           isPrivate: false
         })
@@ -2252,6 +2571,9 @@ function StudioMain() {
       if (bp) {
         setSelectedBlueprintId(bp.id);
         newXml = bp.generateXml(config.domain, 'light');
+        if (config.description && config.description.trim().length > 4) {
+          setPromptInput(config.description.trim());
+        }
       }
     } else if (config.blueprintId === '00') {
       setSelectedBlueprintId('00');
@@ -2696,15 +3018,24 @@ function StudioMain() {
                   <button
                     id="lr-flow-tree-trigger"
                     type="button"
+                    aria-expanded={isFlowTreeOpen}
+                    aria-controls="lr-flow-tree-popover"
+                    aria-haspopup="dialog"
                     onClick={() => {
-                      setIsFlowTreeOpen(true);
+                      setIsFlowTreeOpen((prev) => !prev);
                     }}
-                    className={`flex-1 min-w-0 px-2.5 py-1.5 rounded-lg border text-left transition cursor-pointer flex items-center justify-between gap-1.5 ${
+                    onFocus={() => {
+                      if (flowTreeCloseTimerRef.current) {
+                        clearTimeout(flowTreeCloseTimerRef.current);
+                        flowTreeCloseTimerRef.current = null;
+                      }
+                    }}
+                    className={`flex-1 min-w-0 px-2.5 py-1.5 rounded-lg border text-left transition cursor-pointer flex items-center justify-between gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                       isFlowTreeOpen
                         ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
                         : 'bg-white hover:bg-blue-50/80 text-slate-800 border-slate-300 shadow-2xs'
                     }`}
-                    title="Hover to progressively expand Top-Down (TD) Diagram Flowchart Tree"
+                    title="Hover or click to progressively expand Top-Down (TD) Diagram Flowchart Tree"
                   >
                     <div className="flex items-center gap-1.5 min-w-0">
                       <span className="text-[11px] font-extrabold tracking-tight shrink-0">
@@ -2714,7 +3045,7 @@ function StudioMain() {
                           ? '📊 Infographic'
                           : '🔀 Flowchart'}
                       </span>
-                      <span className="text-[10px] opacity-60 shrink-0">──▼</span>
+                      <span className="text-[10px] opacity-60 shrink-0" aria-hidden="true">──▼</span>
                       <span className="text-[10px] font-mono font-bold truncate px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-600 dark:text-blue-300">
                         {selectedDiagramMode === 'blueprint'
                           ? `#${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}`
@@ -2732,10 +3063,10 @@ function StudioMain() {
                     id="drawer-new-diagram-btn"
                     type="button"
                     onClick={handleOpenNewTab}
-                    className="text-[10px] bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1 shadow-2xs shrink-0"
+                    className="text-[10px] bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1 shadow-2xs shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 active:scale-95"
                     title="Start a Brand-New Diagram (Resets to Draft -> Plan Approval -> v1.0)"
                   >
-                    <Plus className="w-3 h-3" />
+                    <Plus className="w-3 h-3" aria-hidden="true" />
                     <span>New</span>
                   </button>
 
@@ -2743,6 +3074,8 @@ function StudioMain() {
                   {isFlowTreeOpen && (
                     <div
                       id="lr-flow-tree-popover"
+                      role="dialog"
+                      aria-label="Top-Down Diagram Flowchart Tree"
                       onMouseEnter={() => {
                         if (flowTreeCloseTimerRef.current) {
                           clearTimeout(flowTreeCloseTimerRef.current);
@@ -2774,6 +3107,7 @@ function StudioMain() {
                           {isFlowTreeTier2Open && selectedDiagramMode !== 'flowchart' && (
                             <input
                               type="text"
+                              aria-label="Filter diagram tree items"
                               value={flowTreeSearchQuery}
                               onChange={(e) => setFlowTreeSearchQuery(e.target.value)}
                               placeholder="🔍 Filter..."
@@ -2782,12 +3116,13 @@ function StudioMain() {
                           )}
                           <button
                             type="button"
+                            aria-label="Close Top-Down Flowchart"
                             onClick={() => {
                               setIsFlowTreeOpen(false);
                               setIsFlowTreeTier2Open(false);
                               setIsFlowTreeTier3Open(false);
                             }}
-                            className="text-slate-400 hover:text-white px-1.5 py-0.5 rounded-md hover:bg-slate-800 cursor-pointer text-xs font-bold"
+                            className="text-slate-400 hover:text-white px-1.5 py-0.5 rounded-md hover:bg-slate-800 cursor-pointer text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                             title="Close Top-Down Flowchart"
                           >
                             ✕
@@ -2800,7 +3135,7 @@ function StudioMain() {
                         {/* TIER 1 (TOP): 1. ROOT FAMILY */}
                         <div className="rounded-xl border border-slate-200 bg-white p-2.5 shadow-2xs">
                           <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center justify-between">
-                            <span>1. Root Family (Hover or Click to Expand)</span>
+                            <span>1. Root Family (Hover, Focus, or Click to Expand)</span>
                             <span className="text-[8.5px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">Tier 1</span>
                           </div>
                           <div className="grid grid-cols-3 gap-1.5">
@@ -2853,16 +3188,18 @@ function StudioMain() {
                                   key={mode.id}
                                   id={`mode-btn-${mode.id}`}
                                   type="button"
+                                  aria-pressed={selectedDiagramMode === mode.id}
                                   onMouseEnter={activateRootMode}
+                                  onFocus={activateRootMode}
                                   onClick={activateRootMode}
-                                  className={`px-2 py-2 rounded-lg border text-center transition cursor-pointer relative flex flex-col items-center justify-center gap-0.5 ${
+                                  className={`px-2 py-2 rounded-lg border text-center transition cursor-pointer relative flex flex-col items-center justify-center gap-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                                     selectedDiagramMode === mode.id
                                       ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
                                       : 'bg-slate-50/80 hover:bg-blue-50/70 text-slate-800 border-slate-200'
                                   }`}
                                 >
                                   <span className="text-[11px] font-extrabold flex items-center gap-1">
-                                    <span>{mode.icon}</span>
+                                    <span aria-hidden="true">{mode.icon}</span>
                                     <span>{mode.title}</span>
                                   </span>
                                   <span
@@ -3515,16 +3852,23 @@ function StudioMain() {
                 </div>
 
                 {/* System Prompt & Analysis History Stream */}
-                <div ref={editorScrollRef} className="flex-1 min-h-0 overflow-y-auto p-3 space-y-3 text-xs">
+                <div
+                  ref={editorScrollRef}
+                  role="log"
+                  aria-live="polite"
+                  aria-relevant="additions"
+                  aria-label="Architecture Co-Pilot Conversation History"
+                  className="flex-1 min-h-0 overflow-y-auto p-3 space-y-3 text-xs"
+                >
                   {/* Full Version History of Prompt + Diagram XML */}
                   {versions.length > 0 && (
                     <details open className="rounded-xl border border-slate-200 bg-slate-50/80 p-2 text-[10.5px]">
                       <summary className="font-bold text-slate-800 cursor-pointer flex items-center justify-between select-none">
                         <span className="flex items-center gap-1.5">
-                          <History className="w-3.5 h-3.5 text-blue-600" />
+                          <History className="w-3.5 h-3.5 text-blue-600" aria-hidden="true" />
                           <span>Version History (Prompt + Diagram)</span>
                         </span>
-                        <span className="font-mono text-[9.5px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold">
+                        <span className="font-mono text-[9.5px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold tabular-nums">
                           {versions.length} Saved
                         </span>
                       </summary>
@@ -3540,22 +3884,24 @@ function StudioMain() {
                           >
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-1.5">
-                                <span className="font-mono font-black text-blue-700 text-[10px]">
+                                <span className="font-mono font-black text-blue-700 text-[10px] tabular-nums">
                                   {v.versionTag}
                                 </span>
-                                <span className="text-[9px] text-slate-500 font-mono">{v.timestamp}</span>
+                                <span className="text-[9px] text-slate-500 font-mono tabular-nums">{v.timestamp}</span>
                               </div>
                               <div className="text-[9.5px] text-slate-700 truncate font-medium mt-0.5">
                                 {v.actionSummary}
                               </div>
                             </div>
                             <button
+                              type="button"
                               onClick={() => {
                                 setXml(v.xml);
                                 setAst(v.ast);
                                 setActiveVersionTag(v.versionTag);
                               }}
-                              className="px-2 py-1 rounded bg-slate-900 hover:bg-blue-600 text-white text-[9px] font-bold shrink-0 cursor-pointer transition"
+                              aria-label={`Restore version ${v.versionTag}`}
+                              className="px-2 py-1 rounded bg-slate-900 hover:bg-blue-600 text-white text-[9px] font-bold shrink-0 cursor-pointer transition active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                             >
                               Restore
                             </button>
@@ -3580,7 +3926,7 @@ function StudioMain() {
                           <span className={`font-bold ${isUser ? 'text-blue-900' : 'text-slate-900'}`}>
                             {isUser ? 'You:' : 'ArcAssist AI:'}
                           </span>
-                          <span className="font-mono text-[10px] text-slate-500 font-semibold">{msg.timestamp}</span>
+                          <span className="font-mono text-[10px] text-slate-500 font-semibold tabular-nums">{msg.timestamp}</span>
                         </div>
                         <p
                           className={`text-[11.5px] leading-relaxed whitespace-pre-line ${
@@ -3642,11 +3988,13 @@ function StudioMain() {
                 {pendingPlan && (
                   <div
                     id="prompt-validation-plan-card"
+                    role="region"
+                    aria-label="Prompt Validation and Sanity Check"
                     className="mx-2.5 mb-2 rounded-xl border-2 border-emerald-500 bg-emerald-50/95 p-2.5 shadow-lg space-y-2 flex-shrink-0"
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-extrabold text-emerald-900 uppercase tracking-wider flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" aria-hidden="true" />
                         <span>Prompt Validation &amp; Sanity Check</span>
                       </span>
                       <span className="text-[9px] font-mono font-bold bg-emerald-200 text-emerald-950 px-1.5 py-0.5 rounded">
@@ -3677,16 +4025,19 @@ function StudioMain() {
 
                     <div className="flex items-center gap-1.5">
                       <button
+                        type="button"
                         id="approve-plan-create-v1-btn"
                         onClick={handleApprovePendingPlan}
-                        className="flex-1 py-1.5 px-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-extrabold shadow-xs transition cursor-pointer flex items-center justify-center gap-1"
+                        className="flex-1 py-1.5 px-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-extrabold shadow-xs transition cursor-pointer flex items-center justify-center gap-1 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
                       >
-                        <Check className="w-3.5 h-3.5" />
+                        <Check className="w-3.5 h-3.5" aria-hidden="true" />
                         <span>Approve Plan &amp; Create {pendingPlan.targetVersionTag}</span>
                       </button>
                       <button
+                        type="button"
                         onClick={() => setPendingPlan(null)}
-                        className="px-2 py-1.5 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-slate-600 text-[10px] font-bold cursor-pointer"
+                        aria-label="Cancel pending architecture plan"
+                        className="px-2 py-1.5 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-slate-600 text-[10px] font-bold cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                       >
                         ✕
                       </button>
@@ -3697,10 +4048,14 @@ function StudioMain() {
                 {/* Sticky Co-Pilot Prompt Box */}
                 <div className="p-3 border-t border-slate-200 bg-slate-50/80 space-y-1.5 flex-shrink-0">
                   <div className="relative">
+                    <label htmlFor="studio-copilot-prompt-input" className="sr-only">
+                      Ask AI to analyze architecture or mutate canvas
+                    </label>
                     <textarea
                       id="studio-copilot-prompt-input"
                       value={promptInput}
                       onChange={(e) => setPromptInput(e.target.value)}
+                      enterKeyHint="send"
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                           e.preventDefault();
@@ -3709,15 +4064,17 @@ function StudioMain() {
                       }}
                       rows={2}
                       placeholder="Ask AI to analyze architecture or mutate canvas..."
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none shadow-2xs"
+                      className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 resize-none shadow-2xs"
                     />
                     <button
+                      type="button"
                       id="studio-copilot-submit-btn"
                       onClick={() => handleExecutePrompt(promptInput)}
-                      className="absolute bottom-2.5 right-2 px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-bold shadow transition flex items-center gap-1 cursor-pointer"
+                      aria-label="Send prompt to Architecture Co-Pilot"
+                      className="absolute bottom-2.5 right-2 px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-bold shadow transition flex items-center gap-1 cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                     >
                       <span>Send</span>
-                      <Send className="w-2.5 h-2.5" />
+                      <Send className="w-2.5 h-2.5" aria-hidden="true" />
                     </button>
                   </div>
                   <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium">
@@ -4287,19 +4644,21 @@ function StudioMain() {
                 </div>
               </div>
 
-              {/* Section 3.3: Parent-Layer Floating [ ✨ Ask AI (Cmd+K) ] Escape Pill (z-index: 100 above iframe) */}
-              <div className="absolute top-14 right-6 z-[100] flex items-center gap-2 pointer-events-auto">
-                <button
-                  id="floating-ask-ai-pill"
-                  data-testid="floating-ask-ai-pill"
-                  onClick={() => setIsSpotlightOpen((prev) => !prev)}
-                  className="px-3.5 py-1.5 rounded-full bg-slate-900/95 hover:bg-blue-600 text-white border border-slate-700 shadow-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer"
-                  title="Open Spotlight AI Command Bar over canvas (Escapes Iframe Focus)"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-sky-400" />
-                  <span>✨ Ask AI (Cmd+K)</span>
-                </button>
-              </div>
+              {/* Section 3.3: Parent-Layer Floating [ ✨ Ask AI (Cmd+K) ] Escape Pill — only visible when Left AI Drawer is collapsed */}
+              {isLeftDrawerCollapsed && (
+                <div className="absolute top-14 right-6 z-[100] flex items-center gap-2 pointer-events-auto">
+                  <button
+                    id="floating-ask-ai-pill"
+                    data-testid="floating-ask-ai-pill"
+                    onClick={() => setIsSpotlightOpen((prev) => !prev)}
+                    className="px-3.5 py-1.5 rounded-full bg-slate-900/95 hover:bg-blue-600 text-white border border-slate-700 shadow-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer"
+                    title="Open Spotlight AI Command Bar over canvas (Escapes Iframe Focus)"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+                    <span>✨ Ask AI (Cmd+K)</span>
+                  </button>
+                </div>
+              )}
 
               {/* Spotlight AI Command Bar Modal Overlay (z-index: 110 above iframe) */}
               {isSpotlightOpen && (

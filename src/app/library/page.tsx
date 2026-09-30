@@ -123,11 +123,13 @@ function ArchitectureLibraryContent() {
   const [rightFilterTag, setRightFilterTag] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'recent' | 'versions' | 'oldest' | 'name' | 'starred'>('recent');
 
-  // Multi-Select & Batch Deletion State
+  // Multi-Select, Single-Delete Guardrail & Cloning State
   const [isSelectMode, setIsSelectMode] = useState<boolean>(false);
   const [selectedDiagramIds, setSelectedDiagramIds] = useState<Set<string>>(new Set());
   const [isBatchDeleting, setIsBatchDeleting] = useState<boolean>(false);
   const [showBatchDeleteModal, setShowBatchDeleteModal] = useState<boolean>(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [cloningId, setCloningId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Toast Helper
@@ -142,6 +144,23 @@ function ArchitectureLibraryContent() {
   const [selectedVersionIndex, setSelectedVersionIndex] = useState<number>(0);
   const [isLoadingVersions, setIsLoadingVersions] = useState<boolean>(false);
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
+
+  // Escape key handler for modals (UX-22)
+  useEffect(() => {
+    if (!showBatchDeleteModal && !activeModalCanvas) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        if (showBatchDeleteModal) {
+          setShowBatchDeleteModal(false);
+        } else if (activeModalCanvas) {
+          setActiveModalCanvas(null);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showBatchDeleteModal, activeModalCanvas]);
 
   // Starred Canvases
   const [starredIds, setStarredIds] = useState<Set<string>>(() => {
@@ -172,17 +191,51 @@ function ArchitectureLibraryContent() {
     });
   };
 
-  // Initialize active studio and filter tag from URL query
+  // Initialize active studio, filter tag, search, phase, and sort from URL query (UX-09)
   useEffect(() => {
     const studioParam = searchParams.get('studio');
-    if (studioParam === 'studio' || studioParam === 'studio1' || studioParam === 'canonical' || studioParam === 'vision') {
+    if (studioParam === 'all' || studioParam === 'studio' || studioParam === 'studio1' || studioParam === 'canonical' || studioParam === 'vision') {
       setActiveStudioTab(studioParam as StudioTabKey);
     }
     const filterParam = searchParams.get('filter');
     if (filterParam) {
       setRightFilterTag(filterParam);
     }
+    const qParam = searchParams.get('q');
+    if (qParam !== null) {
+      setSearchQuery(qParam);
+    }
+    const phaseParam = searchParams.get('phase');
+    if (phaseParam) {
+      setSelectedPhase(phaseParam);
+    }
+    const sortParam = searchParams.get('sort');
+    if (sortParam === 'recent' || sortParam === 'versions' || sortParam === 'oldest' || sortParam === 'name' || sortParam === 'starred') {
+      setSortBy(sortParam);
+    }
   }, [searchParams]);
+
+  // Persist filter/search/sort state into URL query string without navigation reload (UX-09)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    if (activeStudioTab !== 'all') params.set('studio', activeStudioTab);
+    else params.delete('studio');
+    if (rightFilterTag !== 'all') params.set('filter', rightFilterTag);
+    else params.delete('filter');
+    if (searchQuery.trim()) params.set('q', searchQuery.trim());
+    else params.delete('q');
+    if (selectedPhase !== 'all') params.set('phase', selectedPhase);
+    else params.delete('phase');
+    if (sortBy !== 'recent') params.set('sort', sortBy);
+    else params.delete('sort');
+
+    const qs = params.toString();
+    const nextUrl = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
+    if (nextUrl !== `${window.location.pathname}${window.location.search}`) {
+      window.history.replaceState(null, '', nextUrl);
+    }
+  }, [activeStudioTab, rightFilterTag, searchQuery, selectedPhase, sortBy]);
 
   // Auth Fetch
   const checkAuth = async () => {
@@ -310,10 +363,9 @@ function ArchitectureLibraryContent() {
     fetchAllCanvases();
   }, [fetchAllCanvases]);
 
-  // Single Item Delete
+  // Single Item Delete (with two-step inline confirmation guardrail UX-12)
   const handleDeleteSingle = async (diagram: CanvasDiagramItem, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    if (!confirm(`Are you sure you want to delete "${diagram.name}"? This action cannot be undone.`)) return;
     try {
       if (diagram.id.startsWith('VIS-') || diagram.id.startsWith('GCP-') || diagram.created_studio === 'vision') {
         deleteCustomVisionBlueprint(diagram.id);
@@ -328,10 +380,11 @@ function ArchitectureLibraryContent() {
       if (activeModalCanvas?.id === diagram.id) {
         setActiveModalCanvas(null);
       }
+      setConfirmDeleteId(null);
       showToast(`🗑️ Deleted "${diagram.name}"`);
     } catch (err) {
       console.error('Failed to delete diagram:', err);
-      alert(err instanceof Error ? err.message : 'Failed to delete diagram');
+      showToast(err instanceof Error ? err.message : 'Failed to delete diagram');
     }
   };
 
@@ -389,15 +442,17 @@ function ArchitectureLibraryContent() {
       await fetchAllCanvases();
     } catch (err) {
       console.error('Failed batch delete:', err);
-      alert(err instanceof Error ? err.message : 'Batch delete failed');
+      showToast(err instanceof Error ? err.message : 'Batch delete failed');
     } finally {
       setIsBatchDeleting(false);
     }
   };
 
-  // Clone / Duplicate Diagram
+  // Clone / Duplicate Diagram (with double-submit disabled lock UX-10 / UX-28)
   const handleCloneDiagram = async (diagram: CanvasDiagramItem, e?: React.MouseEvent) => {
     e?.stopPropagation();
+    if (cloningId === diagram.id) return;
+    setCloningId(diagram.id);
     try {
       let xmlToClone = diagram.xml_content;
       if (!xmlToClone) {
@@ -423,6 +478,8 @@ function ArchitectureLibraryContent() {
       }
     } catch (err) {
       console.error('Failed to clone diagram:', err);
+    } finally {
+      setCloningId(null);
     }
   };
 
@@ -646,19 +703,23 @@ function ArchitectureLibraryContent() {
           <div className="flex items-center gap-3 shrink-0 min-w-0">
             <button
               type="button"
-              onClick={() => setIsMobileMenuOpen(true)}
-              className="lg:hidden p-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 cursor-pointer"
+              onClick={() => {
+                setIsMobileMenuOpen(true);
+                window.dispatchEvent(new CustomEvent('promptcanvas_toggle_sidebar'));
+              }}
+              aria-label="Open navigation menu"
+              className="lg:hidden min-w-[40px] min-h-[40px] flex items-center justify-center p-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
             >
               <Menu className="w-4 h-4" />
             </button>
 
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
-              <Link href="/" className="font-extrabold flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors">
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
+              <Link href="/" className="font-extrabold flex items-center gap-1.5 text-slate-300 hover:text-white transition-colors">
                 <span>PromptCanvas</span>
               </Link>
-              <span className="text-slate-600">/</span>
+              <span className="text-slate-500" aria-hidden="true">/</span>
               <span className="text-teal-400 font-bold flex items-center gap-1.5">
-                <LayoutGrid className="w-3.5 h-3.5" />
+                <LayoutGrid className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>Architecture Library</span>
               </span>
             </div>
@@ -673,7 +734,8 @@ function ArchitectureLibraryContent() {
                 setIsSelectMode(!isSelectMode);
                 if (isSelectMode) setSelectedDiagramIds(new Set());
               }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
+              aria-pressed={isSelectMode}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 ${
                 isSelectMode
                   ? 'bg-teal-600 text-white border-teal-500 shadow-sm'
                   : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
@@ -686,9 +748,12 @@ function ArchitectureLibraryContent() {
 
             {/* Refresh */}
             <button
+              type="button"
               onClick={fetchAllCanvases}
               disabled={isLoading}
-              className="p-2 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 transition cursor-pointer"
+              aria-busy={isLoading}
+              aria-label="Refresh Architecture Library"
+              className="min-w-[36px] min-h-[36px] flex items-center justify-center p-2 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
               title="Refresh Architecture Library"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-teal-400' : ''}`} />
@@ -698,7 +763,7 @@ function ArchitectureLibraryContent() {
 
             <Link
               href="/canonical"
-              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 shrink-0"
+              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
               title="Open Full-Width 53 Blueprint Catalog View"
             >
               <LayoutGrid className="w-3.5 h-3.5 text-sky-400" />
@@ -707,7 +772,7 @@ function ArchitectureLibraryContent() {
 
             <Link
               href="/studio"
-              className="px-3.5 py-1.5 bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-black text-xs rounded-xl shadow-md transition-all hover:scale-[1.02] flex items-center gap-1.5 shrink-0"
+              className="px-3.5 py-1.5 bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-black text-xs rounded-xl shadow-md transition-all hover:scale-[1.02] flex items-center gap-1.5 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
               title="Launch Multi-Diagram AI Studio"
             >
               <Sparkles className="w-3.5 h-3.5" />
@@ -718,8 +783,12 @@ function ArchitectureLibraryContent() {
 
         {/* Floating Toast Notification */}
         {toastMessage && (
-          <div className="fixed top-16 right-6 z-50 bg-slate-900 text-white border border-teal-500/50 px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 text-xs font-bold animate-in fade-in slide-in-from-top-2">
-            <Sparkles className="w-4 h-4 text-teal-400" />
+          <div
+            role="status"
+            aria-live="polite"
+            className="fixed top-16 right-6 z-50 bg-slate-900 text-white border border-teal-500/50 px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 text-xs font-bold animate-in fade-in slide-in-from-top-2"
+          >
+            <Sparkles className="w-4 h-4 text-teal-400" aria-hidden="true" />
             <span>{toastMessage}</span>
           </div>
         )}
@@ -738,32 +807,32 @@ function ArchitectureLibraryContent() {
                   <h1 className={`text-base sm:text-lg font-black tracking-tight leading-none ${isLight ? 'text-slate-900' : 'text-white'}`}>
                     Enterprise Architecture <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Library</span>
                   </h1>
-                  <p className={`text-[11px] leading-tight mt-0.5 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                  <p className={`text-[11px] leading-tight mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                     Unified repository for Official Canonical Blueprints (53), My Custom &amp; Forked Topologies, Guided Lifecycle Matrix, and Vision Decompilations.
                   </p>
                 </div>
               </div>
 
               {/* KPI Strip (Compact Inline Chips) */}
-              <div className="flex items-center gap-3 px-3 py-1.5 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-2xs shrink-0 text-xs">
+              <div className="flex items-center gap-3 px-3 py-1.5 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-2xs shrink-0 text-xs tabular-nums">
                 <div className="flex items-center gap-1.5">
                   <span className="font-extrabold text-teal-600 dark:text-teal-400">{diagrams.length}</span>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold">Total</span>
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Total</span>
                 </div>
                 <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
                 <div className="flex items-center gap-1.5">
                   <span className="font-extrabold text-amber-600 dark:text-amber-400">{studioCounts.canonical}</span>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold">Canonical</span>
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Canonical</span>
                 </div>
                 <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
                 <div className="flex items-center gap-1.5">
                   <span className="font-extrabold text-indigo-600 dark:text-indigo-400">{studioCounts.studio}</span>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold">Custom/Forked</span>
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Custom/Forked</span>
                 </div>
                 <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
                 <div className="flex items-center gap-1.5">
                   <span className="font-extrabold text-emerald-600 dark:text-emerald-400">{studioCounts.studio1}</span>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold">Matrix Lab</span>
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Matrix Lab</span>
                 </div>
               </div>
             </div>
@@ -771,7 +840,11 @@ function ArchitectureLibraryContent() {
             {/* ========================================================================= */}
             {/* STUDIO TABS (PROMINENT STUDIO SWITCHER) */}
             {/* ========================================================================= */}
-            <div className="flex flex-wrap items-center gap-2 border-b pb-4 border-slate-200 dark:border-slate-800">
+            <div
+              role="tablist"
+              aria-label="Architecture Studio Categories"
+              className="flex flex-wrap items-center gap-2 border-b pb-4 border-slate-200 dark:border-slate-800"
+            >
               {[
                 { id: 'all', label: '🌐 All Architectures', count: studioCounts.all, color: 'teal' },
                 { id: 'canonical', label: '📚 Official Canonical (53)', count: studioCounts.canonical, color: 'sky' },
@@ -784,11 +857,13 @@ function ArchitectureLibraryContent() {
                   <button
                     key={tab.id}
                     type="button"
+                    role="tab"
+                    aria-selected={isActive}
                     onClick={() => {
                       setActiveStudioTab(tab.id as StudioTabKey);
                       setSelectedDiagramIds(new Set());
                     }}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer border ${
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
                       isActive
                         ? isLight
                           ? 'bg-slate-900 text-white border-slate-900 shadow-md scale-[1.02]'
@@ -799,7 +874,7 @@ function ArchitectureLibraryContent() {
                     }`}
                   >
                     <span>{tab.label}</span>
-                    <span className={`text-[10px] px-2 py-0.2 rounded-full font-mono font-bold ${
+                    <span className={`text-[10px] px-2 py-0.2 rounded-full font-mono font-bold tabular-nums ${
                       isActive
                         ? isLight ? 'bg-white/20 text-white' : 'bg-black/20 text-slate-950'
                         : isLight ? 'bg-slate-100 text-slate-600' : 'bg-slate-800 text-slate-400'
@@ -820,13 +895,17 @@ function ArchitectureLibraryContent() {
               <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
                 {/* Search Box */}
                 <div className="relative w-full lg:w-96">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                  <label htmlFor="library-search-input" className="sr-only">
+                    Search architectures by canvas title, prompt, or keywords
+                  </label>
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" aria-hidden="true" />
                   <input
-                    type="text"
+                    id="library-search-input"
+                    type="search"
                     placeholder="Search by canvas title, prompt, keywords..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className={`w-full border rounded-xl pl-10 pr-12 py-2.5 text-xs transition font-medium focus:outline-none ${
+                    className={`w-full border rounded-xl pl-10 pr-12 py-2.5 text-xs transition font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
                       isLight
                         ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-teal-500'
                         : 'bg-slate-950 border-slate-700/80 text-slate-100 placeholder-slate-500 focus:border-teal-400'
@@ -834,8 +913,10 @@ function ArchitectureLibraryContent() {
                   />
                   {searchQuery && (
                     <button
+                      type="button"
                       onClick={() => setSearchQuery('')}
-                      className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-slate-900 dark:hover:text-white font-bold cursor-pointer"
+                      aria-label="Clear search query"
+                      className="absolute right-3 top-2.5 text-xs text-slate-500 hover:text-slate-900 dark:hover:text-white font-bold cursor-pointer"
                     >
                       Clear
                     </button>
@@ -845,9 +926,13 @@ function ArchitectureLibraryContent() {
                 {/* Filter Controls */}
                 <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
                   {/* Phase Chips */}
-                  <div className={`inline-flex items-center p-1 rounded-xl border text-xs font-bold ${
-                    isLight ? 'bg-slate-100 border-slate-300' : 'bg-slate-950 border-slate-800'
-                  }`}>
+                  <div
+                    role="group"
+                    aria-label="Filter by architecture lifecycle phase"
+                    className={`inline-flex items-center p-1 rounded-xl border text-xs font-bold ${
+                      isLight ? 'bg-slate-100 border-slate-300' : 'bg-slate-950 border-slate-800'
+                    }`}
+                  >
                     {[
                       { id: 'all', label: 'All' },
                       { id: 'P1', label: 'P1' },
@@ -859,8 +944,10 @@ function ArchitectureLibraryContent() {
                     ].map((p) => (
                       <button
                         key={p.id}
+                        type="button"
+                        aria-pressed={selectedPhase === p.id}
                         onClick={() => setSelectedPhase(p.id)}
-                        className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
                           selectedPhase === p.id
                             ? isLight ? 'bg-white text-teal-700 font-extrabold shadow-sm border border-slate-200' : 'bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-sm'
                             : isLight ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-white'
@@ -874,6 +961,7 @@ function ArchitectureLibraryContent() {
                   {/* Right Filter Dropdown (Saved Library & Blueprint Tags) */}
                   <select
                     data-testid="library-right-filter-dropdown"
+                    aria-label="Filter by saved library or blueprint category"
                     value={rightFilterTag}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -882,7 +970,7 @@ function ArchitectureLibraryContent() {
                         setActiveStudioTab('vision');
                       }
                     }}
-                    className={`border text-xs font-bold rounded-xl px-3 py-2 outline-none cursor-pointer ${
+                    className={`border text-xs font-bold rounded-xl px-3 py-2 outline-none cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 ${
                       isLight
                         ? 'bg-teal-50/70 border-teal-300 text-teal-900 focus:border-teal-600'
                         : 'bg-slate-950 border-teal-500/40 text-teal-200 focus:border-teal-400'
@@ -900,9 +988,10 @@ function ArchitectureLibraryContent() {
 
                   {/* Sort By Dropdown */}
                   <select
+                    aria-label="Sort architectures by"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as any)}
-                    className={`border text-xs font-bold rounded-xl px-3 py-2 outline-none cursor-pointer ${
+                    className={`border text-xs font-bold rounded-xl px-3 py-2 outline-none cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 ${
                       isLight
                         ? 'bg-slate-50 border-slate-300 text-slate-800 focus:border-teal-500'
                         : 'bg-slate-950 border-slate-700/80 text-slate-200 focus:border-teal-400'
@@ -920,7 +1009,7 @@ function ArchitectureLibraryContent() {
               {/* Popular Topics */}
               <div className={`flex flex-wrap items-center gap-1.5 pt-2 border-t ${isLight ? 'border-slate-200' : 'border-slate-800/60'}`}>
                 <span className={`text-[11px] font-bold flex items-center gap-1 mr-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                  <Sparkles className="w-3 h-3 text-teal-500" />
+                  <Sparkles className="w-3 h-3 text-teal-500" aria-hidden="true" />
                   <span>Popular Topics:</span>
                 </span>
                 {[
@@ -939,8 +1028,10 @@ function ArchitectureLibraryContent() {
                   return (
                     <button
                       key={chip.label}
+                      type="button"
+                      aria-pressed={isSelected}
                       onClick={() => setSearchQuery(chip.query)}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer border ${
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
                         isSelected 
                           ? isLight ? 'bg-teal-50 text-teal-800 border-teal-300 font-bold' : 'bg-teal-500/20 text-teal-300 border-teal-500/40 font-bold' 
                           : isLight ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200' : 'bg-slate-950/80 hover:bg-slate-800 text-slate-300 border-slate-800 hover:border-slate-700'
@@ -958,8 +1049,13 @@ function ArchitectureLibraryContent() {
             {/* ========================================================================= */}
             <div>
               {isLoading ? (
-                <div className="flex flex-col items-center justify-center py-24 gap-3 text-slate-400">
-                  <Loader2 className="w-8 h-8 animate-spin text-teal-400" />
+                <div
+                  role="status"
+                  aria-live="polite"
+                  aria-busy="true"
+                  className="flex flex-col items-center justify-center py-24 gap-3 text-slate-500"
+                >
+                  <Loader2 className="w-8 h-8 animate-spin text-teal-500" aria-hidden="true" />
                   <span className="text-sm font-semibold">Loading architecture library from database...</span>
                 </div>
               ) : filteredDiagrams.length === 0 ? (
@@ -969,9 +1065,9 @@ function ArchitectureLibraryContent() {
                   <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mx-auto ${isLight ? 'bg-teal-50 text-teal-600' : 'bg-teal-500/15 text-teal-400'}`}>
                     <Layers className="w-7 h-7" />
                   </div>
-                  <h3 className={`text-xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                  <h2 className={`text-xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>
                     No architectures found in this tab
-                  </h3>
+                  </h2>
                   <p className={`text-xs ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                     No diagrams match your current filter or studio selection.
                   </p>
@@ -982,6 +1078,7 @@ function ArchitectureLibraryContent() {
                         setActiveStudioTab('all');
                         setSearchQuery('');
                         setSelectedPhase('all');
+                        setRightFilterTag('all');
                       }}
                       className="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs rounded-xl transition cursor-pointer"
                     >
@@ -997,6 +1094,8 @@ function ArchitectureLibraryContent() {
                     const dateStr = diagram.updated_at || diagram.created_at;
                     const isStarred = starredIds.has(diagram.id);
                     const isSelected = selectedDiagramIds.has(diagram.id);
+                    const isCloning = cloningId === diagram.id;
+                    const isConfirmingDelete = confirmDeleteId === diagram.id;
 
                     // Studio Category & Badging
                     const studioCategory = getStudioCategory(diagram);
@@ -1064,7 +1163,9 @@ function ArchitectureLibraryContent() {
                                 <button
                                   type="button"
                                   onClick={(e) => toggleSelectDiagram(diagram.id, e)}
-                                  className="p-1 rounded-lg text-teal-600 dark:text-teal-400 hover:scale-110 transition-transform cursor-pointer"
+                                  aria-label={isSelected ? `Deselect ${diagram.name}` : `Select ${diagram.name}`}
+                                  aria-pressed={isSelected}
+                                  className="p-1.5 rounded-lg text-teal-600 dark:text-teal-400 hover:scale-110 transition-transform cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
                                 >
                                   {isSelected ? (
                                     <CheckSquare className="w-4 h-4 fill-teal-500 text-white dark:text-slate-950" />
@@ -1092,19 +1193,21 @@ function ArchitectureLibraryContent() {
                             {/* Privacy & Star Toggle */}
                             <div className="flex items-center gap-2">
                               {diagram.is_private ? (
-                                <span className="text-[10px] font-bold text-amber-500 flex items-center gap-1">
-                                  <Lock className="w-3 h-3" /> Private
+                                <span className="text-[10px] font-bold text-amber-600 flex items-center gap-1">
+                                  <Lock className="w-3 h-3" aria-hidden="true" /> Private
                                 </span>
                               ) : (
-                                <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
-                                  <Globe className="w-3 h-3" /> Public
+                                <span className="text-[10px] font-bold text-slate-500 flex items-center gap-1">
+                                  <Globe className="w-3 h-3" aria-hidden="true" /> Public
                                 </span>
                               )}
 
                               <button
                                 type="button"
                                 onClick={(e) => toggleStar(diagram.id, e)}
-                                className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer"
+                                aria-label={isStarred ? `Unstar ${diagram.name}` : `Star ${diagram.name}`}
+                                aria-pressed={isStarred}
+                                className="min-w-[32px] min-h-[32px] flex items-center justify-center p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
                                 title={isStarred ? 'Unstar Canvas' : 'Star Canvas'}
                               >
                                 <Star className={`w-4 h-4 transition-all ${
@@ -1115,11 +1218,11 @@ function ArchitectureLibraryContent() {
                           </div>
 
                           {/* Canvas Title */}
-                          <h3 className={`text-base md:text-lg font-bold transition-colors line-clamp-2 mb-2 ${
+                          <h2 className={`text-base md:text-lg font-bold transition-colors line-clamp-2 mb-2 ${
                             isLight ? 'text-slate-900 group-hover:text-teal-700' : 'text-white group-hover:text-teal-300'
                           }`}>
                             {diagram.name}
-                          </h3>
+                          </h2>
 
                           {/* Prompt / Description Snippet */}
                           <p className={`text-xs line-clamp-2 mb-4 italic ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
@@ -1127,18 +1230,18 @@ function ArchitectureLibraryContent() {
                           </p>
 
                           {/* Version Count & Last Modified Timestamp */}
-                          <div className={`rounded-xl p-3 border mb-4 flex items-center justify-between text-xs font-mono ${
+                          <div className={`rounded-xl p-3 border mb-4 flex items-center justify-between text-xs font-mono tabular-nums ${
                             isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950/60 border-slate-800/60'
                           }`}>
                             <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-300">
-                              <History className="w-3.5 h-3.5 text-indigo-500" />
-                              <span className="font-bold">{verCount} Version{verCount > 1 ? '' : ''}</span>
+                              <History className="w-3.5 h-3.5 text-indigo-500" aria-hidden="true" />
+                              <span className="font-bold">{verCount} Version{verCount > 1 ? 's' : ''}</span>
                               {diagram.max_version && diagram.max_version > 1 && (
-                                <span className="text-[10px] text-slate-400">(Max v{diagram.max_version})</span>
+                                <span className="text-[10px] text-slate-500">(Max v{diagram.max_version})</span>
                               )}
                             </div>
-                            <div className="flex items-center gap-1 text-slate-400 text-[11px]">
-                              <Clock className="w-3 h-3 text-slate-400" />
+                            <div className="flex items-center gap-1 text-slate-500 text-[11px]">
+                              <Clock className="w-3 h-3 text-slate-400" aria-hidden="true" />
                               <span>{new Date(dateStr).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                             </div>
                           </div>
@@ -1154,10 +1257,11 @@ function ArchitectureLibraryContent() {
                                 e.stopPropagation();
                                 router.push(studioBadgeConfig.route);
                               }}
-                              className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-95 ${studioBadgeConfig.btnStyle}`}
+                              aria-label={`${studioBadgeConfig.actionLabel}: ${diagram.name}`}
+                              className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${studioBadgeConfig.btnStyle}`}
                               title={studioBadgeConfig.actionLabel}
                             >
-                              <Sparkles className="w-3.5 h-3.5" />
+                              <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
                               <span>{studioBadgeConfig.actionLabel}</span>
                             </button>
 
@@ -1168,14 +1272,15 @@ function ArchitectureLibraryContent() {
                                 e.stopPropagation();
                                 handleOpenPreviewModal(diagram);
                               }}
-                              className={`py-2 px-3 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs ${
+                              aria-label={`Preview ${diagram.name}`}
+                              className={`py-2 px-3 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
                                 isLight
                                   ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
                                   : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
                               }`}
                               title="Preview all version snapshots"
                             >
-                              <Eye className="w-3.5 h-3.5 text-teal-500" />
+                              <Eye className="w-3.5 h-3.5 text-teal-500" aria-hidden="true" />
                               <span>Preview</span>
                             </button>
                           </div>
@@ -1192,39 +1297,74 @@ function ArchitectureLibraryContent() {
                                   router.push(`/studio?id=${encodeURIComponent(diagram.id)}`);
                                 }
                               }}
-                              className={`flex-1 py-1.5 px-2.5 rounded-lg border text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer ${
+                              aria-label={`Edit ${diagram.name} in Studio`}
+                              className={`flex-1 py-1.5 px-2.5 rounded-lg border text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
                                 isLight ? 'bg-teal-50 hover:bg-teal-100 border-teal-200 text-teal-800' : 'bg-teal-950/50 hover:bg-teal-900 border-teal-800 text-teal-300'
                               }`}
                               title="Open full editable canvas in Architecture Studio"
                             >
-                              <ExternalLink className="w-3 h-3" />
+                              <ExternalLink className="w-3 h-3" aria-hidden="true" />
                               <span>Studio</span>
                             </button>
 
-                            {/* Clone */}
+                            {/* Clone (with double-submit disabled lock UX-10 / UX-28) */}
                             <button
                               type="button"
+                              disabled={isCloning}
+                              aria-busy={isCloning}
+                              aria-label={`Clone ${diagram.name}`}
                               onClick={(e) => handleCloneDiagram(diagram, e)}
-                              className={`p-1.5 rounded-lg border text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
+                              className={`py-1.5 px-2.5 rounded-lg border text-[11px] font-bold transition flex items-center gap-1 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
                                 isLight ? 'bg-amber-50 hover:bg-amber-100 border-amber-200 text-amber-800' : 'bg-amber-950/50 hover:bg-amber-900 border-amber-800 text-amber-300'
                               }`}
                               title="Clone / Duplicate this Canvas"
                             >
-                              <CopyPlus className="w-3.5 h-3.5" />
-                              <span>Clone</span>
+                              {isCloning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CopyPlus className="w-3.5 h-3.5" />}
+                              <span>{isCloning ? 'Cloning...' : 'Clone'}</span>
                             </button>
 
-                            {/* Single Delete */}
-                            <button
-                              type="button"
-                              onClick={(e) => handleDeleteSingle(diagram, e)}
-                              className={`p-1.5 rounded-lg border text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
-                                isLight ? 'bg-red-50 hover:bg-red-100 border-red-200 text-red-800' : 'bg-red-950/50 hover:bg-red-900 border-red-800 text-red-300'
-                              }`}
-                              title="Delete Canvas"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
+                            {/* Single Delete (with two-step inline confirmation guardrail UX-12 / UX-28) */}
+                            {isConfirmingDelete ? (
+                              <div
+                                role="alertdialog"
+                                aria-label={`Confirm deletion of ${diagram.name}`}
+                                onClick={(e) => e.stopPropagation()}
+                                className="flex items-center gap-1 bg-red-50 border border-red-300 rounded-lg px-1.5 py-0.5"
+                              >
+                                <button
+                                  type="button"
+                                  onClick={(e) => handleDeleteSingle(diagram, e)}
+                                  className="px-2 py-1 rounded bg-red-600 hover:bg-red-500 text-white text-[10px] font-black cursor-pointer"
+                                >
+                                  Delete
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setConfirmDeleteId(null);
+                                  }}
+                                  className="px-1.5 py-1 rounded bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-bold cursor-pointer"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setConfirmDeleteId(diagram.id);
+                                }}
+                                aria-label={`Delete ${diagram.name}`}
+                                className={`p-1.5 rounded-lg border text-[11px] font-bold transition flex items-center gap-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 ${
+                                  isLight ? 'bg-red-50 hover:bg-red-100 border-red-200 text-red-800' : 'bg-red-950/50 hover:bg-red-900 border-red-800 text-red-300'
+                                }`}
+                                title="Delete Canvas"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -1241,10 +1381,14 @@ function ArchitectureLibraryContent() {
         {/* STICKY BOTTOM BATCH ACTION BAR (WHEN ITEMS ARE SELECTED) */}
         {/* ========================================================================= */}
         {selectedDiagramIds.size > 0 && (
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-900/95 border border-teal-500/40 text-white px-6 py-3.5 rounded-3xl shadow-2xl backdrop-blur-xl flex items-center gap-4 animate-in fade-in slide-in-from-bottom-4">
+          <div
+            role="region"
+            aria-label="Batch selection actions"
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-900/95 border border-teal-500/40 text-white px-6 py-3.5 rounded-3xl shadow-2xl backdrop-blur-xl flex items-center gap-4 animate-in fade-in slide-in-from-bottom-4"
+          >
             <div className="flex items-center gap-2 pr-2 border-r border-slate-700">
               <CheckSquare className="w-5 h-5 text-teal-400" />
-              <span className="text-sm font-black">
+              <span className="text-sm font-black tabular-nums">
                 {selectedDiagramIds.size} Canvas{selectedDiagramIds.size > 1 ? 'es' : ''} Selected
               </span>
             </div>
@@ -1282,19 +1426,29 @@ function ArchitectureLibraryContent() {
       {/* BATCH DELETE CONFIRMATION MODAL */}
       {/* ========================================================================= */}
       {showBatchDeleteModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
-          <div className="bg-[#0B111E] border border-red-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl text-white">
+        <div
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in"
+          onClick={() => setShowBatchDeleteModal(false)}
+        >
+          <div
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="batch-delete-modal-title"
+            aria-describedby="batch-delete-modal-desc"
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[#0B111E] border border-red-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl text-white"
+          >
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-2xl bg-red-500/20 text-red-400 border border-red-500/30">
-                <AlertTriangle className="w-6 h-6" />
+                <AlertTriangle className="w-6 h-6" aria-hidden="true" />
               </div>
               <div>
-                <h3 className="text-lg font-black">Confirm Batch Deletion</h3>
-                <p className="text-xs text-slate-400">This action permanently deletes diagrams from database</p>
+                <h2 id="batch-delete-modal-title" className="text-lg font-black">Confirm Batch Deletion</h2>
+                <p className="text-xs text-slate-300">This action permanently deletes diagrams from database</p>
               </div>
             </div>
 
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <p id="batch-delete-modal-desc" className="text-xs text-slate-300 leading-relaxed">
               Are you sure you want to permanently delete <strong className="text-white font-bold">{selectedDiagramIds.size}</strong> selected architecture canvas{selectedDiagramIds.size > 1 ? 'es' : ''}? All version snapshots and XML models will be removed.
             </p>
 
@@ -1311,6 +1465,7 @@ function ArchitectureLibraryContent() {
                 type="button"
                 onClick={handleExecuteBatchDelete}
                 disabled={isBatchDeleting}
+                aria-busy={isBatchDeleting}
                 className="px-5 py-2 rounded-xl text-xs font-black bg-red-600 hover:bg-red-500 text-white shadow-lg shadow-red-600/30 transition flex items-center gap-1.5 cursor-pointer"
               >
                 {isBatchDeleting ? (
@@ -1334,8 +1489,17 @@ function ArchitectureLibraryContent() {
       {/* INTERACTIVE PREVIEW MODAL */}
       {/* ========================================================================= */}
       {activeModalCanvas && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 md:p-8 animate-in fade-in">
-          <div className="bg-[#0B0F19] border border-slate-700 rounded-3xl w-full max-w-[1500px] h-[92vh] flex flex-col shadow-2xl overflow-hidden text-white">
+        <div
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 md:p-8 animate-in fade-in"
+          onClick={() => setActiveModalCanvas(null)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="library-preview-modal-title"
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[#0B0F19] border border-slate-700 rounded-3xl w-full max-w-[1500px] h-[92vh] flex flex-col shadow-2xl overflow-hidden text-white"
+          >
             
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-slate-800 bg-slate-950 flex items-center justify-between gap-4 shrink-0">
@@ -1344,10 +1508,10 @@ function ArchitectureLibraryContent() {
                   <Layers className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <h2 className="text-base font-black truncate max-w-2xl text-white">
+                  <h2 id="library-preview-modal-title" className="text-base font-black truncate max-w-2xl text-white">
                     {activeModalCanvas.name}
                   </h2>
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
+                  <div className="flex items-center gap-2 text-xs text-slate-300">
                     <span>{getArchitectureTypeById(activeModalCanvas.architecture_type || '')?.name || activeModalCanvas.architecture_type}</span>
                     <span>&bull;</span>
                     <span>{modalVersions.length} Version{modalVersions.length > 1 ? 's' : ''}</span>
@@ -1365,6 +1529,7 @@ function ArchitectureLibraryContent() {
                 {activeVersion && (
                   <>
                     <button
+                      type="button"
                       onClick={() => handleCopyXml(activeVersion.xml_content)}
                       className="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-900 text-xs font-bold text-slate-200 hover:bg-slate-800 transition flex items-center gap-1 cursor-pointer"
                     >
@@ -1372,6 +1537,7 @@ function ArchitectureLibraryContent() {
                       <span>{copiedXml ? 'Copied!' : 'Copy XML'}</span>
                     </button>
                     <button
+                      type="button"
                       onClick={() => handleDownloadXml(activeModalCanvas.name, activeVersion.version_number, activeVersion.xml_content)}
                       className="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-900 text-xs font-bold text-slate-200 hover:bg-slate-800 transition flex items-center gap-1 cursor-pointer"
                     >
@@ -1381,8 +1547,10 @@ function ArchitectureLibraryContent() {
                   </>
                 )}
                 <button
+                  type="button"
                   onClick={() => setActiveModalCanvas(null)}
-                  className="p-1.5 rounded-xl border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+                  aria-label="Close preview modal"
+                  className="min-w-[36px] min-h-[36px] flex items-center justify-center p-1.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 transition cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -1392,7 +1560,7 @@ function ArchitectureLibraryContent() {
             {/* Modal Body Viewport */}
             <div className="flex-1 overflow-hidden relative bg-[#070A13]">
               {isLoadingVersions ? (
-                <div className="h-full flex items-center justify-center gap-3 text-slate-400">
+                <div role="status" aria-live="polite" className="h-full flex items-center justify-center gap-3 text-slate-300">
                   <Loader2 className="w-6 h-6 animate-spin text-teal-400" />
                   <span className="text-xs">Loading version XML...</span>
                 </div>
@@ -1405,17 +1573,18 @@ function ArchitectureLibraryContent() {
                   />
                 </div>
               ) : (
-                <div className="h-full flex items-center justify-center text-slate-500 text-xs">
+                <div className="h-full flex items-center justify-center text-slate-400 text-xs">
                   No XML content available for this canvas.
                 </div>
               )}
             </div>
 
             {/* Modal Footer: Version Selector */}
-            <div className="px-6 py-3.5 border-t border-slate-800 bg-slate-950 flex items-center justify-between text-xs text-slate-400 shrink-0">
+            <div className="px-6 py-3.5 border-t border-slate-800 bg-slate-950 flex items-center justify-between text-xs text-slate-300 shrink-0">
               <div className="flex items-center gap-3">
-                <span className="font-bold text-slate-300">Active Version:</span>
+                <label htmlFor="library-modal-version-select" className="font-bold text-slate-300">Active Version:</label>
                 <select
+                  id="library-modal-version-select"
                   value={selectedVersionIndex}
                   onChange={(e) => setSelectedVersionIndex(Number(e.target.value))}
                   className="bg-slate-900 border border-slate-700 text-white rounded-xl px-3 py-1.5 text-xs font-bold outline-none cursor-pointer"
@@ -1430,6 +1599,7 @@ function ArchitectureLibraryContent() {
 
               <div className="flex items-center gap-3">
                 <button
+                  type="button"
                   onClick={() => {
                     router.push(`/studio?diagram=${activeModalCanvas.id}`);
                   }}

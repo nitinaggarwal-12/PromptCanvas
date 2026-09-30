@@ -59,6 +59,153 @@ import {
 import { DOC_ARCHETYPES_META, DocArchetypeMeta, BlueprintSlot } from '@/lib/compose/archetypes';
 import { loadAllHistoricalProjects, HistoricalProjectItem } from '@/components/DocGenHistoryModal';
 import { AppHeader } from '@/components/AppHeader';
+import { synthesizePromptDrivenDiagramXml } from '@/lib/promptDrivenDiagramSynthesizer';
+
+interface DashboardStarterPrompt {
+  id: string;
+  label: string;
+  badge: string;
+  prompt: string;
+  recommendedId: string;
+}
+
+const DASHBOARD_STARTER_PROMPTS: DashboardStarterPrompt[] = [
+  {
+    id: 'aws_cloud_ai',
+    label: 'AWS Cloud AI Stack',
+    badge: 'AWS',
+    prompt: 'Create an AWS Cloud AI architecture with Amazon Bedrock, SageMaker, OpenSearch Vector DB, Aurora pgvector, and S3 Lakehouse',
+    recommendedId: '34',
+  },
+  {
+    id: 'gcp_agentic_rag',
+    label: 'GCP Vertex Agentic RAG',
+    badge: 'GCP',
+    prompt: 'Design a Google Cloud Vertex AI Agentic RAG architecture with Gemini, Spanner Graph, Apigee X, and Cloud Armor WAF',
+    recommendedId: '24',
+  },
+  {
+    id: 'multi_region_ha',
+    label: 'Multi-Region Spanner HA',
+    badge: 'HA/DR',
+    prompt: 'Architect a Multi-Region Active-Active High Availability topology with Cloud Spanner nam3, Global Load Balancing, and RPO < 1s',
+    recommendedId: '19',
+  },
+  {
+    id: 'zero_trust_sec',
+    label: 'Zero-Trust Security Mesh',
+    badge: 'SEC',
+    prompt: 'Build a Zero-Trust Security Perimeter with Cloud Armor L7 WAF, BeyondCorp IAP, Cloud KMS HSM CMEK, and VPC Service Controls',
+    recommendedId: '18',
+  },
+  {
+    id: 'exec_infographic',
+    label: 'Context + Harness Infographic',
+    badge: 'INFO',
+    prompt: 'Generate an Executive AI Agent Context + Harness + Loop Architecture Infographic poster',
+    recommendedId: '52',
+  },
+];
+
+function rankTemplatesForPrompt(promptText: string): Array<{ template: CanonicalTemplate; score: number; reason: string }> {
+  const q = promptText.trim().toLowerCase();
+  return CANONICAL_TEMPLATES.map((tpl) => {
+    let score = 10;
+    let reason = `${tpl.family} Reference Blueprint`;
+    const nameLower = tpl.name.toLowerCase();
+    const purposeLower = (tpl.primaryPurpose || '').toLowerCase();
+    const compStr = (tpl.keyComponents || []).join(' ').toLowerCase();
+    const combined = `${nameLower} ${purposeLower} ${compStr} ${tpl.family.toLowerCase()}`;
+
+    if (!q) {
+      if (tpl.id === '24') return { template: tpl, score: 98, reason: 'Featured AI & RAG Reference Blueprint' };
+      if (tpl.id === '34') return { template: tpl, score: 95, reason: 'Featured Multi-Cloud & Hybrid Topology' };
+      if (tpl.id === '16') return { template: tpl, score: 92, reason: 'Featured Cloud Deployment Architecture' };
+      if (tpl.id === '18') return { template: tpl, score: 89, reason: 'Featured Zero-Trust Security Boundary' };
+      return { template: tpl, score: 50 - (parseInt(tpl.id, 10) || 25) * 0.2, reason };
+    }
+
+    const words = q.split(/[^a-z0-9]+/).filter((w) => w.length >= 2);
+    for (const w of words) {
+      if (nameLower.includes(w)) score += 18;
+      if (compStr.includes(w)) score += 14;
+      if (purposeLower.includes(w)) score += 10;
+    }
+
+    if (/\b(aws|amazon|bedrock|sagemaker|eks|redshift|opensearch|aurora|cloudfront|lambda)\b/.test(q)) {
+      if (tpl.id === '34') {
+        score += 65;
+        reason = 'Best match for AWS / Multi-Cloud & Regional Cloud AI Topology';
+      } else if (tpl.id === '24' || tpl.id === '23') {
+        score += 55;
+        reason = 'Best match for Cloud AI, RAG Knowledge Base & Agent Orchestration';
+      } else if (tpl.id === '16' || tpl.id === '07') {
+        score += 45;
+        reason = 'Best match for Cloud Compute, EKS Containers & VPC Deployment';
+      }
+    }
+
+    if (/\b(rag|vector|knowledge|embedding|search|vertex|gemini|llm|claude)\b/.test(q)) {
+      if (tpl.id === '24') {
+        score += 60;
+        reason = 'Best match for Vector RAG, Embeddings & Knowledge Retrieval';
+      } else if (tpl.id === '23' || tpl.id === '40') {
+        score += 48;
+        reason = 'Best match for Multi-Agent AI & Foundation Model Orchestration';
+      }
+    }
+
+    if (/\b(agent|agentic|autonomous|orchestrat|tool|mcp)\b/.test(q)) {
+      if (tpl.id === '23') {
+        score += 62;
+        reason = 'Best match for Multi-Agent Interaction & Tool Routing';
+      } else if (tpl.id === '52') {
+        score += 50;
+        reason = 'Best match for Agent Context + Harness + Loop Topology';
+      }
+    }
+
+    if (/\b(ha|dr|disaster|failover|multi-region|spanner|active-active|resilien|rpo|rto)\b/.test(q)) {
+      if (tpl.id === '19') {
+        score += 68;
+        reason = 'Best match for Multi-Region Active-Active HA & Disaster Recovery';
+      } else if (tpl.id === '15' || tpl.id === '34') {
+        score += 48;
+        reason = 'Best match for Global Network & Geographic Failover';
+      }
+    }
+
+    if (/\b(security|zero-trust|waf|armor|kms|cmek|hsm|iam|threat|stride|firewall|enclave)\b/.test(q)) {
+      if (tpl.id === '18') {
+        score += 68;
+        reason = 'Best match for Zero-Trust Security & Trust Boundary Enclaves';
+      } else if (tpl.id === '17' || tpl.id === '27') {
+        score += 54;
+        reason = 'Best match for Identity Federation & STRIDE Threat Defense';
+      }
+    }
+
+    if (/\b(flow|flowchart|sequence|step|pipeline|stream|kafka|pubsub|kinesis|event)\b/.test(q)) {
+      if (tpl.id === '09' || tpl.id === '11' || tpl.id === '67') {
+        score += 62;
+        reason = 'Best match for Event Streaming, Data Pipelines & Step Sequences';
+      }
+    }
+
+    if (/\b(infographic|poster|executive|charlie|harness)\b/.test(q)) {
+      if (tpl.id === '52' || tpl.id === '53' || tpl.id === '56') {
+        score += 75;
+        reason = 'Best match for Executive Architecture Infographic Poster';
+      }
+    }
+
+    if (combined.includes(q.slice(0, 16))) {
+      score += 25;
+    }
+
+    return { template: tpl, score, reason };
+  }).sort((a, b) => b.score - a.score);
+}
 
 // Family Metadata with dedicated icons and styling accents
 export const FAMILY_CARDS_META = [
@@ -142,13 +289,28 @@ function DashboardContent() {
   // Content locked to light theme (white cards, clean metrics) while top header is dark
   const isLight = true;
 
-  // Navigation Tabs
-  const [activeTab, setActiveTab] = useState<'overview' | 'blueprints' | 'documents' | 'prompts'>('overview');
+  // Navigation Tabs — defaults to 'workspace' (Home Dashboard: Existing Projects + Create New with AI Template Recommender)
+  const [activeTab, setActiveTab] = useState<'workspace' | 'overview' | 'blueprints' | 'documents' | 'prompts'>('workspace');
 
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedFamily, setSelectedFamily] = useState<string>('All');
   const [selectedDomain, setSelectedDomain] = useState<string>('All');
+
+  // Create New Diagram (Prompt + AI Template Recommender + Hover Preview) State
+  const [createPrompt, setCreatePrompt] = useState<string>('');
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('24');
+  const [userLockedTemplate, setUserLockedTemplate] = useState<boolean>(false);
+  const [hoveredTemplateId, setHoveredTemplateId] = useState<string | null>(null);
+  const [localStudioSessions, setLocalStudioSessions] = useState<Array<{
+    id: string;
+    title: string;
+    versionTag: string;
+    prompt: string;
+    domain: string;
+    updatedAt: string;
+    href: string;
+  }>>([]);
 
   // Data State
   const [docProjects, setDocProjects] = useState<HistoricalProjectItem[]>([]);
@@ -167,7 +329,7 @@ function DashboardContent() {
     setTimeout(() => setToastMessage(null), 2500);
   };
 
-  // Fetch DocGen Projects & User Diagrams from DB
+  // Fetch DocGen Projects, LocalStorage Studio Sessions & User Diagrams from DB
   useEffect(() => {
     setIsLoading(true);
     try {
@@ -175,6 +337,45 @@ function DashboardContent() {
       setDocProjects(docs);
     } catch (err) {
       console.error('Failed to load canonical doc projects:', err);
+    }
+
+    try {
+      const sessions: Array<{
+        id: string;
+        title: string;
+        versionTag: string;
+        prompt: string;
+        domain: string;
+        updatedAt: string;
+        href: string;
+      }> = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('promptcanvas_studio_') && !key.includes('prompt_draft')) {
+          const raw = localStorage.getItem(key);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && (parsed.projectTitle || parsed.ast?.metadata?.projectTitle)) {
+              const sid = parsed.id || key.replace('promptcanvas_studio_', '');
+              const lastUserMsg = Array.isArray(parsed.messages)
+                ? [...parsed.messages].reverse().find((m: any) => m.sender === 'user')?.text || ''
+                : '';
+              sessions.push({
+                id: sid,
+                title: parsed.projectTitle || parsed.ast?.metadata?.projectTitle || 'Studio Architecture',
+                versionTag: parsed.activeVersionTag || 'v1.0',
+                prompt: lastUserMsg || 'Interactive Studio Canvas Session',
+                domain: parsed.ast?.metadata?.domain || 'Enterprise Cloud',
+                updatedAt: parsed.lastSaved || new Date().toISOString(),
+                href: `/studio?id=${encodeURIComponent(sid)}`,
+              });
+            }
+          }
+        }
+      }
+      setLocalStudioSessions(sessions);
+    } catch {
+      // ignore localStorage read errors
     }
 
     // Fetch user generated diagrams
@@ -188,6 +389,148 @@ function DashboardContent() {
       .catch((e) => console.warn('Failed to load user artifacts:', e))
       .finally(() => setIsLoading(false));
   }, []);
+
+  // Live AI Template Ranking based on createPrompt
+  const rankedRecommendations = useMemo(() => {
+    return rankTemplatesForPrompt(createPrompt);
+  }, [createPrompt]);
+
+  const topRecommendedMatch = rankedRecommendations[0] || {
+    template: CANONICAL_TEMPLATES[0],
+    score: 95,
+    reason: 'Certified Reference Architecture',
+  };
+
+  // Auto-select the #1 AI-recommended template as the user types, unless they explicitly locked a choice
+  useEffect(() => {
+    if (!userLockedTemplate && createPrompt.trim().length > 0 && topRecommendedMatch?.template) {
+      setSelectedTemplateId(topRecommendedMatch.template.id);
+    }
+  }, [createPrompt, userLockedTemplate, topRecommendedMatch]);
+
+  // Resolved Preview Template (Hover takes priority over Selected so hovering any template previews it "As-Is")
+  const activePreviewTemplate = useMemo(() => {
+    if (hoveredTemplateId && hoveredTemplateId !== 'custom') {
+      return CANONICAL_TEMPLATES.find((t) => t.id === hoveredTemplateId) || topRecommendedMatch.template;
+    }
+    if (selectedTemplateId && selectedTemplateId !== 'custom') {
+      return CANONICAL_TEMPLATES.find((t) => t.id === selectedTemplateId) || topRecommendedMatch.template;
+    }
+    return topRecommendedMatch.template;
+  }, [hoveredTemplateId, selectedTemplateId, topRecommendedMatch]);
+
+  // Preview XML for the Right-Side Sticky Stage
+  const activePreviewXml = useMemo(() => {
+    const domFlavor = selectedDomain === 'All' ? 'enterprise' : selectedDomain;
+    if (!hoveredTemplateId && selectedTemplateId === 'custom' && createPrompt.trim().length >= 8) {
+      return synthesizePromptDrivenDiagramXml(
+        createPrompt.trim(),
+        createPrompt.trim().slice(0, 64),
+        domFlavor
+      );
+    }
+    return activePreviewTemplate.generateXml(domFlavor, 'light');
+  }, [hoveredTemplateId, selectedTemplateId, createPrompt, activePreviewTemplate, selectedDomain]);
+
+  // Combined Existing Projects for Zone 2 ("Continue Where You Left Off")
+  const existingWorkspaceProjects = useMemo(() => {
+    const list: Array<{
+      id: string;
+      title: string;
+      version: string;
+      badge: string;
+      prompt: string;
+      updatedAt: string;
+      href: string;
+    }> = [];
+
+    localStudioSessions.forEach((s) => {
+      list.push({
+        id: `local_${s.id}`,
+        title: s.title,
+        version: s.versionTag,
+        badge: s.domain,
+        prompt: s.prompt,
+        updatedAt: s.updatedAt,
+        href: s.href,
+      });
+    });
+
+    userArtifacts.forEach((art) => {
+      if (!list.some((x) => x.title === art.name)) {
+        list.push({
+          id: `db_${art.id}`,
+          title: art.name || 'Saved Architecture Diagram',
+          version: art.max_version ? `v1.${Math.max(0, art.max_version - 1)}` : 'v1.0',
+          badge: art.architecture_type || 'Saved Diagram',
+          prompt: art.latest_prompt || art.prompt || 'Saved Draw.io Architecture Topology',
+          updatedAt: art.updated_at || art.created_at || new Date().toISOString(),
+          href: `/studio?id=${encodeURIComponent(art.id)}`,
+        });
+      }
+    });
+
+    // Ensure at least 3 rich resumable projects are available even on a clean guest session
+    const defaultFallbacks = [
+      {
+        id: 'seed_aws_ai',
+        title: 'AWS Cloud AI — Amazon Bedrock, SageMaker & OpenSearch',
+        version: 'v1.1',
+        badge: 'AWS Cloud AI',
+        prompt: 'Create an AWS Cloud AI architecture with Amazon Bedrock, SageMaker, OpenSearch Vector DB, and S3 Lakehouse',
+        updatedAt: new Date(Date.now() - 1000 * 60 * 18).toISOString(),
+        href: '/studio?blueprint=34&prompt=' + encodeURIComponent('Create an AWS Cloud AI architecture with Amazon Bedrock, SageMaker, OpenSearch Vector DB, and S3 Lakehouse') + '&autoGenerate=1',
+      },
+      {
+        id: 'seed_gcp_rag',
+        title: 'GCP Vertex AI Agentic RAG & Spanner Graph Mesh',
+        version: 'v1.0',
+        badge: 'GCP Enterprise',
+        prompt: 'Design a Google Cloud Vertex AI Agentic RAG architecture with Gemini, Spanner Graph, and Cloud Armor WAF',
+        updatedAt: new Date(Date.now() - 1000 * 60 * 65).toISOString(),
+        href: '/studio?blueprint=24&prompt=' + encodeURIComponent('Design a Google Cloud Vertex AI Agentic RAG architecture with Gemini, Spanner Graph, and Cloud Armor WAF') + '&autoGenerate=1',
+      },
+      {
+        id: 'seed_spanner_ha',
+        title: 'Global Active-Active Payment Settlement Mesh (nam3)',
+        version: 'v1.2',
+        badge: 'Multi-Region HA',
+        prompt: 'Architect a Multi-Region Active-Active High Availability topology with Cloud Spanner nam3 and RPO < 1s',
+        updatedAt: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
+        href: '/studio?blueprint=19',
+      },
+    ];
+
+    for (const fb of defaultFallbacks) {
+      if (list.length < 6 && !list.some((x) => x.title.toLowerCase() === fb.title.toLowerCase())) {
+        list.push(fb);
+      }
+    }
+
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return list.slice(0, 6);
+    return list.filter(
+      (item) =>
+        item.title.toLowerCase().includes(q) ||
+        item.prompt.toLowerCase().includes(q) ||
+        item.badge.toLowerCase().includes(q)
+    );
+  }, [localStudioSessions, userArtifacts, searchQuery]);
+
+  const handleSendAndGenerateInStudio = () => {
+    const domParam = selectedDomain === 'All' ? 'enterprise' : selectedDomain;
+    const trimmedPrompt = createPrompt.trim();
+    const targetBlueprint = selectedTemplateId || topRecommendedMatch.template.id;
+    if (trimmedPrompt) {
+      router.push(
+        `/studio?blueprint=${encodeURIComponent(targetBlueprint)}&prompt=${encodeURIComponent(trimmedPrompt)}&domain=${encodeURIComponent(domParam)}&autoGenerate=1`
+      );
+    } else {
+      router.push(
+        `/studio?blueprint=${encodeURIComponent(targetBlueprint === 'custom' ? '24' : targetBlueprint)}&domain=${encodeURIComponent(domParam)}`
+      );
+    }
+  };
 
   // Compute Canonical KPIs & Stats
   const stats = useMemo(() => {
@@ -228,7 +571,8 @@ function DashboardContent() {
         q === '' ||
         tpl.name.toLowerCase().includes(q) ||
         tpl.family.toLowerCase().includes(q) ||
-        tpl.id.includes(q);
+        tpl.id.includes(q) ||
+        (tpl.primaryPurpose && tpl.primaryPurpose.toLowerCase().includes(q));
 
       const matchesFamily =
         selectedFamily === 'All' ||
@@ -326,18 +670,18 @@ function DashboardContent() {
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-sky-500 via-teal-500 to-indigo-500 p-0.5 shadow-md flex items-center justify-center">
               <div className="w-full h-full rounded-[10px] flex items-center justify-center bg-[#090D18]">
-                <BarChart3 className="w-4 h-4 text-teal-400" />
+                <Compass className="w-4 h-4 text-teal-400" />
               </div>
             </div>
             <div>
               <h1 className="font-black text-sm md:text-base tracking-tight flex items-center gap-2 text-white">
-                <span>Operations &amp; Canonical Projects Dashboard</span>
+                <span>Home Dashboard &mdash; Workspace &amp; AI Launchpad</span>
                 <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20">
-                  REAL-TIME TELEMETRY
+                  STAGE 2 WORKSPACE
                 </span>
               </h1>
               <p className="text-[11px] text-slate-400 font-medium">
-                Canonical KPIs &bull; 50 Certified Blueprints &bull; 17 Doc Archetypes &bull; Zero-Collision AST Guard
+                Resume Existing Projects &bull; Prompt + AI Template Recommender &bull; Hover-to-Preview 75 Blueprints
               </p>
             </div>
           </div>
@@ -348,214 +692,56 @@ function DashboardContent() {
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 text-white font-extrabold text-xs transition shadow-sm cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Open in Studio</span>
+              <span>Open Blank Studio</span>
             </Link>
             <ThemeToggleBtn />
           </div>
         </AppHeader>
 
         {/* Dashboard Workspace Container - Edge-to-Edge Desktop Utilization */}
-        <div className="w-full max-w-none px-4 md:px-8 py-3 space-y-3">
+        <div className="w-full max-w-none px-4 md:px-8 py-4 space-y-4">
           
           {/* ========================================================================= */}
-          {/* 1. CONSOLIDATED EXECUTIVE POSTURE & LAUNCHPAD BAR (Compact 56px) */}
+          {/* 1. TABBED NAVIGATION & UNIFIED SEARCH BAR */}
           {/* ========================================================================= */}
-          <div className={`p-3 sm:p-4 rounded-2xl border shadow-xs flex flex-wrap items-center justify-between gap-3 ${
-            isLight
-              ? 'bg-gradient-to-r from-white via-slate-50/80 to-teal-50/30 border-slate-200 shadow-slate-200/30'
-              : 'bg-gradient-to-r from-[#0B111E] via-[#090E1A] to-[#071322] border-slate-800 shadow-xl'
-          }`}>
-            {/* Left: Health & Posture Title */}
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-11 h-11 rounded-xl flex flex-col items-center justify-center border font-black bg-gradient-to-br from-teal-500/10 to-emerald-500/20 border-teal-500/30 shrink-0">
-                <span className="text-base font-black text-teal-500 leading-none">{stats.healthScore}%</span>
-                <span className="text-[8px] uppercase font-bold tracking-wider text-emerald-500 leading-none mt-0.5">A+</span>
-              </div>
-
-              <div className="space-y-0.5 min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-sm sm:text-base font-black text-slate-900 dark:text-white truncate">
-                    Enterprise Operations &amp; Posture
-                  </h2>
-                  <span className="text-[9.5px] font-bold px-2 py-0.2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
-                    <CheckCheck className="w-3 h-3" /> Certified Ready
-                  </span>
-                  <span className="hidden lg:inline-flex items-center gap-1 text-[10px] text-teal-600 dark:text-teal-400 font-mono font-bold">
-                    <Zap className="w-3 h-3" /> 1.1s Gemini 3.8 Flash
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 max-w-xl truncate">
-                  Continuous AST compilation monitor, 100% collision-free geometric validation, and CIS GCP mapping.
-                </p>
-              </div>
-            </div>
-
-            {/* Right: Quick Action Hub Launchpad (Compact Chips) */}
-            <div className="flex flex-wrap items-center gap-1.5 shrink-0">
-              <Link
-                href="/studio"
-                className={`px-3 py-1.5 rounded-xl border text-center transition-all flex items-center gap-1.5 group ${
-                  isLight ? 'bg-white hover:bg-teal-50/50 border-slate-200 shadow-2xs' : 'bg-slate-900/60 hover:bg-teal-950/30 border-slate-800'
-                }`}
-              >
-                <span className="text-xs">✨</span>
-                <span className="text-xs font-bold text-slate-900 dark:text-white">Studio</span>
-              </Link>
-
-              <Link
-                href="/canonical"
-                className={`px-3 py-1.5 rounded-xl border text-center transition-all flex items-center gap-1.5 group ${
-                  isLight ? 'bg-white hover:bg-sky-50/50 border-slate-200 shadow-2xs' : 'bg-slate-900/60 hover:bg-sky-950/30 border-slate-800'
-                }`}
-              >
-                <span className="text-xs">🏛️</span>
-                <span className="text-xs font-bold text-slate-900 dark:text-white">Blueprints</span>
-                <span className="text-[10px] text-slate-400 font-mono">(50)</span>
-              </Link>
-
-              <Link
-                href="/docgen"
-                className={`px-3 py-1.5 rounded-xl border text-center transition-all flex items-center gap-1.5 group ${
-                  isLight ? 'bg-white hover:bg-indigo-50/50 border-slate-200 shadow-2xs' : 'bg-slate-900/60 hover:bg-indigo-950/30 border-slate-800'
-                }`}
-              >
-                <span className="text-xs">📄</span>
-                <span className="text-xs font-bold text-slate-900 dark:text-white">DocGen</span>
-                <span className="text-[10px] text-slate-400 font-mono">(17)</span>
-              </Link>
-
-              <Link
-                href="/audit"
-                className={`px-3 py-1.5 rounded-xl border text-center transition-all flex items-center gap-1.5 group ${
-                  isLight ? 'bg-white hover:bg-rose-50/50 border-slate-200 shadow-2xs' : 'bg-slate-900/60 hover:bg-rose-950/30 border-slate-800'
-                }`}
-              >
-                <span className="text-xs">🛡️</span>
-                <span className="text-xs font-bold text-slate-900 dark:text-white">Audit</span>
-              </Link>
-            </div>
-          </div>
-
-          {/* ========================================================================= */}
-          {/* 2. TOP KPI METRICS STRIP (Compact Cards) */}
-          {/* ========================================================================= */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-            {/* KPI 1 */}
-            <div className={`px-3 py-2 rounded-xl border transition-all ${
-              isLight ? 'bg-white border-slate-200 shadow-2xs' : 'bg-[#090D18] border-slate-800 shadow-sm'
-            }`}>
-              <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider">Blueprints</span>
-                <Sparkles className="w-3.5 h-3.5 text-sky-500" />
-              </div>
-              <div className="text-xl font-black text-sky-500 mt-0.5">{stats.totalBlueprints}</div>
-              <p className="text-[9px] text-slate-400">100% Certified 16:9</p>
-            </div>
-
-            {/* KPI 2 */}
-            <div className={`px-3 py-2 rounded-xl border transition-all ${
-              isLight ? 'bg-white border-slate-200 shadow-2xs' : 'bg-[#090D18] border-slate-800 shadow-sm'
-            }`}>
-              <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider">Archetypes</span>
-                <FileText className="w-3.5 h-3.5 text-emerald-500" />
-              </div>
-              <div className="text-xl font-black text-emerald-500 mt-0.5">{stats.totalArchetypes}</div>
-              <p className="text-[9px] text-slate-400">BRD, PRD, SDD, TDD</p>
-            </div>
-
-            {/* KPI 3 */}
-            <div className={`px-3 py-2 rounded-xl border transition-all ${
-              isLight ? 'bg-white border-slate-200 shadow-2xs' : 'bg-[#090D18] border-slate-800 shadow-sm'
-            }`}>
-              <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider">Projects</span>
-                <Boxes className="w-3.5 h-3.5 text-indigo-500" />
-              </div>
-              <div className="text-xl font-black text-indigo-500 mt-0.5">{stats.totalDocs + (userArtifacts.length || 0)}</div>
-              <p className="text-[9px] text-slate-400">Tracked Specs</p>
-            </div>
-
-            {/* KPI 4 */}
-            <div className={`px-3 py-2 rounded-xl border transition-all ${
-              isLight ? 'bg-white border-slate-200 shadow-2xs' : 'bg-[#090D18] border-slate-800 shadow-sm'
-            }`}>
-              <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider">Snapshots</span>
-                <GitBranch className="w-3.5 h-3.5 text-teal-500" />
-              </div>
-              <div className="text-xl font-black text-teal-500 mt-0.5">{stats.totalVersions}</div>
-              <p className="text-[9px] text-slate-400">Version History</p>
-            </div>
-
-            {/* KPI 5 */}
-            <div className={`px-3 py-2 rounded-xl border transition-all ${
-              isLight ? 'bg-white border-slate-200 shadow-2xs' : 'bg-[#090D18] border-slate-800 shadow-sm'
-            }`}>
-              <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider">Collision</span>
-                <CheckCheck className="w-3.5 h-3.5 text-emerald-500" />
-              </div>
-              <div className="text-xl font-black text-emerald-500 mt-0.5">{stats.astCollisionRate}</div>
-              <p className="text-[9px] text-slate-400">Zero Overlaps</p>
-            </div>
-
-            {/* KPI 6 */}
-            <div className={`px-3 py-2 rounded-xl border transition-all ${
-              isLight ? 'bg-white border-slate-200 shadow-2xs' : 'bg-[#090D18] border-slate-800 shadow-sm'
-            }`}>
-              <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider">AST Speed</span>
-                <Zap className="w-3.5 h-3.5 text-amber-500" />
-              </div>
-              <div className="text-xl font-black text-amber-500 mt-0.5">{stats.avgLatency}</div>
-            </div>
-          </div>
-
-          {/* ========================================================================= */}
-          {/* 3. TABBED NAVIGATION BAR */}
-          {/* ========================================================================= */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-white border border-slate-200 rounded-2xl p-3 shadow-xs">
             <div className="flex items-center gap-2 overflow-x-auto">
               <button
+                id="dashboard-tab-workspace"
                 type="button"
-                onClick={() => setActiveTab('overview')}
+                onClick={() => setActiveTab('workspace')}
                 className={`px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer flex items-center gap-2 shrink-0 ${
-                  activeTab === 'overview'
-                    ? 'bg-teal-600 text-white shadow-sm'
-                    : isLight
-                    ? 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900'
-                    : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white'
+                  activeTab === 'workspace'
+                    ? 'bg-gradient-to-r from-teal-600 to-indigo-600 text-white shadow-sm'
+                    : 'bg-slate-50 border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <Activity className="w-3.5 h-3.5" />
-                <span>Overview &amp; Telemetry</span>
+                <Compass className="w-3.5 h-3.5" />
+                <span>Workspace Home (Create &amp; Resume)</span>
               </button>
 
               <button
+                id="dashboard-tab-blueprints"
                 type="button"
                 onClick={() => setActiveTab('blueprints')}
                 className={`px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer flex items-center gap-2 shrink-0 ${
                   activeTab === 'blueprints'
                     ? 'bg-teal-600 text-white shadow-sm'
-                    : isLight
-                    ? 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900'
-                    : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white'
+                    : 'bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>53 Blueprints</span>
+                <span>All {CANONICAL_TEMPLATES.length} Blueprints</span>
               </button>
 
               <button
+                id="dashboard-tab-documents"
                 type="button"
                 onClick={() => setActiveTab('documents')}
                 className={`px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer flex items-center gap-2 shrink-0 ${
                   activeTab === 'documents'
                     ? 'bg-teal-600 text-white shadow-sm'
-                    : isLight
-                    ? 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900'
-                    : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white'
+                    : 'bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <FileText className="w-3.5 h-3.5" />
@@ -563,46 +749,518 @@ function DashboardContent() {
               </button>
 
               <button
+                id="dashboard-tab-overview"
+                type="button"
+                onClick={() => setActiveTab('overview')}
+                className={`px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer flex items-center gap-2 shrink-0 ${
+                  activeTab === 'overview'
+                    ? 'bg-teal-600 text-white shadow-sm'
+                    : 'bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Activity className="w-3.5 h-3.5" />
+                <span>Operations &amp; Telemetry</span>
+              </button>
+
+              <button
+                id="dashboard-tab-prompts"
                 type="button"
                 onClick={() => setActiveTab('prompts')}
                 className={`px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer flex items-center gap-2 shrink-0 ${
                   activeTab === 'prompts'
                     ? 'bg-teal-600 text-white shadow-sm'
-                    : isLight
-                    ? 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900'
-                    : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white'
+                    : 'bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <History className="w-3.5 h-3.5" />
-                <span>Prompt Evolution Ledger ({chronologicalPrompts.length})</span>
+                <span>Prompt Ledger ({chronologicalPrompts.length})</span>
               </button>
             </div>
 
-            {/* Search Filter */}
-            <div className="relative w-full sm:w-72 shrink-0">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            {/* Unified Global Search Filter */}
+            <div className="relative w-full lg:w-96 shrink-0">
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
               <input
+                id="dashboard-global-search"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search blueprints, prompts, specs..."
-                className={`w-full text-xs rounded-xl pl-9 pr-3 py-2 border outline-none font-medium transition ${
-                  isLight
-                    ? 'bg-white border-slate-200 focus:border-teal-500 text-slate-900 placeholder-slate-400'
-                    : 'bg-[#090D18] border-slate-800 focus:border-teal-400 text-white placeholder-slate-500'
-                }`}
+                placeholder="Search your existing projects, saved prompts, or 75 templates..."
+                aria-label="Search existing projects, saved prompts, or templates"
+                className="w-full text-xs rounded-xl pl-10 pr-8 py-2.5 border bg-slate-50 border-slate-200 focus:bg-white focus:border-teal-500 text-slate-900 placeholder-slate-400 outline-none font-medium transition"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs"
+                  aria-label="Clear search query"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-sm font-bold cursor-pointer"
                 >
                   &times;
                 </button>
               )}
             </div>
           </div>
+
+          {/* ========================================================================= */}
+          {/* TAB CONTENT 0 (DEFAULT): WORKSPACE HOME — RESUME & CREATE NEW DIAGRAM     */}
+          {/* ========================================================================= */}
+          {activeTab === 'workspace' && (
+            <div className="space-y-6">
+              {/* ZONE 2: CONTINUE WHERE YOU LEFT OFF (EXISTING PROJECTS & HISTORY) */}
+              <section
+                aria-label="Continue Where You Left Off — Existing Projects"
+                className="bg-white border border-slate-200 rounded-3xl p-5 shadow-xs space-y-3.5"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600">
+                      <History className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h2 className="text-sm font-black text-slate-900 flex items-center gap-2">
+                        <span>Continue Where You Left Off</span>
+                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
+                          {existingWorkspaceProjects.length} Active Projects
+                        </span>
+                      </h2>
+                      <p className="text-[11px] text-slate-500">
+                        Open any saved project to resume your diagram canvas, version snapshots, and AI chat history in Studio.
+                      </p>
+                    </div>
+                  </div>
+                  <Link
+                    href="/library"
+                    className="text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:underline flex items-center gap-1"
+                  >
+                    <span>Browse Full Library &amp; History</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                  {existingWorkspaceProjects.slice(0, 3).map((proj) => (
+                    <div
+                      key={proj.id}
+                      onClick={() => router.push(proj.href)}
+                      className="group p-4 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-teal-500/50 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between gap-3"
+                    >
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-teal-500/10 text-teal-700 border border-teal-500/20 truncate">
+                            {proj.badge}
+                          </span>
+                          <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-700 border border-indigo-500/20 shrink-0">
+                            {proj.version}
+                          </span>
+                        </div>
+                        <h3 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-teal-700 transition-colors line-clamp-1">
+                          {proj.title}
+                        </h3>
+                        <p className="text-[11px] text-slate-500 line-clamp-2 font-mono bg-white px-2.5 py-1.5 rounded-lg border border-slate-200/80">
+                          &ldquo;{proj.prompt}&rdquo;
+                        </p>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-200/70">
+                        <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          <span>Resumable Session</span>
+                        </span>
+                        <span className="text-xs font-extrabold text-teal-600 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+                          <span>Open in Studio</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* ZONE 3: CREATE NEW DIAGRAM — SPLIT-VIEW PROMPT + AI TEMPLATE RECOMMENDER & LIVE HOVER PREVIEW */}
+              <section
+                aria-label="Create New Diagram — Prompt and AI Template Recommender"
+                className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
+              >
+                {/* LEFT HALF (7 COLS): PROMPT COMPOSER + AI RECOMMENDED TEMPLATES + 75 TEMPLATE CATALOG */}
+                <div className="lg:col-span-7 space-y-5">
+                  {/* Step 1: Prompt Input Card */}
+                  <div className="bg-white border-2 border-teal-500/30 rounded-3xl p-5 shadow-sm space-y-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 to-indigo-600 text-white flex items-center justify-center font-black text-xs shadow-xs">
+                          1
+                        </div>
+                        <div>
+                          <h2 className="text-sm sm:text-base font-black text-slate-900">
+                            Create a New Architecture Diagram
+                          </h2>
+                          <p className="text-[11px] text-slate-500">
+                            Describe what you want to build. AI automatically recommends the best starting template below, or you can pick any template (or Zero-Template Custom).
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      <label htmlFor="dashboard-create-prompt-input" className="sr-only">
+                        Describe the architecture you want to create
+                      </label>
+                      <textarea
+                        id="dashboard-create-prompt-input"
+                        value={createPrompt}
+                        onChange={(e) => {
+                          setCreatePrompt(e.target.value);
+                          setUserLockedTemplate(false);
+                        }}
+                        rows={3}
+                        placeholder="Describe your target architecture (e.g., 'Create an AWS Cloud AI architecture with Amazon Bedrock, SageMaker, OpenSearch Vector DB, and S3 Lakehouse')..."
+                        className="w-full rounded-2xl border border-slate-300 bg-slate-50/70 focus:bg-white focus:border-teal-600 focus:ring-2 focus:ring-teal-500/20 p-3.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 outline-none transition resize-none font-medium"
+                      />
+
+                      {/* 1-Click Starter Prompt Chips */}
+                      <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mr-1">
+                          Try a prompt:
+                        </span>
+                        {DASHBOARD_STARTER_PROMPTS.map((chip) => (
+                          <button
+                            key={chip.id}
+                            id={`dashboard-starter-chip-${chip.id}`}
+                            type="button"
+                            onClick={() => {
+                              setCreatePrompt(chip.prompt);
+                              setSelectedTemplateId(chip.recommendedId);
+                              setUserLockedTemplate(false);
+                            }}
+                            className={`px-2.5 py-1 rounded-xl text-[11px] font-bold border transition cursor-pointer flex items-center gap-1.5 ${
+                              createPrompt === chip.prompt
+                                ? 'bg-teal-600 text-white border-teal-600 shadow-2xs'
+                                : 'bg-white hover:bg-teal-50 text-slate-700 border-slate-200 hover:border-teal-300'
+                            }`}
+                          >
+                            <span className="text-[9px] font-mono font-extrabold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700">
+                              {chip.badge}
+                            </span>
+                            <span>{chip.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Step 2: AI-Recommended Best Templates Strip */}
+                    <div className="pt-3 border-t border-slate-200 space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 font-black text-xs flex items-center justify-center">
+                            2
+                          </span>
+                          <span className="text-xs font-black text-slate-900">
+                            AI-Suggested Best Templates for Your Prompt
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-mono text-slate-500">
+                          Hover any option to preview &ldquo;As-Is&rdquo; on the right &rarr;
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        {rankedRecommendations.slice(0, 3).map((rec, idx) => {
+                          const isSelected = selectedTemplateId === rec.template.id;
+                          return (
+                            <div
+                              key={rec.template.id}
+                              id={`dashboard-rec-tpl-${rec.template.id}`}
+                              onMouseEnter={() => setHoveredTemplateId(rec.template.id)}
+                              onMouseLeave={() => setHoveredTemplateId(null)}
+                              onClick={() => {
+                                setSelectedTemplateId(rec.template.id);
+                                setUserLockedTemplate(true);
+                              }}
+                              className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2 ${
+                                isSelected
+                                  ? 'bg-teal-50/70 border-2 border-teal-600 shadow-xs'
+                                  : 'bg-slate-50/80 hover:bg-white border-slate-200 hover:border-teal-400'
+                              }`}
+                            >
+                              <div className="space-y-1">
+                                <div className="flex items-center justify-between gap-1.5">
+                                  <span
+                                    className={`text-[9.5px] font-mono font-extrabold px-2 py-0.5 rounded-md border ${
+                                      idx === 0
+                                        ? 'bg-emerald-500/15 text-emerald-800 border-emerald-500/30'
+                                        : 'bg-slate-200/70 text-slate-700 border-slate-300'
+                                    }`}
+                                  >
+                                    {idx === 0 ? '★ #1 BEST TEMPLATE MATCH' : `RUNNER-UP #${idx + 1}`}
+                                  </span>
+                                  <span className="text-[10px] font-mono font-bold text-slate-500">
+                                    #{rec.template.id} &bull; {rec.template.level}
+                                  </span>
+                                </div>
+                                <div className="text-xs font-black text-slate-900 line-clamp-1">
+                                  {rec.template.name}
+                                </div>
+                                <p className="text-[10.5px] text-slate-600 line-clamp-1">
+                                  {rec.reason}
+                                </p>
+                              </div>
+                              <div className="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[10px] font-bold">
+                                <span className={isSelected ? 'text-teal-700' : 'text-slate-500'}>
+                                  {isSelected ? '✓ Selected for Generation' : 'Click to use this template'}
+                                </span>
+                                <span className="text-teal-600 font-mono">Preview &rarr;</span>
+                              </div>
+                            </div>
+                          );
+                        })}
+
+                        {/* Option 4: Zero-Template Custom AI Synthesis */}
+                        <div
+                          id="dashboard-rec-tpl-custom"
+                          onMouseEnter={() => setHoveredTemplateId('custom')}
+                          onMouseLeave={() => setHoveredTemplateId(null)}
+                          onClick={() => {
+                            setSelectedTemplateId('custom');
+                            setUserLockedTemplate(true);
+                          }}
+                          className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2 ${
+                            selectedTemplateId === 'custom'
+                              ? 'bg-indigo-50/80 border-2 border-indigo-600 shadow-xs'
+                              : 'bg-slate-50/80 hover:bg-white border-slate-200 hover:border-indigo-400'
+                          }`}
+                        >
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between gap-1.5">
+                              <span className="text-[9.5px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-800 border border-indigo-500/30">
+                                ✨ ZERO-TEMPLATE CUSTOM
+                              </span>
+                              <span className="text-[10px] font-mono font-bold text-indigo-600">
+                                Bespoke AI
+                              </span>
+                            </div>
+                            <div className="text-xs font-black text-slate-900 line-clamp-1">
+                              Synthesize From Scratch (No Fixed Template)
+                            </div>
+                            <p className="text-[10.5px] text-slate-600 line-clamp-1">
+                              Builds a bespoke 7-tier cloud topology directly from your prompt entities.
+                            </p>
+                          </div>
+                          <div className="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[10px] font-bold">
+                            <span className={selectedTemplateId === 'custom' ? 'text-indigo-700' : 'text-slate-500'}>
+                              {selectedTemplateId === 'custom' ? '✓ Selected for Generation' : 'Click for custom synthesis'}
+                            </span>
+                            <span className="text-indigo-600 font-mono">Custom &rarr;</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Step 3: Browse or Hover All 75 Templates Catalog */}
+                  <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-xs space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+                          <Layers className="w-4 h-4 text-teal-600" />
+                          <span>Or Choose Any of the {CANONICAL_TEMPLATES.length} Certified Templates</span>
+                        </h3>
+                        <p className="text-[11px] text-slate-500">
+                          Hover over any template card to inspect its &ldquo;As-Is&rdquo; diagram on the right. Click to select it for your prompt.
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">
+                        Showing {filteredBlueprints.length} of {CANONICAL_TEMPLATES.length}
+                      </span>
+                    </div>
+
+                    {/* Category Filter Chips */}
+                    <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                      {CANONICAL_FAMILIES.map((fam) => (
+                        <button
+                          key={fam}
+                          type="button"
+                          onClick={() => setSelectedFamily(fam)}
+                          className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition whitespace-nowrap cursor-pointer ${
+                            selectedFamily === fam
+                              ? 'bg-slate-900 text-white shadow-2xs'
+                              : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                          }`}
+                        >
+                          {fam}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Compact Scrollable Grid of Templates with Hover-to-Preview */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[420px] overflow-y-auto pr-1">
+                      {filteredBlueprints.map((tpl) => {
+                        const isSelected = selectedTemplateId === tpl.id;
+                        const isHovered = hoveredTemplateId === tpl.id;
+                        return (
+                          <div
+                            key={tpl.id}
+                            id={`dashboard-catalog-tpl-${tpl.id}`}
+                            onMouseEnter={() => setHoveredTemplateId(tpl.id)}
+                            onMouseLeave={() => setHoveredTemplateId(null)}
+                            onClick={() => {
+                              setSelectedTemplateId(tpl.id);
+                              setUserLockedTemplate(true);
+                            }}
+                            className={`p-3 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between gap-2 ${
+                              isSelected
+                                ? 'bg-teal-50/70 border-2 border-teal-600 shadow-xs'
+                                : isHovered
+                                ? 'bg-sky-50/50 border-sky-400 shadow-xs'
+                                : 'bg-slate-50/60 hover:bg-white border-slate-200'
+                            }`}
+                          >
+                            <div className="space-y-1">
+                              <div className="flex items-center justify-between gap-1.5">
+                                <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded bg-teal-500/15 text-teal-800 border border-teal-500/20">
+                                  #{tpl.id} &bull; {tpl.family}
+                                </span>
+                                {isSelected && (
+                                  <span className="text-[9.5px] font-mono font-black text-teal-700 bg-teal-100 px-1.5 py-0.5 rounded">
+                                    ✓ SELECTED
+                                  </span>
+                                )}
+                              </div>
+                              <h4 className="text-xs font-black text-slate-900 line-clamp-1">
+                                {tpl.name}
+                              </h4>
+                              <p className="text-[10.5px] text-slate-500 line-clamp-1">
+                                {tpl.primaryPurpose}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* RIGHT HALF (5 COLS): STICKY "AS-IS" TEMPLATE PREVIEW STAGE + SEND & GENERATE CTA */}
+                <div className="lg:col-span-5 lg:sticky lg:top-20 bg-white border-2 border-slate-200 rounded-3xl p-5 shadow-md space-y-4">
+                  {/* Top Preview Status Header */}
+                  <div className="flex items-start justify-between gap-2 border-b border-slate-200 pb-3">
+                    <div className="space-y-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        {hoveredTemplateId ? (
+                          <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-sky-500/15 text-sky-800 border border-sky-500/30">
+                            👁️ HOVER PREVIEW (AS-IS TEMPLATE)
+                          </span>
+                        ) : selectedTemplateId === 'custom' ? (
+                          <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-800 border border-indigo-500/30">
+                            ✨ ZERO-TEMPLATE CUSTOM PREVIEW
+                          </span>
+                        ) : selectedTemplateId === topRecommendedMatch.template.id ? (
+                          <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-800 border border-emerald-500/30">
+                            ★ #1 AI-RECOMMENDED TEMPLATE
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-teal-500/15 text-teal-800 border border-teal-500/30">
+                            ✓ SELECTED BASE TEMPLATE
+                          </span>
+                        )}
+                        <span className="text-[10px] font-mono font-bold text-slate-500">
+                          {selectedTemplateId === 'custom' && !hoveredTemplateId
+                            ? 'Dynamic 7-Tier Synthesis'
+                            : `#${activePreviewTemplate.id} • ${activePreviewTemplate.family} • ${activePreviewTemplate.level}`}
+                        </span>
+                      </div>
+                      <h3
+                        id="dashboard-preview-stage-title"
+                        className="text-sm sm:text-base font-black text-slate-900 truncate"
+                      >
+                        {selectedTemplateId === 'custom' && !hoveredTemplateId
+                          ? createPrompt.trim() || 'Zero-Template Custom AI Architecture'
+                          : `${activePreviewTemplate.name} (As-Is Preview)`}
+                      </h3>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setInspectBlueprint(activePreviewTemplate)}
+                      className="px-2.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 text-[11px] font-bold flex items-center gap-1 shrink-0 cursor-pointer"
+                      title="Expand full-screen preview"
+                    >
+                      <Maximize2 className="w-3.5 h-3.5 text-teal-600" />
+                      <span>Expand</span>
+                    </button>
+                  </div>
+
+                  {/* Live Vector Diagram Preview Box */}
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-2 overflow-hidden shadow-inner">
+                    <DiagramViewerRenderSafe
+                      key={`${activePreviewTemplate.id}_${selectedTemplateId}_${createPrompt.slice(0, 24)}`}
+                      xml={activePreviewXml}
+                      aspectRatioId="16:9"
+                      bgTheme="light"
+                    />
+                  </div>
+
+                  {/* Template Purpose & Key Components */}
+                  <div className="space-y-2 bg-slate-50 rounded-2xl p-3.5 border border-slate-200/80">
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      {selectedTemplateId === 'custom' && !hoveredTemplateId
+                        ? 'Generates a bespoke multi-tier Draw.io architecture diagram directly from your prompt entities (AWS, GCP, Azure, AI, Data, Security) without locking to a static template.'
+                        : activePreviewTemplate.primaryPurpose}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {(activePreviewTemplate.keyComponents || []).slice(0, 6).map((comp, idx) => (
+                        <span
+                          key={idx}
+                          className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700"
+                        >
+                          {comp}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Primary & Secondary Action Buttons */}
+                  <div className="space-y-2.5 pt-1">
+                    <button
+                      id="dashboard-send-generate-btn"
+                      type="button"
+                      onClick={handleSendAndGenerateInStudio}
+                      className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-teal-600/20 hover:scale-[1.01] active:scale-99 transition-all cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      <span>
+                        {createPrompt.trim()
+                          ? selectedTemplateId === 'custom'
+                            ? 'Send & Generate Custom Diagram in Studio'
+                            : `Send & Customize #${selectedTemplateId} in Studio`
+                          : `Open #${activePreviewTemplate.id} in Studio Canvas`}
+                      </span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                      <Link
+                        id="dashboard-open-asis-btn"
+                        href={`/studio?blueprint=${encodeURIComponent(activePreviewTemplate.id)}`}
+                        className="flex-1 py-2.5 px-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs transition flex items-center justify-center gap-1.5 text-center"
+                      >
+                        <Layers className="w-3.5 h-3.5 text-teal-600" />
+                        <span>Open Template #{activePreviewTemplate.id} As-Is</span>
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyXml(activePreviewXml)}
+                        className="py-2.5 px-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                        <span>Copy XML</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          )}
 
           {/* ========================================================================= */}
           {/* TAB CONTENT A: OVERVIEW & TELEMETRY */}

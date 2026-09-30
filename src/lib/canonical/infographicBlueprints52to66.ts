@@ -177,7 +177,17 @@ export function generateInfographicBlueprintXmlById(
       ? effectiveTitleInput.trim()
       : undefined;
 
-  const baseXml = generateBaseInfographicBlueprintXmlById(id, cleanCustomTitle, level);
+  const conciseHeaderTitle = cleanCustomTitle
+    ? (() => {
+        const stripped = cleanCustomTitle
+          .replace(/^(please\s+)?((design|architect|build|create|generate|show)\s+)?(a\s+|an\s+|the\s+)?(\d+-tier\s+)?(infographic\s+(for|of)\s+|process\s+checklist\s+(for|of)\s+)?/i, '')
+          .split(/\s+with\s+|\s+using\s+|\s+featuring\s+|,/i)[0]
+          .trim();
+        return stripped.length > 42 ? stripped.slice(0, 42).replace(/\s+\S*$/, '') : stripped;
+      })()
+    : undefined;
+
+  const baseXml = generateBaseInfographicBlueprintXmlById(id, conciseHeaderTitle, level);
   if (!cleanCustomTitle && !spec) {
     return baseXml;
   }
@@ -1913,8 +1923,23 @@ function applyDynamicInfographicSpecToXml(
   spec?: DynamicInfographicSpec
 ): string {
   let out = xml;
-  const effectiveTitle = spec?.title?.trim() || cleanCustomTitle;
-  const effectiveSub = spec?.subtitle?.trim();
+  const rawTitle = spec?.title?.trim() || cleanCustomTitle;
+  const effectiveTitle = rawTitle
+    ? (() => {
+        const stripped = rawTitle
+          .replace(/^(please\s+)?((design|architect|build|create|generate|show)\s+)?(a\s+|an\s+|the\s+)?(\d+-tier\s+)?(infographic\s+(for|of)\s+|process\s+checklist\s+(for|of)\s+)?/i, '')
+          .split(/\s+with\s+|\s+using\s+|\s+featuring\s+|,/i)[0]
+          .trim();
+        return stripped.length > 42 ? stripped.slice(0, 42).replace(/\s+\S*$/, '') : stripped;
+      })()
+    : undefined;
+  const effectiveSub =
+    spec?.subtitle?.trim() ||
+    (cleanCustomTitle && cleanCustomTitle.length > 20
+      ? cleanCustomTitle
+          .replace(/^(please\s+)?((design|architect|build|create|generate|show)\s+)?(a\s+|an\s+|the\s+)?(\d+-tier\s+)?(infographic\s+(for|of)\s+)?/i, '')
+          .slice(0, 110)
+      : undefined);
 
   if (effectiveTitle) {
     if (id === '53') {
@@ -1956,7 +1981,12 @@ function applyDynamicInfographicSpecToXml(
     }
   }
 
-  const takeawayText = spec?.takeaway?.trim() || spec?.footerText?.trim();
+  const takeawayText =
+    spec?.takeaway?.trim() ||
+    spec?.footerText?.trim() ||
+    (cleanCustomTitle && cleanCustomTitle.length > 20
+      ? `Enforces zero-trust validation, telemetry verification, and SLA guardrails across ${effectiveTitle || 'all pipeline stages'}.`
+      : undefined);
   if (takeawayText) {
     const takeawayCellIds = ['tk58', 'goal59', 'tk61', 'tk62', 'ev64'];
     for (const tkId of takeawayCellIds) {
@@ -1970,7 +2000,45 @@ function applyDynamicInfographicSpecToXml(
     }
   }
 
-  const dynItems = spec?.items && spec.items.length > 0 ? spec.items : null;
+  const promptDerivedItems: DynamicInfographicItem[] | null =
+    !spec?.items && cleanCustomTitle && cleanCustomTitle.length > 20
+      ? (() => {
+          const cleaned = cleanCustomTitle
+            .replace(/^(please\s+)?((design|architect|build|create|generate|show)\s+)?(a\s+|an\s+|the\s+)?(\d+-tier\s+)?(infographic\s+(for|of)\s+|process\s+checklist\s+(for|of)\s+)?/i, '')
+            .trim();
+          const clauses = cleaned
+            .split(/(?:,|;|\+|→|->|\s+and\s+|\s+with\s+|\s+via\s+|\s+using\s+|\s+featuring\s+|\s+including\s+)/i)
+            .map((c) => c.trim())
+            .filter((c) => c.length >= 4);
+          const badges = ['INGRESS', 'VALIDATED', 'ISOLATED', 'PERSISTENT', 'GATEWAY', 'SETTLED', 'AUDITED', 'DEPLOYED'];
+          const fallbackDefaults = [
+            'Edge Telemetry & Ingress Gateway',
+            'Bidirectional Protocol Handshake',
+            'Policy & Load Threshold Gate',
+            'Real-Time Stream Harmonization',
+            'Transactional Settlement Ledger',
+            'Continuous Telemetry & SLA Audit',
+          ];
+          const merged = [...clauses];
+          let fIdx = 0;
+          while (merged.length < 8) {
+            merged.push(fallbackDefaults[fIdx % fallbackDefaults.length]);
+            fIdx++;
+          }
+          return merged.slice(0, 8).map((cl, i) => {
+            const shortCl = cl.length > 32 ? cl.slice(0, 32).replace(/\s+\S*$/, '').trim() : cl;
+            return {
+              code: `0${i + 1}`,
+              title: shortCl,
+              badge: badges[i % badges.length],
+              description: `Enforces ${shortCl} with deterministic policy & SLA telemetry.`,
+              metricOrScore: `step_${i + 1}: VERIFIED`,
+            };
+          });
+        })()
+      : null;
+
+  const dynItems = spec?.items && spec.items.length > 0 ? spec.items : promptDerivedItems;
   if (dynItems) {
     const cellSlotsByBlueprint: Record<string, string[]> = {
       '53': ['c53_codex', 'c53_proj', 'c53_claude', 'c53_files', 'c53_mcp', 'c53_cu', 'c53_adv', 'c53_fix'],
@@ -1988,6 +2056,8 @@ function applyDynamicInfographicSpecToXml(
     };
 
     const slots = cellSlotsByBlueprint[id] || [];
+    const pillCols58 = ['#369B56', '#3B78E7', '#369B56', '#2C8C99', '#5A6D82', '#1F6E37'];
+    const dblToggleSvg = `<svg width="52" height="50" viewBox="0 0 52 50" style="flex-shrink:0;"><rect x="0" y="0" width="52" height="25" rx="12.5" fill="#369B56"/><circle cx="39.5" cy="12.5" r="10.5" fill="#FFFFFF" stroke="#25733E" stroke-width="1"/><rect x="0" y="25" width="52" height="25" rx="12.5" fill="#369B56"/><circle cx="39.5" cy="37.5" r="10.5" fill="#FFFFFF" stroke="#25733E" stroke-width="1"/></svg>`;
     slots.forEach((slotId, idx) => {
       const it = dynItems[idx];
       if (!it) return;
@@ -1995,17 +2065,23 @@ function applyDynamicInfographicSpecToXml(
       const titleStr = esc(it.title || `Stage ${idx + 1}`);
       const subStr = esc(it.badge || it.secondaryBadge || 'ACTIVE');
       const descStr = esc(it.description || '');
-      const cardHtml = esc(
-        `<div style="padding:10px 12px;text-align:left;font-family:Inter,-apple-system,sans-serif;">` +
-          `<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">` +
-          `<span style="font-size:13.5px;font-weight:800;color:#0F172A;line-height:1.2;">${codeStr} | ${titleStr}</span>` +
-          `<span style="background:#DBEAFE;color:#1E40AF;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:800;white-space:nowrap;">${subStr}</span>` +
-          `</div>` +
-          (descStr
-            ? `<div style="font-size:11.5px;color:#334155;margin-top:6px;line-height:1.3;">${descStr}</div>`
-            : '') +
-          `</div>`
-      );
+      const tagStr = esc(it.metricOrScore || `sla_gate_${idx + 1}: PASS`);
+      const cardHtml =
+        id === '58'
+          ? esc(
+              `<div style="padding:12px 16px;text-align:left;font-family:Inter,sans-serif;display:flex;justify-content:space-between;align-items:flex-start;"><div style="width:332px;"><div style="font-size:15.5px;font-weight:800;color:#0F172A;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${codeStr} | ${titleStr}</div><div style="font-size:12.5px;color:#1E293B;margin-top:6px;line-height:1.3;">${descStr}</div></div><div style="display:flex;align-items:flex-start;gap:10px;"><div style="display:flex;flex-direction:column;align-items:flex-end;"><span style="background:${pillCols58[idx % pillCols58.length]};color:#FFFFFF;padding:4px 14px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:0.3px;margin-bottom:6px;">${subStr}</span><div style="width:150px;background:#DFE4EC;padding:5px 9px;border-radius:8px;font-family:monospace;font-size:10.5px;color:#0F172A;font-weight:700;line-height:1.25;text-align:left;">${tagStr}</div></div>${dblToggleSvg}</div></div>`
+            )
+          : esc(
+              `<div style="padding:10px 12px;text-align:left;font-family:Inter,-apple-system,sans-serif;">` +
+                `<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">` +
+                `<span style="font-size:13.5px;font-weight:800;color:#0F172A;line-height:1.2;">${codeStr} | ${titleStr}</span>` +
+                `<span style="background:#DBEAFE;color:#1E40AF;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:800;white-space:nowrap;">${subStr}</span>` +
+                `</div>` +
+                (descStr
+                  ? `<div style="font-size:11.5px;color:#334155;margin-top:6px;line-height:1.3;">${descStr}</div>`
+                  : '') +
+                `</div>`
+            );
       out = replaceCellValue(out, slotId, cardHtml);
     });
   }

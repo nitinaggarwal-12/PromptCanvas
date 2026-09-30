@@ -118,3 +118,40 @@ body {
     background: #ffffff !important;
   }
 }
+
+/* UX-21 (Pillar 11): Global Skip-to-Main-Content Bypass Link */
+.skip-to-main-link {
+  position: fixed;
+  top: 12px;
+  left: 72px;
+  z-index: 100000;
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  background-color: #0284c7;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  box-shadow: 0 20px 25px -5px rgba(2, 6, 23, 0.5);
+  transform: translateY(-220%);
+  transition: transform 0.18s ease-out;
+}
+
+.skip-to-main-link:focus,
+.skip-to-main-link:focus-visible {
+  transform: translateY(0%);
+  outline: 3px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+/* UX-23 (Pillar 12): Global Vestibular Motion Suppression (WCAG 2.2 AAA 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

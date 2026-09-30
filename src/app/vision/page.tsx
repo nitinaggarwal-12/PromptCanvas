@@ -266,6 +266,8 @@ function VisionPageContent() {
   const [librarySearchQuery, setLibrarySearchQuery] = useState<string>('');
   const [libraryTabFilter, setLibraryTabFilter] = useState<'all' | 'custom' | 'master'>('all');
   const [isSavingToDb, setIsSavingToDb] = useState<boolean>(false);
+  const [confirmDeleteVisionId, setConfirmDeleteVisionId] = useState<string | null>(null);
+  const [confirmBatchDeleteVision, setConfirmBatchDeleteVision] = useState<boolean>(false);
 
   // Historical Saved Diagrams Dropdown & Editable PPTX/DOCX Export States
   const [showHistoryDropdown, setShowHistoryDropdown] = useState<boolean>(false);
@@ -289,6 +291,41 @@ function VisionPageContent() {
     xml?: string;
     sourceLabel?: string;
   }>>([]);
+
+  // Keyboard Escape dismissal for dropdown menus and modal dialogs (UX-07, UX-22)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (showUploadDropdown) setShowUploadDropdown(false);
+        if (showExportDropdown) setShowExportDropdown(false);
+        if (showReplaceDropdown) setShowReplaceDropdown(false);
+        if (showUrlModal) {
+          setShowUrlModal(false);
+          setScanError(null);
+        }
+        if (showPasteModal) {
+          setShowPasteModal(false);
+          setPasteError(null);
+        }
+        if (showLibraryModal) setShowLibraryModal(false);
+        if (showRenameModal) setShowRenameModal(false);
+        if (confirmDeleteVisionId) setConfirmDeleteVisionId(null);
+        if (confirmBatchDeleteVision) setConfirmBatchDeleteVision(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [
+    showUploadDropdown,
+    showExportDropdown,
+    showReplaceDropdown,
+    showUrlModal,
+    showPasteModal,
+    showLibraryModal,
+    showRenameModal,
+    confirmDeleteVisionId,
+    confirmBatchDeleteVision,
+  ]);
 
   useEffect(() => {
     let active = true;
@@ -1438,8 +1475,12 @@ function VisionPageContent() {
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-6 right-6 z-50 bg-slate-900/95 border border-teal-500/50 text-white px-5 py-3 rounded-xl shadow-2xl backdrop-blur-md flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-200">
-          <Sparkles className="w-4 h-4 text-teal-400 shrink-0" />
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed top-6 right-6 z-50 bg-slate-900/95 border border-teal-500/50 text-white px-5 py-3 rounded-xl shadow-2xl backdrop-blur-md flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-200"
+        >
+          <Sparkles className="w-4 h-4 text-teal-400 shrink-0" aria-hidden="true" />
           <span className="text-xs font-semibold">{toastMessage}</span>
         </div>
       )}
@@ -1449,10 +1490,10 @@ function VisionPageContent() {
         <div className="flex items-center gap-2.5 min-w-0">
           <Link 
             href="/studio"
-            className="flex items-center gap-2 text-slate-400 hover:text-white transition group cursor-pointer shrink-0"
+            className="flex items-center gap-2 text-slate-400 hover:text-white transition group cursor-pointer shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400 rounded-md"
           >
             <div className="w-7 h-7 rounded-lg bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400 group-hover:scale-105 transition">
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
             </div>
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-bold text-white tracking-tight whitespace-nowrap">
@@ -1470,29 +1511,37 @@ function VisionPageContent() {
           {/* 1. Upload Image Dropdown (Local + Clipboard + Web URL) */}
           <div className="relative">
             <button
+              type="button"
               onClick={() => setShowUploadDropdown(prev => !prev)}
-              className="px-3 py-1 rounded-md bg-teal-600 hover:bg-teal-500 text-white text-[11px] font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+              aria-expanded={showUploadDropdown}
+              aria-haspopup="menu"
+              aria-controls="vision-upload-dropdown-menu"
+              className="px-3 py-1 rounded-md bg-teal-600 hover:bg-teal-500 text-white text-[11px] font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400"
               title="Upload image locally, paste screenshot, or import from web URL"
             >
-              <Upload className="w-3 h-3" />
+              <Upload className="w-3 h-3" aria-hidden="true" />
               <span>Upload Image</span>
-              <ChevronDown className={`w-3 h-3 transition-transform ${showUploadDropdown ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-3 h-3 transition-transform ${showUploadDropdown ? 'rotate-180' : ''}`} aria-hidden="true" />
             </button>
 
             {showUploadDropdown && (
               <div 
+                id="vision-upload-dropdown-menu"
+                role="menu"
+                aria-label="Upload Image Options"
                 className="absolute right-0 mt-1.5 w-64 rounded-xl bg-[#0F172A] border border-slate-700 shadow-2xl py-1.5 z-50 animate-in fade-in slide-in-from-top-1"
-                onMouseLeave={() => setShowUploadDropdown(false)}
               >
                 <button
+                  type="button"
+                  role="menuitem"
                   onClick={() => {
                     setShowUploadDropdown(false);
                     fileInputRef.current?.click();
                   }}
-                  className="w-full text-left px-3 py-2 text-xs flex items-start gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-200"
+                  className="w-full text-left px-3 py-2 text-xs flex items-start gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-200 focus-visible:bg-slate-800 focus-visible:outline-none"
                 >
                   <div className="p-1.5 rounded-lg bg-teal-500/20 text-teal-400 mt-0.5 border border-teal-500/30">
-                    <FolderUp className="w-4 h-4" />
+                    <FolderUp className="w-4 h-4" aria-hidden="true" />
                   </div>
                   <div>
                     <div className="font-bold text-white text-[11.5px]">Local File Upload</div>
@@ -1500,14 +1549,16 @@ function VisionPageContent() {
                   </div>
                 </button>
 
-                <div className="h-px bg-slate-800 my-1" />
+                <div className="h-px bg-slate-800 my-1" role="separator" />
 
                 <button
+                  type="button"
+                  role="menuitem"
                   onClick={handlePasteFromClipboard}
-                  className="w-full text-left px-3 py-2 text-xs flex items-start gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-200"
+                  className="w-full text-left px-3 py-2 text-xs flex items-start gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-200 focus-visible:bg-slate-800 focus-visible:outline-none"
                 >
                   <div className="p-1.5 rounded-lg bg-purple-500/20 text-purple-400 mt-0.5 border border-purple-500/30">
-                    <ClipboardPaste className="w-4 h-4" />
+                    <ClipboardPaste className="w-4 h-4" aria-hidden="true" />
                   </div>
                   <div>
                     <div className="font-bold text-white text-[11.5px]">Paste from Clipboard</div>
@@ -1515,17 +1566,19 @@ function VisionPageContent() {
                   </div>
                 </button>
 
-                <div className="h-px bg-slate-800 my-1" />
+                <div className="h-px bg-slate-800 my-1" role="separator" />
 
                 <button
+                  type="button"
+                  role="menuitem"
                   onClick={() => {
                     setShowUploadDropdown(false);
                     setShowUrlModal(true);
                   }}
-                  className="w-full text-left px-3 py-2 text-xs flex items-start gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-200"
+                  className="w-full text-left px-3 py-2 text-xs flex items-start gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-200 focus-visible:bg-slate-800 focus-visible:outline-none"
                 >
                   <div className="p-1.5 rounded-lg bg-blue-500/20 text-blue-400 mt-0.5 border border-blue-500/30">
-                    <Globe className="w-4 h-4" />
+                    <Globe className="w-4 h-4" aria-hidden="true" />
                   </div>
                   <div>
                     <div className="font-bold text-white text-[11.5px]">Import from Web URL</div>
@@ -1538,15 +1591,17 @@ function VisionPageContent() {
 
           {/* 2. Save Current Diagram to Library */}
           <button
+            type="button"
             onClick={handleSaveCurrentToGlobalLibrary}
             disabled={!decompiledXml || isDecompiling || isSavingToDb}
-            className="px-3 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 whitespace-nowrap"
+            aria-busy={isSavingToDb}
+            className="px-3 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 whitespace-nowrap active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400"
             title="Save this decompiled diagram to Vision Saved Library"
           >
             {isSavingToDb ? (
-              <Loader2 className="w-3 h-3 text-amber-400 animate-spin" />
+              <Loader2 className="w-3 h-3 text-amber-400 animate-spin" aria-hidden="true" />
             ) : (
-              <BookmarkPlus className="w-3 h-3 text-amber-400" />
+              <BookmarkPlus className="w-3 h-3 text-amber-400" aria-hidden="true" />
             )}
             <span>Save to Library</span>
           </button>
@@ -1554,34 +1609,42 @@ function VisionPageContent() {
           {/* 3. Consolidated Export & Google Workspace Menu (Slides, Docs, .pptx, .docx, .drawio, XML) */}
           <div className="relative">
             <button
+              type="button"
               onClick={() => setShowExportDropdown(prev => !prev)}
               disabled={!decompiledXml || isDecompiling}
+              aria-expanded={showExportDropdown}
+              aria-haspopup="menu"
+              aria-controls="vision-export-dropdown-menu"
               data-testid="vision-export-menu-btn"
-              className="px-3 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-amber-500/40 text-amber-300 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 whitespace-nowrap shadow-xs"
+              className="px-3 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-amber-500/40 text-amber-300 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 whitespace-nowrap shadow-xs active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
               title="Export to Google Slides, Google Docs, PowerPoint (.pptx), Word (.docx), or Draw.io"
             >
-              <Presentation className="w-3 h-3 text-amber-400" />
+              <Presentation className="w-3 h-3 text-amber-400" aria-hidden="true" />
               <span>Export & Slides</span>
-              <ChevronDown className={`w-3 h-3 transition-transform ${showExportDropdown ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-3 h-3 transition-transform ${showExportDropdown ? 'rotate-180' : ''}`} aria-hidden="true" />
             </button>
 
             {showExportDropdown && (
               <div
+                id="vision-export-dropdown-menu"
+                role="menu"
+                aria-label="Export and Google Workspace Options"
                 data-testid="vision-export-dropdown-menu"
                 className="absolute right-0 mt-1.5 w-72 rounded-xl bg-[#0F172A] border border-slate-700 shadow-2xl py-1.5 z-50 animate-in fade-in slide-in-from-top-1"
-                onMouseLeave={() => setShowExportDropdown(false)}
               >
                 {/* Google Slides Studio */}
                 <button
+                  type="button"
+                  role="menuitem"
                   onClick={() => {
                     setShowExportDropdown(false);
                     setGoogleWorkspaceModalMode('slides');
                   }}
                   data-testid="vision-open-google-slides-btn"
-                  className="w-full text-left px-3 py-2 text-xs flex items-start gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-200"
+                  className="w-full text-left px-3 py-2 text-xs flex items-start gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-200 focus-visible:bg-slate-800 focus-visible:outline-none"
                 >
                   <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-400 mt-0.5 border border-amber-500/30">
-                    <Presentation className="w-4 h-4" />
+                    <Presentation className="w-4 h-4" aria-hidden="true" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-bold text-amber-300 text-[11.5px] flex items-center justify-between">
@@ -1594,31 +1657,35 @@ function VisionPageContent() {
 
                 {/* Download .pptx */}
                 <button
+                  type="button"
+                  role="menuitem"
                   onClick={() => {
                     setShowExportDropdown(false);
                     handleExportEditablePptx();
                   }}
                   disabled={isExportingPptx}
                   data-testid="vision-export-pptx-btn"
-                  className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-300 pl-11"
+                  className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-300 pl-11 focus-visible:bg-slate-800 focus-visible:outline-none"
                 >
-                  <Download className="w-3.5 h-3.5 text-amber-400" />
+                  <Download className="w-3.5 h-3.5 text-amber-400" aria-hidden="true" />
                   <span className="text-[11px] font-medium">Download PowerPoint (.pptx)</span>
                 </button>
 
-                <div className="h-px bg-slate-800 my-1" />
+                <div className="h-px bg-slate-800 my-1" role="separator" />
 
                 {/* Google Docs Studio */}
                 <button
+                  type="button"
+                  role="menuitem"
                   onClick={() => {
                     setShowExportDropdown(false);
                     setGoogleWorkspaceModalMode('docs');
                   }}
                   data-testid="vision-open-google-docs-btn"
-                  className="w-full text-left px-3 py-2 text-xs flex items-start gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-200"
+                  className="w-full text-left px-3 py-2 text-xs flex items-start gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-200 focus-visible:bg-slate-800 focus-visible:outline-none"
                 >
                   <div className="p-1.5 rounded-lg bg-sky-500/20 text-sky-400 mt-0.5 border border-sky-500/30">
-                    <FileText className="w-4 h-4" />
+                    <FileText className="w-4 h-4" aria-hidden="true" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-bold text-sky-300 text-[11.5px] flex items-center justify-between">
@@ -1631,39 +1698,45 @@ function VisionPageContent() {
 
                 {/* Download .docx */}
                 <button
+                  type="button"
+                  role="menuitem"
                   onClick={() => {
                     setShowExportDropdown(false);
                     handleExportEditableDocx();
                   }}
                   disabled={isExportingDocx}
                   data-testid="vision-export-docx-btn"
-                  className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-300 pl-11"
+                  className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-300 pl-11 focus-visible:bg-slate-800 focus-visible:outline-none"
                 >
-                  <Download className="w-3.5 h-3.5 text-sky-400" />
+                  <Download className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
                   <span className="text-[11px] font-medium">Download Word Doc (.docx)</span>
                 </button>
 
-                <div className="h-px bg-slate-800 my-1" />
+                <div className="h-px bg-slate-800 my-1" role="separator" />
 
                 {/* Download .drawio & Copy XML */}
                 <button
+                  type="button"
+                  role="menuitem"
                   onClick={() => {
                     setShowExportDropdown(false);
                     handleDownloadXml();
                   }}
-                  className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-300"
+                  className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-300 focus-visible:bg-slate-800 focus-visible:outline-none"
                 >
-                  <Download className="w-3.5 h-3.5 text-teal-400 ml-1" />
+                  <Download className="w-3.5 h-3.5 text-teal-400 ml-1" aria-hidden="true" />
                   <span className="text-[11px] font-medium">Download Draw.io File (.drawio)</span>
                 </button>
                 <button
+                  type="button"
+                  role="menuitem"
                   onClick={() => {
                     setShowExportDropdown(false);
                     handleCopyXml();
                   }}
-                  className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-300"
+                  className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-300 focus-visible:bg-slate-800 focus-visible:outline-none"
                 >
-                  <Copy className="w-3.5 h-3.5 text-slate-400 ml-1" />
+                  <Copy className="w-3.5 h-3.5 text-slate-400 ml-1" aria-hidden="true" />
                   <span className="text-[11px] font-medium">Copy Raw Draw.io XML</span>
                 </button>
               </div>
@@ -1672,13 +1745,14 @@ function VisionPageContent() {
 
           {/* 4. Open in Studio Primary CTA */}
           <button
+            type="button"
             onClick={handleOpenInStudio}
             disabled={!decompiledXml || isDecompiling}
-            className="px-3.5 py-1 rounded-md bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-[11px] font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+            className="px-3.5 py-1 rounded-md bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-[11px] font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
           >
-            <Layers className="w-3 h-3" />
+            <Layers className="w-3 h-3" aria-hidden="true" />
             <span>Open in Studio</span>
-            <ArrowRight className="w-2.5 h-2.5" />
+            <ArrowRight className="w-2.5 h-2.5" aria-hidden="true" />
           </button>
         </div>
       </AppHeader>
@@ -1688,6 +1762,7 @@ function VisionPageContent() {
         type="file"
         ref={fileInputRef}
         accept="image/png,image/jpeg,image/svg+xml,image/webp"
+        aria-label="Upload architecture diagram image file"
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0];
@@ -1706,16 +1781,17 @@ function VisionPageContent() {
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar flex-1 min-w-0 py-0.5">
             {/* 1. +New Blank Canvas Button */}
             <button
+              type="button"
               onClick={handleOpenBlankNewCanvas}
               data-testid="vision-new-canvas-btn"
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-extrabold border transition-all whitespace-nowrap cursor-pointer flex-shrink-0 shadow-2xs ${
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-extrabold border transition-all whitespace-nowrap cursor-pointer flex-shrink-0 shadow-2xs active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 ${
                 selectedBlueprintId === 'NEW-CANVAS'
                   ? 'bg-emerald-600 text-white border-emerald-600'
                   : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
               }`}
               title="Open a clean Blank Architecture Canvas to upload/paste a new image or draw from scratch"
             >
-              <Plus className="w-3 h-3 stroke-[2.5]" />
+              <Plus className="w-3 h-3 stroke-[2.5]" aria-hidden="true" />
               <span>New</span>
             </button>
 
@@ -1723,29 +1799,33 @@ function VisionPageContent() {
             <Link
               href="/library?studio=vision&filter=vision_saved"
               data-testid="vision-saved-history-dropdown-btn"
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-bold border bg-teal-50 hover:bg-teal-100 text-teal-800 border-teal-300 transition-all whitespace-nowrap cursor-pointer shadow-2xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-bold border bg-teal-50 hover:bg-teal-100 text-teal-800 border-teal-300 transition-all whitespace-nowrap cursor-pointer shadow-2xs active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
               title="Browse all Vision Saved Library blueprints (Google Multiagent AI System, VIS-1787, VIS-3093, and custom uploads) in the Architecture Library page"
             >
-              <BookOpen className="w-3 h-3 text-teal-600" />
+              <BookOpen className="w-3 h-3 text-teal-600" aria-hidden="true" />
               <span>Saved Library in Library Page ({allLibraryBlueprints.length})</span>
-              <ArrowRight className="w-3 h-3 text-teal-600" />
+              <ArrowRight className="w-3 h-3 text-teal-600" aria-hidden="true" />
             </Link>
           </div>
 
           {/* Right: Single Consolidated Identity Pill (ID + Node Count + Copy URL + Rename) */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
             {isDecompiling && (
-              <span className="text-[10px] px-2.5 py-1 rounded-md bg-amber-100 text-amber-800 border border-amber-300 animate-pulse font-bold flex items-center gap-1">
-                <Loader2 className="w-3 h-3 animate-spin text-amber-600" />
+              <span
+                role="status"
+                aria-live="polite"
+                className="text-[10px] px-2.5 py-1 rounded-md bg-amber-100 text-amber-800 border border-amber-300 animate-pulse font-bold flex items-center gap-1"
+              >
+                <Loader2 className="w-3 h-3 animate-spin text-amber-600" aria-hidden="true" />
                 <span>Decompiling...</span>
               </span>
             )}
 
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900 text-white text-[10.5px] font-mono font-bold border border-slate-700 shadow-2xs">
-              <Tag className="w-3 h-3 text-teal-400" />
-              <span className="text-teal-300 tracking-tight">{formatDisplayBlueprintId(selectedBlueprintId)}</span>
+              <Tag className="w-3 h-3 text-teal-400" aria-hidden="true" />
+              <span className="text-teal-300 tracking-tight tabular-nums">{formatDisplayBlueprintId(selectedBlueprintId)}</span>
               {componentCount > 0 && (
-                <span className="px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 text-[9.5px] font-sans border border-slate-700">
+                <span className="px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 text-[9.5px] font-sans border border-slate-700 tabular-nums">
                   {componentCount} nodes
                 </span>
               )}
@@ -1756,10 +1836,12 @@ function VisionPageContent() {
                     {activeObject.urlSlug}
                   </span>
                   <button
+                    type="button"
                     onClick={() => {
                       setActiveObjectSlug(null);
                       syncVisionUrl(selectedBlueprintId, null);
                     }}
+                    aria-label="Clear selected object filter"
                     className="text-slate-400 hover:text-white px-0.5 cursor-pointer"
                     title="Clear selected object filter"
                   >
@@ -1769,28 +1851,32 @@ function VisionPageContent() {
               )}
               <div className="h-3 w-px bg-slate-700 mx-0.5" />
               <button
+                type="button"
                 onClick={() => {
                   const shortId = formatDisplayBlueprintId(selectedBlueprintId);
                   const shareUrl = `${window.location.origin}/vision?id=${encodeURIComponent(shortId)}${activeObject ? `&obj=${encodeURIComponent(activeObject.urlSlug)}` : ''}`;
                   navigator.clipboard.writeText(shareUrl);
                   showToast(`🔗 Copied Direct URL [${shareUrl}] to clipboard!`);
                 }}
-                className="px-1.5 py-0.2 rounded bg-blue-600/30 hover:bg-blue-600/50 text-blue-200 border border-blue-500/40 flex items-center gap-1 transition cursor-pointer"
+                aria-label="Copy Direct Shareable URL"
+                className="px-1.5 py-0.2 rounded bg-blue-600/30 hover:bg-blue-600/50 text-blue-200 border border-blue-500/40 flex items-center gap-1 transition cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
                 title="Copy Direct Shareable URL"
               >
-                <Link2 className="w-2.5 h-2.5" />
+                <Link2 className="w-2.5 h-2.5" aria-hidden="true" />
                 <span className="text-[9.5px] font-sans font-bold">Copy URL</span>
               </button>
               <button
+                type="button"
                 onClick={() => {
                   setEditTitleInput(selectedImageName || 'Custom Diagram');
                   setEditIdInput(formatDisplayBlueprintId(selectedBlueprintId));
                   setShowRenameModal(true);
                 }}
-                className="px-1.5 py-0.2 rounded bg-teal-600/30 hover:bg-teal-600/50 text-teal-300 border border-teal-500/40 flex items-center gap-1 transition cursor-pointer"
+                aria-label="Rename Blueprint or Customize ID"
+                className="px-1.5 py-0.2 rounded bg-teal-600/30 hover:bg-teal-600/50 text-teal-300 border border-teal-500/40 flex items-center gap-1 transition cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400"
                 title="Rename Blueprint or Customize ID"
               >
-                <Edit3 className="w-2.5 h-2.5" />
+                <Edit3 className="w-2.5 h-2.5" aria-hidden="true" />
                 <span className="text-[9.5px] font-sans font-bold">Rename</span>
               </button>
             </div>
@@ -1806,7 +1892,7 @@ function VisionPageContent() {
               {extractedWebImages.length > 0 && leftPaneMode === 'gallery' ? (
                 <div className="flex items-center gap-1.5 min-w-0">
                   <div className="w-5 h-5 rounded bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 flex-shrink-0">
-                    <Globe className="w-3 h-3" />
+                    <Globe className="w-3 h-3" aria-hidden="true" />
                   </div>
                   <div className="min-w-0">
                     <div className="text-xs font-bold text-slate-900 truncate">
@@ -1819,7 +1905,7 @@ function VisionPageContent() {
                 </div>
               ) : (
                 <div className="flex items-center gap-1.5 min-w-0">
-                  <ImageIcon className="w-3.5 h-3.5 text-teal-600 flex-shrink-0" />
+                  <ImageIcon className="w-3.5 h-3.5 text-teal-600 flex-shrink-0" aria-hidden="true" />
                   <span className="text-xs font-bold text-slate-900 uppercase tracking-wider truncate">
                     {extractedWebImages.length > 0 ? selectedImageName : 'Original Image Source'}
                   </span>
@@ -1833,18 +1919,19 @@ function VisionPageContent() {
               <div className="flex items-center gap-1">
                 {extractedWebImages.length > 0 && (
                   <button
+                    type="button"
                     onClick={() => setLeftPaneMode(m => m === 'gallery' ? 'single' : 'gallery')}
-                    className="px-2 py-0.5 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[10px] font-bold transition flex items-center gap-1 cursor-pointer"
+                    className="px-2 py-0.5 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[10px] font-bold transition flex items-center gap-1 cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                     title={leftPaneMode === 'gallery' ? 'View active focus image' : 'View all extracted images in gallery'}
                   >
                     {leftPaneMode === 'gallery' ? (
                       <>
-                        <Eye className="w-3 h-3 text-blue-600" />
+                        <Eye className="w-3 h-3 text-blue-600" aria-hidden="true" />
                         <span>Focus</span>
                       </>
                     ) : (
                       <>
-                        <LayoutGrid className="w-3 h-3 text-blue-600" />
+                        <LayoutGrid className="w-3 h-3 text-blue-600" aria-hidden="true" />
                         <span>All ({extractedWebImages.length})</span>
                       </>
                     )}
@@ -1854,25 +1941,31 @@ function VisionPageContent() {
                 {leftPaneMode === 'single' && (
                   <>
                     <button
+                      type="button"
                       onClick={() => setImageZoom(z => Math.max(0.7, +(z - 0.15).toFixed(2)))}
-                      className="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold cursor-pointer"
+                      aria-label="Zoom out source image"
+                      className="px-2 py-0.5 min-w-[26px] rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
                       title="Zoom Out"
                     >
                       -
                     </button>
-                    <span className="text-[9.5px] font-mono text-slate-500 min-w-[28px] text-center">
+                    <span className="text-[9.5px] font-mono text-slate-500 min-w-[28px] text-center tabular-nums" aria-live="polite">
                       {Math.round(imageZoom * 100)}%
                     </span>
                     <button
+                      type="button"
                       onClick={() => setImageZoom(z => Math.min(2.5, +(z + 0.15).toFixed(2)))}
-                      className="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold cursor-pointer"
+                      aria-label="Zoom in source image"
+                      className="px-2 py-0.5 min-w-[26px] rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
                       title="Zoom In"
                     >
                       +
                     </button>
                     <button
+                      type="button"
                       onClick={() => setImageZoom(1.0)}
-                      className="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold cursor-pointer ml-0.5"
+                      aria-label="Reset source image zoom to 100%"
+                      className="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold cursor-pointer ml-0.5 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
                       title="Reset Zoom"
                     >
                       Fit
@@ -1883,45 +1976,57 @@ function VisionPageContent() {
                 {/* Replace / Change Image Dropdown */}
                 <div className="relative ml-0.5">
                   <button
+                    type="button"
                     onClick={() => setShowReplaceDropdown(prev => !prev)}
-                    className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[10.5px] font-bold transition flex items-center gap-1 cursor-pointer"
+                    aria-expanded={showReplaceDropdown}
+                    aria-haspopup="menu"
+                    aria-controls="vision-replace-dropdown-menu"
+                    className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[10.5px] font-bold transition flex items-center gap-1 cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
                     title="Change image (local or web URL)"
                   >
-                    <Upload className="w-3 h-3" />
+                    <Upload className="w-3 h-3" aria-hidden="true" />
                     <span>Replace</span>
-                    <ChevronDown className={`w-2.5 h-2.5 transition-transform ${showReplaceDropdown ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-2.5 h-2.5 transition-transform ${showReplaceDropdown ? 'rotate-180' : ''}`} aria-hidden="true" />
                   </button>
 
                   {showReplaceDropdown && (
                     <div 
+                      id="vision-replace-dropdown-menu"
+                      role="menu"
+                      aria-label="Replace Source Image Options"
                       className="absolute right-0 mt-1 w-52 rounded-lg bg-white border border-slate-200 shadow-xl py-1 z-40 animate-in fade-in"
-                      onMouseLeave={() => setShowReplaceDropdown(false)}
                     >
                       <button
+                        type="button"
+                        role="menuitem"
                         onClick={() => {
                           setShowReplaceDropdown(false);
                           fileInputRef.current?.click();
                         }}
-                        className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2 hover:bg-slate-50 transition cursor-pointer text-slate-700"
+                        className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2 hover:bg-slate-50 transition cursor-pointer text-slate-700 focus-visible:bg-slate-100 focus-visible:outline-none"
                       >
-                        <FolderUp className="w-3.5 h-3.5 text-teal-600" />
+                        <FolderUp className="w-3.5 h-3.5 text-teal-600" aria-hidden="true" />
                         <span className="font-semibold text-[11px]">Local File Upload</span>
                       </button>
                       <button
+                        type="button"
+                        role="menuitem"
                         onClick={handlePasteFromClipboard}
-                        className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2 hover:bg-slate-50 transition cursor-pointer text-slate-700"
+                        className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2 hover:bg-slate-50 transition cursor-pointer text-slate-700 focus-visible:bg-slate-100 focus-visible:outline-none"
                       >
-                        <ClipboardPaste className="w-3.5 h-3.5 text-purple-600" />
+                        <ClipboardPaste className="w-3.5 h-3.5 text-purple-600" aria-hidden="true" />
                         <span className="font-semibold text-[11px]">Paste from Clipboard</span>
                       </button>
                       <button
+                        type="button"
+                        role="menuitem"
                         onClick={() => {
                           setShowReplaceDropdown(false);
                           setShowUrlModal(true);
                         }}
-                        className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2 hover:bg-slate-50 transition cursor-pointer text-slate-700"
+                        className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2 hover:bg-slate-50 transition cursor-pointer text-slate-700 focus-visible:bg-slate-100 focus-visible:outline-none"
                       >
-                        <Globe className="w-3.5 h-3.5 text-blue-600" />
+                        <Globe className="w-3.5 h-3.5 text-blue-600" aria-hidden="true" />
                         <span className="font-semibold text-[11px]">Import from Web URL</span>
                       </button>
                     </div>
@@ -1949,7 +2054,9 @@ function VisionPageContent() {
                       <div className="w-full h-28 bg-slate-50 rounded-md overflow-hidden flex items-center justify-center p-1 relative border border-slate-100">
                         <img
                           src={img.proxiedUrl}
-                          alt={img.alt}
+                          alt={img.alt || `Extracted architecture image ${idx + 1}`}
+                          width={320}
+                          height={180}
                           loading="lazy"
                           className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200 select-none"
                           onError={(e) => {
@@ -1963,7 +2070,7 @@ function VisionPageContent() {
                         )}
                         {isSelected && (
                           <span className="absolute top-1 right-1 px-1.5 py-0.2 rounded bg-blue-600 text-white text-[8.5px] font-bold shadow-xs flex items-center gap-0.5">
-                            <Check className="w-2.5 h-2.5" />
+                            <Check className="w-2.5 h-2.5" aria-hidden="true" />
                             Active
                           </span>
                         )}
@@ -1975,6 +2082,7 @@ function VisionPageContent() {
                           {img.alt || `Image #${idx + 1}`}
                         </p>
                         <button
+                          type="button"
                           className={`mt-1 w-full py-1 px-2 rounded text-[9.5px] font-bold flex items-center justify-center gap-1 transition ${
                             isSelected
                               ? 'bg-blue-600 text-white'
@@ -1982,7 +2090,7 @@ function VisionPageContent() {
                           }`}
                         >
                           <span>{isSelected ? '✓ Selected' : 'Convert to Draw.io'}</span>
-                          <ArrowRight className="w-2.5 h-2.5" />
+                          <ArrowRight className="w-2.5 h-2.5" aria-hidden="true" />
                         </button>
                       </div>
                     </div>
@@ -2004,7 +2112,9 @@ function VisionPageContent() {
                       <div className="w-full h-full flex items-center justify-center overflow-hidden">
                         <img
                           src={effectiveImg}
-                          alt={selectedImageName}
+                          alt={selectedImageName || 'Source Architecture Blueprint'}
+                          width={1280}
+                          height={720}
                           style={{ transform: `scale(${imageZoom})`, transformOrigin: 'center center', transition: 'transform 0.15s ease-out' }}
                           className="w-full h-full max-w-full max-h-full object-contain rounded shadow-2xs select-none"
                           onError={(e) => {
@@ -2029,7 +2139,7 @@ function VisionPageContent() {
                         className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-50 to-teal-50/30 border-2 border-dashed border-teal-300 hover:border-teal-500 rounded-xl transition cursor-pointer group"
                       >
                         <div className="w-14 h-14 rounded-2xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-600 mb-3 group-hover:scale-110 transition-transform shadow-sm">
-                          <Upload className="w-7 h-7" />
+                          <Upload className="w-7 h-7" aria-hidden="true" />
                         </div>
                         <h3 className="text-sm font-extrabold text-slate-900">
                           New Blank Architecture Canvas Ready
@@ -2039,24 +2149,27 @@ function VisionPageContent() {
                         </p>
                         <div className="flex flex-wrap items-center justify-center gap-2 mt-4" onClick={(e) => e.stopPropagation()}>
                           <button
+                            type="button"
                             onClick={() => fileInputRef.current?.click()}
-                            className="px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition"
+                            className="px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
                           >
-                            <FolderUp className="w-3.5 h-3.5" />
+                            <FolderUp className="w-3.5 h-3.5" aria-hidden="true" />
                             <span>Upload Image</span>
                           </button>
                           <button
+                            type="button"
                             onClick={handlePasteFromClipboard}
-                            className="px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition"
+                            className="px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
                           >
-                            <ClipboardPaste className="w-3.5 h-3.5" />
+                            <ClipboardPaste className="w-3.5 h-3.5" aria-hidden="true" />
                             <span>Paste Clipboard (⌘V)</span>
                           </button>
                           <button
+                            type="button"
                             onClick={() => setShowUrlModal(true)}
-                            className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition"
+                            className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-800"
                           >
-                            <Globe className="w-3.5 h-3.5" />
+                            <Globe className="w-3.5 h-3.5" aria-hidden="true" />
                             <span>Import Web URL</span>
                           </button>
                         </div>
@@ -2074,8 +2187,10 @@ function VisionPageContent() {
                       </span>
                       {extractedWebImages.map((img, idx) => (
                         <button
+                          type="button"
                           key={idx}
                           onClick={() => handleSelectWebImage(img, idx)}
+                          aria-label={img.alt || `Select web image ${idx + 1}`}
                           className={`relative rounded border p-0.5 transition flex-shrink-0 cursor-pointer overflow-hidden ${
                             selectedWebImageIndex === idx
                               ? 'border-blue-500 ring-2 ring-blue-400/30'
@@ -2083,11 +2198,12 @@ function VisionPageContent() {
                           }`}
                           title={img.alt}
                         >
-                          <img src={img.proxiedUrl} alt={img.alt} className="w-9 h-7 object-contain bg-slate-50 rounded" />
+                          <img src={img.proxiedUrl} alt={img.alt || `Thumbnail ${idx + 1}`} width={36} height={28} className="w-9 h-7 object-contain bg-slate-50 rounded" />
                         </button>
                       ))}
                     </div>
                     <button
+                      type="button"
                       onClick={() => setLeftPaneMode('gallery')}
                       className="text-[9.5px] font-bold text-blue-600 hover:text-blue-700 px-1.5 py-0.5 rounded bg-blue-50 hover:bg-blue-100 border border-blue-200 transition whitespace-nowrap flex-shrink-0"
                     >
@@ -2316,27 +2432,44 @@ function VisionPageContent() {
 
         {/* Web URL Scanner Modal Dialog */}
         {showUrlModal && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
-            <div className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-xl w-full p-5 space-y-4 relative">
+          <div
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in"
+            role="presentation"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setShowUrlModal(false);
+                setScanError(null);
+              }
+            }}
+          >
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="vision-url-modal-title"
+              aria-describedby="vision-url-modal-desc"
+              className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-xl w-full p-5 space-y-4 relative"
+            >
               <button
+                type="button"
                 onClick={() => {
                   setShowUrlModal(false);
                   setScanError(null);
                 }}
-                className="absolute top-3.5 right-3.5 p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+                aria-label="Close Web URL Scanner modal"
+                className="absolute top-3.5 right-3.5 p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4" aria-hidden="true" />
               </button>
 
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 flex-shrink-0">
-                  <Globe className="w-5 h-5" />
+                  <Globe className="w-5 h-5" aria-hidden="true" />
                 </div>
                 <div className="flex-1 min-w-0 pr-6">
-                  <h3 className="text-sm font-bold text-slate-900">
+                  <h3 id="vision-url-modal-title" className="text-sm font-bold text-slate-900">
                     Import Architecture Diagram from Web URL
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p id="vision-url-modal-desc" className="text-xs text-slate-500 mt-0.5">
                     Enter any documentation, blog post, or article URL. Omni 1.1 will scan the page, identify all diagrams and images, and let you preview and convert them to Draw.io.
                   </p>
                 </div>
@@ -2345,12 +2478,18 @@ function VisionPageContent() {
               {/* Input Form */}
               <div className="space-y-2">
                 <div className="relative">
+                  <label htmlFor="vision-web-url-input" className="sr-only">
+                    Webpage URL to scan for architecture diagrams
+                  </label>
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                    <Link2 className="w-4 h-4" />
+                    <Link2 className="w-4 h-4" aria-hidden="true" />
                   </div>
                   <input
+                    id="vision-web-url-input"
                     type="url"
                     value={webUrlInput}
+                    aria-invalid={Boolean(scanError)}
+                    aria-describedby={scanError ? 'vision-url-scan-error' : undefined}
                     onChange={(e) => {
                       setWebUrlInput(e.target.value);
                       if (scanError) setScanError(null);
@@ -2369,7 +2508,7 @@ function VisionPageContent() {
 
                 {/* Quick Sample Links */}
                 <div className="flex items-center gap-1.5 flex-wrap pt-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                     Quick Samples:
                   </span>
                   {[
@@ -2378,12 +2517,13 @@ function VisionPageContent() {
                     { label: 'Google Cloud Blog', url: 'https://cloud.google.com/blog/products/databases/spanner-graph-ga' }
                   ].map((sample) => (
                     <button
+                      type="button"
                       key={sample.label}
                       onClick={() => {
                         setWebUrlInput(sample.url);
                         handleScanWebUrl(sample.url);
                       }}
-                      className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer"
+                      className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                     >
                       {sample.label}
                     </button>
@@ -2391,8 +2531,13 @@ function VisionPageContent() {
                 </div>
 
                 {scanError && (
-                  <div className="p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                  <div
+                    id="vision-url-scan-error"
+                    role="alert"
+                    aria-live="assertive"
+                    className="p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2"
+                  >
+                    <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" aria-hidden="true" />
                     <span>{scanError}</span>
                   </div>
                 )}
@@ -2401,27 +2546,30 @@ function VisionPageContent() {
               {/* Action Buttons */}
               <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                 <button
+                  type="button"
                   onClick={() => {
                     setShowUrlModal(false);
                     setScanError(null);
                   }}
-                  className="px-3 py-1.5 rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition cursor-pointer"
+                  className="px-3 py-1.5 rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                 >
                   Cancel
                 </button>
                 <button
+                  type="button"
                   onClick={() => handleScanWebUrl()}
                   disabled={isScanningUrl || !webUrlInput.trim()}
-                  className="px-4 py-1.5 rounded-md bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  aria-busy={isScanningUrl}
+                  className="px-4 py-1.5 rounded-md bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                 >
                   {isScanningUrl ? (
                     <>
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
                       <span>Scanning Webpage...</span>
                     </>
                   ) : (
                     <>
-                      <Search className="w-3.5 h-3.5" />
+                      <Search className="w-3.5 h-3.5" aria-hidden="true" />
                       <span>Extract Images</span>
                     </>
                   )}
@@ -2437,28 +2585,43 @@ function VisionPageContent() {
         {showPasteModal && (
           <div
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in"
+            role="presentation"
             onPaste={handleClipboardPasteEvent}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setShowPasteModal(false);
+                setPasteError(null);
+              }
+            }}
           >
-            <div className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-lg w-full p-5 space-y-4 relative">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="vision-paste-modal-title"
+              aria-describedby="vision-paste-modal-desc"
+              className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-lg w-full p-5 space-y-4 relative"
+            >
               <button
+                type="button"
                 onClick={() => {
                   setShowPasteModal(false);
                   setPasteError(null);
                 }}
-                className="absolute top-3.5 right-3.5 p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+                aria-label="Close Paste from Clipboard modal"
+                className="absolute top-3.5 right-3.5 p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4" aria-hidden="true" />
               </button>
 
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600 flex-shrink-0">
-                  <ClipboardPaste className="w-5 h-5" />
+                  <ClipboardPaste className="w-5 h-5" aria-hidden="true" />
                 </div>
                 <div className="flex-1 min-w-0 pr-6">
-                  <h3 className="text-sm font-bold text-slate-900">
+                  <h3 id="vision-paste-modal-title" className="text-sm font-bold text-slate-900">
                     Paste Image from Clipboard
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p id="vision-paste-modal-desc" className="text-xs text-slate-500 mt-0.5">
                     Press <kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded text-[10px] font-mono font-bold text-slate-800">⌘V</kbd> / <kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded text-[10px] font-mono font-bold text-slate-800">Ctrl+V</kbd> anywhere, or right-click inside the box below and choose <strong>Paste</strong>.
                   </p>
                 </div>
@@ -2475,7 +2638,7 @@ function VisionPageContent() {
                   className="paste-catcher-zone w-full h-36 p-4 rounded-xl border-2 border-dashed border-purple-300 hover:border-purple-500 focus:border-purple-600 bg-purple-50/40 text-transparent caret-transparent focus:outline-none focus:ring-2 focus:ring-purple-500/20 resize-none cursor-pointer transition"
                 />
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-1.5 p-4">
-                  <ClipboardPaste className="w-7 h-7 text-purple-500 animate-pulse" />
+                  <ClipboardPaste className="w-7 h-7 text-purple-500 animate-pulse" aria-hidden="true" />
                   <span className="text-xs font-bold text-slate-800">
                     Ready for Clipboard Image
                   </span>
@@ -2486,28 +2649,34 @@ function VisionPageContent() {
               </div>
 
               {pasteError && (
-                <div className="p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                <div
+                  role="alert"
+                  aria-live="assertive"
+                  className="p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2"
+                >
+                  <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" aria-hidden="true" />
                   <span>{pasteError}</span>
                 </div>
               )}
 
               {/* Action Buttons */}
               <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100">
-                <span className="text-[11px] text-slate-400">
+                <span className="text-[11px] text-slate-500">
                   Tip: You can also press ⌘V directly on the canvas anytime
                 </span>
                 <div className="flex items-center gap-2">
                   <button
+                    type="button"
                     onClick={() => {
                       setShowPasteModal(false);
                       setPasteError(null);
                     }}
-                    className="px-3 py-1.5 rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition cursor-pointer"
+                    className="px-3 py-1.5 rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
                   >
                     Cancel
                   </button>
                   <button
+                    type="button"
                     onClick={async () => {
                       if (navigator.clipboard && navigator.clipboard.read) {
                         setIsReadingClipboard(true);
@@ -2534,16 +2703,17 @@ function VisionPageContent() {
                       }
                     }}
                     disabled={isReadingClipboard}
-                    className="px-4 py-1.5 rounded-md bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+                    aria-busy={isReadingClipboard}
+                    className="px-4 py-1.5 rounded-md bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
                   >
                     {isReadingClipboard ? (
                       <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
                         <span>Reading Clipboard...</span>
                       </>
                     ) : (
                       <>
-                        <ClipboardPaste className="w-3.5 h-3.5" />
+                        <ClipboardPaste className="w-3.5 h-3.5" aria-hidden="true" />
                         <span>Read Clipboard Now</span>
                       </>
                     )}
@@ -2558,36 +2728,49 @@ function VisionPageContent() {
         {/* 🏛️ BLUEPRINT LIBRARY & SAVED DIAGRAMS MODAL */}
         {/* ========================================================================= */}
         {showLibraryModal && (
-          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-150">
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-5xl max-h-[88vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+          <div
+            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-150"
+            role="presentation"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setShowLibraryModal(false);
+            }}
+          >
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="vision-library-modal-title"
+              className="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-5xl max-h-[88vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
+            >
               
               {/* Modal Header - Dark Shell Scoped */}
               <div className="bg-[#0B111E] text-white px-5 py-3.5 flex items-center justify-between border-b border-slate-800 flex-shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-xl bg-teal-500/20 text-teal-400 border border-teal-500/30">
-                    <BookOpen className="w-5 h-5" />
+                    <BookOpen className="w-5 h-5" aria-hidden="true" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h2 className="text-base font-bold text-white tracking-tight">
+                      <h2 id="vision-library-modal-title" className="text-base font-bold text-white tracking-tight">
                         Vision AI Blueprint Library
                       </h2>
-                      <span className="px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 text-[10px] font-mono font-bold border border-teal-500/30">
+                      <span className="px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 text-[10px] font-mono font-bold border border-teal-500/30 tabular-nums">
                         {allLibraryBlueprints.length} Available
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400 mt-0.5">
+                    <p className="text-xs text-slate-300 mt-0.5">
                       Browse certified master architectures, web-imported diagrams, and user-saved decompilations.
                     </p>
                   </div>
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => setShowLibraryModal(false)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+                  aria-label="Close Vision AI Blueprint Library"
+                  className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400"
                   title="Close Library"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-5 h-5" aria-hidden="true" />
                 </button>
               </div>
 
@@ -2595,43 +2778,52 @@ function VisionPageContent() {
               <div className="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
                 {/* Search Input */}
                 <div className="relative w-full sm:w-80">
-                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <label htmlFor="vision-library-search-input" className="sr-only">
+                    Search Vision Blueprints by ID, title, or keywords
+                  </label>
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" />
                   <input
-                    type="text"
+                    id="vision-library-search-input"
+                    type="search"
                     value={librarySearchQuery}
                     onChange={(e) => setLibrarySearchQuery(e.target.value)}
                     placeholder="Search by Unique ID (e.g. VIS-4829), title, domain, keywords..."
-                    className="w-full pl-8 pr-7 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-800 placeholder:text-slate-400 focus:outline-hidden focus:ring-1 focus:ring-teal-500 focus:border-teal-500 transition shadow-2xs"
+                    className="w-full pl-8 pr-7 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-800 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition shadow-2xs"
                   />
                   {librarySearchQuery && (
                     <button
+                      type="button"
                       onClick={() => setLibrarySearchQuery('')}
+                      aria-label="Clear search query"
                       className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
                     >
-                      <X className="w-3 h-3" />
+                      <X className="w-3 h-3" aria-hidden="true" />
                     </button>
                   )}
                 </div>
 
                 {/* Filter Tabs & Multi-Select Delete Controls */}
                 <div className="flex flex-wrap items-center justify-between gap-2 w-full sm:w-auto">
-                  <div className="flex items-center gap-1.5 overflow-x-auto">
+                  <div className="flex items-center gap-1.5 overflow-x-auto" role="tablist" aria-label="Blueprint Category Filter">
                     {[
                       { id: 'all', label: 'All Blueprints', count: allLibraryBlueprints.length },
                       { id: 'custom', label: 'Saved Uploads & Web', count: customBlueprints.length },
                       { id: 'master', label: 'Certified Masters', count: SAMPLE_BLUEPRINTS.length }
                     ].map((tab) => (
                       <button
+                        type="button"
+                        role="tab"
+                        aria-selected={libraryTabFilter === tab.id}
                         key={tab.id}
                         onClick={() => setLibraryTabFilter(tab.id as any)}
-                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 ${
                           libraryTabFilter === tab.id
                             ? 'bg-teal-600 text-white shadow-xs'
                             : 'bg-white hover:bg-slate-100 text-slate-600 border border-slate-200'
                         }`}
                       >
                         <span>{tab.label}</span>
-                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold tabular-nums ${
                           libraryTabFilter === tab.id ? 'bg-teal-700 text-white' : 'bg-slate-100 text-slate-600'
                         }`}>
                           {tab.count}
@@ -2656,14 +2848,39 @@ function VisionPageContent() {
                     </label>
 
                     {selectedHistoryIds.length > 0 && (
-                      <button
-                        onClick={handleBatchDeleteHistory}
-                        disabled={isBatchDeleting}
-                        className="px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-1 shadow-xs cursor-pointer transition disabled:opacity-50"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                        <span>Delete Selected ({selectedHistoryIds.length})</span>
-                      </button>
+                      confirmBatchDeleteVision ? (
+                        <div className="inline-flex items-center gap-1.5 bg-red-50 border border-red-200 rounded-lg px-2 py-1" role="alertdialog" aria-label="Confirm batch deletion">
+                          <span className="text-[11px] font-bold text-red-800">Delete {selectedHistoryIds.length}?</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setConfirmBatchDeleteVision(false);
+                              handleBatchDeleteHistory();
+                            }}
+                            disabled={isBatchDeleting}
+                            className="px-2 py-0.5 rounded bg-red-600 hover:bg-red-700 text-white text-[10px] font-bold cursor-pointer"
+                          >
+                            Yes, Delete
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setConfirmBatchDeleteVision(false)}
+                            className="px-2 py-0.5 rounded bg-white border border-slate-300 text-slate-700 text-[10px] font-bold cursor-pointer"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setConfirmBatchDeleteVision(true)}
+                          disabled={isBatchDeleting}
+                          className="px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-1 shadow-xs cursor-pointer transition disabled:opacity-50 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+                          <span>Delete Selected ({selectedHistoryIds.length})</span>
+                        </button>
+                      )
                     )}
                   </div>
                 </div>
@@ -2673,13 +2890,14 @@ function VisionPageContent() {
               <div className="p-4 sm:p-5 overflow-y-auto flex-1 max-h-[calc(88vh-180px)] bg-slate-50/50">
                 {filteredLibraryBlueprints.length === 0 ? (
                   <div className="py-16 text-center text-slate-400 flex flex-col items-center justify-center">
-                    <BookOpen className="w-10 h-10 mb-2.5 text-slate-300" />
+                    <BookOpen className="w-10 h-10 mb-2.5 text-slate-300" aria-hidden="true" />
                     <p className="text-sm font-bold text-slate-700">No blueprints found</p>
-                    <p className="text-xs text-slate-400 mt-1">
+                    <p className="text-xs text-slate-500 mt-1">
                       {librarySearchQuery ? `No blueprints matching "${librarySearchQuery}"` : 'Upload an image or import from web to see saved blueprints here.'}
                     </p>
                     {librarySearchQuery && (
                       <button
+                        type="button"
                         onClick={() => setLibrarySearchQuery('')}
                         className="mt-3 px-3 py-1 text-xs font-bold text-teal-600 hover:text-teal-700 bg-teal-50 border border-teal-200 rounded-lg cursor-pointer"
                       >
@@ -2709,6 +2927,9 @@ function VisionPageContent() {
                             <img
                               src={bp.imageSrc}
                               alt={bp.title}
+                              width={320}
+                              height={144}
+                              loading="lazy"
                               className="max-h-full max-w-full object-contain rounded transition group-hover:scale-105 duration-300"
                               onError={(e) => {
                                 (e.target as HTMLElement).style.display = 'none';
@@ -2720,6 +2941,7 @@ function VisionPageContent() {
                               <input
                                 type="checkbox"
                                 checked={isChecked}
+                                aria-label={`Select ${bp.title}`}
                                 onChange={(e) => toggleHistorySelection(bp.id, e as any)}
                                 onClick={(e) => e.stopPropagation()}
                                 className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer shadow-md"
@@ -2740,7 +2962,7 @@ function VisionPageContent() {
                                 </span>
                               ) : (
                                 <span className="px-2 py-0.5 rounded-md bg-teal-500 text-white text-[10px] font-black tracking-wide shadow-xs flex items-center gap-1">
-                                  <CheckCircle2 className="w-2.5 h-2.5" />
+                                  <CheckCircle2 className="w-2.5 h-2.5" aria-hidden="true" />
                                   <span>CERTIFIED MASTER</span>
                                 </span>
                               )}
@@ -2753,19 +2975,21 @@ function VisionPageContent() {
                               {/* Searchable Unique ID Badge inside Card */}
                               <div className="flex items-center justify-between gap-2 mb-1.5">
                                 <button
+                                  type="button"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     navigator.clipboard.writeText(shortId);
                                     showToast(`📋 Copied Unique ID [${shortId}] to clipboard!`);
                                   }}
-                                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-teal-300 text-[9.5px] font-mono font-bold border border-slate-700 cursor-pointer transition"
+                                  aria-label={`Copy Unique ID ${shortId}`}
+                                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-teal-300 text-[9.5px] font-mono font-bold border border-slate-700 cursor-pointer transition tabular-nums"
                                   title="Click to copy Unique ID"
                                 >
-                                  <Tag className="w-2.5 h-2.5 text-teal-400" />
+                                  <Tag className="w-2.5 h-2.5 text-teal-400" aria-hidden="true" />
                                   <span>ID: {shortId}</span>
-                                  <Copy className="w-2.5 h-2.5 text-slate-400 ml-0.5" />
+                                  <Copy className="w-2.5 h-2.5 text-slate-400 ml-0.5" aria-hidden="true" />
                                 </button>
-                                <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                                <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 border border-slate-200 tabular-nums">
                                   {bp.componentCount} nodes
                                 </span>
                               </div>
@@ -2778,7 +3002,7 @@ function VisionPageContent() {
                                 {bp.title}
                               </h3>
 
-                              <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed mb-3">
+                              <p className="text-[11px] text-slate-600 line-clamp-2 leading-relaxed mb-3">
                                 {bp.desc}
                               </p>
                             </div>
@@ -2786,12 +3010,13 @@ function VisionPageContent() {
                             {/* Card Action Buttons */}
                             <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-1.5">
                               <button
+                                type="button"
                                 onClick={() => {
                                   loadBlueprint(bp.id, false);
                                   setShowLibraryModal(false);
                                   showToast(`✨ Loaded "${bp.title}" onto canvas!`);
                                 }}
-                                className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs ${
+                                className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 ${
                                   isActive
                                     ? 'bg-emerald-600 text-white hover:bg-emerald-500'
                                     : 'bg-teal-600 text-white hover:bg-teal-500'
@@ -2799,33 +3024,70 @@ function VisionPageContent() {
                               >
                                 {isActive ? (
                                   <>
-                                    <Check className="w-3.5 h-3.5" />
+                                    <Check className="w-3.5 h-3.5" aria-hidden="true" />
                                     <span>Loaded</span>
                                   </>
                                 ) : (
                                   <>
-                                    <Eye className="w-3.5 h-3.5" />
+                                    <Eye className="w-3.5 h-3.5" aria-hidden="true" />
                                     <span>Load Diagram</span>
                                   </>
                                 )}
                               </button>
 
                               <button
+                                type="button"
                                 onClick={(e) => handleSaveBlueprintToGlobal(bp, e)}
-                                className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-amber-600 hover:bg-amber-50 transition cursor-pointer"
+                                aria-label={`Save ${bp.title} to Global Architecture Library`}
+                                className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-amber-600 hover:bg-amber-50 transition cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
                                 title="Save to Global Architecture Library (/library)"
                               >
-                                <BookmarkPlus className="w-3.5 h-3.5" />
+                                <BookmarkPlus className="w-3.5 h-3.5" aria-hidden="true" />
                               </button>
 
                               {bp.isCustom && (
-                                <button
-                                  onClick={(e) => handleDeleteCustom(bp.id, e)}
-                                  className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:text-red-500 hover:bg-red-50 transition cursor-pointer"
-                                  title="Delete custom saved blueprint"
-                                >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </button>
+                                confirmDeleteVisionId === bp.id ? (
+                                  <div
+                                    className="inline-flex items-center gap-1 bg-red-50 border border-red-200 rounded-lg px-1.5 py-1"
+                                    role="alertdialog"
+                                    aria-label={`Confirm deleting ${bp.title}`}
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        setConfirmDeleteVisionId(null);
+                                        handleDeleteCustom(bp.id, e);
+                                      }}
+                                      className="px-1.5 py-0.5 rounded bg-red-600 hover:bg-red-700 text-white text-[10px] font-bold cursor-pointer"
+                                    >
+                                      Confirm
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setConfirmDeleteVisionId(null);
+                                      }}
+                                      className="px-1.5 py-0.5 rounded bg-white border border-slate-300 text-slate-600 text-[10px] font-bold cursor-pointer"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setConfirmDeleteVisionId(bp.id);
+                                    }}
+                                    aria-label={`Delete custom saved blueprint ${bp.title}`}
+                                    className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:text-red-500 hover:bg-red-50 transition cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                                    title="Delete custom saved blueprint"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+                                  </button>
+                                )
                               )}
                             </div>
                           </div>
@@ -2846,13 +3108,14 @@ function VisionPageContent() {
                     className="font-bold text-teal-600 hover:text-teal-700 flex items-center gap-1 underline underline-offset-2 cursor-pointer"
                   >
                     <span>Open Global Architecture Library</span>
-                    <ExternalLink className="w-3 h-3" />
+                    <ExternalLink className="w-3 h-3" aria-hidden="true" />
                   </Link>
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => setShowLibraryModal(false)}
-                  className="px-4 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition cursor-pointer shadow-xs"
+                  className="px-4 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition cursor-pointer shadow-xs active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
                 >
                   Done
                 </button>
@@ -2866,24 +3129,38 @@ function VisionPageContent() {
         {/* ✏️ RENAME BLUEPRINT & EDIT UNIQUE ID MODAL */}
         {/* ========================================================================= */}
         {showRenameModal && (
-          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150">
-            <div className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-md w-full p-5 space-y-4 relative animate-in zoom-in-95 duration-150">
+          <div
+            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150"
+            role="presentation"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setShowRenameModal(false);
+            }}
+          >
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="vision-rename-modal-title"
+              aria-describedby="vision-rename-modal-desc"
+              className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-md w-full p-5 space-y-4 relative animate-in zoom-in-95 duration-150"
+            >
               <button
+                type="button"
                 onClick={() => setShowRenameModal(false)}
-                className="absolute top-3.5 right-3.5 p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+                aria-label="Close Customize Blueprint Title modal"
+                className="absolute top-3.5 right-3.5 p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4" aria-hidden="true" />
               </button>
 
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-600 flex-shrink-0">
-                  <Tag className="w-5 h-5" />
+                  <Tag className="w-5 h-5" aria-hidden="true" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900">
+                  <h3 id="vision-rename-modal-title" className="text-sm font-bold text-slate-900">
                     Customize Blueprint Title & Unique ID
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p id="vision-rename-modal-desc" className="text-xs text-slate-500 mt-0.5">
                     Set a memorable Unique ID (e.g., <code className="px-1 py-0.2 bg-slate-100 rounded font-mono text-[10px] font-bold">VIS-GEMINI-01</code>) so you can instantly search and retrieve this diagram in the Library.
                   </p>
                 </div>
@@ -2891,12 +3168,13 @@ function VisionPageContent() {
 
               <div className="space-y-3 pt-1">
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  <label htmlFor="vision-edit-id-input" className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
                     Unique Blueprint ID (Search Key)
                   </label>
                   <div className="relative">
-                    <Tag className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-teal-600" />
+                    <Tag className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-teal-600" aria-hidden="true" />
                     <input
+                      id="vision-edit-id-input"
                       type="text"
                       value={editIdInput}
                       onChange={(e) => setEditIdInput(e.target.value.toUpperCase())}
@@ -2907,10 +3185,11 @@ function VisionPageContent() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  <label htmlFor="vision-edit-title-input" className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
                     Blueprint Title
                   </label>
                   <input
+                    id="vision-edit-title-input"
                     type="text"
                     value={editTitleInput}
                     onChange={(e) => setEditTitleInput(e.target.value)}
@@ -2922,16 +3201,18 @@ function VisionPageContent() {
 
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
                 <button
+                  type="button"
                   onClick={() => setShowRenameModal(false)}
-                  className="px-3.5 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
                 >
                   Cancel
                 </button>
                 <button
+                  type="button"
                   onClick={handleSaveRenamedBlueprint}
-                  className="px-4 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  className="px-4 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
                 >
-                  <Check className="w-3.5 h-3.5" />
+                  <Check className="w-3.5 h-3.5" aria-hidden="true" />
                   <span>Save ID & Title</span>
                 </button>
               </div>

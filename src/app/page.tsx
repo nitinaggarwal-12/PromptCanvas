@@ -95,10 +95,10 @@ export default function LandingPage() {
   const handleExploreAsGuest = async (e: React.MouseEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/auth/guest', { method: 'POST' });
-      router.push('/studio');
+      await fetch('/api/auth/guest', { method: 'POST' });
+      router.push('/dashboard');
     } catch {
-      router.push('/studio');
+      router.push('/dashboard');
     }
   };
 
@@ -144,37 +144,38 @@ export default function LandingPage() {
             </div>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-3 xl:gap-4 text-xs font-bold shrink-0 text-slate-300">
-            <Link href="/studio" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-teal-400" title="Conversational AI Architecture & Specification Studio">
-              <Layers className="w-3.5 h-3.5 text-teal-500" />
-              <span>Launch Studio</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-300 font-mono font-black">PRO</span>
+          <nav aria-label="Primary Header Navigation" className="hidden lg:flex items-center gap-3 xl:gap-4 text-xs font-bold shrink-0 text-slate-300">
+            <Link href="/dashboard" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-teal-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="Workspace Home Dashboard — Search Projects & Create New Diagrams">
+              <BarChart3 className="w-3.5 h-3.5 text-teal-400" aria-hidden="true" />
+              <span>Home Dashboard</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-300 font-mono font-black">HOME</span>
             </Link>
 
-            <Link href="/canonical" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-sky-400" title="50 High-Contrast Architecture Blueprints">
-              <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+            <Link href="/studio" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="Conversational AI Architecture & Specification Studio">
+              <Layers className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
+              <span>Studio Canvas</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-300 font-mono font-black">PRO</span>
+            </Link>
+
+            <Link href="/canonical" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="75 High-Contrast Architecture Blueprints">
+              <Sparkles className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
               <span>Canonical Hub</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-300 font-mono font-bold">50</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-300 font-mono font-bold">75</span>
             </Link>
 
-            <Link href="/docgen" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-indigo-400" title="17 Enterprise Specification Blueprints (BRD, PRD, SDD, TDD)">
-              <FileText className="w-3.5 h-3.5 text-indigo-400" />
+            <Link href="/docgen" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="17 Enterprise Specification Blueprints (BRD, PRD, SDD, TDD)">
+              <FileText className="w-3.5 h-3.5 text-indigo-400" aria-hidden="true" />
               <span>DocGen Hub</span>
               <span className="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 text-indigo-300 font-mono font-bold">17</span>
             </Link>
 
-            <Link href="/guide" className="px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 hover:bg-teal-500/10 text-teal-400 hover:text-teal-300" title="Interactive Animated Playbooks & GIFs">
-              <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+            <Link href="/guide" className="px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 hover:bg-teal-500/10 text-teal-400 hover:text-teal-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="Interactive Animated Playbooks & GIFs">
+              <Sparkles className="w-3.5 h-3.5 text-teal-400" aria-hidden="true" />
               <span>Playbooks &amp; GIFs</span>
             </Link>
 
-            <Link href="/dashboard" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white" title="Operations Telemetry & Workspace Management">
-              <BarChart3 className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Operations Dashboard</span>
-            </Link>
-
-            <Link href="/test-status" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-emerald-400" title="Enterprise Quality & Test Status (2,359 Tests Passed)">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+            <Link href="/test-status" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-emerald-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="Enterprise Quality & Test Status (2,359 Tests Passed)">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" aria-hidden="true" />
               <span>Test Status</span>
               <span className="px-1.5 py-0.2 rounded text-[10px] bg-emerald-500/20 text-emerald-400 font-mono font-bold">100%</span>
             </Link>
@@ -188,8 +189,10 @@ export default function LandingPage() {
               <>
                 <button
                   id="header-user-profile-btn"
+                  type="button"
                   onClick={() => setIsProfileOpen(true)}
-                  className="hidden sm:flex px-2.5 py-1.5 rounded-lg border text-xs font-semibold items-center gap-2 transition-all bg-slate-900 border-slate-800 hover:border-teal-500/40 text-slate-200"
+                  aria-label={`Open profile settings for ${user.name || user.email}`}
+                  className="hidden sm:flex px-2.5 py-1.5 min-h-[40px] rounded-lg border text-xs font-semibold items-center gap-2 transition-all bg-slate-900 border-slate-800 hover:border-teal-500/40 text-slate-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
                 >
                   <div className="w-5 h-5 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-[10px]">
                     {(user.name || user.email)[0].toUpperCase()}
@@ -198,32 +201,33 @@ export default function LandingPage() {
                 </button>
                 <Link
                   id="header-launch-app-btn"
-                  href="/studio"
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-slate-950 font-black text-xs tracking-wide transition-all shadow-md shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-1.5"
+                  href="/dashboard"
+                  className="px-4 py-2 min-h-[40px] rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-slate-950 font-black text-xs tracking-wide transition-all shadow-md shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
                 >
-                  <span>Launch Studio</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <span>Open Workspace</span>
+                  <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
                 </Link>
               </>
             ) : (
               <>
                 <button
                   id="header-signin-btn"
+                  type="button"
                   onClick={() => {
                     setAuthMode('signin');
                     setIsAuthOpen(true);
                   }}
-                  className="hidden sm:flex px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer text-slate-300 hover:text-white"
+                  className="hidden sm:flex px-3 py-1.5 min-h-[40px] items-center text-xs font-bold transition-colors cursor-pointer text-slate-300 hover:text-white rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
                 >
                   Sign In
                 </button>
                 <Link
                   id="header-launch-app-btn"
-                  href="/studio"
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-slate-950 font-black text-xs tracking-wide transition-all shadow-md shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-1.5"
+                  href="/dashboard"
+                  className="px-4 py-2 min-h-[40px] rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-slate-950 font-black text-xs tracking-wide transition-all shadow-md shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
                 >
-                  <span>Launch Studio</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <span>Open Workspace</span>
+                  <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
                 </Link>
               </>
             )}
@@ -232,18 +236,21 @@ export default function LandingPage() {
             <button
               type="button"
               onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
-              className="lg:hidden p-2 rounded-lg border cursor-pointer bg-slate-900 border-slate-800 text-slate-300 hover:text-teal-400"
+              aria-expanded={isMobileNavOpen}
+              aria-controls="landing-mobile-nav-drawer"
+              aria-label={isMobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              className="lg:hidden min-w-[44px] min-h-[44px] p-2 rounded-lg border cursor-pointer bg-slate-900 border-slate-800 text-slate-300 hover:text-teal-400 flex items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
               title="Toggle Menu"
             >
-              {isMobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMobileNavOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation Drawer Dropdown */}
         {isMobileNavOpen && (
-          <div className="lg:hidden border-t border-slate-800 bg-[#070a13]/95 backdrop-blur-xl px-4 py-4 space-y-3 animate-in slide-in-from-top-2 duration-200">
-            <nav className="flex flex-col space-y-2 text-sm font-semibold text-slate-300">
+          <div id="landing-mobile-nav-drawer" className="lg:hidden border-t border-slate-800 bg-[#070a13]/95 backdrop-blur-xl px-4 py-4 space-y-3 animate-in slide-in-from-top-2 duration-200">
+            <nav aria-label="Mobile Navigation" className="flex flex-col space-y-2 text-sm font-semibold text-slate-300">
               <a 
                 href="#features" 
                 onClick={() => setIsMobileNavOpen(false)}
@@ -299,6 +306,7 @@ export default function LandingPage() {
                 Build First Diagram
               </Link>
               <button
+                type="button"
                 onClick={() => {
                   setIsMobileNavOpen(false);
                   setIsContactOpen(true);
@@ -316,7 +324,7 @@ export default function LandingPage() {
       <section className="relative w-full max-w-8xl mx-auto px-4 sm:px-6 md:px-12 pt-8 sm:pt-12 md:pt-20 pb-16 md:pb-20 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-center z-10">
         <div className="lg:col-span-7 flex flex-col items-start text-left space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-600 dark:text-teal-300 text-sm font-semibold tracking-wide animate-pulse">
-            <Sparkles className="w-4 h-4" /> Powered by Gemini 3.8 Flash &amp; Draw.io
+            <Sparkles className="w-4 h-4" aria-hidden="true" /> Powered by Gemini 3.8 Flash &amp; Draw.io
           </div>
           
           <h1 className={`text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] ${isLight ? 'text-slate-900' : 'text-white'}`}>
@@ -326,28 +334,28 @@ export default function LandingPage() {
             </span>
           </h1>
 
-          <p className={`text-lg md:text-xl max-w-2xl leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+          <p className={`text-lg md:text-xl max-w-2xl leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
             Translate complex natural language prompts into professional, multi-tier Draw.io architecture diagrams. Audited for security, version-controlled, and instantly editable.
           </p>
 
           <div className="flex flex-wrap items-center gap-4 w-full pt-2">
             <Link
               id="hero-build-diagram-btn"
-              href="/studio"
-              className="px-8 py-4 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070a13] font-bold tracking-wide text-center transition-all shadow-xl shadow-teal-500/15 hover:scale-[1.02] flex items-center justify-center gap-2"
+              href="/dashboard"
+              className="px-8 py-4 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070a13] font-bold tracking-wide text-center transition-all shadow-xl shadow-teal-500/15 hover:scale-[1.02] flex items-center justify-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
             >
               <span>Start Building Free</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
             <Link
               href="/guide"
-              className={`px-8 py-4 rounded-xl border font-semibold text-center transition-all flex items-center justify-center gap-2 ${
+              className={`px-8 py-4 rounded-xl border font-semibold text-center transition-all flex items-center justify-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
                 isLight
                   ? 'bg-white hover:bg-slate-50 border-slate-300 text-slate-700'
-                  : 'bg-slate-800/80 border-slate-700/60 hover:border-teal-500/40 text-slate-300 hover:bg-slate-800'
+                  : 'bg-slate-800/80 border-slate-700/60 hover:border-teal-500/40 text-slate-200 hover:bg-slate-800'
               }`}
             >
-              <Play className="w-4 h-4 text-teal-500" />
+              <Play className="w-4 h-4 text-teal-400" aria-hidden="true" />
               <span>Watch Interactive Tour</span>
             </Link>
           </div>
@@ -358,19 +366,19 @@ export default function LandingPage() {
               isLight ? 'bg-white border-slate-200 shadow-md text-slate-800' : 'glass-panel border-panel-border/30 text-white'
             }`}>
               <p className={`text-4xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>100%</p>
-              <p className={`text-sm mt-1 font-semibold ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Interactive Vector SVG</p>
+              <p className={`text-sm mt-1 font-semibold ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>Interactive Vector SVG</p>
             </div>
             <div className={`rounded-xl p-4 transition-all duration-300 border ${
               isLight ? 'bg-white border-slate-200 shadow-md text-slate-800' : 'glass-panel border-panel-border/30 text-white'
             }`}>
               <p className={`text-4xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>&lt; 60s</p>
-              <p className={`text-sm mt-1 font-semibold ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>From Text to Diagram</p>
+              <p className={`text-sm mt-1 font-semibold ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>From Text to Diagram</p>
             </div>
             <div className={`rounded-xl p-4 transition-all duration-300 border ${
               isLight ? 'bg-white border-slate-200 shadow-md text-slate-800' : 'glass-panel border-panel-border/30 text-white'
             }`}>
               <p className={`text-4xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>Built-in</p>
-              <p className={`text-sm mt-1 font-semibold ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Gemini Security Auditor</p>
+              <p className={`text-sm mt-1 font-semibold ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>Gemini Security Auditor</p>
             </div>
           </div>
         </div>
@@ -406,7 +414,7 @@ export default function LandingPage() {
       }`}>
         <div className="w-full max-w-8xl mx-auto px-6 md:px-12">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-3">The Problem & The Cure</h2>
+            <h2 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-3">The Problem &amp; The Cure</h2>
             <p className={`text-4xl md:text-5xl font-extrabold tracking-tight leading-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
               Diagramming is critical, <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-500">but building them by hand is a bottleneck.</span>
@@ -420,25 +428,25 @@ export default function LandingPage() {
             }`}>
               <div>
                 <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500 mb-6">
-                  <X className="w-6 h-6" />
+                  <X className="w-6 h-6" aria-hidden="true" />
                 </div>
                 <h3 className={`text-2xl font-extrabold mb-4 ${isLight ? 'text-slate-900' : 'text-white'}`}>The Manual Bottleneck</h3>
-                <ul className={`space-y-3.5 text-lg ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                <ul className={`space-y-3.5 text-lg ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                   <li className="flex items-start gap-2.5">
-                    <span className="text-red-500 font-bold shrink-0 mt-0.5">✕</span>
+                    <span className="text-red-500 font-bold shrink-0 mt-0.5" aria-hidden="true">✕</span>
                     <span>Dragging, connecting, and formatting 20+ nodes manually in Draw.io takes hours.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <span className="text-red-500 font-bold shrink-0 mt-0.5">✕</span>
+                    <span className="text-red-500 font-bold shrink-0 mt-0.5" aria-hidden="true">✕</span>
                     <span>Keeping static PDF/PNG images synchronized with production system changes is almost impossible.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <span className="text-red-500 font-bold shrink-0 mt-0.5">✕</span>
+                    <span className="text-red-500 font-bold shrink-0 mt-0.5" aria-hidden="true">✕</span>
                     <span>Verifying design compliance, network segmentation, and safety requires manual architectural reviews.</span>
                   </li>
                 </ul>
               </div>
-              <p className="text-base text-red-500 mt-8 font-medium italic">Result: Out-of-date, misaligned diagrams that slow down teams.</p>
+              <p className="text-base text-red-400 mt-8 font-medium italic">Result: Out-of-date, misaligned diagrams that slow down teams.</p>
             </div>
 
             {/* The PromptCanvas Way */}
@@ -447,20 +455,20 @@ export default function LandingPage() {
             }`}>
               <div>
                 <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-accent mb-6">
-                  <CheckCircle2 className="w-6 h-6" />
+                  <CheckCircle2 className="w-6 h-6" aria-hidden="true" />
                 </div>
                 <h3 className={`text-2xl font-extrabold mb-4 ${isLight ? 'text-slate-900' : 'text-white'}`}>PromptCanvas Automation</h3>
                 <ul className={`space-y-3.5 text-lg ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
                   <li className="flex items-start gap-2.5">
-                    <span className="text-teal-600 dark:text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
+                    <span className="text-teal-600 dark:text-teal-accent font-bold shrink-0 mt-0.5" aria-hidden="true">✓</span>
                     <span>Describe your stack in natural text. PromptCanvas creates valid, fully-spaced XML layouts in seconds.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <span className="text-teal-600 dark:text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
+                    <span className="text-teal-600 dark:text-teal-accent font-bold shrink-0 mt-0.5" aria-hidden="true">✓</span>
                     <span>Iterate seamlessly. Ask the AI to &quot;add an ALB,&quot; &quot;connect DB to Redis,&quot; or &quot;redesign for GCP.&quot;</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <span className="text-teal-600 dark:text-teal-accent font-bold shrink-0 mt-0.5">✓</span>
+                    <span className="text-teal-600 dark:text-teal-accent font-bold shrink-0 mt-0.5" aria-hidden="true">✓</span>
                     <span>Audits are built-in. Let the Gemini security auditor analyze node connections for security risks automatically.</span>
                   </li>
                 </ul>
@@ -488,10 +496,10 @@ export default function LandingPage() {
             isLight ? 'bg-white border-slate-200 hover:border-teal-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-teal-500/45 text-slate-100'
           }`}>
             <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-accent mb-4 group-hover:scale-110 transition-transform">
-              <Zap className="w-5 h-5" />
+              <Zap className="w-5 h-5" aria-hidden="true" />
             </div>
             <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Prompt-to-Architecture</h4>
-            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
               Feed raw text prompts detailing databases, runtimes, security layers, or ingress. PromptCanvas renders standard, color-coded diagrams aligned to logical enterprise tiers.
             </p>
           </div>
@@ -501,10 +509,10 @@ export default function LandingPage() {
             isLight ? 'bg-white border-slate-200 hover:border-indigo-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-indigo-500/45 text-slate-100'
           }`}>
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-4 group-hover:scale-110 transition-transform">
-              <FileText className="w-5 h-5" />
+              <FileText className="w-5 h-5" aria-hidden="true" />
             </div>
             <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Ready-To-Go Templates</h4>
-            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
               Launch with 10 production-grade blueprints (Data Lakehouse, AWS EKS Microservices, RAG/Gemini AI pipelines, VPC networks) to instantly experiment and validate stacks.
             </p>
           </div>
@@ -514,10 +522,10 @@ export default function LandingPage() {
             isLight ? 'bg-white border-slate-200 hover:border-purple-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-purple-500/45 text-slate-100'
           }`}>
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-4 group-hover:scale-110 transition-transform">
-              <History className="w-5 h-5" />
+              <History className="w-5 h-5" aria-hidden="true" />
             </div>
             <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Infinite Version History</h4>
-            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
               Every AI generation or manual update creates a historical snapshot. Compare versions, trace comments, and revert to previous states in one click.
             </p>
           </div>
@@ -527,10 +535,10 @@ export default function LandingPage() {
             isLight ? 'bg-white border-slate-200 hover:border-teal-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-teal-500/45 text-slate-100'
           }`}>
             <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-accent mb-4 group-hover:scale-110 transition-transform">
-              <Shield className="w-5 h-5" />
+              <Shield className="w-5 h-5" aria-hidden="true" />
             </div>
             <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Gemini Compliance Audit</h4>
-            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
               Run security compliance reports directly in the app. Gemini audits your drawing&apos;s nodes and edges for single points of failure, unencrypted links, or exposed ports.
             </p>
           </div>
@@ -540,10 +548,10 @@ export default function LandingPage() {
             isLight ? 'bg-white border-slate-200 hover:border-indigo-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-indigo-500/45 text-slate-100'
           }`}>
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-4 group-hover:scale-110 transition-transform">
-              <Network className="w-5 h-5" />
+              <Network className="w-5 h-5" aria-hidden="true" />
             </div>
             <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Interactive 2D Canvas</h4>
-            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
               Smooth vector-based renderer with panning, scroll-to-zoom, infinite grids, and an interactive side-tree nodes inspector that displays node connections clearly.
             </p>
           </div>
@@ -553,10 +561,10 @@ export default function LandingPage() {
             isLight ? 'bg-white border-slate-200 hover:border-purple-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-purple-500/45 text-slate-100'
           }`}>
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-4 group-hover:scale-110 transition-transform">
-              <FileText className="w-5 h-5" />
+              <FileText className="w-5 h-5" aria-hidden="true" />
             </div>
             <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Pure Open XML Output</h4>
-            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+            <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
               Export designs as fully valid Draw.io XML schemas. Copy, modify, share, or open them in your standard desktop Draw.io client with absolutely no vendor lock-in.
             </p>
           </div>
@@ -571,13 +579,13 @@ export default function LandingPage() {
           <h3 className={`text-4xl md:text-5xl font-extrabold tracking-tight leading-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
             Bootstrap with Production-Grade Blueprints
           </h3>
-          <p className={`text-lg mt-4 max-w-2xl mx-auto ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+          <p className={`text-lg mt-4 max-w-2xl mx-auto ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
             Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>50 complete multi-cloud reference blueprints</strong> directly in the interactive studio.
           </p>
           <div className="mt-4">
             <Link
               href="/canonical"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-500 transition-colors underline underline-offset-4"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
               <span>View All 50 Production Blueprints in Templates Gallery →</span>
             </Link>
@@ -592,21 +600,22 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-accent group-hover:scale-110 transition-transform">
-                  <Sparkles className="w-5 h-5" />
+                  <Sparkles className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">GCP Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">GCP Cloud</span>
               </div>
               <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Vertex AI Retrieval-Augmented Generation (RAG)</h4>
-              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                 Multi-tier pipeline featuring Cloud Run API service, pgvector-enabled Cloud SQL database, Vertex AI Search indexing, and Gemini reasoning engine.
               </p>
             </div>
             <Link
               href="/studio"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-500 transition-colors"
+              aria-label="Launch Vertex AI RAG blueprint in Studio"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch blueprint</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Launch Vertex AI RAG blueprint</span>
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
 
@@ -617,21 +626,22 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
-                  <Network className="w-5 h-5" />
+                  <Network className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">AWS Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-300 border border-orange-500/20">AWS Cloud</span>
               </div>
               <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Kubernetes Microservices Cluster (EKS)</h4>
-              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                 Elastic Kubernetes Service setup with ALB ingress controller, Amazon API Gateway, EKS worker nodes, DynamoDB state session, and Redis caching.
               </p>
             </div>
             <Link
               href="/studio"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors"
+              aria-label="Launch Kubernetes EKS Microservices blueprint in Studio"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-300 hover:text-indigo-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch blueprint</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Launch Kubernetes EKS blueprint</span>
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
 
@@ -642,21 +652,22 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
-                  <Zap className="w-5 h-5" />
+                  <Zap className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">GCP Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">GCP Cloud</span>
               </div>
               <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Serverless Web Application</h4>
-              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                 Global HTTPS Load Balancer with Cloud CDN, Cloud Run compute for microservices, Cloud SQL (PostgreSQL), and Cloud Storage for assets.
               </p>
             </div>
             <Link
               href="/studio"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-400 hover:text-purple-500 transition-colors"
+              aria-label="Launch Serverless Web Application blueprint in Studio"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-300 hover:text-purple-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch blueprint</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Launch Serverless Web App blueprint</span>
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
 
@@ -667,21 +678,22 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-accent group-hover:scale-110 transition-transform">
-                  <FileText className="w-5 h-5" />
+                  <FileText className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">AWS Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-300 border border-orange-500/20">AWS Cloud</span>
               </div>
               <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Modern AWS Data Lakehouse</h4>
-              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                 Amazon S3 raw/processed tiers, AWS Glue Catalog schema database, Athena ad-hoc serverless querying, Redshift warehouse, and QuickSight BI.
               </p>
             </div>
             <Link
               href="/studio"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-500 transition-colors"
+              aria-label="Launch Modern AWS Data Lakehouse blueprint in Studio"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch blueprint</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Launch AWS Data Lakehouse blueprint</span>
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
 
@@ -692,21 +704,22 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
-                  <History className="w-5 h-5" />
+                  <History className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">GCP Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">GCP Cloud</span>
               </div>
               <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Real-time Streaming Analytics</h4>
-              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                 Streaming ingestion via Cloud Pub/Sub, serverless stream/batch ETL processing with Cloud Dataflow, BigQuery storage, and Looker visualization dashboards.
               </p>
             </div>
             <Link
               href="/studio"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors"
+              aria-label="Launch Real-time Streaming Analytics blueprint in Studio"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-300 hover:text-indigo-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch blueprint</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Launch Streaming Analytics blueprint</span>
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
 
@@ -717,21 +730,22 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
-                  <Shield className="w-5 h-5" />
+                  <Shield className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">AWS Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-300 border border-orange-500/20">AWS Cloud</span>
               </div>
               <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Event-Driven Microservices</h4>
-              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+              <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                 Amazon EventBridge bus, decoupling with SQS queues and SNS topics, serverless event handlers via AWS Lambda, and DynamoDB for storage.
               </p>
             </div>
             <Link
               href="/studio"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-400 hover:text-purple-500 transition-colors"
+              aria-label="Launch Event-Driven Microservices blueprint in Studio"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-300 hover:text-purple-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch blueprint</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Launch Event-Driven Microservices blueprint</span>
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
         </div>
@@ -759,7 +773,7 @@ export default function LandingPage() {
                 1
               </div>
               <h4 className={`font-bold text-xl md:text-2xl ${isLight ? 'text-slate-900' : 'text-white'}`}>Select or Input Prompt</h4>
-              <p className={`text-base max-w-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+              <p className={`text-base max-w-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                 Choose a pre-defined architecture template or enter a custom prompt describing your microservices, compute instances, database types, and connectors.
               </p>
             </div>
@@ -770,7 +784,7 @@ export default function LandingPage() {
                 2
               </div>
               <h4 className={`font-bold text-xl md:text-2xl ${isLight ? 'text-slate-900' : 'text-white'}`}>Gemini Generates XML</h4>
-              <p className={`text-base max-w-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+              <p className={`text-base max-w-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                 Our backend compiler calls Gemini 3.6 Flash, generating a valid XML diagram with sequential node numbering, structured tiers, and descriptive connections.
               </p>
             </div>
@@ -781,7 +795,7 @@ export default function LandingPage() {
                 3
               </div>
               <h4 className={`font-bold text-xl md:text-2xl ${isLight ? 'text-slate-900' : 'text-white'}`}>Audit, Tweak, and Iterate</h4>
-              <p className={`text-base max-w-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+              <p className={`text-base max-w-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                 Audit the security of your diagram instantly. Add new nodes using the chat prompt interface, edit components, or click &quot;Open in New Tab&quot; to edit visually in Draw.io.
               </p>
             </div>
@@ -800,47 +814,47 @@ export default function LandingPage() {
           {/* Decorative Grid inside CTA Card */}
           <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(20,184,166,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,184,166,0.015)_1px,transparent_1px)] bg-[size:2rem_2rem] opacity-30 pointer-events-none" />
           
-          <Sparkles className="w-12 h-12 text-teal-500 dark:text-teal-accent mx-auto mb-6 animate-pulse" />
+          <Sparkles className="w-12 h-12 text-teal-500 dark:text-teal-accent mx-auto mb-6 animate-pulse" aria-hidden="true" />
           
           <h2 className={`text-4xl md:text-6xl font-extrabold tracking-tight leading-tight max-w-4xl mx-auto ${isLight ? 'text-slate-900' : 'text-white'}`}>
             Design Compliant Cloud Stacks at the Speed of Thought
           </h2>
           
-          <p className={`text-base md:text-lg max-w-2xl mx-auto mt-5 leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+          <p className={`text-base md:text-lg max-w-2xl mx-auto mt-5 leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
             Stop drawing connectors manually. Leverage Gemini AI to build, audit, and version Draw.io architecture diagrams automatically.
           </p>
 
           <div className="mt-8 flex justify-center">
             <Link
               href="/studio"
-              className="px-8 py-4 rounded-xl bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold tracking-wide transition-all shadow-xl shadow-teal-500/25 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
+              className="px-8 py-4 rounded-xl bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold tracking-wide transition-all shadow-xl shadow-teal-500/25 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
             >
               <span>Launch Studio Free</span>
-              <ArrowRight className="w-4.5 h-4.5" />
+              <ArrowRight className="w-4.5 h-4.5" aria-hidden="true" />
             </Link>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className={`relative z-10 border-t py-14 transition-colors ${
-        isLight ? 'bg-white border-slate-200 text-slate-600' : 'bg-slate-950/60 border-panel-border/30 text-slate-400'
+      <footer role="contentinfo" className={`relative z-10 border-t py-14 transition-colors ${
+        isLight ? 'bg-white border-slate-200 text-slate-600' : 'bg-slate-950/60 border-panel-border/30 text-slate-300'
       }`}>
         <div className="max-w-8xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <Network className="w-5 h-5 text-teal-500 dark:text-teal-accent" />
+            <Network className="w-5 h-5 text-teal-500 dark:text-teal-accent" aria-hidden="true" />
             <span className={`font-extrabold tracking-wider text-sm ${isLight ? 'text-slate-900' : 'text-white'}`}>PROMPT CANVAS</span>
           </div>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-300">
             &copy; 2026 Prompt Canvas. Designed with high-fidelity cloud blueprints. Open-source Draw.io XML compatible.
           </p>
-          <div className="flex flex-wrap gap-6 text-sm text-slate-400">
-            <Link href="/test-status" className="hover:text-emerald-500 transition-colors flex items-center gap-1.5 font-bold text-emerald-600 dark:text-emerald-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <div className="flex flex-wrap gap-6 text-sm text-slate-300">
+            <Link href="/test-status" className="hover:text-emerald-400 hover:underline underline-offset-4 transition-colors flex items-center gap-1.5 font-bold text-emerald-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
               <span>Test Status (2,359 Passed)</span>
             </Link>
-            <Link href="/privacy" className="hover:text-teal-500 transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-teal-500 transition-colors">Terms of Service</Link>
+            <Link href="/privacy" className="hover:text-teal-400 hover:underline underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-teal-400 hover:underline underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded">Terms of Service</Link>
           </div>
         </div>
       </footer>
@@ -853,7 +867,7 @@ export default function LandingPage() {
         onSuccess={(loggedUser) => {
           setUser(loggedUser);
           setIsAuthOpen(false);
-          router.push('/studio');
+          router.push('/dashboard');
         }}
       />
 

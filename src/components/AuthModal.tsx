@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, Mail, Lock, User, ArrowRight, Loader2, AlertCircle, CheckCircle2, Sparkles } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 
@@ -22,6 +22,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -33,6 +34,46 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
       setMode(initialMode);
     }
   }, [isOpen, initialMode]);
+
+  // UX-22: WAI-ARIA Modal Focus Trap & Escape Handler
+  useEffect(() => {
+    if (!isOpen) return;
+    const prevActive = document.activeElement as HTMLElement | null;
+    const timer = setTimeout(() => {
+      const firstInput = dialogRef.current?.querySelector<HTMLElement>('input, button');
+      firstInput?.focus();
+    }, 50);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onClose();
+        return;
+      }
+      if (e.key === 'Tab' && dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('keydown', handleKeyDown);
+      prevActive?.focus?.();
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -111,23 +152,37 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
-      <div className={`relative w-full max-w-xl rounded-3xl p-8 md:p-10 shadow-2xl transition-all border ${
-        isLight
-          ? 'bg-white border-slate-300 text-slate-900 shadow-slate-300/60'
-          : 'bg-[#0b101d] border-slate-800/80 text-white shadow-teal-500/10'
-      }`}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-black/70 backdrop-blur-md animate-in fade-in duration-200"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="auth-modal-title"
+        aria-describedby="auth-modal-desc"
+        className={`relative w-full max-w-xl rounded-3xl p-8 md:p-10 shadow-2xl transition-all border ${
+          isLight
+            ? 'bg-white border-slate-300 text-slate-900 shadow-slate-300/60'
+            : 'bg-[#0b101d] border-slate-800/80 text-white shadow-teal-500/10'
+        }`}
+      >
         {/* Close Button */}
         <button
+          type="button"
           onClick={onClose}
           id="auth-modal-close-btn"
-          className={`absolute top-5 right-5 p-2.5 rounded-xl transition-colors cursor-pointer ${
+          aria-label="Close authentication modal"
+          className={`absolute top-5 right-5 min-w-[44px] min-h-[44px] p-2.5 rounded-xl transition-colors cursor-pointer flex items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${
             isLight
               ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
-              : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
           }`}
         >
-          <X className="w-6 h-6" />
+          <X className="w-6 h-6" aria-hidden="true" />
         </button>
 
         {/* Modal Header */}
@@ -137,14 +192,20 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
               ? 'bg-teal-100 border-teal-300 text-teal-800'
               : 'bg-teal-500/10 border-teal-500/30 text-teal-400'
           }`}>
-            <Sparkles className="w-4 h-4" /> PromptCanvas Account
+            <Sparkles className="w-4 h-4" aria-hidden="true" /> PromptCanvas Account
           </div>
-          <h2 className={`text-2xl md:text-3xl font-black tracking-tight ${
-            isLight ? 'text-slate-900' : 'text-white'
-          }`}>
+          <h2
+            id="auth-modal-title"
+            className={`text-2xl md:text-3xl font-black tracking-tight ${
+              isLight ? 'text-slate-900' : 'text-white'
+            }`}
+          >
             {mode === 'signin' ? 'Welcome Back' : mode === 'signup' ? 'Create Your Account' : 'Passwordless Login'}
           </h2>
-          <p className={`text-sm md:text-base ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
+          <p
+            id="auth-modal-desc"
+            className={`text-sm md:text-base ${isLight ? 'text-slate-600' : 'text-slate-300'}`}
+          >
             {mode === 'signin' 
               ? 'Sign in to access your saved architecture diagrams' 
               : mode === 'signup'
@@ -154,24 +215,30 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
         </div>
 
         {/* Auth Mode Tabs */}
-        <div className={`grid grid-cols-3 p-1.5 rounded-2xl border mb-8 gap-1.5 ${
-          isLight
-            ? 'bg-slate-100 border-slate-300'
-            : 'bg-slate-900/90 border-slate-800'
-        }`}>
+        <div
+          role="tablist"
+          aria-label="Authentication mode"
+          className={`grid grid-cols-3 p-1.5 rounded-2xl border mb-6 gap-1.5 ${
+            isLight
+              ? 'bg-slate-100 border-slate-300'
+              : 'bg-slate-900/90 border-slate-800'
+          }`}
+        >
           <button
             id="auth-tab-signin"
             type="button"
+            role="tab"
+            aria-selected={mode === 'signin'}
             onClick={() => {
               setMode('signin');
               setError(null);
             }}
-            className={`py-3 text-xs md:text-sm font-extrabold rounded-xl transition-all cursor-pointer ${
+            className={`py-3 text-xs md:text-sm font-extrabold rounded-xl transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${
               mode === 'signin'
                 ? 'bg-gradient-to-r from-teal-400 to-emerald-400 text-[#070a13] shadow-md'
                 : isLight
                 ? 'text-slate-600 hover:text-slate-900'
-                : 'text-slate-400 hover:text-white'
+                : 'text-slate-300 hover:text-white'
             }`}
           >
             Sign In
@@ -179,16 +246,18 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
           <button
             id="auth-tab-signup"
             type="button"
+            role="tab"
+            aria-selected={mode === 'signup'}
             onClick={() => {
               setMode('signup');
               setError(null);
             }}
-            className={`py-3 text-xs md:text-sm font-extrabold rounded-xl transition-all cursor-pointer ${
+            className={`py-3 text-xs md:text-sm font-extrabold rounded-xl transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${
               mode === 'signup'
                 ? 'bg-gradient-to-r from-teal-400 to-indigo-500 text-[#070a13] shadow-md'
                 : isLight
                 ? 'text-slate-600 hover:text-slate-900'
-                : 'text-slate-400 hover:text-white'
+                : 'text-slate-300 hover:text-white'
             }`}
           >
             Sign Up
@@ -196,27 +265,34 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
           <button
             id="auth-tab-magiclink"
             type="button"
+            role="tab"
+            aria-selected={mode === 'magiclink'}
             onClick={() => {
               setMode('magiclink');
               setError(null);
             }}
-            className={`py-3 text-xs md:text-sm font-extrabold rounded-xl transition-all cursor-pointer ${
+            className={`py-3 text-xs md:text-sm font-extrabold rounded-xl transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${
               mode === 'magiclink'
                 ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-md'
                 : isLight
                 ? 'text-slate-600 hover:text-slate-900'
-                : 'text-slate-400 hover:text-white'
+                : 'text-slate-300 hover:text-white'
             }`}
           >
             ✨ Magic Link
           </button>
         </div>
 
-        {/* Error / Success Banners */}
+        {/* Error / Success Banners (UX-11 & UX-19) */}
         {error && (
-          <div className="mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-500 dark:text-rose-300 text-sm flex flex-col gap-1.5">
+          <div
+            id="auth-error-alert"
+            role="alert"
+            aria-live="assertive"
+            className="mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 text-sm flex flex-col gap-1.5"
+          >
             <div className="flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 shrink-0 text-rose-500" />
+              <AlertCircle className="w-5 h-5 shrink-0 text-rose-500" aria-hidden="true" />
               <span className="font-bold">{error}</span>
             </div>
             {mode === 'signin' && error.includes('Invalid') && (
@@ -226,7 +302,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
                   setMode('signup');
                   setError(null);
                 }}
-                className="text-xs text-teal-600 dark:text-teal-400 hover:underline text-left font-extrabold mt-1 cursor-pointer"
+                className="text-xs text-teal-600 dark:text-teal-400 hover:underline text-left font-extrabold mt-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 rounded"
               >
                 Don&apos;t have an account yet? Click here to Sign Up instead →
               </button>
@@ -235,21 +311,31 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
         )}
 
         {successMsg && (
-          <div className="mb-6 p-4 rounded-2xl bg-teal-500/10 border border-teal-500/30 text-teal-700 dark:text-teal-300 text-sm flex items-center gap-2.5">
-            <CheckCircle2 className="w-5 h-5 shrink-0 text-teal-600" />
+          <div
+            id="auth-success-status"
+            role="status"
+            aria-live="polite"
+            className="mb-6 p-4 rounded-2xl bg-teal-500/10 border border-teal-500/30 text-teal-700 dark:text-teal-300 text-sm flex items-center gap-2.5"
+          >
+            <CheckCircle2 className="w-5 h-5 shrink-0 text-teal-600" aria-hidden="true" />
             <span className="font-bold">{successMsg}</span>
           </div>
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5" noValidate>
           {mode === 'signup' && (
             <div>
-              <label className={`block text-sm font-bold mb-2 ${
-                isLight ? 'text-slate-800' : 'text-slate-200'
-              }`}>Full Name</label>
+              <label
+                htmlFor="auth-input-name"
+                className={`block text-sm font-bold mb-2 ${
+                  isLight ? 'text-slate-800' : 'text-slate-200'
+                }`}
+              >
+                Full Name
+              </label>
               <div className="relative">
-                <User className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" />
+                <User className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" aria-hidden="true" />
                 <input
                   id="auth-input-name"
                   type="text"
@@ -257,7 +343,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
                   placeholder="Jane Doe"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className={`w-full pl-12 pr-4 py-3.5 rounded-2xl border text-base outline-none transition-colors ${
+                  className={`w-full pl-12 pr-4 py-3.5 rounded-2xl border text-base outline-none transition-colors focus-visible:ring-2 focus-visible:ring-sky-500 ${
                     isLight
                       ? 'bg-slate-50 border-slate-300 focus:border-teal-500 text-slate-900 placeholder-slate-400'
                       : 'bg-slate-900/80 border-slate-800 focus:border-teal-400 text-white placeholder-slate-500'
@@ -268,20 +354,27 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
           )}
 
           <div>
-            <label className={`block text-sm font-bold mb-2 ${
-              isLight ? 'text-slate-800' : 'text-slate-200'
-            }`}>Email Address</label>
+            <label
+              htmlFor="auth-input-email"
+              className={`block text-sm font-bold mb-2 ${
+                isLight ? 'text-slate-800' : 'text-slate-200'
+              }`}
+            >
+              Email Address
+            </label>
             <div className="relative">
-              <Mail className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" />
+              <Mail className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" aria-hidden="true" />
               <input
                 id="auth-input-email"
                 type="email"
                 required
                 autoComplete="email"
+                aria-invalid={!!error}
+                aria-describedby={error ? 'auth-error-alert' : undefined}
                 placeholder="name@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full pl-12 pr-4 py-3.5 rounded-2xl border text-base outline-none transition-colors ${
+                className={`w-full pl-12 pr-4 py-3.5 rounded-2xl border text-base outline-none transition-colors focus-visible:ring-2 focus-visible:ring-sky-500 ${
                   isLight
                     ? 'bg-slate-50 border-slate-300 focus:border-teal-500 text-slate-900 placeholder-slate-400'
                     : 'bg-slate-900/80 border-slate-800 focus:border-teal-400 text-white placeholder-slate-500'
@@ -292,21 +385,34 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
 
           {mode !== 'magiclink' && (
             <div>
-              <label className={`block text-sm font-bold mb-2 ${
-                isLight ? 'text-slate-800' : 'text-slate-200'
-              }`}>Password</label>
+              <label
+                htmlFor="auth-input-password"
+                className={`block text-sm font-bold mb-2 ${
+                  isLight ? 'text-slate-800' : 'text-slate-200'
+                }`}
+              >
+                Password
+              </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" />
+                <Lock className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" aria-hidden="true" />
                 <input
                   id="auth-input-password"
                   type="password"
                   required
                   minLength={6}
+                  aria-invalid={!!error}
+                  aria-describedby={
+                    error
+                      ? 'auth-error-alert'
+                      : mode === 'signup'
+                      ? 'auth-password-hint'
+                      : undefined
+                  }
                   autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full pl-12 pr-4 py-3.5 rounded-2xl border text-base outline-none transition-colors ${
+                  className={`w-full pl-12 pr-4 py-3.5 rounded-2xl border text-base outline-none transition-colors focus-visible:ring-2 focus-visible:ring-sky-500 ${
                     isLight
                       ? 'bg-slate-50 border-slate-300 focus:border-teal-500 text-slate-900 placeholder-slate-400'
                       : 'bg-slate-900/80 border-slate-800 focus:border-teal-400 text-white placeholder-slate-500'
@@ -314,7 +420,9 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
                 />
               </div>
               {mode === 'signup' && (
-                <p className={`mt-1.5 text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Minimum 6 characters required.</p>
+                <p id="auth-password-hint" className={`mt-1.5 text-xs ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
+                  Minimum 6 characters required.
+                </p>
               )}
             </div>
           )}
@@ -323,17 +431,18 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
             id="auth-submit-btn"
             type="submit"
             disabled={loading}
-            className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070a13] font-black text-base md:text-lg tracking-wide transition-all shadow-xl shadow-teal-500/20 hover:scale-[1.01] flex items-center justify-center gap-2.5 disabled:opacity-50 mt-4 cursor-pointer"
+            aria-busy={loading}
+            className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070a13] font-black text-base md:text-lg tracking-wide transition-all shadow-xl shadow-teal-500/20 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2.5 disabled:opacity-50 mt-4 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
           >
             {loading ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
                 <span>{mode === 'signin' ? 'Signing In...' : mode === 'signup' ? 'Creating Account...' : 'Generating Link...'}</span>
               </>
             ) : (
               <>
                 <span>{mode === 'signin' ? 'Sign In' : mode === 'signup' ? 'Create Account' : 'Send Magic Link ✨'}</span>
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-5 h-5" aria-hidden="true" />
               </>
             )}
           </button>
@@ -347,17 +456,17 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
             type="button"
             onClick={handleGuestLogin}
             disabled={loading}
-            className={`w-full py-3.5 px-6 rounded-2xl border font-extrabold text-sm md:text-base transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 ${
+            className={`w-full py-3.5 px-6 rounded-2xl border font-extrabold text-sm md:text-base transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${
               isLight
                 ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800 hover:text-slate-950'
-                : 'bg-slate-900/90 hover:bg-slate-800 border-slate-800 hover:border-teal-500/40 text-slate-300 hover:text-white'
+                : 'bg-slate-900/90 hover:bg-slate-800 border-slate-800 hover:border-teal-500/40 text-slate-200 hover:text-white'
             }`}
           >
-            <User className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+            <User className="w-4 h-4 text-teal-600 dark:text-teal-400" aria-hidden="true" />
             <span>Explore as a Guest (No email required)</span>
           </button>
           <p className={`text-[11px] mt-2.5 leading-relaxed ${
-            isLight ? 'text-slate-500' : 'text-slate-400'
+            isLight ? 'text-slate-600' : 'text-slate-300'
           }`}>
             Note: Content created as a Guest will be visible to all users unless deleted. To save your work privately, you can create a login profile anytime.
           </p>

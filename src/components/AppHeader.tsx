@@ -31,6 +31,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { Menu } from 'lucide-react';
 import ByokHeaderButton from './ByokHeaderButton';
 
 /** Canonical geometry. Change it here and every route moves together. */
@@ -93,7 +94,8 @@ const TONES: Record<HeaderTone, { tile: string; badge: string }> = {
 export const headerBtn = {
   base:
     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border ' +
-    'transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed',
+    'transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ' +
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 active:scale-95',
   neutral: 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700',
   primary: 'bg-blue-600 hover:bg-blue-700 text-white border-blue-500',
   ghost: 'bg-transparent hover:bg-slate-800 text-slate-300 border-transparent',
@@ -163,21 +165,37 @@ export function AppHeader({
     .filter(Boolean)
     .join(' ');
 
+  const defaultMobileToggle = (
+    <button
+      type="button"
+      onClick={() => window.dispatchEvent(new CustomEvent('promptcanvas_toggle_sidebar'))}
+      aria-label="Open navigation menu"
+      title="Open navigation menu"
+      className="lg:hidden min-w-[38px] min-h-[38px] p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-700/80 transition cursor-pointer shrink-0 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 active:scale-95"
+    >
+      <Menu className="w-4 h-4" />
+    </button>
+  );
+
   // Raw mode: the page owns the internal layout, the shell owns the geometry.
   if (children) {
     return (
       <header className={shell}>
-        <div className="flex items-center justify-between flex-1 min-w-0 gap-3">
-          {children}
+        <div className="flex items-center gap-2.5 flex-1 min-w-0">
+          {leading ?? defaultMobileToggle}
+          <div className="flex items-center justify-between flex-1 min-w-0 gap-3">
+            {children}
+          </div>
         </div>
         <div className="flex items-center gap-1.5 shrink-0 pl-2 border-l border-slate-800/80">
           <button
             type="button"
             onClick={() => window.location.reload()}
+            aria-label="Refresh page and sync latest changes"
             title="Refresh page & sync latest changes"
-            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-[11px] font-semibold transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-[11px] font-semibold transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95"
           >
-            <svg className="w-3.5 h-3.5 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="w-3.5 h-3.5 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
               <path d="M3 3v5h5" />
               <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
@@ -216,11 +234,11 @@ export function AppHeader({
   return (
     <header className={shell}>
       <div className="flex items-center gap-3 min-w-0">
-        {leading}
+        {leading ?? defaultMobileToggle}
         {href ? (
           <Link
             href={href}
-            className="flex items-center gap-3 min-w-0 hover:opacity-80 transition-opacity"
+            className="flex items-center gap-3 min-w-0 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 rounded-lg"
           >
             {identity}
           </Link>
@@ -234,10 +252,11 @@ export function AppHeader({
         <button
           type="button"
           onClick={() => window.location.reload()}
+          aria-label="Refresh page and sync latest changes"
           title="Refresh page & sync latest changes"
-          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-[11px] font-semibold transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-[11px] font-semibold transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95"
         >
-          <svg className="w-3.5 h-3.5 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <svg className="w-3.5 h-3.5 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
             <path d="M3 3v5h5" />
             <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />

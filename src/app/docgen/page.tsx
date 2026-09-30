@@ -541,6 +541,24 @@ function DocGenContent() {
     'An enterprise-grade decentralized clinical genomics analysis and regulatory pharmacovigilance platform with automated FDA electronic signature audits, Spanner knowledge graphs, multi-region active-active disaster recovery, and zero-trust VPC Service Perimeters.'
   );
 
+  // Restore & persist custom scope prompt draft in sessionStorage (UX-26)
+  useEffect(() => {
+    try {
+      const savedDraft = sessionStorage.getItem('promptcanvas_docgen_scope_draft');
+      if (savedDraft && savedDraft.trim().length > 0) {
+        setProjectScopePrompt(savedDraft);
+      }
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    try {
+      if (projectScopePrompt) {
+        sessionStorage.setItem('promptcanvas_docgen_scope_draft', projectScopePrompt);
+      }
+    } catch {}
+  }, [projectScopePrompt]);
+
   const handleUpdateProjectName = (name: string) => {
     setProjectName(name);
     const combined = name && useCaseName ? `${name} — ${useCaseName}` : (name || useCaseName || 'Enterprise Architecture Platform');
@@ -1402,21 +1420,39 @@ function DocGenContent() {
     while (i < lines.length) {
       const line = lines[i];
 
-      // Nested Sub-headers inside section
+      // Nested Sub-headers inside section (demoted below page H1 for WCAG 1.3.1 / UX-03)
+      if (line.startsWith('# ')) {
+        elements.push(
+          <h2 key={`subh2-${secKey}-${i}`} className={`text-base md:text-lg font-black tracking-tight mt-4 mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>
+            {line.replace('# ', '')}
+          </h2>
+        );
+        i++;
+        continue;
+      }
+      if (line.startsWith('## ')) {
+        elements.push(
+          <h3 key={`subh2b-${secKey}-${i}`} className={`text-sm md:text-base font-bold tracking-tight mt-4 mb-2 ${isLight ? 'text-sky-900' : 'text-sky-400'}`}>
+            {line.replace('## ', '')}
+          </h3>
+        );
+        i++;
+        continue;
+      }
       if (line.startsWith('### ')) {
         elements.push(
-          <h3 key={`subh3-${secKey}-${i}`} className={`text-sm md:text-base font-bold uppercase tracking-wider mt-4 mb-2 ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
+          <h4 key={`subh3-${secKey}-${i}`} className={`text-sm md:text-base font-bold uppercase tracking-wider mt-4 mb-2 ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
             {line.replace('### ', '')}
-          </h3>
+          </h4>
         );
         i++;
         continue;
       }
       if (line.startsWith('#### ')) {
         elements.push(
-          <h4 key={`subh4-${secKey}-${i}`} className={`text-xs md:text-sm font-semibold tracking-wide mt-3 mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-400'}`}>
+          <h5 key={`subh4-${secKey}-${i}`} className={`text-xs md:text-sm font-semibold tracking-wide mt-3 mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-400'}`}>
             {line.replace('#### ', '')}
-          </h4>
+          </h5>
         );
         i++;
         continue;
@@ -1456,18 +1492,28 @@ function DocGenContent() {
           });
 
         elements.push(
-          <div key={`table-${secKey}-${i}`} className={`my-4 overflow-x-auto rounded-2xl border shadow-md ${
-            isLight ? 'border-slate-300 bg-white' : 'border-slate-700/80 bg-slate-950/60'
-          }`}>
+          <div
+            key={`table-${secKey}-${i}`}
+            tabIndex={0}
+            role="region"
+            aria-label="Specification Data Table"
+            className={`my-4 overflow-x-auto rounded-2xl border shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 ${
+              isLight ? 'border-slate-300 bg-white' : 'border-slate-700/80 bg-slate-950/60'
+            }`}
+          >
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className={`border-b ${
                   isLight ? 'bg-slate-100 text-slate-800 border-slate-300' : 'bg-slate-800/90 text-slate-200 border-slate-700'
                 }`}>
                   {headers.map((h, hIdx) => (
-                    <th key={hIdx} className={`px-4 py-3 font-bold uppercase tracking-wider text-[11px] ${
-                      isLight ? 'text-slate-800' : 'text-slate-300'
-                    }`}>
+                    <th
+                      key={hIdx}
+                      scope="col"
+                      className={`px-4 py-3 font-bold uppercase tracking-wider text-[11px] ${
+                        isLight ? 'text-slate-800' : 'text-slate-300'
+                      }`}
+                    >
                       {h.replace(/\*\*/g, '')}
                     </th>
                   ))}
@@ -1690,40 +1736,48 @@ function DocGenContent() {
                     {sec.level === 1 ? 'H1 Title' : sec.level === 2 ? `Chapter ${secIdx}` : `Sub-Sec ${secIdx}`}
                   </span>
 
-                  {/* Section Title */}
+                  {/* Section Title (demoted below page-level H1 for WCAG 1.3.1 / UX-03) */}
                   {sec.level === 1 ? (
-                    <h1 className={`text-xl md:text-2xl font-black tracking-tight truncate ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                    <h2 className={`text-xl md:text-2xl font-black tracking-tight truncate ${isLight ? 'text-slate-900' : 'text-white'}`}>
                       {sec.title}
-                    </h1>
-                  ) : sec.level === 2 ? (
-                    <h2 className={`text-base md:text-lg font-bold truncate flex items-center gap-2 ${isLight ? 'text-sky-900' : 'text-sky-400'}`}>
-                      <span className={`h-2 w-2 rounded-full shrink-0 ${isLight ? 'bg-sky-600' : 'bg-sky-400'}`}></span>
-                      <span className="truncate">{sec.title}</span>
                     </h2>
-                  ) : (
-                    <h3 className={`text-sm md:text-base font-bold uppercase tracking-wider truncate ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
-                      {sec.title}
+                  ) : sec.level === 2 ? (
+                    <h3 className={`text-base md:text-lg font-bold truncate flex items-center gap-2 ${isLight ? 'text-sky-900' : 'text-sky-400'}`}>
+                      <span className={`h-2 w-2 rounded-full shrink-0 ${isLight ? 'bg-sky-600' : 'bg-sky-400'}`} aria-hidden="true"></span>
+                      <span className="truncate">{sec.title}</span>
                     </h3>
+                  ) : (
+                    <h4 className={`text-sm md:text-base font-bold uppercase tracking-wider truncate ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
+                      {sec.title}
+                    </h4>
                   )}
                 </div>
 
                 {/* ACTION ICONS BAR: Edit, Save, Delete, Clone, Add, Move Up/Down, Promote/Demote */}
                 {isInteractive && (
-                  <div className="flex items-center gap-1 shrink-0 bg-slate-100 dark:bg-slate-900/80 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 no-print">
+                  <div
+                    role="toolbar"
+                    aria-label={`Actions for section ${sec.title}`}
+                    className="flex items-center gap-1 shrink-0 bg-slate-100 dark:bg-slate-900/80 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 no-print opacity-100 sm:opacity-90 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity"
+                  >
                     {/* EDIT / SAVE TOGGLE */}
                     {isEditing ? (
                       <button
+                        type="button"
                         onClick={() => handleSaveSection(sec)}
-                        className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer"
+                        aria-label={`Save changes to section ${sec.title}`}
+                        className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
                         title="Save changes to this section"
                       >
-                        <Save className="w-3.5 h-3.5" />
+                        <Save className="w-3.5 h-3.5" aria-hidden="true" />
                         <span>Save</span>
                       </button>
                     ) : (
                       <button
+                        type="button"
                         onClick={() => handleStartEditSection(sec)}
-                        className="p-1.5 rounded-lg hover:bg-sky-500/10 hover:text-sky-500 transition-colors cursor-pointer"
+                        aria-label={`Edit section ${sec.title}`}
+                        className="p-1.5 rounded-lg hover:bg-sky-500/10 hover:text-sky-500 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
                         title="Edit Section"
                       >
                         <Edit3 className="w-3.5 h-3.5" />
@@ -1732,8 +1786,10 @@ function DocGenContent() {
 
                     {/* CLONE / DUPLICATE */}
                     <button
+                      type="button"
                       onClick={() => handleCloneSection(sec)}
-                      className="p-1.5 rounded-lg hover:bg-sky-500/10 hover:text-sky-500 transition-colors cursor-pointer"
+                      aria-label={`Duplicate section ${sec.title}`}
+                      className="p-1.5 rounded-lg hover:bg-sky-500/10 hover:text-sky-500 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
                       title="Clone / Duplicate Section"
                     >
                       <CopyPlus className="w-3.5 h-3.5" />
@@ -1741,8 +1797,10 @@ function DocGenContent() {
 
                     {/* ADD BELOW */}
                     <button
+                      type="button"
                       onClick={() => handleStartAddSectionBelow(sec)}
-                      className="p-1.5 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-500 transition-colors cursor-pointer"
+                      aria-label={`Add new section below ${sec.title}`}
+                      className="p-1.5 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-500 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                       title="Add New Section Below"
                     >
                       <PlusCircle className="w-3.5 h-3.5" />
@@ -1750,20 +1808,24 @@ function DocGenContent() {
 
                     {/* DELETE */}
                     <button
+                      type="button"
                       onClick={() => handleDeleteSection(sec)}
-                      className="p-1.5 rounded-lg hover:bg-rose-500/10 hover:text-rose-500 transition-colors cursor-pointer"
+                      aria-label={`Delete section ${sec.title}`}
+                      className="p-1.5 rounded-lg hover:bg-rose-500/10 hover:text-rose-500 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
                       title="Delete Section"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
 
-                    <div className="w-[1px] h-3.5 bg-slate-300 dark:bg-slate-700 mx-0.5"></div>
+                    <div className="w-[1px] h-3.5 bg-slate-300 dark:bg-slate-700 mx-0.5" aria-hidden="true"></div>
 
                     {/* MOVE UP */}
                     <button
+                      type="button"
                       onClick={() => handleMoveSectionUp(sec)}
                       disabled={secIdx === 0}
-                      className="p-1.5 rounded-lg hover:bg-sky-500/10 hover:text-sky-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                      aria-label={`Move section ${sec.title} up`}
+                      className="p-1.5 rounded-lg hover:bg-sky-500/10 hover:text-sky-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
                       title="Move Section Up"
                     >
                       <ArrowUp className="w-3.5 h-3.5" />
@@ -1771,21 +1833,25 @@ function DocGenContent() {
 
                     {/* MOVE DOWN */}
                     <button
+                      type="button"
                       onClick={() => handleMoveSectionDown(sec)}
                       disabled={secIdx === sections.length - 1}
-                      className="p-1.5 rounded-lg hover:bg-sky-500/10 hover:text-sky-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                      aria-label={`Move section ${sec.title} down`}
+                      className="p-1.5 rounded-lg hover:bg-sky-500/10 hover:text-sky-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
                       title="Move Section Down"
                     >
                       <ArrowDown className="w-3.5 h-3.5" />
                     </button>
 
-                    <div className="w-[1px] h-3.5 bg-slate-300 dark:bg-slate-700 mx-0.5"></div>
+                    <div className="w-[1px] h-3.5 bg-slate-300 dark:bg-slate-700 mx-0.5" aria-hidden="true"></div>
 
                     {/* PROMOTE (HIGHER PARENT LEVEL) */}
                     <button
+                      type="button"
                       onClick={() => handlePromoteSection(sec)}
                       disabled={sec.level <= 1}
-                      className="p-1.5 rounded-lg hover:bg-purple-500/10 hover:text-purple-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                      aria-label={`Promote section ${sec.title} to higher heading level`}
+                      className="p-1.5 rounded-lg hover:bg-purple-500/10 hover:text-purple-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                       title="Promote to Higher Parent Level (e.g. Sub-section to Chapter)"
                     >
                       <FolderTree className="w-3.5 h-3.5" />
@@ -1793,9 +1859,11 @@ function DocGenContent() {
 
                     {/* DEMOTE (LEAF LEVEL) */}
                     <button
+                      type="button"
                       onClick={() => handleDemoteSection(sec)}
                       disabled={sec.level >= 3}
-                      className="p-1.5 rounded-lg hover:bg-purple-500/10 hover:text-purple-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                      aria-label={`Demote section ${sec.title} to lower heading level`}
+                      className="p-1.5 rounded-lg hover:bg-purple-500/10 hover:text-purple-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                       title="Demote to Leaf Level (e.g. Chapter to Sub-section)"
                     >
                       <CornerDownRight className="w-3.5 h-3.5" />
@@ -1966,51 +2034,62 @@ function DocGenContent() {
             <div className="flex items-center gap-3">
               {!isSidebarOpen && (
                 <button
+                  type="button"
                   onClick={() => setIsSidebarOpen(true)}
-                  className="hidden lg:flex p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+                  aria-label="Expand Left Navigation Menu"
+                  className="hidden lg:flex p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
                   title="Expand Left Navigation Menu"
                 >
                   <Menu className="w-4 h-4" />
                 </button>
               )}
               <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(!isMobileMenuOpen);
+                  window.dispatchEvent(new CustomEvent('promptcanvas_toggle_sidebar'));
+                }}
+                aria-label="Open navigation menu"
+                className="lg:hidden min-w-[40px] min-h-[40px] flex items-center justify-center p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
                 title="Toggle Menu"
               >
                 <Menu className="w-4 h-4" />
               </button>
 
-              <div className="flex items-center gap-2 text-xs font-semibold">
-                <Link href="/" className="text-slate-400 hover:text-white transition-colors" title="Home">
+              <div className="flex items-center gap-2 text-xs font-semibold" role="tablist" aria-label="Document Specification Views">
+                <Link href="/" className="text-slate-300 hover:text-white transition-colors" title="Home">
                   PromptCanvas
                 </Link>
-                <span className="text-slate-600">/</span>
+                <span className="text-slate-500" aria-hidden="true">/</span>
                 <button
                   type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'catalog'}
                   onClick={() => setActiveTab('catalog')}
-                  className={`font-bold flex items-center gap-1.5 truncate cursor-pointer transition-all px-2.5 py-1 rounded-lg ${
+                  className={`font-bold flex items-center gap-1.5 truncate cursor-pointer transition-all px-2.5 py-1 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                     activeTab === 'catalog'
-                      ? 'bg-sky-500/20 text-sky-400 border border-sky-500/40'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40'
+                      : 'text-slate-300 hover:text-white'
                   }`}
                   title="17 Document Archetypes Catalog"
                 >
-                  <FileText className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                  <FileText className="w-3.5 h-3.5 text-sky-400 shrink-0" aria-hidden="true" />
                   <span>17 Document Archetypes</span>
                 </button>
 
                 <button
                   type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'studio'}
                   onClick={() => setActiveTab('studio')}
-                  className={`font-bold flex items-center gap-1.5 truncate cursor-pointer transition-all px-2.5 py-1 rounded-lg ${
+                  className={`font-bold flex items-center gap-1.5 truncate cursor-pointer transition-all px-2.5 py-1 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
                     activeTab === 'studio'
-                      ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/40'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40'
+                      : 'text-slate-300 hover:text-white'
                   }`}
                   title="Interactive Document Studio"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                  <Sparkles className="w-3.5 h-3.5 text-indigo-400 shrink-0" aria-hidden="true" />
                   <span>Studio</span>
                 </button>
               </div>
@@ -2020,9 +2099,11 @@ function DocGenContent() {
             <div className="flex items-center gap-2 shrink-0">
               {/* Domain Preset Selector */}
               <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-xs font-medium bg-slate-900 border-slate-700 text-slate-200">
-                <Sliders className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                <span className="text-slate-400 hidden xl:inline text-[11px]">Domain:</span>
+                <Sliders className="w-3.5 h-3.5 text-sky-400 shrink-0" aria-hidden="true" />
+                <label htmlFor="docgen-header-domain-select" className="text-slate-300 hidden xl:inline text-[11px]">Domain:</label>
                 <select
+                  id="docgen-header-domain-select"
+                  aria-label="Select Enterprise Domain Preset"
                   value={selectedDomain}
                   onChange={(e) => setSelectedDomain(e.target.value)}
                   className="bg-transparent font-semibold text-sky-400 outline-none cursor-pointer text-xs max-w-[170px] truncate"
@@ -2300,17 +2381,17 @@ function DocGenContent() {
             }`}>
               <div className="space-y-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-teal-600" />
-                  <span className="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white">
+                  <Sparkles className="w-4 h-4 text-teal-600" aria-hidden="true" />
+                  <h1 className="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white">
                     Studio Generation Mode:
-                  </span>
+                  </h1>
                   <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-950/40 dark:text-teal-400 dark:border-teal-800">
                     {studioMode === 'diagrams' && '53 Canonical 16:9 Master Blueprints'}
                     {studioMode === 'documents' && '17 Production-Ready Archetypes'}
                     {studioMode === 'both' && 'Unified Multi-Blueprint Specifications'}
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-slate-600 dark:text-slate-300">
                   {studioMode === 'diagrams' && 'Synthesize standalone 16:9 architecture diagrams with domain flavoring, component matrices & Canonical Blueprints suite.'}
                   {studioMode === 'documents' && 'Synthesize 17 production-ready enterprise specifications (BRD, PRD, SDD, TDD, STRIDE) with full section controls.'}
                   {studioMode === 'both' && 'Generate multi-chapter enterprise specifications with live 16:9 interactive diagrams embedded in each chapter.'}
@@ -2318,50 +2399,60 @@ function DocGenContent() {
               </div>
 
               {/* 3 Mode Switcher Buttons */}
-              <div className="flex items-center p-1.5 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner">
+              <div
+                role="tablist"
+                aria-label="Studio Generation Mode"
+                className="flex items-center p-1.5 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner"
+              >
                 <button
                   type="button"
+                  role="tab"
+                  aria-selected={studioMode === 'diagrams'}
                   onClick={() => {
                     setStudioMode('diagrams');
                     setGeneratedDocContent(null);
                   }}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
                     studioMode === 'diagrams'
                       ? 'bg-teal-600 text-white shadow-sm font-black'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
-                  <Network className="w-3.5 h-3.5" />
+                  <Network className="w-3.5 h-3.5" aria-hidden="true" />
                   <span>Diagrams</span>
                 </button>
                 <button
                   type="button"
+                  role="tab"
+                  aria-selected={studioMode === 'documents'}
                   onClick={() => {
                     setStudioMode('documents');
                     setGeneratedDocContent(null);
                   }}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 ${
                     studioMode === 'documents'
                       ? 'bg-sky-600 text-white shadow-sm font-black'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
-                  <FileText className="w-3.5 h-3.5" />
+                  <FileText className="w-3.5 h-3.5" aria-hidden="true" />
                   <span>Documents</span>
                 </button>
                 <button
                   type="button"
+                  role="tab"
+                  aria-selected={studioMode === 'both'}
                   onClick={() => {
                     setStudioMode('both');
                     setGeneratedDocContent(null);
                   }}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
                     studioMode === 'both'
                       ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-sm font-black'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
-                  <Zap className="w-3.5 h-3.5" />
+                  <Zap className="w-3.5 h-3.5" aria-hidden="true" />
                   <span>Both (Unified)</span>
                 </button>
               </div>
@@ -2513,10 +2604,11 @@ function DocGenContent() {
                   {/* Connected Project Name & Use Case Name Fields */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1">
+                      <label htmlFor="docgen-project-name-input" className="text-xs font-black uppercase tracking-wider text-slate-600 block mb-1">
                         1. Project / Program Name
                       </label>
                       <input
+                        id="docgen-project-name-input"
                         type="text"
                         value={projectName}
                         onChange={(e) => handleUpdateProjectName(e.target.value)}
@@ -2528,10 +2620,11 @@ function DocGenContent() {
                     </div>
 
                     <div>
-                      <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1">
+                      <label htmlFor="docgen-usecase-name-input" className="text-xs font-black uppercase tracking-wider text-slate-600 block mb-1">
                         2. Architectural Use Case Name
                       </label>
                       <input
+                        id="docgen-usecase-name-input"
                         type="text"
                         value={useCaseName}
                         onChange={(e) => handleUpdateUseCaseName(e.target.value)}
@@ -2546,11 +2639,11 @@ function DocGenContent() {
                   {/* 3. Dynamic Prompt Suggestions */}
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
+                      <span className="text-xs font-black uppercase tracking-wider text-slate-600 block">
                         3. Dynamic Prompt Suggestions
-                      </label>
+                      </span>
                       <span className="text-[10px] font-mono text-teal-600 dark:text-teal-400 font-bold flex items-center gap-1">
-                        <Sparkles className="w-3 h-3 text-amber-500" />
+                        <Sparkles className="w-3 h-3 text-amber-500" aria-hidden="true" />
                         Searchable &bull; Click to Populate
                       </span>
                     </div>
@@ -2568,11 +2661,11 @@ function DocGenContent() {
                   {/* 4. Enterprise Domain Flavor Selector */}
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
+                      <span className="text-xs font-black uppercase tracking-wider text-slate-600 block">
                         4. Enterprise Domain Flavor
-                      </label>
+                      </span>
                       <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
                         Live Domain Sync
                       </span>
                     </div>
@@ -2599,14 +2692,15 @@ function DocGenContent() {
                   {/* 5. AI Scope Prompt Terminal (Moved to 5) */}
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
+                      <label htmlFor="docgen-scope-prompt-textarea" className="text-xs font-black uppercase tracking-wider text-slate-600 block">
                         5. Architectural Scope &amp; Topology Requirements Prompt
                       </label>
-                      <span className="text-[10px] font-mono text-slate-400">
+                      <span className="text-[10px] font-mono text-slate-500">
                         Gemini 3.8 Flash &bull; Real-Time AST
                       </span>
                     </div>
                     <textarea
+                      id="docgen-scope-prompt-textarea"
                       rows={3}
                       value={projectScopePrompt}
                       onChange={(e) => {
@@ -2635,6 +2729,7 @@ function DocGenContent() {
                         type="button"
                         onClick={handleStartGeneration}
                         disabled={isGenerating}
+                        aria-busy={isGenerating}
                         className="w-full py-3 px-5 rounded-2xl text-xs font-black bg-gradient-to-r from-teal-500 via-sky-600 to-indigo-600 hover:opacity-95 text-white shadow-lg shadow-teal-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                       >
                         {isGenerating ? (

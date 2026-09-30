@@ -576,12 +576,14 @@ function AuditHubContent() {
             <div className="flex items-center gap-2.5 shrink-0">
               {/* Domain Preset Selector */}
               <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium bg-slate-900 border-slate-700 text-slate-200">
-                <Sliders className="w-3.5 h-3.5 text-teal-400 shrink-0" />
-                <span className="text-slate-400 hidden xl:inline text-[11px]">Domain:</span>
+                <Sliders className="w-3.5 h-3.5 text-teal-400 shrink-0" aria-hidden="true" />
+                <label htmlFor="audit-domain-select" className="text-slate-300 hidden xl:inline text-[11px]">Domain:</label>
                 <select
+                  id="audit-domain-select"
+                  aria-label="Audit domain preset"
                   value={selectedDomain}
                   onChange={(e) => setSelectedDomain(e.target.value)}
-                  className="bg-transparent font-semibold text-teal-400 outline-none cursor-pointer text-xs max-w-[170px] truncate"
+                  className="bg-transparent font-semibold text-teal-400 outline-none cursor-pointer text-xs max-w-[170px] truncate focus-visible:ring-2 focus-visible:ring-teal-400 rounded"
                 >
                   {DOMAIN_PRESETS.map((d) => (
                     <option key={d.id} value={d.id} className="bg-slate-900 text-slate-100">
@@ -596,9 +598,10 @@ function AuditHubContent() {
                 type="button"
                 onClick={handleRunFullSuite}
                 disabled={isAuditing}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-md shadow-teal-500/20 transition-all cursor-pointer disabled:opacity-50"
+                aria-busy={isAuditing}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-md shadow-teal-500/20 transition-all cursor-pointer disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 active:scale-95"
               >
-                <Zap className={`w-3.5 h-3.5 ${isAuditing ? 'animate-spin' : ''}`} />
+                <Zap className={`w-3.5 h-3.5 ${isAuditing ? 'animate-spin' : ''}`} aria-hidden="true" />
                 <span>Run 6-Tier Audit</span>
               </button>
 
@@ -609,9 +612,9 @@ function AuditHubContent() {
                     ? `/studio?blueprint=${encodeURIComponent(activeCanonicalTemplate.id)}`
                     : `/studio?id=${encodeURIComponent(activeArtifact?.id || '')}`
                 }
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95"
               >
-                <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
+                <ExternalLink className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
                 <span className="hidden md:inline">Open in Studio</span>
               </Link>
 
@@ -627,47 +630,53 @@ function AuditHubContent() {
             {/* 0. UNIFIED GOVERNANCE, FINOPS & SYSTEM HEALTH SWITCHER */}
             {/* ========================================================================= */}
             <div className="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-slate-200 dark:border-slate-800">
-              <div className="flex flex-wrap items-center gap-2">
+              <div role="tablist" aria-label="Governance and Operations Views" className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
+                  role="tab"
+                  aria-selected={activeHubTab === 'audit'}
                   onClick={() => setActiveHubTab('audit')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer border ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 active:scale-95 ${
                     activeHubTab === 'audit'
                       ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
                       : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
                   }`}
                 >
-                  <ShieldCheck className="w-4 h-4 text-teal-400" />
+                  <ShieldCheck className="w-4 h-4 text-teal-400" aria-hidden="true" />
                   <span>6-Audit Inspector &amp; Auto-Heal</span>
-                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-teal-500/20 text-teal-400 font-mono">6/6</span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-teal-500/20 text-teal-400 font-mono tabular-nums">6/6</span>
                 </button>
 
                 <button
                   type="button"
+                  role="tab"
+                  aria-selected={activeHubTab === 'finops'}
                   onClick={() => setActiveHubTab('finops')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer border ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 active:scale-95 ${
                     activeHubTab === 'finops'
                       ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
                       : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
                   }`}
                 >
-                  <TrendingUp className="w-4 h-4 text-sky-400" />
+                  <TrendingUp className="w-4 h-4 text-sky-400" aria-hidden="true" />
                   <span>FinOps &amp; Operations Telemetry</span>
                   <span className="text-[10px] px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400 font-mono">LIVE</span>
                 </button>
 
                 <button
                   type="button"
+                  role="tab"
+                  aria-selected={activeHubTab === 'health'}
                   onClick={() => setActiveHubTab('health')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer border ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 active:scale-95 ${
                     activeHubTab === 'health'
                       ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
                       : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
                   }`}
                 >
-                  <Activity className="w-4 h-4 text-emerald-400" />
+                  <Activity className="w-4 h-4 text-emerald-400" aria-hidden="true" />
                   <span>System E2E Health</span>
-                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-mono">100%</span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-mono tabular-nums">100%</span>
                 </button>
               </div>
 
@@ -675,18 +684,18 @@ function AuditHubContent() {
                 {activeHubTab === 'finops' && (
                   <Link
                     href="/dashboard"
-                    className="px-3 py-1.5 rounded-xl font-bold bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 flex items-center gap-1.5"
+                    className="px-3 py-1.5 rounded-xl font-bold bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
                   >
-                    <ExternalLink className="w-3.5 h-3.5" />
+                    <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
                     <span>Open Full Operations View (/dashboard)</span>
                   </Link>
                 )}
                 {activeHubTab === 'health' && (
                   <Link
                     href="/test-status"
-                    className="px-3 py-1.5 rounded-xl font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 flex items-center gap-1.5"
+                    className="px-3 py-1.5 rounded-xl font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                   >
-                    <ExternalLink className="w-3.5 h-3.5" />
+                    <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
                     <span>Open Full E2E Matrix (/test-status)</span>
                   </Link>
                 )}
@@ -698,26 +707,26 @@ function AuditHubContent() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
                   <div className="text-[11px] font-bold uppercase text-slate-500">Active Topology Est. Run-Rate</div>
-                  <div className="text-2xl font-black text-slate-900 mt-1">
+                  <div className="text-2xl font-black text-slate-900 mt-1 tabular-nums">
                     ${(((currentXml.match(/vertex="1"/g)?.length || 16) * 165) + ((currentXml.match(/edge="1"/g)?.length || 12) * 35)).toLocaleString()}<span className="text-xs font-normal text-slate-500">/mo</span>
                   </div>
-                  <div className="text-[11px] text-emerald-600 font-semibold mt-1">
+                  <div className="text-[11px] text-emerald-600 font-semibold mt-1 tabular-nums">
                     {currentXml.match(/vertex="1"/g)?.length || 16} Nodes • {currentXml.match(/edge="1"/g)?.length || 12} Connectors
                   </div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
                   <div className="text-[11px] font-bold uppercase text-slate-500">Overall Audit Health Score</div>
-                  <div className="text-2xl font-black text-sky-600 mt-1">{overallScore}% ({scoreGrade.grade})</div>
+                  <div className="text-2xl font-black text-sky-600 mt-1 tabular-nums">{overallScore}% ({scoreGrade.grade})</div>
                   <div className="text-[11px] text-slate-500 mt-1">Domain: {selectedDomain.toUpperCase()}</div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
                   <div className="text-[11px] font-bold uppercase text-slate-500">Catalog &amp; Saved Topologies</div>
-                  <div className="text-2xl font-black text-indigo-600 mt-1">{CANONICAL_TEMPLATES.length + artifacts.length}</div>
-                  <div className="text-[11px] text-slate-500 mt-1">{CANONICAL_TEMPLATES.length} Canonical + {artifacts.length} Custom/Vision</div>
+                  <div className="text-2xl font-black text-indigo-600 mt-1 tabular-nums">{CANONICAL_TEMPLATES.length + artifacts.length}</div>
+                  <div className="text-[11px] text-slate-500 mt-1 tabular-nums">{CANONICAL_TEMPLATES.length} Canonical + {artifacts.length} Custom/Vision</div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
                   <div className="text-[11px] font-bold uppercase text-slate-500">Auto-Heal Geometry Pass Rate</div>
-                  <div className="text-2xl font-black text-emerald-600 mt-1">100%</div>
+                  <div className="text-2xl font-black text-emerald-600 mt-1 tabular-nums">100%</div>
                   <div className="text-[11px] text-emerald-600 font-semibold mt-1">Zero Bounding-Box Collisions</div>
                 </div>
               </div>
@@ -729,21 +738,21 @@ function AuditHubContent() {
                 <div className="p-4 rounded-xl bg-emerald-50/50 border border-emerald-200">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-black text-slate-900">1. 6-Audit XML Geometry Gate</span>
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white">PASS (6/6)</span>
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white tabular-nums">PASS (6/6)</span>
                   </div>
                   <p className="text-xs text-slate-600 mt-1.5">Orthogonal routing (`jettySize=auto`), 140px column pitch, and zero node/label collisions verified.</p>
                 </div>
                 <div className="p-4 rounded-xl bg-emerald-50/50 border border-emerald-200">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-black text-slate-900">2. Conversational Intent Guardrails</span>
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white">PASS (4/4)</span>
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white tabular-nums">PASS (4/4)</span>
                   </div>
                   <p className="text-xs text-slate-600 mt-1.5">Greetings, capability queries, and short tokens return helpful chat replies with zero canvas mutation.</p>
                 </div>
                 <div className="p-4 rounded-xl bg-emerald-50/50 border border-emerald-200">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-black text-slate-900">3. Studio Fork &amp; Incremental AI Modify</span>
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white">PASS (100%)</span>
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white tabular-nums">PASS (100%)</span>
                   </div>
                   <p className="text-xs text-slate-600 mt-1.5">`+ Add Node`, `Connect`, `Group`, and natural-language delta prompts preserve base XML topology.</p>
                 </div>
@@ -761,7 +770,7 @@ function AuditHubContent() {
               {/* Left: Health Score Rating & Title */}
               <div className="flex items-center gap-3 min-w-0">
                 <div className={`w-12 h-12 rounded-xl flex flex-col items-center justify-center border font-black shadow-2xs shrink-0 ${scoreGrade.bg}`}>
-                  <span className={`text-base sm:text-lg font-black leading-none ${scoreGrade.color}`}>{overallScore}%</span>
+                  <span className={`text-base sm:text-lg font-black leading-none tabular-nums ${scoreGrade.color}`}>{overallScore}%</span>
                   <span className={`text-[8.5px] uppercase font-bold tracking-wider leading-none mt-0.5 ${scoreGrade.color}`}>{scoreGrade.grade}</span>
                 </div>
 
@@ -778,7 +787,7 @@ function AuditHubContent() {
                       {scoreGrade.label}
                     </span>
                     <span className="hidden sm:inline-flex text-[10px] text-emerald-600 dark:text-emerald-400 font-bold items-center gap-1 font-mono">
-                      <CheckCheck className="w-3 h-3" /> 100% Collision-Free
+                      <CheckCheck className="w-3 h-3" aria-hidden="true" /> 100% Collision-Free
                     </span>
                   </div>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 max-w-2xl truncate">
@@ -788,7 +797,7 @@ function AuditHubContent() {
               </div>
 
               {/* Right: 6 Category Radar Pills (Compact Horizontal Strip) */}
-              <div className="flex flex-wrap items-center gap-1.5 shrink-0">
+              <div role="group" aria-label="Audit Categories" className="flex flex-wrap items-center gap-1.5 shrink-0">
                 {AUDIT_CATEGORIES.map((cat) => {
                   const score = auditScores[cat.id] ?? 96;
                   const isActive = activeCategory === cat.id;
@@ -796,8 +805,9 @@ function AuditHubContent() {
                     <button
                       key={cat.id}
                       type="button"
+                      aria-pressed={isActive}
                       onClick={() => handleRunAuditForCategory(cat.id)}
-                      className={`px-2.5 py-1.5 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 ${
+                      className={`px-2.5 py-1.5 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 active:scale-95 ${
                         isActive
                           ? 'bg-teal-50 dark:bg-teal-950/50 border-teal-500 ring-1 ring-teal-500/30 shadow-xs'
                           : isLight
@@ -805,11 +815,11 @@ function AuditHubContent() {
                           : 'bg-slate-900/60 hover:bg-slate-800 border-slate-800'
                       }`}
                     >
-                      <span className="text-sm">{cat.icon}</span>
+                      <span className="text-sm" aria-hidden="true">{cat.icon}</span>
                       <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
                         {cat.shortName}
                       </span>
-                      <span className={`text-[11px] font-black ${score >= 95 ? 'text-emerald-600 dark:text-emerald-400' : score >= 85 ? 'text-teal-600 dark:text-teal-400' : 'text-amber-500'}`}>
+                      <span className={`text-[11px] font-black tabular-nums ${score >= 95 ? 'text-emerald-600 dark:text-emerald-400' : score >= 85 ? 'text-teal-600 dark:text-teal-400' : 'text-amber-500'}`}>
                         {score}%
                       </span>
                     </button>
@@ -829,56 +839,64 @@ function AuditHubContent() {
                   isLight ? 'bg-white border-slate-200/90 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-xl'
                 }`}>
                   {/* Scope Switcher Tabs */}
-                  <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner">
+                  <div role="tablist" aria-label="Artifact Source Scope" className="flex items-center p-1 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner">
                     <button
                       type="button"
+                      role="tab"
+                      aria-selected={scopeTab === 'artifacts'}
                       onClick={() => setScopeTab('artifacts')}
-                      className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
                         scopeTab === 'artifacts'
                           ? 'bg-teal-600 text-white shadow-sm font-black'
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                       }`}
                     >
-                      <Network className="w-3.5 h-3.5" />
+                      <Network className="w-3.5 h-3.5" aria-hidden="true" />
                       <span>Artifacts ({artifacts.length})</span>
                     </button>
 
                     <button
                       type="button"
+                      role="tab"
+                      aria-selected={scopeTab === 'custom'}
                       onClick={() => setScopeTab('custom')}
-                      className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
                         scopeTab === 'custom'
                           ? 'bg-indigo-600 text-white shadow-sm font-black'
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                       }`}
                     >
-                      <Boxes className="w-3.5 h-3.5" />
+                      <Boxes className="w-3.5 h-3.5" aria-hidden="true" />
                       <span>Custom XML</span>
                     </button>
 
                     <button
                       type="button"
+                      role="tab"
+                      aria-selected={scopeTab === 'canonical'}
                       onClick={() => setScopeTab('canonical')}
-                      className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 ${
                         scopeTab === 'canonical'
                           ? 'bg-sky-600 text-white shadow-sm font-black'
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                       }`}
                     >
-                      <Sparkles className="w-3.5 h-3.5" />
+                      <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
                       <span>{CANONICAL_TEMPLATES.length} Blueprints</span>
                     </button>
                   </div>
 
                   {/* Search Bar */}
                   <div className="relative">
-                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <label htmlFor="audit-artifact-search" className="sr-only">Filter generated artifacts by name or type</label>
+                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true" />
                     <input
+                      id="audit-artifact-search"
                       type="text"
                       placeholder="Filter generated artifacts by name or type..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className={`w-full rounded-xl pl-9 pr-8 py-2 text-xs outline-none transition-all ${
+                      className={`w-full rounded-xl pl-9 pr-8 py-2 text-xs outline-none transition-all focus-visible:ring-2 focus-visible:ring-teal-500 ${
                         isLight
                           ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-teal-500'
                           : 'bg-[#080d1a] border border-slate-800 text-white focus:border-teal-500'
@@ -888,7 +906,8 @@ function AuditHubContent() {
                       <button
                         type="button"
                         onClick={() => setSearchQuery('')}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs"
+                        aria-label="Clear artifact search filter"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:hover:text-white text-xs"
                       >
                         &times;
                       </button>
@@ -980,15 +999,16 @@ function AuditHubContent() {
                   {/* TAB 2: CUSTOM XML PASTE BOX */}
                   {scopeTab === 'custom' && (
                     <div className="space-y-3">
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                      <label htmlFor="audit-custom-xml-textarea" className="block text-xs text-slate-500 dark:text-slate-400">
                         Paste any generated Draw.io XML below to audit custom architecture artifacts against 6-tier compliance rules:
-                      </p>
+                      </label>
                       <textarea
+                        id="audit-custom-xml-textarea"
                         rows={14}
                         value={customXmlInput}
                         onChange={(e) => setCustomXmlInput(e.target.value)}
                         placeholder="<mxfile host='embed.diagrams.net'>...</mxfile>"
-                        className={`w-full p-3 font-mono text-[11px] rounded-2xl border outline-none ${
+                        className={`w-full p-3 font-mono text-[11px] rounded-2xl border outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
                           isLight
                             ? 'bg-slate-50 border-slate-200 text-slate-900 focus:border-indigo-500'
                             : 'bg-[#080d1a] border-slate-800 text-slate-200 focus:border-indigo-500'
@@ -997,9 +1017,9 @@ function AuditHubContent() {
                       <button
                         type="button"
                         onClick={handleRunFullSuite}
-                        className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md cursor-pointer flex items-center justify-center gap-1.5"
+                        className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md cursor-pointer flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 active:scale-95"
                       >
-                        <Zap className="w-3.5 h-3.5" />
+                        <Zap className="w-3.5 h-3.5" aria-hidden="true" />
                         <span>Audit Custom XML Now</span>
                       </button>
                     </div>
@@ -1019,7 +1039,7 @@ function AuditHubContent() {
                               setActiveArtifactId(tpl.id);
                               handleRunAuditForCategory(activeCategory);
                             }}
-                            className={`w-full p-3 rounded-2xl border text-left transition-all cursor-pointer flex items-start justify-between gap-3 ${
+                            className={`w-full p-3 rounded-2xl border text-left transition-all cursor-pointer flex items-start justify-between gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 ${
                               isSelected
                                 ? 'bg-sky-50/80 dark:bg-sky-950/40 border-sky-500 ring-2 ring-sky-500/30'
                                 : isLight
@@ -1029,7 +1049,7 @@ function AuditHubContent() {
                           >
                             <div className="space-y-1 min-w-0 flex-1">
                               <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-mono font-bold text-sky-600 dark:text-sky-400 bg-sky-500/10 px-1.5 py-0.2 rounded">
+                                <span className="text-[10px] font-mono font-bold text-sky-600 dark:text-sky-400 bg-sky-500/10 px-1.5 py-0.2 rounded tabular-nums">
                                   #{tpl.id}
                                 </span>
                                 <span className="text-[9px] font-semibold uppercase text-slate-400 truncate">
@@ -1044,7 +1064,7 @@ function AuditHubContent() {
                               </p>
                             </div>
 
-                            <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 shrink-0">
+                            <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 shrink-0 tabular-nums">
                               98%
                             </span>
                           </button>
@@ -1062,33 +1082,37 @@ function AuditHubContent() {
                 <div className={`p-2 rounded-2xl border flex flex-wrap items-center justify-between gap-2 shadow-xs ${
                   isLight ? 'bg-white border-slate-200/90' : 'bg-[#0B111E] border-slate-800'
                 }`}>
-                  <div className="flex items-center gap-1 overflow-x-auto">
+                  <div role="tablist" aria-label="Audit Inspection Views" className="flex items-center gap-1 overflow-x-auto">
                     <button
                       type="button"
+                      role="tab"
+                      aria-selected={activeViewTab === 'diagram'}
                       onClick={() => setActiveViewTab('diagram')}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
                         activeViewTab === 'diagram'
                           ? 'bg-teal-600 text-white shadow-xs font-black'
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                       }`}
                     >
-                      <Network className="w-3.5 h-3.5" />
+                      <Network className="w-3.5 h-3.5" aria-hidden="true" />
                       <span>Live 16:9 Diagram</span>
                     </button>
 
                     <button
                       type="button"
+                      role="tab"
+                      aria-selected={activeViewTab === 'findings'}
                       onClick={() => setActiveViewTab('findings')}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
                         activeViewTab === 'findings'
                           ? 'bg-teal-600 text-white shadow-xs font-black'
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                       }`}
                     >
-                      <AlertTriangle className="w-3.5 h-3.5" />
+                      <AlertTriangle className="w-3.5 h-3.5" aria-hidden="true" />
                       <span>Findings &amp; Remediation</span>
                       {auditGaps.length > 0 && (
-                        <span className="px-1.5 py-0.2 rounded-full text-[9px] bg-rose-500 text-white font-bold">
+                        <span className="px-1.5 py-0.2 rounded-full text-[9px] bg-rose-500 text-white font-bold tabular-nums">
                           {auditGaps.length}
                         </span>
                       )}
@@ -1096,27 +1120,31 @@ function AuditHubContent() {
 
                     <button
                       type="button"
+                      role="tab"
+                      aria-selected={activeViewTab === 'compliance'}
                       onClick={() => setActiveViewTab('compliance')}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
                         activeViewTab === 'compliance'
                           ? 'bg-teal-600 text-white shadow-xs font-black'
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                       }`}
                     >
-                      <FileCheck className="w-3.5 h-3.5" />
+                      <FileCheck className="w-3.5 h-3.5" aria-hidden="true" />
                       <span>Regulatory Matrix</span>
                     </button>
 
                     <button
                       type="button"
+                      role="tab"
+                      aria-selected={activeViewTab === 'executive'}
                       onClick={() => setActiveViewTab('executive')}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
                         activeViewTab === 'executive'
                           ? 'bg-teal-600 text-white shadow-xs font-black'
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                       }`}
                     >
-                      <Printer className="w-3.5 h-3.5" />
+                      <Printer className="w-3.5 h-3.5" aria-hidden="true" />
                       <span>Executive Briefing</span>
                     </button>
                   </div>
@@ -1126,18 +1154,20 @@ function AuditHubContent() {
                     <button
                       type="button"
                       onClick={handleCopyXml}
-                      className="p-2 rounded-xl border text-slate-500 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-slate-800 transition-colors"
+                      aria-label={copied ? 'Draw.io XML copied' : 'Copy Draw.io XML'}
+                      className="min-w-[36px] min-h-[36px] p-2 rounded-xl border text-slate-500 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-slate-800 transition-colors flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 active:scale-95 cursor-pointer"
                       title="Copy Draw.io XML"
                     >
-                      {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                      {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" aria-hidden="true" /> : <Copy className="w-3.5 h-3.5" aria-hidden="true" />}
                     </button>
                     <button
                       type="button"
                       onClick={handleDownloadXml}
-                      className="p-2 rounded-xl border text-slate-500 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-slate-800 transition-colors"
+                      aria-label="Download Draw.io XML"
+                      className="min-w-[36px] min-h-[36px] p-2 rounded-xl border text-slate-500 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-slate-800 transition-colors flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 active:scale-95 cursor-pointer"
                       title="Download Draw.io XML"
                     >
-                      <Download className="w-3.5 h-3.5" />
+                      <Download className="w-3.5 h-3.5" aria-hidden="true" />
                     </button>
                   </div>
                 </div>
@@ -1149,12 +1179,12 @@ function AuditHubContent() {
                   }`}>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
                         <h3 className="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white">
                           Live Architecture Topology &bull; 16:9 Presentation Canvas
                         </h3>
                       </div>
-                      <span className="text-[11px] font-mono text-slate-400">
+                      <span className="text-[11px] font-mono text-slate-400 tabular-nums">
                         1600 &times; 960 &bull; 100% Vector Certified
                       </span>
                     </div>
@@ -1183,11 +1213,11 @@ function AuditHubContent() {
                       </div>
                       <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/60">
                         <span className="text-[9.5px] font-bold uppercase text-slate-400 block">Column Gap Pitch</span>
-                        <span className="text-xs font-black text-teal-600 dark:text-teal-400">140px Clean</span>
+                        <span className="text-xs font-black text-teal-600 dark:text-teal-400 tabular-nums">140px Clean</span>
                       </div>
                       <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/60">
                         <span className="text-[9.5px] font-bold uppercase text-slate-400 block">WCAG Contrast</span>
-                        <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">4.8:1 (AA)</span>
+                        <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 tabular-nums">4.8:1 (AA)</span>
                       </div>
                     </div>
                   </div>
@@ -1212,9 +1242,9 @@ function AuditHubContent() {
                         <button
                           type="button"
                           onClick={handleAutoRemediateGaps}
-                          className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 text-white text-xs font-black shadow-md hover:scale-105 transition-all cursor-pointer flex items-center gap-1.5"
+                          className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 text-white text-xs font-black shadow-md hover:scale-105 transition-all cursor-pointer flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 active:scale-95"
                         >
-                          <Sparkles className="w-3.5 h-3.5" />
+                          <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
                           <span>1-Click Auto-Remediate</span>
                         </button>
                       )}
@@ -1222,7 +1252,7 @@ function AuditHubContent() {
 
                     {auditGaps.length === 0 ? (
                       <div className="p-10 text-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20 space-y-2">
-                        <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto" />
+                        <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto" aria-hidden="true" />
                         <h4 className="text-base font-bold text-emerald-600 dark:text-emerald-400">
                           Zero Architectural Violations Found!
                         </h4>
@@ -1286,27 +1316,32 @@ function AuditHubContent() {
                       </p>
                     </div>
 
-                    <div className="overflow-x-auto">
+                    <div
+                      tabIndex={0}
+                      role="region"
+                      aria-label="Regulatory Compliance Matrix"
+                      className="overflow-x-auto max-h-[420px] overflow-y-auto rounded-xl border border-slate-200/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+                    >
                       <table className="w-full text-left text-xs border-collapse">
-                        <thead>
-                          <tr className={`border-b ${isLight ? 'border-slate-200 bg-slate-50' : 'border-slate-800 bg-slate-900/50'}`}>
-                            <th className="p-3 font-bold text-slate-500">Framework</th>
-                            <th className="p-3 font-bold text-slate-500">Control ID</th>
-                            <th className="p-3 font-bold text-slate-500">Requirement</th>
-                            <th className="p-3 font-bold text-slate-500">Component</th>
-                            <th className="p-3 font-bold text-slate-500">Status</th>
+                        <thead className="sticky top-0 z-10">
+                          <tr className={`border-b ${isLight ? 'border-slate-200 bg-slate-50' : 'border-slate-800 bg-slate-900/95'}`}>
+                            <th scope="col" className="p-3 font-bold text-slate-700">Framework</th>
+                            <th scope="col" className="p-3 font-bold text-slate-700">Control ID</th>
+                            <th scope="col" className="p-3 font-bold text-slate-700">Requirement</th>
+                            <th scope="col" className="p-3 font-bold text-slate-700">Component</th>
+                            <th scope="col" className="p-3 font-bold text-slate-700">Status</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                           {DEFAULT_CONTROLS.security.map((ctrl) => (
                             <tr key={ctrl.controlId} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30">
                               <td className="p-3 font-mono font-bold text-teal-600 dark:text-teal-400">{ctrl.framework}</td>
-                              <td className="p-3 font-mono text-slate-400">{ctrl.controlId}</td>
+                              <td className="p-3 font-mono text-slate-500 tabular-nums">{ctrl.controlId}</td>
                               <td className="p-3 font-semibold text-slate-900 dark:text-white">{ctrl.title}</td>
-                              <td className="p-3 text-slate-500">{ctrl.component}</td>
+                              <td className="p-3 text-slate-600">{ctrl.component}</td>
                               <td className="p-3">
                                 <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                                  <Check className="w-3 h-3" /> PASS
+                                  <Check className="w-3 h-3" aria-hidden="true" /> PASS
                                 </span>
                               </td>
                             </tr>
@@ -1335,9 +1370,9 @@ function AuditHubContent() {
                       <button
                         type="button"
                         onClick={() => window.print()}
-                        className="px-4 py-2 rounded-xl border text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1.5 cursor-pointer"
+                        className="px-4 py-2 rounded-xl border text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 active:scale-95"
                       >
-                        <Printer className="w-3.5 h-3.5" />
+                        <Printer className="w-3.5 h-3.5" aria-hidden="true" />
                         <span>Print / Export PDF</span>
                       </button>
                     </div>
@@ -1346,17 +1381,17 @@ function AuditHubContent() {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
                         <span className="text-[10px] uppercase font-bold text-slate-400 block">Overall Readiness</span>
-                        <span className="text-xl font-black text-emerald-600 dark:text-emerald-400">{overallScore}% (Grade A+)</span>
+                        <span className="text-xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{overallScore}% (Grade A+)</span>
                         <p className="text-[11px] text-slate-500 mt-1">Certified for enterprise production deployment.</p>
                       </div>
                       <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
                         <span className="text-[10px] uppercase font-bold text-slate-400 block">Zero-Trust Boundaries</span>
-                        <span className="text-xl font-black text-teal-600 dark:text-teal-400">100% Enforced</span>
+                        <span className="text-xl font-black text-teal-600 dark:text-teal-400 tabular-nums">100% Enforced</span>
                         <p className="text-[11px] text-slate-500 mt-1">VPC-SC and Workload Identity compliant.</p>
                       </div>
                       <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
                         <span className="text-[10px] uppercase font-bold text-slate-400 block">Draw.io Geometry</span>
-                        <span className="text-xl font-black text-sky-600 dark:text-sky-400">100% Collision-Free</span>
+                        <span className="text-xl font-black text-sky-600 dark:text-sky-400 tabular-nums">100% Collision-Free</span>
                         <p className="text-[11px] text-slate-500 mt-1">16:9 ratio with zero line-node collisions.</p>
                       </div>
                     </div>
@@ -1386,8 +1421,12 @@ function AuditHubContent() {
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-2xl bg-slate-900/95 dark:bg-white text-white dark:text-slate-900 text-xs font-bold shadow-2xl border border-slate-700/50 flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-200">
-          <Sparkles className="w-3.5 h-3.5 text-teal-400 dark:text-teal-600" />
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-2xl bg-slate-900/95 dark:bg-white text-white dark:text-slate-900 text-xs font-bold shadow-2xl border border-slate-700/50 flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-200"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-teal-400 dark:text-teal-600" aria-hidden="true" />
           <span>{toastMessage}</span>
         </div>
       )}

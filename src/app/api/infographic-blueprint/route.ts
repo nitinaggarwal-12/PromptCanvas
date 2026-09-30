@@ -14,6 +14,7 @@ import {
   DynamicInfographicSpec,
   generateInfographicBlueprintXmlById
 } from '@/lib/canonical/infographicBlueprints52to66';
+import { generateDynamicTieredInfographicXml } from '@/lib/canonical/dynamicTieredInfographic';
 
 export async function POST(req: NextRequest) {
   const startMs = Date.now();
@@ -22,7 +23,14 @@ export async function POST(req: NextRequest) {
     if (!guard.allowed) return guard.errorResponse!;
 
     const body = await req.json();
-    const blueprintId = String(body?.blueprintId || '52');
+    const rawBlueprintId = body?.blueprintId ? String(body.blueprintId).trim() : '';
+    const isNoTemplate =
+      Boolean(body?.noTemplate) ||
+      !rawBlueprintId ||
+      rawBlueprintId === 'blank' ||
+      rawBlueprintId === 'custom' ||
+      rawBlueprintId === 'dynamic';
+    const blueprintId = isNoTemplate ? 'blank' : rawBlueprintId;
     const userPrompt = String(body?.prompt || 'Enterprise Cloud AI Architecture').trim();
     const level = String(body?.level || 'L2');
     const userApiKey = typeof body?.userApiKey === 'string' ? body.userApiKey : undefined;
@@ -35,6 +43,23 @@ export async function POST(req: NextRequest) {
         conversationalOnly: true,
         replyMessage: intentCheck.replyMessage,
         latencyMs: Date.now() - startMs
+      });
+    }
+
+    if (isNoTemplate) {
+      const xml = generateDynamicTieredInfographicXml(userPrompt);
+      return NextResponse.json({
+        success: true,
+        blueprintId: 'blank',
+        noTemplate: true,
+        shortType: 'Zero-Template 4-Tier Dynamic Infographic',
+        title: `4-Tier Infographic: ${userPrompt.slice(0, 72)}`,
+        subtitle: '01 Ingestion • 02 Control Plane • 03 Closed-Loop Verification • 04 Serving Topology',
+        takeaway: `100% prompt-driven 4-tier infographic synthesized without static blueprint templates for: ${userPrompt}`,
+        itemCount: 12,
+        engineUsed: 'zero-template-4tier-synthesizer',
+        latencyMs: Date.now() - startMs,
+        xml
       });
     }
 

@@ -45,12 +45,23 @@ export function buildDynamicInfographicTiers(prompt: string): {
   tiers: TierSpec[];
 } {
   const pLower = prompt.toLowerCase();
-  const cleanPrompt = prompt
-    .replace(/\b(create|generate|build|draw|make|show|an?|the|diagram|infographic|tiered|architecture|for|of|about|on)\b/gi, ' ')
+  const strippedPrompt = prompt
+    .replace(/^(please\s+)?(design|architect|build|create|generate|synthesize|draw|make|show)\s+(a\s+|an\s+|the\s+)?(\d+-tier\s+)?(architectural\s+)?(infographic|diagram|architecture|blueprint|topology)\s+(for|of|about|on)\s+/i, '')
+    .replace(/^(4-tier\s+|tiered\s+)?(architectural\s+)?(infographic|diagram|architecture)\s+(for|of|about|on)\s+/i, '')
     .replace(/\s+/g, ' ')
     .trim();
 
-  const subjectTopic = cleanPrompt.length > 2 ? cleanPrompt : 'Enterprise Domain Architecture';
+  const firstClause = strippedPrompt
+    .split(/,|;|\s+with\s+|\s+via\s+|\s+using\s+|\s+featuring\s+|\s+including\s+|->|→/i)[0]
+    .trim();
+
+  const rawTopic = firstClause.length > 3 ? firstClause : strippedPrompt;
+  const subjectTopic =
+    rawTopic.length > 46
+      ? rawTopic.slice(0, 44).replace(/\s+\S*$/, '').trim()
+      : rawTopic.length > 2
+      ? rawTopic
+      : 'Enterprise Domain Architecture';
   const upperTopic = subjectTopic.toUpperCase();
 
   // 0. AGENT AI SUB-DOMAIN: Agentic Skill Engineering (skills.md / SKILL.md) in Business Workflows
@@ -737,51 +748,80 @@ export function buildDynamicInfographicTiers(prompt: string): {
     };
   }
 
-  // 4. GENERIC / UNIVERSAL ENTERPRISE TOPIC (Default 4-Tier Synthesis for ANY other topic)
+  // 4. GENERIC / UNIVERSAL ENTERPRISE TOPIC (100% Prompt-Driven 4-Tier Synthesis for ANY brand-new requirement)
+  const rawClauses = strippedPrompt
+    .split(/,|;|\s+and\s+|\s+with\s+|\s+via\s+|\s+using\s+|\s+featuring\s+|\s+including\s+|\s+plus\s+|->|→/i)
+    .map((s: string) => s.trim().replace(/\.$/, '').trim())
+    .filter((s: string) => s.length >= 4);
+
+  const shortCore =
+    subjectTopic.length > 22
+      ? subjectTopic.slice(0, 20).replace(/\s+\S*$/, '').trim()
+      : subjectTopic;
+
+  const getClause = (idx: number, fallback: string): string => {
+    const c = rawClauses[idx];
+    const chosen = c && c.length >= 4 ? c.charAt(0).toUpperCase() + c.slice(1) : fallback;
+    return chosen.length > 28 ? chosen.slice(0, 26).replace(/\s+\S*$/, '').trim() : chosen;
+  };
+
+  const c1 = getClause(0, `${shortCore} Ingress`);
+  const c2 = getClause(1, 'Signal & Wire Framing');
+  const c3 = getClause(2, 'Zero-Trust mTLS Gate');
+  const c4 = getClause(3, 'Core State Orchestrator');
+  const c5 = getClause(4, 'Low-Latency Event Router');
+  const c6 = getClause(5, 'OpenTelemetry Span Bus');
+  const c7 = getClause(6, 'Parity & Drift Verifier');
+  const c8 = getClause(7, 'Autonomous Fault Isolation');
+  const c9 = getClause(8, 'Closed-Loop Calibration');
+  const c10 = getClause(9, 'Active-Active State Ledger');
+  const c11 = getClause(10, 'Operational Telemetry HUD');
+  const c12 = getClause(11, 'Global Traffic Failover');
+
   return {
-    headerTitle: `${upperTopic} — 4-TIER ARCHITECTURAL INFOGRAPHIC`,
-    headerSubtitle: `End-to-End Ingestion, Governance Harness, Validation Loop & Knowledge Graph Topology for ${subjectTopic}`,
-    footerText: `ARCHITECTURAL SYNTHESIS: ${upperTopic} | TIERED INFOGRAPHIC BLUEPRINT (01 INGESTION • 02 HARNESS • 03 VALIDATION • 04 GRAPH)`,
+    headerTitle: `${upperTopic} — 4-TIER INFOGRAPHIC`,
+    headerSubtitle: `Zero-Template 4-Tier Synthesis: ${c1} • ${c2} • ${c3} • ${c4}`,
+    footerText: `ZERO-TEMPLATE 4-TIER SYNTHESIS: ${upperTopic} | (01 INGESTION • 02 CONTROL PLANE • 03 VERIFICATION • 04 SERVING)`,
     tiers: [
       {
         num: '01',
         title: 'INGESTION & PROTOCOL TELEMETRY PLANE',
-        subtitle: `High-throughput ingress, wire-protocol framing & schema normalization for ${subjectTopic}`,
+        subtitle: `High-throughput ingress, sensor/wire framing & schema normalization for ${subjectTopic}`,
         primaryColor: '#2563EB',
         lightBg: '#EFF6FF',
         borderColor: '#93C5FD',
         cards: [
           {
-            title: `${subjectTopic} Ingress Gateways`,
+            title: c1,
             badge: 'INGESTION',
             bullets: [
-              `Primary ${subjectTopic} wire payloads & framing`,
+              `Primary ${c1} wire payloads & framing`,
               'Sub-10ms streaming & batch gRPC/REST endpoints',
               'Deterministic schema & boundary normalization'
             ]
           },
           {
-            title: 'Canonical Schema & Metadata Store',
-            badge: 'ONTOLOGY',
+            title: c2,
+            badge: 'SIGNAL / SCHEMA',
             bullets: [
-              'Typed domain entity & lineage definitions',
+              `Real-time ${c2} feature & payload extraction`,
               'Deterministic payload contract validation',
               'Cryptographic SHA-256 provenance stamping'
             ]
           },
           {
-            title: 'Zero-Trust Identity & Perimeter',
-            badge: 'SECURITY',
+            title: c3,
+            badge: 'PERIMETER',
             bullets: [
-              'Mutual TLS (mTLS 1.3) & OIDC workload identity',
+              `${c3} mutual authentication & workload identity`,
               'Field-level envelope encryption (AES-256-GCM)',
-              'Strict ingress rate-limiting & WAF shielding'
+              'Strict ingress rate-limiting & perimeter shielding'
             ]
           }
         ],
-        gateTitle: 'Ingress SLA & Schema Valid?',
+        gateTitle: `${c3.slice(0, 22)} & SLA Valid?`,
         gatePassLabel: 'Verified Payload',
-        bottomRuleText: `Rule 01: Enforce strict ${subjectTopic} wire-protocol framing and mTLS 1.3 identity verification at ingress.`
+        bottomRuleText: `Rule 01: Enforce strict ${c1} framing and ${c3} verification at Tier 01 ingress.`
       },
       {
         num: '02',
@@ -792,28 +832,28 @@ export function buildDynamicInfographicTiers(prompt: string): {
         borderColor: '#C4B5FD',
         cards: [
           {
-            title: `${subjectTopic} Control Plane`,
+            title: c4,
             badge: 'CONTROL PLANE',
             bullets: [
-              'Deterministic DAG scheduling & state transitions',
+              `Deterministic ${c4} state transitions`,
               'Pre-execution invariant & safety boundary checks',
               'Zero-bypass operational isolation enclaves'
             ]
           },
           {
-            title: 'Service Mesh & Adapter Bus',
+            title: c5,
             badge: 'ROUTING',
             bullets: [
-              'Typed synchronous gRPC & async event adapters',
+              `Typed synchronous & async ${c5} bus`,
               'Idempotent transaction commit coordination',
               'Adaptive circuit-breaker & backpressure control'
             ]
           },
           {
-            title: 'Distributed Trace & Audit Ledger',
+            title: c6,
             badge: 'TELEMETRY',
             bullets: [
-              'OpenTelemetry span propagation & W3C TraceContext',
+              `OpenTelemetry span propagation for ${c6}`,
               'Real-time p99 latency & saturation telemetry',
               'Append-only cryptographic audit event stream'
             ]
@@ -821,7 +861,7 @@ export function buildDynamicInfographicTiers(prompt: string): {
         ],
         gateTitle: 'p99 Latency < 25ms & Compliant?',
         gatePassLabel: 'Authorized State',
-        bottomRuleText: `Rule 02: Isolate ${subjectTopic} control-plane state transitions from high-throughput data-plane execution.`
+        bottomRuleText: `Rule 02: Isolate ${c4} control-plane state transitions from high-throughput ${c5} execution.`
       },
       {
         num: '03',
@@ -832,28 +872,28 @@ export function buildDynamicInfographicTiers(prompt: string): {
         borderColor: '#FDBA74',
         cards: [
           {
-            title: 'Quantitative Invariant Verifier',
+            title: c7,
             badge: 'VERIFICATION',
             bullets: [
-              'Multi-stage structural & semantic parity checks',
+              `Multi-stage ${c7} structural & parity checks`,
               'Real-time state drift & anomaly scoring',
               'Deterministic pass/fail SLA threshold gating'
             ]
           },
           {
-            title: 'Autonomous Rollback & Quarantine',
+            title: c8,
             badge: 'REMEDIATION',
             bullets: [
-              'Closed-loop root-cause isolation & bounded retry',
+              `Closed-loop ${c8} fault isolation & retry`,
               'Atomic state rollback on invariant violation',
               'Dead-letter quarantine for unresolvable faults'
             ]
           },
           {
-            title: 'Closed-Loop Feedback Telemetry',
+            title: c9,
             badge: 'FEEDBACK',
             bullets: [
-              'Continuous calibration signals back to Tier 01',
+              `Continuous ${c9} signals back to Tier 01`,
               'Dynamic routing weight & threshold tuning',
               'Automated capacity & throughput optimization'
             ]
@@ -861,7 +901,7 @@ export function buildDynamicInfographicTiers(prompt: string): {
         ],
         gateTitle: 'Zero Drift & Parity >= 99.9%?',
         gatePassLabel: 'Certified Output',
-        bottomRuleText: `Rule 03: Every ${subjectTopic} state mutation must pass quantitative parity verification or trigger atomic rollback.`
+        bottomRuleText: `Rule 03: Every ${subjectTopic} mutation must pass ${c7} verification or trigger ${c8}.`
       },
       {
         num: '04',
@@ -872,36 +912,36 @@ export function buildDynamicInfographicTiers(prompt: string): {
         borderColor: '#6EE7B7',
         cards: [
           {
-            title: `${subjectTopic} Serving Topology`,
+            title: c10,
             badge: 'SERVING',
             bullets: [
-              'Multi-region active-active indexed state store',
+              `Multi-region active-active ${c10}`,
               'Cross-entity lineage & relationship resolution',
               'Sub-5ms point lookups & analytical projections'
             ]
           },
           {
-            title: 'Operational Cockpit & Analytics',
+            title: c11,
             badge: 'OBSERVABILITY',
             bullets: [
-              'Real-time executive SLO & golden-signal dashboards',
+              `Real-time ${c11} & golden-signal dashboards`,
               'Predictive blast-radius & dependency simulation',
               'Grounded enterprise search & audit reporting'
             ]
           },
           {
-            title: 'External Consumer Syndication',
+            title: c12,
             badge: 'DELIVERY',
             bullets: [
-              'SLA-backed GraphQL, REST & webhook event streams',
+              `SLA-backed ${c12} & event syndication`,
               'Multi-tenant partner isolation & quota governance',
-              'Versioned API contracts with zero-downtime rollout'
+              'Versioned contracts with zero-downtime failover'
             ]
           }
         ],
         gateTitle: 'Multi-Region Quorum Commit?',
         gatePassLabel: 'Live in Production',
-        bottomRuleText: `Rule 04: Serve certified ${subjectTopic} state through multi-region active-active projections with strict SLO guarantees.`
+        bottomRuleText: `Rule 04: Serve certified ${subjectTopic} state via ${c10} and ${c12} with strict SLO guarantees.`
       }
     ]
   };

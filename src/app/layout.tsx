@@ -36,9 +36,15 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col bg-[#0B111E]">
+        <a
+          href="#main-content"
+          className="skip-to-main-link"
+        >
+          Skip to main content
+        </a>
         <ThemeProvider>
           <LegalProvider>
-            <div className="flex-1 flex flex-col">
+            <div id="main-content" tabIndex={-1} className="flex-1 flex flex-col outline-none">
               {children}
             </div>
             <PortalFooter />

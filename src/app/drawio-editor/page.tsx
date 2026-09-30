@@ -52,16 +52,23 @@ export default function FullscreenDrawioEditorPage() {
   };
 
   useEffect(() => {
+    const sanitizeXmlAttributeValues = (raw: string): string =>
+      String(raw || '').replace(/value="([^"]*)"/g, (_m, val: string) => {
+        if (!val.includes('<') && !val.includes('>')) return _m;
+        return `value="${val.replace(/</g, '&lt;').replace(/>/g, '&gt;')}"`;
+      });
+
     const handleMessage = (evt: MessageEvent) => {
       if (!evt.data || typeof evt.data !== 'string') return;
       try {
         const msg = JSON.parse(evt.data);
         if (msg.event === 'init') {
+          const safeXml = sanitizeXmlAttributeValues(latestXmlRef.current || xml);
           iframeRef.current?.contentWindow?.postMessage(
             JSON.stringify({
               action: 'load',
               autosave: 1,
-              xml: latestXmlRef.current || xml,
+              xml: safeXml,
             }),
             '*'
           );

@@ -7,6 +7,13 @@
  * - 4 full-width horizontal cards (`x=80, width=975, height=272` at `y=120, 410, 700, 990`) with 100% verbatim text & geometry parity with `52.png`.
  */
 export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string): string {
+  const escAttr = (s: string): string =>
+    String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
   const modelStarSvg = `<svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke="#C2410C" stroke-width="2.4" stroke-linecap="round"><line x1="16" y1="3" x2="16" y2="29"/><line x1="3" y1="16" x2="29" y2="16"/><line x1="6.8" y1="6.8" x2="25.2" y2="25.2"/><line x1="25.2" y1="6.8" x2="6.8" y2="25.2"/><line x1="16" y1="3" x2="16" y2="29" transform="rotate(30 16 16)"/><line x1="16" y1="3" x2="16" y2="29" transform="rotate(60 16 16)"/></g><circle cx="16" cy="16" r="3.5" fill="#FCFBF7"/></svg>`;
 
   const attemptStarSvg = `<svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke="#C2410C" stroke-width="2.4" stroke-linecap="round"><line x1="16" y1="3" x2="16" y2="29"/><line x1="3" y1="16" x2="29" y2="16"/><line x1="6.8" y1="6.8" x2="25.2" y2="25.2"/><line x1="25.2" y1="6.8" x2="6.8" y2="25.2"/><line x1="16" y1="3" x2="16" y2="29" transform="rotate(30 16 16)"/><line x1="16" y1="3" x2="16" y2="29" transform="rotate(60 16 16)"/></g><circle cx="16" cy="16" r="3.5" fill="#FCFBF7"/></svg>`;
@@ -17,8 +24,11 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
 
   const checkboxSvg = `<span style="display:inline-block;width:13px;height:13px;border:1.8px solid #047857;border-radius:3px;vertical-align:-2px;margin-right:7px;background:#FFFFFF;"></span>`;
 
-  const headerHtml = (customTitle && customTitle.trim())
-    ? `<font color="#1E293B">${customTitle.trim()}</font>`
+  const safeCustomTitle = customTitle && customTitle.trim()
+    ? customTitle.trim().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    : '';
+  const headerHtml = safeCustomTitle
+    ? `<font color="#1E293B">${safeCustomTitle}</font>`
     : `<font color="#1E293B">Context </font><font color="#94A3B8">+</font><font color="#1E293B"> Harness </font><font color="#94A3B8">+</font><font color="#1E293B"> Loop </font><font color="#94A3B8">+</font><font color="#D96B38"> Graph</font>`;
 
   return `<mxfile host="embed.diagrams.net" modified="2026-04-17T12:00:00.000Z" agent="PromptCanvas Canonical Engine" version="24.0.0">
@@ -34,7 +44,7 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
         </mxCell>
 
         <!-- ==================== TOP HEADER & WATERMARK ==================== -->
-        <mxCell id="header_title" value="${headerHtml.replace(/"/g, '&quot;')}" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=42;fontStyle=1;fontColor=#1E293B;" vertex="1" parent="1">
+        <mxCell id="header_title" value="${escAttr(headerHtml)}" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=42;fontStyle=1;fontColor=#1E293B;" vertex="1" parent="1">
           <mxGeometry x="25" y="16" width="920" height="54" as="geometry" />
         </mxCell>
 
@@ -42,7 +52,7 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
           <mxGeometry x="25" y="72" width="900" height="28" as="geometry" />
         </mxCell>
 
-        <mxCell id="header_watermark" value="${watermarkStarSvg.replace(/"/g, '&quot;')}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="header_watermark" value="${escAttr(watermarkStarSvg)}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="945" y="8" width="110" height="105" as="geometry" />
         </mxCell>
 
@@ -115,7 +125,7 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
         </mxCell>
 
         <!-- Center Model Node -->
-        <mxCell id="c01_model_circle" value="${modelStarSvg.replace(/"/g, '&quot;')}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#FCFBF7;strokeColor=#E7E2D8;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="c01_model_circle" value="${escAttr(modelStarSvg)}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#FCFBF7;strokeColor=#E7E2D8;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="515" y="206" width="54" height="54" as="geometry" />
         </mxCell>
         <mxCell id="c01_model_label" value="the model" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;fontSize=15;fontStyle=1;fontColor=#1E293B;" vertex="1" parent="1">
@@ -166,7 +176,7 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
         <mxCell id="c01_prompt_text" value="List the files and tool results you are using for this job. If anything is missing, name it and ask before assuming what it says." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=15;fontColor=#475569;" vertex="1" parent="1">
           <mxGeometry x="194" y="328" width="785" height="44" as="geometry" />
         </mxCell>
-        <mxCell id="c01_prompt_btn" value="${upArrowSvg.replace(/"/g, '&quot;')}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1E293B;strokeColor=none;" vertex="1" parent="1">
+        <mxCell id="c01_prompt_btn" value="${escAttr(upArrowSvg)}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1E293B;strokeColor=none;" vertex="1" parent="1">
           <mxGeometry x="990" y="333" width="34" height="34" as="geometry" />
         </mxCell>
 
@@ -223,7 +233,7 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
         </mxCell>
 
         <!-- Center Model in Harness -->
-        <mxCell id="c02_model_circle" value="${modelStarSvg.replace(/"/g, '&quot;')}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#FCFBF7;strokeColor=#E7E2D8;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="c02_model_circle" value="${escAttr(modelStarSvg)}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#FCFBF7;strokeColor=#E7E2D8;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="381" y="492" width="54" height="54" as="geometry" />
         </mxCell>
         <mxCell id="c02_model_label" value="the model" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;fontSize=15;fontStyle=1;fontColor=#1E293B;" vertex="1" parent="1">
@@ -296,7 +306,7 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
         <mxCell id="c02_prompt_text" value="Read CLAUDE.md. Use the connected tools and skills needed for this job. Flag any conflicting rules before you start work." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=15;fontColor=#475569;" vertex="1" parent="1">
           <mxGeometry x="194" y="618" width="785" height="44" as="geometry" />
         </mxCell>
-        <mxCell id="c02_prompt_btn" value="${upArrowSvg.replace(/"/g, '&quot;')}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1E293B;strokeColor=none;" vertex="1" parent="1">
+        <mxCell id="c02_prompt_btn" value="${escAttr(upArrowSvg)}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1E293B;strokeColor=none;" vertex="1" parent="1">
           <mxGeometry x="990" y="623" width="34" height="34" as="geometry" />
         </mxCell>
 
@@ -315,7 +325,7 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
         </mxCell>
 
         <!-- attempt Circle -->
-        <mxCell id="c03_attempt_circle" value="${attemptStarSvg.replace(/"/g, '&quot;')}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#FCFBF7;strokeColor=#E7E2D8;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="c03_attempt_circle" value="${escAttr(attemptStarSvg)}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#FCFBF7;strokeColor=#E7E2D8;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="124" y="766" width="54" height="54" as="geometry" />
         </mxCell>
         <mxCell id="c03_attempt_label" value="attempt" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;fontSize=15;fontStyle=1;fontColor=#1E293B;" vertex="1" parent="1">
@@ -336,10 +346,10 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
         <mxCell id="c03_check_hdr" value="CHECK THE OUTPUT" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11.5;fontStyle=1;fontColor=#64748B;" vertex="1" parent="1">
           <mxGeometry x="234" y="756" width="200" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="c03_check_1" value="${checkboxSvg.replace(/"/g, '&quot;')}Every box fits" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=15;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+        <mxCell id="c03_check_1" value="${escAttr(checkboxSvg)}Every box fits" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=15;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="234" y="780" width="200" height="24" as="geometry" />
         </mxCell>
-        <mxCell id="c03_check_2" value="${checkboxSvg.replace(/"/g, '&quot;')}Nothing is cut off" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=15;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+        <mxCell id="c03_check_2" value="${escAttr(checkboxSvg)}Nothing is cut off" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=15;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="234" y="805" width="200" height="24" as="geometry" />
         </mxCell>
 
@@ -432,7 +442,7 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
         <mxCell id="c03_prompt_text" value="Check that every box fits and nothing is cut off. Fix failures and recheck. Stop after 3 tries and report what still fails." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=15;fontColor=#475569;" vertex="1" parent="1">
           <mxGeometry x="194" y="908" width="785" height="44" as="geometry" />
         </mxCell>
-        <mxCell id="c03_prompt_btn" value="${upArrowSvg.replace(/"/g, '&quot;')}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1E293B;strokeColor=none;" vertex="1" parent="1">
+        <mxCell id="c03_prompt_btn" value="${escAttr(upArrowSvg)}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1E293B;strokeColor=none;" vertex="1" parent="1">
           <mxGeometry x="990" y="913" width="34" height="34" as="geometry" />
         </mxCell>
 
@@ -599,7 +609,7 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
         <mxCell id="c04_prompt_text" value="Read this folder. Write MAP.md: topics, unlinked files, connections, date and files read. Mark links FOUND or GUESSED. List unread files." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=15;fontColor=#475569;" vertex="1" parent="1">
           <mxGeometry x="194" y="1198" width="785" height="44" as="geometry" />
         </mxCell>
-        <mxCell id="c04_prompt_btn" value="${upArrowSvg.replace(/"/g, '&quot;')}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1E293B;strokeColor=none;" vertex="1" parent="1">
+        <mxCell id="c04_prompt_btn" value="${escAttr(upArrowSvg)}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1E293B;strokeColor=none;" vertex="1" parent="1">
           <mxGeometry x="990" y="1203" width="34" height="34" as="geometry" />
         </mxCell>
 
