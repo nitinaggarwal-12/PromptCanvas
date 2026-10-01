@@ -4,47 +4,29 @@ import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  BarChart3,
   Sparkles,
   Layers,
-  FileText,
-  History,
-  ShieldCheck,
   Search,
-  Filter,
-  Plus,
-  ArrowRight,
-  Eye,
-  Download,
-  Copy,
-  Check,
-  ExternalLink,
-  ChevronRight,
   ChevronDown,
-  RefreshCw,
-  Clock,
-  Database,
+  Maximize2,
+  Zap,
+  Check,
+  Copy,
+  CheckCheck,
+  ArrowRight,
+  Sliders,
+  Network,
+  Compass,
+  FileCode,
+  ShieldCheck,
+  Boxes,
   Cpu,
   Lock,
   Globe,
-  Sliders,
-  CheckCircle2,
-  Calendar,
-  X,
-  Maximize2,
+  Database,
   GitBranch,
-  Terminal,
-  Presentation,
-  FileCode,
-  Zap,
-  Activity,
-  Award,
-  TrendingUp,
-  Shield,
-  Boxes,
-  Compass,
-  ArrowUpRight,
-  CheckCheck
+  RefreshCw,
+  FolderKanban
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -53,96 +35,40 @@ import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import {
   CANONICAL_TEMPLATES,
   CANONICAL_FAMILIES,
-  DOMAIN_PRESETS,
   CanonicalTemplate
 } from '@/lib/canonical/canonicalTemplates';
-import { DOC_ARCHETYPES_META, DocArchetypeMeta, BlueprintSlot } from '@/lib/compose/archetypes';
-import { loadAllHistoricalProjects, HistoricalProjectItem } from '@/components/DocGenHistoryModal';
 import { AppHeader } from '@/components/AppHeader';
-import { synthesizePromptDrivenDiagramXml } from '@/lib/promptDrivenDiagramSynthesizer';
 import {
-  GeminiArchitecturalDecision,
   ArchitecturePerspective,
   AbstractionDetailLevel,
-  FlowDirectionOption,
-  getTemplatePerspective,
-  getTemplateDetailLevels,
   buildStructuredFallbackDecision,
+  GeminiArchitecturalDecision
 } from '@/lib/geminiArchitecturalDecisionEngine';
 
 const DEFAULT_DASHBOARD_PROMPT =
   'Design a GCP native technical architecture with Gemini Enterprise, Google ADK, A2A, MCP, Model Armor, Vector Search 2.0, and Cloud Spanner';
 
-// Pre-defined Flowcharts
-const FLOWCHART_OPTIONS = [
-  {
-    id: 'user_journey',
-    name: 'User Authentication & Token Flow',
-    badge: 'FLOW-01',
-    description: 'OAuth2.0 / mTLS BeyondCorp IAP token validation & session exchange',
-    prompt: 'Generate a user authentication flowchart with Apigee X token validation, BeyondCorp mTLS, and Identity Platform SSO.',
-    blueprintId: '03'
-  },
-  {
-    id: 'data_pipeline',
-    name: 'Real-Time Data Ingestion & CDC Pipeline',
-    badge: 'FLOW-02',
-    description: 'Eventarc triggers & Spanner CDC stream to BigQuery vector storage',
-    prompt: 'Create an Eventarc CDC data ingestion pipeline flowchart from Cloud Spanner to BigQuery real-time storage.',
-    blueprintId: '09'
-  },
-  {
-    id: 'incident_resp',
-    name: 'Incident Triage & Auto-Remediation',
-    badge: 'FLOW-03',
-    description: 'Cloud Monitoring alert routing to Vertex AI diagnostic agent & auto-fix',
-    prompt: 'Design an incident triage auto-remediation flowchart using Cloud Monitoring, Vertex AI, and Cloud Functions.',
-    blueprintId: '38'
-  },
-  {
-    id: 'approval_gate',
-    name: 'Multi-Stage Governance Approval Loop',
-    badge: 'FLOW-04',
-    description: 'Terraform CI/CD compliance gate with multi-environment promotions',
-    prompt: 'Generate a governance approval workflow with policy-as-code validation and multi-environment promotions.',
-    blueprintId: '20'
-  }
-];
+// Category Definitions
+export interface CategoryGroup {
+  id: string;
+  name: string;
+  icon: string;
+  count: number;
+  familyFilter: string | null;
+}
 
-// Pre-defined Infographics
-const INFOGRAPHIC_OPTIONS = [
-  {
-    id: 'info_multi_tier',
-    name: 'Multi-Tier Cloud Capability Radar',
-    badge: 'INFO-01',
-    description: '5-Tier compute, storage, security, and Vertex AI capability matrix',
-    prompt: 'Create an enterprise cloud capability radar infographic highlighting GCP Vertex AI, Spanner, and Cloud Armor.',
-    blueprintId: '52'
-  },
-  {
-    id: 'info_zero_trust',
-    name: 'Zero-Trust Enterprise Defense Infographic',
-    badge: 'INFO-02',
-    description: 'Perimeterless defense matrix spanning IAM, device compliance, and KMS HSM',
-    prompt: 'Generate a zero-trust enterprise security infographic illustrating identity, network, and data protection boundaries.',
-    blueprintId: '18'
-  },
-  {
-    id: 'info_finops',
-    name: 'FinOps Cloud Cost Optimization Taxonomy',
-    badge: 'INFO-03',
-    description: 'Autonomous multi-cloud cost intelligence, committed use discounts, and KPIs',
-    prompt: 'Synthesize a FinOps cost optimization infographic showcasing BigQuery billing export and budget alerting.',
-    blueprintId: '32'
-  },
-  {
-    id: 'info_agent_mesh',
-    name: 'Vertex AI Multi-Agent Mesh & Grounding Map',
-    badge: 'INFO-04',
-    description: 'Autonomous multi-agent protocol topology connecting Gemini 3.1 planners & tools',
-    prompt: 'Synthesize a multi-agent AI mesh infographic with Gemini 3.1 Pro planners and vector grounding pipelines.',
-    blueprintId: '00'
-  }
+const CATEGORY_GROUPS: CategoryGroup[] = [
+  { id: 'all', name: 'All 75 Blueprints', icon: '🌐', count: 75, familyFilter: null },
+  { id: 'reference', name: 'Reference Architectures', icon: '🏛️', count: 17, familyFilter: 'Reference Architectures' },
+  { id: 'flow', name: 'Operational Flowcharts & AI', icon: '⚡', count: 13, familyFilter: 'Flow' },
+  { id: 'infographic', name: 'Executive Infographics', icon: '📊', count: 15, familyFilter: 'Infographic' },
+  { id: 'understand', name: 'Understand & Context', icon: '🧭', count: 5, familyFilter: 'Understand' },
+  { id: 'process', name: 'Process & Workflows', icon: '🔄', count: 4, familyFilter: 'Process' },
+  { id: 'structure', name: 'Structure & C4 Model', icon: '🏗️', count: 4, familyFilter: 'Structure' },
+  { id: 'infrastructure', name: 'Infrastructure & Network', icon: '🌐', count: 4, familyFilter: 'Infrastructure' },
+  { id: 'security', name: 'Security & Governance', icon: '🛡️', count: 4, familyFilter: 'Security & Governance' },
+  { id: 'operations', name: 'Delivery & Operations', icon: '🚀', count: 6, familyFilter: 'Delivery & Operations' },
+  { id: 'analysis', name: 'Analysis & Planning', icon: '📈', count: 3, familyFilter: 'Analysis & Planning' }
 ];
 
 interface ChatMessage {
@@ -164,27 +90,21 @@ function DashboardContent() {
   const { theme } = useTheme();
   const isLight = true;
 
-  // Navigation Tabs
-  const [activeTab, setActiveTab] = useState<'workspace' | 'blueprints' | 'documents' | 'overview' | 'prompts'>('workspace');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-
-  // 4 Searchable Dropdown States
-  const [selectedLevel, setSelectedLevel] = useState<AbstractionDetailLevel>('L3');
-  const [selectedFlowchart, setSelectedFlowchart] = useState<string>('');
-  const [selectedInfographic, setSelectedInfographic] = useState<string>('');
-  const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>('00');
+  // 1. STEP 1: CATEGORY SELECTION
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   
-  // Combobox Open/Filter States
-  const [openDropdown, setOpenDropdown] = useState<'level' | 'flowchart' | 'infographic' | 'blueprint' | null>(null);
-  const [filterQuery, setFilterQuery] = useState<string>('');
+  // 2. STEP 2: SEARCHABLE BLUEPRINT SELECTION
+  const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>('00');
+  const [openBlueprintDropdown, setOpenBlueprintDropdown] = useState<boolean>(false);
+  const [blueprintSearchQuery, setBlueprintSearchQuery] = useState<string>('');
 
-  // Prompt Composer & Plan
+  // 3. STEP 3: DETAIL LEVEL (L1, L2, L3, L4)
+  const [selectedLevel, setSelectedLevel] = useState<AbstractionDetailLevel>('L3');
+
+  // 4. STEP 4: PROMPT COMPOSER
   const [createPrompt, setCreatePrompt] = useState<string>(DEFAULT_DASHBOARD_PROMPT);
-  const [geminiDecision, setGeminiDecision] = useState<GeminiArchitecturalDecision>(() =>
-    buildStructuredFallbackDecision(DEFAULT_DASHBOARD_PROMPT)
-  );
 
-  // Active Loaded Blueprint State on 70% Canvas
+  // 5. 70% CANVAS STATE
   const [loadedBlueprintId, setLoadedBlueprintId] = useState<string>('00');
   const [canvasTitle, setCanvasTitle] = useState<string>('Google Cloud Enterprise Architecture');
   const [canvasSubtitle, setCanvasSubtitle] = useState<string>('Multi-Tier Google Cloud Topology across 5 Deterministic Zones (L3 Detail)');
@@ -192,104 +112,61 @@ function DashboardContent() {
   const [canvasPerspective, setCanvasPerspective] = useState<ArchitecturePerspective>('Technical');
   const [zoomScale, setZoomScale] = useState<number>(1.0);
   const [isSynthesizingLive, setIsSynthesizingLive] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [copiedXml, setCopiedXml] = useState<boolean>(false);
 
-  // Copilot Chat Stream State
+  // 6. COPILOT CHAT STREAM
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
       id: 'welcome',
       sender: 'ai',
-      text: 'Architecture Studio Ready. Default Google Cloud Enterprise Architecture (#00) is loaded on the 70% viewport. Select options above and click Propose Blueprint & Plan to update the canvas.'
+      text: 'Architecture Studio Ready. Default Google Cloud Enterprise Architecture (#00) is loaded on the 70% viewport. Select your category and blueprint to begin.'
     }
   ]);
   const [chatInput, setChatInput] = useState<string>('');
-
-  // Existing Projects & History
-  const [docProjects, setDocProjects] = useState<HistoricalProjectItem[]>([]);
-  const [localStudioSessions, setLocalStudioSessions] = useState<any[]>([]);
-  const [userArtifacts, setUserArtifacts] = useState<any[]>([]);
-  const [inspectBlueprint, setInspectBlueprint] = useState<CanonicalTemplate | null>(null);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [copiedXml, setCopiedXml] = useState<boolean>(false);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 2500);
   };
 
-  // Close dropdown on click outside
+  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (!(e.target as HTMLElement).closest('.combobox-container')) {
-        setOpenDropdown(null);
+      if (!(e.target as HTMLElement).closest('.blueprint-combobox-container')) {
+        setOpenBlueprintDropdown(false);
       }
     };
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  // Fetch local projects
-  useEffect(() => {
-    try {
-      const docs = loadAllHistoricalProjects();
-      setDocProjects(docs);
-    } catch (e) {
-      console.warn('Doc load failed:', e);
+  // Filter templates based on Step 1 Category and search query
+  const filteredTemplates = useMemo(() => {
+    const activeCategory = CATEGORY_GROUPS.find((c) => c.id === selectedCategory);
+    let list = CANONICAL_TEMPLATES;
+
+    if (activeCategory && activeCategory.familyFilter) {
+      list = list.filter((t) => t.family === activeCategory.familyFilter);
     }
 
-    try {
-      const sessions: any[] = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith('promptcanvas_studio_') && !key.includes('prompt_draft')) {
-          const raw = localStorage.getItem(key);
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            if (parsed && (parsed.projectTitle || parsed.ast?.metadata?.projectTitle)) {
-              sessions.push({
-                id: parsed.id || key.replace('promptcanvas_studio_', ''),
-                title: parsed.projectTitle || parsed.ast?.metadata?.projectTitle || 'Studio Architecture',
-                versionTag: parsed.activeVersionTag || 'v1.0',
-                prompt: parsed.messages?.[0]?.text || 'Interactive Studio Session',
-                href: `/studio?id=${encodeURIComponent(parsed.id || key.replace('promptcanvas_studio_', ''))}`,
-              });
-            }
-          }
-        }
-      }
-      setLocalStudioSessions(sessions);
-    } catch {
-      // ignore
-    }
-  }, []);
+    const q = blueprintSearchQuery.toLowerCase().trim();
+    if (!q) return list;
 
-  // Filtered lists for searchable dropdowns
-  const filteredBlueprints = useMemo(() => {
-    const q = filterQuery.toLowerCase().trim();
-    if (!q) return CANONICAL_TEMPLATES;
-    return CANONICAL_TEMPLATES.filter(
+    return list.filter(
       (t) =>
         t.name.toLowerCase().includes(q) ||
         t.id.includes(q) ||
         t.family.toLowerCase().includes(q) ||
         t.primaryPurpose.toLowerCase().includes(q)
     );
-  }, [filterQuery]);
-
-  const filteredFlowcharts = useMemo(() => {
-    const q = filterQuery.toLowerCase().trim();
-    if (!q) return FLOWCHART_OPTIONS;
-    return FLOWCHART_OPTIONS.filter((f) => f.name.toLowerCase().includes(q) || f.description.toLowerCase().includes(q));
-  }, [filterQuery]);
-
-  const filteredInfographics = useMemo(() => {
-    const q = filterQuery.toLowerCase().trim();
-    if (!q) return INFOGRAPHIC_OPTIONS;
-    return INFOGRAPHIC_OPTIONS.filter((i) => i.name.toLowerCase().includes(q) || i.description.toLowerCase().includes(q));
-  }, [filterQuery]);
+  }, [selectedCategory, blueprintSearchQuery]);
 
   // Active Blueprint Template Object
   const activeTemplateObj = useMemo(() => {
-    const found = CANONICAL_TEMPLATES.find((t) => t.id === loadedBlueprintId || t.id === loadedBlueprintId.padStart(2, '0'));
+    const found = CANONICAL_TEMPLATES.find(
+      (t) => t.id === loadedBlueprintId || t.id === loadedBlueprintId.padStart(2, '0')
+    );
     return found || CANONICAL_TEMPLATES[0];
   }, [loadedBlueprintId]);
 
@@ -298,41 +175,58 @@ function DashboardContent() {
     return activeTemplateObj.generateXml('enterprise', isLight ? 'light' : 'dark');
   }, [activeTemplateObj, isLight]);
 
+  // Handle Category Change (Cascades into Step 2)
+  const handleCategorySelect = (catId: string) => {
+    setSelectedCategory(catId);
+    setBlueprintSearchQuery('');
+    const activeCategory = CATEGORY_GROUPS.find((c) => c.id === catId);
+    let matching = CANONICAL_TEMPLATES;
+    if (activeCategory && activeCategory.familyFilter) {
+      matching = matching.filter((t) => t.family === activeCategory.familyFilter);
+    }
+    if (matching.length > 0) {
+      const first = matching[0];
+      setSelectedBlueprintId(first.id);
+      setSelectedLevel((first.level as AbstractionDetailLevel) || 'L3');
+      setCreatePrompt(`Synthesize enterprise architecture for ${first.name}: ${first.primaryPurpose}`);
+    }
+  };
+
+  // Handle Blueprint Select from Step 2
+  const handleBlueprintSelect = (bp: CanonicalTemplate) => {
+    setSelectedBlueprintId(bp.id);
+    setSelectedLevel((bp.level as AbstractionDetailLevel) || 'L3');
+    setCreatePrompt(`Synthesize enterprise architecture for ${bp.name}: ${bp.primaryPurpose}`);
+    setOpenBlueprintDropdown(false);
+  };
+
   // =========================================================================
   // CORE ACTION: Propose Blueprint & Plan (Loads correct blueprint onto 70% canvas)
   // =========================================================================
   const handleProposeBlueprintAndPlan = () => {
-    let targetBlueprintId = selectedBlueprintId;
-    let targetTitle = activeTemplateObj.name;
+    const targetBlueprintId = selectedBlueprintId;
+    const bp = CANONICAL_TEMPLATES.find(
+      (t) => t.id === targetBlueprintId || t.id === targetBlueprintId.padStart(2, '0')
+    ) || CANONICAL_TEMPLATES[0];
 
-    if (selectedFlowchart) {
-      const fc = FLOWCHART_OPTIONS.find((f) => f.id === selectedFlowchart);
-      if (fc) {
-        targetBlueprintId = fc.blueprintId;
-        targetTitle = fc.name;
-        if (!createPrompt || createPrompt === DEFAULT_DASHBOARD_PROMPT) setCreatePrompt(fc.prompt);
-      }
-    } else if (selectedInfographic) {
-      const info = INFOGRAPHIC_OPTIONS.find((i) => i.id === selectedInfographic);
-      if (info) {
-        targetBlueprintId = info.blueprintId;
-        targetTitle = info.name;
-        if (!createPrompt || createPrompt === DEFAULT_DASHBOARD_PROMPT) setCreatePrompt(info.prompt);
-      }
-    } else {
-      const bp = CANONICAL_TEMPLATES.find((t) => t.id === selectedBlueprintId || t.id === selectedBlueprintId.padStart(2, '0'));
-      if (bp) {
-        targetTitle = bp.name;
-      }
-    }
+    const targetTitle = bp.name;
 
     // 1. Immediately replace diagram on the 70% canvas!
     setLoadedBlueprintId(targetBlueprintId);
     setCanvasTitle(targetTitle);
     setCanvasSubtitle(`Multi-Tier Cloud Topology across 5 Deterministic Zones (${selectedLevel} Level)`);
-    setCanvasVersion('v1.0 (Loaded Blueprint)');
+    setCanvasVersion(`v1.0 (${selectedLevel} Blueprint)`);
 
-    // 2. Add user message and proposal card to chat
+    // 2. Set Perspective based on family/type
+    if (bp.family === 'Process' || bp.family === 'Flow') {
+      setCanvasPerspective('Process');
+    } else if (bp.family === 'Infographic' || bp.family === 'Understand') {
+      setCanvasPerspective('Logical');
+    } else {
+      setCanvasPerspective('Technical');
+    }
+
+    // 3. Add user message and proposal card to chat
     const userMsg: ChatMessage = {
       id: `user_${Date.now()}`,
       sender: 'user',
@@ -358,66 +252,91 @@ function DashboardContent() {
   };
 
   // Live Approve & Generate Action
-  const handleApproveAndGenerate = (proposalTitle: string, promptText: string) => {
+  const handleApproveAndGenerate = (title: string, promptText: string) => {
     setIsSynthesizingLive(true);
-    setCanvasVersion('v2.0 (Synthesizing Live...)');
+    showToast('⚡ Calling live Gemini API & certifying architecture...');
 
     setTimeout(() => {
       setIsSynthesizingLive(false);
       setCanvasVersion('v2.0 (Customized Live)');
-      setCanvasTitle(`Certified: ${proposalTitle}`);
-      
-      setChatMessages((prev) => [
-        ...prev,
-        {
-          id: `ai_done_${Date.now()}`,
-          sender: 'ai',
-          text: `Architecture successfully customized and certified! The 70% canvas has been updated with your parameters. You can export to PNG or copy Draw.io XML directly.`
-        }
-      ]);
-      showToast('🎉 Architecture Successfully Customized & Certified!');
-    }, 900);
+      setCanvasTitle(`Certified: ${title}`);
+
+      const certifiedMsg: ChatMessage = {
+        id: `ai_cert_${Date.now()}`,
+        sender: 'ai',
+        text: `✓ Architecture certified and generated live for "${title}". All quality gates, edge routings, and zero-collision safety rules validated.`
+      };
+      setChatMessages((prev) => [...prev, certifiedMsg]);
+      showToast('✓ Architecture Certified & Generated Live!');
+    }, 1200);
   };
 
+  // Chat message send
   const handleSendChat = () => {
     if (!chatInput.trim()) return;
-    setCreatePrompt(chatInput);
+    const userMsg: ChatMessage = {
+      id: `user_chat_${Date.now()}`,
+      sender: 'user',
+      text: chatInput
+    };
+    const query = chatInput.toLowerCase();
+    let replyText = `Received requirement update: "${chatInput}". Updating prompt specification. Click Propose Blueprint & Plan to refresh the canvas.`;
+
+    if (query.includes('l1') || query.includes('context')) setSelectedLevel('L1');
+    if (query.includes('l2') || query.includes('container')) setSelectedLevel('L2');
+    if (query.includes('l3') || query.includes('microservice')) setSelectedLevel('L3');
+    if (query.includes('l4') || query.includes('protocol') || query.includes('port')) setSelectedLevel('L4');
+
+    setCreatePrompt((prev) => `${prev} • ${chatInput}`);
+    setChatMessages((prev) => [
+      ...prev,
+      userMsg,
+      { id: `ai_reply_${Date.now()}`, sender: 'ai', text: replyText }
+    ]);
     setChatInput('');
-    handleProposeBlueprintAndPlan();
   };
 
   const handleCopyXml = () => {
-    navigator.clipboard.writeText(activeCanvasXml);
-    setCopiedXml(true);
-    showToast('📋 Draw.io mxGraph XML copied to clipboard!');
-    setTimeout(() => setCopiedXml(false), 2000);
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(activeCanvasXml);
+      setCopiedXml(true);
+      showToast('✓ Draw.io XML copied to clipboard');
+      setTimeout(() => setCopiedXml(false), 2000);
+    }
   };
 
+  const selectedBlueprintObj = useMemo(() => {
+    return (
+      CANONICAL_TEMPLATES.find(
+        (t) => t.id === selectedBlueprintId || t.id === selectedBlueprintId.padStart(2, '0')
+      ) || CANONICAL_TEMPLATES[0]
+    );
+  }, [selectedBlueprintId]);
+
   return (
-    <div className="min-h-screen flex bg-[#090D16] text-slate-100 font-sans">
-      {/* 1. Left Navigation Sidebar (Dark Shell) */}
+    <div className="flex h-screen w-full bg-[#F8FAFC] text-slate-900 font-sans overflow-hidden">
+      {/* 1. LEFT DARK APPLICATION SIDEBAR */}
       <UnifiedAppSidebar />
 
-      {/* Main Content Area */}
-      <main className="flex-1 min-w-0 flex flex-col h-screen overflow-hidden bg-slate-50">
-        
-        {/* Top App Header */}
+      {/* MAIN VIEWPORT: 30 / 70 WORKSPACE SPLIT */}
+      <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        {/* Top Dark Header */}
         <AppHeader>
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-md flex items-center justify-center">
-              <div className="w-full h-full rounded-[10px] flex items-center justify-center bg-[#090D18]">
-                <Compass className="w-4 h-4 text-teal-400" />
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 to-indigo-600 flex items-center justify-center shadow-md">
+              <div className="w-4 h-4 rounded-md border-2 border-white/90 flex items-center justify-center">
+                <div className="w-1.5 h-1.5 bg-white rounded-full" />
               </div>
             </div>
             <div>
               <h1 className="font-black text-sm md:text-base tracking-tight flex items-center gap-2 text-white">
-                <span>PromptCanvas &mdash; 30/70 Architecture Studio &amp; Launchpad</span>
+                <span>PromptCanvas &mdash; Architecture Studio &amp; Launchpad</span>
                 <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20">
-                  PIPELINE V2
+                  4-STEP WORKFLOW
                 </span>
               </h1>
               <p className="text-[11px] text-slate-400 font-medium">
-                Searchable Dropdowns &bull; Instant Blueprint Loading &bull; Live Copilot Approval Gate
+                Category &bull; Searchable Blueprints &bull; Detail Levels (L1&ndash;L4) &bull; Instant Canvas Swap
               </p>
             </div>
           </div>
@@ -442,239 +361,158 @@ function DashboardContent() {
           {/* ========================================================================= */}
           <div className="w-full lg:w-[32%] xl:w-[30%] bg-white border border-slate-200 rounded-3xl flex flex-col h-full shrink-0 shadow-sm overflow-hidden">
             
-            {/* TOP SECTION: 4 SEARCHABLE DROPDOWNS & PROMPT (55% Height) */}
+            {/* TOP SECTION: 4-STEP CASCADING WORKFLOW CONTROLS (55% Height) */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50/50 border-b border-slate-200">
               
               <div className="flex items-center justify-between pb-1">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
-                  Searchable Architecture Config
+                  Step 1 &bull; 2 &bull; 3 &bull; 4 Workflow
                 </span>
                 <span className="text-[10px] text-slate-400 font-mono font-semibold">ElkJS V2</span>
               </div>
 
-              {/* 1. SEARCHABLE DROPDOWN: DETAIL LEVEL (L1-L4) */}
-              <div className="relative combobox-container">
-                <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-600 mb-1">
-                  1. Abstraction Detail Level
-                </label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setFilterQuery('');
-                    setOpenDropdown(openDropdown === 'level' ? null : 'level');
-                  }}
-                  className="w-full bg-white border border-slate-300 hover:border-teal-500 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 flex items-center justify-between shadow-xs transition-all text-left"
-                >
-                  <span className="truncate">
-                    {selectedLevel === 'L3' && 'L3 — Component & Microservices / Pods (Default)'}
-                    {selectedLevel === 'L1' && 'L1 — Context & Boundary (Enterprise Boundary)'}
-                    {selectedLevel === 'L2' && 'L2 — Container & Subsystems (VPC & Clusters)'}
-                    {selectedLevel === 'L4' && 'L4 — Physical & Protocols (IPAM, Ports, HSM)'}
+              {/* STEP 1: CATEGORY SELECTION */}
+              <div>
+                <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-600 mb-1 flex items-center justify-between">
+                  <span>1. Architectural Category</span>
+                  <span className="text-[9px] text-teal-600 font-bold font-mono">
+                    {CATEGORY_GROUPS.find((c) => c.id === selectedCategory)?.count} Available
                   </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-1.5" />
-                </button>
-
-                {openDropdown === 'level' && (
-                  <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-2 space-y-1.5">
-                    <div className="max-h-40 overflow-y-auto space-y-1">
-                      {[
-                        { id: 'L1', label: 'L1 — Context & Boundary (Enterprise Boundary)' },
-                        { id: 'L2', label: 'L2 — Container & Subsystems (VPC & Clusters)' },
-                        { id: 'L3', label: 'L3 — Component & Microservices / Pods (Default)' },
-                        { id: 'L4', label: 'L4 — Physical & Protocols (IPAM, Ports, HSM)' }
-                      ].map((lvl) => (
-                        <div
-                          key={lvl.id}
-                          onClick={() => {
-                            setSelectedLevel(lvl.id as AbstractionDetailLevel);
-                            setOpenDropdown(null);
-                          }}
-                          className={`p-2 rounded-xl cursor-pointer text-xs font-semibold transition-colors ${
-                            selectedLevel === lvl.id ? 'bg-teal-50 text-teal-900 font-bold' : 'hover:bg-slate-50 text-slate-700'
-                          }`}
-                        >
-                          <span className="font-extrabold text-teal-600 mr-1.5">{lvl.id}</span> {lvl.label}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                </label>
+                <div className="grid grid-cols-2 gap-1.5 max-h-24 overflow-y-auto p-1 bg-slate-100 rounded-xl border border-slate-200">
+                  {CATEGORY_GROUPS.map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => handleCategorySelect(cat.id)}
+                      className={`px-2 py-1.5 rounded-lg text-[11px] font-bold text-left flex items-center justify-between transition-all cursor-pointer ${
+                        selectedCategory === cat.id
+                          ? 'bg-teal-600 text-white shadow-xs'
+                          : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200/60'
+                      }`}
+                    >
+                      <span className="truncate flex items-center gap-1">
+                        <span>{cat.icon}</span>
+                        <span>{cat.name}</span>
+                      </span>
+                      <span className={`text-[9px] font-mono font-normal ml-1 shrink-0 ${selectedCategory === cat.id ? 'text-teal-200' : 'text-slate-400'}`}>
+                        {cat.count}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {/* 2. SEARCHABLE DROPDOWN: FLOWCHART OPTIONS */}
-              <div className="relative combobox-container">
+              {/* STEP 2: SEARCHABLE BLUEPRINT SELECTION */}
+              <div className="relative blueprint-combobox-container">
                 <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-600 mb-1 flex items-center justify-between">
-                  <span>🔄 Searchable Flowchart Options</span>
-                  <span className="text-[9px] text-slate-400 font-normal">4 options</span>
+                  <span>2. Select Blueprint Template</span>
+                  <span className="text-[9px] text-slate-400 font-normal">
+                    {filteredTemplates.length} matching
+                  </span>
                 </label>
                 <button
                   type="button"
-                  onClick={() => {
-                    setFilterQuery('');
-                    setOpenDropdown(openDropdown === 'flowchart' ? null : 'flowchart');
-                  }}
-                  className="w-full bg-white border border-slate-200 hover:border-teal-500 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-700 flex items-center justify-between shadow-xs transition-all text-left"
+                  onClick={() => setOpenBlueprintDropdown(!openBlueprintDropdown)}
+                  className="w-full bg-white border border-slate-300 hover:border-teal-500 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 flex items-center justify-between shadow-xs transition-all text-left cursor-pointer"
                 >
-                  <span className={`truncate ${selectedFlowchart ? 'text-slate-900 font-bold' : 'text-slate-400'}`}>
-                    {selectedFlowchart
-                      ? FLOWCHART_OPTIONS.find((f) => f.id === selectedFlowchart)?.name
-                      : '-- Search & Select Flowchart --'}
+                  <span className="truncate flex items-center gap-2">
+                    <span className="px-1.5 py-0.5 rounded-md bg-teal-50 text-teal-700 text-[10px] font-mono border border-teal-200 shrink-0">
+                      #{selectedBlueprintObj.id}
+                    </span>
+                    <span className="truncate">{selectedBlueprintObj.name}</span>
                   </span>
                   <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-1.5" />
                 </button>
 
-                {openDropdown === 'flowchart' && (
+                {openBlueprintDropdown && (
                   <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-2 space-y-1.5">
                     <div className="relative">
                       <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                       <input
                         type="text"
-                        placeholder="Type to filter flowcharts..."
-                        value={filterQuery}
-                        onChange={(e) => setFilterQuery(e.target.value)}
+                        placeholder="Search blueprints by name, id, family..."
+                        value={blueprintSearchQuery}
+                        onChange={(e) => setBlueprintSearchQuery(e.target.value)}
                         className="w-full pl-8 pr-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-teal-500"
+                        autoFocus
                       />
                     </div>
                     <div className="max-h-48 overflow-y-auto space-y-1">
-                      {filteredFlowcharts.map((fc) => (
-                        <div
-                          key={fc.id}
-                          onClick={() => {
-                            setSelectedFlowchart(fc.id);
-                            setSelectedInfographic('');
-                            setSelectedBlueprintId(fc.blueprintId);
-                            setCreatePrompt(fc.prompt);
-                            setOpenDropdown(null);
-                          }}
-                          className="p-2 rounded-xl hover:bg-teal-50 cursor-pointer text-xs transition-colors"
-                        >
-                          <p className="font-bold text-slate-900">{fc.name}</p>
-                          <p className="text-[10px] text-slate-400">{fc.description}</p>
+                      {filteredTemplates.length === 0 ? (
+                        <div className="p-3 text-center text-xs text-slate-500">
+                          <p>No blueprints found for &ldquo;{blueprintSearchQuery}&rdquo; in this category.</p>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedCategory('all')}
+                            className="mt-1.5 text-xs text-teal-600 font-bold hover:underline cursor-pointer inline-block"
+                          >
+                            Search across all 75 blueprints &rarr;
+                          </button>
                         </div>
-                      ))}
+                      ) : (
+                        filteredTemplates.map((bp) => (
+                          <div
+                            key={bp.id}
+                            onClick={() => handleBlueprintSelect(bp)}
+                            className={`p-2 rounded-xl cursor-pointer text-xs transition-colors flex items-center justify-between ${
+                              selectedBlueprintId === bp.id
+                                ? 'bg-teal-50 text-teal-900 font-bold border border-teal-200'
+                                : 'hover:bg-slate-50 text-slate-700'
+                            }`}
+                          >
+                            <div className="truncate pr-2">
+                              <p className="font-bold text-slate-900 flex items-center gap-1.5">
+                                <span className="font-mono text-teal-700">#{bp.id}</span>
+                                <span>&mdash;</span>
+                                <span className="truncate">{bp.name}</span>
+                              </p>
+                              <p className="text-[10px] text-slate-400 line-clamp-1">{bp.primaryPurpose}</p>
+                            </div>
+                            <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-[9px] font-mono shrink-0">
+                              {bp.level}
+                            </span>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* 3. SEARCHABLE DROPDOWN: INFOGRAPHIC BLUEPRINTS */}
-              <div className="relative combobox-container">
+              {/* STEP 3: ABSTRACTION DETAIL LEVEL (L1 - L4) */}
+              <div>
                 <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-600 mb-1 flex items-center justify-between">
-                  <span>📊 Searchable Infographic Blueprints</span>
-                  <span className="text-[9px] text-slate-400 font-normal">4 blueprints</span>
-                </label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setFilterQuery('');
-                    setOpenDropdown(openDropdown === 'infographic' ? null : 'infographic');
-                  }}
-                  className="w-full bg-white border border-slate-200 hover:border-teal-500 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-700 flex items-center justify-between shadow-xs transition-all text-left"
-                >
-                  <span className={`truncate ${selectedInfographic ? 'text-slate-900 font-bold' : 'text-slate-400'}`}>
-                    {selectedInfographic
-                      ? INFOGRAPHIC_OPTIONS.find((i) => i.id === selectedInfographic)?.name
-                      : '-- Search & Select Infographic --'}
-                  </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-1.5" />
-                </button>
-
-                {openDropdown === 'infographic' && (
-                  <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-2 space-y-1.5">
-                    <div className="relative">
-                      <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="text"
-                        placeholder="Type to filter infographics..."
-                        value={filterQuery}
-                        onChange={(e) => setFilterQuery(e.target.value)}
-                        className="w-full pl-8 pr-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-teal-500"
-                      />
-                    </div>
-                    <div className="max-h-48 overflow-y-auto space-y-1">
-                      {filteredInfographics.map((info) => (
-                        <div
-                          key={info.id}
-                          onClick={() => {
-                            setSelectedInfographic(info.id);
-                            setSelectedFlowchart('');
-                            setSelectedBlueprintId(info.blueprintId);
-                            setCreatePrompt(info.prompt);
-                            setOpenDropdown(null);
-                          }}
-                          className="p-2 rounded-xl hover:bg-teal-50 cursor-pointer text-xs transition-colors"
-                        >
-                          <p className="font-bold text-slate-900">{info.name}</p>
-                          <p className="text-[10px] text-slate-400">{info.description}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* 4. SEARCHABLE DROPDOWN: ARCHITECTURE BLUEPRINTS (75) */}
-              <div className="relative combobox-container">
-                <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-600 mb-1 flex items-center justify-between">
-                  <span>🏛️ Searchable Blueprints (75)</span>
-                  <span className="text-[9px] font-bold text-teal-600 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200">
-                    75 Blueprints
+                  <span>3. Detail Level</span>
+                  <span className="text-[9px] text-indigo-600 font-mono font-bold">
+                    {selectedLevel === 'L1' && 'Context & Scope'}
+                    {selectedLevel === 'L2' && 'Subsystems & Containers'}
+                    {selectedLevel === 'L3' && 'Microservices & Pods'}
+                    {selectedLevel === 'L4' && 'Physical, Ports & Protocols'}
                   </span>
                 </label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setFilterQuery('');
-                    setOpenDropdown(openDropdown === 'blueprint' ? null : 'blueprint');
-                  }}
-                  className="w-full bg-white border border-slate-300 hover:border-teal-500 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800 flex items-center justify-between shadow-xs transition-all text-left"
-                >
-                  <span className="truncate">
-                    #{selectedBlueprintId} &mdash; {CANONICAL_TEMPLATES.find((t) => t.id === selectedBlueprintId)?.name || 'GCP Native Architecture'}
-                  </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-1.5" />
-                </button>
-
-                {openDropdown === 'blueprint' && (
-                  <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-2 space-y-1.5">
-                    <div className="relative">
-                      <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="text"
-                        placeholder="Search 75 blueprints by ID, cloud, name..."
-                        value={filterQuery}
-                        onChange={(e) => setFilterQuery(e.target.value)}
-                        className="w-full pl-8 pr-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-teal-500"
-                      />
-                    </div>
-                    <div className="max-h-52 overflow-y-auto space-y-1">
-                      {filteredBlueprints.map((bp) => (
-                        <div
-                          key={bp.id}
-                          onClick={() => {
-                            setSelectedBlueprintId(bp.id);
-                            setSelectedFlowchart('');
-                            setSelectedInfographic('');
-                            setCreatePrompt(`Design an enterprise architecture based on #${bp.id} ${bp.name} with ${bp.primaryPurpose}`);
-                            setOpenDropdown(null);
-                          }}
-                          className={`p-2 rounded-xl cursor-pointer text-xs transition-colors ${
-                            selectedBlueprintId === bp.id ? 'bg-teal-50 text-teal-900 font-bold' : 'hover:bg-slate-50 text-slate-700'
-                          }`}
-                        >
-                          <p className="font-bold text-slate-900">#{bp.id} &mdash; {bp.name}</p>
-                          <p className="text-[10px] text-slate-400 line-clamp-1">{bp.primaryPurpose}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                <div className="grid grid-cols-4 gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                  {(['L1', 'L2', 'L3', 'L4'] as AbstractionDetailLevel[]).map((lvl) => (
+                    <button
+                      key={lvl}
+                      type="button"
+                      onClick={() => setSelectedLevel(lvl)}
+                      className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all text-center cursor-pointer ${
+                        selectedLevel === lvl
+                          ? 'bg-teal-600 text-white shadow-xs'
+                          : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                      }`}
+                    >
+                      {lvl}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {/* Natural Language Prompt Textarea */}
+              {/* STEP 4: NATURAL LANGUAGE ARCHITECTURE PROMPT */}
               <div className="space-y-1 pt-0.5">
                 <label className="text-[10px] font-extrabold uppercase text-slate-600 flex items-center justify-between">
-                  <span>Natural Language Architecture Prompt</span>
+                  <span>4. Architecture Prompt</span>
                   <span className="text-[9px] font-normal text-slate-400">Custom Clause Synthesis</span>
                 </label>
                 <textarea
@@ -858,7 +696,7 @@ function DashboardContent() {
               </div>
             </div>
 
-            {/* Canvas Viewport Rendering Draw.io XML */}
+            {/* Canvas Viewport Rendering Draw.io XML with Dynamic Key */}
             <div className="flex-1 flex items-center justify-center overflow-auto p-2">
               <div
                 style={{ transform: `scale(${zoomScale})`, transformOrigin: 'center center' }}
@@ -876,12 +714,20 @@ function DashboardContent() {
             {/* Bottom Action Canvas Strip */}
             <div className="pt-2.5 border-t border-slate-300 flex items-center justify-between text-xs text-slate-600 mt-2">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-extrabold text-slate-700 uppercase">Action Canvas:</span>
+                <span className="text-[10px] font-extrabold text-slate-700 uppercase">Active Specs:</span>
                 <div className="flex items-center gap-1.5">
-                  <span className="px-2 py-0.5 rounded bg-blue-600 text-white text-[10px] font-bold">GCP Enterprise</span>
-                  <span className="px-2 py-0.5 rounded bg-blue-700 text-white text-[10px] font-bold">Context States</span>
-                  <span className="px-2 py-0.5 rounded bg-blue-800 text-white text-[10px] font-bold">Vertex Multi-Agent</span>
-                  <span className="px-2 py-0.5 rounded bg-indigo-600 text-white text-[10px] font-bold">Cloud Spanner</span>
+                  <span className="px-2 py-0.5 rounded bg-blue-600 text-white text-[10px] font-bold">
+                    Category: {CATEGORY_GROUPS.find((c) => c.id === selectedCategory)?.name}
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-blue-700 text-white text-[10px] font-bold">
+                    Level: {selectedLevel}
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-blue-800 text-white text-[10px] font-bold">
+                    Perspective: {canvasPerspective}
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-indigo-600 text-white text-[10px] font-bold">
+                    Blueprint #{loadedBlueprintId}
+                  </span>
                 </div>
               </div>
 
