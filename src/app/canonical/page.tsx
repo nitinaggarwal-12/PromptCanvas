@@ -195,13 +195,27 @@ function CanonicalContent() {
     setIsAdaptModalOpen(true);
   };
 
-  // Execute Domain Adaptation & Self-Healing
-  const handleRunAdaptation = () => {
+  // Execute Domain Adaptation & Self-Healing (and persist to Saved Architectures Library)
+  const handleRunAdaptation = async () => {
     if (!activeTemplate) return;
     setIsGenerating(true);
+    const effectiveDomain = customPrompt.trim() ? customPrompt : selectedDomain;
+    const domainLabel = DOMAIN_PRESETS.find((d) => d.id === selectedDomain)?.name || selectedDomain;
+    const healedXml = activeTemplate.generateXml(effectiveDomain, themeMode);
+    try {
+      await fetch('/api/diagrams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: `${activeTemplate.name} — ${customPrompt.trim() ? customPrompt.trim().slice(0, 48) : domainLabel}`,
+          architecture_type: `canonical_${activeTemplate.id}`,
+          created_studio: 'studio',
+          xml_content: healedXml,
+          prompt: customPrompt.trim() || `Adapted Blueprint #${activeTemplate.id} (${activeTemplate.name}) for ${domainLabel}`,
+        }),
+      });
+    } catch {}
     setTimeout(() => {
-      const effectiveDomain = customPrompt.trim() ? customPrompt : selectedDomain;
-      const healedXml = activeTemplate.generateXml(effectiveDomain, themeMode);
       setCurrentXml(healedXml);
       setIsGenerating(false);
       setIsAdaptModalOpen(false);
@@ -209,7 +223,7 @@ function CanonicalContent() {
       if (typeof window !== 'undefined') {
         window.history.pushState({ templateId: activeTemplate.id }, '', `/canonical?id=${activeTemplate.id}`);
       }
-    }, 600);
+    }, 450);
   };
 
   const handleCopyXml = () => {
@@ -289,7 +303,16 @@ function CanonicalContent() {
                 </select>
               </div>
 
-              {/* Quick Links & Studio CTA */}
+              {/* Quick Links & Saved Architectures Library CTA */}
+              <Link
+                href="/library"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-teal-500 hover:bg-teal-400 text-slate-950 shadow-md shadow-teal-500/20 transition-all cursor-pointer shrink-0"
+                title="View all created and saved architectures using these blueprints"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span>Saved Architectures</span>
+              </Link>
+
               <Link
                 href="/studio"
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-md shadow-sky-500/20 transition-all cursor-pointer shrink-0"

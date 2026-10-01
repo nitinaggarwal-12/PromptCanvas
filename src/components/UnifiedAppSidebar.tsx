@@ -80,9 +80,10 @@ const NAV_GROUPS: NavGroup[] = [
   },
   {
     id: 'reference',
-    label: 'Library',
+    label: 'Library & Blueprints',
     items: [
-      { id: 'canonical', name: 'Architecture Library', icon: LayoutGrid, href: '/library', badge: '75' },
+      { id: 'library', name: 'Saved Architectures', icon: LayoutGrid, href: '/library', badge: 'SAVED', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
+      { id: 'canonical', name: 'Blueprint Catalog', icon: Network, href: '/canonical', badge: '75' },
     ],
   },
   {
@@ -120,7 +121,10 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
     if (targetPath === '/studio' && (pathname === '/studio' || pathname === '/studio1' || pathname === '/gcp')) {
       return true;
     }
-    if (targetPath === '/library' && (pathname === '/library' || pathname.startsWith('/canonical'))) {
+    if (targetPath === '/library' && pathname === '/library') {
+      return true;
+    }
+    if (targetPath === '/canonical' && pathname.startsWith('/canonical')) {
       return true;
     }
     if (targetPath === '/audit' && (pathname === '/audit' || pathname === '/test-status')) {

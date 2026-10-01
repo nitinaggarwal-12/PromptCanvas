@@ -69,6 +69,7 @@ import { useTheme } from '@/lib/themeContext';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { AppHeader } from '@/components/AppHeader';
 import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
+import { generateUpgradedGcpGeBankingArchitectureXml } from '@/lib/canonical/upgradedGcpGeBankingAgentTemplate';
 
 interface DiagramVersionItem {
   id: string;
@@ -144,23 +145,6 @@ function ArchitectureLibraryContent() {
   const [selectedVersionIndex, setSelectedVersionIndex] = useState<number>(0);
   const [isLoadingVersions, setIsLoadingVersions] = useState<boolean>(false);
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
-
-  // Escape key handler for modals (UX-22)
-  useEffect(() => {
-    if (!showBatchDeleteModal && !activeModalCanvas) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        if (showBatchDeleteModal) {
-          setShowBatchDeleteModal(false);
-        } else if (activeModalCanvas) {
-          setActiveModalCanvas(null);
-        }
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showBatchDeleteModal, activeModalCanvas]);
 
   // Starred Canvases
   const [starredIds, setStarredIds] = useState<Set<string>>(() => {
@@ -259,6 +243,22 @@ function ArchitectureLibraryContent() {
     const seen = new Set<string>();
 
     const BASELINE_REF_TIMESTAMP = '2026-08-15T12:00:00.000Z';
+
+    // 0. 2026 Upgraded GCP & Gemini Enterprise Multi-Agent Banking Architecture (L2/L3 Uncluttered Blueprint)
+    if (!deletedSet.has('GCP-GE-BANKING-2026')) {
+      seen.add('GCP-GE-BANKING-2026');
+      items.push({
+        id: 'GCP-GE-BANKING-2026',
+        name: '2026 Upgraded GCP & Gemini Enterprise Multi-Agent Banking Architecture',
+        architecture_type: 'vision_gcp_multiagent',
+        created_studio: 'vision',
+        created_at: '2026-09-30T12:00:00.000Z',
+        updated_at: '2026-09-30T12:00:00.000Z',
+        version_count: 1,
+        latest_prompt: 'Upgraded L2/L3 Multi-Agent Banking Architecture using Gemini Enterprise, Vertex AI Agent Engine, Google ADK, LangGraph, A2A & MCP Protocols, Gemini 3.1 Pro / 3.8 Flash, vLLM on GKE, Model Armor & SDP, Vector Search 2.0 + Valkey, and OTel GenAI FinOps.',
+        xml_content: generateUpgradedGcpGeBankingArchitectureXml(),
+      });
+    }
 
     // 1. Official Precompiled Sample Blueprints (e.g. GCP-MULTIAGENT-01: Google Multiagent AI System)
     for (const sample of PRECOMPILED_SAMPLE_BLUEPRINTS) {
@@ -684,6 +684,67 @@ function ArchitectureLibraryContent() {
     return list;
   }, [diagrams, activeStudioTab, rightFilterTag, searchQuery, selectedPhase, sortBy, starredIds]);
 
+  // Modal Prev / Next Navigation across filteredDiagrams
+  const currentModalIndex = useMemo(() => {
+    if (!activeModalCanvas) return -1;
+    return filteredDiagrams.findIndex(d => d.id === activeModalCanvas.id);
+  }, [activeModalCanvas, filteredDiagrams]);
+
+  const prevModalDiagram = useMemo(() => {
+    if (filteredDiagrams.length <= 1 || currentModalIndex < 0) return null;
+    const prevIdx = currentModalIndex > 0 ? currentModalIndex - 1 : filteredDiagrams.length - 1;
+    return filteredDiagrams[prevIdx] || null;
+  }, [currentModalIndex, filteredDiagrams]);
+
+  const nextModalDiagram = useMemo(() => {
+    if (filteredDiagrams.length <= 1 || currentModalIndex < 0) return null;
+    const nextIdx = currentModalIndex < filteredDiagrams.length - 1 ? currentModalIndex + 1 : 0;
+    return filteredDiagrams[nextIdx] || null;
+  }, [currentModalIndex, filteredDiagrams]);
+
+  // Keyboard & Iframe Key Navigation for Preview Modal (Escape to close, ArrowLeft / ArrowRight for Prev/Next)
+  useEffect(() => {
+    if (!showBatchDeleteModal && !activeModalCanvas) return;
+    const handleKeyAction = (key: string, e?: KeyboardEvent) => {
+      if (key === 'Escape') {
+        e?.preventDefault();
+        if (showBatchDeleteModal) {
+          setShowBatchDeleteModal(false);
+        } else if (activeModalCanvas) {
+          setActiveModalCanvas(null);
+        }
+      } else if (activeModalCanvas && !showBatchDeleteModal) {
+        if (e && (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) {
+          return;
+        }
+        if (key === 'ArrowLeft' && prevModalDiagram) {
+          e?.preventDefault();
+          handleOpenPreviewModal(prevModalDiagram);
+        } else if (key === 'ArrowRight' && nextModalDiagram) {
+          e?.preventDefault();
+          handleOpenPreviewModal(nextModalDiagram);
+        }
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      handleKeyAction(e.key, e);
+    };
+
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data && event.data.type === 'PROMPTCANVAS_IFRAME_KEY' && typeof event.data.key === 'string') {
+        handleKeyAction(event.data.key);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown, true);
+    window.addEventListener('message', handleMessage);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown, true);
+      window.removeEventListener('message', handleMessage);
+    };
+  }, [showBatchDeleteModal, activeModalCanvas, prevModalDiagram, nextModalDiagram]);
+
   const activeVersion = modalVersions[selectedVersionIndex] || null;
 
   return (
@@ -764,10 +825,10 @@ function ArchitectureLibraryContent() {
             <Link
               href="/canonical"
               className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
-              title="Open Full-Width 53 Blueprint Catalog View"
+              title={`Open Full-Width ${CANONICAL_TEMPLATES.length} Blueprint Catalog View`}
             >
               <LayoutGrid className="w-3.5 h-3.5 text-sky-400" />
-              <span>Full Catalog Cards (53)</span>
+              <span>Blueprint Catalog ({CANONICAL_TEMPLATES.length})</span>
             </Link>
 
             <Link
@@ -805,10 +866,10 @@ function ArchitectureLibraryContent() {
                 </div>
                 <div>
                   <h1 className={`text-base sm:text-lg font-black tracking-tight leading-none ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                    Enterprise Architecture <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Library</span>
+                    Saved Architectures &amp; <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Enterprise Library</span>
                   </h1>
                   <p className={`text-[11px] leading-tight mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                    Unified repository for Official Canonical Blueprints (53), My Custom &amp; Forked Topologies, Guided Lifecycle Matrix, and Vision Decompilations.
+                    Unified repository for My Created &amp; Saved Architectures, Adapted Blueprints, Guided Lifecycle Matrix, Vision Decompilations, and Official Canonical Blueprints ({CANONICAL_TEMPLATES.length}).
                   </p>
                 </div>
               </div>
@@ -847,10 +908,10 @@ function ArchitectureLibraryContent() {
             >
               {[
                 { id: 'all', label: '🌐 All Architectures', count: studioCounts.all, color: 'teal' },
-                { id: 'canonical', label: '📚 Official Canonical (53)', count: studioCounts.canonical, color: 'sky' },
-                { id: 'studio', label: '💎 My Custom & Forked', count: studioCounts.studio, color: 'indigo' },
+                { id: 'studio', label: '💎 My Created & Saved (Studio)', count: studioCounts.studio, color: 'indigo' },
+                { id: 'vision', label: '👁️ Vision Decompiled & Upgraded', count: studioCounts.vision, color: 'teal' },
                 { id: 'studio1', label: '🧭 Guided Matrix & Lab', count: studioCounts.studio1, color: 'emerald' },
-                { id: 'vision', label: '👁️ Vision Decompiled', count: studioCounts.vision, color: 'teal' }
+                { id: 'canonical', label: `📚 Official Canonical (${CANONICAL_TEMPLATES.length})`, count: studioCounts.canonical, color: 'sky' }
               ].map((tab) => {
                 const isActive = activeStudioTab === tab.id;
                 return (
@@ -1502,13 +1563,13 @@ function ArchitectureLibraryContent() {
           >
             
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-slate-800 bg-slate-950 flex items-center justify-between gap-4 shrink-0">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="p-2 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
+            <div className="px-6 py-4 border-b border-slate-800 bg-slate-950 flex flex-wrap items-center justify-between gap-4 shrink-0">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="p-2 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20 shrink-0">
                   <Layers className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <h2 id="library-preview-modal-title" className="text-base font-black truncate max-w-2xl text-white">
+                  <h2 id="library-preview-modal-title" className="text-base font-black truncate max-w-xl text-white">
                     {activeModalCanvas.name}
                   </h2>
                   <div className="flex items-center gap-2 text-xs text-slate-300">
@@ -1517,7 +1578,7 @@ function ArchitectureLibraryContent() {
                     <span>{modalVersions.length} Version{modalVersions.length > 1 ? 's' : ''}</span>
                   </div>
                   {(activeVersion?.prompt || activeModalCanvas.latest_prompt) && (
-                    <div className="mt-1.5 px-2.5 py-1 rounded-lg bg-teal-950/80 border border-teal-500/30 text-[11px] text-teal-200 font-medium max-w-3xl truncate" title={activeVersion?.prompt || activeModalCanvas.latest_prompt}>
+                    <div className="mt-1.5 px-2.5 py-1 rounded-lg bg-teal-950/80 border border-teal-500/30 text-[11px] text-teal-200 font-medium max-w-2xl truncate" title={activeVersion?.prompt || activeModalCanvas.latest_prompt}>
                       <span className="font-black text-teal-400 mr-1.5">💬 Generative Prompt:</span>
                       &ldquo;{activeVersion?.prompt || activeModalCanvas.latest_prompt}&rdquo;
                     </div>
@@ -1525,7 +1586,54 @@ function ArchitectureLibraryContent() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              {/* Center: Backward / Forward Saved Architecture Navigation */}
+              <div
+                id="library-preview-nav-bar"
+                className="flex items-center gap-1.5 bg-slate-900/95 px-2 py-1.5 rounded-2xl border border-slate-700/90 shadow-inner shrink-0"
+              >
+                <button
+                  id="library-preview-prev-btn"
+                  type="button"
+                  disabled={!prevModalDiagram}
+                  onClick={() => prevModalDiagram && handleOpenPreviewModal(prevModalDiagram)}
+                  aria-label="Previous saved architecture"
+                  title={prevModalDiagram ? `Previous (←): ${prevModalDiagram.name}` : 'No previous architecture'}
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    prevModalDiagram
+                      ? 'bg-slate-800 hover:bg-teal-500 hover:text-slate-950 text-slate-100 border border-slate-700 cursor-pointer shadow-sm'
+                      : 'opacity-35 cursor-not-allowed text-slate-500'
+                  }`}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Prev</span>
+                </button>
+
+                <span
+                  id="library-preview-position-badge"
+                  className="text-xs font-mono font-black px-2.5 py-1 rounded-lg bg-slate-950 text-teal-400 border border-slate-800 tabular-nums"
+                >
+                  {currentModalIndex >= 0 ? `${currentModalIndex + 1} / ${filteredDiagrams.length}` : `1 / ${filteredDiagrams.length}`}
+                </span>
+
+                <button
+                  id="library-preview-next-btn"
+                  type="button"
+                  disabled={!nextModalDiagram}
+                  onClick={() => nextModalDiagram && handleOpenPreviewModal(nextModalDiagram)}
+                  aria-label="Next saved architecture"
+                  title={nextModalDiagram ? `Next (→): ${nextModalDiagram.name}` : 'No next architecture'}
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    nextModalDiagram
+                      ? 'bg-slate-800 hover:bg-teal-500 hover:text-slate-950 text-slate-100 border border-slate-700 cursor-pointer shadow-sm'
+                      : 'opacity-35 cursor-not-allowed text-slate-500'
+                  }`}
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
                 {activeVersion && (
                   <>
                     <button
@@ -1547,18 +1655,49 @@ function ArchitectureLibraryContent() {
                   </>
                 )}
                 <button
+                  id="library-preview-close-btn"
                   type="button"
                   onClick={() => setActiveModalCanvas(null)}
-                  aria-label="Close preview modal"
-                  className="min-w-[36px] min-h-[36px] flex items-center justify-center p-1.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+                  aria-label="Close preview modal (Escape)"
+                  title="Close preview mode (Press Esc)"
+                  className="min-h-[36px] flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-200 hover:text-white hover:bg-rose-600/80 hover:border-rose-500 transition cursor-pointer"
                 >
-                  <X className="w-5 h-5" />
+                  <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Esc</span>
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
-            {/* Modal Body Viewport */}
+            {/* Modal Body Viewport with Floating Left/Right Navigation Paddles */}
             <div className="flex-1 overflow-hidden relative bg-[#070A13]">
+              {/* Floating Backward (Previous) Paddle */}
+              {prevModalDiagram && (
+                <button
+                  id="library-preview-float-prev"
+                  type="button"
+                  onClick={() => handleOpenPreviewModal(prevModalDiagram)}
+                  aria-label={`Previous architecture: ${prevModalDiagram.name}`}
+                  title={`Previous (← Left Arrow): ${prevModalDiagram.name}`}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-2xl bg-slate-900/90 hover:bg-teal-500 text-white hover:text-slate-950 border border-slate-700 shadow-2xl flex items-center justify-center transition-all hover:scale-110 cursor-pointer"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+              )}
+
+              {/* Floating Forward (Next) Paddle */}
+              {nextModalDiagram && (
+                <button
+                  id="library-preview-float-next"
+                  type="button"
+                  onClick={() => handleOpenPreviewModal(nextModalDiagram)}
+                  aria-label={`Next architecture: ${nextModalDiagram.name}`}
+                  title={`Next (→ Right Arrow): ${nextModalDiagram.name}`}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-2xl bg-slate-900/90 hover:bg-teal-500 text-white hover:text-slate-950 border border-slate-700 shadow-2xl flex items-center justify-center transition-all hover:scale-110 cursor-pointer"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              )}
+
               {isLoadingVersions ? (
                 <div role="status" aria-live="polite" className="h-full flex items-center justify-center gap-3 text-slate-300">
                   <Loader2 className="w-6 h-6 animate-spin text-teal-400" />
@@ -1579,8 +1718,8 @@ function ArchitectureLibraryContent() {
               )}
             </div>
 
-            {/* Modal Footer: Version Selector */}
-            <div className="px-6 py-3.5 border-t border-slate-800 bg-slate-950 flex items-center justify-between text-xs text-slate-300 shrink-0">
+            {/* Modal Footer: Version Selector & Quick Prev/Next Hints */}
+            <div className="px-6 py-3.5 border-t border-slate-800 bg-slate-950 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-300 shrink-0">
               <div className="flex items-center gap-3">
                 <label htmlFor="library-modal-version-select" className="font-bold text-slate-300">Active Version:</label>
                 <select
@@ -1595,6 +1734,9 @@ function ArchitectureLibraryContent() {
                     </option>
                   ))}
                 </select>
+                <span className="hidden md:inline-flex items-center gap-1.5 text-[11px] text-slate-400 ml-2">
+                  Use <kbd className="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-200 font-mono text-[10px]">←</kbd> <kbd className="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-200 font-mono text-[10px]">→</kbd> to switch architectures &bull; <kbd className="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-200 font-mono text-[10px]">Esc</kbd> to close preview
+                </span>
               </div>
 
               <div className="flex items-center gap-3">

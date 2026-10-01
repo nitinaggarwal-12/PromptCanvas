@@ -49,14 +49,22 @@ export default function DiagramViewer({
     const pointerQuery = window.matchMedia('(pointer: coarse)');
     const syncCompactViewport = () => setIsCompactViewport(widthQuery.matches || pointerQuery.matches);
 
+    const handleIframeKeyMessage = (event: MessageEvent) => {
+      if (event.data && event.data.type === 'PROMPTCANVAS_IFRAME_KEY' && typeof event.data.key === 'string') {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: event.data.key, bubbles: true, cancelable: true }));
+      }
+    };
+
     syncCompactViewport();
     widthQuery.addEventListener?.('change', syncCompactViewport);
     pointerQuery.addEventListener?.('change', syncCompactViewport);
+    window.addEventListener('message', handleIframeKeyMessage);
 
     return () => {
       document.body.classList.remove('pc-diagram-viewer-active');
       widthQuery.removeEventListener?.('change', syncCompactViewport);
       pointerQuery.removeEventListener?.('change', syncCompactViewport);
+      window.removeEventListener('message', handleIframeKeyMessage);
     };
   }, []);
 
@@ -511,6 +519,14 @@ export default function DiagramViewer({
 
           document.body.appendChild(script);
         }
+
+        window.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            try {
+              window.parent.postMessage({ type: 'PROMPTCANVAS_IFRAME_KEY', key: e.key }, '*');
+            } catch (err) {}
+          }
+        }, true);
 
         if (document.readyState === 'complete' || document.readyState === 'interactive') {
           setTimeout(loadViewerScript, 50);
