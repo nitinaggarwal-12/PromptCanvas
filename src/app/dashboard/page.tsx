@@ -71,6 +71,14 @@ const CATEGORY_GROUPS: CategoryGroup[] = [
   { id: 'analysis', name: 'Analysis & Planning', icon: '📈', count: 3, familyFilter: 'Analysis & Planning' }
 ];
 
+// Detail Level Definitions
+const DETAIL_LEVELS: { id: AbstractionDetailLevel; name: string; title: string; desc: string }[] = [
+  { id: 'L1', name: 'Context & Scope', title: 'L1 — Context & Scope', desc: 'Enterprise boundaries, external actors & systems' },
+  { id: 'L2', name: 'Subsystems & Containers', title: 'L2 — Subsystems & Containers', desc: 'VPCs, subnets, clusters, databases & tier boundaries' },
+  { id: 'L3', name: 'Microservices & Pods', title: 'L3 — Microservices & Pods', desc: 'Microservices, queues, pods & event streams' },
+  { id: 'L4', name: 'Physical, Ports & Protocols', title: 'L4 — Physical, Ports & Protocols', desc: 'IPAM, subnets, CIDRs, mTLS, HSM & port mappings' }
+];
+
 interface ChatMessage {
   id: string;
   sender: 'user' | 'ai';
@@ -92,6 +100,7 @@ function DashboardContent() {
 
   // 1. STEP 1: CATEGORY SELECTION
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [openCategoryDropdown, setOpenCategoryDropdown] = useState<boolean>(false);
   
   // 2. STEP 2: SEARCHABLE BLUEPRINT SELECTION
   const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>('00');
@@ -100,6 +109,7 @@ function DashboardContent() {
 
   // 3. STEP 3: DETAIL LEVEL (L1, L2, L3, L4)
   const [selectedLevel, setSelectedLevel] = useState<AbstractionDetailLevel>('L3');
+  const [openLevelDropdown, setOpenLevelDropdown] = useState<boolean>(false);
 
   // 4. STEP 4: PROMPT COMPOSER
   const [createPrompt, setCreatePrompt] = useState<string>(DEFAULT_DASHBOARD_PROMPT);
@@ -133,8 +143,14 @@ function DashboardContent() {
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest('.category-dropdown-container')) {
+        setOpenCategoryDropdown(false);
+      }
       if (!(e.target as HTMLElement).closest('.blueprint-combobox-container')) {
         setOpenBlueprintDropdown(false);
+      }
+      if (!(e.target as HTMLElement).closest('.level-dropdown-container')) {
+        setOpenLevelDropdown(false);
       }
     };
     document.addEventListener('click', handleClickOutside);
@@ -305,6 +321,14 @@ function DashboardContent() {
     }
   };
 
+  const selectedCategoryObj = useMemo(() => {
+    return CATEGORY_GROUPS.find((c) => c.id === selectedCategory) || CATEGORY_GROUPS[0];
+  }, [selectedCategory]);
+
+  const selectedLevelObj = useMemo(() => {
+    return DETAIL_LEVELS.find((l) => l.id === selectedLevel) || DETAIL_LEVELS[2];
+  }, [selectedLevel]);
+
   const selectedBlueprintObj = useMemo(() => {
     return (
       CANONICAL_TEMPLATES.find(
@@ -371,49 +395,78 @@ function DashboardContent() {
                 <span className="text-[10px] text-slate-400 font-mono font-semibold">ElkJS V2</span>
               </div>
 
-              {/* STEP 1: CATEGORY SELECTION */}
-              <div>
+              {/* STEP 1: CATEGORY DROPDOWN */}
+              <div className="relative category-dropdown-container">
                 <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-600 mb-1 flex items-center justify-between">
                   <span>1. Architectural Category</span>
                   <span className="text-[9px] text-teal-600 font-bold font-mono">
-                    {CATEGORY_GROUPS.find((c) => c.id === selectedCategory)?.count} Available
+                    {selectedCategoryObj.count} Available
                   </span>
                 </label>
-                <div className="grid grid-cols-2 gap-1.5 max-h-24 overflow-y-auto p-1 bg-slate-100 rounded-xl border border-slate-200">
-                  {CATEGORY_GROUPS.map((cat) => (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => handleCategorySelect(cat.id)}
-                      className={`px-2 py-1.5 rounded-lg text-[11px] font-bold text-left flex items-center justify-between transition-all cursor-pointer ${
-                        selectedCategory === cat.id
-                          ? 'bg-teal-600 text-white shadow-xs'
-                          : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200/60'
-                      }`}
-                    >
-                      <span className="truncate flex items-center gap-1">
-                        <span>{cat.icon}</span>
-                        <span>{cat.name}</span>
-                      </span>
-                      <span className={`text-[9px] font-mono font-normal ml-1 shrink-0 ${selectedCategory === cat.id ? 'text-teal-200' : 'text-slate-400'}`}>
-                        {cat.count}
-                      </span>
-                    </button>
-                  ))}
-                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenCategoryDropdown(!openCategoryDropdown);
+                    setOpenBlueprintDropdown(false);
+                    setOpenLevelDropdown(false);
+                  }}
+                  className="w-full bg-white border border-slate-300 hover:border-teal-500 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 flex items-center justify-between shadow-xs transition-all text-left cursor-pointer"
+                >
+                  <span className="truncate flex items-center gap-2">
+                    <span className="text-sm">{selectedCategoryObj.icon}</span>
+                    <span className="truncate">{selectedCategoryObj.name}</span>
+                    <span className="px-1.5 py-0.5 rounded bg-teal-50 text-teal-700 text-[10px] font-mono border border-teal-200 shrink-0 ml-auto mr-1">
+                      {selectedCategoryObj.count}
+                    </span>
+                  </span>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-1.5" />
+                </button>
+
+                {openCategoryDropdown && (
+                  <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-2 space-y-1">
+                    <div className="max-h-56 overflow-y-auto space-y-1">
+                      {CATEGORY_GROUPS.map((cat) => (
+                        <div
+                          key={cat.id}
+                          onClick={() => {
+                            handleCategorySelect(cat.id);
+                            setOpenCategoryDropdown(false);
+                          }}
+                          className={`p-2 rounded-xl cursor-pointer text-xs transition-colors flex items-center justify-between ${
+                            selectedCategory === cat.id
+                              ? 'bg-teal-50 text-teal-900 font-bold border border-teal-200'
+                              : 'hover:bg-slate-50 text-slate-700'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 truncate">
+                            <span className="text-sm">{cat.icon}</span>
+                            <span className="truncate">{cat.name}</span>
+                          </div>
+                          <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-[9px] font-mono shrink-0 ml-2">
+                            {cat.count}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* STEP 2: SEARCHABLE BLUEPRINT SELECTION */}
               <div className="relative blueprint-combobox-container">
                 <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-600 mb-1 flex items-center justify-between">
-                  <span>2. Select Blueprint Template</span>
+                  <span>2. Blueprint Template</span>
                   <span className="text-[9px] text-slate-400 font-normal">
                     {filteredTemplates.length} matching
                   </span>
                 </label>
                 <button
                   type="button"
-                  onClick={() => setOpenBlueprintDropdown(!openBlueprintDropdown)}
+                  onClick={() => {
+                    setOpenBlueprintDropdown(!openBlueprintDropdown);
+                    setOpenCategoryDropdown(false);
+                    setOpenLevelDropdown(false);
+                  }}
                   className="w-full bg-white border border-slate-300 hover:border-teal-500 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 flex items-center justify-between shadow-xs transition-all text-left cursor-pointer"
                 >
                   <span className="truncate flex items-center gap-2">
@@ -480,24 +533,72 @@ function DashboardContent() {
                 )}
               </div>
 
-              {/* STEP 3: ABSTRACTION DETAIL LEVEL (L1 - L4) */}
-              <div>
+              {/* STEP 3: DETAIL LEVEL DROPDOWN (L1 - L4) */}
+              <div className="relative level-dropdown-container">
                 <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-600 mb-1 flex items-center justify-between">
-                  <span>3. Detail Level</span>
+                  <span>3. Detail Level (L1 &ndash; L4)</span>
                   <span className="text-[9px] text-indigo-600 font-mono font-bold">
-                    {selectedLevel === 'L1' && 'Context & Scope'}
-                    {selectedLevel === 'L2' && 'Subsystems & Containers'}
-                    {selectedLevel === 'L3' && 'Microservices & Pods'}
-                    {selectedLevel === 'L4' && 'Physical, Ports & Protocols'}
+                    {selectedLevelObj.name}
                   </span>
                 </label>
-                <div className="grid grid-cols-4 gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenLevelDropdown(!openLevelDropdown);
+                    setOpenCategoryDropdown(false);
+                    setOpenBlueprintDropdown(false);
+                  }}
+                  className="w-full bg-white border border-slate-300 hover:border-teal-500 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 flex items-center justify-between shadow-xs transition-all text-left cursor-pointer"
+                >
+                  <span className="truncate flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 text-[10px] font-mono font-black border border-indigo-200 shrink-0">
+                      {selectedLevelObj.id}
+                    </span>
+                    <span className="truncate font-semibold text-slate-800">{selectedLevelObj.title}</span>
+                  </span>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-1.5" />
+                </button>
+
+                {openLevelDropdown && (
+                  <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-2 space-y-1">
+                    <div className="space-y-1">
+                      {DETAIL_LEVELS.map((lvl) => (
+                        <div
+                          key={lvl.id}
+                          onClick={() => {
+                            setSelectedLevel(lvl.id);
+                            setOpenLevelDropdown(false);
+                          }}
+                          className={`p-2 rounded-xl cursor-pointer text-xs transition-colors flex items-center justify-between ${
+                            selectedLevel === lvl.id
+                              ? 'bg-teal-50 text-teal-900 font-bold border border-teal-200'
+                              : 'hover:bg-slate-50 text-slate-700'
+                          }`}
+                        >
+                          <div className="truncate pr-2">
+                            <p className="font-bold text-slate-900 flex items-center gap-1.5">
+                              <span className="px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 text-[9px] font-mono font-bold border border-indigo-200">
+                                {lvl.id}
+                              </span>
+                              <span>&mdash;</span>
+                              <span className="truncate">{lvl.title}</span>
+                            </p>
+                            <p className="text-[10px] text-slate-400 line-clamp-1 mt-0.5">{lvl.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Quick 1-click segmented toggle */}
+                <div className="grid grid-cols-4 gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 mt-1.5">
                   {(['L1', 'L2', 'L3', 'L4'] as AbstractionDetailLevel[]).map((lvl) => (
                     <button
                       key={lvl}
                       type="button"
                       onClick={() => setSelectedLevel(lvl)}
-                      className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all text-center cursor-pointer ${
+                      className={`py-1 rounded-lg text-xs font-bold transition-all text-center cursor-pointer ${
                         selectedLevel === lvl
                           ? 'bg-teal-600 text-white shadow-xs'
                           : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50'
