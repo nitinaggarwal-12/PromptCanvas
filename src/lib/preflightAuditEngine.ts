@@ -11,6 +11,8 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   archType: string = 'custom'
 ): string {
   const isMasterOrStructured = (
+    xmlInput.includes('id="upgraded-gcp-ge-multi-agent-banking-2026"') ||
+    xmlInput.includes('PromptCanvas-2026-Upgrader') ||
     xmlInput.includes('id="exact_unified_system_view"') ||
     xmlInput.includes('TOTAL UNIFIED SYSTEM VIEW') ||
     xmlInput.includes('id="gemini_ent"') ||

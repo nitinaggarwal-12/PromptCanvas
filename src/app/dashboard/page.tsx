@@ -79,14 +79,21 @@ interface DashboardStarterPrompt {
 }
 
 const DEFAULT_DASHBOARD_PROMPT =
-  'Build a time machine capsule for time travel using GCP and Gemini Enterprise';
+  'Design a GCP native technical architecture with Gemini Enterprise, Google ADK, A2A, MCP, Model Armor, Vector Search 2.0, and Cloud Spanner';
 
 const DASHBOARD_STARTER_PROMPTS: DashboardStarterPrompt[] = [
+  {
+    id: 'gcp_native_2026',
+    label: 'GCP & Gemini Enterprise Multi-Agent (Default)',
+    badge: '2026 DEFAULT',
+    prompt: DEFAULT_DASHBOARD_PROMPT,
+    recommendedId: '00',
+  },
   {
     id: 'time_machine_gcp',
     label: 'Time Machine Capsule (GCP + Gemini)',
     badge: 'CHRONOS AI',
-    prompt: DEFAULT_DASHBOARD_PROMPT,
+    prompt: 'Build a time machine capsule for time travel using GCP and Gemini Enterprise',
     recommendedId: '40',
   },
   {
@@ -101,7 +108,7 @@ const DASHBOARD_STARTER_PROMPTS: DashboardStarterPrompt[] = [
     label: 'GCP Vertex Agentic RAG',
     badge: 'GCP',
     prompt: 'Design a Google Cloud Vertex AI Agentic RAG architecture with Gemini, Spanner Graph, Apigee X, and Cloud Armor WAF',
-    recommendedId: '24',
+    recommendedId: '00',
   },
   {
     id: 'multi_region_ha',
@@ -225,7 +232,7 @@ function DashboardContent() {
   const [selectedPerspective, setSelectedPerspective] = useState<ArchitecturePerspective | 'All'>('Logical');
   const [selectedLevel, setSelectedLevel] = useState<AbstractionDetailLevel | 'All'>('L3');
   const [selectedDirection, setSelectedDirection] = useState<FlowDirectionOption>('LR');
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('40');
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('00');
   const [previewMode, setPreviewMode] = useState<'tailored' | 'as_is'>('tailored');
   const [userLockedTemplate, setUserLockedTemplate] = useState<boolean>(false);
   const [hoveredTemplateId, setHoveredTemplateId] = useState<string | null>(null);
@@ -346,7 +353,7 @@ function DashboardContent() {
               if (dec.recommendedDomain) {
                 setSelectedDomain(dec.recommendedDomain);
               }
-              setSelectedTemplateId(dec.recommendedBlueprintId || '40');
+              setSelectedTemplateId(dec.recommendedBlueprintId || '00');
             }
           }
         }
@@ -380,7 +387,10 @@ function DashboardContent() {
     const list = CANONICAL_TEMPLATES.filter((tpl) => {
       const tplPersp = getTemplatePerspective(tpl);
       const tplLevels = getTemplateDetailLevels(tpl);
-      const matchesPersp = selectedPerspective === 'All' || tplPersp === selectedPerspective;
+      const matchesPersp =
+        selectedPerspective === 'All' ||
+        tplPersp === selectedPerspective ||
+        (tpl.id === '00' && (selectedPerspective === 'Technical' || selectedPerspective === 'Logical'));
       const matchesLevel = selectedLevel === 'All' || tplLevels.includes(selectedLevel as AbstractionDetailLevel);
       const matchesFam = selectedFamily === 'All' || tpl.family.toLowerCase() === selectedFamily.toLowerCase();
       const q = searchQuery.trim().toLowerCase();
@@ -395,7 +405,10 @@ function DashboardContent() {
     return list.length > 0
       ? list
       : CANONICAL_TEMPLATES.filter((tpl) =>
-          selectedPerspective === 'All' ? true : getTemplatePerspective(tpl) === selectedPerspective
+          selectedPerspective === 'All'
+            ? true
+            : getTemplatePerspective(tpl) === selectedPerspective ||
+              (tpl.id === '00' && (selectedPerspective === 'Technical' || selectedPerspective === 'Logical'))
         );
   }, [selectedPerspective, selectedLevel, selectedFamily, searchQuery]);
 
@@ -413,7 +426,7 @@ function DashboardContent() {
       setSelectedLevel('L1');
       setSelectedTemplateId(concBp);
     } else if (newPersp === 'Technical') {
-      const techBp = geminiDecision?.perspectiveMatches?.Technical?.blueprintId || '16';
+      const techBp = geminiDecision?.perspectiveMatches?.Technical?.blueprintId || '00';
       if (selectedLevel === 'L4') {
         setSelectedTemplateId('stratum_l4');
       } else {
@@ -421,7 +434,7 @@ function DashboardContent() {
         setSelectedTemplateId(techBp);
       }
     } else if (newPersp === 'Logical') {
-      const logBp = geminiDecision?.perspectiveMatches?.Logical?.blueprintId || geminiDecision?.recommendedBlueprintId || '40';
+      const logBp = geminiDecision?.perspectiveMatches?.Logical?.blueprintId || geminiDecision?.recommendedBlueprintId || '00';
       setSelectedLevel('L3');
       setSelectedTemplateId(logBp);
     }
@@ -458,10 +471,10 @@ function DashboardContent() {
 
   // Top recommended match from Gemini Decision
   const topRecommendedMatch = useMemo(() => {
-    const recId = geminiDecision?.recommendedBlueprintId || '40';
+    const recId = geminiDecision?.recommendedBlueprintId || '00';
     const tpl =
       CANONICAL_TEMPLATES.find((t) => t.id === recId.padStart(2, '0') || t.id === recId) ||
-      CANONICAL_TEMPLATES.find((t) => t.id === '40') ||
+      CANONICAL_TEMPLATES.find((t) => t.id === '00') ||
       CANONICAL_TEMPLATES[0];
     return {
       template: tpl,

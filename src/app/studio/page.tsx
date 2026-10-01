@@ -829,13 +829,15 @@ function StudioMain() {
       title: `Tab ${nextNum}: New Diagram`,
       mode: 'launchpad',
       intentEngine: 'auto',
-      blueprintId: '01',
-      domain: 'biopharma',
+      blueprintId: '00',
+      domain: 'enterprise',
       versionTag: 'v0.0 (Draft)',
       isLocked: false
     };
     setStudioTabs((prev) => [...prev, newTab]);
     setActiveTabId(newTabId);
+    setSelectedBlueprintId('00');
+    setXml(generateGcpNativeArchitectureXml());
     setIsLaunchpadMode(true);
     setIsLeftDrawerCollapsed(false);
     setIsRightGovernanceOpen(false);
@@ -845,7 +847,7 @@ function StudioMain() {
     setIsNewDiagramDraft(true);
     setPendingPlan(null);
     setSelectedDiagramMode('blueprint');
-    setSelectedAbstractionLevel('L2');
+    setSelectedAbstractionLevel('L3');
     setSelectedFlowDirection('LR');
     setActiveVersionTag('v0.0 (Draft)');
     if (promptInput.trim()) {
@@ -855,7 +857,7 @@ function StudioMain() {
       {
         id: `msg_new_${Date.now()}`,
         sender: 'assistant',
-        text: `✨ **New Diagram Workspace Ready (v0.0 Draft)**.\n\nEnter your architecture, flowchart, or infographic prompt in the canvas composer or below (e.g., *"Create an AWS Cloud AI architecture"*), or click any of the 75 certified blueprints on the canvas to generate **v1.0**.`,
+        text: `✨ **New Diagram Workspace Ready (Default: 2026 GCP & Gemini Enterprise Native Technical Architecture)**.\n\nEnter your architecture prompt in the canvas composer or below (e.g., *"Design a GCP native technical architecture with Gemini Enterprise, ADK, A2A, MCP & Cloud Spanner"*), or click any of the 75 certified blueprints on the canvas to generate **v1.0**.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       },
     ]);
@@ -1711,10 +1713,13 @@ function StudioMain() {
 
     const isExplicitFlowchartPrompt = /\bflowchart\b/i.test(promptText);
     const isExplicitInfographicPrompt = /\binfographic\b/i.test(promptText);
+    const isArchitectureRequest = /\b(architecture|gcp|google\s+cloud|gemini|vertex|multi-agent|adk|a2a|mcp|spanner|gke|cloud\s+run|technical|topology|blueprint)\b/i.test(promptText);
     const effectiveDiagramMode = isExplicitFlowchartPrompt
       ? 'flowchart'
       : isExplicitInfographicPrompt
       ? 'infographic'
+      : isArchitectureRequest && selectedDiagramMode === 'flowchart'
+      ? 'blueprint'
       : selectedDiagramMode;
     if (effectiveDiagramMode !== selectedDiagramMode) {
       setSelectedDiagramMode(effectiveDiagramMode);
@@ -2279,8 +2284,9 @@ function StudioMain() {
       }).catch(() => {});
     }
 
-    // Check if the current active XML is the 6-Zone GCP Native Architecture
+    // Check if the current active XML is the Default GCP Native Architecture
     const isSixZoneNativeCanvas =
+      activeBaseXml.includes('id="upgraded-gcp-ge-multi-agent-banking-2026"') ||
       activeBaseXml.includes('id="spatial_gcp_reference_arch"') ||
       (activeBaseXml.includes('id="z1"') && activeBaseXml.includes('id="z2"')) ||
       (activeBaseXml.includes('id="z1_bg"') && activeBaseXml.includes('id="z2_bg"'));

@@ -14,6 +14,7 @@
  *  4. Scrubs 100% of any residual NOVACURA / Veeva Vault / Pharmacovigilance text.
  */
 
+import { generateUpgradedGcpGeBankingArchitectureXml } from './canonical/upgradedGcpGeBankingAgentTemplate';
 import { generateTemplate38CloudLandingZoneXml } from './canonical/template38CloudLandingZone';
 import { generateTemplate40EnterpriseGenAiPlatformXml } from './canonical/template40EnterpriseGenAiPlatform';
 import { generateTemplate41EnterpriseRagPlatformXml } from './canonical/template41EnterpriseRagPlatform';
@@ -255,10 +256,16 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
     ];
   };
 
-  // 1. If an explicit Canonical Blueprint ID ("01".."75") was selected by Gemini API or User Dropdown:
+  // 1. If an explicit Canonical Blueprint ID ("00".."75") was selected by Gemini API or User Dropdown:
   if (explicitBpId && explicitBpId !== 'custom' && explicitBpId !== 'process_flow') {
     const paddedId = explicitBpId.padStart(2, '0');
-    if (paddedId === '40') {
+    if (paddedId === '00') {
+      return generateUpgradedGcpGeBankingArchitectureXml({
+        prompt,
+        projectTitle: safeTitle,
+        domain,
+      });
+    } else if (paddedId === '40') {
       baseXml = generateTemplate40EnterpriseGenAiPlatformXml('enterprise', 'light');
       templateRefLabel = `Modified Saved Template #40 • [${perspBadge} · ${levelBadge}] ${
         options?.geminiDecision?.tailoredSpec?.diagramSubtitle ||
@@ -304,8 +311,34 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
       (lower.includes('bedrock') && !lower.includes('foundation bedrock') && !lower.includes('infrastructure bedrock')) ||
       (lower.includes('aws') && !lower.includes('to gcp') && !lower.includes('alloydb') && !lower.includes('decompile')));
 
+  const isGcpNativeTechnicalPrompt =
+    !baseXml &&
+    !isAwsBedrockPrompt &&
+    (lower.includes('gcp native') ||
+      lower.includes('native technical') ||
+      lower.includes('gemini enterprise') ||
+      lower.includes('multi-agent') ||
+      lower.includes('multiagent') ||
+      lower.includes('google adk') ||
+      lower.includes('adk') ||
+      lower.includes('a2a') ||
+      lower.includes('banking') ||
+      lower.includes('coordinator agent') ||
+      lower.includes('model armor') ||
+      (!lower.includes('time machine') &&
+        !lower.includes('chronos') &&
+        !lower.includes('sap') &&
+        !lower.includes('s/4hana') &&
+        !lower.includes('route53')));
+
   if (baseXml) {
     // Already resolved via explicit blueprint selection or Gemini decision above
+  } else if (isGcpNativeTechnicalPrompt) {
+    return generateUpgradedGcpGeBankingArchitectureXml({
+      prompt,
+      projectTitle: safeTitle,
+      domain,
+    });
   } else if (isAwsBedrockPrompt) {
     // Saved Template 41 adapted for AWS Cloud Reference Architecture v2.0 (Amazon Bedrock + Amazon SageMaker + Redshift + Claude)
     baseXml = generateTemplate41EnterpriseRagPlatformXml('saas', 'light');
@@ -1383,6 +1416,28 @@ export function extractRichPromptSubsystems(prompt: string, fallbackTitle: strin
  * Zero static canonical blueprint templates (#01..#75) are loaded.
  */
 export function synthesizeZeroTemplateCustomArchitectureXml(
+  prompt: string,
+  title?: string,
+  domain = 'Enterprise Cloud',
+  customSubsystems?: string[],
+  _decisionGateQuestion?: string,
+  _level = 'L2',
+  _perspective = 'Logical'
+): string {
+  const displayTitle = truncateAtWord(
+    title && !title.includes('Global Real-Time Payments') ? title : prompt || 'Upgraded GCP & Gemini Enterprise Multi-Agent Architecture',
+    76
+  );
+  // Default to the uncluttered 2026 Upgraded GCP & Gemini Enterprise Native Technical Architecture (zero senseless diamond-gate flowcharts)
+  return generateUpgradedGcpGeBankingArchitectureXml({
+    prompt,
+    projectTitle: displayTitle,
+    domain,
+    customSubsystems,
+  });
+}
+
+export function synthesizeLegacyFourTierCustomArchitectureXml(
   prompt: string,
   title?: string,
   domain = 'Enterprise Cloud',

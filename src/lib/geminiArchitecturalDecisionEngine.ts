@@ -175,7 +175,7 @@ Never use naive keyword/regex guessing. Analyze the user's architecture prompt s
 
 3. **Blueprint Selection ("recommendedBlueprintId", "topCandidates", "perspectiveMatches")**:
    From the AVAILABLE CANONICAL BLUEPRINTS list, pick:
-   - The #1 best overall Blueprint ID (e.g., "40", "24", "19", "16", "18", "01", "03", "13", etc.).
+   - The #1 best overall Blueprint ID: ALWAYS prefer "00" ("00 — GCP Enterprise Architecture", the 2026 Upgraded GCP & Gemini Enterprise Native Technical Architecture with ADK, A2A, MCP, Model Armor, Vector Search 2.0, Spanner/Bigtable/Firestore & OTel/FinOps) whenever the user requests a GCP native technical architecture, Gemini Enterprise, Google ADK, A2A, MCP, Vertex AI, or multi-agent cloud architecture!
    - Top 4 candidate blueprints ("topCandidates") with score (0-100), perspective, level, "whyChosen", and 3 specific "plannedModifications" you will make to adapt that template to the user's prompt.
    - "perspectiveMatches": For EACH of the 4 perspectives ("Conceptual", "Logical", "Technical", "Process"), pick the single best Blueprint ID from the catalog so that if the user changes the Perspective filter dropdown in the UI, the preview immediately shows the best corresponding blueprint for that perspective!
 
@@ -212,7 +212,7 @@ Return strictly valid JSON matching this structure:
   "levelReasoning": "string",
   "recommendedDirection": "LR" | "TD",
   "recommendedDomain": "enterprise" | "fintech" | "healthcare" | "biopharma" | "saas" | "retail" | "manufacturing" | "cybersecurity",
-  "recommendedBlueprintId": "string (2-digit ID like '40', '24', '16', '01', '03', '13')",
+  "recommendedBlueprintId": "string (2-digit ID like '00', '40', '24', '16', '01', '03', '13')",
   "blueprintReasoning": "string",
   "plannedModificationsSummary": ["string", "string", "string", "string"],
   "topCandidates": [
@@ -239,16 +239,16 @@ Return strictly valid JSON matching this structure:
     },
     "Logical": {
       "perspective": "Logical",
-      "blueprintId": "40",
+      "blueprintId": "00",
       "blueprintName": "string",
-      "recommendedLevel": "L2",
+      "recommendedLevel": "L3",
       "tailoredTitle": "string",
       "whyChosen": "string",
       "plannedModifications": ["string", "string"]
     },
     "Technical": {
       "perspective": "Technical",
-      "blueprintId": "16",
+      "blueprintId": "00",
       "blueprintName": "string",
       "recommendedLevel": "L3",
       "tailoredTitle": "string",
@@ -345,12 +345,29 @@ function normalizeGeminiDecision(
     ? raw.recommendedLevel
     : fb.recommendedLevel;
 
-  const recommendedBlueprintId =
-    CANONICAL_TEMPLATES.some((t) => t.id === String(raw?.recommendedBlueprintId).padStart(2, '0'))
-      ? String(raw.recommendedBlueprintId).padStart(2, '0')
-      : CANONICAL_TEMPLATES.some((t) => t.id === String(raw?.recommendedBlueprintId))
-      ? String(raw.recommendedBlueprintId)
-      : fb.recommendedBlueprintId;
+  const lowerPrompt = prompt.toLowerCase();
+  const isGcpNativeTech =
+    !lowerPrompt.includes('time machine') &&
+    !lowerPrompt.includes('chronos') &&
+    !lowerPrompt.includes('aws') &&
+    !lowerPrompt.includes('bedrock') &&
+    (lowerPrompt.includes('gcp native') ||
+      lowerPrompt.includes('native technical') ||
+      lowerPrompt.includes('gemini enterprise') ||
+      lowerPrompt.includes('adk') ||
+      lowerPrompt.includes('a2a') ||
+      lowerPrompt.includes('mcp') ||
+      lowerPrompt.includes('model armor') ||
+      lowerPrompt.includes('multi-agent') ||
+      lowerPrompt.includes('banking'));
+
+  const recommendedBlueprintId = isGcpNativeTech
+    ? '00'
+    : CANONICAL_TEMPLATES.some((t) => t.id === String(raw?.recommendedBlueprintId).padStart(2, '0'))
+    ? String(raw.recommendedBlueprintId).padStart(2, '0')
+    : CANONICAL_TEMPLATES.some((t) => t.id === String(raw?.recommendedBlueprintId))
+    ? String(raw.recommendedBlueprintId)
+    : fb.recommendedBlueprintId;
 
   const customSubsystems =
     Array.isArray(raw?.tailoredSpec?.customSubsystems) && raw.tailoredSpec.customSubsystems.length >= 12
@@ -379,6 +396,9 @@ function normalizeGeminiDecision(
 
   const perspectiveMatches: Record<ArchitecturePerspective, PerspectiveBlueprintMatch> = { ...fb.perspectiveMatches };
   for (const p of validPerspectives) {
+    if (isGcpNativeTech && (p === 'Logical' || p === 'Technical')) {
+      continue;
+    }
     const pm = raw?.perspectiveMatches?.[p];
     if (pm && pm.blueprintId) {
       const pid = String(pm.blueprintId).padStart(2, '0');
@@ -445,24 +465,38 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
       'L3 (Component & Technical Cloud Architecture) captures concrete GCP services (Vertex AI, Gemini Enterprise, Spanner TrueTime, Cloud Armor, GKE) alongside agent routing and safety guardrails.',
     recommendedDirection: 'LR',
     recommendedDomain: 'enterprise',
-    recommendedBlueprintId: '40',
+    recommendedBlueprintId: '00',
     blueprintReasoning:
-      'Blueprint #40 (Enterprise GenAI & Multi-Agent Platform) provides the complete 8-layer Google Cloud + Gemini Enterprise reference topology with supervisor orchestration, 7 specialist agents, RAG memory, and zero-trust governance.',
+      'Blueprint #00 (2026 GCP & Gemini Enterprise Multi-Agent Native Technical Architecture) provides the clean, uncluttered L2/L3 reference topology with Edge Layer (Cloud Armor, Apigee X, Envoy AI), Identity Platform, Cloud Run Gen2 API Gateway, Model Armor & SDP, AI Cluster (Coordinator + Specialist Agents on Gemini Enterprise, ADK & A2A), Vertex AI & GKE LLM Layer, Vector Search 2.0, and Cloud Databases via MCP.',
     plannedModificationsSummary: [
-      `Customize header & scope to "${cleanTitle}" on Google Cloud & Gemini Enterprise`,
-      'Adapt Layer 1 Personas, Channels & Copilot to domain-specific operators and telemetry interfaces',
-      'Reconfigure Layer 3 Supervisor & 7 Specialist Agents for domain reasoning, trajectory planning & invariant checks',
-      'Bind Layer 4–7 Models & Data Stores to Gemini Enterprise 3.1 Pro, Vertex AI Vector Search & Cloud Spanner TrueTime',
+      `Customize scope to "${cleanTitle}" on Google Cloud & Gemini Enterprise`,
+      'Configure Edge Layer (Cloud Armor WAF, Apigee X, Envoy AI) & Identity Platform (Firebase Auth & Passkeys)',
+      'Orchestrate Coordinator Agent & 3 Specialist Agents via Gemini Enterprise, Google ADK, LangGraph & A2A',
+      'Bind LLM Layer (Gemini 3.1 Pro / 3.8 Flash + Gemma 3 / Llama 4 on GKE vLLM), Vector Search 2.0 & Cloud Spanner/Bigtable/Firestore via MCP',
     ],
     topCandidates: [
+      {
+        id: '00',
+        name: 'GCP Enterprise Architecture',
+        perspective: 'Technical',
+        level: 'L3',
+        family: 'Reference Architectures',
+        score: 99,
+        whyChosen: 'Default 2026 GCP & Gemini Enterprise Native Technical Architecture with ADK, A2A, MCP, Model Armor, Vector Search 2.0, Spanner/Bigtable/Firestore, and OTel/FinOps.',
+        plannedModifications: [
+          'Adapt Specialist Agents inside the AI Cluster (GE • ADK • A2A) to domain workloads',
+          'Connect Specialist Agents via MCP to Cloud Spanner, Bigtable (+ AlloyDB AI), and Firestore (+ Document AI)',
+          'Customize bottom domain capability microservices and OTel AI Tracing & FinOps telemetry',
+        ],
+      },
       {
         id: '40',
         name: 'Enterprise GenAI & Multi-Agent Platform',
         perspective: 'Logical',
         level: 'L3',
         family: 'Reference Architectures',
-        score: 98,
-        whyChosen: 'Best Logical/L3 match for Gemini Enterprise multi-agent supervisor, 7 specialist agents, RAG memory, and GCP foundation.',
+        score: 95,
+        whyChosen: 'Best Logical/L3 match for 8-layer Gemini Enterprise multi-agent supervisor, 7 specialist agents, RAG memory, and GCP foundation.',
         plannedModifications: [
           'Replace generic business users/channels with domain-specific operators and control HUDs',
           'Customize the 7 specialist agents & Gemini Supervisor to execute domain workflows',
@@ -475,7 +509,7 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
         perspective: 'Technical',
         level: 'L3',
         family: 'Infrastructure',
-        score: 93,
+        score: 92,
         whyChosen: 'Best Technical/L3 match for physical GCP regional zones, GKE/TPU clusters, Cloud Armor WAF, and Spanner HA replication.',
         plannedModifications: [
           'Map ingress tier to Global Cloud Load Balancing, Apigee X, and Cloud Armor WAF',
@@ -484,26 +518,12 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
         ],
       },
       {
-        id: '13',
-        name: 'Decision Flow / Tree Architecture',
-        perspective: 'Process',
-        level: 'L2',
-        family: 'Flow',
-        score: 90,
-        whyChosen: 'Best Process/L2 match for sequential step execution (❶..❻), diamond causality/policy decision gates, and DLQ retry loops.',
-        plannedModifications: [
-          'Define 6 sequential execution stages from telemetry ingress to ACID state commit',
-          'Insert diamond policy/causality validation gates with ✓ YES and ✕ NO quarantine branches',
-          'Add closed-loop backoff replay from Dead-Letter Queue back to orchestrator',
-        ],
-      },
-      {
         id: '01',
         name: 'System Context Architecture',
         perspective: 'Conceptual',
         level: 'L1',
         family: 'Understand',
-        score: 87,
+        score: 88,
         whyChosen: 'Best Conceptual/L1 match for an executive boundary view showing external actors, core platform boundary, and external dependencies.',
         plannedModifications: [
           'Center the core GCP & Gemini Enterprise platform boundary box',
@@ -527,26 +547,26 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
       },
       Logical: {
         perspective: 'Logical',
-        blueprintId: '40',
-        blueprintName: 'Enterprise GenAI & Multi-Agent Platform',
+        blueprintId: '00',
+        blueprintName: 'GCP Enterprise Architecture',
         recommendedLevel: 'L3',
-        tailoredTitle: `L3 Logical Multi-Agent Architecture: ${cleanTitle}`,
-        whyChosen: 'Shows the 8-layer logical separation across Channels, IAM, Gemini Supervisor + 7 Specialist Agents, Models, RAG Memory, MCP Tools, and Data Stores.',
+        tailoredTitle: `L3 Logical & Technical GCP Architecture: ${cleanTitle}`,
+        whyChosen: 'Shows the clean, uncluttered 2026 GCP & Gemini Enterprise Multi-Agent Native Technical Architecture (UI -> Edge/Identity -> Cloud Run API/Model Armor -> AI Cluster ADK/A2A -> LLM Layer & Vector Search 2.0 -> Spanner/Bigtable/Firestore via MCP).',
         plannedModifications: [
-          'Customize all 7 specialist agents and Gemini Enterprise Supervisor to the prompt domain',
-          'Adapt Layer 4 models and Layer 7 data stores to domain workloads',
+          'Adapt the 3 Specialist Agents (GE • ADK • A2A) and bottom microservice capabilities to the prompt domain',
+          'Wire OTel AI Tracing, Vertex AI Evaluation, and GCP FinOps Hub telemetry',
         ],
       },
       Technical: {
         perspective: 'Technical',
-        blueprintId: '16',
-        blueprintName: 'Cloud Deployment Architecture',
+        blueprintId: '00',
+        blueprintName: 'GCP Enterprise Architecture',
         recommendedLevel: 'L3',
-        tailoredTitle: `L3 Technical Cloud Deployment: ${cleanTitle}`,
-        whyChosen: 'Focuses on physical GCP VPC subnets, Cloud Armor WAF, GKE/TPU compute pods, KMS CMEK hardware encryption, and Spanner multi-region HA.',
+        tailoredTitle: `L3 GCP Native Technical Architecture: ${cleanTitle}`,
+        whyChosen: 'Default uncluttered 2026 Google Cloud & Gemini Enterprise Native Technical Architecture with Cloud Armor, Apigee X, Envoy AI, Cloud Run Gen2, Model Armor & SDP, Google ADK, A2A, MCP, Vertex AI & GKE vLLM, Vector Search 2.0, and Spanner/Bigtable/Firestore.',
         plannedModifications: [
-          'Configure regional VPC subnets, Cloud NAT, Private Service Connect, and IAM boundaries',
-          'Detail hardware compute accelerators, p99 latency budgets, and RPO=0 failover',
+          'Configure Edge Layer, Identity Platform (OAuth 2.1 / Passkeys), and IAM WIF authorisation',
+          'Detail Gemini 3.1 Pro / 3.8 Flash + Gemma 3 / Llama 4 on GKE vLLM and MCP database tool servers',
         ],
       },
       Process: {

@@ -200,15 +200,32 @@ function createEdge(
   );
 }
 
+import { generateUpgradedGcpGeBankingArchitectureXml } from "./canonical/upgradedGcpGeBankingAgentTemplate";
+
 export interface GcpNativeArchOptions {
   projectTitle?: string;
   projectName?: string;
   useCaseName?: string;
   domain?: string;
+  prompt?: string;
   theme?: "light" | "dark";
+  legacySixZone?: boolean;
 }
 
 export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions = {}, ast?: ArchitectureAst): string {
+  if (!options.legacySixZone) {
+    return generateUpgradedGcpGeBankingArchitectureXml(
+      {
+        projectTitle: options.projectTitle,
+        projectName: options.projectName,
+        useCaseName: options.useCaseName,
+        domain: options.domain,
+        prompt: options.prompt,
+        theme: options.theme,
+      },
+      ast
+    );
+  }
   const isDark = options.theme === "dark";
   const canvasBg = isDark ? "#0B111E" : "#FFFFFF";
   const cells: string[] = [];

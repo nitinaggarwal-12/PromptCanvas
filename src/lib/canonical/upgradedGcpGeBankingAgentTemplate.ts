@@ -75,8 +75,152 @@ function compactNodeHtml(opts: {
   </table>`;
 }
 
-export function generateUpgradedGcpGeBankingArchitectureXml(): string {
+export interface UpgradedGcpNativeArchOptions {
+  projectTitle?: string;
+  projectName?: string;
+  useCaseName?: string;
+  domain?: string;
+  prompt?: string;
+  customSubsystems?: string[];
+  theme?: 'light' | 'dark';
+}
+
+interface DomainAgentAndCapabilityProfile {
+  agent1: { title: string; line1: string; line2: string };
+  agent2: { title: string; line1: string; line2: string };
+  agent3: { title: string; line1: string; line2: string };
+  cap1: { title: string; line1?: string };
+  cap2: { title: string; line1?: string };
+  cap3: { title: string; line1?: string };
+  cap4: { title: string; line1?: string };
+  cap5: { title: string; line1?: string };
+  cap6: { title: string; line1?: string };
+}
+
+function resolveDomainProfile(
+  options?: UpgradedGcpNativeArchOptions,
+  astDomain?: string,
+  astTitle?: string
+): DomainAgentAndCapabilityProfile {
+  const combined = `${options?.prompt || ''} ${options?.domain || ''} ${options?.projectTitle || ''} ${options?.useCaseName || ''} ${astDomain || ''} ${astTitle || ''}`.toLowerCase();
+
+  if (
+    combined.includes('health') ||
+    combined.includes('clinical') ||
+    combined.includes('fhir') ||
+    combined.includes('hl7') ||
+    combined.includes('patient') ||
+    combined.includes('hospital') ||
+    combined.includes('med')
+  ) {
+    return {
+      agent1: { title: 'Clinical EHR', line1: 'Agent', line2: '(Google ADK / FHIR)' },
+      agent2: { title: 'Claims & Care', line1: 'Agent', line2: '(ADK / LangGraph)' },
+      agent3: { title: 'Patient Triage', line1: 'Agent', line2: '(Google ADK / HITL)' },
+      cap1: { title: 'FHIR R4 Record', line1: 'Lookup' },
+      cap2: { title: 'Claims Status', line1: 'Verification' },
+      cap3: { title: 'Prior Auth', line1: 'Request' },
+      cap4: { title: 'Care Pathway', line1: 'Update' },
+      cap5: { title: 'Rx Refill', line1: 'Order' },
+      cap6: { title: 'Lab OCR Intake', line1: '(Document AI)' },
+    };
+  }
+
+  if (
+    combined.includes('retail') ||
+    combined.includes('commerce') ||
+    combined.includes('shopping') ||
+    combined.includes('catalog') ||
+    combined.includes('inventory') ||
+    combined.includes('supply chain')
+  ) {
+    return {
+      agent1: { title: 'Catalog & Stock', line1: 'Agent', line2: '(Google ADK / Vertex)' },
+      agent2: { title: 'Orders & Cart', line1: 'Agent', line2: '(ADK / LangGraph)' },
+      agent3: { title: 'Fulfillment', line1: 'Agent', line2: '(Google ADK / HITL)' },
+      cap1: { title: 'Inventory', line1: 'Enquiry' },
+      cap2: { title: 'Order Status', line1: 'Details' },
+      cap3: { title: 'Invoice', line1: 'Request' },
+      cap4: { title: 'Shipping', line1: 'Address Update' },
+      cap5: { title: 'Return / RMA', line1: 'Request' },
+      cap6: { title: 'Receipt Claims', line1: '(Document AI)' },
+    };
+  }
+
+  if (
+    combined.includes('secops') ||
+    combined.includes('cyber') ||
+    combined.includes('chronicle') ||
+    combined.includes('siem') ||
+    combined.includes('soar') ||
+    combined.includes('threat')
+  ) {
+    return {
+      agent1: { title: 'Threat Intel', line1: 'Agent', line2: '(Google ADK / SecOps)' },
+      agent2: { title: 'SIEM Triage', line1: 'Agent', line2: '(ADK / LangGraph)' },
+      agent3: { title: 'SOAR Response', line1: 'Agent', line2: '(Google ADK / HITL)' },
+      cap1: { title: 'Asset Posture', line1: 'Enquiry' },
+      cap2: { title: 'UDM Telemetry', line1: 'Search' },
+      cap3: { title: 'IOC Forensic', line1: 'Report' },
+      cap4: { title: 'IAM Policy', line1: 'Remediation' },
+      cap5: { title: 'Firewall Rule', line1: 'Quarantine' },
+      cap6: { title: 'Compliance Evidence', line1: '(Document AI)' },
+    };
+  }
+
+  if (
+    combined.includes('lakehouse') ||
+    combined.includes('data mesh') ||
+    combined.includes('dataplex') ||
+    combined.includes('analytics') ||
+    combined.includes('streaming') ||
+    combined.includes('iot')
+  ) {
+    return {
+      agent1: { title: 'Data Catalog', line1: 'Agent', line2: '(Google ADK / Vertex)' },
+      agent2: { title: 'Pipeline Ops', line1: 'Agent', line2: '(ADK / LangGraph)' },
+      agent3: { title: 'BI & Governance', line1: 'Agent', line2: '(Google ADK / HITL)' },
+      cap1: { title: 'Schema & SLA', line1: 'Enquiry' },
+      cap2: { title: 'Stream Metrics', line1: 'Details' },
+      cap3: { title: 'Lineage Audit', line1: 'Request' },
+      cap4: { title: 'Partition', line1: 'Compaction' },
+      cap5: { title: 'DLQ Replay', line1: 'Request' },
+      cap6: { title: 'Contract Parser', line1: '(Document AI)' },
+    };
+  }
+
+  // Default: 1:1 Multi-Agent Banking & Enterprise Reference Architecture
+  return {
+    agent1: { title: 'Accounts', line1: 'Agent', line2: '(Google ADK / Vertex)' },
+    agent2: { title: 'Transaction', line1: 'Agent', line2: '(ADK / LangGraph)' },
+    agent3: { title: 'Service', line1: 'Agent', line2: '(Google ADK / HITL)' },
+    cap1: { title: 'Balance Enquiry' },
+    cap2: { title: 'Transaction', line1: 'Details' },
+    cap3: { title: 'Statement', line1: 'Request' },
+    cap4: { title: 'Change of', line1: 'Address' },
+    cap5: { title: 'Cheque book', line1: 'request' },
+    cap6: { title: 'eKYC update', line1: '(Document AI)' },
+  };
+}
+
+export function generateUpgradedGcpGeBankingArchitectureXml(
+  options?: UpgradedGcpNativeArchOptions,
+  ast?: {
+    metadata?: { projectTitle?: string; domain?: string };
+    components?: Array<{
+      id: string;
+      name: string;
+      service: string;
+      tier?: string;
+      role?: string;
+      sla?: string;
+      protocols?: string[];
+      description?: string;
+    }>;
+  }
+): string {
   const cells: string[] = [];
+  const profile = resolveDomainProfile(options, ast?.metadata?.domain, ast?.metadata?.projectTitle);
 
   const addVertex = (
     id: string,
@@ -309,9 +453,9 @@ export function generateUpgradedGcpGeBankingArchitectureXml(): string {
     'accounts_agent',
     compactNodeHtml({
       rightIcon: ICONS.agentCube,
-      title: 'Accounts',
-      line1: 'Agent',
-      line2: '(Google ADK / Vertex)',
+      title: profile.agent1.title,
+      line1: profile.agent1.line1,
+      line2: profile.agent1.line2,
     }),
     396,
     456,
@@ -324,9 +468,9 @@ export function generateUpgradedGcpGeBankingArchitectureXml(): string {
     'transaction_agent',
     compactNodeHtml({
       rightIcon: ICONS.agentCube,
-      title: 'Transaction',
-      line1: 'Agent',
-      line2: '(ADK / LangGraph)',
+      title: profile.agent2.title,
+      line1: profile.agent2.line1,
+      line2: profile.agent2.line2,
     }),
     548,
     456,
@@ -339,9 +483,9 @@ export function generateUpgradedGcpGeBankingArchitectureXml(): string {
     'service_agent',
     compactNodeHtml({
       rightIcon: ICONS.agentCube,
-      title: 'Service',
-      line1: 'Agent',
-      line2: '(Google ADK / HITL)',
+      title: profile.agent3.title,
+      line1: profile.agent3.line1,
+      line2: profile.agent3.line2,
     }),
     700,
     456,
@@ -477,7 +621,7 @@ export function generateUpgradedGcpGeBankingArchitectureXml(): string {
   );
 
   // ============================================================================
-  // BOTTOM BANKING CAPABILITY MICROSERVICES (y=720, h=80)
+  // BOTTOM DOMAIN CAPABILITY MICROSERVICES (y=720, h=80)
   // ============================================================================
   // Group 1: Balance Enquiry (x=304, y=720, w=150, h=80)
   addVertex(
@@ -492,7 +636,8 @@ export function generateUpgradedGcpGeBankingArchitectureXml(): string {
   addVertex(
     'act_balance',
     compactNodeHtml({
-      title: 'Balance Enquiry',
+      title: profile.cap1.title,
+      line1: profile.cap1.line1,
     }),
     318,
     734,
@@ -514,8 +659,8 @@ export function generateUpgradedGcpGeBankingArchitectureXml(): string {
   addVertex(
     'act_tx_details',
     compactNodeHtml({
-      title: 'Transaction',
-      line1: 'Details',
+      title: profile.cap2.title,
+      line1: profile.cap2.line1,
     }),
     496,
     734,
@@ -526,8 +671,8 @@ export function generateUpgradedGcpGeBankingArchitectureXml(): string {
   addVertex(
     'act_statement',
     compactNodeHtml({
-      title: 'Statement',
-      line1: 'Request',
+      title: profile.cap3.title,
+      line1: profile.cap3.line1,
     }),
     620,
     734,
@@ -549,8 +694,8 @@ export function generateUpgradedGcpGeBankingArchitectureXml(): string {
   addVertex(
     'act_address',
     compactNodeHtml({
-      title: 'Change of',
-      line1: 'Address',
+      title: profile.cap4.title,
+      line1: profile.cap4.line1,
     }),
     788,
     734,
@@ -561,8 +706,8 @@ export function generateUpgradedGcpGeBankingArchitectureXml(): string {
   addVertex(
     'act_cheque',
     compactNodeHtml({
-      title: 'Cheque book',
-      line1: 'request',
+      title: profile.cap5.title,
+      line1: profile.cap5.line1,
     }),
     912,
     734,
@@ -573,8 +718,8 @@ export function generateUpgradedGcpGeBankingArchitectureXml(): string {
   addVertex(
     'act_kyc',
     compactNodeHtml({
-      title: 'eKYC update',
-      line1: '(Document AI)',
+      title: profile.cap6.title,
+      line1: profile.cap6.line1,
     }),
     1036,
     734,
@@ -785,9 +930,85 @@ export function generateUpgradedGcpGeBankingArchitectureXml(): string {
     ]
   );
 
+  // Optional cumulative AST prompt-added components (for multi-turn Studio prompts)
+  const BASELINE_AST_IDS = new Set([
+    'comp_armor',
+    'comp_glb',
+    'comp_gke',
+    'comp_vertex',
+    'comp_spanner_leader',
+    'comp_bigquery',
+    'comp_spanner_dr',
+    'comp_gcs_backup',
+  ]);
+  const customAstNodes = (ast?.components || []).filter((c) => !BASELINE_AST_IDS.has(c.id));
+  const numRows = Math.ceil(customAstNodes.length / 5);
+  const z7Height = customAstNodes.length > 0 ? 44 + numRows * 76 : 0;
+  const totalPageHeight = customAstNodes.length > 0 ? 830 + z7Height + 24 : 830;
+
+  if (customAstNodes.length > 0) {
+    const extHeader = `<div style="font-family:'Inter',-apple-system,sans-serif;text-align:left;padding:4px 10px;">
+      <span style="font-size:10.5px;font-weight:800;color:#0F172A;">Prompt Extensions (${customAstNodes.length})</span>
+    </div>`;
+    addVertex(
+      'z7_custom',
+      extHeader,
+      24,
+      820,
+      1216,
+      z7Height,
+      'rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#64748B;strokeWidth=1.5;dashed=1;dashPattern=4 4;verticalAlign=top;align=left;'
+    );
+
+    customAstNodes.forEach((comp, idx) => {
+      const colIdx = idx % 5;
+      const rowIdx = Math.floor(idx / 5);
+      const xPos = 40 + colIdx * 238;
+      const yPos = 852 + rowIdx * 76;
+      const nodeId = `n_custom_${comp.id}`;
+      addVertex(
+        nodeId,
+        compactNodeHtml({
+          leftIcon: ICONS.cloudRun,
+          title: comp.name,
+          line1: `(${comp.service})`,
+        }),
+        xPos,
+        yPos,
+        220,
+        58,
+        'rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#60A5FA;strokeWidth=1.8;shadow=1;'
+      );
+      if (rowIdx === 0 && colIdx === 0) {
+        addEdge(
+          `e_custom_${comp.id}`,
+          'MCP',
+          'obs_container',
+          nodeId,
+          darkEdge + 'exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;',
+          [{ x: 115, y: yPos + 29 }]
+        );
+      } else if (rowIdx === 0) {
+        const prevComp = customAstNodes[idx - 1];
+        addEdge(
+          `e_custom_${comp.id}`,
+          '',
+          `n_custom_${prevComp.id}`,
+          nodeId,
+          darkEdge + 'exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;'
+        );
+      }
+    });
+  }
+
+  const diagramTitle =
+    options?.projectTitle ||
+    ast?.metadata?.projectTitle ||
+    'Upgraded GCP & Gemini Enterprise Multi-Agent Architecture';
+
   return `<mxfile host="embed.diagrams.net" modified="2026-09-30T21:08:00.000Z" agent="PromptCanvas-2026-Upgrader" version="24.7.8">
-  <diagram id="upgraded-gcp-ge-multi-agent-banking-2026" name="Upgraded GCP &amp; Gemini Enterprise Multi-Agent Architecture">
-    <mxGraphModel dx="1280" dy="830" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1280" pageHeight="830" background="#FFFFFF" math="0" shadow="0">
+  <diagram id="upgraded-gcp-ge-multi-agent-banking-2026" name="${escAttr(diagramTitle)}">
+    <mxGraphModel dx="1280" dy="${totalPageHeight}" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1280" pageHeight="${totalPageHeight}" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>

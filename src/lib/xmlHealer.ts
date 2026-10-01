@@ -162,6 +162,8 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('id="pharma_genomics_pipeline"') ||
     inputXml.includes('GCP ACTIVE-PASSIVE MULTI-REGION DR') ||
     inputXml.includes('PromptCanvas-LayoutEngineV2') ||
+    inputXml.includes('id="upgraded-gcp-ge-multi-agent-banking-2026"') ||
+    inputXml.includes('PromptCanvas-2026-Upgrader') ||
     inputXml.includes('id="gemini_ent"') ||
     inputXml.includes('Gemini Enterprise Agent Platform') ||
     inputXml.includes('google_multiagent_system_architecture') ||
