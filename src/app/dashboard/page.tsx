@@ -101,6 +101,7 @@ function DashboardContent() {
   // 1. STEP 1: CATEGORY SELECTION
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [openCategoryDropdown, setOpenCategoryDropdown] = useState<boolean>(false);
+  const [categorySearchQuery, setCategorySearchQuery] = useState<string>('');
   
   // 2. STEP 2: SEARCHABLE BLUEPRINT SELECTION
   const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>('00');
@@ -110,6 +111,7 @@ function DashboardContent() {
   // 3. STEP 3: DETAIL LEVEL (L1, L2, L3, L4)
   const [selectedLevel, setSelectedLevel] = useState<AbstractionDetailLevel>('L3');
   const [openLevelDropdown, setOpenLevelDropdown] = useState<boolean>(false);
+  const [levelSearchQuery, setLevelSearchQuery] = useState<string>('');
 
   // 4. STEP 4: PROMPT COMPOSER
   const [createPrompt, setCreatePrompt] = useState<string>(DEFAULT_DASHBOARD_PROMPT);
@@ -156,6 +158,28 @@ function DashboardContent() {
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
+
+  // Filter categories based on categorySearchQuery
+  const filteredCategories = useMemo(() => {
+    const q = categorySearchQuery.toLowerCase().trim();
+    if (!q) return CATEGORY_GROUPS;
+    return CATEGORY_GROUPS.filter(
+      (c) => c.name.toLowerCase().includes(q) || (c.familyFilter && c.familyFilter.toLowerCase().includes(q))
+    );
+  }, [categorySearchQuery]);
+
+  // Filter levels based on levelSearchQuery
+  const filteredLevels = useMemo(() => {
+    const q = levelSearchQuery.toLowerCase().trim();
+    if (!q) return DETAIL_LEVELS;
+    return DETAIL_LEVELS.filter(
+      (l) =>
+        l.id.toLowerCase().includes(q) ||
+        l.name.toLowerCase().includes(q) ||
+        l.title.toLowerCase().includes(q) ||
+        l.desc.toLowerCase().includes(q)
+    );
+  }, [levelSearchQuery]);
 
   // Filter templates based on Step 1 Category and search query
   const filteredTemplates = useMemo(() => {
@@ -395,7 +419,7 @@ function DashboardContent() {
                 <span className="text-[10px] text-slate-400 font-mono font-semibold">ElkJS V2</span>
               </div>
 
-              {/* STEP 1: CATEGORY DROPDOWN */}
+              {/* STEP 1: SEARCHABLE CATEGORY DROPDOWN */}
               <div className="relative category-dropdown-container">
                 <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-600 mb-1 flex items-center justify-between">
                   <span>1. Architectural Category</span>
@@ -423,30 +447,47 @@ function DashboardContent() {
                 </button>
 
                 {openCategoryDropdown && (
-                  <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-2 space-y-1">
-                    <div className="max-h-56 overflow-y-auto space-y-1">
-                      {CATEGORY_GROUPS.map((cat) => (
-                        <div
-                          key={cat.id}
-                          onClick={() => {
-                            handleCategorySelect(cat.id);
-                            setOpenCategoryDropdown(false);
-                          }}
-                          className={`p-2 rounded-xl cursor-pointer text-xs transition-colors flex items-center justify-between ${
-                            selectedCategory === cat.id
-                              ? 'bg-teal-50 text-teal-900 font-bold border border-teal-200'
-                              : 'hover:bg-slate-50 text-slate-700'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2 truncate">
-                            <span className="text-sm">{cat.icon}</span>
-                            <span className="truncate">{cat.name}</span>
-                          </div>
-                          <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-[9px] font-mono shrink-0 ml-2">
-                            {cat.count}
-                          </span>
+                  <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-2 space-y-1.5">
+                    <div className="relative">
+                      <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Search categories (e.g. flowcharts, infographics)..."
+                        value={categorySearchQuery}
+                        onChange={(e) => setCategorySearchQuery(e.target.value)}
+                        className="w-full pl-8 pr-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-teal-500"
+                        autoFocus
+                      />
+                    </div>
+                    <div className="max-h-52 overflow-y-auto space-y-1">
+                      {filteredCategories.length === 0 ? (
+                        <div className="p-2.5 text-center text-xs text-slate-500">
+                          No categories found matching &ldquo;{categorySearchQuery}&rdquo;
                         </div>
-                      ))}
+                      ) : (
+                        filteredCategories.map((cat) => (
+                          <div
+                            key={cat.id}
+                            onClick={() => {
+                              handleCategorySelect(cat.id);
+                              setOpenCategoryDropdown(false);
+                            }}
+                            className={`p-2 rounded-xl cursor-pointer text-xs transition-colors flex items-center justify-between ${
+                              selectedCategory === cat.id
+                                ? 'bg-teal-50 text-teal-900 font-bold border border-teal-200'
+                                : 'hover:bg-slate-50 text-slate-700'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 truncate">
+                              <span className="text-sm">{cat.icon}</span>
+                              <span className="truncate">{cat.name}</span>
+                            </div>
+                            <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-[9px] font-mono shrink-0 ml-2">
+                              {cat.count}
+                            </span>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
                 )}
@@ -533,7 +574,7 @@ function DashboardContent() {
                 )}
               </div>
 
-              {/* STEP 3: DETAIL LEVEL DROPDOWN (L1 - L4) */}
+              {/* STEP 3: SEARCHABLE DETAIL LEVEL DROPDOWN (L1 - L4) */}
               <div className="relative level-dropdown-container">
                 <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-600 mb-1 flex items-center justify-between">
                   <span>3. Detail Level (L1 &ndash; L4)</span>
@@ -560,54 +601,53 @@ function DashboardContent() {
                 </button>
 
                 {openLevelDropdown && (
-                  <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-2 space-y-1">
-                    <div className="space-y-1">
-                      {DETAIL_LEVELS.map((lvl) => (
-                        <div
-                          key={lvl.id}
-                          onClick={() => {
-                            setSelectedLevel(lvl.id);
-                            setOpenLevelDropdown(false);
-                          }}
-                          className={`p-2 rounded-xl cursor-pointer text-xs transition-colors flex items-center justify-between ${
-                            selectedLevel === lvl.id
-                              ? 'bg-teal-50 text-teal-900 font-bold border border-teal-200'
-                              : 'hover:bg-slate-50 text-slate-700'
-                          }`}
-                        >
-                          <div className="truncate pr-2">
-                            <p className="font-bold text-slate-900 flex items-center gap-1.5">
-                              <span className="px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 text-[9px] font-mono font-bold border border-indigo-200">
-                                {lvl.id}
-                              </span>
-                              <span>&mdash;</span>
-                              <span className="truncate">{lvl.title}</span>
-                            </p>
-                            <p className="text-[10px] text-slate-400 line-clamp-1 mt-0.5">{lvl.desc}</p>
-                          </div>
+                  <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-2 space-y-1.5">
+                    <div className="relative">
+                      <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Search levels (L1, L2, L3, L4, physical, microservices)..."
+                        value={levelSearchQuery}
+                        onChange={(e) => setLevelSearchQuery(e.target.value)}
+                        className="w-full pl-8 pr-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-teal-500"
+                        autoFocus
+                      />
+                    </div>
+                    <div className="max-h-48 overflow-y-auto space-y-1">
+                      {filteredLevels.length === 0 ? (
+                        <div className="p-2.5 text-center text-xs text-slate-500">
+                          No levels found matching &ldquo;{levelSearchQuery}&rdquo;
                         </div>
-                      ))}
+                      ) : (
+                        filteredLevels.map((lvl) => (
+                          <div
+                            key={lvl.id}
+                            onClick={() => {
+                              setSelectedLevel(lvl.id);
+                              setOpenLevelDropdown(false);
+                            }}
+                            className={`p-2 rounded-xl cursor-pointer text-xs transition-colors flex items-center justify-between ${
+                              selectedLevel === lvl.id
+                                ? 'bg-teal-50 text-teal-900 font-bold border border-teal-200'
+                                : 'hover:bg-slate-50 text-slate-700'
+                            }`}
+                          >
+                            <div className="truncate pr-2">
+                              <p className="font-bold text-slate-900 flex items-center gap-1.5">
+                                <span className="px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 text-[9px] font-mono font-bold border border-indigo-200">
+                                  {lvl.id}
+                                </span>
+                                <span>&mdash;</span>
+                                <span className="truncate">{lvl.title}</span>
+                              </p>
+                              <p className="text-[10px] text-slate-400 line-clamp-1 mt-0.5">{lvl.desc}</p>
+                            </div>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
                 )}
-
-                {/* Quick 1-click segmented toggle */}
-                <div className="grid grid-cols-4 gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 mt-1.5">
-                  {(['L1', 'L2', 'L3', 'L4'] as AbstractionDetailLevel[]).map((lvl) => (
-                    <button
-                      key={lvl}
-                      type="button"
-                      onClick={() => setSelectedLevel(lvl)}
-                      className={`py-1 rounded-lg text-xs font-bold transition-all text-center cursor-pointer ${
-                        selectedLevel === lvl
-                          ? 'bg-teal-600 text-white shadow-xs'
-                          : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                      }`}
-                    >
-                      {lvl}
-                    </button>
-                  ))}
-                </div>
               </div>
 
               {/* STEP 4: NATURAL LANGUAGE ARCHITECTURE PROMPT */}
