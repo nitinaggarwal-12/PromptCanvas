@@ -299,7 +299,7 @@ export default function LandingPage() {
             </nav>
             <div className="pt-3 border-t border-slate-800 flex flex-col gap-2">
               <Link
-                href="/studio"
+                href="/dashboard"
                 onClick={() => setIsMobileNavOpen(false)}
                 className="w-full py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 text-slate-950 font-black text-xs text-center shadow-md"
               >
@@ -826,10 +826,10 @@ export default function LandingPage() {
 
           <div className="mt-8 flex justify-center">
             <Link
-              href="/studio"
+              href="/dashboard"
               className="px-8 py-4 rounded-xl bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold tracking-wide transition-all shadow-xl shadow-teal-500/25 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
             >
-              <span>Launch Studio Free</span>
+              <span>Launch Workspace Free</span>
               <ArrowRight className="w-4.5 h-4.5" aria-hidden="true" />
             </Link>
           </div>

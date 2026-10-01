@@ -146,7 +146,9 @@ export function auditPromptCanvasGovernanceSync() {
       if (hooksJson.global_governance?.dynamic_model_orchestration?.orchestrator !== 'Google Omni 1.1') {
         mismatches.push('DRIFT: .agents/hooks.json missing global_governance.dynamic_model_orchestration.orchestrator = "Google Omni 1.1"');
       }
-      if (parseFloat(hooksJson.version) < 3.2) {
+      const verParts = (hooksJson.version || '0.0.0').split('.').map(Number);
+      const isSemverGte32 = verParts[0] > 3 || (verParts[0] === 3 && verParts[1] >= 2);
+      if (!isSemverGte32) {
         mismatches.push(`DRIFT: .agents/hooks.json version expected >= 3.2.0, found "${hooksJson.version}"`);
       }
       if (!Array.isArray(hooksJson.amendment_log) || hooksJson.amendment_log.length === 0) {
