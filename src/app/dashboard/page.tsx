@@ -2039,14 +2039,29 @@ function DashboardContent() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {filteredBlueprints.map((tpl) => (
+                {filteredBlueprints.map((tpl) => {
+                  const thumbSrc = tpl.previewImage || `/templates/canonical_${String(tpl.id).padStart(2, '0')}.png`;
+                  return (
                   <div
                     key={tpl.id}
-                    className={`p-5 rounded-3xl border flex flex-col justify-between space-y-4 transition-all duration-200 ${
-                      isLight ? 'bg-white border-slate-200 shadow-sm hover:shadow-md' : 'bg-[#090D18] border-slate-800 shadow-md hover:shadow-xl'
+                    onClick={() => router.push(`/canonical/${tpl.id}`)}
+                    className={`p-5 rounded-3xl border flex flex-col justify-between space-y-4 transition-all duration-200 relative overflow-hidden group cursor-pointer ${
+                      isLight ? 'bg-white border-slate-200 shadow-sm hover:shadow-xl hover:border-teal-400' : 'bg-[#090D18] border-slate-800 shadow-md hover:shadow-xl hover:border-teal-500/50'
                     }`}
                   >
-                    <div className="space-y-2.5">
+                    {/* Real Thumbnail Behind Tile */}
+                    <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none z-0">
+                      <img
+                        src={thumbSrc}
+                        alt=""
+                        aria-hidden="true"
+                        loading="lazy"
+                        className="w-full h-full object-cover object-center opacity-[0.16] group-hover:opacity-[0.26] transition-all duration-500 group-hover:scale-105"
+                      />
+                      <div className={`absolute inset-0 ${isLight ? 'bg-gradient-to-b from-white/75 via-white/90 to-white/95' : 'bg-gradient-to-b from-slate-950/75 via-slate-900/90 to-slate-950/95'}`} />
+                    </div>
+
+                    <div className="space-y-2.5 relative z-10">
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/30">
                           #{tpl.id} &bull; {tpl.family.toUpperCase()}
@@ -2054,6 +2069,15 @@ function DashboardContent() {
                         <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                           100% AST VALID
                         </span>
+                      </div>
+
+                      <div className="w-full h-40 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white">
+                        <img
+                          src={thumbSrc}
+                          alt={tpl.name}
+                          loading="lazy"
+                          className="w-full h-full object-contain p-1.5 bg-white transition-transform duration-500 group-hover:scale-[1.03]"
+                        />
                       </div>
 
                       <h3 className="text-sm font-black line-clamp-1 text-slate-900 dark:text-white">
@@ -2070,20 +2094,21 @@ function DashboardContent() {
                       </div>
                     </div>
 
-                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setInspectBlueprint(tpl)}
+                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-2 relative z-10">
+                      <Link
+                        href={`/canonical/${tpl.id}`}
+                        onClick={(e) => e.stopPropagation()}
                         className={`flex-1 py-2 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
                           isLight ? 'bg-slate-50 hover:bg-slate-100 border-slate-300 text-slate-800' : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-200'
                         }`}
                       >
                         <Eye className="w-3.5 h-3.5 text-teal-500" />
-                        <span>Inspect XML</span>
-                      </button>
+                        <span>Full Page</span>
+                      </Link>
 
                       <Link
                         href={`/studio?blueprint=${tpl.id}`}
+                        onClick={(e) => e.stopPropagation()}
                         className="flex-1 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-extrabold text-xs transition flex items-center justify-center gap-1.5 shadow-sm"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
@@ -2091,7 +2116,8 @@ function DashboardContent() {
                       </Link>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}

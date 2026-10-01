@@ -90,7 +90,9 @@ export default function CanonicalTemplateDetailPage() {
   const currentXml = useMemo(() => {
     if (!activeTemplate) return '';
     const rawXml = activeTemplate.generateXml(selectedDomain, themeMode);
-    const domainCleaned = injectDomainFlavorXml(rawXml, selectedDomain);
+    const domainCleaned = activeTemplate.id === '00' && (!selectedDomain || selectedDomain === 'biopharma' || selectedDomain === 'general')
+      ? rawXml
+      : injectDomainFlavorXml(rawXml, selectedDomain);
     if (titleParam || promptParam) {
       return injectUseCaseFlavor(domainCleaned, titleParam || activeTemplate.name, promptParam || undefined);
     }
@@ -149,16 +151,16 @@ export default function CanonicalTemplateDetailPage() {
         {/* TOP NAVIGATION BAR */}
         {!isFullScreen && (
           <AppHeader>
- <div className="w-full max-w-[1680px] mx-auto flex items-center justify-between gap-3 min-w-0">
-            {/* Left: Back to Catalog & Template Title */}
-            <div className="flex items-center gap-2.5 min-w-0 shrink">
-              <Link
-                href="/canonical"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors text-xs font-bold shrink-0"
-              >
-                <ArrowLeft className="w-4 h-4 text-sky-400" />
-                <span className="hidden sm:inline">All Templates</span>
-              </Link>
+            <div className="w-full max-w-none flex items-center justify-between gap-3 min-w-0">
+              {/* Left: Back to Catalog & Template Title */}
+              <div className="flex items-center gap-2.5 min-w-0 shrink">
+                <Link
+                  href="/canonical"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-100 transition-colors text-xs font-extrabold shrink-0 shadow-xs"
+                >
+                  <ArrowLeft className="w-4 h-4 text-sky-400" />
+                  <span>Back to Blueprint Catalog</span>
+                </Link>
 
               <div className="h-6 w-px bg-slate-800 shrink-0" />
 
@@ -405,7 +407,7 @@ export default function CanonicalTemplateDetailPage() {
                   </span>
                 </div>
                 <a
-                  href={Number(activeTemplate.id) >= 52 ? `/templates/${activeTemplate.id}.png` : `/images/${activeTemplate.id}.png`}
+                  href={activeTemplate.previewImage || `/templates/canonical_${activeTemplate.id}.png`}
                   target="_blank"
                   rel="noreferrer"
                   className="text-[11px] font-mono text-sky-300 hover:underline shrink-0"
@@ -415,7 +417,7 @@ export default function CanonicalTemplateDetailPage() {
               </div>
               <div className="flex-1 min-h-0 relative overflow-hidden bg-slate-100/70">
                 <img
-                  src={Number(activeTemplate.id) >= 52 ? `/templates/${activeTemplate.id}.png` : `/images/${activeTemplate.id}.png`}
+                  src={activeTemplate.previewImage || `/templates/canonical_${activeTemplate.id}.png`}
                   alt={activeTemplate.name}
                   className="absolute inset-3 w-[calc(100%-24px)] h-[calc(100%-24px)] object-contain rounded-xl border border-slate-200 bg-white shadow-md"
                 />
@@ -456,14 +458,39 @@ export default function CanonicalTemplateDetailPage() {
             </div>
           </div>
         ) : (
-          <div className="flex-1 w-full h-[calc(100vh-90px)] rounded-3xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden flex items-center justify-center p-2 md:p-6">
-            <DiagramViewerRenderSafe
-              xml={currentXml}
-              bgTheme={themeMode}
-              diagramId={`canonical_${activeTemplate.id}`}
-              diagramType={`canonical_${activeTemplate.id}`}
-              aspectRatioId="16:9"
-            />
+          <div className="flex-1 w-full flex flex-col gap-2.5">
+            {/* Full-Page Stable Blueprint Metadata Strip */}
+            <div className="w-full rounded-2xl bg-white border border-slate-200 px-4 py-2.5 shadow-xs flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="px-2.5 py-1 rounded-lg bg-sky-50 text-sky-700 border border-sky-200 font-mono text-xs font-black">
+                  Blueprint #{activeTemplate.id} • {activeTemplate.family}
+                </span>
+                <p className="text-xs font-semibold text-slate-600 truncate">
+                  {activeTemplate.primaryPurpose}
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {activeTemplate.keyComponents.map((comp, idx) => (
+                  <span
+                    key={idx}
+                    className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200"
+                  >
+                    {comp}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Full-Screen Stable Diagram Canvas */}
+            <div className="flex-1 w-full h-[calc(100vh-135px)] min-h-[680px] rounded-3xl bg-white border border-slate-200 shadow-xl relative overflow-hidden flex items-center justify-center p-2 md:p-4">
+              <DiagramViewerRenderSafe
+                xml={currentXml}
+                bgTheme={themeMode}
+                diagramId={`canonical_${activeTemplate.id}`}
+                diagramType={`canonical_${activeTemplate.id}`}
+                aspectRatioId="16:9"
+              />
+            </div>
           </div>
         )}
       </main>

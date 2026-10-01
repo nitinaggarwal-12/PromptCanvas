@@ -68,8 +68,9 @@ function CanonicalContent() {
   const [selectedDomain, setSelectedDomain] = useState<string>('biopharma');
   const [customPrompt, setCustomPrompt] = useState<string>('');
 
-  // Modal / Canvas state
+  // Full-page viewer / hover state
   const [activeTemplate, setActiveTemplate] = useState<CanonicalTemplate | null>(null);
+  const [hoveredTemplateId, setHoveredTemplateId] = useState<string | null>(null);
   const [isViewerOpen, setIsViewerOpen] = useState<boolean>(false);
   const [isAdaptModalOpen, setIsAdaptModalOpen] = useState<boolean>(false);
   const [isComposeOpen, setIsComposeOpen] = useState<boolean>(false);
@@ -94,18 +95,19 @@ function CanonicalContent() {
     return CANONICAL_TEMPLATES[currentIndex + 1];
   }, [currentIndex]);
 
-  // Open Template in Canvas Viewer & sync URL
-  const handleOpenCanvas = useCallback((tpl: CanonicalTemplate, updateHistory = true) => {
+  // Open Template as a Full-Screen Page (NO popup modal)
+  const handleOpenCanvas = useCallback((tpl: CanonicalTemplate, navigateToRoute = true) => {
+    if (navigateToRoute) {
+      router.push(`/canonical/${tpl.id}?domain=${selectedDomain}`);
+      return;
+    }
     setActiveTemplate(tpl);
     const xml = tpl.generateXml(selectedDomain, themeMode);
     setCurrentXml(xml);
     setIsViewerOpen(true);
-    if (updateHistory && typeof window !== 'undefined') {
-      window.history.pushState({ templateId: tpl.id }, '', `/canonical?id=${tpl.id}`);
-    }
-  }, [selectedDomain, themeMode]);
+  }, [router, selectedDomain, themeMode]);
 
-  // Close Viewer & sync URL
+  // Close Full-Page Viewer & return to catalog grid
   const handleCloseViewer = useCallback((updateHistory = true) => {
     setIsViewerOpen(false);
     setActiveTemplate(null);
@@ -123,6 +125,9 @@ function CanonicalContent() {
       if (matched) {
         handleOpenCanvas(matched, false);
       }
+    } else {
+      setIsViewerOpen(false);
+      setActiveTemplate(null);
     }
   }, [searchParams, handleOpenCanvas]);
 
@@ -338,468 +343,504 @@ function CanonicalContent() {
           </div>
         </AppHeader>
 
-      {/* COMPACT HERO SECTION */}
-      <main className="w-full max-w-none px-4 sm:px-6 lg:px-8 pt-3 pb-8">
-        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-3.5 border-b border-slate-200 dark:border-slate-800 min-w-0">
-          <div className="flex-1 min-w-0 space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
-                <Zap className="w-3 h-3" />
-                {CANONICAL_TEMPLATES.length} Canonical Diagram Grammars
+      {isViewerOpen && activeTemplate ? (
+        /* FULL-SCREEN STABLE PAGE VIEW (NO POPUP MODAL) */
+        <main className="flex-1 w-full max-w-none flex flex-col px-4 sm:px-6 lg:px-8 py-4 gap-3 bg-[#F8FAFC]">
+          {/* Top Full-Page Control Bar */}
+          <div className="w-full rounded-2xl bg-white border border-slate-200 px-4 md:px-6 py-3 shadow-sm flex flex-wrap items-center justify-between gap-4">
+            {/* Left: Back to Catalog & Template Title */}
+            <div className="flex items-center gap-3 min-w-0">
+              <button
+                onClick={() => handleCloseViewer()}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold transition-colors cursor-pointer shrink-0 shadow-xs"
+              >
+                <ChevronLeft className="w-4 h-4 text-sky-400" />
+                <span>Back to Catalog</span>
+              </button>
+              <span className="w-9 h-9 rounded-xl bg-sky-600 text-white font-black text-xs flex items-center justify-center shadow-sm shrink-0">
+                #{activeTemplate.id}
               </span>
-            </div>
-            <h1 className="text-xl sm:text-2xl font-black tracking-tight leading-tight">
-              Architectural Grammar for{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400">
-                Self-Healing AI Blueprints
-              </span>
-            </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-normal leading-normal max-w-2xl line-clamp-1">
-              Fully editable, self-healing Draw.io XML templates aligned to 140px column pitch, 80px row pitch, and ready for 1-click execution.
-            </p>
-          </div>
-
-          {/* Compact Stats Pill Strip */}
-          <div className="flex items-center gap-3 sm:gap-4 p-2 px-3.5 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-xs shrink-0">
-            <div className="text-center px-1.5">
-              <div className="text-base sm:text-lg font-black text-sky-500">{CANONICAL_TEMPLATES.length}</div>
-              <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Schemas</div>
-            </div>
-            <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
-            <div className="text-center px-1.5">
-              <div className="text-base sm:text-lg font-black text-indigo-500">{CANONICAL_FAMILIES.filter((f) => f !== 'All').length}</div>
-              <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Families</div>
-            </div>
-            <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
-            <div className="text-center px-1.5">
-              <div className="text-base sm:text-lg font-black text-emerald-500">100%</div>
-              <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">XML Ready</div>
-            </div>
-          </div>
-        </div>
-
-        {/* COMPACT CONTROLS BAR: SEARCH, FAMILIES & LEVEL FILTERS */}
-        <div className="py-3 space-y-2.5">
-          {/* Top Row: Search & Level Tabs */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            {/* Search Input */}
-            <div className="relative w-full sm:w-80">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search templates (e.g. System Context, RAG, Threat Model)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-8 pr-3 py-1.5 rounded-lg border text-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-xs"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-[10px]"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-
-            {/* Abstraction Level Filters */}
-            <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0">
-              {[
-                { id: 'All', label: 'All Levels', count: CANONICAL_TEMPLATES.length },
-                { id: 'L1', label: 'L1 Conceptual', count: CANONICAL_TEMPLATES.filter((t) => t.level === 'L1').length },
-                { id: 'L2', label: 'L2 Logical', count: CANONICAL_TEMPLATES.filter((t) => t.level === 'L2').length },
-                { id: 'L3', label: 'L3 Physical / Technical', count: CANONICAL_TEMPLATES.filter((t) => t.level === 'L3').length }
-              ].map(({ id, label, count }) => (
-                <button
-                  key={id}
-                  onClick={() => setSelectedLevel(id)}
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-bold transition-all ${
-                    selectedLevel === id
-                      ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs'
-                      : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
-                  }`}
-                >
-                  <span>{label}</span>
-                  <span className={`px-1.5 py-0.2 rounded text-[9px] font-extrabold ${
-                    selectedLevel === id
-                      ? 'bg-sky-100 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300'
-                      : 'bg-slate-200/70 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
-                  }`}>
-                    {count}
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="text-base md:text-lg font-black text-slate-900 truncate">
+                    {activeTemplate.name}
+                  </h2>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-50 text-sky-700 border border-sky-200">
+                    {activeTemplate.family} • {activeTemplate.level}
                   </span>
-                </button>
-              ))}
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    Full-Screen Stable Blueprint
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 truncate">
+                  {activeTemplate.primaryPurpose}
+                </p>
+              </div>
+            </div>
+
+            {/* Center: Prev / Next Navigation Arrows */}
+            <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-xl border border-slate-200">
+              <button
+                disabled={!prevTemplate}
+                onClick={() => prevTemplate && handleOpenCanvas(prevTemplate, false)}
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  prevTemplate
+                    ? 'hover:bg-white text-slate-700 shadow-xs cursor-pointer'
+                    : 'opacity-30 cursor-not-allowed text-slate-400'
+                }`}
+                title={prevTemplate ? `Previous: ${prevTemplate.id} - ${prevTemplate.name}` : 'No previous template'}
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>Prev {prevTemplate ? `(${prevTemplate.id})` : ''}</span>
+              </button>
+
+              <span className="text-[11px] font-mono font-bold px-2 text-slate-600">
+                {currentIndex + 1} / {CANONICAL_TEMPLATES.length}
+              </span>
+
+              <button
+                disabled={!nextTemplate}
+                onClick={() => nextTemplate && handleOpenCanvas(nextTemplate, false)}
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  nextTemplate
+                    ? 'hover:bg-white text-slate-700 shadow-xs cursor-pointer'
+                    : 'opacity-30 cursor-not-allowed text-slate-400'
+                }`}
+                title={nextTemplate ? `Next: ${nextTemplate.id} - ${nextTemplate.name}` : 'No next template'}
+              >
+                <span>Next {nextTemplate ? `(${nextTemplate.id})` : ''}</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Right: Action Buttons */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <Link
+                href={`/studio?mode=diagrams&blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-teal-500 hover:bg-teal-400 text-slate-950 shadow-sm transition-all"
+              >
+                <Sparkles className="w-3.5 h-3.5 fill-current" />
+                <span>Open in Studio</span>
+              </Link>
+
+              <button
+                onClick={() => setIsComposeOpen(true)}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sm transition-all cursor-pointer"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>Generate Docs</span>
+              </button>
+
+              <button
+                onClick={handleCopyShareUrl}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
+              >
+                {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5 text-sky-600" />}
+                <span>{copiedUrl ? 'Copied Link!' : 'Share'}</span>
+              </button>
+
+              <button
+                onClick={handleCopyXml}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
+              >
+                {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>{copied ? 'Copied XML!' : 'Copy XML'}</span>
+              </button>
+
+              <button
+                onClick={handleDownloadXml}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Download .drawio</span>
+              </button>
             </div>
           </div>
 
-          {/* Bottom Row: 8 Visual Families Category Badges */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin max-w-full">
-            {CANONICAL_FAMILIES.map((family) => {
-              const count =
-                family === 'All'
-                  ? CANONICAL_TEMPLATES.length
-                  : CANONICAL_TEMPLATES.filter((t) => t.family === family).length;
-              return (
-                <button
-                  key={family}
-                  onClick={() => setSelectedFamily(family)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all border shrink-0 ${
-                    selectedFamily === family
-                      ? 'bg-sky-600 text-white border-sky-600 shadow-xs'
-                      : isDark
-                      ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
-                      : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 shadow-xs'
-                  }`}
-                >
-                  <span>{family}</span>
-                  <span
-                    className={`px-1.5 py-0.2 rounded text-[9px] ${
-                      selectedFamily === family
-                        ? 'bg-white/20 text-white'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+          {/* Full-Screen Stable Diagram Canvas */}
+          <div className="flex-1 w-full h-[calc(100vh-150px)] min-h-[700px] rounded-3xl bg-white border border-slate-200 shadow-xl relative overflow-hidden flex items-center justify-center p-2 md:p-4">
+            <DiagramViewerRenderSafe
+              xml={currentXml}
+              bgTheme={themeMode}
+              diagramId={`canonical_${activeTemplate.id}`}
+              diagramType={`canonical_${activeTemplate.id}`}
+              aspectRatioId="16:9"
+            />
+          </div>
+        </main>
+      ) : (
+        /* COMPACT HERO SECTION & CATALOG GRID */
+        <main className="w-full max-w-none px-4 sm:px-6 lg:px-8 pt-3 pb-16">
+          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-3.5 border-b border-slate-200 dark:border-slate-800 min-w-0">
+            <div className="flex-1 min-w-0 space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+                  <Zap className="w-3 h-3" />
+                  {CANONICAL_TEMPLATES.length} Canonical Diagram Grammars
+                </span>
+              </div>
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight leading-tight">
+                Architectural Grammar for{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400">
+                  Self-Healing AI Blueprints
+                </span>
+              </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-normal leading-normal max-w-2xl line-clamp-1">
+                Hover over any tile for an enlarged diagram preview, or click any tile to open the full-screen blueprint page.
+              </p>
+            </div>
+
+            {/* Compact Stats Pill Strip */}
+            <div className="flex items-center gap-3 sm:gap-4 p-2 px-3.5 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-xs shrink-0">
+              <div className="text-center px-1.5">
+                <div className="text-base sm:text-lg font-black text-sky-500">{CANONICAL_TEMPLATES.length}</div>
+                <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Schemas</div>
+              </div>
+              <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+              <div className="text-center px-1.5">
+                <div className="text-base sm:text-lg font-black text-indigo-500">{CANONICAL_FAMILIES.filter((f) => f !== 'All').length}</div>
+                <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Families</div>
+              </div>
+              <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+              <div className="text-center px-1.5">
+                <div className="text-base sm:text-lg font-black text-emerald-500">100%</div>
+                <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Full-Page</div>
+              </div>
+            </div>
+          </div>
+
+          {/* COMPACT CONTROLS BAR: SEARCH, FAMILIES & LEVEL FILTERS */}
+          <div className="py-3 space-y-2.5">
+            {/* Top Row: Search & Level Tabs */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+              {/* Search Input */}
+              <div className="relative w-full sm:w-80">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search templates (e.g. System Context, RAG, Threat Model)..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-8 pr-3 py-1.5 rounded-lg border text-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-xs"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-[10px]"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+
+              {/* Abstraction Level Filters */}
+              <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0">
+                {[
+                  { id: 'All', label: 'All Levels', count: CANONICAL_TEMPLATES.length },
+                  { id: 'L1', label: 'L1 Conceptual', count: CANONICAL_TEMPLATES.filter((t) => t.level === 'L1').length },
+                  { id: 'L2', label: 'L2 Logical', count: CANONICAL_TEMPLATES.filter((t) => t.level === 'L2').length },
+                  { id: 'L3', label: 'L3 Physical / Technical', count: CANONICAL_TEMPLATES.filter((t) => t.level === 'L3').length }
+                ].map(({ id, label, count }) => (
+                  <button
+                    key={id}
+                    onClick={() => setSelectedLevel(id)}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-bold transition-all ${
+                      selectedLevel === id
+                        ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs'
+                        : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
                     }`}
                   >
-                    {count}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+                    <span>{label}</span>
+                    <span className={`px-1.5 py-0.2 rounded text-[9px] font-extrabold ${
+                      selectedLevel === id
+                        ? 'bg-sky-100 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300'
+                        : 'bg-slate-200/70 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                    }`}>
+                      {count}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        {/* 50 TEMPLATES GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 pt-2">
-          {filteredTemplates.map((template) => {
-            const isHighlighted = ['01', '02', '03', '04'].includes(template.id);
-
-            return (
-              <div
-                key={template.id}
-                className={`group relative rounded-2xl border p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-xl ${cardClass} ${
-                  isHighlighted ? 'ring-2 ring-sky-500/30' : ''
-                }`}
-              >
-                {isHighlighted && (
-                  <div className="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center gap-1">
-                    <Sparkles className="w-3 h-3" /> Live 1:1 Replica Ready
-                  </div>
-                )}
-
-                <div className="space-y-4">
-                  {/* Top Row: Template ID & Badges */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 font-black text-sm flex items-center justify-center">
-                        {template.id}
-                      </span>
-                      <div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                          {template.family}
-                        </span>
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight group-hover:text-sky-500 transition-colors">
-                          {template.name}
-                        </h3>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <span className="px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700" title={
-                        template.level === 'L1' ? 'L1 Conceptual Architecture' :
-                        template.level === 'L2' ? 'L2 Logical Architecture' :
-                        template.level === 'L3' ? 'L3 Physical / Technical Architecture' :
-                        `${template.level} Architecture Continuum`
-                      }>
-                        {template.level === 'L1' ? 'L1 Conceptual' :
-                         template.level === 'L2' ? 'L2 Logical' :
-                         template.level === 'L3' ? 'L3 Physical' :
-                         template.level}
-                      </span>
-                      {template.certificationStatus === 'certified' ? (
-                        <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Certified
-                        </span>
-                      ) : (
-                        <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
-                          In Review
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Primary Purpose */}
-                  <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">
-                    {template.primaryPurpose}
-                  </p>
-
-                  {/* Architecture Diagram Preview Thumbnail */}
-                  {template.previewImage && (
-                    <div
-                      onClick={() => handleOpenCanvas(template)}
-                      className="relative w-full h-44 rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 cursor-pointer group-hover:border-sky-500/50 transition-all shadow-inner flex items-center justify-center"
+            {/* Bottom Row: Visual Families Category Badges */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin max-w-full">
+              {CANONICAL_FAMILIES.map((family) => {
+                const count =
+                  family === 'All'
+                    ? CANONICAL_TEMPLATES.length
+                    : CANONICAL_TEMPLATES.filter((t) => t.family === family).length;
+                return (
+                  <button
+                    key={family}
+                    onClick={() => setSelectedFamily(family)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all border shrink-0 ${
+                      selectedFamily === family
+                        ? 'bg-sky-600 text-white border-sky-600 shadow-xs'
+                        : isDark
+                        ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                        : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 shadow-xs'
+                    }`}
+                  >
+                    <span>{family}</span>
+                    <span
+                      className={`px-1.5 py-0.2 rounded text-[9px] ${
+                        selectedFamily === family
+                          ? 'bg-white/20 text-white'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                      }`}
                     >
-                      <img
-                        src={template.previewImage}
-                        alt={template.name}
-                        className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
-                        onError={(e) => {
-                          (e.target as HTMLElement).style.display = 'none';
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-3">
-                        <span className="text-[11px] font-bold text-white flex items-center gap-1.5 drop-shadow-md">
-                          <Eye className="w-3.5 h-3.5 text-sky-400" /> Click to Open Live Canvas
-                        </span>
-                        <span className="text-[10px] font-black px-2 py-0.5 rounded bg-sky-500 text-white shadow">
-                          1:1 XML Ready
-                        </span>
-                      </div>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 75 TEMPLATES GRID WITH REAL THUMBNAILS BEHIND TILES & BIGGER HOVER CARDS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 pt-2">
+            {filteredTemplates.map((template, idx) => {
+              const isHighlighted = ['00', '01', '02', '03', '04'].includes(template.id);
+              const thumbSrc = template.previewImage || `/templates/canonical_${template.id.padStart(2, '0')}.png`;
+              const isHovered = hoveredTemplateId === template.id;
+              // Determine horizontal alignment of the bigger hover card so edge columns never clip
+              const colMod4 = idx % 4;
+              const hoverAlignClass =
+                colMod4 === 0
+                  ? 'left-0 origin-left'
+                  : colMod4 === 3
+                  ? 'right-0 origin-right'
+                  : 'left-1/2 -translate-x-1/2 origin-center';
+
+              return (
+                <div
+                  key={template.id}
+                  data-testid={`canonical-tile-${template.id}`}
+                  onMouseEnter={() => setHoveredTemplateId(template.id)}
+                  onMouseLeave={() => setHoveredTemplateId(null)}
+                  onClick={() => handleOpenCanvas(template, true)}
+                  className={`group relative rounded-2xl border p-5 flex flex-col justify-between transition-all duration-300 cursor-pointer ${cardClass} ${
+                    isHighlighted ? 'ring-2 ring-sky-500/30' : ''
+                  } ${isHovered ? 'z-40 border-sky-500 shadow-2xl' : 'z-10 hover:shadow-xl'}`}
+                >
+                  {/* REAL THUMBNAIL BEHIND THE TILE (SUBTLE FULL-BLEED LAYER) */}
+                  <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none z-0">
+                    <img
+                      src={thumbSrc}
+                      alt=""
+                      aria-hidden="true"
+                      className="w-full h-full object-cover opacity-[0.18] group-hover:opacity-[0.28] group-hover:scale-105 transition-all duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-white/88 via-white/82 to-white/94" />
+                  </div>
+
+                  {isHighlighted && (
+                    <div className="absolute -top-3 right-6 z-20 px-3 py-0.5 rounded-full bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" /> Live 1:1 Replica Ready
                     </div>
                   )}
 
-                  {/* Key Component Pills */}
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {template.keyComponents.map((comp, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border border-slate-200/80 dark:border-slate-800"
+                  <div className="relative z-10 space-y-3.5">
+                    {/* Top Row: Template ID & Badges */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className="w-9 h-9 rounded-xl bg-sky-600 text-white font-black text-sm flex items-center justify-center shadow-xs shrink-0">
+                          {template.id}
+                        </span>
+                        <div className="min-w-0">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-sky-600 block">
+                            {template.family}
+                          </span>
+                          <h3 className="text-base font-extrabold text-slate-900 leading-tight group-hover:text-sky-600 transition-colors truncate">
+                            {template.name}
+                          </h3>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-1 shrink-0">
+                        <span className="px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-white/90 text-slate-700 border border-slate-200 shadow-2xs">
+                          {template.level === 'L1' ? 'L1 Conceptual' :
+                           template.level === 'L2' ? 'L2 Logical' :
+                           template.level === 'L3' ? 'L3 Physical' :
+                           template.level}
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Certified
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Primary Purpose */}
+                    <p className="text-xs text-slate-700 font-medium line-clamp-2 leading-relaxed">
+                      {template.primaryPurpose}
+                    </p>
+
+                    {/* Real Architecture Diagram Thumbnail Preview Box */}
+                    <div className="relative w-full h-48 rounded-xl overflow-hidden bg-white border border-slate-200/90 group-hover:border-sky-500/60 transition-all shadow-sm flex items-center justify-center">
+                      <img
+                        src={thumbSrc}
+                        alt={template.name}
+                        loading="lazy"
+                        className="w-full h-full object-contain p-1.5 group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-slate-900/80 backdrop-blur-xs text-white text-[9px] font-bold flex items-center gap-1">
+                        <Maximize2 className="w-2.5 h-2.5 text-sky-400" /> Full Page
+                      </div>
+                    </div>
+
+                    {/* Key Component Pills */}
+                    <div className="flex flex-wrap gap-1.5 pt-0.5">
+                      {template.keyComponents.map((comp, cIdx) => (
+                        <span
+                          key={cIdx}
+                          className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-white/90 text-slate-600 border border-slate-200/90 shadow-2xs"
+                        >
+                          {comp}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Examples */}
+                    <div className="text-[11px] text-slate-500 pt-0.5 truncate">
+                      <span className="font-bold text-slate-700">Typical: </span>
+                      {template.examples}
+                    </div>
+                  </div>
+
+                  {/* Card Action Buttons */}
+                  <div
+                    className="relative z-10 pt-3.5 mt-3.5 border-t border-slate-200/80 grid grid-cols-3 gap-1.5"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Link
+                      href={`/canonical/${template.id}?domain=${selectedDomain}`}
+                      className="flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white shadow-sm shadow-sky-500/20 transition-all hover:scale-[1.02]"
+                      title="Open full-screen blueprint template page"
+                    >
+                      <Maximize2 className="w-3.5 h-3.5" />
+                      <span>Full Page</span>
+                    </Link>
+
+                    <button
+                      onClick={() => {
+                        setActiveTemplate(template);
+                        setCurrentXml(template.generateXml(selectedDomain, themeMode));
+                        setIsComposeOpen(true);
+                      }}
+                      className="flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sm shadow-sky-500/20 transition-all hover:scale-[1.02] cursor-pointer"
+                      title="Generate BRD, PRD, SDD (HLD), FDD, TDD (LLD) from this blueprint"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>Docs</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleOpenAdapt(template)}
+                      className="flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-all cursor-pointer"
+                      title="Adapt blueprint for your custom prompt"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+                      <span>Adapt</span>
+                    </button>
+                  </div>
+
+                  {/* BIGGER FLOATING CARD ON HOVER */}
+                  {isHovered && (
+                    <div
+                      data-testid={`canonical-hover-card-${template.id}`}
+                      onClick={() => handleOpenCanvas(template, true)}
+                      className={`hidden md:flex flex-col justify-between absolute -top-4 ${hoverAlignClass} w-[480px] xl:w-[540px] z-50 rounded-3xl bg-white border-2 border-sky-500 shadow-[0_28px_80px_-12px_rgba(2,132,199,0.45)] p-5 transition-all duration-200 cursor-pointer`}
+                    >
+                      {/* Subtle Real Thumbnail Behind Hover Card */}
+                      <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none z-0">
+                        <img
+                          src={thumbSrc}
+                          alt=""
+                          aria-hidden="true"
+                          className="w-full h-full object-cover opacity-[0.12] scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-b from-white/94 via-white/92 to-white/96" />
+                      </div>
+
+                      <div className="relative z-10 space-y-3">
+                        {/* Hover Card Header */}
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-2.5">
+                            <span className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-indigo-600 text-white font-black text-base flex items-center justify-center shadow-md shrink-0">
+                              #{template.id}
+                            </span>
+                            <div>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[10px] font-black uppercase tracking-wider text-sky-600">
+                                  {template.family}
+                                </span>
+                                <span className="text-slate-300">•</span>
+                                <span className="text-[10px] font-extrabold text-indigo-600">
+                                  {template.level} Blueprint
+                                </span>
+                              </div>
+                              <h4 className="text-lg font-black text-slate-900 leading-snug">
+                                {template.name}
+                              </h4>
+                            </div>
+                          </div>
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-sky-500 text-white shadow-xs shrink-0 flex items-center gap-1">
+                            <Maximize2 className="w-3 h-3" /> Click for Full Page
+                          </span>
+                        </div>
+
+                        {/* Enlarged High-Resolution Real Diagram Preview */}
+                        <div className="relative w-full h-64 rounded-2xl overflow-hidden bg-white border-2 border-sky-200 shadow-inner flex items-center justify-center p-2">
+                          <img
+                            src={thumbSrc}
+                            alt={template.name}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+
+                        {/* Full Purpose & Key Components */}
+                        <p className="text-xs font-medium text-slate-700 leading-relaxed">
+                          {template.primaryPurpose}
+                        </p>
+
+                        <div className="flex flex-wrap gap-1.5">
+                          {template.keyComponents.map((comp, idx2) => (
+                            <span
+                              key={idx2}
+                              className="px-2.5 py-0.5 rounded-lg text-[10px] font-bold bg-sky-50 text-sky-800 border border-sky-200"
+                            >
+                              {comp}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Hover Card Footer CTA */}
+                      <div
+                        className="relative z-10 pt-3 mt-3 border-t border-slate-200 flex items-center justify-between gap-2"
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        {comp}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Examples */}
-                  <div className="text-[11px] text-slate-400 pt-1">
-                    <span className="font-semibold text-slate-500 dark:text-slate-400">Typical: </span>
-                    {template.examples}
-                  </div>
+                        <Link
+                          href={`/canonical/${template.id}?domain=${selectedDomain}`}
+                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-md shadow-sky-500/20 transition-all"
+                        >
+                          <Maximize2 className="w-3.5 h-3.5" />
+                          <span>Open Full-Screen Stable Page</span>
+                        </Link>
+                        <Link
+                          href={`/studio?mode=diagrams&blueprint=${template.id}&domain=${selectedDomain}`}
+                          className="px-3.5 py-2.5 rounded-xl text-xs font-extrabold bg-teal-500 hover:bg-teal-400 text-slate-950 transition-all"
+                        >
+                          Open in Studio
+                        </Link>
+                      </div>
+                    </div>
+                  )}
                 </div>
-
-                {/* Card Action Buttons */}
-                <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-3 gap-1.5">
-                  <button
-                    onClick={() => handleOpenCanvas(template)}
-                    className="flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white shadow-sm shadow-sky-500/20 transition-all hover:scale-[1.02]"
-                    title="Open live interactive canvas"
-                  >
-                    <Eye className="w-3.5 h-3.5" />
-                    <span>Canvas</span>
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setActiveTemplate(template);
-                      setCurrentXml(template.generateXml(selectedDomain, themeMode));
-                      setIsComposeOpen(true);
-                    }}
-                    className="flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sm shadow-sky-500/20 transition-all hover:scale-[1.02]"
-                    title="Generate BRD, PRD, SDD (HLD), FDD, TDD (LLD) from this blueprint"
-                  >
-                    <FileText className="w-3.5 h-3.5" />
-                    <span>Docs</span>
-                  </button>
-
-                  <button
-                    onClick={() => handleOpenAdapt(template)}
-                    className="flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all"
-                    title="Adapt blueprint for your custom prompt"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                    <span>Adapt</span>
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </main>
-
-      {/* FULL-FEATURED LIVE DRAW.IO CANVAS VIEWER MODAL WITH URL SYNC & PREV/NEXT NAVIGATION */}
-      {isViewerOpen && activeTemplate && (
-        <div
-          onClick={() => handleCloseViewer()}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-2 md:p-6 cursor-pointer"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-[1680px] h-[92vh] rounded-3xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden cursor-default"
-          >
-            {/* Modal Header */}
-            <div className="px-4 md:px-6 py-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4">
-              {/* Left: Template ID & Title */}
-              <div className="flex items-center gap-3">
-                <span className="w-8 h-8 rounded-lg bg-sky-500 text-white font-black text-xs flex items-center justify-center shadow-sm">
-                  {activeTemplate.id}
-                </span>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-sm md:text-base font-bold text-slate-900 dark:text-white">
-                      {activeTemplate.name} &bull; Live Draw.io Architecture
-                    </h2>
-                    <span className="hidden sm:inline-flex text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                      Self-Healed &bull; Zero Collisions
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Domain: {DOMAIN_PRESETS.find((d) => d.id === selectedDomain)?.name || selectedDomain}
-                  </p>
-                </div>
-              </div>
-
-              {/* Center: Prev / Next Navigation Arrows */}
-              <div className="hidden sm:flex items-center gap-2 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800">
-                <button
-                  disabled={!prevTemplate}
-                  onClick={() => prevTemplate && handleOpenCanvas(prevTemplate)}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
-                    prevTemplate
-                      ? 'hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-sm cursor-pointer'
-                      : 'opacity-30 cursor-not-allowed text-slate-400'
-                  }`}
-                  title={prevTemplate ? `Previous: ${prevTemplate.id} - ${prevTemplate.name}` : 'No previous template'}
-                >
-                  <ChevronLeft className="w-3.5 h-3.5" />
-                  <span>Prev {prevTemplate ? `(${prevTemplate.id})` : ''}</span>
-                </button>
-
-                <span className="text-[11px] font-mono font-bold px-2 text-slate-500">
-                  {currentIndex + 1} / {CANONICAL_TEMPLATES.length}
-                </span>
-
-                <button
-                  disabled={!nextTemplate}
-                  onClick={() => nextTemplate && handleOpenCanvas(nextTemplate)}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
-                    nextTemplate
-                      ? 'hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-sm cursor-pointer'
-                      : 'opacity-30 cursor-not-allowed text-slate-400'
-                  }`}
-                  title={nextTemplate ? `Next: ${nextTemplate.id} - ${nextTemplate.name}` : 'No next template'}
-                >
-                  <span>Next {nextTemplate ? `(${nextTemplate.id})` : ''}</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              {/* Right: Action Buttons */}
-              <div className="flex items-center gap-1.5 md:gap-2">
-                {/* Open in Architecture Studio */}
-                <Link
-                  href={`/studio?mode=diagrams&blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-teal-500 hover:bg-teal-400 text-slate-950 shadow-sm shadow-teal-500/20 transition-all hover:scale-[1.02]"
-                  title="Launch in Multi-Blueprint Studio & DocGen"
-                >
-                  <Sparkles className="w-3.5 h-3.5 fill-current" />
-                  <span className="hidden sm:inline">Open in Studio</span>
-                  <span className="sm:hidden">Studio</span>
-                </Link>
-
-                {/* Generate Docs Button */}
-                <button
-                  onClick={() => setIsComposeOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sm shadow-sky-500/20 transition-all hover:scale-[1.02]"
-                  title="Generate BRD, PRD, SDD (HLD), FDD, TDD (LLD) from this diagram"
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Generate Docs (BRD / PRD / SDD)</span>
-                  <span className="sm:hidden">Docs</span>
-                </button>
-
-                {/* Full Page Link */}
-                <Link
-                  href={`/canonical/${activeTemplate.id}`}
-                  className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                  title="Open in dedicated full page"
-                >
-                  <Maximize2 className="w-3.5 h-3.5 text-indigo-500" />
-                  <span>Full Page</span>
-                </Link>
-
-                {/* Share URL */}
-                <button
-                  onClick={handleCopyShareUrl}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                  title="Copy Direct Link to this Template"
-                >
-                  {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Share2 className="w-3.5 h-3.5 text-sky-500" />}
-                  <span className="hidden lg:inline">{copiedUrl ? 'Copied Link!' : 'Share'}</span>
-                </button>
-
-                {/* Reload Master */}
-                <button
-                  onClick={() => {
-                    if (activeTemplate) {
-                      setCurrentXml(activeTemplate.generateXml(selectedDomain, themeMode));
-                    }
-                  }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                  title="Reload 1:1 clean master geometry"
-                >
-                  <RefreshCw className="w-3.5 h-3.5 text-sky-500" />
-                  <span className="hidden lg:inline">Reload Master</span>
-                </button>
-
-                {/* Copy XML */}
-                <button
-                  onClick={handleCopyXml}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                >
-                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span className="hidden sm:inline">{copied ? 'Copied XML!' : 'Copy XML'}</span>
-                </button>
-
-                {/* Download */}
-                <button
-                  onClick={handleDownloadXml}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Download .drawio</span>
-                </button>
-
-                {/* Close Button */}
-                <button
-                  onClick={() => handleCloseViewer()}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Embedded Live Draw.io Viewer Viewport with Floating Prev/Next Buttons */}
-            <div className="flex-1 w-full h-full min-h-[550px] bg-[#F8FAFC] dark:bg-[#0B111E] relative overflow-hidden flex items-center justify-center p-2 md:p-4">
-              {/* Floating Prev Button */}
-              {prevTemplate && (
-                <button
-                  onClick={() => handleOpenCanvas(prevTemplate)}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xl flex items-center justify-center hover:scale-110 hover:bg-sky-500 hover:text-white transition-all text-slate-700 dark:text-slate-200"
-                  title={`Previous (Left Arrow): ${prevTemplate.id} - ${prevTemplate.name}`}
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-              )}
-
-              {/* Floating Next Button */}
-              {nextTemplate && (
-                <button
-                  onClick={() => handleOpenCanvas(nextTemplate)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xl flex items-center justify-center hover:scale-110 hover:bg-sky-500 hover:text-white transition-all text-slate-700 dark:text-slate-200"
-                  title={`Next (Right Arrow): ${nextTemplate.id} - ${nextTemplate.name}`}
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              )}
-
-              <DiagramViewerRenderSafe
-                xml={currentXml}
-                bgTheme={themeMode}
-                diagramId={`canonical_${activeTemplate.id}`}
-                diagramType={`canonical_${activeTemplate.id}`}
-                aspectRatioId="16:9"
-              />
-            </div>
+              );
+            })}
           </div>
-        </div>
+        </main>
       )}
 
       {/* DOMAIN ADAPTATION & SELF-HEALING MODAL */}

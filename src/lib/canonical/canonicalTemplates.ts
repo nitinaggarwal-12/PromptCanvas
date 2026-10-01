@@ -1671,23 +1671,30 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
 
 export const CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
   const contract = CANONICAL_CONTRACTS[t.id];
-  const cleanName = t.name
-    .replace(/\bCLAUDE\.md\b/gi, 'AGENTS.md')
-    .replace(/\bGPT-6\s+Astra\b/gi, 'Frontier Agent')
-    .replace(/\bGCP\s+Enterprise\s+Architecture\b/gi, 'Cloud-Native Enterprise Architecture')
-    .replace(/\bRaw\s+Gemini\s+API\b/gi, 'Stateless Foundation API')
-    .replace(/\bVertex\s+AI\s+Agent\s+Engine\b/gi, 'Governed Agent Engine')
-    .replace(/^Google\s+Cloud\s+/i, 'Enterprise Cloud ');
+  const paddedId = t.id.padStart(2, '0');
+  const cleanName = t.id === '00'
+    ? '2026 Upgraded GCP & Gemini Enterprise Native Architecture'
+    : t.name
+        .replace(/\bCLAUDE\.md\b/gi, 'AGENTS.md')
+        .replace(/\bGPT-6\s+Astra\b/gi, 'Frontier Agent')
+        .replace(/\bGCP\s+Enterprise\s+Architecture\b/gi, 'Cloud-Native Enterprise Architecture')
+        .replace(/\bRaw\s+Gemini\s+API\b/gi, 'Stateless Foundation API')
+        .replace(/\bVertex\s+AI\s+Agent\s+Engine\b/gi, 'Governed Agent Engine')
+        .replace(/^Google\s+Cloud\s+/i, 'Enterprise Cloud ');
   return {
     ...t,
     name: cleanName,
-    sourceImageId: `images/${t.id}.png`,
+    previewImage: `/templates/canonical_${paddedId}.png`,
+    sourceImageId: `/templates/canonical_${paddedId}.png`,
     generatorVersion: contract ? contract.generatorVersion : "1.0",
     fidelityScore: contract && contract.certificationStatus === "certified" ? 0.98 : 0.90,
     certificationStatus: contract ? contract.certificationStatus : "in_review",
     contract,
     generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => {
       const baseXml = t.generateXml(domainFlavor, theme);
+      if (t.id === '00' && (!domainFlavor || domainFlavor === 'general')) {
+        return baseXml;
+      }
       return sanitizeAndHealCanonicalBlueprintXml(injectDomainFlavorXml(baseXml, domainFlavor), t.id);
     }
   };
