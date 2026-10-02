@@ -257,18 +257,22 @@ export default function DiagramViewer({
           bottom: 0;
           left: 0;
           right: 0;
-          padding: 12px 16px 20px 16px;
+          padding: 20px 24px;
           box-sizing: border-box;
           overflow: auto;
           overscroll-behavior: contain;
           -webkit-overflow-scrolling: touch;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         .mxgraph {
           width: 100%;
           min-height: 100%;
           display: flex;
-          align-items: flex-start;
+          align-items: center;
           justify-content: center;
+          margin: auto;
         }
         .mxgraph > svg, .mxgraph > div {
           width: 100% !important;
@@ -429,7 +433,7 @@ export default function DiagramViewer({
           resize: true,
           toolbar: 'zoom layers tags',
           edit: '_blank',
-          border: 0,
+          border: 32,
           transparent: true,
           fit: true,
           'max-scale': 4.0

@@ -142,7 +142,7 @@ export default function DiagramViewerRenderSafe({
     toolbar: null,
     'toolbar-position': 'none',
     edit: '',
-    border: allowFullScaleScroll ? 15 : fitToWidth ? 12 : minHeight === 0 ? 4 : 16,
+    border: 32,
     transparent: true,
     fit: !allowFullScaleScroll,
     'max-scale': 4.0,
@@ -168,10 +168,10 @@ ${origin ? `<base href="${origin}/">` : ''}
   }
   .canvas-container {
     ${fitToWidth
-      ? `position: relative; width: 100%; min-height: 100%; padding: 12px 10px 32px 10px; box-sizing: border-box; overflow: visible; background: ${bgColor}; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;`
+      ? `position: relative; width: 100%; min-height: 100%; padding: 20px 24px; box-sizing: border-box; overflow: visible; background: ${bgColor}; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;`
       : allowFullScaleScroll
-      ? `position: relative; width: 100%; min-width: 1640px; min-height: 1040px; padding: 24px; box-sizing: border-box; overflow: visible; background: ${bgColor}; display: flex; align-items: flex-start; justify-content: center;`
-      : `position: absolute; inset: 0; padding: 0px; box-sizing: border-box; overflow: hidden; background: ${bgColor}; display: flex; align-items: center; justify-content: center;`}
+      ? `position: relative; width: 100%; min-width: 1640px; min-height: 1040px; padding: 32px; box-sizing: border-box; overflow: visible; background: ${bgColor}; display: flex; align-items: flex-start; justify-content: center;`
+      : `position: absolute; inset: 0; padding: 20px 24px; box-sizing: border-box; overflow: hidden; background: ${bgColor}; display: flex; align-items: center; justify-content: center;`}
   }
   .mxgraph {
     ${fitToWidth
