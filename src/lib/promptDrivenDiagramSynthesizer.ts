@@ -15,6 +15,9 @@
  */
 
 import { generateUpgradedGcpGeBankingArchitectureXml } from './canonical/upgradedGcpGeBankingAgentTemplate';
+import { generateLogicalGcpAgentArchitectureXml } from './canonical/templateLogicalGcpAgentArchitecture';
+import { generateConceptualGcpAgentArchitectureXml } from './canonical/templateConceptualGcpAgentArch';
+import { generateProcessGcpAgentWorkflowXml } from './canonical/templateProcessGcpAgentWorkflow';
 import { generateTemplate38CloudLandingZoneXml } from './canonical/template38CloudLandingZone';
 import { generateTemplate40EnterpriseGenAiPlatformXml } from './canonical/template40EnterpriseGenAiPlatform';
 import { generateTemplate41EnterpriseRagPlatformXml } from './canonical/template41EnterpriseRagPlatform';
@@ -260,6 +263,27 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
   if (explicitBpId && explicitBpId !== 'custom' && explicitBpId !== 'process_flow') {
     const paddedId = explicitBpId.padStart(2, '0');
     if (paddedId === '00') {
+      if (options?.perspective === 'Logical') {
+        return generateLogicalGcpAgentArchitectureXml({
+          domain,
+          projectTitle: safeTitle,
+          theme: 'light',
+        });
+      }
+      if (options?.perspective === 'Conceptual') {
+        return generateConceptualGcpAgentArchitectureXml({
+          domain,
+          projectTitle: safeTitle,
+          theme: 'light',
+        });
+      }
+      if (options?.perspective === 'Process') {
+        return generateProcessGcpAgentWorkflowXml({
+          domain,
+          projectTitle: safeTitle,
+          theme: 'light',
+        });
+      }
       return generateUpgradedGcpGeBankingArchitectureXml({
         prompt,
         projectTitle: safeTitle,

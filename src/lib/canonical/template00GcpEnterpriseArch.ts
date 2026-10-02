@@ -1,22 +1,39 @@
 /**
  * Canonical Blueprint 00: GCP Enterprise Architecture (Default 2026 GCP & Gemini Enterprise Native Technical Architecture)
- * Compact, uncluttered L2/L3 Logical-Component Reference Topology:
- * 1. User Interface (Chat / Gemini Live / AG-UI)
- * 2. Edge Layer (Cloud Armor, Apigee X, Envoy AI) & Identity Platform (Firebase Auth & Passkeys)
- * 3. API Gateway (Cloud Run Gen2) & Model Armor + SDP (DLP PII Redaction & Guardrails)
- * 4. AI Cluster (Gemini Enterprise, Vertex Agent Engine, Google ADK, LangGraph & A2A Specialist Agents)
- * 5. LLM Layer (Gemini 3.1 Pro / 3.8 Flash on Vertex AI + Gemma 3 / Llama 4 on GKE vLLM)
- * 6. Vector Search 2.0 (ScaNN & Valkey Session Memory)
- * 7. Cloud Databases via MCP (Cloud Spanner TrueTime/Graph, Bigtable + AlloyDB AI, Firestore + Document AI)
- * + GCP Observability, AgentOps & FinOps (Cloud Logging OTel, Cloud Monitoring, Vertex AI Eval, FinOps Hub)
+ * Supports Technical, Logical, Conceptual, and Process perspectives.
  */
 
 import { generateUpgradedGcpGeBankingArchitectureXml } from "./upgradedGcpGeBankingAgentTemplate";
+import { generateLogicalGcpAgentArchitectureXml } from "./templateLogicalGcpAgentArchitecture";
+import { generateConceptualGcpAgentArchitectureXml } from "./templateConceptualGcpAgentArch";
+import { generateProcessGcpAgentWorkflowXml } from "./templateProcessGcpAgentWorkflow";
 
 export function generateTemplate00GcpEnterpriseArchXml(
   domainFlavor?: string,
-  theme: "light" | "dark" = "light"
+  theme: "light" | "dark" = "light",
+  perspective: "Logical" | "Technical" | "Process" | "Conceptual" = "Technical"
 ): string {
+  if (perspective === "Logical") {
+    return generateLogicalGcpAgentArchitectureXml({
+      domain: domainFlavor || "GCP ENTERPRISE",
+      theme,
+      projectTitle: "Google Cloud Multi-Agent Logical Architecture",
+    });
+  }
+  if (perspective === "Conceptual") {
+    return generateConceptualGcpAgentArchitectureXml({
+      domain: domainFlavor || "GCP ENTERPRISE",
+      theme,
+      projectTitle: "Enterprise Multi-Agent Conceptual Architecture",
+    });
+  }
+  if (perspective === "Process") {
+    return generateProcessGcpAgentWorkflowXml({
+      domain: domainFlavor || "GCP ENTERPRISE",
+      theme,
+      projectTitle: "Multi-Agent Request Processing & Banking Workflow",
+    });
+  }
   return generateUpgradedGcpGeBankingArchitectureXml({
     projectTitle: "00 — GCP Native Technical Architecture (Gemini Enterprise, ADK, A2A & MCP)",
     projectName: "Google Cloud & Gemini Enterprise",
@@ -25,3 +42,42 @@ export function generateTemplate00GcpEnterpriseArchXml(
     theme,
   });
 }
+
+export function generateTemplate00LogicalXml(
+  domainFlavor?: string,
+  theme: "light" | "dark" = "light"
+): string {
+  return generateLogicalGcpAgentArchitectureXml({
+    domain: domainFlavor || "GCP ENTERPRISE",
+    theme,
+    projectTitle: "Google Cloud Multi-Agent Logical Architecture",
+  });
+}
+
+export function generateTemplate00ConceptualXml(
+  domainFlavor?: string,
+  theme: "light" | "dark" = "light"
+): string {
+  return generateConceptualGcpAgentArchitectureXml({
+    domain: domainFlavor || "GCP ENTERPRISE",
+    theme,
+    projectTitle: "Enterprise Multi-Agent Conceptual Architecture",
+  });
+}
+
+export function generateTemplate00ProcessXml(
+  domainFlavor?: string,
+  theme: "light" | "dark" = "light"
+): string {
+  return generateProcessGcpAgentWorkflowXml({
+    domain: domainFlavor || "GCP ENTERPRISE",
+    theme,
+    projectTitle: "Multi-Agent Request Processing & Banking Workflow",
+  });
+}
+
+export {
+  generateLogicalGcpAgentArchitectureXml,
+  generateConceptualGcpAgentArchitectureXml,
+  generateProcessGcpAgentWorkflowXml
+};

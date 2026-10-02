@@ -57,6 +57,9 @@ import {
   CanonicalTemplate
 } from '@/lib/canonical/canonicalTemplates';
 import { AppHeader } from '@/components/AppHeader';
+import { generateLogicalGcpAgentArchitectureXml } from '@/lib/canonical/templateLogicalGcpAgentArchitecture';
+import { generateConceptualGcpAgentArchitectureXml } from '@/lib/canonical/templateConceptualGcpAgentArch';
+import { generateProcessGcpAgentWorkflowXml } from '@/lib/canonical/templateProcessGcpAgentWorkflow';
 import {
   ArchitecturePerspective,
   AbstractionDetailLevel,
@@ -109,7 +112,7 @@ export interface DashboardVersionEntry {
   minor: number;
   title: string;
   prompt: string;
-  source: 'ai_copilot' | 'manual_drawio' | 'audit_autofix' | 'suggestion_chip' | 'initial_load';
+  source: 'ai_copilot' | 'manual_drawio' | 'audit_autofix' | 'suggestion_chip' | 'initial_load' | 'perspective_switch';
   sourceLabel: string;
   diffSummary: string;
   timestamp: string;
@@ -473,6 +476,70 @@ function DashboardContent() {
       `Blueprint #${targetBlueprintId}`,
       targetTitle,
       `Swapped canvas to ${targetTitle} (#${targetBlueprintId}) at ${selectedLevel} level.`
+    );
+  };
+
+  // =========================================================================
+  // CORE ACTION: Switch Architecture Perspective (Technical / Logical / Process)
+  // =========================================================================
+  const handleSwitchPerspective = (newPerspective: ArchitecturePerspective) => {
+    if (newPerspective === canvasPerspective) return;
+    setCanvasPerspective(newPerspective);
+
+    let nextXml = '';
+    let nextTitle = canvasTitle;
+    let nextLevel: AbstractionDetailLevel = selectedLevel;
+    let summary = '';
+
+    if (newPerspective === 'Logical') {
+      nextXml = generateLogicalGcpAgentArchitectureXml({
+        domain: 'enterprise',
+        theme: isLight ? 'light' : 'dark',
+        projectTitle: 'Google Cloud Multi-Agent Logical Architecture'
+      });
+      nextTitle = 'Google Cloud Multi-Agent Logical Architecture';
+      nextLevel = 'L2';
+      summary = 'Switched to L2 Logical Multi-Agent Architecture (Coordinator, Subagents, Model Armor, ADK & MCP Tools).';
+    } else if (newPerspective === 'Conceptual') {
+      nextXml = generateConceptualGcpAgentArchitectureXml({
+        domain: 'enterprise',
+        theme: isLight ? 'light' : 'dark',
+        projectTitle: 'Enterprise Multi-Agent Conceptual Architecture'
+      });
+      nextTitle = 'Enterprise Multi-Agent Conceptual Architecture';
+      nextLevel = 'L1';
+      summary = 'Switched to L1 Conceptual Architecture (Enterprise Governance, Client Experience, AI Trust Perimeter, AI Cluster, Foundation Models & Core Banking).';
+    } else if (newPerspective === 'Process') {
+      nextXml = generateProcessGcpAgentWorkflowXml({
+        domain: 'enterprise',
+        theme: isLight ? 'light' : 'dark',
+        projectTitle: 'Multi-Agent Request Processing & Banking Workflow'
+      });
+      nextTitle = 'Multi-Agent Request Processing & Banking Workflow';
+      nextLevel = 'L2';
+      summary = 'Switched to Process Architecture (BPMN Swimlanes: Ingress & Security, Multi-Agent Orchestration, Tools & Data Services, Backend Core Banking).';
+    } else if (newPerspective === 'Technical') {
+      const bp = CANONICAL_TEMPLATES.find((t) => t.id === '00') || CANONICAL_TEMPLATES[0];
+      nextXml = bp.generateXml('enterprise', isLight ? 'light' : 'dark');
+      nextTitle = 'Google Cloud Enterprise Architecture';
+      nextLevel = 'L3';
+      summary = 'Switched to L3 Technical Architecture (6-Zone Enterprise Cloud Topology & Gemini Native Mesh).';
+    } else {
+      const bp = CANONICAL_TEMPLATES.find((t) => t.id === '13') || CANONICAL_TEMPLATES.find((t) => t.family === 'Process') || CANONICAL_TEMPLATES[0];
+      nextXml = bp.generateXml('enterprise', isLight ? 'light' : 'dark');
+      nextTitle = bp.name;
+      nextLevel = 'L1';
+      summary = `Switched to Process Architecture (${bp.name}).`;
+    }
+
+    setCanvasTitle(nextTitle);
+    recordNewVersion(
+      nextXml,
+      `Switched Perspective to ${newPerspective}`,
+      'perspective_switch',
+      `${newPerspective} View`,
+      nextTitle,
+      summary
     );
   };
 
@@ -1158,11 +1225,11 @@ function DashboardContent() {
                 {/* Perspective & Zoom Actions */}
                 <div className="flex items-center gap-2 shrink-0">
                   <div className="flex items-center bg-white p-0.5 rounded-xl border border-slate-300 text-xs shadow-2xs">
-                    {(["Technical", "Logical", "Process"] as ArchitecturePerspective[]).map((p) => (
+                    {(["Technical", "Logical", "Conceptual", "Process"] as ArchitecturePerspective[]).map((p) => (
                       <button
                         key={p}
                         type="button"
-                        onClick={() => setCanvasPerspective(p)}
+                        onClick={() => handleSwitchPerspective(p)}
                         className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
                           canvasPerspective === p ? 'bg-teal-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                         }`}

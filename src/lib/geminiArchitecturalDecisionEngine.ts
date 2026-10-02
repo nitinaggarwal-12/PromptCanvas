@@ -548,13 +548,13 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
       Logical: {
         perspective: 'Logical',
         blueprintId: '00',
-        blueprintName: 'GCP Enterprise Architecture',
-        recommendedLevel: 'L3',
-        tailoredTitle: `L3 Logical & Technical GCP Architecture: ${cleanTitle}`,
-        whyChosen: 'Shows the clean, uncluttered 2026 GCP & Gemini Enterprise Multi-Agent Native Technical Architecture (UI -> Edge/Identity -> Cloud Run API/Model Armor -> AI Cluster ADK/A2A -> LLM Layer & Vector Search 2.0 -> Spanner/Bigtable/Firestore via MCP).',
+        blueprintName: 'Google Cloud Multi-Agent Logical Architecture',
+        recommendedLevel: 'L2',
+        tailoredTitle: `L2 Google Cloud Multi-Agent Architecture: ${cleanTitle}`,
+        whyChosen: 'Renders the Google Cloud Multi-Agent Logical Architecture: Application Users & AI Developers -> Cloud Run Frontend (HITL) -> Agents Container (Coordinator Agent, Sequence Subagents Task-A/A.1, Iterative Refinement Subagents Task-B/Quality Evaluator/Prompt Enhancer, Response Generator) -> Agents Runtime (Cloud Run, Gemini Enterprise Agent Platform, GKE) -> ADK & Model Armor Guardrails -> AI Model (Gemini) -> MCP Clients to Databases, APIs & External Tools.',
         plannedModifications: [
-          'Adapt the 3 Specialist Agents (GE • ADK • A2A) and bottom microservice capabilities to the prompt domain',
-          'Wire OTel AI Tracing, Vertex AI Evaluation, and GCP FinOps Hub telemetry',
+          'Wire Coordinator Agent and Subagent flows (Sequence & Iterative Refinement loops)',
+          'Configure Model Armor guardrails, Gemini Model Runtime, and MCP Tools',
         ],
       },
       Technical: {
