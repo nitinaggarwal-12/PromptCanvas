@@ -262,12 +262,29 @@ export function executeGcpPromptModification(
   const textDark = isDark ? '#F8FAFC' : '#0F172A';
   const textMuted = isDark ? '#94A3B8' : '#64748B';
 
-  // Dynamic 2D Coordinate Layout (Bottom Channel Slot Allocation to avoid colliding with headers at y: 10..120)
+  // Dynamic 2D Coordinate Layout (Bottom Channel Slot Allocation to avoid colliding with headers or bottom-tier cards)
   const slotIndex = Math.max(0, currentVersionIndex - 1);
   const colOffset = slotIndex % 3;
   const rowOffset = Math.floor(slotIndex / 3);
   const targetX = 220 + colOffset * 360;
-  const targetY = 660 + rowOffset * 85;
+
+  let maxExistingBottomY = 620;
+  const cellBlocks = currentXml.split('<mxCell');
+  for (const block of cellBlocks) {
+    if (block.includes('id="copilot_mod_')) continue;
+    const yMatch = block.match(/\by="(-?\d+(?:\.\d+)?)"/);
+    const hMatch = block.match(/\bheight="(\d+(?:\.\d+)?)"/);
+    if (yMatch && hMatch) {
+      const yVal = parseFloat(yMatch[1]);
+      const hVal = parseFloat(hMatch[1]);
+      // Consider component cards & group containers (height <= 450) so tall column background swimlanes don't skew standard Dialect-A templates
+      if (!isNaN(yVal) && !isNaN(hVal) && hVal <= 450 && yVal + hVal > maxExistingBottomY && yVal + hVal < 2400) {
+        maxExistingBottomY = yVal + hVal;
+      }
+    }
+  }
+  const baseY = maxExistingBottomY > 645 ? Math.ceil(maxExistingBottomY) + 24 : 660;
+  const targetY = baseY + rowOffset * 85;
 
   // Cross-Vendor Translation Check
   const vendorMatch = detectVendorTranslation(lower);
@@ -506,11 +523,20 @@ export function executeGcpPromptModification(
     `;
   }
 
-  // 3. Inject cells before </root> tag cleanly
+  // 3. Inject cells before </root> tag cleanly and expand pageHeight if needed
   let mutatedXml = currentXml;
   if (mutatedXml.includes('</root>')) {
     mutatedXml = mutatedXml.replace('</root>', `${injectedCellsXml}\n        </root>`);
   }
+  const requiredHeight = targetY + 95;
+  mutatedXml = mutatedXml.replace(/pageHeight="(\d+)"/, (full, hStr) => {
+    const curH = parseInt(hStr, 10);
+    return !isNaN(curH) && curH < requiredHeight ? `pageHeight="${requiredHeight}"` : full;
+  });
+  mutatedXml = mutatedXml.replace(/\bdy="(\d+)"/, (full, dyStr) => {
+    const curDy = parseInt(dyStr, 10);
+    return !isNaN(curDy) && curDy < requiredHeight ? `dy="${requiredHeight}"` : full;
+  });
 
   // 4. Validate & Heal Draw.io XML
   const healingResult = validateAndHealDrawioXml(mutatedXml, archId);

@@ -324,6 +324,34 @@ function ArchitectureLibraryContent() {
         ...d,
         latest_prompt: d.latest_prompt || d.prompt || d.technical_usecase || d.business_usecase || '',
       }));
+
+      // Read user-saved projects from localStorage (saved from Dashboard Session Copy or Studio)
+      let localSavedItems: CanvasDiagramItem[] = [];
+      if (typeof window !== 'undefined') {
+        try {
+          const rawSaved = JSON.parse(localStorage.getItem('promptcanvas_saved_blueprints') || '[]');
+          if (Array.isArray(rawSaved)) {
+            localSavedItems = rawSaved.map((item: any) => {
+              let fullPayload: any = null;
+              try {
+                fullPayload = JSON.parse(localStorage.getItem(`promptcanvas_studio_${item.id}`) || 'null');
+              } catch {}
+              return {
+                id: item.id,
+                name: item.name || 'Saved Project',
+                architecture_type: item.architecture_type || 'gcp_enterprise_reference',
+                created_studio: item.created_studio || 'studio',
+                created_at: item.createdAt || item.updatedAt || new Date().toISOString(),
+                updated_at: item.updatedAt || new Date().toISOString(),
+                version_count: fullPayload?.versions?.length || item.versionCount || 1,
+                latest_prompt: item.description || fullPayload?.description || 'Saved from User Session Copy',
+                xml_content: item.xml || fullPayload?.xml || '',
+              };
+            });
+          }
+        } catch {}
+      }
+
       const visionSavedItems = buildVisionSavedLibraryItems();
 
       const canonicalFallbackItems: CanvasDiagramItem[] = CANONICAL_TEMPLATES.map((tpl) => ({
@@ -339,7 +367,13 @@ function ArchitectureLibraryContent() {
       }));
 
       const existingIds = new Set(dbList.map(d => d.id.toUpperCase()));
+      const existingNames = new Set(dbList.map(d => (d.name || '').toLowerCase().trim()));
+      const uniqueLocalSaved = localSavedItems.filter(
+        l => !existingIds.has(l.id.toUpperCase()) && !existingNames.has((l.name || '').toLowerCase().trim())
+      );
+
       const merged = [
+        ...uniqueLocalSaved,
         ...dbList,
         ...visionSavedItems.filter(v => !existingIds.has(v.id.toUpperCase())),
       ];
@@ -370,6 +404,16 @@ function ArchitectureLibraryContent() {
     try {
       if (diagram.id.startsWith('VIS-') || diagram.id.startsWith('GCP-') || diagram.created_studio === 'vision') {
         deleteCustomVisionBlueprint(diagram.id);
+      }
+      if (typeof window !== 'undefined') {
+        try {
+          const rawSaved = JSON.parse(localStorage.getItem('promptcanvas_saved_blueprints') || '[]');
+          if (Array.isArray(rawSaved)) {
+            const nextSaved = rawSaved.filter((item: any) => item.id !== diagram.id && item.name !== diagram.name);
+            localStorage.setItem('promptcanvas_saved_blueprints', JSON.stringify(nextSaved));
+          }
+          localStorage.removeItem(`promptcanvas_studio_${diagram.id}`);
+        } catch {}
       }
       await fetch(`/api/diagrams/${diagram.id}`, { method: 'DELETE' }).catch(() => {});
       setDiagrams(prev => prev.filter(d => d.id !== diagram.id));

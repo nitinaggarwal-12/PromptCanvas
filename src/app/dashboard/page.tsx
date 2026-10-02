@@ -45,7 +45,12 @@ import {
   ArrowUpRight,
   Loader2,
   Share2,
-  CheckCircle2
+  CheckCircle2,
+  Bookmark,
+  Trash2,
+  GitFork,
+  Save,
+  MessageSquare
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -69,6 +74,8 @@ import {
 import { computeArchitectureDiff, ArchitectureDiffResult } from '@/lib/diffEngine';
 import { exportDiagramPng } from '@/lib/export/diagramRaster';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
+import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
+import { executeGcpPromptModification } from '@/lib/gcpCoPilotModifier';
 
 const DEFAULT_DASHBOARD_PROMPT =
   'Design a GCP native technical architecture with Gemini Enterprise, Google ADK, A2A, MCP, Model Armor, Vector Search 2.0, and Cloud Spanner';
@@ -133,6 +140,100 @@ export interface AuditDimensionResult {
   recommendations: string[];
 }
 
+// Pending Navigation / Switch Action when Unsaved Session Copy Exists
+export type PendingLeaveAction =
+  | { type: 'route'; href: string; label?: string }
+  | { type: 'category'; categoryId: string }
+  | { type: 'blueprint'; blueprint: CanonicalTemplate }
+  | { type: 'manual_save' };
+
+/**
+ * Pure helper returning the immutable Canonical Baseline state for any (blueprintId, perspective)
+ * without mutating CANONICAL_TEMPLATES or incrementing version history.
+ */
+function getCanonicalBaselineForPerspective(
+  blueprintId: string,
+  perspective: ArchitecturePerspective,
+  isLight: boolean
+): {
+  xml: string;
+  title: string;
+  level: AbstractionDetailLevel;
+  diffSummary: string;
+} {
+  const bp =
+    CANONICAL_TEMPLATES.find(
+      (t) => t.id === blueprintId || t.id === blueprintId.padStart(2, '0')
+    ) || CANONICAL_TEMPLATES[0];
+
+  if (perspective === 'Logical') {
+    const title =
+      blueprintId === '00'
+        ? 'Google Cloud Multi-Agent Logical Architecture'
+        : `${bp.name} — Logical Architecture`;
+    return {
+      xml: generateLogicalGcpAgentArchitectureXml({
+        domain: 'enterprise',
+        theme: isLight ? 'light' : 'dark',
+        projectTitle: title
+      }),
+      title,
+      level: 'L2',
+      diffSummary: `Canonical Master Blueprint #${bp.id} (L2 Logical Multi-Agent Architecture — Read-Only Baseline).`
+    };
+  }
+
+  if (perspective === 'Conceptual') {
+    const title =
+      blueprintId === '00'
+        ? 'Enterprise Multi-Agent Conceptual Architecture'
+        : `${bp.name} — Conceptual Architecture`;
+    return {
+      xml: generateConceptualGcpAgentArchitectureXml({
+        domain: 'enterprise',
+        theme: isLight ? 'light' : 'dark',
+        projectTitle: title
+      }),
+      title,
+      level: 'L1',
+      diffSummary: `Canonical Master Blueprint #${bp.id} (L1 Conceptual Architecture — Read-Only Baseline).`
+    };
+  }
+
+  if (perspective === 'Process') {
+    if (blueprintId !== '00' && (bp.family === 'Process' || bp.family === 'Flow')) {
+      return {
+        xml: bp.generateXml('enterprise', isLight ? 'light' : 'dark'),
+        title: bp.name,
+        level: (bp.level as AbstractionDetailLevel) || 'L2',
+        diffSummary: `Canonical Master Blueprint #${bp.id} (${bp.name} — Read-Only Baseline).`
+      };
+    }
+    const title =
+      blueprintId === '00'
+        ? 'Multi-Agent Request Processing & Banking Workflow'
+        : `${bp.name} — Process Workflow`;
+    return {
+      xml: generateProcessGcpAgentWorkflowXml({
+        domain: 'enterprise',
+        theme: isLight ? 'light' : 'dark',
+        projectTitle: title
+      }),
+      title,
+      level: 'L2',
+      diffSummary: `Canonical Master Blueprint #${bp.id} (BPMN Swimlane Process Workflow — Read-Only Baseline).`
+    };
+  }
+
+  // Default: Technical Perspective
+  return {
+    xml: bp.generateXml('enterprise', isLight ? 'light' : 'dark'),
+    title: blueprintId === '00' ? 'Google Cloud Enterprise Architecture' : bp.name,
+    level: (bp.level as AbstractionDetailLevel) || 'L3',
+    diffSummary: `Canonical Master Blueprint #${bp.id} loaded across 5 Deterministic Zones (Immutable Baseline).`
+  };
+}
+
 function DashboardContent() {
   const router = useRouter();
   const { theme } = useTheme();
@@ -153,11 +254,49 @@ function DashboardContent() {
   const [openLevelDropdown, setOpenLevelDropdown] = useState<boolean>(false);
   const [levelSearchQuery, setLevelSearchQuery] = useState<string>('');
 
-  // 4. CENTRAL PROMPT COMPOSER STATE
+  // 4. CENTRAL PROMPT COMPOSER & CONVERSATIONAL STATE
   const [activeComposerPrompt, setActiveComposerPrompt] = useState<string>('');
   const [isProcessingAi, setIsProcessingAi] = useState<boolean>(false);
+  const [conversationalReply, setConversationalReply] = useState<string | null>(null);
 
-  // 5. VERSION LINEAGE & STATE MANAGEMENT
+  // 5. IMMUTABLE BASELINE + COPY-ON-WRITE PER-USER SESSION SANDBOX STATE
+  const [sessionUserId, setSessionUserId] = useState<string>('sess_local');
+  const [isSessionForked, setIsSessionForked] = useState<boolean>(false);
+  const [hasUnsavedSessionChanges, setHasUnsavedSessionChanges] = useState<boolean>(false);
+  const [sessionCopyId, setSessionCopyId] = useState<string | null>(null);
+
+  // Leave / Switch Intercept Modal ("Save Session Copy as Your Project?")
+  const [leaveModalOpen, setLeaveModalOpen] = useState<boolean>(false);
+  const [pendingLeaveAction, setPendingLeaveAction] = useState<PendingLeaveAction | null>(null);
+  const [saveProjectName, setSaveProjectName] = useState<string>('');
+  const [saveProjectDomain, setSaveProjectDomain] = useState<string>('Enterprise Cloud & Multi-Agent AI');
+  const [isSavingProject, setIsSavingProject] = useState<boolean>(false);
+
+  // Initialize isolated per-tab/per-user session ID
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      let sid = sessionStorage.getItem('promptcanvas_session_user_id');
+      if (!sid) {
+        sid = 'sess_' + Math.random().toString(36).substring(2, 8);
+        sessionStorage.setItem('promptcanvas_session_user_id', sid);
+      }
+      setSessionUserId(sid);
+    }
+  }, []);
+
+  // Warn on browser tab close / reload when unsaved session copy changes exist
+  useEffect(() => {
+    if (!hasUnsavedSessionChanges) return;
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = 'You have unsaved changes in your Dashboard Session Copy. Save as your project before leaving?';
+      return e.returnValue;
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedSessionChanges]);
+
+  // 6. VERSION LINEAGE & STATE MANAGEMENT
   const [loadedBlueprintId, setLoadedBlueprintId] = useState<string>('00');
   const [canvasTitle, setCanvasTitle] = useState<string>('Google Cloud Enterprise Architecture');
   const [canvasPerspective, setCanvasPerspective] = useState<ArchitecturePerspective>('Technical');
@@ -175,7 +314,7 @@ function DashboardContent() {
     return bp.generateXml('enterprise', isLight ? 'light' : 'dark');
   }, [isLight]);
 
-  // Version History Stream
+  // Version History Stream (Starts with 1 Immutable Baseline Snapshot v1.0)
   const [versionHistory, setVersionHistory] = useState<DashboardVersionEntry[]>([
     {
       id: 'ver_init_00',
@@ -185,8 +324,8 @@ function DashboardContent() {
       title: 'Google Cloud Enterprise Architecture',
       prompt: DEFAULT_DASHBOARD_PROMPT,
       source: 'initial_load',
-      sourceLabel: 'Initial Baseline',
-      diffSummary: 'Canonical Master Blueprint #00 loaded across 5 Deterministic Zones.',
+      sourceLabel: 'Canonical Baseline',
+      diffSummary: 'Canonical Master Blueprint #00 loaded across 5 Deterministic Zones (Immutable Baseline).',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       xml: initialBaseXml,
       blueprintId: '00',
@@ -206,9 +345,8 @@ function DashboardContent() {
   // Active XML rendered on canvas
   const activeCanvasXml = currentVersion.xml;
 
-  // 6. DYNAMIC CONTEXTUAL 3 TOP NEXT-UPDATE SUGGESTIONS
+  // 7. DYNAMIC CONTEXTUAL 3 TOP NEXT-UPDATE SUGGESTIONS
   const contextualSuggestions = useMemo(() => {
-    const promptLower = (currentVersion.prompt || '').toLowerCase();
     const xmlLower = (currentVersion.xml || '').toLowerCase();
 
     // Contextual rule 1: Spanner HA
@@ -229,7 +367,7 @@ function DashboardContent() {
     return [s1, s2, s3];
   }, [currentVersion]);
 
-  // 7. MODALS & DRAWERS STATE
+  // 8. MODALS & DRAWERS STATE
   const [isInlineEditOpen, setIsInlineEditOpen] = useState<boolean>(false);
   const [isAuditModalOpen, setIsAuditModalOpen] = useState<boolean>(false);
   const [isExporting, setIsExporting] = useState<'pdf' | 'png' | null>(null);
@@ -288,7 +426,7 @@ function DashboardContent() {
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
+    setTimeout(() => setToastMessage(null), 3500);
   };
 
   // Close dropdowns on click outside
@@ -370,8 +508,78 @@ function DashboardContent() {
     );
   }, [selectedBlueprintId]);
 
-  // Handle Category Change
-  const handleCategorySelect = (catId: string) => {
+  // =========================================================================
+  // CORE HELPER: Open "Save Session Copy as Your Project?" Intercept Modal
+  // =========================================================================
+  const openSaveOrDiscardModal = (action: PendingLeaveAction) => {
+    setPendingLeaveAction(action);
+    const defaultName = `${canvasTitle} — Custom Project (${currentVersion.versionTag})`;
+    setSaveProjectName(defaultName);
+    setSaveProjectDomain(selectedCategoryObj.name === 'All 75 Blueprints' ? 'Enterprise Cloud & Multi-Agent AI' : selectedCategoryObj.name);
+    setLeaveModalOpen(true);
+  };
+
+  // =========================================================================
+  // CORE HELPER: Reset Any Blueprint to Pristine v1.0 Canonical Baseline
+  // =========================================================================
+  const loadPristineCanonicalBlueprint = (targetBlueprintId: string) => {
+    const bp =
+      CANONICAL_TEMPLATES.find(
+        (t) => t.id === targetBlueprintId || t.id === targetBlueprintId.padStart(2, '0')
+      ) || CANONICAL_TEMPLATES[0];
+
+    let defaultPerspective: ArchitecturePerspective = 'Technical';
+    if (bp.family === 'Process' || bp.family === 'Flow') {
+      defaultPerspective = 'Process';
+    } else if (bp.family === 'Infographic' || bp.family === 'Understand') {
+      defaultPerspective = 'Logical';
+    }
+
+    const baseline = getCanonicalBaselineForPerspective(bp.id, defaultPerspective, isLight);
+
+    // Clear any ephemeral session copy from sessionStorage
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.removeItem(`promptcanvas_dashboard_session_${sessionUserId}_${loadedBlueprintId}`);
+        sessionStorage.removeItem(`promptcanvas_dashboard_session_${sessionUserId}_${bp.id}`);
+      } catch {}
+    }
+
+    setIsSessionForked(false);
+    setHasUnsavedSessionChanges(false);
+    setSessionCopyId(null);
+    setConversationalReply(null);
+
+    setSelectedBlueprintId(bp.id);
+    setLoadedBlueprintId(bp.id);
+    setSelectedLevel(baseline.level);
+    setCanvasPerspective(defaultPerspective);
+    setCanvasTitle(baseline.title);
+
+    const baselineEntry: DashboardVersionEntry = {
+      id: `ver_init_${bp.id}_${Date.now()}`,
+      versionTag: 'v1.0',
+      major: 1,
+      minor: 0,
+      title: baseline.title,
+      prompt: bp.primaryPurpose || DEFAULT_DASHBOARD_PROMPT,
+      source: 'initial_load',
+      sourceLabel: 'Canonical Baseline',
+      diffSummary: baseline.diffSummary,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      xml: baseline.xml,
+      blueprintId: bp.id,
+      level: baseline.level,
+      perspective: defaultPerspective,
+      status: 'published'
+    };
+
+    setVersionHistory([baselineEntry]);
+    setActiveVersionIndex(0);
+  };
+
+  // Immediate Category Selection (after no unsaved changes or after modal resolution)
+  const applyCategorySelectImmediate = (catId: string) => {
     setSelectedCategory(catId);
     setBlueprintSearchQuery('');
     const activeCategory = CATEGORY_GROUPS.find((c) => c.id === catId);
@@ -381,20 +589,35 @@ function DashboardContent() {
     }
     if (matching.length > 0) {
       const first = matching[0];
-      setSelectedBlueprintId(first.id);
-      setSelectedLevel((first.level as AbstractionDetailLevel) || 'L3');
+      loadPristineCanonicalBlueprint(first.id);
     }
   };
 
-  // Handle Blueprint Select
+  // Handle Category Change (Intercepts if user has unsaved session copy changes)
+  const handleCategorySelect = (catId: string) => {
+    setOpenCategoryDropdown(false);
+    if (catId === selectedCategory) return;
+    if (hasUnsavedSessionChanges) {
+      openSaveOrDiscardModal({ type: 'category', categoryId: catId });
+      return;
+    }
+    applyCategorySelectImmediate(catId);
+  };
+
+  // Handle Blueprint Select (Intercepts if user has unsaved session copy changes)
   const handleBlueprintSelect = (bp: CanonicalTemplate) => {
-    setSelectedBlueprintId(bp.id);
-    setSelectedLevel((bp.level as AbstractionDetailLevel) || 'L3');
     setOpenBlueprintDropdown(false);
+    if (bp.id === loadedBlueprintId && !hasUnsavedSessionChanges) return;
+    if (hasUnsavedSessionChanges) {
+      openSaveOrDiscardModal({ type: 'blueprint', blueprint: bp });
+      return;
+    }
+    loadPristineCanonicalBlueprint(bp.id);
+    showToast(`✓ Loaded Canonical Blueprint #${bp.id}: ${bp.name} (v1.0 Baseline)`);
   };
 
   // =========================================================================
-  // CORE HELPER: Create New Version Record
+  // CORE HELPER: Fork Per-User Session Copy & Create New Version Record
   // =========================================================================
   const recordNewVersion = (
     newXml: string,
@@ -423,6 +646,11 @@ function DashboardContent() {
         : `Applied architectural modifications: "${promptText.slice(0, 45)}..."`
     );
 
+    const forkId = sessionCopyId || `fork_bp${loadedBlueprintId}_${sessionUserId}`;
+    setIsSessionForked(true);
+    setHasUnsavedSessionChanges(true);
+    setSessionCopyId(forkId);
+
     const newEntry: DashboardVersionEntry = {
       id: `ver_${Date.now()}_${nextTag}`,
       versionTag: nextTag,
@@ -431,154 +659,168 @@ function DashboardContent() {
       title: overrideTitle || canvasTitle,
       prompt: promptText,
       source,
-      sourceLabel,
+      sourceLabel: `${sourceLabel} (Session Copy)`,
       diffSummary: summaryText,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       xml: newXml,
       blueprintId: loadedBlueprintId,
       level: selectedLevel,
       perspective: canvasPerspective,
-      status: publishingScope === 'draft' ? 'draft' : 'published'
+      status: 'draft'
     };
 
-    setVersionHistory((prev) => [newEntry, ...prev]);
+    setVersionHistory((prev) => {
+      const nextHistory = [newEntry, ...prev];
+      if (typeof window !== 'undefined') {
+        try {
+          sessionStorage.setItem(
+            `promptcanvas_dashboard_session_${sessionUserId}_${loadedBlueprintId}`,
+            JSON.stringify({
+              sessionCopyId: forkId,
+              blueprintId: loadedBlueprintId,
+              updatedAt: new Date().toISOString(),
+              versionHistory: nextHistory
+            })
+          );
+        } catch {}
+      }
+      return nextHistory;
+    });
     setActiveVersionIndex(0);
-    showToast(`✓ Created version ${nextTag}: ${sourceLabel}`);
+    showToast(`⚡ Forked Session Copy (${nextTag}): Canonical Blueprint #${loadedBlueprintId} remains untouched`);
   };
 
   // =========================================================================
-  // CORE ACTION: Load Blueprint & Step 1-4 Synthesis
-  // =========================================================================
-  const handleProposeBlueprintAndPlan = () => {
-    const targetBlueprintId = selectedBlueprintId;
-    const bp = CANONICAL_TEMPLATES.find(
-      (t) => t.id === targetBlueprintId || t.id === targetBlueprintId.padStart(2, '0')
-    ) || CANONICAL_TEMPLATES[0];
-
-    const targetTitle = bp.name;
-    const generatedXml = bp.generateXml('enterprise', isLight ? 'light' : 'dark');
-
-    setLoadedBlueprintId(targetBlueprintId);
-    setCanvasTitle(targetTitle);
-
-    if (bp.family === 'Process' || bp.family === 'Flow') {
-      setCanvasPerspective('Process');
-    } else if (bp.family === 'Infographic' || bp.family === 'Understand') {
-      setCanvasPerspective('Logical');
-    } else {
-      setCanvasPerspective('Technical');
-    }
-
-    recordNewVersion(
-      generatedXml,
-      `Loaded Canonical Blueprint #${targetBlueprintId} (${bp.name}) at ${selectedLevel} level`,
-      'initial_load',
-      `Blueprint #${targetBlueprintId}`,
-      targetTitle,
-      `Swapped canvas to ${targetTitle} (#${targetBlueprintId}) at ${selectedLevel} level.`
-    );
-  };
-
-  // =========================================================================
-  // CORE ACTION: Switch Architecture Perspective (Technical / Logical / Process)
+  // CORE ACTION: Switch Architecture Perspective (Read-Only View Switch!)
   // =========================================================================
   const handleSwitchPerspective = (newPerspective: ArchitecturePerspective) => {
     if (newPerspective === canvasPerspective) return;
     setCanvasPerspective(newPerspective);
 
-    let nextXml = '';
-    let nextTitle = canvasTitle;
-    let nextLevel: AbstractionDetailLevel = selectedLevel;
-    let summary = '';
+    const baseline = getCanonicalBaselineForPerspective(loadedBlueprintId, newPerspective, isLight);
+    setCanvasTitle(baseline.title);
+    setSelectedLevel(baseline.level);
 
-    if (newPerspective === 'Logical') {
-      nextXml = generateLogicalGcpAgentArchitectureXml({
-        domain: 'enterprise',
-        theme: isLight ? 'light' : 'dark',
-        projectTitle: 'Google Cloud Multi-Agent Logical Architecture'
+    if (!isSessionForked) {
+      // Read-Only Canonical View Switch: Update v1.0 in-place without adding version snapshots or dirtying baseline
+      setVersionHistory((prev) => {
+        const base = prev[0] || {
+          id: `ver_init_${loadedBlueprintId}`,
+          versionTag: 'v1.0',
+          major: 1,
+          minor: 0,
+          prompt: DEFAULT_DASHBOARD_PROMPT,
+          source: 'initial_load' as const,
+          sourceLabel: 'Canonical Baseline',
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          blueprintId: loadedBlueprintId,
+          status: 'published' as const
+        };
+        return [
+          {
+            ...base,
+            title: baseline.title,
+            xml: baseline.xml,
+            level: baseline.level,
+            perspective: newPerspective,
+            diffSummary: baseline.diffSummary
+          }
+        ];
       });
-      nextTitle = 'Google Cloud Multi-Agent Logical Architecture';
-      nextLevel = 'L2';
-      summary = 'Switched to L2 Logical Multi-Agent Architecture (Coordinator, Subagents, Model Armor, ADK & MCP Tools).';
-    } else if (newPerspective === 'Conceptual') {
-      nextXml = generateConceptualGcpAgentArchitectureXml({
-        domain: 'enterprise',
-        theme: isLight ? 'light' : 'dark',
-        projectTitle: 'Enterprise Multi-Agent Conceptual Architecture'
-      });
-      nextTitle = 'Enterprise Multi-Agent Conceptual Architecture';
-      nextLevel = 'L1';
-      summary = 'Switched to L1 Conceptual Architecture (Enterprise Governance, Client Experience, AI Trust Perimeter, AI Cluster, Foundation Models & Core Banking).';
-    } else if (newPerspective === 'Process') {
-      nextXml = generateProcessGcpAgentWorkflowXml({
-        domain: 'enterprise',
-        theme: isLight ? 'light' : 'dark',
-        projectTitle: 'Multi-Agent Request Processing & Banking Workflow'
-      });
-      nextTitle = 'Multi-Agent Request Processing & Banking Workflow';
-      nextLevel = 'L2';
-      summary = 'Switched to Process Architecture (BPMN Swimlanes: Ingress & Security, Multi-Agent Orchestration, Tools & Data Services, Backend Core Banking).';
-    } else if (newPerspective === 'Technical') {
-      const bp = CANONICAL_TEMPLATES.find((t) => t.id === '00') || CANONICAL_TEMPLATES[0];
-      nextXml = bp.generateXml('enterprise', isLight ? 'light' : 'dark');
-      nextTitle = 'Google Cloud Enterprise Architecture';
-      nextLevel = 'L3';
-      summary = 'Switched to L3 Technical Architecture (6-Zone Enterprise Cloud Topology & Gemini Native Mesh).';
+      setActiveVersionIndex(0);
     } else {
-      const bp = CANONICAL_TEMPLATES.find((t) => t.id === '13') || CANONICAL_TEMPLATES.find((t) => t.family === 'Process') || CANONICAL_TEMPLATES[0];
-      nextXml = bp.generateXml('enterprise', isLight ? 'light' : 'dark');
-      nextTitle = bp.name;
-      nextLevel = 'L1';
-      summary = `Switched to Process Architecture (${bp.name}).`;
+      // User is in an active Session Copy: check if they already have a snapshot in this perspective
+      const existingIdx = versionHistory.findIndex((v) => v.perspective === newPerspective);
+      if (existingIdx !== -1) {
+        setActiveVersionIndex(existingIdx);
+      } else {
+        // Update current session view perspective without creating fake version increments
+        setVersionHistory((prev) =>
+          prev.map((v, idx) =>
+            idx === activeVersionIndex
+              ? {
+                  ...v,
+                  perspective: newPerspective,
+                  title: baseline.title,
+                  xml: baseline.xml
+                }
+              : v
+          )
+        );
+      }
     }
-
-    setCanvasTitle(nextTitle);
-    recordNewVersion(
-      nextXml,
-      `Switched Perspective to ${newPerspective}`,
-      'perspective_switch',
-      `${newPerspective} View`,
-      nextTitle,
-      summary
-    );
   };
 
   // =========================================================================
-  // CORE ACTION: Execute Prompt with Gemini / Synthesizer (Single Central Chatbox)
+  // CORE ACTION: Execute Prompt with Gemini / Synthesizer (Copy-on-Write Session Sandbox)
   // =========================================================================
   const handleExecutePrompt = async (promptToRun?: string) => {
     const rawPrompt = promptToRun || activeComposerPrompt;
     if (!rawPrompt.trim() || isProcessingAi) return;
 
     const query = rawPrompt.trim();
-    setIsProcessingAi(true);
-    setActiveComposerPrompt(''); // Reset central composer immediately into empty state!
+    setActiveComposerPrompt('');
 
-    showToast(`⚡ Synthesizing with Gemini API: "${query.slice(0, 35)}..."`);
+    // 1. Mandatory Dynamic Conversational & Intent Fuzzing Gate:
+    // Greetings ("Hi"), identity queries ("who are you"), courtesies ("thanks"), or <=2 word non-mutations
+    // must NEVER mutate the diagram, fork a session copy, or bump v1.0!
+    if (!promptToRun) {
+      const intentResult = classifyChatIntent(query);
+      if (intentResult.isQuestion) {
+        let replyText = '';
+        if (intentResult.intent === 'greeting') {
+          replyText = `Hello! I'm the PromptCanvas Architecture Co-Pilot. Blueprint #${loadedBlueprintId} (${canvasTitle}) is currently at immutable Canonical Baseline ${currentVersion.versionTag}. Type an architectural change (e.g., "Add Cloud Armor WAF and multi-region Cloud Spanner") to automatically fork a private Session Copy!`;
+        } else if (intentResult.intent === 'identity') {
+          replyText = `I am the PromptCanvas Gemini Architecture Assistant. I help you customize canonical Google Cloud blueprints in an isolated per-user Session Sandbox without altering the shared baseline for other users.`;
+        } else if (intentResult.intent === 'conversational') {
+          replyText = `You're welcome! Canonical Blueprint #${loadedBlueprintId} remains at ${currentVersion.versionTag} with zero canvas mutations. Let me know whenever you'd like to add, replace, or refine components.`;
+        } else {
+          replyText = `Advisory Analysis (${currentVersion.versionTag}): "${canvasTitle}" enforces VPC-SC perimeter isolation, Identity-Aware Proxy, and deterministic tier separation. To modify the topology in your session copy, start your prompt with an action verb like "Add...", "Insert...", or "Upgrade...".`;
+        }
+        setConversationalReply(replyText);
+        showToast('💬 Conversational response ready (Canonical Baseline unchanged)');
+        return;
+      }
+    }
+
+    setConversationalReply(null);
+    setIsProcessingAi(true);
+    showToast(`⚡ Forking Session Copy & synthesizing: "${query.slice(0, 35)}..."`);
 
     try {
-      let modifiedXml = currentVersion.xml;
-      modifiedXml = preflightVerifyAndHealXmlAcrossAll6Audits(modifiedXml, 'tech_enterprise');
+      const nextMinorStep = currentVersion.minor + 1;
+      const modResult = executeGcpPromptModification(
+        currentVersion.xml,
+        query,
+        nextMinorStep,
+        `canonical_${loadedBlueprintId}`,
+        !isLight
+      );
+
+      const healedXml = preflightVerifyAndHealXmlAcrossAll6Audits(
+        modResult.updatedXml,
+        'tech_enterprise'
+      );
 
       const isFromChip = !!promptToRun;
       recordNewVersion(
-        modifiedXml,
+        healedXml,
         query,
         isFromChip ? 'suggestion_chip' : 'ai_copilot',
         isFromChip ? 'Context Suggestion' : 'Gemini AI Synthesis',
         canvasTitle,
-        `+ Integrated "${query}" with zero visual collisions.`
+        modResult.newVersion.canvasDiff || `+ Integrated "${query}" into isolated session copy.`
       );
     } catch (err) {
       console.error('Gemini synthesis failed:', err);
-      showToast('⚠️ Synthesis fallback applied. Layout validated.');
+      showToast('⚠️ Synthesis fallback applied to session copy.');
     } finally {
       setIsProcessingAi(false);
     }
   };
 
   // =========================================================================
-  // CORE ACTION: Promote to Major Version (v1.x -> v2.0)
+  // CORE ACTION: Promote to Major Version (v1.x -> v2.0 in Session Copy)
   // =========================================================================
   const handlePromoteMajorVersion = () => {
     const prevVer = currentVersion;
@@ -586,27 +828,185 @@ function DashboardContent() {
     const nextMinor = 0;
     const nextTag = `v${nextMajor}.${nextMinor}`;
 
+    const forkId = sessionCopyId || `fork_bp${loadedBlueprintId}_${sessionUserId}`;
+    setIsSessionForked(true);
+    setHasUnsavedSessionChanges(true);
+    setSessionCopyId(forkId);
+
     const newEntry: DashboardVersionEntry = {
       id: `ver_major_${Date.now()}_${nextTag}`,
       versionTag: nextTag,
       major: nextMajor,
       minor: nextMinor,
       title: `Major Release: ${canvasTitle}`,
-      prompt: `Promoted from ${prevVer.versionTag} to ${nextTag} enterprise release candidate.`,
+      prompt: `Promoted from ${prevVer.versionTag} to ${nextTag} enterprise release candidate in session copy.`,
       source: 'ai_copilot',
-      sourceLabel: 'Major Version Promotion',
-      diffSummary: `Promoted ${prevVer.versionTag} to certified enterprise baseline ${nextTag}.`,
+      sourceLabel: 'Major Version Promotion (Session Copy)',
+      diffSummary: `Promoted ${prevVer.versionTag} to release candidate ${nextTag} in isolated user session.`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       xml: prevVer.xml,
       blueprintId: loadedBlueprintId,
       level: selectedLevel,
       perspective: canvasPerspective,
-      status: 'published'
+      status: 'draft'
     };
 
     setVersionHistory((prev) => [newEntry, ...prev]);
     setActiveVersionIndex(0);
-    showToast(`🎉 Upgraded architecture to Major Version ${nextTag}!`);
+    showToast(`🎉 Promoted Session Copy to Major Version ${nextTag}!`);
+  };
+
+  // =========================================================================
+  // CORE ACTION: Intercept Any Navigation Click While Unsaved Session Copy Exists
+  // =========================================================================
+  const handleDashboardClickCapture = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!hasUnsavedSessionChanges || leaveModalOpen) return;
+    const target = e.target as HTMLElement;
+    const anchor = target.closest('a[href]') as HTMLAnchorElement | null;
+    if (!anchor) return;
+
+    // Allow external or new-tab links (target="_blank")
+    if (anchor.target === '_blank') return;
+
+    const rawHref = anchor.getAttribute('href');
+    if (!rawHref || rawHref.startsWith('#') || rawHref === '/dashboard') return;
+
+    // Intercept leaving /dashboard!
+    e.preventDefault();
+    e.stopPropagation();
+    openSaveOrDiscardModal({
+      type: 'route',
+      href: rawHref,
+      label: anchor.textContent?.trim() || rawHref
+    });
+  };
+
+  // =========================================================================
+  // CORE ACTION: Modal Choice 1 — Accept & Save Session Copy as User's Project
+  // =========================================================================
+  const handleAcceptAndSaveProject = async () => {
+    const finalTitle = (saveProjectName || `${canvasTitle} — Custom Project (${currentVersion.versionTag})`).trim();
+    const finalDomain = (saveProjectDomain || 'Enterprise Cloud & Multi-Agent AI').trim();
+    setIsSavingProject(true);
+
+    const newProjId = 'proj_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+    const latestPrompt = currentVersion.prompt || DEFAULT_DASHBOARD_PROMPT;
+
+    try {
+      // 1. Save to Database API (/api/diagrams) scoped to current user/guest session
+      await fetch('/api/diagrams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: finalTitle,
+          xml: activeCanvasXml,
+          comment: `Saved from Dashboard Session Copy (${currentVersion.versionTag}, forked from Blueprint #${loadedBlueprintId})`,
+          prompt: latestPrompt,
+          businessUsecase: finalDomain,
+          technicalUsecase: currentVersion.diffSummary,
+          architectureType: 'gcp_enterprise_reference',
+          createdStudio: 'studio',
+          isPrivate: true
+        })
+      }).catch(() => {});
+
+      // 2. Save to LocalStorage Saved Architectures Inventory (/library & /studio)
+      if (typeof window !== 'undefined') {
+        const projectPayload = {
+          id: newProjId,
+          name: finalTitle,
+          domain: finalDomain,
+          description: currentVersion.diffSummary || latestPrompt,
+          tags: ['Session Copy', `Blueprint #${loadedBlueprintId}`, currentVersion.versionTag, canvasPerspective],
+          visibility: 'private',
+          activeVersionTag: currentVersion.versionTag,
+          xml: activeCanvasXml,
+          versions: versionHistory,
+          nodeCount: 28,
+          specCount: 10,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+
+        localStorage.setItem(`promptcanvas_studio_${newProjId}`, JSON.stringify(projectPayload));
+        const existingCatalog = JSON.parse(localStorage.getItem('promptcanvas_saved_blueprints') || '[]');
+        const updatedCatalog = [
+          {
+            id: newProjId,
+            name: finalTitle,
+            domain: finalDomain,
+            description: currentVersion.diffSummary || latestPrompt,
+            tags: projectPayload.tags,
+            nodeCount: 28,
+            specCount: 10,
+            versionCount: versionHistory.length,
+            activeVersionTag: currentVersion.versionTag,
+            xml: activeCanvasXml,
+            created_studio: 'studio',
+            architecture_type: 'gcp_enterprise_reference',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          ...(Array.isArray(existingCatalog) ? existingCatalog.filter((item: any) => item.id !== newProjId) : [])
+        ];
+        localStorage.setItem('promptcanvas_saved_blueprints', JSON.stringify(updatedCatalog));
+      }
+    } catch (err) {
+      console.error('Error saving session copy as project:', err);
+    } finally {
+      setIsSavingProject(false);
+    }
+
+    const actionToExecute = pendingLeaveAction;
+    setLeaveModalOpen(false);
+    setPendingLeaveAction(null);
+
+    // Restore Dashboard Canonical Blueprint back to pristine v1.0 so dashboard blueprint NEVER stays mutated
+    if (actionToExecute?.type === 'category') {
+      applyCategorySelectImmediate(actionToExecute.categoryId);
+      showToast(`✓ Saved "${finalTitle}" to your projects! Switched category.`);
+    } else if (actionToExecute?.type === 'blueprint') {
+      loadPristineCanonicalBlueprint(actionToExecute.blueprint.id);
+      showToast(`✓ Saved "${finalTitle}" to your projects! Loaded Blueprint #${actionToExecute.blueprint.id}.`);
+    } else if (actionToExecute?.type === 'route') {
+      loadPristineCanonicalBlueprint(loadedBlueprintId);
+      showToast(`✓ Saved "${finalTitle}" to your projects!`);
+      router.push(actionToExecute.href);
+    } else {
+      loadPristineCanonicalBlueprint(loadedBlueprintId);
+      showToast(`✓ Saved "${finalTitle}" to Saved Architectures! Canonical Blueprint #${loadedBlueprintId} restored to v1.0.`);
+    }
+  };
+
+  // =========================================================================
+  // CORE ACTION: Modal Choice 2 — Discard Session Copy & Restore Canonical v1.0
+  // =========================================================================
+  const handleDiscardSessionChanges = () => {
+    const actionToExecute = pendingLeaveAction;
+    setLeaveModalOpen(false);
+    setPendingLeaveAction(null);
+
+    if (actionToExecute?.type === 'category') {
+      applyCategorySelectImmediate(actionToExecute.categoryId);
+      showToast(`🗑️ Discarded session copy. Canonical Blueprint #${loadedBlueprintId} unchanged.`);
+    } else if (actionToExecute?.type === 'blueprint') {
+      loadPristineCanonicalBlueprint(actionToExecute.blueprint.id);
+      showToast(`🗑️ Discarded session copy. Loaded pristine Blueprint #${actionToExecute.blueprint.id}.`);
+    } else if (actionToExecute?.type === 'route') {
+      loadPristineCanonicalBlueprint(loadedBlueprintId);
+      router.push(actionToExecute.href);
+    } else {
+      loadPristineCanonicalBlueprint(loadedBlueprintId);
+      showToast(`🗑️ Discarded session copy. Restored Canonical Blueprint #${loadedBlueprintId} to v1.0 Baseline.`);
+    }
+  };
+
+  // =========================================================================
+  // CORE ACTION: Modal Choice 3 — Cancel & Keep Playing in Session Copy
+  // =========================================================================
+  const handleCancelLeaveModal = () => {
+    setLeaveModalOpen(false);
+    setPendingLeaveAction(null);
   };
 
   // =========================================================================
@@ -797,7 +1197,10 @@ function DashboardContent() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-[#F8FAFC] text-slate-900 font-sans overflow-hidden">
+    <div
+      onClickCapture={handleDashboardClickCapture}
+      className="flex h-screen w-full bg-[#F8FAFC] text-slate-900 font-sans overflow-hidden"
+    >
       {/* 1. LEFT DARK APPLICATION SIDEBAR */}
       <UnifiedAppSidebar />
 
@@ -805,26 +1208,72 @@ function DashboardContent() {
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         {/* Top Dark Header */}
         <AppHeader>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 to-indigo-600 flex items-center justify-center shadow-md">
+          <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-3">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 to-indigo-600 flex items-center justify-center shadow-md shrink-0">
               <div className="w-4 h-4 rounded-md border-2 border-white/90 flex items-center justify-center">
                 <div className="w-1.5 h-1.5 bg-white rounded-full" />
               </div>
             </div>
-            <div>
-              <h1 className="font-black text-sm md:text-base tracking-tight flex items-center gap-2 text-white">
-                <span>PromptCanvas &mdash; Architecture Studio &amp; Launchpad</span>
-                <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20">
+            <div className="min-w-0 flex-1">
+              <h1 className="font-black text-xs md:text-sm tracking-tight flex items-center gap-1.5 text-white whitespace-nowrap overflow-hidden">
+                <span className="shrink-0">PromptCanvas &mdash; Architecture Studio</span>
+                <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 shrink-0">
                   {currentVersion.versionTag} LIVE
                 </span>
+                {isSessionForked ? (
+                  <span
+                    id="dashboard-session-copy-badge"
+                    data-session-copy-id={sessionCopyId || ''}
+                    title={`Isolated Session Copy (${sessionCopyId})`}
+                    className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/40 flex items-center gap-1 shrink-0"
+                  >
+                    <GitFork className="w-2.5 h-2.5 text-amber-300" />
+                    <span>Session Copy &bull; Unsaved</span>
+                  </span>
+                ) : (
+                  <span
+                    id="dashboard-canonical-baseline-badge"
+                    className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 shrink-0"
+                  >
+                    <Lock className="w-2.5 h-2.5 text-emerald-400" />
+                    <span>Immutable Canonical Baseline</span>
+                  </span>
+                )}
               </h1>
-              <p className="text-[11px] text-slate-400 font-medium">
-                Single Prompt Composer &bull; Micro-Versioning &bull; Dual History Stream &bull; Zero-Clipping Canvas
+              <p className="text-[10.5px] text-slate-400 font-medium truncate">
+                {isSessionForked
+                  ? `Isolated Session Copy forked from Blueprint #${loadedBlueprintId} • Dashboard Canonical Blueprint remains untouched for all users`
+                  : 'Canonical Blueprints never change globally • Any prompt edit automatically forks an isolated copy for your session'}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-1.5 shrink-0">
+            {/* Session Copy Direct Actions: Save as Project & Discard */}
+            {isSessionForked && (
+              <>
+                <button
+                  id="header-save-session-project-btn"
+                  type="button"
+                  onClick={() => openSaveOrDiscardModal({ type: 'manual_save' })}
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-[11px] whitespace-nowrap transition shadow-sm cursor-pointer shrink-0"
+                >
+                  <Save className="w-3 h-3" />
+                  <span>Save as My Project</span>
+                </button>
+                <button
+                  id="header-discard-session-copy-btn"
+                  type="button"
+                  onClick={() => loadPristineCanonicalBlueprint(loadedBlueprintId)}
+                  title="Discard session copy and restore canonical baseline v1.0"
+                  className="flex items-center gap-1 px-2 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-500/30 font-bold text-[11px] whitespace-nowrap transition cursor-pointer shrink-0"
+                >
+                  <RotateCcw className="w-3 h-3 text-rose-300" />
+                  <span>Discard &amp; Reset</span>
+                </button>
+              </>
+            )}
+
             {/* Major Version Upgrade Button */}
             <button
               type="button"
@@ -916,8 +1365,9 @@ function DashboardContent() {
             {/* TOP CONTROLS: COMPACT BLUEPRINT SELECTOR BAR */}
             <div className="p-3 bg-slate-50 border-b border-slate-200 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-wider text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
-                  Blueprint Baseline
+                <span className="text-[10px] font-black uppercase tracking-wider text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200 flex items-center gap-1">
+                  <Lock className="w-2.5 h-2.5 text-teal-600" />
+                  <span>Canonical Baseline (Read-Only)</span>
                 </span>
                 <span className="text-[10px] font-mono text-slate-500 font-bold">
                   {filteredTemplates.length} Blueprints
@@ -962,7 +1412,6 @@ function DashboardContent() {
                             key={cat.id}
                             onClick={() => {
                               handleCategorySelect(cat.id);
-                              setOpenCategoryDropdown(false);
                             }}
                             className={`p-1.5 rounded-lg cursor-pointer text-xs flex items-center justify-between ${
                               selectedCategory === cat.id
@@ -1016,7 +1465,6 @@ function DashboardContent() {
                             key={bp.id}
                             onClick={() => {
                               handleBlueprintSelect(bp);
-                              handleProposeBlueprintAndPlan();
                             }}
                             className={`p-1.5 rounded-lg cursor-pointer text-xs flex items-center justify-between ${
                               selectedBlueprintId === bp.id
@@ -1033,6 +1481,28 @@ function DashboardContent() {
                   )}
                 </div>
               </div>
+
+              {/* Session Copy Notice Banner inside Left Panel when Forked */}
+              {isSessionForked && (
+                <div
+                  id="left-panel-session-copy-banner"
+                  className="p-2 rounded-xl bg-amber-50 border border-amber-300 text-[11px] text-amber-900 flex items-center justify-between gap-2"
+                >
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <GitFork className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                    <span className="truncate font-semibold">
+                      Working in Session Copy &bull; Blueprint #{loadedBlueprintId} unchanged
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => openSaveOrDiscardModal({ type: 'manual_save' })}
+                    className="px-2 py-0.5 rounded-lg bg-amber-700 hover:bg-amber-800 text-white font-bold text-[10px] shrink-0 cursor-pointer"
+                  >
+                    Save Project
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* CENTER SECTION: SINGLE CENTRAL PROMPT COMPOSER & 3 CONTEXTUAL SUGGESTION CHIPS */}
@@ -1044,13 +1514,16 @@ function DashboardContent() {
                   <span className="text-xs font-black text-slate-800">Architecture Prompt Composer</span>
                 </div>
                 <span className="text-[9px] font-mono font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
-                  Target: {currentVersion.versionTag} &rarr; v{currentVersion.major}.{currentVersion.minor + 1}
+                  {isSessionForked
+                    ? `Session Copy: ${currentVersion.versionTag} → v${currentVersion.major}.${currentVersion.minor + 1}`
+                    : `Forks Session Copy: v1.0 → v1.1`}
                 </span>
               </div>
 
               {/* Central Single Prompt Composer Input */}
               <div className="relative bg-white rounded-2xl border-2 border-teal-500/40 focus-within:border-teal-500 focus-within:ring-2 focus-within:ring-teal-500/20 shadow-xs p-2.5 transition-all">
                 <textarea
+                  id="dashboard-prompt-composer-input"
                   rows={2}
                   value={activeComposerPrompt}
                   onChange={(e) => setActiveComposerPrompt(e.target.value)}
@@ -1060,17 +1533,18 @@ function DashboardContent() {
                       handleExecutePrompt();
                     }
                   }}
-                  placeholder="Ask Gemini to modify architecture, add components, or refine tier..."
+                  placeholder="Ask Gemini to modify architecture (automatically forks a private session copy)..."
                   className="w-full bg-transparent text-xs text-slate-800 placeholder-slate-400 focus:outline-none resize-none font-medium leading-relaxed"
                 />
 
                 <div className="flex items-center justify-between pt-2 border-t border-slate-100 mt-1">
                   <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono">
                     <Zap className="w-3 h-3 text-amber-500" />
-                    <span>Enter to synthesize</span>
+                    <span>Enter to synthesize in session copy</span>
                   </div>
 
                   <button
+                    id="dashboard-prompt-submit-btn"
                     type="button"
                     onClick={() => handleExecutePrompt()}
                     disabled={!activeComposerPrompt.trim() || isProcessingAi}
@@ -1095,13 +1569,36 @@ function DashboardContent() {
                 </div>
               </div>
 
+              {/* Conversational Assistant Reply Card (Non-Mutating) */}
+              {conversationalReply && (
+                <div
+                  id="dashboard-conversational-reply"
+                  className="p-2.5 rounded-2xl bg-teal-50/90 border border-teal-200 text-[11px] text-teal-950 space-y-1 shadow-2xs"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-extrabold text-[10px] uppercase tracking-wider text-teal-700 flex items-center gap-1">
+                      <MessageSquare className="w-3 h-3" />
+                      <span>Co-Pilot Advisory (Zero Canvas Mutation)</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setConversationalReply(null)}
+                      className="text-slate-400 hover:text-slate-700 cursor-pointer"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                  <p className="leading-relaxed text-slate-700">{conversationalReply}</p>
+                </div>
+              )}
+
               {/* 3 Top Next Updates Contextual Suggestions */}
               <div className="space-y-1.5 pt-0.5">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
                     Recommended Next Updates
                   </span>
-                  <span className="text-[9px] text-teal-600 font-bold">Click to apply</span>
+                  <span className="text-[9px] text-teal-600 font-bold">Click to apply in session copy</span>
                 </div>
 
                 <div className="space-y-1">
@@ -1130,7 +1627,7 @@ function DashboardContent() {
                   <span className="text-xs font-bold text-slate-800">Version Lineage &amp; History Log</span>
                 </div>
                 <span className="text-[10px] text-slate-400 font-mono font-bold">
-                  {versionHistory.length} Snapshots
+                  {versionHistory.length} {versionHistory.length === 1 ? 'Snapshot' : 'Snapshots'}
                 </span>
               </div>
 
@@ -1157,17 +1654,17 @@ function DashboardContent() {
                           }`}>
                             {ver.versionTag}
                           </span>
-                          <span className="text-[10px] font-bold text-slate-700 truncate max-w-[140px]">
+                          <span className="text-[10px] font-bold text-slate-700 truncate max-w-[155px]">
                             {ver.sourceLabel}
                           </span>
                         </div>
                         <div className="flex items-center gap-1">
                           <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
-                            ver.status === 'published'
+                            ver.versionTag === 'v1.0' && ver.source === 'initial_load'
                               ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                               : 'bg-amber-50 text-amber-700 border border-amber-200'
                           }`}>
-                            {ver.status === 'published' ? 'Published' : 'Draft'}
+                            {ver.versionTag === 'v1.0' && ver.source === 'initial_load' ? 'Canonical' : 'Session Copy'}
                           </span>
                           <span className="text-[9px] text-slate-400 font-mono">{ver.timestamp}</span>
                         </div>
@@ -1213,12 +1710,16 @@ function DashboardContent() {
               {/* Row 1: Title, Version, Perspective & Zoom Controls */}
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                  <span className="text-xs font-black text-slate-800 tracking-tight truncate max-w-[280px]">
+                  <span className={`w-2.5 h-2.5 rounded-full animate-pulse shrink-0 ${isSessionForked ? 'bg-amber-500' : 'bg-emerald-500'}`} />
+                  <span className="text-xs font-black text-slate-800 tracking-tight truncate max-w-[260px]">
                     {canvasTitle}
                   </span>
-                  <span className="px-2 py-0.5 rounded-md bg-teal-100 text-teal-800 border border-teal-300 text-[10px] font-mono font-bold shrink-0">
-                    {currentVersion.versionTag} ({currentVersion.sourceLabel})
+                  <span className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold shrink-0 border ${
+                    isSessionForked
+                      ? 'bg-amber-100 text-amber-900 border-amber-300'
+                      : 'bg-teal-100 text-teal-800 border-teal-300'
+                  }`}>
+                    {currentVersion.versionTag} ({isSessionForked ? 'Forked Session Copy' : 'Canonical Baseline'})
                   </span>
                 </div>
 
@@ -1278,9 +1779,26 @@ function DashboardContent() {
                   <span className="font-bold text-slate-700">Blueprint #{loadedBlueprintId}</span>
                   <span>&bull;</span>
                   <span>Detail {selectedLevel}</span>
+                  <span>&bull;</span>
+                  <span className={isSessionForked ? 'text-amber-700 font-bold' : 'text-emerald-700 font-bold'}>
+                    {isSessionForked ? 'Isolated User Session Copy' : 'Shared Baseline Protected'}
+                  </span>
                 </div>
 
                 <div className="flex items-center gap-1.5">
+                  {/* Save as Project Button inside Canvas Toolbar when Forked */}
+                  {isSessionForked && (
+                    <button
+                      id="toolbar-save-session-project-btn"
+                      type="button"
+                      onClick={() => openSaveOrDiscardModal({ type: 'manual_save' })}
+                      className="px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] flex items-center gap-1 transition cursor-pointer shadow-2xs"
+                    >
+                      <Bookmark className="w-3.5 h-3.5" />
+                      <span>Save as Project</span>
+                    </button>
+                  )}
+
                   {/* 1. Edit Inline */}
                   <button
                     type="button"
@@ -1426,7 +1944,138 @@ function DashboardContent() {
       </main>
 
       {/* ========================================================================= */}
-      {/* 4. DRAW.IO INLINE EDIT OVERLAY MODAL                                      */}
+      {/* 4. LEAVE / SWITCH INTERCEPT MODAL: "SAVE SESSION COPY AS YOUR PROJECT?"   */}
+      {/* ========================================================================= */}
+      {leaveModalOpen && (
+        <div
+          id="save-session-copy-modal"
+          className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150"
+        >
+          <div className="bg-white text-slate-900 w-full max-w-xl rounded-3xl border border-slate-200 shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-150">
+            {/* Modal Header */}
+            <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 border border-amber-300 flex items-center justify-center shadow-2xs">
+                  <GitFork className="w-5 h-5 text-amber-700" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base text-slate-900">
+                    Save Session Copy as Your Project?
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Dashboard Canonical Blueprints never change &bull; Save your custom session work before leaving
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleCancelLeaveModal}
+                className="p-1.5 rounded-xl hover:bg-slate-200 text-slate-400 hover:text-slate-700 transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-4 text-xs">
+              <div className="p-3.5 rounded-2xl bg-amber-50/90 border border-amber-200 text-amber-950 space-y-1">
+                <div className="font-extrabold text-xs flex items-center gap-1.5 text-amber-900">
+                  <Lock className="w-3.5 h-3.5 text-amber-700" />
+                  <span>Canonical Blueprint #{loadedBlueprintId} is Protected &amp; Immutable</span>
+                </div>
+                <p className="text-[11px] text-amber-800 leading-relaxed">
+                  You made changes (<span className="font-mono font-bold">{currentVersion.versionTag}</span>) in an isolated copy for your user session (<span className="font-mono">{sessionCopyId}</span>) without impacting other users. Would you like to accept and save these changes as your own project, or discard them?
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-600 mb-1">
+                    Project Name (Saved to Your Projects Library)
+                  </label>
+                  <input
+                    id="save-session-project-name-input"
+                    type="text"
+                    value={saveProjectName}
+                    onChange={(e) => setSaveProjectName(e.target.value)}
+                    placeholder="Enter your custom project name..."
+                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-teal-600 focus:outline-none text-xs font-bold text-slate-900 bg-white"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-600 mb-1">
+                      Domain / Track
+                    </label>
+                    <input
+                      type="text"
+                      value={saveProjectDomain}
+                      onChange={(e) => setSaveProjectDomain(e.target.value)}
+                      className="w-full px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-600 mb-1">
+                      Session Lineage
+                    </label>
+                    <div className="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-mono font-bold text-teal-800">
+                      {currentVersion.versionTag} &bull; {versionHistory.length} Snapshots
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer: 3 Explicit User Actions (Accept & Save / Discard / Cancel) */}
+            <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
+              <button
+                id="save-session-project-cancel-btn"
+                type="button"
+                onClick={handleCancelLeaveModal}
+                className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold text-xs transition cursor-pointer"
+              >
+                Keep Playing on Dashboard
+              </button>
+
+              <div className="flex items-center gap-2">
+                <button
+                  id="save-session-project-discard-btn"
+                  type="button"
+                  onClick={handleDiscardSessionChanges}
+                  className="px-4 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs flex items-center gap-1.5 transition cursor-pointer"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Discard Changes</span>
+                </button>
+
+                <button
+                  id="save-session-project-accept-btn"
+                  type="button"
+                  onClick={handleAcceptAndSaveProject}
+                  disabled={isSavingProject}
+                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 text-white font-extrabold text-xs flex items-center gap-1.5 shadow-md transition cursor-pointer"
+                >
+                  {isSavingProject ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Saving Project...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <span>Accept &amp; Save as My Project</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 5. DRAW.IO INLINE EDIT OVERLAY MODAL                                      */}
       {/* ========================================================================= */}
       {isInlineEditOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
@@ -1438,7 +2087,7 @@ function DashboardContent() {
                   Draw.io Inline Canvas Editor &mdash; {canvasTitle} ({currentVersion.versionTag})
                 </h3>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20">
-                  Auto-increments to v{currentVersion.major}.{currentVersion.minor + 1} on Save
+                  Auto-forks Session Copy v{currentVersion.major}.{currentVersion.minor + 1} on Save
                 </span>
               </div>
               <button
@@ -1463,7 +2112,7 @@ function DashboardContent() {
       )}
 
       {/* ========================================================================= */}
-      {/* 5. OMNI SANITY AUDIT & AUTO-FIX DOSSIER DRAWER / MODAL                     */}
+      {/* 6. OMNI SANITY AUDIT & AUTO-FIX DOSSIER DRAWER / MODAL                     */}
       {/* ========================================================================= */}
       {isAuditModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
