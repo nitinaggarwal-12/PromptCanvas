@@ -109,10 +109,13 @@ export default function DiagramViewerRenderSafe({
     customHeightStyle = { height: `${calcH}px` };
   }
 
+  const defaultMinHeight = allowFullScaleScroll ? '760px' : fitToWidth ? '100%' : aspectRatioId === '16:9' ? 0 : '680px';
+  const effectiveMinHeight = minHeight !== undefined ? minHeight : defaultMinHeight;
+
   const responsiveFrameStyle: React.CSSProperties = {
     ...customHeightStyle,
     height: '100%',
-    minHeight: minHeight !== undefined ? minHeight : allowFullScaleScroll ? '760px' : fitToWidth ? '100%' : '680px',
+    minHeight: effectiveMinHeight,
     width: '100%',
     ...(isCompactViewport && aspectRatioId !== '9:16' && aspectRatioId !== '16:9'
       ? { height: 'clamp(440px, 56vw, 720px)', minHeight: 0, alignSelf: 'flex-start' }
@@ -355,7 +358,7 @@ ${origin ? `<base href="${origin}/">` : ''}
             var bbox = svg.getBBox();
             if (bbox && bbox.width > 20 && bbox.height > 20) {
               var isPortraitPoster = bbox.height > bbox.width * 1.08;
-              var pad = (hasPosterBg || isPortraitPoster) ? 0 : 24;
+              var pad = (hasPosterBg || isPortraitPoster) ? 0 : 36;
               var vx = Math.floor(bbox.x - pad);
               var vy = Math.floor(bbox.y - pad);
               var vw = Math.ceil(bbox.width + pad * 2);
@@ -469,7 +472,7 @@ ${origin ? `<base href="${origin}/">` : ''}
           key={`safe_iframe_${diagramId || 'd'}_${versionId || 'v'}_${aspectRatioId}_${bgTheme}_${sanitizedXml.length}_${sanitizedXml.slice(60, 120)}`}
           srcDoc={iframeHtml}
           className="w-full h-full flex-1 border-0 bg-transparent"
-          style={{ minHeight: minHeight !== undefined ? minHeight : allowFullScaleScroll ? '760px' : fitToWidth ? '100%' : '680px' }}
+          style={{ minHeight: effectiveMinHeight }}
           title="PromptCanvas Draw.io Diagram Viewer"
           sandbox="allow-scripts allow-popups allow-forms"
         />

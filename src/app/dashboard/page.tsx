@@ -838,16 +838,17 @@ function DashboardContent() {
             </div>
 
             {/* Canvas Viewport Rendering Draw.io XML with Dynamic Key */}
-            <div className="flex-1 flex items-center justify-center overflow-auto p-2">
+            <div className="flex-1 min-h-0 flex items-center justify-center overflow-auto p-2">
               <div
                 style={{ transform: `scale(${zoomScale})`, transformOrigin: 'center center' }}
-                className="w-full max-w-[1360px] aspect-[16/9] bg-white rounded-2xl border border-slate-300 shadow-xl overflow-hidden transition-transform duration-200"
+                className="w-full h-full max-w-[1440px] max-h-full min-h-0 bg-white rounded-2xl border border-slate-300 shadow-xl overflow-hidden flex items-center justify-center relative transition-transform duration-200"
               >
                 <DiagramViewerRenderSafe
                   key={`${loadedBlueprintId}_${canvasPerspective}_${isLight ? 'light' : 'dark'}_${canvasVersion}`}
                   xml={activeCanvasXml}
                   aspectRatioId="16:9"
                   bgTheme={isLight ? 'light' : 'dark'}
+                  minHeight={0}
                 />
               </div>
             </div>
