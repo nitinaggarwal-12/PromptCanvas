@@ -7,11 +7,19 @@ import { generateUpgradedGcpGeBankingArchitectureXml } from "./upgradedGcpGeBank
 import { generateLogicalGcpAgentArchitectureXml } from "./templateLogicalGcpAgentArchitecture";
 import { generateConceptualGcpAgentArchitectureXml } from "./templateConceptualGcpAgentArch";
 import { generateProcessGcpAgentWorkflowXml } from "./templateProcessGcpAgentWorkflow";
+import {
+  generateWhiteboardGcpAgentArchXml,
+  convertXmlToWhiteboardMode,
+} from "./templateWhiteboardGcpAgentArch";
+import {
+  generatePaperGcpAgentArchXml,
+  convertXmlToPaperMode,
+} from "./templatePaperGcpAgentArch";
 
 export function generateTemplate00GcpEnterpriseArchXml(
   domainFlavor?: string,
   theme: "light" | "dark" = "light",
-  perspective: "Logical" | "Technical" | "Process" | "Conceptual" = "Technical"
+  perspective: "Logical" | "Technical" | "Process" | "Conceptual" | "Whiteboard" | "Paper" = "Technical"
 ): string {
   if (perspective === "Logical") {
     return generateLogicalGcpAgentArchitectureXml({
@@ -32,6 +40,20 @@ export function generateTemplate00GcpEnterpriseArchXml(
       domain: domainFlavor || "GCP ENTERPRISE",
       theme,
       projectTitle: "Multi-Agent Request Processing & Banking Workflow",
+    });
+  }
+  if (perspective === "Whiteboard") {
+    return generateWhiteboardGcpAgentArchXml({
+      domain: domainFlavor || "GCP ENTERPRISE",
+      theme,
+      projectTitle: "Multi-Agent Intelligence Core — Whiteboard Architecture",
+    });
+  }
+  if (perspective === "Paper") {
+    return generatePaperGcpAgentArchXml({
+      domain: domainFlavor || "GCP ENTERPRISE",
+      theme,
+      projectTitle: "Multi-Agent Orchestration — Spiral Graph-Paper Sketch",
     });
   }
   return generateUpgradedGcpGeBankingArchitectureXml({
@@ -79,5 +101,10 @@ export function generateTemplate00ProcessXml(
 export {
   generateLogicalGcpAgentArchitectureXml,
   generateConceptualGcpAgentArchitectureXml,
-  generateProcessGcpAgentWorkflowXml
+  generateProcessGcpAgentWorkflowXml,
+  generateWhiteboardGcpAgentArchXml,
+  convertXmlToWhiteboardMode,
+  generatePaperGcpAgentArchXml,
+  convertXmlToPaperMode,
 };
+

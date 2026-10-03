@@ -3,7 +3,7 @@ import { CANONICAL_TEMPLATES, CanonicalTemplate } from './canonical/canonicalTem
 import { GEMINI_FLASH_MODEL_ID, getEffectiveGeminiApiKey } from './geminiConfig';
 import { generateContentWithRetry } from './geminiRetryHelper';
 
-export type ArchitecturePerspective = 'Conceptual' | 'Logical' | 'Technical' | 'Process';
+export type ArchitecturePerspective = 'Conceptual' | 'Logical' | 'Technical' | 'Process' | 'Whiteboard' | 'Paper';
 export type AbstractionDetailLevel = 'L1' | 'L2' | 'L3' | 'L4';
 export type FlowDirectionOption = 'LR' | 'TD';
 
@@ -579,6 +579,30 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
         plannedModifications: [
           'Map 6 sequential process steps from trigger ingress through validation to state commit',
           'Add diamond decision gates and quarantine backoff replay loops',
+        ],
+      },
+      Whiteboard: {
+        perspective: 'Whiteboard',
+        blueprintId: '00',
+        blueprintName: 'Multi-Agent Intelligence Core — Whiteboard Architecture',
+        recommendedLevel: 'L2',
+        tailoredTitle: `Whiteboard Architecture: ${cleanTitle}`,
+        whyChosen: 'Renders the hand-drawn dry-erase marker architecture on an aluminum-framed whiteboard with bottom marker tray, blue/green/gold/red marker strokes, and A2A multi-agent orchestration.',
+        plannedModifications: [
+          'Sketch dry-erase marker updates inside the whiteboard frame while preserving Whiteboard mode',
+          'Connect new marker components via hand-drawn orthogonal arrows',
+        ],
+      },
+      Paper: {
+        perspective: 'Paper',
+        blueprintId: '00',
+        blueprintName: 'Multi-Agent Orchestration — Spiral Graph-Paper Sketch',
+        recommendedLevel: 'L2',
+        tailoredTitle: `Paper Notebook Sketch: ${cleanTitle}`,
+        whyChosen: 'Renders the hand-drawn pen & fluorescent highlighter sketch on a spiral-bound squared graph-paper notebook resting on a wooden desk.',
+        plannedModifications: [
+          'Apply pen & fluorescent highlighter updates directly on the squared graph-paper sheet while retaining Paper mode',
+          'Route ink connectors cleanly across the notebook page',
         ],
       },
     },

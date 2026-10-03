@@ -66,6 +66,14 @@ import { generateLogicalGcpAgentArchitectureXml } from '@/lib/canonical/template
 import { generateConceptualGcpAgentArchitectureXml } from '@/lib/canonical/templateConceptualGcpAgentArch';
 import { generateProcessGcpAgentWorkflowXml } from '@/lib/canonical/templateProcessGcpAgentWorkflow';
 import {
+  generateWhiteboardGcpAgentArchXml,
+  convertXmlToWhiteboardMode
+} from '@/lib/canonical/templateWhiteboardGcpAgentArch';
+import {
+  generatePaperGcpAgentArchXml,
+  convertXmlToPaperMode
+} from '@/lib/canonical/templatePaperGcpAgentArch';
+import {
   ArchitecturePerspective,
   AbstractionDetailLevel,
   buildStructuredFallbackDecision,
@@ -96,6 +104,8 @@ const CATEGORY_GROUPS: CategoryGroup[] = [
   { id: 'infographic', name: 'Executive Infographics', icon: '📊', count: 15, familyFilter: 'Infographic' },
   { id: 'understand', name: 'Understand & Context', icon: '🧭', count: 5, familyFilter: 'Understand' },
   { id: 'process', name: 'Process & Workflows', icon: '🔄', count: 4, familyFilter: 'Process' },
+  { id: 'whiteboard', name: 'Whiteboard (Dry-Erase Sketch)', icon: '🖍️', count: 75, familyFilter: null },
+  { id: 'paper', name: 'Paper (Graph-Paper Sketch)', icon: '📝', count: 75, familyFilter: null },
   { id: 'structure', name: 'Structure & C4 Model', icon: '🏗️', count: 4, familyFilter: 'Structure' },
   { id: 'infrastructure', name: 'Infrastructure & Network', icon: '🌐', count: 4, familyFilter: 'Infrastructure' },
   { id: 'security', name: 'Security & Governance', icon: '🛡️', count: 4, familyFilter: 'Security & Governance' },
@@ -228,6 +238,46 @@ function getCanonicalBaselineForPerspective(
       title,
       level: 'L2',
       diffSummary: `Canonical Master Blueprint #${bp.id} (BPMN Swimlane Process Workflow — Read-Only Baseline).`
+    };
+  }
+
+  if (perspective === 'Whiteboard') {
+    const title =
+      blueprintId === '00'
+        ? 'Multi-Agent Intelligence Core — Whiteboard Architecture'
+        : `${bp.name} — Whiteboard Architecture`;
+    return {
+      xml:
+        blueprintId === '00'
+          ? generateWhiteboardGcpAgentArchXml({
+              domain: 'enterprise',
+              theme: isLight ? 'light' : 'dark',
+              projectTitle: title
+            })
+          : convertXmlToWhiteboardMode('', bp.name),
+      title,
+      level: 'L2',
+      diffSummary: `Canonical Master Blueprint #${bp.id} (Hand-Drawn Dry-Erase Whiteboard Mode — Read-Only Baseline).`
+    };
+  }
+
+  if (perspective === 'Paper') {
+    const title =
+      blueprintId === '00'
+        ? 'Multi-Agent Orchestration — Spiral Graph-Paper Sketch'
+        : `${bp.name} — Paper Sketch`;
+    return {
+      xml:
+        blueprintId === '00'
+          ? generatePaperGcpAgentArchXml({
+              domain: 'enterprise',
+              theme: isLight ? 'light' : 'dark',
+              projectTitle: title
+            })
+          : convertXmlToPaperMode('', bp.name),
+      title,
+      level: 'L2',
+      diffSummary: `Canonical Master Blueprint #${bp.id} (Spiral Graph-Paper Pen & Highlighter Mode — Read-Only Baseline).`
     };
   }
 
@@ -586,14 +636,21 @@ function DashboardContent() {
   // =========================================================================
   // CORE HELPER: Reset Any Blueprint to Pristine v1.0 Canonical Baseline
   // =========================================================================
-  const loadPristineCanonicalBlueprint = (targetBlueprintId: string) => {
+  const loadPristineCanonicalBlueprint = (
+    targetBlueprintId: string,
+    explicitPerspective?: ArchitecturePerspective
+  ) => {
     const bp =
       CANONICAL_TEMPLATES.find(
         (t) => t.id === targetBlueprintId || t.id === targetBlueprintId.padStart(2, '0')
       ) || CANONICAL_TEMPLATES[0];
 
     let defaultPerspective: ArchitecturePerspective = 'Technical';
-    if (bp.family === 'Process' || bp.family === 'Flow') {
+    if (explicitPerspective) {
+      defaultPerspective = explicitPerspective;
+    } else if (canvasPerspective === 'Whiteboard' || canvasPerspective === 'Paper') {
+      defaultPerspective = canvasPerspective;
+    } else if (bp.family === 'Process' || bp.family === 'Flow') {
       defaultPerspective = 'Process';
     } else if (bp.family === 'Infographic' || bp.family === 'Understand') {
       defaultPerspective = 'Logical';
@@ -648,6 +705,14 @@ function DashboardContent() {
   const applyCategorySelectImmediate = (catId: string) => {
     setSelectedCategory(catId);
     setBlueprintSearchQuery('');
+    if (catId === 'whiteboard') {
+      loadPristineCanonicalBlueprint(loadedBlueprintId || '00', 'Whiteboard');
+      return;
+    }
+    if (catId === 'paper') {
+      loadPristineCanonicalBlueprint(loadedBlueprintId || '00', 'Paper');
+      return;
+    }
     const activeCategory = CATEGORY_GROUPS.find((c) => c.id === catId);
     let matching = CANONICAL_TEMPLATES;
     if (activeCategory && activeCategory.familyFilter) {
@@ -679,7 +744,7 @@ function DashboardContent() {
       return;
     }
     loadPristineCanonicalBlueprint(bp.id);
-    showToast(`✓ Loaded Canonical Blueprint #${bp.id}: ${bp.name} (v1.0 Baseline)`);
+    showToast(`✓ Loaded Canonical Blueprint #${bp.id}: ${bp.name} (${canvasPerspective} v1.0 Baseline)`);
   };
 
   // =========================================================================
@@ -718,7 +783,7 @@ function DashboardContent() {
         : `Applied architectural modifications: "${promptText.slice(0, 45)}..."`
     );
 
-    const forkId = sessionCopyId || `fork_bp${loadedBlueprintId}_${sessionUserId}`;
+    const forkId = sessionCopyId || `fork_bp${loadedBlueprintId}_${canvasPerspective.toLowerCase()}_${sessionUserId}`;
     setIsSessionForked(true);
     setHasUnsavedSessionChanges(true);
     setSessionCopyId(forkId);
@@ -731,7 +796,7 @@ function DashboardContent() {
       title: overrideTitle || canvasTitle,
       prompt: promptText,
       source,
-      sourceLabel: `${sourceLabel} (Session Copy)`,
+      sourceLabel: `${sourceLabel} (${canvasPerspective} Session Copy)`,
       diffSummary: summaryText,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       xml: newXml,
@@ -767,11 +832,11 @@ function DashboardContent() {
       return nextHistory;
     });
     setActiveVersionIndex(0);
-    showToast(`⚡ Forked Session Copy (${nextTag}): Canonical Blueprint #${loadedBlueprintId} remains untouched`);
+    showToast(`⚡ Forked ${canvasPerspective} Session Copy (${nextTag}): Canonical Blueprint #${loadedBlueprintId} remains untouched`);
   };
 
   // =========================================================================
-  // CORE ACTION: Switch Architecture Perspective (Non-Destructive View Switch!)
+  // CORE ACTION: Switch Architecture Perspective (Isolated Per-Diagram-Type!)
   // =========================================================================
   const handleSwitchPerspective = (newPerspective: ArchitecturePerspective) => {
     if (newPerspective === canvasPerspective) return;
@@ -813,8 +878,10 @@ function DashboardContent() {
       });
       setActiveVersionIndex(0);
     } else {
-      // Non-destructive perspective switch in active Session Copy:
-      // Preserve each perspective's customized XML inside `perspectiveXmlMap` so switching tabs NEVER loses user edits!
+      // Isolated Per-Diagram-Type Switch:
+      // Each diagram type (Technical, Logical, Conceptual, Process, Whiteboard, Paper)
+      // maintains its own isolated XML in `perspectiveXmlMap`. Prompts executed in Paper
+      // mode modify ONLY Paper mode and never cross-mutate other diagram types!
       setVersionHistory((prev) =>
         prev.map((v, idx) => {
           if (idx !== activeVersionIndex) return v;
@@ -822,20 +889,7 @@ function DashboardContent() {
             ...(v.perspectiveXmlMap || {}),
             [v.perspective]: v.xml
           };
-          let targetPerspectiveXml = mapWithCurrentSaved[newPerspective];
-          if (!targetPerspectiveXml) {
-            // Replay current session modification onto the target perspective's baseline XML
-            const replayed = executeGcpPromptModification(
-              baseline.xml,
-              v.prompt,
-              Math.max(1, v.minor),
-              `canonical_${loadedBlueprintId}`,
-              !isLight,
-              v.persona
-            );
-            targetPerspectiveXml = replayed.updatedXml;
-            mapWithCurrentSaved[newPerspective] = targetPerspectiveXml;
-          }
+          const targetPerspectiveXml = mapWithCurrentSaved[newPerspective] || baseline.xml;
           return {
             ...v,
             perspective: newPerspective,
@@ -1948,9 +2002,10 @@ function DashboardContent() {
                 {/* Perspective & Zoom Actions */}
                 <div className="flex items-center gap-2 shrink-0">
                   <div className="flex items-center bg-white p-0.5 rounded-xl border border-slate-300 text-xs shadow-2xs">
-                    {(["Technical", "Logical", "Conceptual", "Process"] as ArchitecturePerspective[]).map((p) => (
+                    {(["Technical", "Logical", "Conceptual", "Process", "Whiteboard", "Paper"] as ArchitecturePerspective[]).map((p) => (
                       <button
                         key={p}
+                        id={`perspective-tab-${p.toLowerCase()}`}
                         type="button"
                         onClick={() => handleSwitchPerspective(p)}
                         className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${

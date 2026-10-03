@@ -12,6 +12,11 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
 ): string {
   const isMasterOrStructured = (
     xmlInput.includes('id="upgraded-gcp-ge-multi-agent-banking-2026"') ||
+    xmlInput.includes('id="whiteboard-gcp-ge-multi-agent-2026"') ||
+    xmlInput.includes('id="paper-gcp-ge-multi-agent-2026"') ||
+    xmlInput.includes('id="conceptual-gcp-ge-multi-agent-banking-2026"') ||
+    xmlInput.includes('id="wb_frame_board"') ||
+    xmlInput.includes('id="pp_spiral_sheet"') ||
     xmlInput.includes('PromptCanvas-2026-Upgrader') ||
     xmlInput.includes('id="exact_unified_system_view"') ||
     xmlInput.includes('TOTAL UNIFIED SYSTEM VIEW') ||

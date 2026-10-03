@@ -297,12 +297,21 @@ function applyInPlaceNodeUpgrade(
   textReplacement?: { find: string; replace: string }
 ): string {
   if (!xml.includes(`id="${nodeId}"`)) return xml;
+  const isPaper =
+    xml.includes('paper-gcp-ge-multi-agent-2026') || xml.includes('id="pp_spiral_sheet"');
+  const isWhiteboard =
+    xml.includes('whiteboard-gcp-ge-multi-agent-2026') || xml.includes('id="wb_frame_board"');
+
+  const effectiveFill = isPaper ? '#FEF08A' : accentFillColor;
+  const effectiveStroke = isPaper ? '#CA8A04' : accentStrokeColor;
+  const effectiveWidth = isWhiteboard ? '4.2' : isPaper ? '3.8' : '2.8';
+
   const cellRegex = new RegExp(`(<mxCell\\s+id="${nodeId}"[^>]*>)`, 'i');
   return xml.replace(cellRegex, (fullCellTag) => {
     let updatedTag = fullCellTag
-      .replace(/strokeColor=#[0-9A-Fa-f]{3,6}/, `strokeColor=${accentStrokeColor}`)
-      .replace(/strokeWidth=[0-9.]+/, 'strokeWidth=2.8')
-      .replace(/fillColor=#[0-9A-Fa-f]{3,6}/, `fillColor=${accentFillColor}`);
+      .replace(/strokeColor=#[0-9A-Fa-f]{3,6}/, `strokeColor=${effectiveStroke}`)
+      .replace(/strokeWidth=[0-9.]+/, `strokeWidth=${effectiveWidth}`)
+      .replace(/fillColor=#[0-9A-Fa-f]{3,6}/, `fillColor=${effectiveFill}`);
     if (textReplacement && updatedTag.includes(textReplacement.find)) {
       updatedTag = updatedTag.replace(textReplacement.find, textReplacement.replace);
     }
@@ -435,6 +444,110 @@ export function executeGcpPromptModification(
       resolved,
       titleFontSize = 10,
     } = params;
+
+    const isWhiteboardMode =
+      inPlaceUpgradedXml.includes('whiteboard-gcp-ge-multi-agent-2026') ||
+      inPlaceUpgradedXml.includes('id="wb_frame_board"');
+    const isPaperMode =
+      inPlaceUpgradedXml.includes('paper-gcp-ge-multi-agent-2026') ||
+      inPlaceUpgradedXml.includes('id="pp_spiral_sheet"');
+    const isSketchMode = isWhiteboardMode || isPaperMode;
+
+    // -------------------------------------------------------------------------
+    // SKETCH MODE RETENTION (WHITEBOARD & PAPER):
+    // Keep synthesized cards 100% inside the 1400x840 Whiteboard or Spiral Paper
+    // surface and render with authentic handwritten marker / highlighter styles!
+    // -------------------------------------------------------------------------
+    if (isSketchMode) {
+      const sketchSlots = [
+        {
+          matchIds: ['obs_container', 'iam_auth', 'db_spanner', 'db_bigtable', 'db_firestore'],
+          x: 62,
+          y: 668,
+          w: 200,
+          h: 76,
+          portSpec:
+            resolved.targetId === 'obs_container' || resolved.targetId === 'iam_auth'
+              ? 'exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;'
+              : 'exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;',
+        },
+        {
+          matchIds: ['dlp_model_armor', 'llm_container', 'gemini_models', 'vector_memory'],
+          x: 960,
+          y: 28,
+          w: 290,
+          h: 72,
+          portSpec:
+            resolved.targetId === 'dlp_model_armor'
+              ? 'exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;'
+              : 'exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;',
+        },
+        {
+          matchIds: ['ui_chat', 'edge_layer', 'identity_auth', 'api_cloud_run', 'coordinator_agent'],
+          x: 64,
+          y: 28,
+          w: 280,
+          h: 72,
+          portSpec: 'exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;',
+        },
+        {
+          matchIds: [],
+          x: 1122,
+          y: 128,
+          w: 182,
+          h: 74,
+          portSpec: 'exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;',
+        },
+      ];
+
+      let chosenSlot =
+        sketchSlots.find(
+          (s) =>
+            s.matchIds.includes(resolved.targetId) &&
+            !inPlaceUpgradedXml.includes(`x="${s.x}" y="${s.y}"`)
+        ) ||
+        sketchSlots.find((s) => !inPlaceUpgradedXml.includes(`x="${s.x}" y="${s.y}"`)) ||
+        sketchSlots[slotIndex % sketchSlots.length];
+
+      const sx = chosenSlot.x;
+      const sy = chosenSlot.y;
+      const sw = chosenSlot.w;
+      const sh = chosenSlot.h;
+      const sketchFont = 'fontFamily=Architects Daughter,Caveat,Comic Sans MS,cursive;';
+
+      const hlCellXml = isPaperMode
+        ? `<mxCell id="${boxId}_hl" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FEF08A;strokeColor=#FACC15;strokeWidth=6;" vertex="1" parent="1"><mxGeometry x="${sx - 3}" y="${sy - 3}" width="${sw + 6}" height="${sh + 6}" as="geometry" /></mxCell>`
+        : '';
+
+      const sketchBoxFill = isPaperMode ? '#FAF8F2' : '#FFFFFF';
+      const sketchStroke = isPaperMode ? '#1E293B' : strokeColor;
+      const sketchWidth = isWhiteboardMode ? '3.2' : '2.4';
+
+      const sketchXml = `
+      ${hlCellXml}
+      <mxCell id="${boxId}" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${sketchBoxFill};strokeColor=${sketchStroke};strokeWidth=${sketchWidth};dashed=1;dashPattern=6 4;" vertex="1" parent="1">
+        <mxGeometry x="${sx}" y="${sy}" width="${sw}" height="${sh}" as="geometry" />
+      </mxCell>
+      <mxCell id="${badgeId}" value="${badgeText}" style="text;html=1;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;${sketchFont}fontSize=8;fontStyle=1;fontColor=${badgeColor};" vertex="1" parent="1">
+        <mxGeometry x="${sx + 4}" y="${sy + 3}" width="${sw - 8}" height="14" as="geometry" />
+      </mxCell>
+      <mxCell id="${titleId}" value="${titleText}" style="text;html=1;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;${sketchFont}fontSize=9;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+        <mxGeometry x="${sx + 4}" y="${sy + 17}" width="${sw - 8}" height="18" as="geometry" />
+      </mxCell>
+      <mxCell id="${descId}" value="${descText}" style="text;html=1;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;align=center;verticalAlign=top;${sketchFont}fontSize=7.5;fontStyle=1;fontColor=#334155;" vertex="1" parent="1">
+        <mxGeometry x="${sx + 5}" y="${sy + 36}" width="${sw - 10}" height="${sh - 40}" as="geometry" />
+      </mxCell>
+      <mxCell id="${edgeId}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;${chosenSlot.portSpec}strokeColor=${sketchStroke};strokeWidth=2.4;dashed=1;dashPattern=5 4;endArrow=classic;endFill=1;" edge="1" parent="1" source="${boxId}" target="${resolved.targetId}">
+        <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+      `;
+
+      return {
+        xml: sketchXml,
+        maxRight: 1400,
+        maxBottom: 840,
+      };
+    }
 
     let boxX = targetX;
     let boxY = targetY;
