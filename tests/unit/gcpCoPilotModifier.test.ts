@@ -111,4 +111,41 @@ describe('GCP Architecture Co-Pilot Modifier & Quality Gates', () => {
     expect(result.updatedXml).toContain('&amp;');
     expect(result.newVersion.versionTag).toBe('v1.1');
   });
+
+  it('connects suggested prompts to real existing vertex IDs and upgrades nodes in-place on Canonical Blueprint #00', async () => {
+    const { generateUpgradedGcpGeBankingArchitectureXml } = await import('@/lib/canonical/upgradedGcpGeBankingAgentTemplate');
+    const bp00Xml = generateUpgradedGcpGeBankingArchitectureXml({ theme: 'light' });
+
+    const step1 = executeGcpPromptModification(
+      bp00Xml,
+      '+ Upgrade Cloud Spanner to Multi-Region Dual-Zone HA',
+      1,
+      'canonical_00',
+      false
+    );
+    expect(step1.updatedXml).toContain('target="db_spanner"');
+    expect(step1.updatedXml).toContain('Multi-Region nam3 HA');
+
+    const step2 = executeGcpPromptModification(
+      step1.updatedXml,
+      '+ Insert Vertex AI Model Armor Prompt-Injection Firewall',
+      2,
+      'canonical_00',
+      false
+    );
+    expect(step2.updatedXml).toContain('target="dlp_model_armor"');
+    expect(step2.updatedXml).toContain('Vertex AI Model Armor Prompt-Injection Firewall');
+
+    const step3 = executeGcpPromptModification(
+      step2.updatedXml,
+      '+ Attach BigQuery Cost Intelligence & Cloud Billing Anomaly Pipeline',
+      3,
+      'canonical_00',
+      false
+    );
+    expect(step3.updatedXml).toContain('target="obs_container"');
+    expect(step3.updatedXml).toContain('BigQuery Cost Intelligence &amp; Billing Anomaly AI');
+    expect(step3.updatedXml).not.toContain('&amp; Clou"');
+  });
 });
+

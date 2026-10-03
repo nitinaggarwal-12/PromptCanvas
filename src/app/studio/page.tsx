@@ -1074,7 +1074,8 @@ function StudioMain() {
         const saved = localStorage.getItem(`promptcanvas_studio_${urlId}`);
         if (saved) {
           const parsed = JSON.parse(saved);
-          const projTitle = (parsed.projectTitle || parsed.ast?.metadata?.projectTitle || searchParams.get('project') || '').toLowerCase();
+          const resolvedTitle = parsed.projectTitle || parsed.name || parsed.ast?.metadata?.projectTitle || searchParams.get('project') || '';
+          const projTitle = resolvedTitle.toLowerCase();
           let restoredXml: string = parsed.xml || '';
 
           // Extract Target Use Case from saved messages if present (e.g., "*Target Use Case:* AWS Cloud Architecture on Bedrock and Sagemaker...")
@@ -1125,7 +1126,18 @@ function StudioMain() {
             restoredXml = generateGoogleMultiagentArchitectureXml();
           }
 
-          if (parsed.ast) setAst(parsed.ast);
+          if (parsed.ast) {
+            setAst(parsed.ast);
+          } else if (resolvedTitle) {
+            setAst((prev) => ({
+              ...prev,
+              metadata: {
+                ...prev.metadata,
+                projectTitle: resolvedTitle,
+                domain: parsed.domain || prev.metadata.domain
+              }
+            }));
+          }
           if (restoredXml) {
             setXml(restoredXml);
             const inferredBp =
@@ -1139,10 +1151,21 @@ function StudioMain() {
             setSelectedBlueprintId(inferredBp);
             loadedFromLocal = true;
           }
-          if (parsed.versions) setVersions(parsed.versions);
+          if (Array.isArray(parsed.versions)) {
+            setVersions(
+              parsed.versions.map((v: any) => ({
+                ...v,
+                author: v.author || v.persona || v.sourceLabel || 'Lead Cloud Architect',
+                actionSummary: v.actionSummary || v.diffSummary || v.prompt || 'Snapshot',
+                canvasDiff: v.canvasDiff || v.diffSummary || '',
+                specDiff: v.specDiff || v.aiReasoning || v.prompt || ''
+              }))
+            );
+          }
           if (parsed.messages) setMessages(parsed.messages);
           if (parsed.activeVersionTag) setActiveVersionTag(parsed.activeVersionTag);
         }
+
       } catch {
         // storage fallback
       }
@@ -3987,8 +4010,8 @@ function StudioMain() {
                             <button
                               type="button"
                               onClick={() => {
-                                setXml(v.xml);
-                                setAst(v.ast);
+                                if (v.xml) setXml(v.xml);
+                                if (v.ast) setAst(v.ast);
                                 setActiveVersionTag(v.versionTag);
                               }}
                               aria-label={`Restore version ${v.versionTag}`}

@@ -468,6 +468,25 @@ function ArchitectureLibraryContent() {
         batchDeleteCustomVisionBlueprints(visionIds);
       }
 
+      if (typeof window !== 'undefined') {
+        try {
+          const deleteSet = new Set(idsToDelete);
+          for (const id of idsToDelete) {
+            localStorage.removeItem(`promptcanvas_studio_${id}`);
+          }
+          const rawSaved = localStorage.getItem('promptcanvas_saved_blueprints');
+          if (rawSaved) {
+            const parsedSaved = JSON.parse(rawSaved);
+            if (Array.isArray(parsedSaved)) {
+              localStorage.setItem(
+                'promptcanvas_saved_blueprints',
+                JSON.stringify(parsedSaved.filter((item: any) => !deleteSet.has(item?.id)))
+              );
+            }
+          }
+        } catch {}
+      }
+
       const res = await fetch('/api/diagrams/batch-delete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -533,6 +552,32 @@ function ArchitectureLibraryContent() {
     setActiveModalCanvas(diagram);
     setIsLoadingVersions(true);
     try {
+      // 1. Check localStorage studio/dashboard project payload first for rich multi-version history
+      if (typeof window !== 'undefined') {
+        try {
+          const localRaw = localStorage.getItem(`promptcanvas_studio_${diagram.id}`);
+          if (localRaw) {
+            const parsedLocal = JSON.parse(localRaw);
+            if (Array.isArray(parsedLocal?.versions) && parsedLocal.versions.length > 0) {
+              const total = parsedLocal.versions.length;
+              const mappedLocalVersions: DiagramVersionItem[] = parsedLocal.versions.map((v: any, idx: number) => ({
+                id: v.id || `ver_${diagram.id}_${total - idx}`,
+                diagram_id: diagram.id,
+                version_number: total - idx,
+                xml_content: v.xml || diagram.xml_content || '',
+                comment: `${v.versionTag || `v1.${total - idx - 1}`} — ${v.diffSummary || v.actionSummary || v.prompt || 'Session Snapshot'}`,
+                created_by: v.persona || v.author || v.sourceLabel || 'Session Copy',
+                created_at: parsedLocal.updatedAt || diagram.created_at,
+                architecture_type: diagram.architecture_type
+              }));
+              setModalVersions(mappedLocalVersions);
+              setSelectedVersionIndex(0);
+              return;
+            }
+          }
+        } catch {}
+      }
+
       const res = await fetch(`/api/diagrams/${diagram.id}`);
       if (res.ok) {
         const fullData = await res.json();
@@ -574,6 +619,7 @@ function ArchitectureLibraryContent() {
       setIsLoadingVersions(false);
     }
   };
+
 
   const handleCopyXml = (xml: string) => {
     navigator.clipboard.writeText(xml);

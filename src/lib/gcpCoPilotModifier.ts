@@ -205,6 +205,112 @@ function detectVendorTranslation(lowerPrompt: string): VendorTranslation | null 
 }
 
 /**
+ * Dynamically resolves a valid existing vertex ID in `xml` so injected Co-Pilot edges
+ * NEVER point to nonexistent `col_*_bg` IDs on Canonical Blueprints (#00-#74) or Logical/Conceptual/Process views.
+ * Preserves `preferredDialectATier` when running on Dialect-A templates (`/gcp`).
+ */
+function resolveValidTargetNodeId(
+  xml: string,
+  preferredDialectATier: string,
+  candidateNodeIds: string[],
+  semanticKeywords: string[],
+  targetX: number
+): { targetId: string; isDialectA: boolean } {
+  if (xml.includes(`id="${preferredDialectATier}"`)) {
+    return { targetId: preferredDialectATier, isDialectA: true };
+  }
+
+  for (const cid of candidateNodeIds) {
+    if (xml.includes(`id="${cid}"`)) {
+      return { targetId: cid, isDialectA: false };
+    }
+  }
+
+  // Parse all non-copilot component vertices in the diagram
+  const vertexRegex = /<mxCell\s+id="([^"]+)"[^>]*vertex="1"[^>]*>[\s\S]*?<mxGeometry\s+([^/>]+)\/?>/g;
+  const candidates: Array<{ id: string; x: number; y: number; w: number; h: number; block: string }> = [];
+  let match: RegExpExecArray | null;
+  while ((match = vertexRegex.exec(xml)) !== null) {
+    const id = match[1];
+    if (!id || id === '0' || id === '1' || id.startsWith('copilot_mod_')) continue;
+    const geomAttr = match[2];
+    const xMatch = geomAttr.match(/\bx="(-?\d+(?:\.\d+)?)"/);
+    const yMatch = geomAttr.match(/\by="(-?\d+(?:\.\d+)?)"/);
+    const wMatch = geomAttr.match(/\bwidth="(\d+(?:\.\d+)?)"/);
+    const hMatch = geomAttr.match(/\bheight="(\d+(?:\.\d+)?)"/);
+    if (!xMatch || !yMatch || !wMatch || !hMatch) continue;
+    const x = parseFloat(xMatch[1]);
+    const y = parseFloat(yMatch[1]);
+    const w = parseFloat(wMatch[1]);
+    const h = parseFloat(hMatch[1]);
+    // Skip giant background swimlane containers or tiny decorative icons
+    if (w > 650 || h > 360 || w < 75 || h < 34) continue;
+    candidates.push({ id, x, y, w, h, block: match[0].toLowerCase() });
+  }
+
+  // 1. Try semantic keyword match inside vertex value/id
+  for (const kw of semanticKeywords) {
+    const kwLower = kw.toLowerCase();
+    const hit = candidates.find((c) => c.id.toLowerCase().includes(kwLower) || c.block.includes(kwLower));
+    if (hit) {
+      return { targetId: hit.id, isDialectA: false };
+    }
+  }
+
+  // 2. Spatial match: pick component in the lower half of the diagram horizontally closest to targetX + 160
+  if (candidates.length > 0) {
+    const centerX = targetX + 160;
+    const sorted = [...candidates].sort((a, b) => {
+      const scoreA = a.y * 1.5 - Math.abs(a.x + a.w / 2 - centerX);
+      const scoreB = b.y * 1.5 - Math.abs(b.x + b.w / 2 - centerX);
+      return scoreB - scoreA;
+    });
+    return { targetId: sorted[0].id, isDialectA: false };
+  }
+
+  return { targetId: preferredDialectATier, isDialectA: true };
+}
+
+/**
+ * Formats a clean title on word boundaries so titles are never cut mid-word (e.g. "Clou").
+ */
+function formatCleanCardTitle(rawPrompt: string, maxLen = 48): string {
+  const stripped = rawPrompt
+    .replace(/^[+⚡🛡️🔒📊🤖✉️]+\s*/, '')
+    .replace(/^(add|insert|attach|upgrade|implement|enforce|integrate|configure|enable|deploy)\s+/i, '')
+    .trim();
+  if (stripped.length <= maxLen) return stripped;
+  const sliced = stripped.slice(0, maxLen);
+  const lastSpace = sliced.lastIndexOf(' ');
+  return (lastSpace > 20 ? sliced.slice(0, lastSpace) : sliced).replace(/[&,+/-]+$/, '').trim();
+}
+
+/**
+ * Highlights & upgrades an existing node in-place inside `xml` when a prompt enhances
+ * an existing component (such as `db_spanner`, `dlp_model_armor`, `edge_layer`, `obs_container`, `vector_memory`).
+ */
+function applyInPlaceNodeUpgrade(
+  xml: string,
+  nodeId: string,
+  accentStrokeColor: string,
+  accentFillColor: string,
+  textReplacement?: { find: string; replace: string }
+): string {
+  if (!xml.includes(`id="${nodeId}"`)) return xml;
+  const cellRegex = new RegExp(`(<mxCell\\s+id="${nodeId}"[^>]*>)`, 'i');
+  return xml.replace(cellRegex, (fullCellTag) => {
+    let updatedTag = fullCellTag
+      .replace(/strokeColor=#[0-9A-Fa-f]{3,6}/, `strokeColor=${accentStrokeColor}`)
+      .replace(/strokeWidth=[0-9.]+/, 'strokeWidth=2.8')
+      .replace(/fillColor=#[0-9A-Fa-f]{3,6}/, `fillColor=${accentFillColor}`);
+    if (textReplacement && updatedTag.includes(textReplacement.find)) {
+      updatedTag = updatedTag.replace(textReplacement.find, textReplacement.replace);
+    }
+    return updatedTag;
+  });
+}
+
+/**
  * Executes a prompt against an active GCP architecture, mutating the Draw.io XML
  * and producing an immutable version snapshot with action summaries.
  */
@@ -220,7 +326,7 @@ export function executeGcpPromptModification(
   newVersion: GcpVersionSnapshot;
   assistantMessage: GcpChatMessage;
 } {
-  const cleanPrompt = promptText.replace(/^\[.*?\]\s*/, '').trim();
+  const cleanPrompt = promptText.replace(/^\[.*?\]\s*/, '').replace(/^\+\s*/, '').trim();
   const lower = cleanPrompt.toLowerCase();
 
   // Negative Intent & Removal Detection (Prevents Prompt Inversion)
@@ -234,9 +340,9 @@ export function executeGcpPromptModification(
       detectedPersona = 'Product Manager';
     } else if (lower.includes('lead architect') || lower.includes('spanner') || lower.includes('multi-region') || lower.includes('dr') || lower.includes('failover')) {
       detectedPersona = 'Lead Cloud Architect';
-    } else if (lower.includes('ciso') || lower.includes('security') || lower.includes('armor') || lower.includes('waf') || lower.includes('cmek') || lower.includes('hsm') || lower.includes('vpc-sc')) {
+    } else if (lower.includes('ciso') || lower.includes('security') || lower.includes('armor') || lower.includes('waf') || lower.includes('cmek') || lower.includes('hsm') || lower.includes('vpc-sc') || lower.includes('beyondcorp')) {
       detectedPersona = 'CISO / Security Architect';
-    } else if (lower.includes('finops') || lower.includes('sre') || lower.includes('cost') || lower.includes('spot') || lower.includes('scale-to-zero')) {
+    } else if (lower.includes('finops') || lower.includes('sre') || lower.includes('cost') || lower.includes('billing') || lower.includes('bigquery') || lower.includes('monitoring') || lower.includes('telemetry') || lower.includes('spot') || lower.includes('scale-to-zero')) {
       detectedPersona = 'FinOps & SRE Lead';
     } else if (lower.includes('cryo-em') || lower.includes('alphafold') || lower.includes('target')) {
       detectedPersona = 'Target-to-Lead Discovery Lead';
@@ -257,6 +363,7 @@ export function executeGcpPromptModification(
   let canvasDiff = '';
   let specDiff = '';
   let injectedCellsXml = '';
+  let inPlaceUpgradedXml = currentXml;
 
   const cardBg = isDark ? '#1E293B' : '#FFFFFF';
   const textDark = isDark ? '#F8FAFC' : '#0F172A';
@@ -283,15 +390,157 @@ export function executeGcpPromptModification(
       }
     }
   }
-  const baseY = maxExistingBottomY > 645 ? Math.ceil(maxExistingBottomY) + 24 : 660;
-  const targetY = baseY + rowOffset * 85;
+  const baseY = maxExistingBottomY > 645 ? Math.ceil(maxExistingBottomY) + 28 : 660;
+  const targetY = baseY + rowOffset * 92;
+
+  const buildEdgeStyle = (
+    strokeColor: string,
+    fontColor: string,
+    isDialectA: boolean,
+    portSpec = 'exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;'
+  ) =>
+    isDialectA
+      ? `edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=${strokeColor};strokeWidth=1.8;dashed=1;fontSize=8;fontStyle=1;fontColor=${fontColor};labelBackgroundColor=${cardBg};`
+      : `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;${portSpec}strokeColor=${strokeColor};strokeWidth=2.2;dashed=1;dashPattern=5 3;endArrow=block;endFill=1;fontSize=9;fontStyle=1;fontColor=${fontColor};labelBackgroundColor=${cardBg};`;
+
+  const renderSynthesizedCardAndEdge = (params: {
+    boxId: string;
+    badgeId: string;
+    titleId: string;
+    descId: string;
+    edgeId: string;
+    boxFill: string;
+    strokeColor: string;
+    badgeColor: string;
+    badgeText: string;
+    titleText: string;
+    descText: string;
+    edgeLabel: string;
+    resolved: { targetId: string; isDialectA: boolean };
+    titleFontSize?: number;
+  }): { xml: string; maxRight: number; maxBottom: number } => {
+    const {
+      boxId,
+      badgeId,
+      titleId,
+      descId,
+      edgeId,
+      boxFill,
+      strokeColor,
+      badgeColor,
+      badgeText,
+      titleText,
+      descText,
+      edgeLabel,
+      resolved,
+      titleFontSize = 10,
+    } = params;
+
+    let boxX = targetX;
+    let boxY = targetY;
+    let boxW = 320;
+    const boxH = 74;
+    let portSpec = 'exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;';
+    let waypoints: Array<{ x: number; y: number }> = [];
+    const isBlueprint00 = inPlaceUpgradedXml.includes('upgraded-gcp-ge-multi-agent-banking-2026');
+    const effectiveEdgeLabel = isBlueprint00 ? '' : edgeLabel;
+
+    if (!resolved.isDialectA) {
+      if (resolved.targetId === 'obs_container') {
+        boxX = 16;
+        boxY = 668;
+        boxW = 250;
+        portSpec = 'exitX=0.40;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;';
+      } else if (resolved.targetId === 'dlp_model_armor') {
+        boxX = 1185;
+        boxY = 211;
+        boxW = 265;
+        portSpec = 'exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;';
+      } else if (resolved.targetId === 'db_spanner') {
+        boxX = 304;
+        boxY = 828;
+        boxW = 280;
+        portSpec = 'exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;';
+        waypoints = [
+          { x: 284, y: 865 },
+          { x: 284, y: 642 },
+        ];
+      } else if (resolved.targetId === 'edge_layer' || resolved.targetId === 'identity_auth') {
+        boxX = 110;
+        boxY = 107;
+        boxW = 275;
+        portSpec = 'exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;';
+      } else if (resolved.targetId === 'ui_chat') {
+        boxX = 150;
+        boxY = 14;
+        boxW = 275;
+        portSpec = 'exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;';
+      } else if (resolved.targetId === 'vector_memory') {
+        boxX = 1185;
+        boxY = 668;
+        boxW = 265;
+        portSpec = 'exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.85;entryY=1;entryDx=0;entryDy=0;';
+        waypoints = [{ x: 1100, y: 705 }];
+      } else if (
+        resolved.targetId === 'llm_container' ||
+        resolved.targetId === 'open_models' ||
+        resolved.targetId === 'gemini_models'
+      ) {
+        boxX = 1235;
+        boxY = 381;
+        boxW = 255;
+        portSpec = 'exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;';
+      }
+
+      // Prevent stacking collision if a previous prompt already placed a card at (boxX, boxY)
+      while (
+        inPlaceUpgradedXml.includes(`x="${boxX}" y="${boxY}"`) ||
+        inPlaceUpgradedXml.includes(`x="${boxX + 5}" y="${boxY + 4}"`)
+      ) {
+        boxY += 90;
+        if (waypoints.length > 0) {
+          waypoints[0] = { x: waypoints[0].x, y: boxY + 37 };
+        }
+      }
+    }
+
+    const ptsXml =
+      waypoints.length > 0
+        ? `<Array as="points">${waypoints.map((pt) => `<mxPoint x="${pt.x}" y="${pt.y}"/>`).join('')}</Array>`
+        : '';
+
+    const xml = `
+      <mxCell id="${boxId}" value="" style="rounded=1;arcSize=6;fillColor=${boxFill};strokeColor=${strokeColor};strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
+        <mxGeometry x="${boxX}" y="${boxY}" width="${boxW}" height="${boxH}" as="geometry" />
+      </mxCell>
+      <mxCell id="${badgeId}" value="${badgeText}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=${badgeColor};" vertex="1" parent="1">
+        <mxGeometry x="${boxX + 5}" y="${boxY + 4}" width="${boxW - 10}" height="14" as="geometry" />
+      </mxCell>
+      <mxCell id="${titleId}" value="${titleText}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=${titleFontSize};fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
+        <mxGeometry x="${boxX + 5}" y="${boxY + 20}" width="${boxW - 10}" height="16" as="geometry" />
+      </mxCell>
+      <mxCell id="${descId}" value="${descText}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
+        <mxGeometry x="${boxX + 5}" y="${boxY + 38}" width="${boxW - 10}" height="14" as="geometry" />
+      </mxCell>
+      <mxCell id="${edgeId}" value="${effectiveEdgeLabel}" style="${buildEdgeStyle(strokeColor, badgeColor, resolved.isDialectA, portSpec)}" edge="1" parent="1" source="${boxId}" target="${resolved.targetId}">
+        <mxGeometry relative="1" as="geometry">${ptsXml}</mxGeometry>
+      </mxCell>
+    `;
+
+    return {
+      xml,
+      maxRight: boxX + boxW + 28,
+      maxBottom: boxY + boxH + 24,
+    };
+  };
+
+  let renderedPlacement = { xml: '', maxRight: 1280, maxBottom: targetY + 95 };
 
   // Cross-Vendor Translation Check
   const vendorMatch = detectVendorTranslation(lower);
 
   // 2. Intelligent Draw.io XML Mutation according to prompt intent
   if (isNegativeRemoval && (lower.includes('spanner') || lower.includes('armor') || lower.includes('waf') || lower.includes('portal') || lower.includes('tpu'))) {
-    // Handled Negative / Removal gracefully without inverted positive upgrades
     const targetComp = lower.includes('spanner')
       ? 'Cloud Spanner'
       : lower.includes('armor') || lower.includes('waf')
@@ -300,235 +549,409 @@ export function executeGcpPromptModification(
       ? 'Patient Intake Portal'
       : 'Specialized Hardware';
 
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'col_agent_bg',
+      ['db_spanner', 'edge_layer', 'api_cloud_run', 'coordinator_agent'],
+      ['spanner', 'armor', 'gateway', 'agent'],
+      targetX
+    );
+
     canvasDiff = `- Decoupled & isolated ${targetComp}; re-routed traffic to core fallback pipelines.`;
     specDiff = `Reconciled DOC-03 (System Architecture) & DOC-07 (Topology Isolation).`;
-    injectedCellsXml = `
-      <mxCell id="copilot_mod_decouple_${slotIndex}" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#450A0A' : '#FEF2F2'};strokeColor=#EF4444;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_decouple_badge_${slotIndex}" value="✂️ COMPONENT DECOUPLED: ${escapeXmlText(targetComp.toUpperCase())}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#B91C1C;" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_decouple_title_${slotIndex}" value="${escapeXmlText(targetComp)} Removed / Decoupled" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_decouple_desc_${slotIndex}" value="Traffic isolated and re-directed to primary gateway fallback path" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_decouple_edge_${slotIndex}" value="Decoupled Route" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#EF4444;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#B91C1C;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_decouple_${slotIndex}" target="col_agent_bg">
-        <mxGeometry relative="1" as="geometry" />
-      </mxCell>
-    `;
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: `copilot_mod_decouple_${slotIndex}`,
+      badgeId: `copilot_mod_decouple_badge_${slotIndex}`,
+      titleId: `copilot_mod_decouple_title_${slotIndex}`,
+      descId: `copilot_mod_decouple_desc_${slotIndex}`,
+      edgeId: `copilot_mod_decouple_edge_${slotIndex}`,
+      boxFill: isDark ? '#450A0A' : '#FEF2F2',
+      strokeColor: '#EF4444',
+      badgeColor: '#B91C1C',
+      badgeText: `✂️ COMPONENT DECOUPLED: ${escapeXmlText(targetComp.toUpperCase())}`,
+      titleText: `${escapeXmlText(targetComp)} Removed / Decoupled`,
+      descText: 'Traffic isolated and re-directed to primary gateway fallback path',
+      edgeLabel: 'Decoupled Route',
+      resolved,
+    });
   } else if (isReplacement && lower.includes('spanner') && (lower.includes('postgres') || lower.includes('sql') || lower.includes('cloud sql'))) {
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'db_spanner', '#059669', '#ECFDF5', {
+      find: 'Cloud Spanner',
+      replace: 'Cloud SQL PG16 HA',
+    });
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'col_lake_bg',
+      ['db_spanner', 'db_bigtable', 'grp_accounts'],
+      ['spanner', 'database', 'sql', 'storage'],
+      targetX
+    );
+
     canvasDiff = `⇄ Replaced Cloud Spanner with Cloud SQL PostgreSQL High-Availability Cluster with cross-zone standby.`;
     specDiff = `Reconciled DOC-03 (System Architecture), DOC-05 (Database DDL), and DOC-08 (HA Standby Protocol).`;
-    injectedCellsXml = `
-      <mxCell id="copilot_mod_cloudsql_${slotIndex}" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#1E293B' : '#F0FDF4'};strokeColor=#10B981;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_cloudsql_badge_${slotIndex}" value="⇄ REPLACED: CLOUD SQL POSTGRESQL HA" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#059669;" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_cloudsql_title_${slotIndex}" value="Cloud SQL Enterprise Plus (PostgreSQL 16)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_cloudsql_desc_${slotIndex}" value="Cross-zone HA replication with automated regional SSD storage scaling" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_cloudsql_edge_${slotIndex}" value="Relational Persistence" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#10B981;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#059669;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_cloudsql_${slotIndex}" target="col_lake_bg">
-        <mxGeometry relative="1" as="geometry" />
-      </mxCell>
-    `;
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: `copilot_mod_cloudsql_${slotIndex}`,
+      badgeId: `copilot_mod_cloudsql_badge_${slotIndex}`,
+      titleId: `copilot_mod_cloudsql_title_${slotIndex}`,
+      descId: `copilot_mod_cloudsql_desc_${slotIndex}`,
+      edgeId: `copilot_mod_cloudsql_edge_${slotIndex}`,
+      boxFill: isDark ? '#1E293B' : '#F0FDF4',
+      strokeColor: '#10B981',
+      badgeColor: '#059669',
+      badgeText: '⇄ REPLACED: CLOUD SQL POSTGRESQL HA',
+      titleText: 'Cloud SQL Enterprise Plus (PostgreSQL 16)',
+      descText: 'Cross-zone HA replication with automated regional SSD storage scaling',
+      edgeLabel: 'Relational Persistence',
+      resolved,
+    });
   } else if (vendorMatch) {
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      vendorMatch.targetTierId,
+      ['db_spanner', 'api_cloud_run', 'coordinator_agent', 'vector_memory'],
+      ['spanner', 'cloud_run', 'agent', 'storage'],
+      targetX
+    );
     canvasDiff = `☁️ Mapped [${vendorMatch.detectedEntity}] $\\to$ [${vendorMatch.gcpEquivalent}] with enterprise zero-trust controls.`;
     specDiff = `Reconciled DOC-04 (Component Catalog), DOC-06 (Vendor Translation Map), and DOC-08 (Cloud Architecture).`;
-    injectedCellsXml = `
-      <mxCell id="copilot_mod_vendor_${slotIndex}" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#1E293B' : '#EFF6FF'};strokeColor=${vendorMatch.categoryColor};strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_vendor_badge_${slotIndex}" value="${escapeXmlText(vendorMatch.badge)}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=${vendorMatch.categoryColor};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_vendor_title_${slotIndex}" value="${escapeXmlText(vendorMatch.gcpEquivalent)}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_vendor_desc_${slotIndex}" value="${escapeXmlText(vendorMatch.gcpDescription)}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_vendor_edge_${slotIndex}" value="Mapped Endpoint" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=${vendorMatch.categoryColor};strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=${vendorMatch.categoryColor};labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_vendor_${slotIndex}" target="${vendorMatch.targetTierId}">
-        <mxGeometry relative="1" as="geometry" />
-      </mxCell>
-    `;
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: `copilot_mod_vendor_${slotIndex}`,
+      badgeId: `copilot_mod_vendor_badge_${slotIndex}`,
+      titleId: `copilot_mod_vendor_title_${slotIndex}`,
+      descId: `copilot_mod_vendor_desc_${slotIndex}`,
+      edgeId: `copilot_mod_vendor_edge_${slotIndex}`,
+      boxFill: isDark ? '#1E293B' : '#EFF6FF',
+      strokeColor: vendorMatch.categoryColor,
+      badgeColor: vendorMatch.categoryColor,
+      badgeText: escapeXmlText(vendorMatch.badge),
+      titleText: escapeXmlText(vendorMatch.gcpEquivalent),
+      descText: escapeXmlText(vendorMatch.gcpDescription),
+      edgeLabel: 'Mapped Endpoint',
+      resolved,
+    });
   } else if (lower.includes('cryo-em') || lower.includes('alphafold')) {
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'col_agent_bg',
+      ['open_models', 'gemini_models', 'llm_container', 'coordinator_agent'],
+      ['llm', 'gemini', 'model', 'agent'],
+      targetX
+    );
     canvasDiff = `+ Injected Cryo-EM 3D Density Map Reconstruction Engine & AlphaFold 3 Multimer Accelerator on Cloud TPU v5e & NVIDIA A100 Cluster.`;
     specDiff = `Reconciled DOC-03 (System Architecture), DOC-04 (HPC Co-Processor Cluster), and DOC-05 (Cloud TPU Topology).`;
-    injectedCellsXml = `
-      <mxCell id="copilot_mod_cryoem_box" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#1E1B4B' : '#EEF2FF'};strokeColor=#6366F1;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_cryoem_badge" value="🧬 CO-PILOT INJECTED: CRYO-EM &amp; ALPHAFOLD 3 HPC" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#4F46E5;" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_cryoem_title" value="Cloud TPU v5e (256 Pods) + 8x A100 GPU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_cryoem_desc" value="Sub-minute AlphaFold 3 multimer synthesis &amp; 3D Cryo-EM map alignment" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_cryoem_edge" value="HPC Offload" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#4F46E5;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#4F46E5;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_cryoem_box" target="col_agent_bg">
-        <mxGeometry relative="1" as="geometry" />
-      </mxCell>
-    `;
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: 'copilot_mod_cryoem_box',
+      badgeId: 'copilot_mod_cryoem_badge',
+      titleId: 'copilot_mod_cryoem_title',
+      descId: 'copilot_mod_cryoem_desc',
+      edgeId: 'copilot_mod_cryoem_edge',
+      boxFill: isDark ? '#1E1B4B' : '#EEF2FF',
+      strokeColor: '#6366F1',
+      badgeColor: '#4F46E5',
+      badgeText: '🧬 CO-PILOT INJECTED: CRYO-EM &amp; ALPHAFOLD 3 HPC',
+      titleText: 'Cloud TPU v5e (256 Pods) + 8x A100 GPU',
+      descText: 'Sub-minute AlphaFold 3 multimer synthesis &amp; 3D Cryo-EM map alignment',
+      edgeLabel: 'HPC Offload',
+      resolved,
+    });
   } else if (lower.includes('vector') || lower.includes('chembl') || lower.includes('fingerprint')) {
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'vector_memory', '#059669', '#ECFDF5');
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'col_lake_bg',
+      ['vector_memory', 'db_spanner', 'db_firestore'],
+      ['vector', 'search', 'memory', 'database'],
+      targetX
+    );
     canvasDiff = `+ Integrated ScaNN Vector Search Cluster with ChEMBL 33 & BindingDB Molecular Fingerprints (sub-8ms p99 similarity search).`;
     specDiff = `Reconciled DOC-04 (Component Catalog), DOC-05 (Vector Embeddings Schema), and DOC-07 (Latency Budgets).`;
-    injectedCellsXml = `
-      <mxCell id="copilot_mod_vector_box" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#022C22' : '#F0FDF4'};strokeColor=#10B981;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_vector_badge" value="⚡ CO-PILOT INJECTED: SCANN VECTOR SEARCH" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#059669;" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_vector_title" value="10M+ Molecular Embeddings Index (ChEMBL 33)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_vector_desc" value="Sub-8ms p99 similarity search across Morgan &amp; Tanimoto fingerprints" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_vector_edge" value="SMILES Lookups" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#10B981;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#059669;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_vector_box" target="col_lake_bg">
-        <mxGeometry relative="1" as="geometry" />
-      </mxCell>
-    `;
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: 'copilot_mod_vector_box',
+      badgeId: 'copilot_mod_vector_badge',
+      titleId: 'copilot_mod_vector_title',
+      descId: 'copilot_mod_vector_desc',
+      edgeId: 'copilot_mod_vector_edge',
+      boxFill: isDark ? '#022C22' : '#F0FDF4',
+      strokeColor: '#10B981',
+      badgeColor: '#059669',
+      badgeText: '⚡ CO-PILOT INJECTED: SCANN VECTOR SEARCH',
+      titleText: '10M+ Molecular Embeddings Index (ChEMBL 33)',
+      descText: 'Sub-8ms p99 similarity search across Morgan &amp; Tanimoto fingerprints',
+      edgeLabel: 'SMILES Lookups',
+      resolved,
+    });
   } else if (lower.includes('sila') || lower.includes('wet-lab') || lower.includes('robot')) {
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'col_gxp_bg',
+      ['service_agent', 'api_cloud_run', 'coordinator_agent'],
+      ['service', 'gateway', 'agent'],
+      targetX
+    );
     canvasDiff = `⚡ Enforced SiLA 2 (Standard in Lab Automation) Microservice Gateway with bidirectional IoT telemetry streaming.`;
     specDiff = `Reconciled DOC-03 (Wet-Lab Interfaces), DOC-05 (SiLA 2 Robotic Dispatch), and DOC-08 (Telemetry Lineage).`;
-    injectedCellsXml = `
-      <mxCell id="copilot_mod_sila_box" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#431407' : '#FFF7ED'};strokeColor=#F97316;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_sila_badge" value="🤖 CO-PILOT INJECTED: SILA 2 ROBOTICS GATEWAY" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#C2410C;" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_sila_title" value="SiLA 2 gRPC Interconnect &amp; Workcell Bus" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_sila_desc" value="Direct mTLS control for Hamilton Starlet &amp; Echo acoustic liquid handlers" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_sila_edge" value="Robotic Dispatch" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F97316;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#C2410C;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_sila_box" target="col_gxp_bg">
-        <mxGeometry relative="1" as="geometry" />
-      </mxCell>
-    `;
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: 'copilot_mod_sila_box',
+      badgeId: 'copilot_mod_sila_badge',
+      titleId: 'copilot_mod_sila_title',
+      descId: 'copilot_mod_sila_desc',
+      edgeId: 'copilot_mod_sila_edge',
+      boxFill: isDark ? '#431407' : '#FFF7ED',
+      strokeColor: '#F97316',
+      badgeColor: '#C2410C',
+      badgeText: '🤖 CO-PILOT INJECTED: SILA 2 ROBOTICS GATEWAY',
+      titleText: 'SiLA 2 gRPC Interconnect &amp; Workcell Bus',
+      descText: 'Direct mTLS control for Hamilton Starlet &amp; Echo acoustic liquid handlers',
+      edgeLabel: 'Robotic Dispatch',
+      resolved,
+    });
   } else if (lower.includes('21 cfr') || lower.includes('gxp') || lower.includes('audit')) {
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'col_gxp_bg',
+      ['iam_auth', 'dlp_model_armor', 'obs_container'],
+      ['iam', 'armor', 'audit', 'security'],
+      targetX
+    );
     canvasDiff = `🔒 Enforced 21 CFR Part 11 Cryptographic Audit Vault, Cloud HSM keyrings, and SHA-256 electronic batch record ledger.`;
     specDiff = `Reconciled DOC-06 (Regulatory Compliance), DOC-10 (Audit Matrix), and DOC-02 (FDA Electronic Submissions).`;
-    injectedCellsXml = `
-      <mxCell id="copilot_mod_gxp_box" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#450A0A' : '#FEF2F2'};strokeColor=#EF4444;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_gxp_badge" value="⚖️ CO-PILOT INJECTED: 21 CFR PART 11 CRYPTO VAULT" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#B91C1C;" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_gxp_title" value="Cloud KMS FIPS 140-2 Level 3 HSM Keyring" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_gxp_desc" value="Immutable e-signatures, WORM storage lock, &amp; IND dossier packaging" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_gxp_edge" value="Compliance Audit" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#EF4444;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#B91C1C;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_gxp_box" target="col_gxp_bg">
-        <mxGeometry relative="1" as="geometry" />
-      </mxCell>
-    `;
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: 'copilot_mod_gxp_box',
+      badgeId: 'copilot_mod_gxp_badge',
+      titleId: 'copilot_mod_gxp_title',
+      descId: 'copilot_mod_gxp_desc',
+      edgeId: 'copilot_mod_gxp_edge',
+      boxFill: isDark ? '#450A0A' : '#FEF2F2',
+      strokeColor: '#EF4444',
+      badgeColor: '#B91C1C',
+      badgeText: '⚖️ CO-PILOT INJECTED: 21 CFR PART 11 CRYPTO VAULT',
+      titleText: 'Cloud KMS FIPS 140-2 Level 3 HSM Keyring',
+      descText: 'Immutable e-signatures, WORM storage lock, &amp; IND dossier packaging',
+      edgeLabel: 'Compliance Audit',
+      resolved,
+    });
   } else if (lower.includes('patient') || lower.includes('portal') || lower.includes('admission') || lower.includes('product manager')) {
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'ui_chat', '#0284C7', '#E0F2FE');
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'col_ingress_bg',
+      ['ui_chat', 'edge_layer', 'api_cloud_run'],
+      ['ui', 'chat', 'portal', 'edge', 'ingress'],
+      targetX
+    );
     canvasDiff = `+ Injected Emergency Patient Portal & Telemetry Ingress Gateway (Cloud Run) with 99.999% SLA tracking.`;
     specDiff = `Reconciled DOC-01 (Product Vision), DOC-02 (User Journeys), and DOC-04 (Architecture Overview).`;
-    injectedCellsXml = `
-      <mxCell id="copilot_mod_portal_box" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#1E293B' : '#F0F9FF'};strokeColor=#0284C7;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_portal_badge" value="👔 CO-PILOT INJECTED: PATIENT INGRESS PORTAL" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#0369A1;" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_portal_title" value="Emergency Triage &amp; Intake Gateway (Cloud Run)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_portal_desc" value="FHIR R4 compliant ingestion with 99.999% SLA availability guarantee" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_portal_edge" value="Ingress Flow" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#0369A1;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_portal_box" target="col_ingress_bg">
-        <mxGeometry relative="1" as="geometry" />
-      </mxCell>
-    `;
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: 'copilot_mod_portal_box',
+      badgeId: 'copilot_mod_portal_badge',
+      titleId: 'copilot_mod_portal_title',
+      descId: 'copilot_mod_portal_desc',
+      edgeId: 'copilot_mod_portal_edge',
+      boxFill: isDark ? '#1E293B' : '#F0F9FF',
+      strokeColor: '#0284C7',
+      badgeColor: '#0369A1',
+      badgeText: '👔 CO-PILOT INJECTED: PATIENT INGRESS PORTAL',
+      titleText: 'Emergency Triage &amp; Intake Gateway (Cloud Run)',
+      descText: 'FHIR R4 compliant ingestion with 99.999% SLA availability guarantee',
+      edgeLabel: 'Ingress Flow',
+      resolved,
+    });
   } else if (lower.includes('spanner') || lower.includes('multi-region') || lower.includes('dr') || lower.includes('failover') || lower.includes('lead architect')) {
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'db_spanner', '#4338CA', '#EEF2FF', {
+      find: '(TrueTime &amp; Graph)',
+      replace: '(Multi-Region nam3 HA • RPO &lt; 1s)',
+    });
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'col_lake_bg',
+      ['db_spanner', 'grp_accounts', 'db_bigtable'],
+      ['spanner', 'database', 'persistence', 'ledger'],
+      targetX
+    );
     canvasDiff = `⚡ Upgraded Cloud Spanner to Active-Active Multi-Region (nam3) with europe-west1 DR witness and cross-region interconnect.`;
     specDiff = `Reconciled DOC-03 (System Architecture), DOC-05 (Infrastructure & DDL), and DOC-08 (Disaster Recovery).`;
-    injectedCellsXml = `
-      <mxCell id="copilot_mod_spanner_box" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#312E81' : '#EEF2FF'};strokeColor=#4338CA;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_spanner_badge" value="🏗️ CO-PILOT INJECTED: MULTI-REGION NAM3 DR" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#4338CA;" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_spanner_title" value="Cloud Spanner Active-Active nam3 Leader" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_spanner_desc" value="Witness in europe-west1 with RPO &lt; 1s and automated zero-loss failover" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_spanner_edge" value="Dual-Leader Replication" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#4338CA;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#4338CA;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_spanner_box" target="col_lake_bg">
-        <mxGeometry relative="1" as="geometry" />
-      </mxCell>
-    `;
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: 'copilot_mod_spanner_box',
+      badgeId: 'copilot_mod_spanner_badge',
+      titleId: 'copilot_mod_spanner_title',
+      descId: 'copilot_mod_spanner_desc',
+      edgeId: 'copilot_mod_spanner_edge',
+      boxFill: isDark ? '#312E81' : '#EEF2FF',
+      strokeColor: '#4338CA',
+      badgeColor: '#4338CA',
+      badgeText: '🏗️ CO-PILOT INJECTED: MULTI-REGION NAM3 DR',
+      titleText: 'Cloud Spanner Active-Active nam3 Leader',
+      descText: 'Witness in europe-west1 with RPO &lt; 1s and automated zero-loss failover',
+      edgeLabel: 'Dual-Leader Replication',
+      resolved,
+    });
+  } else if (lower.includes('model armor') || lower.includes('prompt-injection') || lower.includes('prompt injection') || lower.includes('guardrail')) {
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'dlp_model_armor', '#7C3AED', '#FAF5FF', {
+      find: '(DLP PII Redaction &amp; Guardrails)',
+      replace: '(Prompt-Injection Firewall &amp; DLP)',
+    });
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'col_ingress_bg',
+      ['dlp_model_armor', 'edge_layer', 'api_cloud_run'],
+      ['model_armor', 'armor', 'guardrail', 'security', 'gateway'],
+      targetX
+    );
+    canvasDiff = `🛡️ Upgraded Model Armor & SDP in-place + inserted Vertex AI Model Armor Prompt-Injection Firewall & inline DLP token redaction.`;
+    specDiff = `Reconciled DOC-06 (Security & Threat Model), DOC-07 (AI Safety Guardrails), and DOC-10 (Compliance Matrix).`;
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: `copilot_mod_modelarmor_box_${slotIndex}`,
+      badgeId: `copilot_mod_modelarmor_badge_${slotIndex}`,
+      titleId: `copilot_mod_modelarmor_title_${slotIndex}`,
+      descId: `copilot_mod_modelarmor_desc_${slotIndex}`,
+      edgeId: `copilot_mod_modelarmor_edge_${slotIndex}`,
+      boxFill: isDark ? '#4C1D95' : '#FAF5FF',
+      strokeColor: '#7C3AED',
+      badgeColor: '#6D28D9',
+      badgeText: '🛡️ CO-PILOT UPGRADE: VERTEX AI MODEL ARMOR',
+      titleText: 'Vertex AI Model Armor Prompt-Injection Firewall',
+      descText: 'Inline jailbreak detection, PII/PCI token redaction &amp; adversarial filter',
+      edgeLabel: 'Inline Prompt Shield',
+      resolved,
+    });
+  } else if (lower.includes('beyondcorp') || lower.includes('identity-aware proxy') || lower.includes('iap')) {
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'edge_layer', '#6D28D9', '#F5F3FF');
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'identity_auth', '#6D28D9', '#F5F3FF');
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'col_ingress_bg',
+      ['edge_layer', 'identity_auth', 'iam_auth', 'api_cloud_run'],
+      ['edge', 'identity', 'iam', 'ingress'],
+      targetX
+    );
+    canvasDiff = `🔐 Upgraded Edge Layer in-place + inserted BeyondCorp Zero-Trust Identity-Aware Proxy (IAP) & Context-Aware Access.`;
+    specDiff = `Reconciled DOC-06 (Zero-Trust Perimeter), DOC-17 (IAM Federation), and DOC-10 (Compliance Matrix).`;
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: `copilot_mod_beyondcorp_box_${slotIndex}`,
+      badgeId: `copilot_mod_beyondcorp_badge_${slotIndex}`,
+      titleId: `copilot_mod_beyondcorp_title_${slotIndex}`,
+      descId: `copilot_mod_beyondcorp_desc_${slotIndex}`,
+      edgeId: `copilot_mod_beyondcorp_edge_${slotIndex}`,
+      boxFill: isDark ? '#4C1D95' : '#F5F3FF',
+      strokeColor: '#7C3AED',
+      badgeColor: '#6D28D9',
+      badgeText: '🔐 CO-PILOT UPGRADE: BEYONDCORP ZERO-TRUST IAP',
+      titleText: 'BeyondCorp Enterprise IAP &amp; Context-Aware Access',
+      descText: 'Device posture verification, mTLS identity proxy &amp; Cloud Armor WAF',
+      edgeLabel: 'Zero-Trust IAP',
+      resolved,
+    });
   } else if (lower.includes('armor') || lower.includes('waf') || lower.includes('security') || lower.includes('ciso') || lower.includes('cmek')) {
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'edge_layer', '#7C3AED', '#FAF5FF');
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'col_ingress_bg',
+      ['edge_layer', 'dlp_model_armor', 'iam_auth'],
+      ['edge', 'armor', 'security', 'waf', 'ingress'],
+      targetX
+    );
     canvasDiff = `🔒 Enforced Cloud Armor Enterprise WAF, Cloud KMS HSM CMEK keys, and VPC Service Controls perimeter shield.`;
     specDiff = `Reconciled DOC-06 (Security & Threat Model) and DOC-10 (Compliance Matrix).`;
-    injectedCellsXml = `
-      <mxCell id="copilot_mod_security_box" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#4C1D95' : '#FAF5FF'};strokeColor=#7C3AED;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_security_badge" value="🛡️ CO-PILOT INJECTED: ZERO-TRUST PERIMETER" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#6D28D9;" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_security_title" value="Cloud Armor Enterprise WAF &amp; VPC-SC Perimeter" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_security_desc" value="Adaptive DDoS layer 7 filtering, OWASP Top 10 rules &amp; FIPS 140-2 Level 3 CMEK" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_security_edge" value="Zero-Trust Shield" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#6D28D9;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_security_box" target="col_ingress_bg">
-        <mxGeometry relative="1" as="geometry" />
-      </mxCell>
-    `;
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: 'copilot_mod_security_box',
+      badgeId: 'copilot_mod_security_badge',
+      titleId: 'copilot_mod_security_title',
+      descId: 'copilot_mod_security_desc',
+      edgeId: 'copilot_mod_security_edge',
+      boxFill: isDark ? '#4C1D95' : '#FAF5FF',
+      strokeColor: '#7C3AED',
+      badgeColor: '#6D28D9',
+      badgeText: '🛡️ CO-PILOT INJECTED: ZERO-TRUST PERIMETER',
+      titleText: 'Cloud Armor Enterprise WAF &amp; VPC-SC Perimeter',
+      descText: 'Adaptive DDoS layer 7 filtering, OWASP Top 10 rules &amp; FIPS 140-2 Level 3 CMEK',
+      edgeLabel: 'Zero-Trust Shield',
+      resolved,
+    });
+  } else if (
+    lower.includes('finops') ||
+    lower.includes('bigquery') ||
+    lower.includes('billing') ||
+    lower.includes('cost') ||
+    lower.includes('monitoring') ||
+    lower.includes('telemetry') ||
+    lower.includes('trace') ||
+    lower.includes('scale-to-zero')
+  ) {
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'obs_container', '#0D9488', '#F0FDFA', {
+      find: 'GCP FinOps Hub',
+      replace: 'BigQuery FinOps &amp; Cost AI',
+    });
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'col_agent_bg',
+      ['obs_container', 'db_bigtable', 'coordinator_agent'],
+      ['obs', 'finops', 'monitoring', 'logging', 'telemetry'],
+      targetX
+    );
+    canvasDiff = `📊 Upgraded GCP Observability & FinOps Hub in-place + attached BigQuery Cost Intelligence & Cloud Billing Anomaly Pipeline.`;
+    specDiff = `Reconciled DOC-11 (SRE & OpenTelemetry Spec) and DOC-14 (Cloud FinOps & Unit Economics Model).`;
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: `copilot_mod_finops_box_${slotIndex}`,
+      badgeId: `copilot_mod_finops_badge_${slotIndex}`,
+      titleId: `copilot_mod_finops_title_${slotIndex}`,
+      descId: `copilot_mod_finops_desc_${slotIndex}`,
+      edgeId: `copilot_mod_finops_edge_${slotIndex}`,
+      boxFill: isDark ? '#042F2E' : '#F0FDFA',
+      strokeColor: '#0D9488',
+      badgeColor: '#0F766E',
+      badgeText: '📊 CO-PILOT UPGRADE: FINOPS &amp; COST INTELLIGENCE',
+      titleText: 'BigQuery Cost Intelligence &amp; Billing Anomaly AI',
+      descText: 'Real-time token spend attribution, Cloud Billing export &amp; OTel Collector',
+      edgeLabel: 'FinOps &amp; OTel Stream',
+      resolved,
+    });
   } else {
     // Custom Arbitrary Prompt synthesis with dynamic placement & orthogonal edge connection
-    const safeTitle = escapeXmlText(cleanPrompt.slice(0, 42));
+    const safeTitle = escapeXmlText(formatCleanCardTitle(cleanPrompt, 48));
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'col_agent_bg',
+      ['coordinator_agent', 'transaction_agent', 'api_cloud_run', 'db_spanner'],
+      ['coordinator', 'agent', 'gateway', 'spanner'],
+      targetX
+    );
     canvasDiff = `+ Applied architectural synthesis: "${cleanPrompt.slice(0, 80)}" incorporating required components and security controls.`;
     specDiff = `Reconciled system specifications, data dictionary, and infrastructure topology for version ${nextVersionTag}.`;
-    injectedCellsXml = `
-      <mxCell id="copilot_mod_custom_box_${slotIndex}" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#1E293B' : '#F8FAFC'};strokeColor=#3B82F6;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_custom_badge_${slotIndex}" value="🤖 CO-PILOT SYNTHESIS: ${nextVersionTag.toUpperCase()}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#2563EB;" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_custom_title_${slotIndex}" value="${safeTitle}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_custom_desc_${slotIndex}" value="Synthesized &amp; connected by Google Cloud Architecture Co-Pilot" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
-      </mxCell>
-      <mxCell id="copilot_mod_custom_edge_${slotIndex}" value="Synthesized Link" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3B82F6;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#2563EB;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_custom_box_${slotIndex}" target="col_agent_bg">
-        <mxGeometry relative="1" as="geometry" />
-      </mxCell>
-    `;
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: `copilot_mod_custom_box_${slotIndex}`,
+      badgeId: `copilot_mod_custom_badge_${slotIndex}`,
+      titleId: `copilot_mod_custom_title_${slotIndex}`,
+      descId: `copilot_mod_custom_desc_${slotIndex}`,
+      edgeId: `copilot_mod_custom_edge_${slotIndex}`,
+      boxFill: isDark ? '#1E293B' : '#F8FAFC',
+      strokeColor: '#3B82F6',
+      badgeColor: '#2563EB',
+      badgeText: `🤖 CO-PILOT SYNTHESIS: ${nextVersionTag.toUpperCase()}`,
+      titleText: safeTitle,
+      descText: 'Synthesized &amp; connected by Google Cloud Architecture Co-Pilot',
+      edgeLabel: 'Synthesized Link',
+      resolved,
+      titleFontSize: 9.5,
+    });
   }
 
-  // 3. Inject cells before </root> tag cleanly and expand pageHeight if needed
-  let mutatedXml = currentXml;
+  injectedCellsXml = renderedPlacement.xml;
+
+  // 3. Inject cells before </root> tag cleanly and expand pageWidth/pageHeight if needed
+  let mutatedXml = inPlaceUpgradedXml;
   if (mutatedXml.includes('</root>')) {
     mutatedXml = mutatedXml.replace('</root>', `${injectedCellsXml}\n        </root>`);
   }
-  const requiredHeight = targetY + 95;
+  const requiredWidth = renderedPlacement.maxRight;
+  const requiredHeight = renderedPlacement.maxBottom;
+  mutatedXml = mutatedXml.replace(/pageWidth="(\d+)"/, (full, wStr) => {
+    const curW = parseInt(wStr, 10);
+    return !isNaN(curW) && curW < requiredWidth ? `pageWidth="${requiredWidth}"` : full;
+  });
+  mutatedXml = mutatedXml.replace(/\bdx="(\d+)"/, (full, dxStr) => {
+    const curDx = parseInt(dxStr, 10);
+    return !isNaN(curDx) && curDx < requiredWidth ? `dx="${requiredWidth}"` : full;
+  });
   mutatedXml = mutatedXml.replace(/pageHeight="(\d+)"/, (full, hStr) => {
     const curH = parseInt(hStr, 10);
     return !isNaN(curH) && curH < requiredHeight ? `pageHeight="${requiredHeight}"` : full;
@@ -558,7 +981,7 @@ export function executeGcpPromptModification(
   const assistantMessage: GcpChatMessage = {
     id: `msg_${Date.now() + 1}`,
     sender: 'assistant',
-    text: `[${detectedPersona} Persona Refinement]: Successfully synthesized updates for "${cleanPrompt.slice(0, 75)}...". Created immutable snapshot ${nextVersionTag}.`,
+    text: `[${detectedPersona} Persona Refinement]: Successfully synthesized updates for "${cleanPrompt.slice(0, 75)}". Created immutable snapshot ${nextVersionTag}.`,
     timestamp,
     actionSummary: {
       versionTag: nextVersionTag,
@@ -570,4 +993,5 @@ export function executeGcpPromptModification(
 
   return { updatedXml, newVersion, assistantMessage };
 }
+
 
