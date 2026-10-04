@@ -2696,7 +2696,7 @@ function DocGenContent() {
                         5. Architectural Scope &amp; Topology Requirements Prompt
                       </label>
                       <span className="text-[10px] font-mono text-slate-500">
-                        Gemini 3.8 Flash &bull; Real-Time AST
+                        Gemini 2.5 Flash &bull; Real-Time AST
                       </span>
                     </div>
                     <textarea
@@ -4002,7 +4002,7 @@ function DocGenContent() {
             <div className="flex-1 p-6 md:p-10 overflow-y-auto space-y-6">
               {/* TAB A: FULL MASTER DOCUMENT RENDERING */}
               {modalTab === 'doc' && (
-                <div className="max-w-5xl mx-auto space-y-4">
+                <div className="w-full max-w-[1600px] mx-auto space-y-4">
                   <div className="p-4 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-between">
                     <div className="flex items-center gap-2 text-xs text-sky-600 dark:text-sky-400 font-semibold">
                       <Sparkles className="w-4 h-4 text-sky-500 shrink-0" />
@@ -4018,7 +4018,7 @@ function DocGenContent() {
 
               {/* TAB B: MULTI-BLUEPRINT PACK ARCHITECTURE */}
               {modalTab === 'blueprints' && (
-                <div className="max-w-5xl mx-auto space-y-6">
+                <div className="w-full max-w-[1600px] mx-auto space-y-6">
                   <div className="space-y-1">
                     <h4 className="text-lg font-bold text-slate-900 dark:text-white">
                       Attached Blueprint Architecture Pack ({previewModalDoc.blueprintPack.length} Diagrams)
@@ -4074,7 +4074,7 @@ function DocGenContent() {
 
               {/* TAB C: SECTION HIERARCHY */}
               {modalTab === 'hierarchy' && (
-                <div className="max-w-5xl mx-auto space-y-4">
+                <div className="w-full max-w-[1600px] mx-auto space-y-4">
                   <div className="space-y-1">
                     <h4 className="text-lg font-bold text-slate-900 dark:text-white">
                       Chapter &amp; Section Hierarchy ({previewModalDoc.sectionsCount} Sections)
@@ -4142,6 +4142,7 @@ function DocGenContent() {
         projectScope={projectScopePrompt}
         domain={selectedDomain}
         isLight={isLight}
+        xmlContent={customInsertedXml || undefined}
       />
 
       {/* Enterprise Toolchain Sync Modal (Jira, Confluence, GitHub, Webhook) */}

@@ -57,7 +57,7 @@ export async function orchestrateArchitecturePipeline(params: {
   const tPlannerStart = Date.now();
   steps.push({
     agent: 'TOPOLOGY_PLANNER',
-    agentModel: 'Gemini 3.8 Flash',
+    agentModel: 'Gemini 2.5 Flash',
     phase: 'OCR & Signature Matching',
     status: 'RUNNING',
     message: 'Extracting spatial zones, entity labels, and scanning PromptCanvas master blueprint catalog...'

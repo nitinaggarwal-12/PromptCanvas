@@ -176,7 +176,7 @@ Author the full, end-to-end ${archetypeId.toUpperCase()} specification document 
       projectScopePrompt || ''
     );
 
-    // Cross-model LLM-as-a-Judge audit using distinct judgeModel (gemini-3.8-flash judging gemini-3.1-pro-preview)
+    // Cross-model LLM-as-a-Judge audit using distinct judgeModel (gemini-2.5-flash judging gemini-3.1-pro-preview)
     let judgeVerdict: { passed: boolean; judgeModel: string; generatorModel: string; notes?: string } = {
       passed: true,
       judgeModel,

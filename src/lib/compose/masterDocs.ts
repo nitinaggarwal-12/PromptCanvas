@@ -575,7 +575,7 @@ graph TD
     AUTH --> ORCHESTRATOR["⚙️ ReAct Agent Orchestrator (< 20ms)"]
     
     ORCHESTRATOR --> VDB["🔍 Vertex Vector Search (< 45ms)"]
-    ORCHESTRATOR --> GEMINI["🤖 Gemini 3.8 Flash Model (< 1200ms)"]
+    ORCHESTRATOR --> GEMINI["🤖 Gemini 2.5 Flash Model (< 1200ms)"]
     ORCHESTRATOR --> SPANNER["🗄️ Spanner Distributed Ledger (< 15ms)"]
     ORCHESTRATOR --> AUDIT["🔒 Cryptographic SHA-256 Audit Logger (< 8ms)"]
 \`\`\`
@@ -742,7 +742,7 @@ graph TD
     L1["1. Executive Digital Workspace & Portal"] --> L2["2. Zero-Trust Identity & ABAC Perimeter"]
     L2 --> L3["3. Agentic Workflow Orchestration (GKE)"]
     L3 --> L4["4. Access-Aware Hybrid Vector RAG"]
-    L4 --> L5["5. Model Gateway & Governance (Gemini 3.8 Flash)"]
+    L4 --> L5["5. Model Gateway & Governance (Gemini 2.5 Flash)"]
     L5 --> L6["6. Human-in-the-Loop Governance Board"]
     L6 --> L7["7. Governed Tool Execution Gateway"]
     L7 --> L8["8. Immutable Cryptographic Audit Ledger"]

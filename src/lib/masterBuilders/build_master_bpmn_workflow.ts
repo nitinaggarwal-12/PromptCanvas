@@ -16,7 +16,7 @@ export function buildBpmnWorkflowXml(): string {
         <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:11px;color:#475569;font-weight:600;&quot;&gt;Business Process Model and Notation (BPMN 2.0): User Tasks, Service Tasks, XOR Gateways, Timer Boundary Events &amp;amp; Autonomous Sub-Processes&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="65" y="34" width="1050" height="18" as="geometry"/>
         </mxCell>
-        <mxCell id="top_gemini_badge" value="&lt;b style=&quot;font-size:14px;color:#2563EB;&quot;&gt;Gemini 3.8 Flash&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Process Engine&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="top_gemini_badge" value="&lt;b style=&quot;font-size:14px;color:#2563EB;&quot;&gt;Gemini 2.5 Flash&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Process Engine&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="1220" y="10" width="140" height="36" as="geometry"/>
         </mxCell>
 
@@ -50,7 +50,7 @@ export function buildBpmnWorkflowXml(): string {
         </mxCell>
 
         <!-- Lane 2: Autonomous Agentic Orchestrator Lane -->
-        <mxCell id="lane2_header" value="&lt;b style=&quot;font-size:11px;color:#1E293B;&quot;&gt;🤖 Autonomous AI &amp;amp; Gemini 3.8 Flash Orchestrator Lane&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#A855F7;strokeWidth=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
+        <mxCell id="lane2_header" value="&lt;b style=&quot;font-size:11px;color:#1E293B;&quot;&gt;🤖 Autonomous AI &amp;amp; Gemini 2.5 Flash Orchestrator Lane&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#A855F7;strokeWidth=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="30" y="270" width="1325" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="lane2_body" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDF4FF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
@@ -61,7 +61,7 @@ export function buildBpmnWorkflowXml(): string {
           <mxGeometry x="190" y="340" width="210" height="80" as="geometry"/>
         </mxCell>
 
-        <mxCell id="task_gemini_fraud" value="&lt;b style=&quot;font-size:10px;color:#7E22CE;&quot;&gt;⚙️ Service Task: Gemini 3.8 Flash Scorer&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Fraud Confidence Scoring &amp;amp; Policy Match&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="task_gemini_fraud" value="&lt;b style=&quot;font-size:10px;color:#7E22CE;&quot;&gt;⚙️ Service Task: Gemini 2.5 Flash Scorer&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Fraud Confidence Scoring &amp;amp; Policy Match&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="450" y="340" width="220" height="80" as="geometry"/>
         </mxCell>
 
@@ -131,7 +131,7 @@ export function buildBpmnWorkflowXml(): string {
         </mxCell>
 
         <!-- Footer Legend -->
-        <mxCell id="footer_legend" value="&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;&lt;b&gt;BPMN 2.0 Standard:&lt;/b&gt; 🟢 Start Event &amp;nbsp;|&amp;nbsp; 👤 User Task &amp;nbsp;|&amp;nbsp; ⚙️ Service Task (Gemini 3.8 Flash AI) &amp;nbsp;|&amp;nbsp; ✕ XOR Gateway Split/Join &amp;nbsp;|&amp;nbsp; 🔴 End Event &amp;nbsp;|&amp;nbsp; ⚡ Powered by Gemini 3.8 Flash&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="footer_legend" value="&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;&lt;b&gt;BPMN 2.0 Standard:&lt;/b&gt; 🟢 Start Event &amp;nbsp;|&amp;nbsp; 👤 User Task &amp;nbsp;|&amp;nbsp; ⚙️ Service Task (Gemini 2.5 Flash AI) &amp;nbsp;|&amp;nbsp; ✕ XOR Gateway Split/Join &amp;nbsp;|&amp;nbsp; 🔴 End Event &amp;nbsp;|&amp;nbsp; ⚡ Powered by Gemini 2.5 Flash&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="25" y="655" width="1335" height="30" as="geometry"/>
         </mxCell>
 

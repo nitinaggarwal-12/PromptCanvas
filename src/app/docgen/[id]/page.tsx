@@ -778,7 +778,7 @@ function DocDetailPageContent() {
       </AppHeader>
 
       {/* MAIN DOCUMENT VIEWPORT */}
-      <main className="max-w-5xl mx-auto px-6 md:px-12 py-8 space-y-6">
+      <main className="w-full max-w-[1600px] mx-auto px-6 md:px-12 py-8 space-y-6">
         {/* DOMAIN FLAVOR SELECTION BAR */}
         <div className={`p-4 rounded-2xl border transition-all ${
           isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900/70 border-slate-800'

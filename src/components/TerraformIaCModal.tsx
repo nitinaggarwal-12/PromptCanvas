@@ -31,6 +31,8 @@ interface TerraformIaCModalProps {
   projectScope: string;
   domain: string;
   isLight: boolean;
+  xmlContent?: string;
+  diagramId?: string;
 }
 
 export default function TerraformIaCModal({
@@ -40,6 +42,7 @@ export default function TerraformIaCModal({
   projectScope,
   domain,
   isLight,
+  xmlContent,
 }: TerraformIaCModalProps) {
   const [bundle, setBundle] = useState<TerraformFileBundle | null>(null);
   const [activeTab, setActiveTab] = useState<'main' | 'variables' | 'outputs' | 'tfvars' | 'provider' | 'k8s' | 'plan'>('main');
@@ -49,12 +52,12 @@ export default function TerraformIaCModal({
 
   useEffect(() => {
     if (isOpen) {
-      const generated = generateTerraformBundle(projectTitle, projectScope, domain, 'gcp');
+      const generated = generateTerraformBundle(projectTitle, projectScope, domain, 'gcp', xmlContent);
       setBundle(generated);
       setSimulation(simulateTerraformPlan(generated));
       setActiveTab('main');
     }
-  }, [isOpen, projectTitle, projectScope, domain]);
+  }, [isOpen, projectTitle, projectScope, domain, xmlContent]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -226,11 +229,11 @@ export default function TerraformIaCModal({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-900/90 border border-slate-800">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
-                    +18
+                    +{simulation?.resourcesToAdd ?? bundle.resourcesCount}
                   </div>
                   <div>
                     <div className="text-[10px] text-slate-400 uppercase font-sans font-bold">Resources to Add</div>
-                    <div className="text-xs font-bold text-emerald-400">18 Cloud Resources</div>
+                    <div className="text-xs font-bold text-emerald-400">{simulation?.resourcesToAdd ?? bundle.resourcesCount} Cloud Resources</div>
                   </div>
                 </div>
 

@@ -49,19 +49,138 @@ export interface ArchitectureAst {
   connections: AstConnection[];
 }
 
-export function createDefaultFintechAst(): ArchitectureAst {
+export function inferServiceAndTierFromLabel(label: string): {
+  service: string;
+  tier: AstComponent['tier'];
+  sla: string;
+} {
+  const lower = (label || '').toLowerCase();
+
+  // AWS services
+  if (lower.includes('eks') || lower.includes('elastic kubernetes')) {
+    return { service: 'AWS Elastic Kubernetes Service (EKS)', tier: 'compute', sla: '99.95%' };
+  }
+  if (lower.includes('ecs') || lower.includes('fargate')) {
+    return { service: 'AWS ECS / Fargate', tier: 'compute', sla: '99.99%' };
+  }
+  if (lower.includes('lambda')) {
+    return { service: 'AWS Lambda Serverless', tier: 'compute', sla: '99.95%' };
+  }
+  if (lower.includes('aurora') || lower.includes('rds')) {
+    return { service: 'Amazon Aurora / RDS', tier: 'data', sla: '99.99%' };
+  }
+  if (lower.includes('dynamodb')) {
+    return { service: 'Amazon DynamoDB Global Tables', tier: 'data', sla: '99.999%' };
+  }
+  if (lower.includes('s3') || lower.includes('glacier')) {
+    return { service: 'Amazon S3 Object Storage', tier: 'data', sla: '99.99%' };
+  }
+  if (lower.includes('cloudfront') || lower.includes('route 53') || lower.includes('route53') || lower.includes('alb')) {
+    return { service: 'AWS CloudFront / ALB Edge', tier: 'ingress', sla: '99.99%' };
+  }
+  if (lower.includes('bedrock') || lower.includes('sagemaker')) {
+    return { service: 'Amazon Bedrock / SageMaker', tier: 'compute', sla: '99.9%' };
+  }
+  if (lower.includes('kinesis') || lower.includes('msk') || lower.includes('sqs') || lower.includes('eventbridge')) {
+    return { service: 'AWS Kinesis / EventBridge', tier: 'compute', sla: '99.99%' };
+  }
+
+  // Azure services
+  if (lower.includes('aks') || lower.includes('azure kubernetes')) {
+    return { service: 'Azure Kubernetes Service (AKS)', tier: 'compute', sla: '99.95%' };
+  }
+  if (lower.includes('cosmos') || lower.includes('cosmosdb')) {
+    return { service: 'Azure Cosmos DB', tier: 'data', sla: '99.999%' };
+  }
+  if (lower.includes('entra') || lower.includes('active directory') || lower.includes('key vault')) {
+    return { service: 'Microsoft Entra ID / Key Vault', tier: 'security', sla: '99.99%' };
+  }
+  if (lower.includes('front door') || lower.includes('application gateway')) {
+    return { service: 'Azure Front Door / App Gateway', tier: 'ingress', sla: '99.99%' };
+  }
+  if (lower.includes('azure openai') || lower.includes('ai foundry')) {
+    return { service: 'Azure AI Foundry / OpenAI', tier: 'compute', sla: '99.9%' };
+  }
+
+  // GCP & General Cloud / AI / Edge services
+  if (lower.includes('armor') || lower.includes('waf') || lower.includes('ddos') || lower.includes('shield')) {
+    return { service: 'Cloud Armor L7 WAF', tier: 'ingress', sla: '99.99%' };
+  }
+  if (lower.includes('apigee') || lower.includes('api gateway') || lower.includes('envoy') || lower.includes('kong')) {
+    return { service: 'Apigee X / API Gateway', tier: 'ingress', sla: '99.99%' };
+  }
+  if (lower.includes('load balanc') || lower.includes('gclb') || lower.includes('anycast') || lower.includes('cdn') || lower.includes('dns')) {
+    return { service: 'Global HTTPS Load Balancing', tier: 'ingress', sla: '99.99%' };
+  }
+  if (lower.includes('spanner')) {
+    return { service: 'Cloud Spanner Multi-Region', tier: 'data', sla: '99.999%' };
+  }
+  if (lower.includes('alloydb') || lower.includes('cloud sql') || lower.includes('postgres')) {
+    return { service: 'AlloyDB / Cloud SQL PostgreSQL', tier: 'data', sla: '99.99%' };
+  }
+  if (lower.includes('bigquery') || lower.includes('biglake') || lower.includes('lakehouse') || lower.includes('snowflake') || lower.includes('databricks')) {
+    return { service: 'BigQuery Analytics Lakehouse', tier: 'data', sla: '99.99%' };
+  }
+  if (lower.includes('redis') || lower.includes('memorystore') || lower.includes('cache')) {
+    return { service: 'Memorystore Redis 7.2', tier: 'data', sla: '99.9%' };
+  }
+  if (lower.includes('gcs') || lower.includes('cloud storage') || lower.includes('bucket') || lower.includes('worm')) {
+    return { service: 'Dual-Region Cloud Storage', tier: 'data', sla: '99.99%' };
+  }
+  if (lower.includes('pubsub') || lower.includes('pub/sub') || lower.includes('kafka') || lower.includes('dataflow') || lower.includes('datastream') || lower.includes('stream')) {
+    return { service: 'Cloud Pub/Sub & Dataflow', tier: 'compute', sla: '99.95%' };
+  }
+  if (lower.includes('gemini') || lower.includes('vertex') || lower.includes('llm') || lower.includes('agent') || lower.includes('rag') || lower.includes('scann') || lower.includes('vector') || lower.includes('vllm')) {
+    return { service: 'Vertex AI (Gemini 3.1 Pro / 2.5 Flash)', tier: 'compute', sla: '99.9%' };
+  }
+  if (lower.includes('kms') || lower.includes('hsm') || lower.includes('vpc-sc') || lower.includes('iam') || lower.includes('oidc') || lower.includes('mtls') || lower.includes('secret') || lower.includes('chronicle') || lower.includes('scc')) {
+    return { service: 'Cloud KMS HSM & Zero-Trust IAM', tier: 'security', sla: '99.99%' };
+  }
+  if (lower.includes('prometheus') || lower.includes('grafana') || lower.includes('otel') || lower.includes('telemetry') || lower.includes('monitoring') || lower.includes('logging') || lower.includes('trace')) {
+    return { service: 'Cloud Monitoring & OpenTelemetry', tier: 'observability', sla: '99.95%' };
+  }
+  if (lower.includes('drone') || lower.includes('lidar') || lower.includes('edge') || lower.includes('client') || lower.includes('browser') || lower.includes('mobile') || lower.includes('iot') || lower.includes('sensor')) {
+    return { service: 'Edge Telemetry & Client Ingress', tier: 'ingress', sla: '99.9%' };
+  }
+  if (lower.includes('cloud run') || lower.includes('serverless')) {
+    return { service: 'Cloud Run Gen2 Serverless', tier: 'compute', sla: '99.95%' };
+  }
+  if (lower.includes('gke') || lower.includes('kubernetes') || lower.includes('autopilot') || lower.includes('mesh') || lower.includes('worker') || lower.includes('orchestrat') || lower.includes('service')) {
+    return { service: 'GKE Autopilot Compute Mesh', tier: 'compute', sla: '99.95%' };
+  }
+
+  return { service: 'Cloud Managed Workload Tier', tier: 'compute', sla: '99.95%' };
+}
+
+export function createDefaultFintechAst(projectTitle?: string, domain?: string): ArchitectureAst {
+  const effectiveTitle = projectTitle || 'Global Real-Time Payments Mesh & Settlement Engine';
+  const lower = `${effectiveTitle} ${domain || ''}`.toLowerCase();
+  const isFintech =
+    !projectTitle ||
+    lower.includes('payment') ||
+    lower.includes('settlement') ||
+    lower.includes('fintech') ||
+    lower.includes('bank') ||
+    lower.includes('ledger');
+
+  const resolvedCompliance = lower.includes('hipaa') || lower.includes('clinical') || lower.includes('hospital') || lower.includes('patient')
+    ? ['HIPAA', 'HITRUST CSF', 'SOC2 Type II']
+    : isFintech
+    ? ['PCI-DSS 4.0', 'SOC2 Type II', 'ISO 27001']
+    : ['SOC2 Type II', 'ISO 27001', 'NIST 800-53'];
+
   return {
     metadata: {
-      projectTitle: 'Global Real-Time Payments Mesh & Settlement Engine',
-      projectId: 'gcp-pay-001',
+      projectTitle: effectiveTitle,
+      projectId: 'gcp-arch-001',
       version: 'v1.1',
-      domain: 'Financial Services & Banking',
+      domain: domain || (isFintech ? 'Financial Services & Banking' : 'Enterprise Cloud & AI Architecture'),
       slaTarget: '99.999%',
       targetRpo: '< 5 Seconds',
       targetRto: '< 30 Seconds',
       primaryRegion: 'us-central1',
       drRegions: ['europe-west1'],
-      compliance: ['PCI-DSS 4.0', 'SOC2 Type II', 'ISO 27001'],
+      compliance: resolvedCompliance,
       latencyBudgetMs: 50,
       lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     },
@@ -96,8 +215,8 @@ export function createDefaultFintechAst(): ArchitectureAst {
         service: 'Google Kubernetes Engine',
         tier: 'compute',
         region: 'us-central1',
-        role: 'Core Payment Gateway',
-        description: 'Containerized payment orchestration, ledger posting, and tokenization services with mTLS zero-trust.',
+        role: isFintech ? 'Core Payment Gateway' : 'Core Orchestration Mesh',
+        description: 'Containerized domain orchestration, policy enforcement, and microservice routing with mTLS zero-trust.',
         sla: '99.95%',
         protocols: ['gRPC mTLS', 'REST']
       },
@@ -107,8 +226,8 @@ export function createDefaultFintechAst(): ArchitectureAst {
         service: 'Vertex AI',
         tier: 'compute',
         region: 'us-central1',
-        role: 'Real-Time Fraud Scoring RAG',
-        description: 'Sub-20ms fraud inference via ScaNN vector search and Gemini risk analysis.',
+        role: isFintech ? 'Real-Time Fraud Scoring RAG' : 'Real-Time Grounded AI Reasoning',
+        description: 'Sub-20ms grounded inference via ScaNN vector search and Gemini 3.1 Pro / 2.5 Flash reasoning.',
         sla: '99.9%',
         protocols: ['gRPC']
       },
@@ -120,18 +239,18 @@ export function createDefaultFintechAst(): ArchitectureAst {
         tier: 'data',
         region: 'us-central1',
         role: 'Leader Instance',
-        description: 'Multi-region distributed ACID database handling synchronous payment balance ledgers.',
+        description: 'Multi-region distributed ACID database handling synchronous state commits.',
         sla: '99.999%',
         protocols: ['SQL DDL', 'gRPC']
       },
       {
         id: 'comp_bigquery',
-        name: 'BigQuery Analytics & Ledger Lakehouse',
+        name: 'BigQuery Analytics Lakehouse',
         service: 'BigQuery',
         tier: 'data',
         region: 'us-central1',
         role: 'Audit Lake',
-        description: 'Immutable ledger audit streaming and long-term regulatory compliance analysis.',
+        description: 'Immutable audit streaming and long-term regulatory compliance analysis.',
         sla: '99.99%',
         protocols: ['Storage Write API']
       },
@@ -154,7 +273,7 @@ export function createDefaultFintechAst(): ArchitectureAst {
         tier: 'dr',
         region: 'europe-west1',
         role: 'Encrypted Snapshots',
-        description: 'CMEK-encrypted transaction archives with WORM object lock compliance.',
+        description: 'CMEK-encrypted state archives with WORM object lock compliance.',
         sla: '99.999999999% Durability',
         protocols: ['HTTPS']
       }
@@ -185,7 +304,7 @@ export function createDefaultFintechAst(): ArchitectureAst {
         protocol: 'gRPC mTLS',
         flowType: 'rag_grounding',
         stepNumber: 3,
-        label: '3. Fraud Vector Scoring (<20ms)'
+        label: '3. Vector Grounding (<20ms)'
       },
       {
         id: 'conn_4',
@@ -194,7 +313,7 @@ export function createDefaultFintechAst(): ArchitectureAst {
         protocol: 'gRPC ACID',
         flowType: 'sync_api',
         stepNumber: 4,
-        label: '4. Commit Ledger Transaction'
+        label: '4. Commit ACID State'
       },
       {
         id: 'conn_5',
@@ -217,3 +336,4 @@ export function createDefaultFintechAst(): ArchitectureAst {
     ]
   };
 }
+

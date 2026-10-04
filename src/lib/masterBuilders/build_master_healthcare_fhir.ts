@@ -17,8 +17,8 @@ export function buildHealthcareFhirXml(): string {
           <mxGeometry x="65" y="32" width="1250" height="16" as="geometry"/>
         </mxCell>
         
-        <!-- Gemini 3.8 Flash Badge -->
-        <mxCell id="top_gemini_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#38BDF8;&quot;&gt;✨ Gemini 3.8 Flash&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#94A3B8;font-weight:600;&quot;&gt;Clinical Intelligence Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+        <!-- Gemini 2.5 Flash Badge -->
+        <mxCell id="top_gemini_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#38BDF8;&quot;&gt;✨ Gemini 2.5 Flash&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#94A3B8;font-weight:600;&quot;&gt;Clinical Intelligence Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="1380" y="8" width="195" height="42" as="geometry"/>
         </mxCell>
 
@@ -106,8 +106,8 @@ export function buildHealthcareFhirXml(): string {
           <mxGeometry x="585" y="345" width="370" height="94" as="geometry"/>
         </mxCell>
 
-        <!-- 3.3 Gemini 3.8 Flash Clinical Reasoner -->
-        <mxCell id="card_gemini_clinical" value="&lt;table style=&quot;width:100%;text-align:left;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;✨ [Gemini 3.8 Flash Clinical Reasoner]&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;color:#475569;padding-top:4px;&quot;&gt;• Synthesizes Discharge Summaries &amp;amp; Lab Trends&lt;br&gt;• Drug-Drug Interaction Risk Flagging&lt;br&gt;• Patient Journey Summarization&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+        <!-- 3.3 Gemini 2.5 Flash Clinical Reasoner -->
+        <mxCell id="card_gemini_clinical" value="&lt;table style=&quot;width:100%;text-align:left;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;✨ [Gemini 2.5 Flash Clinical Reasoner]&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;color:#475569;padding-top:4px;&quot;&gt;• Synthesizes Discharge Summaries &amp;amp; Lab Trends&lt;br&gt;• Drug-Drug Interaction Risk Flagging&lt;br&gt;• Patient Journey Summarization&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
           <mxGeometry x="975" y="345" width="430" height="94" as="geometry"/>
         </mxCell>
 
@@ -191,7 +191,7 @@ export function buildHealthcareFhirXml(): string {
 
         <!-- ==================== FOOTER LEGEND ==================== -->
         <!-- x = 25 .. 1575 (width = 1550, height = 40) -->
-        <mxCell id="footer_legend" value="&lt;table style=&quot;width:100%;font-size:7.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Professional Legend:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔵 &lt;b&gt;Data&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔷 &lt;b&gt;Compute&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟢 &lt;b&gt;Security&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔴 &lt;b&gt;Controls&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔒 &lt;b&gt;Access Transparency&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🛡️ &lt;b&gt;HIPAA BAA Compliant&lt;/b&gt;&lt;/td&gt;&lt;td&gt;✨ &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Gemini 3.8 Flash Clinical Engine&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="footer_legend" value="&lt;table style=&quot;width:100%;font-size:7.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Professional Legend:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔵 &lt;b&gt;Data&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔷 &lt;b&gt;Compute&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟢 &lt;b&gt;Security&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔴 &lt;b&gt;Controls&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔒 &lt;b&gt;Access Transparency&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🛡️ &lt;b&gt;HIPAA BAA Compliant&lt;/b&gt;&lt;/td&gt;&lt;td&gt;✨ &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Gemini 2.5 Flash Clinical Engine&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="25" y="755" width="1550" height="36" as="geometry"/>
         </mxCell>
 

@@ -170,7 +170,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     name: 'GCP Enterprise Architecture',
     family: 'Reference Architectures',
     level: 'L1',
-    primaryPurpose: 'Production-grade Google Cloud native topology across 6 balanced zones with Gemini 3.8 Flash & Pro hybrid engine',
+    primaryPurpose: 'Production-grade Google Cloud native topology across 6 balanced zones with Gemini 2.5 Flash & Pro hybrid engine',
     examples: 'Multi-Region Microservices, Vertex AI GenAI Studio, Real-Time Event Streaming & Unified Lakehouse',
     defaultDomain: 'Enterprise Google Cloud Native Architecture',
     previewImage: '/templates/gcp_enterprise_architecture.png',

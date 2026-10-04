@@ -304,7 +304,7 @@ export default function ByokHeaderButton({ compact = false }: { compact?: boolea
                   </span>
                   <span className="font-mono text-slate-200">
                     {status?.activeModels?.pro || 'gemini-3.1-pro-preview'} ·{' '}
-                    {status?.activeModels?.flash || 'gemini-3.8-flash'}
+                    {status?.activeModels?.flash || 'gemini-2.5-flash'}
                   </span>
                 </div>
               </div>

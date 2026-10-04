@@ -550,7 +550,7 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
     modifiedXml = modifiedXml.replace(pattern, replacement);
   }
 
-  // Ensure any remaining Gemini 1.5 references in adapted templates use Gemini 3.1 Pro / 3.8 Flash
+  // Ensure any remaining Gemini 1.5 references in adapted templates use Gemini 3.1 Pro / 2.5 Flash
   modifiedXml = modifiedXml
     .replace(/Gemini 1\.5&lt;br\/&gt;Pro/gi, 'Gemini 3.1&lt;br/&gt;Pro')
     .replace(/Gemini 1\.5&lt;br\/&gt;Flash/gi, 'Gemini 3.8&lt;br/&gt;Flash')

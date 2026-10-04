@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { checkAndRecordDailyGeminiQuota, getUserGeminiApiKey } from '@/lib/db';
-import { setActiveRequestGeminiApiKey } from '@/lib/geminiConfig';
+import { initRequestGeminiKeyContext, setActiveRequestGeminiApiKey } from '@/lib/geminiConfig';
 
 function isGuestUser(user: { email?: string; is_guest?: number | boolean } | null): boolean {
   if (!user) return true;
@@ -30,6 +30,7 @@ export async function enforceGeminiRouteGuard(
   request: NextRequest | Request,
   routeNameOrOpts: string | { endpoint?: string; maxDailyLimit?: number } = 'gemini'
 ): Promise<GeminiGuardResult> {
+  const keyBox = initRequestGeminiKeyContext();
   const routeName =
     typeof routeNameOrOpts === 'string'
       ? routeNameOrOpts
@@ -53,7 +54,7 @@ export async function enforceGeminiRouteGuard(
   if (!user) {
     const authHeader = request.headers?.get?.('authorization');
     if (authHeader === 'Bearer invalid' || request.headers?.get?.('x-require-auth') === '1') {
-      setActiveRequestGeminiApiKey(null);
+      setActiveRequestGeminiApiKey(null, keyBox);
       const errRes = NextResponse.json(
         { error: 'Authentication required. Please sign in or start a guest session.' },
         { status: 401 }
@@ -69,7 +70,7 @@ export async function enforceGeminiRouteGuard(
     }
 
     // Guest / Anonymous session -> Always uses current system key
-    setActiveRequestGeminiApiKey(systemKey);
+    setActiveRequestGeminiApiKey(systemKey, keyBox);
 
     try {
       const quota = await checkAndRecordDailyGeminiQuota(`anon_ip_${ip}`, maxDailyLimit, routeName);
@@ -121,7 +122,7 @@ export async function enforceGeminiRouteGuard(
 
     if (effectiveUserKey) {
       // Logged-in user has their own BYOK key -> use it for all Gemini model calls & bypass shared quota!
-      setActiveRequestGeminiApiKey(effectiveUserKey);
+      setActiveRequestGeminiApiKey(effectiveUserKey, keyBox);
       return {
         allowed: true,
         userId: user.id,
@@ -133,7 +134,7 @@ export async function enforceGeminiRouteGuard(
   }
 
   // Guest mode (or logged-in user without a custom key saved yet) -> use current system key
-  setActiveRequestGeminiApiKey(systemKey);
+  setActiveRequestGeminiApiKey(systemKey, keyBox);
 
   try {
     const quota = await checkAndRecordDailyGeminiQuota(user.id, maxDailyLimit, routeName);
@@ -205,7 +206,7 @@ export function checkConversationalOrNonMutationIntent(prompt: string): Conversa
     return {
       isNonMutation: true,
       category: 'greeting',
-      replyMessage: "👋 Hello! I'm your PromptCanvas Architecture Co-Pilot (powered by Google Omni 1.1, Gemini 3.1 Pro & Gemini 3.8 Flash). Tell me what system, cloud topology, or domain infographic you'd like to design or refine!"
+      replyMessage: "👋 Hello! I'm your PromptCanvas Architecture Co-Pilot (powered by Google Omni 1.1, Gemini 3.1 Pro & Gemini 2.5 Flash). Tell me what system, cloud topology, or domain infographic you'd like to design or refine!"
     };
   }
 
@@ -213,7 +214,7 @@ export function checkConversationalOrNonMutationIntent(prompt: string): Conversa
     return {
       isNonMutation: true,
       category: 'identity',
-      replyMessage: "🏛️ I am the PromptCanvas Architecture & Infographic Engine, orchestrated by Google Omni 1.1 with Gemini 3.1 Pro, Gemini 3.8 Flash, and Gemini Flash Live. I synthesize collision-free Draw.io XML blueprints, 6-Dimension Domain Research Infographics, and 19-Section Architecture Specifications."
+      replyMessage: "🏛️ I am the PromptCanvas Architecture & Infographic Engine, orchestrated by Google Omni 1.1 with Gemini 3.1 Pro, Gemini 2.5 Flash, and Gemini Flash Live. I synthesize collision-free Draw.io XML blueprints, 6-Dimension Domain Research Infographics, and 19-Section Architecture Specifications."
     };
   }
 

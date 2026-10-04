@@ -3,7 +3,7 @@
  *
  * Eradicates the generic template string-interpolation blindspot (Rule 42).
  * Before generating a diagram for ANY brand-new domain or topic, this engine
- * invokes Google Omni 1.1 + Gemini 3.1 Pro (`gemini-3.1-pro-preview` / `gemini-3.8-flash`)
+ * invokes Google Omni 1.1 + Gemini 3.1 Pro (`gemini-3.1-pro-preview` / `gemini-2.5-flash`)
  * to research and ground 6 mandatory architectural dimensions:
  *   1. True Domain Ontology & Canonical 4-Stage Lifecycle Spine (01..04)
  *   2. Authentic Wire Protocols, RFCs, File Formats & Regulatory Standards
@@ -64,8 +64,8 @@ export function normalizeLatestGoogleAndCloudNomenclature(text: string): string 
     .replace(/\bDataplex (?:Data|Universal) Catalog\b/gi, 'Dataplex Catalog')
     .replace(/\bGlobal HTTPS Load Balancer\b/gi, 'Global External Application LB')
     .replace(/\bGemini\s+(?:1\.5|2\.0|3\.7)\s+Pro\b/gi, 'Gemini 3.1 Pro')
-    .replace(/\bGemini\s+(?:1\.5|2\.0|3\.7)\s+Flash\b/gi, 'Gemini 3.8 Flash')
-    .replace(/\bgemini-3\.7-(?:pro|flash)[a-z0-9-]*\b/gi, 'gemini-3.8-flash')
+    .replace(/\bGemini\s+(?:1\.5|2\.0|3\.7)\s+Flash\b/gi, 'Gemini 2.5 Flash')
+    .replace(/\bgemini-3\.7-(?:pro|flash)[a-z0-9-]*\b/gi, 'gemini-2.5-flash')
     .replace(/\bVeo\s+[12](?:\.0)?\b/gi, 'DeepMind Veo 3.1')
     .replace(/\bLyria\s+[12](?:\.0)?\b/gi, 'DeepMind Lyria 3.5');
 }

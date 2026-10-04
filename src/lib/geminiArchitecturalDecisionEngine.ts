@@ -455,7 +455,7 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
 
   return {
     prompt,
-    modelUsed: 'gemini-3.8-flash (cached/fallback)',
+    modelUsed: 'gemini-2.5-flash (cached/fallback)',
     isLiveGeminiDecision: false,
     recommendedPerspective: 'Logical',
     perspectiveReasoning:
@@ -472,7 +472,7 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
       `Customize scope to "${cleanTitle}" on Google Cloud & Gemini Enterprise`,
       'Configure Edge Layer (Cloud Armor WAF, Apigee X, Envoy AI) & Identity Platform (Firebase Auth & Passkeys)',
       'Orchestrate Coordinator Agent & 3 Specialist Agents via Gemini Enterprise, Google ADK, LangGraph & A2A',
-      'Bind LLM Layer (Gemini 3.1 Pro / 3.8 Flash + Gemma 3 / Llama 4 on GKE vLLM), Vector Search 2.0 & Cloud Spanner/Bigtable/Firestore via MCP',
+      'Bind LLM Layer (Gemini 3.1 Pro / 2.5 Flash + Gemma 3 / Llama 4 on GKE vLLM), Vector Search 2.0 & Cloud Spanner/Bigtable/Firestore via MCP',
     ],
     topCandidates: [
       {
@@ -566,7 +566,7 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
         whyChosen: 'Default uncluttered 2026 Google Cloud & Gemini Enterprise Native Technical Architecture with Cloud Armor, Apigee X, Envoy AI, Cloud Run Gen2, Model Armor & SDP, Google ADK, A2A, MCP, Vertex AI & GKE vLLM, Vector Search 2.0, and Spanner/Bigtable/Firestore.',
         plannedModifications: [
           'Configure Edge Layer, Identity Platform (OAuth 2.1 / Passkeys), and IAM WIF authorisation',
-          'Detail Gemini 3.1 Pro / 3.8 Flash + Gemma 3 / Llama 4 on GKE vLLM and MCP database tool servers',
+          'Detail Gemini 3.1 Pro / 2.5 Flash + Gemma 3 / Llama 4 on GKE vLLM and MCP database tool servers',
         ],
       },
       Process: {

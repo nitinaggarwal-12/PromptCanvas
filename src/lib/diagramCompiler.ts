@@ -575,7 +575,7 @@ export function getExactAgenticRagReferenceXml(): string {
         </mxCell>
 
         <!-- THE REASONER: GEMINI 3.6 PRO AND REACT LOOP -->
-        <mxCell id="reasoner_box" value="The Reasoner: Gemini 3.8 Flash (LLM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=2;verticalAlign=top;align=center;spacingTop=15;fontFamily=Helvetica;fontSize=16;fontStyle=1;fontColor=#0F172A;shadow=1;" vertex="1" parent="1">
+        <mxCell id="reasoner_box" value="The Reasoner: Gemini 2.5 Flash (LLM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=2;verticalAlign=top;align=center;spacingTop=15;fontFamily=Helvetica;fontSize=16;fontStyle=1;fontColor=#0F172A;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="460" y="360" width="460" height="320" as="geometry" />
         </mxCell>
 
@@ -809,8 +809,8 @@ export function getExactSequenceDiagramReferenceXml(): string {
           <mxGeometry x="295" y="100" width="180" height="50" as="geometry" />
         </mxCell>
 
-        <!-- 3. Reasoner: Gemini 3.8 Flash / Pro (LLM) -->
-        <mxCell id="col_reasoner" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;vertical-align:middle;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:20px;&quot;&gt;🧠&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;padding-left:4px;&quot;&gt;&lt;div style=&quot;font-size:9.5px;color:#DDD6FE;&quot;&gt;Reasoner:&lt;/div&gt;&lt;b style=&quot;font-size:11px;color:#FFFFFF;&quot;&gt;Gemini 3.8 Flash (LLM)&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1.5;verticalAlign=middle;" vertex="1" parent="1">
+        <!-- 3. Reasoner: Gemini 2.5 Flash / Pro (LLM) -->
+        <mxCell id="col_reasoner" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:28px;vertical-align:middle;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:20px;&quot;&gt;🧠&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;padding-left:4px;&quot;&gt;&lt;div style=&quot;font-size:9.5px;color:#DDD6FE;&quot;&gt;Reasoner:&lt;/div&gt;&lt;b style=&quot;font-size:11px;color:#FFFFFF;&quot;&gt;Gemini 2.5 Flash (LLM)&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1.5;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="515" y="100" width="180" height="50" as="geometry" />
         </mxCell>
 
@@ -1163,7 +1163,7 @@ export function getExactMacroSequenceDiagramReferenceXml(): string {
         <mxCell id="p3_mem_h" value="&lt;span style='font-size:14px;'&gt;📁&lt;/span&gt; &lt;b style='font-size:9px;color:#0F172A;'&gt;Memorystore Session State&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;align=center;" vertex="1" parent="1">
           <mxGeometry x="800" y="620" width="130" height="35" as="geometry" />
         </mxCell>
-        <mxCell id="p3_h5" value="&lt;span style='font-size:14px;'&gt;🧠&lt;/span&gt; &lt;b style='font-size:11px;color:#0369A1;'&gt;Gemini 3.8 Flash Engine&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
+        <mxCell id="p3_h5" value="&lt;span style='font-size:14px;'&gt;🧠&lt;/span&gt; &lt;b style='font-size:11px;color:#0369A1;'&gt;Gemini 2.5 Flash Engine&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
           <mxGeometry x="1050" y="615" width="180" height="45" as="geometry" />
         </mxCell>
         <mxCell id="p3_h6" value="&lt;span style='font-size:14px;'&gt;🔍&lt;/span&gt; &lt;b style='font-size:10px;color:#0369A1;'&gt;Vertex AI Search &amp;amp; Vector RAG&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0284C7;align=center;" vertex="1" parent="1">
@@ -1193,7 +1193,7 @@ export function getExactMacroSequenceDiagramReferenceXml(): string {
         <mxCell id="p3_arr3" value="Executes Reasoner invocation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="690" y="740" as="sourcePoint" /><mxPoint x="1140" y="740" as="targetPoint" /></mxGeometry></mxCell>
 
         <!-- Gemini ReAct Box -->
-        <mxCell id="p3_react" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Gemini 3.8 Flash Reasoner: ReAct Loop Execution&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;color:#334155;'&gt;THOUGHT: Need multi-silo corpus context and real-time revenue metrics&lt;br&gt;ACTION: vector_search(query=&quot;Q4 performance&quot;) &amp;rarr; Vertex AI Search&lt;br&gt;ACTION: execute_sql(query=&quot;SELECT revenue FROM mart...&quot;) &amp;rarr; BigQuery&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;align=left;padding=6;shadow=1;" vertex="1" parent="1">
+        <mxCell id="p3_react" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;Gemini 2.5 Flash Reasoner: ReAct Loop Execution&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;color:#334155;'&gt;THOUGHT: Need multi-silo corpus context and real-time revenue metrics&lt;br&gt;ACTION: vector_search(query=&quot;Q4 performance&quot;) &amp;rarr; Vertex AI Search&lt;br&gt;ACTION: execute_sql(query=&quot;SELECT revenue FROM mart...&quot;) &amp;rarr; BigQuery&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;align=left;padding=6;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="960" y="755" width="370" height="75" as="geometry" />
         </mxCell>
         <mxCell id="p3_arr4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#475569;endArrow=block;endFill=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1330" y="780" as="sourcePoint" /><mxPoint x="1380" y="780" as="targetPoint" /></mxGeometry></mxCell>

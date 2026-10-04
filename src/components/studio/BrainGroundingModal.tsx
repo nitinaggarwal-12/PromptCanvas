@@ -1,17 +1,41 @@
 'use client';
 
-import React from 'react';
-import { X, CheckCircle2, RefreshCw, Cpu, ShieldCheck, Layers, Award } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { X, CheckCircle2, RefreshCw, Cpu, AlertTriangle } from 'lucide-react';
+import { validateDrawioXml } from '@/lib/validate/validator';
 
 interface BrainGroundingModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAutoHeal: () => void;
   isHealing: boolean;
+  currentXml?: string;
 }
 
-export function BrainGroundingModal({ isOpen, onClose, onAutoHeal, isHealing }: BrainGroundingModalProps) {
+export function BrainGroundingModal({ isOpen, onClose, onAutoHeal, isHealing, currentXml }: BrainGroundingModalProps) {
+  const validation = useMemo(() => {
+    if (!currentXml || !currentXml.trim()) return null;
+    try {
+      return validateDrawioXml(currentXml);
+    } catch {
+      return null;
+    }
+  }, [currentXml]);
+
   if (!isOpen) return null;
+
+  const overlapDefects = validation
+    ? validation.errors.filter(
+        (e) =>
+          e.code === 'OVERLAP' ||
+          e.code === 'EDGE_INTERSECTS_VERTEX' ||
+          e.code === 'CONTAINER_HEADER_SLICED'
+      ).length
+    : 0;
+  const totalErrors = validation ? validation.errors.length : 0;
+  const qualityScore = validation
+    ? Math.max(40, 100 - totalErrors * 5 - overlapDefects * 3)
+    : 100;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-150">
@@ -25,7 +49,7 @@ export function BrainGroundingModal({ isOpen, onClose, onAutoHeal, isHealing }: 
             </div>
             <div>
               <h2 className="font-bold text-base text-slate-900 tracking-tight">Architecture Brain & Skill Grounding</h2>
-              <p className="text-xs text-slate-500 font-mono">Immutable Enterprise Standards • Zero-Drift Guarantee</p>
+              <p className="text-xs text-slate-500 font-mono">Immutable Enterprise Standards • Live AST & Geometry Validator</p>
             </div>
           </div>
           <button onClick={onClose} className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-700 transition">
@@ -57,8 +81,8 @@ export function BrainGroundingModal({ isOpen, onClose, onAutoHeal, isHealing }: 
             <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               <div>
-                <div className="font-bold text-slate-900 font-mono">living-specs-engine (10 Documents)</div>
-                <p className="text-slate-600 text-[11px] mt-0.5">Automates PRD, HLD, LLD, STRIDE Threat Model, Spanner DDL SQL, and Terraform HCL sync.</p>
+                <div className="font-bold text-slate-900 font-mono">living-specs-engine (16 Documents)</div>
+                <p className="text-slate-600 text-[11px] mt-0.5">Synchronizes all 16 Living Specs (PRD, FDD, HLD, LLD, SQL DDL, STRIDE, AI Card, Terraform HCL, BCDR, CI/CD, SRE, 6-Rs, Cutover, FinOps, Compliance, ADRs).</p>
               </div>
             </div>
           </div>
@@ -66,13 +90,15 @@ export function BrainGroundingModal({ isOpen, onClose, onAutoHeal, isHealing }: 
 
         {/* Quality Score Badges */}
         <div className="grid grid-cols-3 gap-3 text-center">
-          <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-xl">
-            <div className="text-[10px] text-emerald-800 uppercase font-mono font-bold">Quality Score</div>
-            <div className="text-xl font-black text-emerald-700 mt-0.5">100 / 100</div>
+          <div className={`${qualityScore >= 90 ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'} border p-3 rounded-xl`}>
+            <div className={`text-[10px] ${qualityScore >= 90 ? 'text-emerald-800' : 'text-amber-800'} uppercase font-mono font-bold`}>Quality Score</div>
+            <div className={`text-xl font-black ${qualityScore >= 90 ? 'text-emerald-700' : 'text-amber-700'} mt-0.5`}>{qualityScore} / 100</div>
           </div>
-          <div className="bg-blue-50 border border-blue-200 p-3 rounded-xl">
-            <div className="text-[10px] text-blue-800 uppercase font-mono font-bold">AABB Collisions</div>
-            <div className="text-xl font-black text-blue-700 mt-0.5">0 Defect</div>
+          <div className={`${overlapDefects === 0 ? 'bg-blue-50 border-blue-200' : 'bg-amber-50 border-amber-200'} border p-3 rounded-xl`}>
+            <div className={`text-[10px] ${overlapDefects === 0 ? 'text-blue-800' : 'text-amber-800'} uppercase font-mono font-bold`}>AABB Collisions</div>
+            <div className={`text-xl font-black ${overlapDefects === 0 ? 'text-blue-700' : 'text-amber-700'} mt-0.5`}>
+              {overlapDefects} {overlapDefects === 1 ? 'Defect' : 'Defects'}
+            </div>
           </div>
           <div className="bg-purple-50 border border-purple-200 p-3 rounded-xl">
             <div className="text-[10px] text-purple-800 uppercase font-mono font-bold">Contrast Standards</div>
@@ -80,9 +106,25 @@ export function BrainGroundingModal({ isOpen, onClose, onAutoHeal, isHealing }: 
           </div>
         </div>
 
+        {validation && validation.errors.length > 0 && (
+          <div className="rounded-xl bg-amber-50 border border-amber-200 p-3 text-xs text-amber-900 space-y-1 max-h-28 overflow-y-auto">
+            <div className="font-bold flex items-center gap-1.5">
+              <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              <span>Detected {validation.errors.length} live geometry/structural finding(s):</span>
+            </div>
+            {validation.errors.slice(0, 3).map((err, i) => (
+              <div key={i} className="text-[11px] text-amber-800 font-mono truncate">
+                • [{err.code}] {err.detail}
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Action Button */}
         <div className="border-t border-slate-100 pt-4 flex items-center justify-between">
-          <span className="text-[11px] text-slate-500 font-mono">Status: Grounded & Enforced</span>
+          <span className="text-[11px] text-slate-500 font-mono">
+            {totalErrors === 0 ? 'Status: Grounded & Enforced (0 Defects)' : `Status: ${totalErrors} Finding(s) — Ready to Auto-Heal`}
+          </span>
           <button
             onClick={onAutoHeal}
             disabled={isHealing}

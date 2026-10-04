@@ -77,6 +77,80 @@ function extractTitleFromDrawioXml(xml: string, fallbackTitle: string): string {
   return fallbackTitle;
 }
 
+/**
+ * Extracts container/zone/tier headers from a Draw.io XML document.
+ */
+function extractZonesFromDrawioXml(xml: string): string[] {
+  const zones: string[] = [];
+  const seen = new Set<string>();
+  const cellRegex = /<mxCell\b([^>]*)\bvertex="1"([^>]*)>/gi;
+  let match: RegExpExecArray | null;
+
+  while ((match = cellRegex.exec(xml)) !== null) {
+    const attrs = `${match[1]} ${match[2]}`;
+    const idMatch = attrs.match(/\bid="([^"]+)"/i);
+    const styleMatch = attrs.match(/\bstyle="([^"]+)"/i);
+    const valMatch = attrs.match(/\bvalue="([^"]+)"/i);
+    if (!valMatch) continue;
+
+    const id = (idMatch?.[1] || '').toLowerCase();
+    const style = (styleMatch?.[1] || '').toLowerCase();
+    const isZoneLike =
+      style.includes('swimlane') ||
+      style.includes('container=1') ||
+      style.includes('group') ||
+      style.includes('dashed=1') ||
+      id.startsWith('zone') ||
+      id.startsWith('tier') ||
+      id.startsWith('z') ||
+      id.startsWith('grp') ||
+      id.startsWith('container') ||
+      id.includes('header') ||
+      id.includes('hdr');
+
+    if (!isZoneLike) continue;
+
+    const plain = valMatch[1]
+      .replace(/&lt;br\s*\/?&gt;/gi, ' — ')
+      .replace(/&lt;[^&]+&gt;/g, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (plain.length >= 4 && plain.length <= 90 && !seen.has(plain.toLowerCase())) {
+      seen.add(plain.toLowerCase());
+      zones.push(plain);
+      if (zones.length >= 6) break;
+    }
+  }
+
+  if (zones.length > 0) return zones;
+
+  // Fallback: extract up to 4 distinct top-level node labels if no explicit container cells exist
+  const fallbackNodes: string[] = [];
+  const valMatches = Array.from(xml.matchAll(/<mxCell\b[^>]*\bvalue="([^"]+)"[^>]*\bvertex="1"/gi));
+  for (const m of valMatches) {
+    const plain = m[1]
+      .replace(/&lt;[^&]+&gt;/g, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (plain.length >= 4 && plain.length <= 64 && !seen.has(plain.toLowerCase())) {
+      seen.add(plain.toLowerCase());
+      fallbackNodes.push(plain);
+      if (fallbackNodes.length >= 4) break;
+    }
+  }
+
+  return fallbackNodes.length > 0
+    ? fallbackNodes
+    : ['Ingress & Security', 'Compute Tier', 'Data Tier', 'Agentic AI Services'];
+}
+
 export async function decompileArchitectureImageWithDeepMind(params: {
   imageBase64: string;
   mimeType?: string;
@@ -94,17 +168,19 @@ export async function decompileArchitectureImageWithDeepMind(params: {
   } = normalizedParams;
 
   const lowerTitle = `${projectName} ${useCaseName}`.toLowerCase();
+  const cleanInputBase64 = (imageBase64 || '').replace(/^data:image\/[a-zA-Z]+;base64,/, '').trim();
+  const hasSubstantialCustomImage = cleanInputBase64.length > 2000;
 
   // 🏛️ Certified 1:1 Infographic Blueprints (#52 through #66) Deterministic Guard:
+  // Only match on explicit blueprint IDs (#52..#66, /52.png) or exact blueprint name, OR shortType when no custom image payload is uploaded
   const matchedInfographic = INFOGRAPHIC_BLUEPRINTS_LIST.find((bp) => {
     const bpNameLower = bp.name.toLowerCase();
     const bpShortLower = bp.shortType.toLowerCase();
-    return (
+    const explicitMatch =
       lowerTitle.includes(`#${bp.id}`) ||
       lowerTitle.includes(`/${bp.id}.png`) ||
-      lowerTitle.includes(bpNameLower) ||
-      lowerTitle.includes(bpShortLower)
-    );
+      lowerTitle.includes(bpNameLower);
+    return explicitMatch || (!hasSubstantialCustomImage && lowerTitle.includes(bpShortLower));
   });
   if (matchedInfographic) {
     const masterXml = generateInfographicBlueprintXmlById(matchedInfographic.id);
@@ -125,8 +201,7 @@ export async function decompileArchitectureImageWithDeepMind(params: {
   }
 
   // 🏛️ Certified Master Blueprint Deterministic Guard:
-  // Prevents LLM output token window limits from truncating dense 36+ node architectures on Re-Decompile
-  if (lowerTitle.includes('multiagent') || lowerTitle.includes('gcp-multiagent')) {
+  if (lowerTitle.includes('google multiagent') || lowerTitle.includes('gcp-multiagent') || (!hasSubstantialCustomImage && lowerTitle.includes('multiagent'))) {
     const masterXml = enrichDrawioXmlWithVectorIcons(generateGoogleMultiagentArchitectureXml());
     const count = (masterXml.match(/<mxCell[^>]+(?:vertex|edge)="1"/gi) || []).length;
     return {
@@ -136,7 +211,7 @@ export async function decompileArchitectureImageWithDeepMind(params: {
       componentCount: count,
       isFallback: false,
       isCertified: true,
-      modelUsed: 'gemini-3.1-pro-preview + Omni 1.1 Master AST Engine',
+      modelUsed: 'gemini-3.1-pro-preview + Master AST Engine',
       attribution: 'Certified Master Compiler (Google Multiagent AI System)',
       matchedBlueprintId: 'GCP-MULTIAGENT-01',
       detectedTitle: 'Google Multiagent AI System',
@@ -154,14 +229,14 @@ export async function decompileArchitectureImageWithDeepMind(params: {
       componentCount: count,
       isFallback: false,
       isCertified: true,
-      modelUsed: 'gemini-3.1-pro-preview + Omni 1.1 Master AST Engine',
+      modelUsed: 'gemini-3.1-pro-preview + Master AST Engine',
       attribution: 'Certified Master Compiler (Gemini Enterprise Agent Platform)',
       detectedTitle: 'Gemini Enterprise Agent Platform',
       validationReport: { valid: true, errorCount: 0, warningCount: 0 }
     };
   }
 
-  if (lowerTitle.includes('azure landing zone') || lowerTitle.includes('vis-5965')) {
+  if (lowerTitle.includes('azure landing zone') || lowerTitle.includes('azure application landing zone') || lowerTitle.includes('vis-5965')) {
     const masterXml = enrichDrawioXmlWithVectorIcons(generateAzureLandingZoneArchitectureXml());
     const count = (masterXml.match(/<mxCell[^>]+(?:vertex|edge)="1"/gi) || []).length;
     return {
@@ -171,7 +246,7 @@ export async function decompileArchitectureImageWithDeepMind(params: {
       componentCount: count,
       isFallback: false,
       isCertified: true,
-      modelUsed: 'gemini-3.1-pro-preview + Omni 1.1 Master AST Engine',
+      modelUsed: 'gemini-3.1-pro-preview + Master AST Engine',
       attribution: 'Certified Master Compiler (Azure Application Landing Zone)',
       detectedTitle: 'Azure Application Landing Zone',
       validationReport: { valid: true, errorCount: 0, warningCount: 0 }
@@ -188,14 +263,14 @@ export async function decompileArchitectureImageWithDeepMind(params: {
       componentCount: count,
       isFallback: false,
       isCertified: true,
-      modelUsed: 'gemini-3.1-pro-preview + Omni 1.1 Master AST Engine',
+      modelUsed: 'gemini-3.1-pro-preview + Master AST Engine',
       attribution: 'Certified Master Compiler (Agentic AI Architecture)',
       detectedTitle: 'Agentic AI Architecture',
       validationReport: { valid: true, errorCount: 0, warningCount: 0 }
     };
   }
 
-  if (lowerTitle.includes('leo') || lowerTitle.includes('satellite') || lowerTitle.includes('crosslink') || lowerTitle.includes('wf05')) {
+  if (lowerTitle.includes('leo satellite') || lowerTitle.includes('laser crosslink') || lowerTitle.includes('wf05')) {
     const leoPrompt =
       'LEO Satellite Laser Crosslink Ground Station Network with Optical OISL Mesh, Ka-Band Phased-Array Gateway, Autonomous Ephemeris Orbit Solver, Doppler Frame Correlator, Space-Packet Security Gate, and Telemetry Downlink Lakehouse';
     const leoTitle = 'LEO Satellite Laser Crosslink Ground Station Network';
@@ -231,7 +306,7 @@ export async function decompileArchitectureImageWithDeepMind(params: {
     return {
       xml,
       summary: `Zero-Template custom vector architecture synthesized for ${projectName}.`,
-      extractedZones: ['Tier 01: Edge & Ingress', 'Tier 02: Compute & Orchestration', 'Tier 03: Policy & Decision Gate', 'Tier 04: Stateful Storage & Analytics'],
+      extractedZones: extractZonesFromDrawioXml(xml),
       componentCount: (xml.match(/<mxCell/g) || []).length,
       isFallback: true,
       modelUsed: null,
@@ -259,7 +334,7 @@ CRITICAL XML & STYLING RULES:
 6. High-Contrast Labels: All connector labels must have 'labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;'.
 7. Output ONLY the raw valid XML document enclosed in <mxfile>...</mxfile>. Do not include conversational markdown commentary.`;
 
-    const cleanBase64 = imageBase64.replace(/^data:image\/[a-zA-Z]+;base64,/, '');
+    const cleanBase64 = cleanInputBase64;
 
     let candidateText = '';
     let usedModel = modelsToTry[0];
@@ -345,11 +420,12 @@ CRITICAL XML & STYLING RULES:
       const iconEnrichedXml = enrichDrawioXmlWithVectorIcons(healedResult.xml);
       const validation = validateDrawioXml(iconEnrichedXml);
       const detectedTitle = extractTitleFromDrawioXml(iconEnrichedXml, projectName);
+      const dynamicZones = extractZonesFromDrawioXml(iconEnrichedXml);
 
       return {
         xml: iconEnrichedXml,
         summary: `Successfully decompiled "${detectedTitle}" using Gemini Vision (${usedModel}) with 100% vector icon parity and zero architectural defects.`,
-        extractedZones: ['Ingress & Security', 'Compute Tier', 'Data Tier', 'Agentic AI Services'],
+        extractedZones: dynamicZones,
         componentCount: (iconEnrichedXml.match(/<mxCell/g) || []).length,
         isFallback: false,
         modelUsed: usedModel,

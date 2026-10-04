@@ -8,6 +8,7 @@ import { GEMINI_MODEL_ID, getDistinctJudgeModel, getEffectiveGeminiApiKey } from
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
+import { validateDrawioXml } from '@/lib/validate/validator';
 import { cookies } from 'next/headers';
 
 export interface AuditGap {
@@ -23,7 +24,7 @@ export type AuditCategory = 'security' | 'visual' | 'topology' | 'responsive' | 
 
 const PROMPTS: Record<AuditCategory, string> = {
   security: `
-You are "Maestro-Audit", an elite enterprise solutions architect and cybersecurity auditor.
+You are "Maestro-Audit", an enterprise solutions architect and cybersecurity auditor.
 Analyze the provided Draw.io (mxGraph) XML diagram for SECURITY, GOVERNANCE & COMPLIANCE (HIPAA, GxP, SOC 2, PCI-DSS).
 
 STRICT ARCHITECTURE-TYPE AUDIT RULES:
@@ -32,26 +33,25 @@ STRICT ARCHITECTURE-TYPE AUDIT RULES:
 3. Sequence Diagrams ("sequence_diagram", "macro_sequence_diagram"): Evaluate chronological execution, ReAct (Thought/Action) loops, and IAM/VPC-SC enforcement callouts on lifelines.
 4. Technical Cloud Topologies ("tech_*", "secure_deployment_map", "devops_cicd_pipeline", "data_ai_pipeline", "unified_system_view"): Evaluate Edge protection (Cloud Armor/WAF), encryption (KMS), private subnets, and IAM RBAC controls.
 
-If the diagram satisfies the controls expected for its specific architecture type, assign a score of 90-100% and return an empty or minimal gaps array.
+Score objectively (0-100) based on the presence or absence of required controls for this architecture type, and report any concrete security gaps found.
 `,
 
   visual: `
-You are "Maestro-Visual", a world-class graphic designer and diagram layout auditor.
-Analyze the provided Draw.io (mxGraph) XML diagram for VISUAL LAYOUT & GEOMETRY (Overlapping shapes, arrow lines slicing text, compact node spacing, text overflow).
-If nodes and connector labels are spaced cleanly with zero overlaps, return high score (90-100) and empty gaps array.
+You are "Maestro-Visual", a diagram layout and spatial geometry auditor.
+Analyze the provided Draw.io (mxGraph) XML diagram for VISUAL LAYOUT & GEOMETRY (Overlapping node bounding boxes, arrow lines slicing through nodes or container headers, cramped node spacing, text overflow).
+Score objectively (0-100) based on actual coordinate geometry and report every detected overlap or routing defect.
 `,
 
   topology: `
 You are "Maestro-Topology", a chief cloud enterprise architecture reviewer.
-Analyze the provided Draw.io (mxGraph) XML diagram for CLOUD ARCHITECTURE TOPOLOGY & DATA FLOW ACCURACY (Well-Architected Framework, ingress ordering, load balancing, direct database exposure, missing gateways, entity relationships, sequence execution loops).
-Evaluate topology against standard design patterns for this specific architecture type.
-If topology follows best practices, return high score (90-100) and empty gaps array.
+Analyze the provided Draw.io (mxGraph) XML diagram for CLOUD ARCHITECTURE TOPOLOGY & DATA FLOW ACCURACY (Well-Architected Framework, ingress ordering, load balancing, direct database exposure, missing gateways, entity relationships, sequence execution loops, orphan nodes, dangling edges).
+Evaluate topology objectively (0-100) against standard design patterns for this specific architecture type.
 `,
 
   responsive: `
 You are "Maestro-Responsive", a multi-device UI/UX auditor.
 Analyze the provided Draw.io (mxGraph) XML diagram for RESPONSIVE FIT & ASPECT RATIO LEGIBILITY (16:9 presentation slides, 4:3 documents, 9:16 mobile viewports).
-Evaluate whether node coordinates and font scaling fit nicely inside target viewport dimensions.
+Evaluate whether node coordinates and font scaling fit cleanly inside target viewport dimensions.
 `,
 
   accessibility: `
@@ -62,7 +62,7 @@ Analyze the provided Draw.io (mxGraph) XML diagram for COLOR CONTRAST & ACCESSIB
   vendor: `
 You are "Maestro-Vendor", a cloud branding and icon integrity auditor.
 Analyze the provided Draw.io (mxGraph) XML diagram for VENDOR ICON & BRAND LOGO COVERAGE (AWS, GCP, Azure, Kubernetes, Databricks, PostgreSQL official SVG logos).
-Score the percentage of nodes using official vendor logos.
+Score the percentage of nodes using official vendor logos or inline vector SVGs.
 `
 };
 
@@ -110,7 +110,32 @@ function runDeterministicCategoryAstAudit(
     });
   }
 
+  // Run unified Draw.io XML structural & 2D AABB validator
+  const xmlValidation = validateDrawioXml(xmlContent);
+
   if (categoryKey === 'visual') {
+    // 0. Real 2D AABB & Geometry Validation from validateDrawioXml
+    const visualErrorCodes = new Set([
+      'OVERLAP',
+      'EDGE_INTERSECTS_VERTEX',
+      'CONTAINER_HEADER_SLICED',
+      'NON_ORTHOGONAL_EDGE_SEGMENT',
+      'TEXT_OVERFLOW_HEIGHT',
+      'OUT_OF_CONTAINER',
+      'OUT_OF_BOUNDS',
+    ]);
+    const geomFindings = xmlValidation.errors.filter((e) => visualErrorCodes.has(e.code));
+    geomFindings.slice(0, 6).forEach((finding, idx) => {
+      gaps.push({
+        id: `gap_vis_validator_${idx + 1}`,
+        title: `Geometry Validator: ${finding.code.replace(/_/g, ' ')}`,
+        severity: finding.code === 'OVERLAP' || finding.code === 'EDGE_INTERSECTS_VERTEX' ? 'HIGH' : 'MEDIUM',
+        component: finding.cells.length > 0 ? finding.cells.join(', ') : 'Canvas Geometry',
+        description: finding.detail,
+        remediation: 'Run Auto-Heal or adjust node coordinates/waypoints to maintain >=30px AABB clearance and orthogonal routing.',
+      });
+    });
+
     // 1. Geometric Line Slicing Check (Detects waypoints slicing through staging compute nodes)
     const stagingNode = vertices.find(v => v.rawText.toLowerCase().includes('staging') || v.rawText.toLowerCase().includes('kubernetes') || v.rawText.toLowerCase().includes('cluster'));
     const points = Array.from(xmlContent.matchAll(/<mxPoint\s+x="(\d+)"\s+y="(\d+)"/gi));
@@ -153,7 +178,7 @@ function runDeterministicCategoryAstAudit(
 
     // 3. Icon-Over-Text Boundary Overlap
     const sonarNode = vertices.find(v => v.rawText.toLowerCase().includes('sonar') || v.rawText.toLowerCase().includes('sast') || v.rawText.toLowerCase().includes('security scan'));
-    if (sonarNode && !sonarNode.value.includes('float:left')) {
+    if (sonarNode && !sonarNode.value.includes('float:left') && !sonarNode.value.includes('display:flex')) {
       gaps.push({
         id: 'gap_vis_text_collision_1',
         title: 'Icon-Over-Text Boundary Overlap',
@@ -184,9 +209,9 @@ function runDeterministicCategoryAstAudit(
       }
     }
   } else if (categoryKey === 'security') {
-    const hasWaf = xmlLower.includes('waf') || xmlLower.includes('cloud armor') || xmlLower.includes('aws waf') || xmlLower.includes('edge protection');
-    const hasSecrets = xmlLower.includes('secret') || xmlLower.includes('vault') || xmlLower.includes('kms') || xmlLower.includes('credential');
-    const hasPrivateVpc = xmlLower.includes('private vpc') || xmlLower.includes('private subnet') || xmlLower.includes('isolated') || xmlLower.includes('subnet') || xmlLower.includes('security boundary');
+    const hasWaf = xmlLower.includes('waf') || xmlLower.includes('cloud armor') || xmlLower.includes('aws waf') || xmlLower.includes('edge protection') || xmlLower.includes('front door');
+    const hasSecrets = xmlLower.includes('secret') || xmlLower.includes('vault') || xmlLower.includes('kms') || xmlLower.includes('credential') || xmlLower.includes('hsm');
+    const hasPrivateVpc = xmlLower.includes('private vpc') || xmlLower.includes('private subnet') || xmlLower.includes('isolated') || xmlLower.includes('subnet') || xmlLower.includes('security boundary') || xmlLower.includes('vpc-sc') || xmlLower.includes('vnet');
 
     if (!hasWaf && !isBusiness) {
       gaps.push({
@@ -219,8 +244,27 @@ function runDeterministicCategoryAstAudit(
       });
     }
   } else if (categoryKey === 'topology') {
-    const hasReplica = xmlLower.includes('replica') || xmlLower.includes('standby') || xmlLower.includes('ha') || xmlLower.includes('multi-region');
-    const hasDlq = xmlLower.includes('dlq') || xmlLower.includes('dead-letter') || xmlLower.includes('holding');
+    const topoErrorCodes = new Set([
+      'EDGE_DANGLING',
+      'ORPHAN_NODE',
+      'DATA_STORE_DISCONNECTED',
+      'DECISION_GATE_INCOMPLETE',
+      'UNCONNECTED_LOAD_BALANCER',
+    ]);
+    const topoFindings = xmlValidation.errors.filter((e) => topoErrorCodes.has(e.code));
+    topoFindings.slice(0, 4).forEach((finding, idx) => {
+      gaps.push({
+        id: `gap_top_validator_${idx + 1}`,
+        title: `Topology Validator: ${finding.code.replace(/_/g, ' ')}`,
+        severity: 'HIGH',
+        component: finding.cells.length > 0 ? finding.cells.join(', ') : 'Graph Topology',
+        description: finding.detail,
+        remediation: 'Connect isolated nodes or repair dangling edge source/target IDs.',
+      });
+    });
+
+    const hasReplica = xmlLower.includes('replica') || xmlLower.includes('standby') || xmlLower.includes('ha') || xmlLower.includes('multi-region') || xmlLower.includes('nam3') || xmlLower.includes('dual-region');
+    const hasDlq = xmlLower.includes('dlq') || xmlLower.includes('dead-letter') || xmlLower.includes('holding') || xmlLower.includes('quarantine');
 
     if (!hasReplica && !isBusiness) {
       gaps.push({
@@ -244,14 +288,14 @@ function runDeterministicCategoryAstAudit(
     }
   } else if (categoryKey === 'responsive') {
     const maxVertexX = vertices.length > 0 ? Math.max(...vertices.map(v => v.x + v.w)) : 0;
-    if (maxVertexX > 1150) {
+    if (maxVertexX > 1680) {
       gaps.push({
         id: 'gap_resp_ast_1',
         title: 'Canvas Horizontal Viewport Overflow',
         severity: 'MEDIUM',
         component: 'Outer Right Diagram Boundary',
-        description: `Node bounds extend to x=${maxVertexX}px, exceeding standard 1100px slide and tablet viewport widths.`,
-        remediation: 'Compress horizontal column pitch to 140px to fit within 1100px canvas bounds.'
+        description: `Node bounds extend to x=${maxVertexX}px, exceeding standard 1680px widescreen viewport widths.`,
+        remediation: 'Compress horizontal column pitch to fit within 1600px–1680px widescreen canvas bounds.'
       });
     }
   } else if (categoryKey === 'accessibility') {
@@ -267,15 +311,15 @@ function runDeterministicCategoryAstAudit(
     }
   } else if (categoryKey === 'vendor') {
     const totalNodes = vertices.length || 1;
-    const iconNodes = vertices.filter(v => v.value.includes('<img src=')).length;
-    if (totalNodes > 0 && (iconNodes / totalNodes) < 0.6) {
+    const iconNodes = vertices.filter(v => v.value.includes('<img src=') || v.value.includes('<svg') || v.value.includes('&lt;svg')).length;
+    if (totalNodes > 0 && (iconNodes / totalNodes) < 0.5) {
       gaps.push({
         id: 'gap_ven_ast_1',
         title: 'Low Vendor Brand Icon Coverage',
         severity: 'MEDIUM',
         component: 'Infrastructure Component Nodes',
-        description: `Only ${Math.round((iconNodes / totalNodes) * 100)}% of components (${iconNodes}/${totalNodes}) utilize official cloud vendor logo icons.`,
-        remediation: 'Attach official Iconify SVG logos (AWS, GCP, Azure, K8s) across all node value labels.'
+        description: `Only ${Math.round((iconNodes / totalNodes) * 100)}% of components (${iconNodes}/${totalNodes}) utilize official cloud vendor logo icons or inline vector SVGs.`,
+        remediation: 'Attach official vector SVG icons (AWS, GCP, Azure, K8s) across component node labels.'
       });
     }
   }
@@ -288,114 +332,20 @@ function generateFallbackHeuristicAudit(
   categoryKey: AuditCategory,
   archType: string = 'conceptual_diagram'
 ): { score: number; report: string; gaps: AuditGap[] } {
-  const xmlLower = xmlContent.toLowerCase();
-  const gaps: AuditGap[] = [];
-  let score = 98;
-
-  const isConceptual = archType === 'conceptual_diagram' || archType.includes('conceptual');
-  const isErd = archType === 'erd';
-  const isSequence = archType.includes('sequence');
-  const isBusiness = isConceptual || isErd || isSequence || archType === 'governance_state_machine';
-  const isRag = archType.includes('rag');
-
-  if (categoryKey === 'security') {
-    if (isErd) {
-      const hasPk = xmlLower.includes('pk') || xmlLower.includes('primary');
-      const hasFk = xmlLower.includes('fk') || xmlLower.includes('foreign');
-      if (!hasPk) {
-        score -= 10;
-        gaps.push({
-          id: 'gap_sec_erd_1',
-          title: 'Missing Primary Key Identifiers (PK)',
-          severity: 'HIGH',
-          component: 'Entity Relationship Schema',
-          description: 'Database entities lack explicit Primary Key constraints.',
-          remediation: 'Annotate primary key fields with PK markers across all dimension and fact tables.'
-        });
-      }
-      if (!hasFk) {
-        score -= 8;
-        gaps.push({
-          id: 'gap_sec_erd_2',
-          title: 'Missing Foreign Key Relational Constraints (FK)',
-          severity: 'MEDIUM',
-          component: 'Relational References',
-          description: 'Foreign key relationships between Fact and Dimension tables are unconstrained.',
-          remediation: 'Define explicit foreign key references (FK) on relational connector lines.'
-        });
-      }
-    } else if (isSequence) {
-      const hasReact = xmlLower.includes('react') || xmlLower.includes('thought') || xmlLower.includes('action');
-      if (!hasReact) {
-        score -= 10;
-        gaps.push({
-          id: 'gap_sec_seq_1',
-          title: 'Missing ReAct Agent Reasoning & Action Loop',
-          severity: 'HIGH',
-          component: 'Sequence Execution Loop',
-          description: 'Sequence diagram lacks explicit ReAct Thought/Action badges.',
-          remediation: 'Add ReAct Thought & Action observation badges on sequence lifelines.'
-        });
-      }
-    } else if (isBusiness) {
-      score = 98;
-    } else {
-      const hasWaf = xmlLower.includes('waf') || xmlLower.includes('armor');
-      const hasKms = xmlLower.includes('kms') || xmlLower.includes('encryption');
-      if (!hasWaf) {
-        score -= 10;
-        gaps.push({
-          id: 'gap_sec_1',
-          title: 'Missing Edge Web Application Firewall (WAF)',
-          severity: 'HIGH',
-          component: 'Ingress Entry Point',
-          description: 'Public traffic enters the load balancer without Layer 7 DDoS scrubbing.',
-          remediation: 'Attach Cloud Armor WAF / AWS WAF Security Policy to the Edge Load Balancer.'
-        });
-      }
-      if (!hasKms) {
-        score -= 8;
-        gaps.push({
-          id: 'gap_sec_2',
-          title: 'Missing Customer-Managed Encryption Keys (CMEK)',
-          severity: 'MEDIUM',
-          component: 'Database & Storage',
-          description: 'Persistent data stores are using default provider-managed encryption keys.',
-          remediation: 'Attach Cloud KMS / AWS KMS envelope encryption key vaults to databases.'
-        });
-      }
-    }
-  } else if (categoryKey === 'visual') {
-    score = 100;
-  } else if (categoryKey === 'topology') {
-    score = 94;
-    const hasReplica = xmlLower.includes('replica') || xmlLower.includes('standby') || xmlLower.includes('dr');
-    if (!isBusiness && !hasReplica) {
-      score -= 12;
-      gaps.push({
-        id: 'gap_top_1',
-        title: 'Single Region Database Point of Failure',
-        severity: 'HIGH',
-        component: 'Primary Relational Database',
-        description: 'Database lacks cross-region disaster recovery streaming replication.',
-        remediation: 'Add Multi-AZ Cross-Region Standby Replica database instance.'
-      });
-    }
-  } else {
-    score = 95;
-  }
+  const gaps = runDeterministicCategoryAstAudit(xmlContent, categoryKey, archType);
+  const score = Math.max(45, 100 - gaps.length * 10);
 
   const report = `
-### 🛡️ Heuristic Architecture Audit Report (${categoryKey.toUpperCase()})
+### 🛡️ Deterministic AST & Geometry Audit Report (${categoryKey.toUpperCase()})
 
 - **Audit Category**: \`${categoryKey.toUpperCase()}\`
 - **Architecture Type**: \`${archType}\`
-- **Posture Score**: **${score}%** (Grade: ${score >= 90 ? 'EXCELLENT' : 'NEEDS IMPROVEMENT'})
+- **Posture Score**: **${score}%** (Grade: ${score >= 90 ? 'EXCELLENT' : score >= 75 ? 'GOOD' : 'NEEDS IMPROVEMENT'})
 - **Audited Gaps**: Found ${gaps.length} actionable gap(s).
 
 #### Findings Summary:
-The architecture (${archType}) has been analyzed against domain-specific best practices and standards. 
-${gaps.length === 0 ? 'All architectural controls are properly configured.' : 'Remediate the listed gaps to achieve 100% compliance.'}
+The architecture (\`${archType}\`) was evaluated by the deterministic Draw.io XML AST & 2D AABB geometry validator.
+${gaps.length === 0 ? 'All evaluated architectural and geometric controls passed with zero defects.' : 'Remediate the listed gaps to achieve 100% compliance.'}
 `;
 
   return { score, report, gaps };
@@ -432,25 +382,33 @@ export async function POST(request: Request) {
   const lockAcquired = acquireGeminiLock(lockKey);
 
   try {
-    const { diagramId, versionId, auditCategory = 'security', architectureType, imageBase64 } = await request.json();
-    if (!diagramId) {
-      return NextResponse.json({ error: 'diagramId is required' }, { status: 400 });
+    const {
+      diagramId,
+      versionId,
+      auditCategory = 'security',
+      architectureType,
+      imageBase64,
+      xmlContent: bodyXmlContent,
+    } = await request.json();
+
+    if (!diagramId && !bodyXmlContent) {
+      return NextResponse.json({ error: 'diagramId or xmlContent is required' }, { status: 400 });
     }
 
     let targetVersion = null;
     if (versionId) {
       targetVersion = await getDiagramVersion(versionId);
     }
-    if (!targetVersion) {
+    if (!targetVersion && diagramId) {
       targetVersion = await getLatestDiagramVersion(diagramId, architectureType);
     }
 
-    if (!targetVersion) {
+    if (!targetVersion && (!bodyXmlContent || typeof bodyXmlContent !== 'string' || bodyXmlContent.trim().length === 0)) {
       return NextResponse.json({ error: 'Diagram has no versions to audit' }, { status: 404 });
     }
 
-    const ucContext = (targetVersion as any).use_case_context || targetVersion.prompt || 'Architecture System';
-    const userPrompt = targetVersion.prompt || undefined;
+    const ucContext = (targetVersion as any)?.use_case_context || targetVersion?.prompt || 'Architecture System';
+    const userPrompt = targetVersion?.prompt || undefined;
 
     const combinedText = `${ucContext} ${userPrompt || ''}`.toLowerCase();
     const isExplicitCicdOrGenomicPrompt =
@@ -462,10 +420,13 @@ export async function POST(request: Request) {
 
     const effectiveArchType =
       architectureType ||
-      targetVersion.architecture_type ||
+      targetVersion?.architecture_type ||
       (isExplicitCicdOrGenomicPrompt ? 'devops_cicd_pipeline' : 'conceptual_diagram');
 
-    let xmlContent = targetVersion.xml_content;
+    let xmlContent =
+      typeof bodyXmlContent === 'string' && bodyXmlContent.trim().length > 0
+        ? bodyXmlContent
+        : targetVersion?.xml_content || '';
 
     if (!xmlContent || xmlContent.length < 500) {
       xmlContent = getDefaultXmlForArchitecture(effectiveArchType, ucContext, userPrompt) || '';
@@ -488,9 +449,9 @@ ${selectedPrompt}
 - Architecture Model Type: "${effectiveArchType}"
 
 EVALUATION MANDATE:
-- Examine the provided Draw.io XML structure carefully.
-- If the diagram includes Web Application Firewalls (Cloud Armor/AWS WAF), Encryption (KMS), Private VPC Subnets, IAM Roles, Primary/Foreign Key identifiers, or ReAct Agent Loops, recognize them as verified active controls.
-- Assign a high posture score (90-100%) when these controls are present, and output an empty or minimal gaps array.
+- Examine the provided Draw.io XML structure objectively and thoroughly.
+- Verify whether expected controls (WAF, KMS/HSM, Private VPC/VNet subnets, IAM/OIDC, PK/FK constraints, ReAct loops, high-availability replicas, DLQs, and non-overlapping 2D node coordinates) are actually present in the XML.
+- Compute an honest, evidence-based posture score (0-100%) reflecting the verified controls and any detected gaps.
 
 Respond strictly in JSON matching the schema provided:
 - score: number (0-100)
@@ -595,21 +556,23 @@ Respond strictly in JSON matching the schema provided:
       }
     }
 
-    // Save report to database for persistent audit history
+    // Save report to database for persistent audit history (when diagramId is persisted)
     let savedReport = null;
     let allReports: any[] = [];
-    try {
-      savedReport = await saveAuditReport({
-        diagramId,
-        versionNumber: targetVersion.version_number,
-        auditCategory: categoryKey,
-        score,
-        report,
-        gaps,
-      });
-      allReports = await getAuditReportsForDiagram(diagramId);
-    } catch (dbErr) {
-      console.warn('Failed to save audit report to DB, returning live audit result:', dbErr);
+    if (diagramId && targetVersion) {
+      try {
+        savedReport = await saveAuditReport({
+          diagramId,
+          versionNumber: targetVersion.version_number,
+          auditCategory: categoryKey,
+          score,
+          report,
+          gaps,
+        });
+        allReports = await getAuditReportsForDiagram(diagramId);
+      } catch (dbErr) {
+        console.warn('Failed to save audit report to DB, returning live audit result:', dbErr);
+      }
     }
 
     return NextResponse.json({

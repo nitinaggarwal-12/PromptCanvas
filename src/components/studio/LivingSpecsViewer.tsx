@@ -53,12 +53,21 @@ export function LivingSpecsViewer({
 }: LivingSpecsViewerProps) {
   const [copied, setCopied] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [editedContentById, setEditedContentById] = useState<Record<string, string>>({});
 
   const activeDoc = specs.find(d => d.id === activeDocId) || specs[0];
+  const effectiveMarkdown = activeDoc
+    ? (editedContentById[activeDoc.id] ?? activeDoc.markdownContent)
+    : "";
+  const hasUnsavedEdits = Boolean(
+    activeDoc &&
+    editedContentById[activeDoc.id] !== undefined &&
+    editedContentById[activeDoc.id] !== activeDoc.markdownContent
+  );
 
   const handleCopy = () => {
     if (activeDoc) {
-      navigator.clipboard.writeText(activeDoc.markdownContent);
+      navigator.clipboard.writeText(effectiveMarkdown);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -66,7 +75,7 @@ export function LivingSpecsViewer({
 
   const handleDownload = () => {
     if (activeDoc) {
-      const blob = new Blob([activeDoc.markdownContent], { type: "text/markdown;charset=utf-8" });
+      const blob = new Blob([effectiveMarkdown], { type: "text/markdown;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -74,6 +83,24 @@ export function LivingSpecsViewer({
       a.click();
       URL.revokeObjectURL(url);
     }
+  };
+
+  const handleDownloadAllBundle = () => {
+    if (!specs || specs.length === 0) return;
+    const combined = specs
+      .map(doc => {
+        const body = editedContentById[doc.id] ?? doc.markdownContent;
+        return `# ==============================================================================\n# ${doc.id}: ${doc.title} (${projectName})\n# Category: ${doc.category.toUpperCase()} | Version: ${versionName}\n# ==============================================================================\n\n${body}`;
+      })
+      .join("\n\n---\n\n");
+    const blob = new Blob([combined], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    const safeProj = projectName.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+    a.download = `${safeProj}_${specs.length}_living_specs_bundle.md`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const getDocIcon = (category: string) => {
@@ -90,9 +117,9 @@ export function LivingSpecsViewer({
   return (
     <section className="flex-1 bg-[#F8FAFC] flex flex-col relative overflow-hidden">
       
-      {/* 10 Spec Tabs Bar */}
+      {/* 16 Spec Tabs Bar */}
       <div className="px-6 py-2.5 border-b border-slate-200 bg-white flex items-center justify-between shadow-xs">
-        <div className="flex items-center gap-1.5 overflow-x-auto py-0.5 max-w-[75vw]">
+        <div className="flex items-center gap-1.5 overflow-x-auto py-0.5 max-w-[70vw]">
           {specs.map(doc => {
             const isActive = doc.id === activeDoc.id;
             return (
@@ -139,10 +166,19 @@ export function LivingSpecsViewer({
           <button
             onClick={handleDownload}
             className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 shadow-2xs transition"
-            title="Download Markdown Spec"
+            title="Download Current Markdown Spec (.md)"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>Download</span>
+            <span>Download (.md)</span>
+          </button>
+
+          <button
+            onClick={handleDownloadAllBundle}
+            className="px-2.5 py-1 rounded-lg border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold flex items-center gap-1.5 shadow-2xs transition"
+            title={`Download All ${specs.length} Living Specs Bundle (.md)`}
+          >
+            <Download className="w-3.5 h-3.5 text-indigo-600" />
+            <span>All {specs.length} (.md)</span>
           </button>
           
           <button
@@ -187,39 +223,62 @@ export function LivingSpecsViewer({
           </div>
 
           {/* Quick SLA & Compliance Badges */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
-            <div className="bg-slate-50 rounded-lg p-2.5 border border-slate-100 flex items-center gap-2">
-              <Zap className="w-4 h-4 text-amber-500 shrink-0" />
-              <div className="min-w-0">
-                <div className="text-[10px] uppercase font-mono font-bold text-slate-400">Target SLA</div>
-                <div className="text-xs font-bold text-slate-800">99.999% Multi-Reg</div>
-              </div>
-            </div>
+          {(() => {
+            const combinedContext = `${projectName} ${useCaseName} ${effectiveMarkdown} ${specs[0]?.markdownContent || ""}`;
+            const slaMatch = combinedContext.match(/\b(99\.\d{1,3}%)\b/);
+            const resolvedSla = slaMatch ? `${slaMatch[1]} Multi-Reg` : "99.999% Multi-Reg";
+            const lowerCtx = combinedContext.toLowerCase();
+            const resolvedCompliance =
+              lowerCtx.includes("hipaa") || lowerCtx.includes("clinical") || lowerCtx.includes("hospital") || lowerCtx.includes("patient")
+                ? "HIPAA / HITRUST CSF"
+                : lowerCtx.includes("pci-dss") || lowerCtx.includes("payment") || lowerCtx.includes("fintech") || lowerCtx.includes("settlement")
+                ? "PCI-DSS 4.0 / SOC2"
+                : lowerCtx.includes("fedramp") || lowerCtx.includes("nist") || lowerCtx.includes("sovereign")
+                ? "FedRAMP / NIST 800-53"
+                : "SOC2 Type II / ISO 27001";
+            const resolvedSecurity =
+              lowerCtx.includes("aws") && !lowerCtx.includes("vpc-sc")
+                ? "Zero Trust / AWS KMS"
+                : lowerCtx.includes("azure") && !lowerCtx.includes("vpc-sc")
+                ? "Zero Trust / Entra ID"
+                : "Zero Trust / VPC-SC";
 
-            <div className="bg-slate-50 rounded-lg p-2.5 border border-slate-100 flex items-center gap-2">
-              <Lock className="w-4 h-4 text-purple-500 shrink-0" />
-              <div className="min-w-0">
-                <div className="text-[10px] uppercase font-mono font-bold text-slate-400">Security Model</div>
-                <div className="text-xs font-bold text-slate-800">Zero Trust / VPC-SC</div>
-              </div>
-            </div>
+            return (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
+                <div className="bg-slate-50 rounded-lg p-2.5 border border-slate-100 flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-amber-500 shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-[10px] uppercase font-mono font-bold text-slate-400">Target SLA</div>
+                    <div className="text-xs font-bold text-slate-800">{resolvedSla}</div>
+                  </div>
+                </div>
 
-            <div className="bg-slate-50 rounded-lg p-2.5 border border-slate-100 flex items-center gap-2">
-              <BadgeCheck className="w-4 h-4 text-emerald-500 shrink-0" />
-              <div className="min-w-0">
-                <div className="text-[10px] uppercase font-mono font-bold text-slate-400">Compliance</div>
-                <div className="text-xs font-bold text-slate-800">SOC2 Type II / ISO 27001</div>
-              </div>
-            </div>
+                <div className="bg-slate-50 rounded-lg p-2.5 border border-slate-100 flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-purple-500 shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-[10px] uppercase font-mono font-bold text-slate-400">Security Model</div>
+                    <div className="text-xs font-bold text-slate-800">{resolvedSecurity}</div>
+                  </div>
+                </div>
 
-            <div className="bg-slate-50 rounded-lg p-2.5 border border-slate-100 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-blue-500 shrink-0" />
-              <div className="min-w-0">
-                <div className="text-[10px] uppercase font-mono font-bold text-slate-400">AI Grounding</div>
-                <div className="text-xs font-bold text-slate-800">Gemini 3.1 Pro + 3.8 Flash</div>
+                <div className="bg-slate-50 rounded-lg p-2.5 border border-slate-100 flex items-center gap-2">
+                  <BadgeCheck className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-[10px] uppercase font-mono font-bold text-slate-400">Compliance</div>
+                    <div className="text-xs font-bold text-slate-800">{resolvedCompliance}</div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-50 rounded-lg p-2.5 border border-slate-100 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-blue-500 shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-[10px] uppercase font-mono font-bold text-slate-400">AI Grounding</div>
+                    <div className="text-xs font-bold text-slate-800">Gemini 3.1 Pro + 2.5 Flash</div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            );
+          })()}
 
           {/* Bound Certified Architectural Diagram Views */}
           {(() => {
@@ -316,15 +375,42 @@ export function LivingSpecsViewer({
         )}
 
         {/* Formatted Markdown Body with RichSpecRenderer */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-8 shadow-sm">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-8 shadow-sm space-y-3">
+          {hasUnsavedEdits && (
+            <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900">
+              <span className="font-semibold">Custom edits active for {activeDoc.id} ({activeDoc.shortTitle})</span>
+              <button
+                onClick={() => {
+                  if (!activeDoc) return;
+                  setEditedContentById(prev => {
+                    const next = { ...prev };
+                    delete next[activeDoc.id];
+                    return next;
+                  });
+                }}
+                className="px-2.5 py-1 rounded-lg bg-white hover:bg-amber-100 text-amber-800 border border-amber-300 font-bold transition cursor-pointer"
+              >
+                Reset to Generated Spec
+              </button>
+            </div>
+          )}
           {isEditing ? (
             <textarea
-              defaultValue={activeDoc.markdownContent}
+              value={effectiveMarkdown}
+              onChange={(e) => {
+                if (!activeDoc) return;
+                const val = e.target.value;
+                setEditedContentById(prev => ({
+                  ...prev,
+                  [activeDoc.id]: val
+                }));
+              }}
               rows={24}
+              aria-label={`Edit ${activeDoc.title} Markdown`}
               className="w-full bg-white border border-slate-300 rounded-xl p-4 text-xs font-mono text-slate-900 focus:outline-none focus:border-blue-500 shadow-inner leading-relaxed"
             />
           ) : (
-            <RichSpecRenderer content={activeDoc.markdownContent} />
+            <RichSpecRenderer content={effectiveMarkdown} />
           )}
         </div>
 

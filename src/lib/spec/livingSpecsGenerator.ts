@@ -1,4 +1,5 @@
-import { ArchitectureAst, createDefaultFintechAst } from "../ast/architectureAst";
+import { ArchitectureAst, createDefaultFintechAst, inferServiceAndTierFromLabel } from "../ast/architectureAst";
+import { estimateCloudArchitectureCost } from "../cost/cloudCostEstimator";
 
 export interface LivingSpecDocument {
   id: string;
@@ -99,11 +100,12 @@ function extractActiveCanvasComponentTitles(ast: ArchitectureAst, activeXml?: st
         const key = candidate.toLowerCase();
         if (!seen.has(key)) {
           seen.add(key);
+          const inferred = inferServiceAndTierFromLabel(fullDecoded || candidate);
           const item = {
             name: candidate.slice(0, 76),
-            service: 'Google Cloud Managed Service',
-            tier: (priorityNodes.length + secondaryNodes.length) < 2 ? 'ingress' : (priorityNodes.length + secondaryNodes.length) < 6 ? 'compute' : 'data',
-            sla: '99.999%',
+            service: inferred.service,
+            tier: inferred.tier,
+            sla: inferred.sla,
           };
           const matchesDomainWord = titleWords.some((w) => key.includes(w));
           if (matchesDomainWord || /^\[?\d+[a-z]?\]/.test(candidate) || /\bid="(c\d|n\d|node_|step_|t3_|t4_|t5_)/i.test(cellTag)) {
@@ -150,7 +152,7 @@ function extractActiveCanvasComponentTitles(ast: ArchitectureAst, activeXml?: st
 }
 
 export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: string): LivingSpecDocument[] {
-  const defaultAst = createDefaultFintechAst();
+  const defaultAst = createDefaultFintechAst(rawAst?.metadata?.projectTitle, rawAst?.metadata?.domain);
   const ast: ArchitectureAst = {
     metadata: {
       ...defaultAst.metadata,
@@ -180,8 +182,65 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
   const c0 = liveComps[0]?.name || "Edge Telemetry & API Ingress";
   const c1 = liveComps[1]?.name || "Core Stream Orchestrator";
   const c2 = liveComps[2]?.name || "Real-Time Decision & Policy Gate";
-  const c3 = liveComps[3]?.name || "Gemini 3.1 Pro + 3.8 Flash Reasoning Mesh";
+  const c3 = liveComps[3]?.name || "Gemini 3.1 Pro + 2.5 Flash Reasoning Mesh";
   const c4 = liveComps[4]?.name || "Distributed State & Vector Store";
+
+  const projectSlug = (meta.projectTitle || "enterprise-core")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 28) || "enterprise-core";
+  const tfPrefix = projectSlug.replace(/-/g, "_");
+  const primaryComplianceSlug = (meta.compliance[0] || "soc2-type-ii")
+    .toLowerCase()
+    .replace(/[^a-z0-9.-]+/g, "-");
+  const isFintechDomain = resolvedDomain === "FINANCIAL SERVICES & BANKING";
+  const primaryTableName = isFintechDomain ? "Accounts" : "DomainEntities";
+  const primaryKeyCol = isFintechDomain ? "AccountId" : "EntityId";
+  const secondaryTableName = isFintechDomain ? "PaymentTransactions" : "DomainExecutionLedger";
+  const secondaryKeyCol = isFintechDomain ? "TransactionId" : "ExecutionId";
+
+  const costEstimate = estimateCloudArchitectureCost(activeXml || "", meta.projectTitle);
+  const finopsRows =
+    costEstimate.items.length > 0
+      ? costEstimate.items
+          .slice(0, 8)
+          .map((item) => {
+            const cudCost = (item.totalMonthlyCostUsd * 0.68).toFixed(2);
+            const per10k = (item.totalMonthlyCostUsd / 75000).toFixed(3);
+            return `| **${item.resourceName}** (${item.category}) | ${item.pricingTierDescription} | $${item.totalMonthlyCostUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} | $${Number(cudCost).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (32% CUD) | $${per10k} |`;
+          })
+          .join("\n")
+      : liveComps
+          .slice(0, 5)
+          .map((comp, idx) => {
+            const listUsd = [1850, 1420, 1150, 980, 640][idx] || 750;
+            const cudUsd = (listUsd * 0.68).toFixed(2);
+            const per10k = (listUsd / 75000).toFixed(3);
+            return `| **${comp.name}** | ${comp.service} (${comp.tier.toUpperCase()}) | $${listUsd.toLocaleString("en-US", { minimumFractionDigits: 2 })} | $${Number(cudUsd).toLocaleString("en-US", { minimumFractionDigits: 2 })} (32% CUD) | $${per10k} |`;
+          })
+          .join("\n");
+  const totalMonthlyUsd =
+    costEstimate.items.length > 0 ? costEstimate.totalMonthlyCostUsd : 6040;
+  const totalCudUsd = Math.round(totalMonthlyUsd * 0.68 * 100) / 100;
+  const totalPer10k = (totalMonthlyUsd / 75000).toFixed(3);
+
+  const migrationWaveRows = liveComps
+    .slice(0, 6)
+    .map((comp, idx) => {
+      const strategies = ["Refactor", "Replatform", "Replatform", "Refactor", "Repurchase", "Rehost"];
+      const legacyHostings = [
+        "Legacy Edge Gateway / Appliance",
+        "On-Prem Monolithic Application Tier",
+        "Self-Managed Message Broker Cluster",
+        "Rule-Based Batch Scoring Pipeline",
+        "On-Premises RDBMS / SAN Storage",
+        "Manual Operations & Static Config",
+      ];
+      const waves = ["Wave 1", "Wave 2", "Wave 2", "Wave 3", "Wave 3", "Wave 1"];
+      return `| **${comp.name}** | ${legacyHostings[idx % legacyHostings.length]} | **${strategies[idx % strategies.length]}** | ${comp.service} | ${waves[idx % waves.length]} |`;
+    })
+    .join("\n");
 
   const liveInventoryRows = liveComps
     .map(
@@ -207,7 +266,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         "> This document serves as the authoritative product specification for **" + meta.projectTitle + "** (**" + resolvedDomain + "**), dynamically synchronized with the active architecture canvas and defining business objectives, latency boundaries, regulatory compliance, and functional requirements.",
         "",
         "## 1.0 Executive Problem Statement & Architecture Scope",
-        "Mission-critical **" + resolvedDomain + "** workloads for **" + meta.projectTitle + "** require continuous high-throughput orchestration across **" + c0 + "**, **" + c1 + "**, and **" + c2 + "** with strict **" + meta.slaTarget + " availability** and zero data loss (**RPO = " + meta.targetRpo + "**). The platform unifies edge ingestion, real-time event streaming, and **Gemini 3.1 Pro + Gemini 3.8 Flash** grounded inference into an integrated, Zero-Trust ecosystem.",
+        "Mission-critical **" + resolvedDomain + "** workloads for **" + meta.projectTitle + "** require continuous high-throughput orchestration across **" + c0 + "**, **" + c1 + "**, and **" + c2 + "** with strict **" + meta.slaTarget + " availability** and zero data loss (**RPO = " + meta.targetRpo + "**). The platform unifies edge ingestion, real-time event streaming, and **Gemini 3.1 Pro + Gemini 2.5 Flash** grounded inference into an integrated, Zero-Trust ecosystem.",
         "",
         "## 1.5 Live Synchronized Canvas Component Inventory",
         "| Component ID | Active Canvas Node / Subsystem | Cloud Backing Service | Architectural Tier | Target SLA |",
@@ -221,19 +280,19 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         "| **End-to-End Latency** | **p95 < 25ms • p99 < 50ms** | " + c0 + " + Memorystore Redis 7.2 + ScaNN Index | P2 SRE Alert Threshold |",
         "| **Data Recovery Point** | **" + meta.targetRpo + " (Zero Data Loss)** | Cloud Spanner TrueTime Multi-Region Commit | P1 Regulatory Breach |",
         "| **Failover Recovery** | **" + meta.targetRto + "** | Automated Cloud DNS Healthcheck & Witness Quorum | P1 SLA Violation |",
-        "| **AI Inference Precision**| **> 99.8% Precision @ < 20ms** | Vertex AI Gemini 3.8 Flash + Gemini 3.1 Pro + Omni 1.1 Audit | Automated Fallback |",
+        "| **AI Inference Precision**| **> 99.8% Precision @ < 20ms** | Vertex AI Gemini 2.5 Flash + Gemini 3.1 Pro Multimodal Audit | Automated Fallback |",
         "",
         "## 3.0 Functional Requirements (FR)",
         "* **FR-101 (Deterministic Ingress & Telemetry)**: Every incoming payload across **" + c0 + "** must supply an idempotent UUIDv4 token cached in Redis 7.2 for 86,400s to guarantee exactly-once processing under high concurrency.",
         "* **FR-102 (Zero-Cleartext Perimeter)**: Sensitive credentials, telemetry secrets, and regulated payloads traversing **" + c1 + "** must be tokenized at edge ingress via Cloud KMS HSM; cleartext secrets must never touch unencrypted storage.",
-        "* **FR-103 (Sub-20ms AI Grounding)**: Domain payloads in **" + c2 + "** must be vectorized into 768-dimensional `text-embedding-005` embeddings and evaluated by **Gemini 3.8 Flash** (`gemini-3.8-flash`) and **Gemini 3.1 Pro** (`gemini-3.1-pro-preview`) in under 20ms.",
+        "* **FR-103 (Sub-20ms AI Grounding)**: Domain payloads in **" + c2 + "** must be vectorized into 768-dimensional `text-embedding-004` embeddings and evaluated by **Gemini 2.5 Flash** (`gemini-2.5-flash`) and **Gemini 3.1 Pro** (`gemini-3.1-pro-preview`) in under 20ms.",
         "* **FR-104 (Distributed ACID Consistency)**: State transitions across **" + c4 + "** must execute as two-phase ACID commits in Cloud Spanner, with continuous Change-Data-Capture (CDC) streamed to BigQuery Lakehouse for real-time auditability.",
         "* **FR-105 (Multi-Region Disaster Recovery)**: System state must continuously replicate between primary region (" + meta.primaryRegion + ") and standby region (" + drRegion + ") with automated health-check failover.",
         "* **FR-106 (Zero-Trust Identity Federation)**: All inter-service communications must enforce short-lived (3600s) SPIFFE/OIDC tokens via Workload Identity Federation without static API keys.",
         "",
         "## 4.0 Non-Functional Requirements (NFR)",
         "* **NFR-201 (Throughput Scale)**: The architecture must scale elastically to sustain up to 50,000 events/transactions per second (TPS) without performance degradation.",
-        "* **NFR-202 (Regulatory Compliance)**: Full adherence to SOC2 Type II, ISO 27001, PCI-DSS Level 1, and HIPAA compliance baselines with hardware-isolated KMS CMEK encryption.",
+        "* **NFR-202 (Regulatory Compliance)**: Full adherence to " + meta.compliance.join(", ") + " compliance baselines with hardware-isolated KMS CMEK encryption.",
         "* **NFR-203 (Auditability & Lineage)**: 100% of domain events and schema mutations must be cataloged in Dataplex with immutable WORM retention in Cloud Storage.",
         "",
         "## 5.0 Target User Personas",
@@ -262,7 +321,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         "1. **Phase 1 — Ingress & Telemetry (" + c0 + ")**: Client/edge node authenticates via OIDC / mTLS and submits structured payload with idempotency key.",
         "2. **Phase 2 — Edge & Policy Validation (" + c1 + ")**: Cloud Armor & Apigee X inspect payloads and enforce rate limits and schema contracts.",
         "3. **Phase 3 — Core Orchestration (" + c2 + ")**: GKE Autopilot / Cloud Run verifies state and checks Memorystore Redis 7.2 for duplicate execution.",
-        "4. **Phase 4 — AI-Grounded Reasoning (" + c3 + ")**: Vertex AI ScaNN performs vector similarity search; **Gemini 3.8 Flash** and **Gemini 3.1 Pro** evaluate domain policies.",
+        "4. **Phase 4 — AI-Grounded Reasoning (" + c3 + ")**: Vertex AI ScaNN performs vector similarity search; **Gemini 2.5 Flash** and **Gemini 3.1 Pro** evaluate domain policies.",
         "5. **Phase 5 — State Commit & Event Broadcast (" + c4 + ")**: Cloud Spanner records immutable state entry and emits CDC event to Cloud Pub/Sub.",
         "",
         "## 2.0 Business Logic Exception Matrix",
@@ -307,9 +366,9 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         "* **Zone 1 (Ingress & Edge)**: **" + c0 + "** backed by Anycast External HTTPS GCLB + Cloud Armor L7 WAF + Apigee X.",
         "* **Zone 2 (Core Orchestration)**: **" + c1 + "** running on GKE Autopilot c3-standard-8 + Cloud Run Gen2 + Memorystore Redis 7.2.",
         "* **Zone 3 (Real-Time Event Mesh)**: **" + c2 + "** powered by Cloud Pub/Sub + Datastream CDC + Cloud Dataflow Apache Beam.",
-        "* **Zone 4 (Vertex AI Intelligence Hub)**: **" + c3 + "** with ScaNN Vector Search + Model Armor Shield + **Gemini 3.1 Pro** & **Gemini 3.8 Flash**.",
+        "* **Zone 4 (Vertex AI Intelligence Hub)**: **" + c3 + "** with ScaNN Vector Search + Model Armor Shield + **Gemini 3.1 Pro** & **Gemini 2.5 Flash**.",
         "* **Zone 5 (Multi-Region Persistence)**: **" + c4 + "** on Cloud Spanner nam3 + BigQuery BigLake + Dual-Region Cloud Storage.",
-        "* **Zone 6 (Zero-Trust Governance)**: VPC Service Controls + Keyless Workload Identity + Cloud KMS HSM + **Omni 1.1** Certification.",
+        "* **Zone 6 (Zero-Trust Governance)**: VPC Service Controls + Keyless Workload Identity + Cloud KMS HSM + **Gemini 3.1 Pro** Multimodal Certification.",
         "",
         "---"
       ].join("\n")
@@ -340,7 +399,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         "| **Step 2** | Token Authentication & Routing | HTTPS Anycast | " + c0 + " -> " + c1 + " | < 3.5ms |",
         "| **Step 3** | HSM Tokenization & Idempotency Lock | gRPC mTLS | " + c1 + " -> " + c2 + " / Redis 7.2 | < 2.0ms |",
         "| **Step 4** | ScaNN Vector Embeddings Match | gRPC Internal | " + c2 + " -> Vertex Vector Search | < 12.0ms |",
-        "| **Step 5** | Gemini 3.8 Flash + 3.1 Pro Inference | gRPC Internal | Vertex Search -> Gemini 3.8 Flash | < 18.0ms |",
+        "| **Step 5** | Gemini 2.5 Flash + 3.1 Pro Inference | gRPC Internal | Vertex Search -> Gemini 2.5 Flash | < 18.0ms |",
         "| **Step 6** | Spanner TrueTime 2PC ACID Commit | gRPC Private | " + c3 + " -> " + c4 + " | < 6.5ms |",
         "| **Step 7** | Asynchronous Audit Event Stream | Pub/Sub Stream | " + c4 + " -> Pub/Sub / BigQuery | Async (< 2ms) |",
         "| **TOTAL** | **End-to-End Execution Latency** | | **Client to Confirmed Response** | **46.0ms (p99 < 50ms)** |",
@@ -352,49 +411,50 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
     // DOC-05: Data Model
     {
       id: "DOC-05",
-      title: "Data Architecture & Spanner SQL DDL Spec",
+      title: `Data Architecture & Distributed SQL DDL (${meta.projectTitle})`,
       shortTitle: "Data Model",
       category: "engineering",
-      description: "Cloud Spanner DDL definitions, indexing strategies, and retention policies.",
+      description: `Distributed SQL DDL definitions, interleaved schemas, and indexing strategies for ${meta.projectTitle}.`,
       lastUpdated: meta.lastSyncTimestamp,
       isSynced: true,
       markdownContent: [
-        "# Data Architecture & Database Schemas",
+        "# Data Architecture & Database Schemas (" + meta.projectTitle + ")",
         "",
-        "## 1.0 Production Cloud Spanner Distributed DDL",
+        "> [!NOTE]",
+        "> Synchronized with active persistence tier **" + c4 + "** and upstream orchestrator **" + c2 + "** for domain **" + resolvedDomain + "**.",
+        "",
+        "## 1.0 Production Distributed SQL DDL",
         String.fromCharCode(96, 96, 96) + "sql",
-        "-- Master Account Balances Table",
-        "CREATE TABLE Accounts (",
-        "  AccountId STRING(36) NOT NULL,",
-        "  CustomerId STRING(36) NOT NULL,",
-        "  AccountType STRING(20) NOT NULL,",
-        "  Currency STRING(3) NOT NULL,",
-        "  CurrentBalance NUMERIC NOT NULL,",
-        "  AvailableBalance NUMERIC NOT NULL,",
-        "  Status STRING(16) NOT NULL,",
+        "-- Primary Domain Entity Table (" + meta.projectTitle + " — " + c0 + ")",
+        "CREATE TABLE " + primaryTableName + " (",
+        "  " + primaryKeyCol + " STRING(36) NOT NULL,",
+        "  TenantId STRING(36) NOT NULL,",
+        "  DomainSegment STRING(64) NOT NULL,",
+        "  SourceSubsystem STRING(128) NOT NULL DEFAULT ('" + c0.replace(/'/g, "") + "'),",
+        "  OperationalState STRING(24) NOT NULL,",
+        "  SecurityClassification STRING(32) NOT NULL,",
         "  CreatedAt TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp=true),",
         "  UpdatedAt TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp=true)",
-        ") PRIMARY KEY(AccountId);",
+        ") PRIMARY KEY(" + primaryKeyCol + ");",
         "",
-        "-- High-Throughput Interleaved Payment Transactions Ledger Table",
-        "CREATE TABLE PaymentTransactions (",
-        "  AccountId STRING(36) NOT NULL,",
-        "  TransactionId STRING(64) NOT NULL,",
-        "  MerchantId STRING(36) NOT NULL,",
-        "  Amount NUMERIC NOT NULL,",
-        "  Currency STRING(3) NOT NULL,",
-        "  RiskScore FLOAT64,",
-        "  FraudDecision STRING(16) NOT NULL,",
-        "  Status STRING(20) NOT NULL,",
-        "  SettlementCorridor STRING(12) NOT NULL,",
+        "-- High-Throughput Interleaved Execution & Telemetry Ledger (" + c2 + " -> " + c4 + ")",
+        "CREATE TABLE " + secondaryTableName + " (",
+        "  " + primaryKeyCol + " STRING(36) NOT NULL,",
+        "  " + secondaryKeyCol + " STRING(64) NOT NULL,",
+        "  OrchestratorNode STRING(128) NOT NULL DEFAULT ('" + c2.replace(/'/g, "") + "'),",
+        "  ReasoningModel STRING(64) NOT NULL DEFAULT ('gemini-2.5-flash'),",
+        "  ConfidenceScore FLOAT64,",
+        "  PolicyDecision STRING(24) NOT NULL,",
+        "  PayloadHash STRING(64) NOT NULL,",
         "  IdempotencyKey STRING(64) NOT NULL,",
+        "  RegionCode STRING(32) NOT NULL DEFAULT ('" + meta.primaryRegion + "'),",
         "  CreatedAt TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp=true)",
-        ") PRIMARY KEY(AccountId, TransactionId),",
-        "  INTERLEAVE IN PARENT Accounts ON DELETE CASCADE;",
+        ") PRIMARY KEY(" + primaryKeyCol + ", " + secondaryKeyCol + "),",
+        "  INTERLEAVE IN PARENT " + primaryTableName + " ON DELETE CASCADE;",
         "",
         "-- Secondary Indexes for Low-Latency Querying",
-        "CREATE INDEX Idx_Payments_Created ON PaymentTransactions(AccountId, CreatedAt DESC);",
-        "CREATE UNIQUE INDEX Idx_Payments_Idempotency ON PaymentTransactions(IdempotencyKey);",
+        "CREATE INDEX Idx_" + secondaryTableName + "_Created ON " + secondaryTableName + "(" + primaryKeyCol + ", CreatedAt DESC);",
+        "CREATE UNIQUE INDEX Idx_" + secondaryTableName + "_Idempotency ON " + secondaryTableName + "(IdempotencyKey);",
         String.fromCharCode(96, 96, 96),
         "",
         "---"
@@ -428,9 +488,9 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         "| **TR-01** | **Spoofing** | Forged client identity or bearer token hijacking | " + c0 + " | Mutual TLS (mTLS) + OAuth 2.0 PKCE + Identity-Aware Proxy (IAP) | Low |",
         "| **TR-02** | **Tampering** | Man-in-the-middle packet alteration | In-transit traffic | Enforced TLS 1.3 with AES-256-GCM + Dedicated Private Google Fiber | Very Low |",
         "| **TR-03** | **Repudiation** | Client or service denies initiating state change | " + c4 + " | Cryptographic audit streaming into WORM-compliant BigQuery storage | Very Low |",
-        "| **TR-04** | **Information Disclosure** | Data exfiltration via compromised database credentials | Spanner / GCS | VPC Service Controls (VPC-SC) + Cloud KMS HSM (CMEK AES-256) | Very Low |",
-        "| **TR-05** | **Denial of Service** | Volumetric Layer 7 HTTP flood attacking gateway | GCLB / GKE | Cloud Armor Adaptive Protection (30Gbps rate-limiting per IP) | Low |",
-        "| **TR-06** | **Elevation of Privilege** | Container escape leading to cluster compromise | GKE Pods | Non-root Pod Security Standards + Workload Identity (No service keys) | Low |",
+        "| **TR-04** | **Information Disclosure** | Data exfiltration via compromised database credentials | " + c4 + " | VPC Service Controls (VPC-SC) + Cloud KMS HSM (CMEK AES-256) | Very Low |",
+        "| **TR-05** | **Denial of Service** | Volumetric Layer 7 HTTP flood attacking gateway | " + c0 + " / " + c1 + " | Cloud Armor Adaptive Protection (30Gbps rate-limiting per IP) | Low |",
+        "| **TR-06** | **Elevation of Privilege** | Container escape leading to cluster compromise | " + c2 + " | Non-root Pod Security Standards + Workload Identity (No service keys) | Low |",
         "",
         "---"
       ].join("\n")
@@ -449,12 +509,12 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         "# AI System Card & Cognitive Architecture Spec",
         "",
         "## 1.0 Foundation Model Provenance & 5-Tier Routing",
-        "* **Tier 0 Multimodal Certification Gate**: **Omni 1.1** (`google-omni-1.1` — 6-Audit Visual & Structural Judge).",
-        "* **Tier 1 Deep Reasoning & Architecture Synthesis**: **Gemini 3.1 Pro** (`gemini-3.1-pro-preview` — Deep ReAct Planning, Tool Calling AST, 2M context window).",
-        "* **Tier 2 High-Speed Interactive Copilot**: **Gemini 3.8 Flash** (`gemini-3.8-flash` — Sub-second Hybrid Reasoning & Intent Routing).",
-        "* **Tier 3 Real-Time Bidirectional Voice/Video**: **Gemini 3.1 Flash Live** (`gemini-3.1-flash-live-preview`).",
-        "* **Tier 4 Multimodal Media Synthesis**: **Veo 3.1** (`veo-3.1-generate-preview`), **Lyria 3.5** (`lyria-3.5`), **Gemini 3.1 Flash Image** (`gemini-3.1-flash-image-preview`), **Gemini 3.1 Flash TTS** (`gemini-3.1-flash-tts-preview`).",
-        "* **Embedding Model**: **text-embedding-005** (768-dimensional normalized dense vectors).",
+        "* **Tier 0 Multimodal Certification Gate**: **Gemini 3.1 Pro** (`gemini-3.1-pro-preview` — 6-Audit Visual & Structural Judge).",
+        "* **Tier 1 Deep Reasoning & Architecture Synthesis**: **Gemini 3.1 Pro** (`gemini-3.1-pro-preview` — Deep ReAct Planning, Tool Calling AST, 2M context window) & **Gemini 2.5 Pro** (`gemini-2.5-pro`).",
+        "* **Tier 2 High-Speed Interactive Copilot**: **Gemini 2.5 Flash** (`gemini-2.5-flash` — Sub-second Hybrid Reasoning & Intent Routing).",
+        "* **Tier 3 Real-Time Bidirectional Voice/Video**: **Gemini 2.5 Flash Live** (`gemini-2.5-flash`).",
+        "* **Tier 4 Multimodal Media Synthesis**: **Veo 2** (`veo-2.0-generate-001`), **Lyria 002** (`lyria-002`), **Imagen 3** (`imagen-3.0-generate-002`), **Cloud TTS** (`en-US-Journey-D`).",
+        "* **Embedding Model**: **text-embedding-004** (768-dimensional normalized dense vectors).",
         "",
         "## 2.0 RAG Triad Evaluation Benchmarks",
         "| Evaluation Metric | Target Benchmark | Measured Production Score | Enforcement Mechanism |",
@@ -471,34 +531,42 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
     // DOC-08: Terraform IaC
     {
       id: "DOC-08",
-      title: "Infrastructure as Code (Terraform GCP HCL)",
+      title: `Infrastructure as Code (Terraform HCL — ${meta.projectTitle})`,
       shortTitle: "Terraform IaC",
       category: "engineering",
-      description: "Declarative Terraform GCP modules for Spanner, GKE, and Cloud Armor.",
+      description: `Declarative Terraform modules synchronized with ${meta.projectTitle} canvas components.`,
       lastUpdated: meta.lastSyncTimestamp,
       isSynced: true,
       markdownContent: [
-        "# Infrastructure as Code (Terraform GCP HCL)",
+        "# Infrastructure as Code (Terraform HCL — " + meta.projectTitle + ")",
         "",
         String.fromCharCode(96, 96, 96) + "hcl",
-        "# Master Multi-Region Cloud Spanner Instance",
-        "resource \"google_spanner_instance\" \"payments_main\" {",
-        "  name         = \"spanner-payments-prod\"",
+        "# Primary Multi-Region State & Ledger Instance (" + c4 + ")",
+        "resource \"google_spanner_instance\" \"" + tfPrefix + "_state\" {",
+        "  name         = \"spanner-" + projectSlug + "-prod\"",
         "  config       = \"nam-eur-dual1\"",
-        "  display_name = \"Payments Multi-Region Spanner Cluster\"",
+        "  display_name = \"" + meta.projectTitle.replace(/"/g, "") + " State Cluster\"",
         "  num_nodes    = 3",
         "",
         "  labels = {",
         "    environment = \"production\"",
-        "    compliance  = \"pci-dss-4.0\"",
-        "    sla_tier    = \"99-999\"",
+        "    domain      = \"" + projectSlug + "\"",
+        "    compliance  = \"" + primaryComplianceSlug + "\"",
+        "    primary_reg = \"" + meta.primaryRegion + "\"",
         "  }",
         "}",
         "",
-        "# Cloud Armor Enterprise Security Policy (L7 DDoS & OWASP Top 10)",
-        "resource \"google_compute_security_policy\" \"armor_waf\" {",
-        "  name        = \"sp-payments-armor-waf\"",
-        "  description = \"Enterprise WAF Rule Set for Financial Ingress\"",
+        "# Primary Orchestration Runtime (" + c1 + " / " + c2 + ")",
+        "resource \"google_container_cluster\" \"" + tfPrefix + "_orchestrator\" {",
+        "  name             = \"gke-" + projectSlug + "-" + meta.primaryRegion + "\"",
+        "  location         = \"" + meta.primaryRegion + "\"",
+        "  enable_autopilot = true",
+        "}",
+        "",
+        "# Cloud Armor Enterprise Security Policy (" + c0 + ")",
+        "resource \"google_compute_security_policy\" \"" + tfPrefix + "_armor_waf\" {",
+        "  name        = \"sp-" + projectSlug + "-armor-waf\"",
+        "  description = \"Enterprise WAF Rule Set for " + meta.projectTitle.replace(/"/g, "") + " (" + c0.replace(/"/g, "") + ")\"",
         "",
         "  rule {",
         "    action   = \"rate_based_ban\"",
@@ -533,7 +601,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
       embeddedFigure: {
         id: "Figure 9.1",
         title: "Multi-Region Failover & Replication Topology",
-        description: "Synchronous cross-region Spanner replication between " + meta.primaryRegion + " and " + drRegion + ".",
+        description: "Synchronous cross-region replication between " + meta.primaryRegion + " and " + drRegion + ".",
         diagramType: "dr"
       },
       lastUpdated: meta.lastSyncTimestamp,
@@ -552,10 +620,10 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         "## 2.0 Automated Failover Decision Matrix",
         "| Disaster Scenario | Detection Trigger | Automated Remediation Action | Target RTO | Verification Gate |",
         "| :--- | :--- | :--- | :--- | :--- |",
-        "| **Zone Degradation** | > 3 healthcheck failures in single zone | GKE Pod auto-rescheduling to healthy zones | < 10s | Validate pod readiness probes |",
+        "| **Zone Degradation** | > 3 healthcheck failures in single zone (" + c1 + ") | GKE Pod auto-rescheduling to healthy zones | < 10s | Validate pod readiness probes |",
         "| **Regional Outage** | Complete " + meta.primaryRegion + " loss detected by edge probes | Promote " + drRegion + " Replica to Leader & Shift Anycast DNS | < 30s | Verify transaction write ACK rate |",
         "| **Fiber Partition** | Inter-region network split (>100ms jitter) | Quorum maintained via Witness Node; secondary serves reads | Zero RPO | Audit Spanner TrueTime bounds |",
-        "| **Data Corruption** | Accidental mass ledger deletion | Restore point-in-time snapshot from Dual-Region GCS WORM | < 15m | Execute checksum reconciliation |",
+        "| **Data Corruption** | Accidental mass state mutation on " + c4 + " | Restore point-in-time snapshot from Dual-Region GCS WORM | < 15m | Execute checksum reconciliation |",
         "",
         "---"
       ].join("\n")
@@ -599,10 +667,10 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         "## 1.0 Service Level Objectives (SLOs) & Error Budgets",
         "| Service Tier | SLI Definition | Target SLO | Monthly Error Budget | Fast Burn Alert Trigger |",
         "| :--- | :--- | :--- | :--- | :--- |",
-        "| **Edge Ingress** | Successful HTTP 2xx/3xx requests / Total | **99.999%** | 26 seconds | > 2% budget in 1 hour |",
-        "| **Transaction Mesh** | gRPC transactions completed in < 50ms | **99.95%** | 21.6 minutes | > 5% budget in 6 hours |",
-        "| **Vertex AI Scoring** | Prompt evaluation latency < 35ms | **99.90%** | 43.2 minutes | > 10% budget in 12 hours |",
-        "| **Spanner Commit** | 2PC commit ACK completed in < 10ms | **99.99%** | 4.3 minutes | > 2% budget in 1 hour |",
+        "| **" + c0 + "** | Successful HTTP/gRPC requests / Total | **99.999%** | 26 seconds | > 2% budget in 1 hour |",
+        "| **" + c1 + "** | Orchestration requests completed in < 50ms | **99.95%** | 21.6 minutes | > 5% budget in 6 hours |",
+        "| **" + c3 + "** | Grounded inference latency < 35ms | **99.90%** | 43.2 minutes | > 10% budget in 12 hours |",
+        "| **" + c4 + "** | State commit ACK completed in < 10ms | **99.99%** | 4.3 minutes | > 2% budget in 1 hour |",
         "",
         "---"
       ].join("\n")
@@ -611,23 +679,19 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
     // DOC-12: Migration Strategy
     {
       id: "DOC-12",
-      title: "Cloud Migration & Modernization Strategy (6-Rs)",
+      title: `Cloud Migration & Modernization Strategy (6-Rs — ${meta.projectTitle})`,
       shortTitle: "Migration (6-Rs)",
       category: "architecture",
-      description: "Legacy workload assessment, 6-Rs modernization matrix, and wave cutover planning.",
+      description: `Workload modernization matrix and wave cutover planning synchronized with ${meta.projectTitle}.`,
       lastUpdated: meta.lastSyncTimestamp,
       isSynced: true,
       markdownContent: [
-        "# Cloud Migration & Modernization Strategy (6-Rs)",
+        "# Cloud Migration & Modernization Strategy (6-Rs — " + meta.projectTitle + ")",
         "",
-        "## 1.0 Workload Rationalization Framework (6-Rs)",
-        "| Workload Name | Legacy Hosting | 6-Rs Strategy | Target Google Cloud Service | Migration Wave |",
+        "## 1.0 Live Canvas Workload Rationalization Framework (6-Rs)",
+        "| Active Canvas Workload | Legacy Baseline | 6-Rs Strategy | Target Cloud Backing Service | Migration Wave |",
         "| :--- | :--- | :--- | :--- | :--- |",
-        "| **Legacy Monolith Core** | On-Prem Bare Metal | **Refactor** | GKE Autopilot (Go Microservices) | Wave 2 |",
-        "| **Oracle RAC Database** | Exadata On-Prem | **Replatform** | Cloud Spanner Multi-Region | Wave 3 |",
-        "| **Batch Reporting Engine** | Teradata Warehouse | **Replatform** | BigQuery Lakehouse + Dataflow | Wave 1 |",
-        "| **Session Token Store** | Self-hosted Memcached | **Replatform** | Memorystore Redis 7.2 | Wave 2 |",
-        "| **Perimeter Firewall** | Hardware Appliance | **Repurchase** | Cloud Armor L7 WAF | Wave 1 |",
+        migrationWaveRows,
         "",
         "---"
       ].join("\n")
@@ -648,11 +712,11 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         "## 1.0 Minute-by-Minute Execution Timeline (T-Minus Schedule)",
         "| Timeline | Task Owner | Action Item | Success Criteria | Abort / Rollback Gate |",
         "| :--- | :--- | :--- | :--- | :--- |",
-        "| **T - 120m** | Lead SRE | Verify Datastream CDC replication lag | < 500ms replication lag | If > 5s, pause migration |",
+        "| **T - 120m** | Lead SRE | Verify replication lag across **" + c4 + "** | < 500ms replication lag | If > 5s, pause cutover |",
         "| **T - 60m** | Security Lead | Validate Cloud KMS CMEK key status | HSM FIPS 140-3 active | Abort if key not reachable |",
-        "| **T - 30m** | Network Eng | Reduce Cloud DNS TTL to 60 seconds | Global DNS TTL = 60s | Block if TTL propagation fails |",
-        "| **T - 0m** | War Room Lead | Shift 10% Anycast GCLB traffic to new cluster | 0% HTTP 5xx errors | Rollback immediately if > 0.1% errors |",
-        "| **T + 30m** | Performance SRE| Ramp to 100% traffic across all regions | p99 latency < 50ms | Scale GKE replicas if CPU > 60% |",
+        "| **T - 30m** | Network Eng | Reduce Cloud DNS TTL to 60 seconds on **" + c0 + "** | Global DNS TTL = 60s | Block if TTL propagation fails |",
+        "| **T - 0m** | War Room Lead | Shift 10% Anycast traffic to **" + c1 + "** | 0% HTTP 5xx errors | Rollback immediately if > 0.1% errors |",
+        "| **T + 30m** | Performance SRE| Ramp to 100% traffic across **" + meta.primaryRegion + "** | p99 latency < 50ms | Scale replicas if CPU > 60% |",
         "",
         "---"
       ].join("\n")
@@ -661,24 +725,23 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
     // DOC-14: FinOps Cost Model
     {
       id: "DOC-14",
-      title: "Cloud FinOps & Unit Economics Cost Model",
+      title: `Cloud FinOps & Unit Economics Cost Model (${meta.projectTitle})`,
       shortTitle: "FinOps Model",
       category: "governance",
-      description: "Monthly bill of materials (BOM), committed use discounts, and cost per transaction.",
+      description: `Live monthly bill of materials (BOM), committed use discounts, and unit economics for ${meta.projectTitle}.`,
       lastUpdated: meta.lastSyncTimestamp,
       isSynced: true,
       markdownContent: [
-        "# Cloud FinOps & Unit Economics Cost Model",
+        "# Cloud FinOps & Unit Economics Cost Model (" + meta.projectTitle + ")",
+        "",
+        "> [!NOTE]",
+        "> Dynamically calculated from active diagram nodes using the Cloud FinOps Cost Estimator (**" + costEstimate.provider + "** pricing catalog).",
         "",
         "## 1.0 Monthly Bill of Materials (BOM) Breakdown",
-        "| Service Component | Sizing / Allocation | Monthly List Cost | 3-Year CUD Cost | Cost per 10k Transactions |",
+        "| Active Component / Service | Sizing / Allocation | Monthly List Cost | 3-Year CUD Cost | Cost per 10k Operations |",
         "| :--- | :--- | :--- | :--- | :--- |",
-        "| **Cloud Spanner (nam3)** | 3 Multi-Region Nodes | $2,980.00 | $1,788.00 (40% discount) | $0.035 |",
-        "| **GKE Autopilot Compute** | 48 vCPU, 192GB RAM | $1,650.00 | $1,072.50 (35% discount) | $0.021 |",
-        "| **Vertex AI (Gemini 3.8 / 3.1)**| 50M Reasoning Tokens | $1,250.00 | $1,250.00 (On-Demand) | $0.025 |",
-        "| **Cloud Armor & GCLB** | 1 Global VIP + WAF Rules | $450.00 | $450.00 | $0.009 |",
-        "| **Cloud Pub/Sub & Dataflow**| 5TB Stream Processing | $380.00 | $247.00 (35% discount) | $0.005 |",
-        "| **TOTAL MONTHLY SPEND** | | **$6,710.00** | **$4,807.50 (28.3% savings)** | **$0.095 / 10k Tx** |",
+        finopsRows,
+        "| **TOTAL MONTHLY SPEND** | **" + (costEstimate.items.length || liveComps.length) + " Billable Tiers** | **$" + totalMonthlyUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "** | **$" + totalCudUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " (32.0% savings)** | **$" + totalPer10k + " / 10k Ops** |",
         "",
         "---"
       ].join("\n")
@@ -723,17 +786,17 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
       markdownContent: [
         "# Architecture Decision Record (ADR) Log",
         "",
-        "## ADR-001: Selection of Google Cloud Spanner (nam3) Over CockroachDB",
-        "* **Status**: APPROVED (2026-08-15)",
-        "* **Context**: The platform requires multi-region active-active external consistency across North America and Europe with sub-10ms transactional ACID latency.",
-        "* **Decision**: Adopt Google Cloud Spanner multi-region nam3 configuration with TrueTime hardware synchronization.",
-        "* **Consequences**: Zero replication lag, 99.999% SLA availability, native BigQuery BigLake zero-ETL integration; higher baseline node cost offset by zero operational maintenance.",
+        `## ADR-001: Primary Stateful & Orchestration Tier Selection (${liveComps[0]?.name || "Managed Cloud Tier"})`,
+        `* **Status**: APPROVED (${new Date().toISOString().split('T')[0]})`,
+        `* **Context**: ${meta.projectTitle} (${resolvedDomain}) requires high-availability state management and deterministic request routing across ${liveComps.length} active topology components.`,
+        `* **Decision**: Standardize on ${liveComps.slice(0, 3).map((c) => c.name).join(", ") || "Google Cloud Managed Services"} with automated regional failover.`,
+        "* **Consequences**: High availability, deterministic failover guarantees, and native observability integration; requires strict IAM least-privilege boundaries.",
         "",
-        "## ADR-002: Native Vector Indexing with Vertex Vector Search (ScaNN)",
-        "* **Status**: APPROVED (2026-08-20)",
-        "* **Context**: High-speed similarity matching required for real-time anomaly detection at 50,000 queries per second.",
-        "* **Decision**: Deploy Vertex AI ScaNN with Tree-AH quantization.",
-        "* **Consequences**: p99 latency < 2.5ms; seamless integration with Gemini 3.8 Flash and Gemini 3.1 Pro reasoning pipelines.",
+        `## ADR-002: AI & Analytical Data Plane (${liveComps[liveComps.length - 1]?.name || "Vertex AI & Analytics"})`,
+        `* **Status**: APPROVED (${new Date().toISOString().split('T')[0]})`,
+        "* **Context**: Low-latency inference, vector indexing, and analytical telemetry required across production workloads.",
+        "* **Decision**: Deploy managed cloud analytics and AI endpoints with strict schema validation and VPC perimeter controls.",
+        "* **Consequences**: Sub-10ms p99 retrieval latency and seamless integration with Gemini 2.5 Flash and Gemini 3.1 Pro reasoning pipelines.",
         "",
         "---"
       ].join("\n")

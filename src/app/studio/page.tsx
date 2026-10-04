@@ -4063,7 +4063,7 @@ function StudioMain() {
                       <div className="flex items-center justify-between text-[10px] font-bold text-emerald-900">
                         <span>⚡ Prompt-Driven Topology Active</span>
                         <span className="font-mono text-[9px] bg-emerald-200/80 text-emerald-950 px-1.5 py-0.5 rounded">
-                          Gemini 3.1 Pro + 3.8 Flash
+                          Gemini 3.1 Pro + 2.5 Flash
                         </span>
                       </div>
                       <div className="rounded-lg border border-emerald-200/90 bg-white px-2.5 py-2 text-[10px] text-slate-700 space-y-1">
@@ -5182,12 +5182,15 @@ function StudioMain() {
         onClose={() => setIsBrainModalOpen(false)}
         onAutoHeal={handleAutoHeal}
         isHealing={isHealing}
+        currentXml={xml}
       />
 
       <AudioBriefingModal
         isOpen={isAudioModalOpen}
         onClose={() => setIsAudioModalOpen(false)}
         title={ast.metadata.projectTitle}
+        ast={ast}
+        currentXml={xml}
       />
 
       <ObjectShareModal

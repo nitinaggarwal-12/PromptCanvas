@@ -47,35 +47,55 @@ export function ObjectShareModal({
   activeNode
 }: ObjectShareModalProps) {
   const [copied, setCopied] = useState(false);
-  const [accessRole, setAccessRole] = useState<'viewer' | 'commenter' | 'editor'>('commenter');
-  const [comments, setComments] = useState<Array<{ id: string; author: string; role: string; text: string; time: string }>>([
-    {
-      id: 'c1',
-      author: 'Dr. Sarah Jenkins',
-      role: 'Clinical Operations Lead (NovaCura Pharma)',
-      text: 'Verified 21 CFR Part 11 audit trails in DOC-07. Spanner mutation logs match GxP requirements.',
-      time: '12m ago'
-    },
-    {
-      id: 'c2',
-      author: 'Alex Rivera',
-      role: 'Principal Cloud Architect (Google)',
-      text: 'Multi-region failover latency verified under 15ms with global HTTPS load balancing.',
-      time: '4m ago'
+  const [accessRole, setAccessRole] = useState<'viewer' | 'commenter' | 'editor'>(() => {
+    if (typeof window !== 'undefined' && targetId) {
+      const saved = window.localStorage.getItem(`promptcanvas_share_role_${targetId}`);
+      if (saved === 'viewer' || saved === 'commenter' || saved === 'editor') return saved;
     }
-  ]);
+    return 'commenter';
+  });
+  const [comments, setComments] = useState<Array<{ id: string; author: string; role: string; text: string; time: string }>>([]);
   const [newComment, setNewComment] = useState('');
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined' && targetId) {
+      const savedRole = window.localStorage.getItem(`promptcanvas_share_role_${targetId}`);
+      if (savedRole === 'viewer' || savedRole === 'commenter' || savedRole === 'editor') {
+        setAccessRole(savedRole);
+      }
+      try {
+        const rawComments = window.localStorage.getItem(`promptcanvas_object_comments_${targetId}`);
+        if (rawComments) {
+          const parsed = JSON.parse(rawComments);
+          if (Array.isArray(parsed)) {
+            setComments(parsed);
+            return;
+          }
+        }
+      } catch {
+        // Ignore parse errors
+      }
+      setComments([]);
+    }
+  }, [targetId, isOpen]);
+
+  const handleSelectRole = (role: 'viewer' | 'commenter' | 'editor') => {
+    setAccessRole(role);
+    if (typeof window !== 'undefined' && targetId) {
+      window.localStorage.setItem(`promptcanvas_share_role_${targetId}`, role);
+    }
+  };
 
   if (!isOpen) return null;
 
-  // Build canonical deep link
+  // Build canonical deep link with active accessRole encoded
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://promptcanvas-887605034827.us-central1.run.app';
-  let deepLink = `${origin}/studio?project=${encodeURIComponent(projectTitle)}&v=${activeVersionTag}`;
+  let deepLink = `${origin}/studio?project=${encodeURIComponent(projectTitle)}&v=${activeVersionTag}&role=${accessRole}`;
 
   if (targetType === 'doc' && activeDoc) {
-    deepLink = `${origin}/studio?project=${encodeURIComponent(projectTitle)}&view=specs&doc=${activeDoc.id}&v=${activeVersionTag}`;
+    deepLink = `${origin}/studio?project=${encodeURIComponent(projectTitle)}&view=specs&doc=${activeDoc.id}&v=${activeVersionTag}&role=${accessRole}`;
   } else if (targetType === 'node' && activeNode) {
-    deepLink = `${origin}/studio?project=${encodeURIComponent(projectTitle)}&view=diagram&node=${activeNode.id}&v=${activeVersionTag}`;
+    deepLink = `${origin}/studio?project=${encodeURIComponent(projectTitle)}&view=diagram&node=${activeNode.id}&v=${activeVersionTag}&role=${accessRole}`;
   }
 
   const handleCopyLink = () => {
@@ -86,16 +106,20 @@ export function ObjectShareModal({
 
   const handleAddComment = () => {
     if (!newComment.trim()) return;
-    setComments(prev => [
-      ...prev,
-      {
-        id: `c_${Date.now()}`,
-        author: 'Lead Architect (You)',
-        role: 'Enterprise Reviewer',
-        text: newComment,
-        time: 'Just now'
+    const nextItem = {
+      id: `c_${Date.now()}`,
+      author: 'Lead Architect (You)',
+      role: `Session Reviewer (${accessRole})`,
+      text: newComment.trim(),
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setComments(prev => {
+      const updated = [...prev, nextItem];
+      if (typeof window !== 'undefined' && targetId) {
+        window.localStorage.setItem(`promptcanvas_object_comments_${targetId}`, JSON.stringify(updated));
       }
-    ]);
+      return updated;
+    });
     setNewComment('');
   };
 
@@ -185,7 +209,7 @@ export function ObjectShareModal({
             </label>
             <div className="grid grid-cols-3 gap-2">
               <button
-                onClick={() => setAccessRole('viewer')}
+                onClick={() => handleSelectRole('viewer')}
                 className={`p-2.5 rounded-xl border text-left transition ${
                   accessRole === 'viewer'
                     ? 'bg-blue-50 border-blue-400 text-blue-900 font-semibold ring-1 ring-blue-400/30'
@@ -200,7 +224,7 @@ export function ObjectShareModal({
               </button>
 
               <button
-                onClick={() => setAccessRole('commenter')}
+                onClick={() => handleSelectRole('commenter')}
                 className={`p-2.5 rounded-xl border text-left transition ${
                   accessRole === 'commenter'
                     ? 'bg-blue-50 border-blue-400 text-blue-900 font-semibold ring-1 ring-blue-400/30'
@@ -215,7 +239,7 @@ export function ObjectShareModal({
               </button>
 
               <button
-                onClick={() => setAccessRole('editor')}
+                onClick={() => handleSelectRole('editor')}
                 className={`p-2.5 rounded-xl border text-left transition ${
                   accessRole === 'editor'
                     ? 'bg-blue-50 border-blue-400 text-blue-900 font-semibold ring-1 ring-blue-400/30'
@@ -242,16 +266,22 @@ export function ObjectShareModal({
             </div>
 
             <div className="max-h-36 overflow-y-auto space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
-              {comments.map(c => (
-                <div key={c.id} className="bg-white p-2.5 rounded-lg border border-slate-200/80 shadow-2xs space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-900 text-[11px]">{c.author}</span>
-                    <span className="text-[9px] text-slate-400">{c.time}</span>
-                  </div>
-                  <div className="text-[9.5px] text-blue-700 font-medium">{c.role}</div>
-                  <p className="text-[11px] text-slate-600 leading-snug">{c.text}</p>
+              {comments.length === 0 ? (
+                <div className="text-[11px] text-slate-400 italic py-2 text-center">
+                  No annotations recorded yet for {targetTitle}. Add a review note below.
                 </div>
-              ))}
+              ) : (
+                comments.map(c => (
+                  <div key={c.id} className="bg-white p-2.5 rounded-lg border border-slate-200/80 shadow-2xs space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-slate-900 text-[11px]">{c.author}</span>
+                      <span className="text-[9px] text-slate-400">{c.time}</span>
+                    </div>
+                    <div className="text-[9.5px] text-blue-700 font-medium">{c.role}</div>
+                    <p className="text-[11px] text-slate-600 leading-snug">{c.text}</p>
+                  </div>
+                ))
+              )}
             </div>
 
             {/* Post Comment Input */}
@@ -279,7 +309,7 @@ export function ObjectShareModal({
         <div className="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs">
           <div className="flex items-center gap-1.5 text-slate-500 text-[11px]">
             <UserCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Multi-persona sync: 4 stakeholders active</span>
+            <span>Object Anchor: {targetId} &bull; Link Role: {accessRole.toUpperCase()}</span>
           </div>
           <button
             onClick={onClose}

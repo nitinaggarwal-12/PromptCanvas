@@ -4623,15 +4623,15 @@ export async function addOrUpdateUserWithChangelog(params: {
   const source = params.source || 'UI';
   const normalizedEmail = params.email.toLowerCase().trim();
   const existing = await getUserByEmail(normalizedEmail);
-  const rowRef = `Users!A${Math.floor(Math.random() * 15) + 3}:F`;
+  const rowRef = `DB:users:${normalizedEmail}`;
 
   if (existing) {
     const oldRole = existing.global_role || 'Author';
     const updated = await updateUserGlobalRole(existing.id, params.role);
     const summary =
       source === 'GOOGLE_SHEET'
-        ? `${params.actorName} changed role of ${params.name} (${normalizedEmail}) from "${oldRole}" to "${params.role}" in Google Sheet [${rowRef}] — synced to UI.`
-        : `${params.actorName} changed role of ${params.name} (${normalizedEmail}) from "${oldRole}" to "${params.role}" in UI and synced to Google Sheet [${rowRef}].`;
+        ? `${params.actorName} changed role of ${params.name} (${normalizedEmail}) from "${oldRole}" to "${params.role}" via Governance Sync.`
+        : `${params.actorName} changed role of ${params.name} (${normalizedEmail}) from "${oldRole}" to "${params.role}" in Governance UI.`;
     const changelog = await recordChangelogEntry({
       event_category: 'USER_ROLE_CHANGED',
       actor_name: params.actorName,
@@ -4668,8 +4668,8 @@ export async function addOrUpdateUserWithChangelog(params: {
     const createdUser = (await getUserById(id))!;
     const summary =
       source === 'GOOGLE_SHEET'
-        ? `${params.actorName} added new user ${params.name} (${normalizedEmail}) with role "${params.role}" in Google Sheet [${rowRef}] — auto-provisioned in PromptCanvas UI.`
-        : `${params.actorName} added new user ${params.name} (${normalizedEmail}) with role "${params.role}" in UI and synced to Google Sheet [${rowRef}].`;
+        ? `${params.actorName} added new user ${params.name} (${normalizedEmail}) with role "${params.role}" via Governance Sync.`
+        : `${params.actorName} added new user ${params.name} (${normalizedEmail}) with role "${params.role}" in Governance UI.`;
 
     const changelog = await recordChangelogEntry({
       event_category: 'USER_ADDED',

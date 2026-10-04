@@ -174,7 +174,7 @@ export const GeminiEnterpriseLeftStudio: React.FC<GeminiEnterpriseLeftStudioProp
             </div>
             <div>
               <span className="text-[11px] font-black tracking-wide block">Gemini Enterprise AI</span>
-              <span className="text-[9px] font-bold text-teal-500 dark:text-teal-400 block -mt-0.5">3.8 Flash Architecture Engine</span>
+              <span className="text-[9px] font-bold text-teal-500 dark:text-teal-400 block -mt-0.5">2.5 Flash &amp; 3.1 Pro Engine</span>
             </div>
           </div>
 

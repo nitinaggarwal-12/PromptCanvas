@@ -256,7 +256,7 @@ function ArchitectureLibraryContent() {
         created_at: '2026-09-30T12:00:00.000Z',
         updated_at: '2026-09-30T12:00:00.000Z',
         version_count: 1,
-        latest_prompt: 'Upgraded L2/L3 Multi-Agent Banking Architecture using Gemini Enterprise, Vertex AI Agent Engine, Google ADK, LangGraph, A2A & MCP Protocols, Gemini 3.1 Pro / 3.8 Flash, vLLM on GKE, Model Armor & SDP, Vector Search 2.0 + Valkey, and OTel GenAI FinOps.',
+        latest_prompt: 'Upgraded L2/L3 Multi-Agent Banking Architecture using Gemini Enterprise, Vertex AI Agent Engine, Google ADK, LangGraph, A2A & MCP Protocols, Gemini 3.1 Pro / 2.5 Flash, vLLM on GKE, Model Armor & SDP, Vector Search 2.0 + Valkey, and OTel GenAI FinOps.',
         xml_content: generateUpgradedGcpGeBankingArchitectureXml(),
       });
     }

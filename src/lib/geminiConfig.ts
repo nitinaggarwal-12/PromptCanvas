@@ -1,16 +1,16 @@
-export const OMNI_ORCHESTRATOR_ID = process.env.OMNI_ORCHESTRATOR_ID || 'google-omni-1.1';
-export const OMNI_FLASH_MODEL_ID = process.env.OMNI_FLASH_MODEL_ID || 'gemini-omni-1.1-flash';
+export const OMNI_ORCHESTRATOR_ID = process.env.OMNI_ORCHESTRATOR_ID || 'gemini-3.1-pro-preview';
+export const OMNI_FLASH_MODEL_ID = process.env.OMNI_FLASH_MODEL_ID || 'gemini-2.5-flash';
 export const GEMINI_PRO_MODEL_ID = process.env.GEMINI_PRO_MODEL_ID || 'gemini-3.1-pro-preview';
-export const GEMINI_FLASH_MODEL_ID = process.env.GEMINI_FLASH_MODEL_ID || 'gemini-3.8-flash';
-export const GEMINI_FLASH_LIVE_MODEL_ID = process.env.GEMINI_FLASH_LIVE_MODEL_ID || 'gemini-3.1-flash-live-preview';
+export const GEMINI_FLASH_MODEL_ID = process.env.GEMINI_FLASH_MODEL_ID || 'gemini-2.5-flash';
+export const GEMINI_FLASH_LIVE_MODEL_ID = process.env.GEMINI_FLASH_LIVE_MODEL_ID || 'gemini-2.5-flash';
 export const GEMINI_FALLBACK_PRO_MODEL_ID = process.env.GEMINI_FALLBACK_PRO_MODEL_ID || 'gemini-2.5-pro';
 export const GEMINI_FALLBACK_FLASH_MODEL_ID = process.env.GEMINI_FALLBACK_FLASH_MODEL_ID || 'gemini-2.5-flash';
-export const GEMINI_FALLBACK_FLASH_LIVE_MODEL_ID = process.env.GEMINI_FALLBACK_FLASH_LIVE_MODEL_ID || 'gemini-2.5-flash-live-001';
-export const DEEPMIND_VEO_MODEL_ID = process.env.DEEPMIND_VEO_MODEL_ID || 'veo-3.1-generate-preview';
-export const DEEPMIND_IMAGEN_MODEL_ID = process.env.DEEPMIND_IMAGEN_MODEL_ID || 'gemini-3.1-flash-image-preview';
-export const DEEPMIND_LYRIA_MODEL_ID = process.env.DEEPMIND_LYRIA_MODEL_ID || 'lyria-3.5';
-export const GEMINI_TTS_MODEL_ID = process.env.GEMINI_TTS_MODEL_ID || 'gemini-3.1-flash-tts-preview';
-export const GEMINI_EMBEDDING_MODEL_ID = process.env.GEMINI_EMBEDDING_MODEL_ID || 'text-embedding-005';
+export const GEMINI_FALLBACK_FLASH_LIVE_MODEL_ID = process.env.GEMINI_FALLBACK_FLASH_LIVE_MODEL_ID || 'gemini-2.5-flash';
+export const DEEPMIND_VEO_MODEL_ID = process.env.DEEPMIND_VEO_MODEL_ID || 'veo-2.0-generate-001';
+export const DEEPMIND_IMAGEN_MODEL_ID = process.env.DEEPMIND_IMAGEN_MODEL_ID || 'imagen-3.0-generate-002';
+export const DEEPMIND_LYRIA_MODEL_ID = process.env.DEEPMIND_LYRIA_MODEL_ID || 'lyria-002';
+export const GEMINI_TTS_MODEL_ID = process.env.GEMINI_TTS_MODEL_ID || 'gemini-2.5-flash-preview-tts';
+export const GEMINI_EMBEDDING_MODEL_ID = process.env.GEMINI_EMBEDDING_MODEL_ID || 'text-embedding-004';
 export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL_ID || GEMINI_FLASH_MODEL_ID;
 
 export const GEMINI_MODELS = {
@@ -26,28 +26,83 @@ export const GEMINI_MODELS = {
   VECTOR_EMBEDDING: GEMINI_EMBEDDING_MODEL_ID,
 } as const;
 
-let activeRequestGeminiApiKey: string | null = null;
+interface RequestGeminiKeyBox {
+  apiKey: string | null;
+}
+
+interface AsyncLocalStorageLike<T> {
+  getStore(): T | undefined;
+  enterWith(store: T): void;
+  run<R>(store: T, callback: () => R): R;
+}
+
+function getGeminiKeyAls(): AsyncLocalStorageLike<RequestGeminiKeyBox> | null {
+  if (typeof window !== 'undefined') return null;
+  const g = globalThis as unknown as {
+    __promptCanvasGeminiKeyAls?: AsyncLocalStorageLike<RequestGeminiKeyBox> | null;
+  };
+  if (g.__promptCanvasGeminiKeyAls !== undefined) {
+    return g.__promptCanvasGeminiKeyAls;
+  }
+  try {
+    const asyncHooks = eval('require')('node:async_hooks') as {
+      AsyncLocalStorage: new <T>() => AsyncLocalStorageLike<T>;
+    };
+    g.__promptCanvasGeminiKeyAls = new asyncHooks.AsyncLocalStorage<RequestGeminiKeyBox>();
+  } catch {
+    g.__promptCanvasGeminiKeyAls = null;
+  }
+  return g.__promptCanvasGeminiKeyAls;
+}
 
 /**
- * Sets the active request's resolved Gemini API key (either the logged-in user's BYOK key
- * tied to their userId, or the system default key in Guest mode).
+ * Synchronously initializes a request-isolated AsyncLocalStorage box before the first
+ * `await` in a route guard so all downstream async continuations in the request share
+ * the isolated box without cross-request leakage.
  */
-export function setActiveRequestGeminiApiKey(apiKey: string | null): void {
-  activeRequestGeminiApiKey = apiKey && apiKey.trim().length > 0 ? apiKey.trim() : null;
+export function initRequestGeminiKeyContext(): RequestGeminiKeyBox {
+  const als = getGeminiKeyAls();
+  const box: RequestGeminiKeyBox = { apiKey: null };
+  if (als) {
+    als.enterWith(box);
+  }
+  return box;
+}
+
+/**
+ * Sets the active request's resolved Gemini API key inside the request-isolated
+ * AsyncLocalStorage context box (never in a shared module-global variable).
+ */
+export function setActiveRequestGeminiApiKey(apiKey: string | null, contextBox?: RequestGeminiKeyBox): void {
+  const normalized = apiKey && apiKey.trim().length > 0 ? apiKey.trim() : null;
+  if (contextBox) {
+    contextBox.apiKey = normalized;
+  }
+  const als = getGeminiKeyAls();
+  if (als) {
+    const existing = als.getStore();
+    if (existing) {
+      existing.apiKey = normalized;
+    } else {
+      als.enterWith(contextBox || { apiKey: normalized });
+    }
+  }
 }
 
 /**
  * Returns the effective Gemini API key for the current operation:
  * 1. Explicit key passed to the function (if non-empty)
- * 2. Active logged-in user's saved BYOK key (set by enforceGeminiRouteGuard)
+ * 2. Active request's isolated AsyncLocalStorage BYOK key (set by enforceGeminiRouteGuard)
  * 3. Default system key (process.env.GEMINI_API_KEY, always used in Guest mode)
  */
 export function getEffectiveGeminiApiKey(explicitKey?: string | null): string {
   if (explicitKey && explicitKey.trim().length > 0) {
     return explicitKey.trim();
   }
-  if (activeRequestGeminiApiKey) {
-    return activeRequestGeminiApiKey;
+  const als = getGeminiKeyAls();
+  const scopedKey = als?.getStore()?.apiKey;
+  if (scopedKey) {
+    return scopedKey;
   }
   return process.env.GEMINI_API_KEY || '';
 }
@@ -56,11 +111,11 @@ export type ModelTier = 'omni' | 'lite' | 'medium' | 'pro' | 'critic' | 'vision'
 
 
 /**
- * 🧠 Unified 5-Tier Google Omni 1.1, Gemini & DeepMind Model Routing Engine
- * - Tier 'omni': Google Omni 1.1 SME Director & Multimodal Forensic Auditor (`google-omni-1.1` / `gemini-3.1-pro-preview`)
+ * 🧠 Unified 5-Tier Google Gemini & DeepMind Model Routing Engine
+ * - Tier 'omni': Gemini 3.1 Pro SME Director & Multimodal Forensic Auditor (`gemini-3.1-pro-preview`)
  * - Tier 'pro', 'critic' & 'vision': Gemini 3.1 Pro (`gemini-3.1-pro-preview`, fallback `gemini-2.5-pro`)
- * - Tier 'medium', 'lite' & 'chat': Gemini 3.8 Flash (`gemini-3.8-flash`, fallback `gemini-2.5-flash`)
- * - Tier 'live': Gemini Flash Live (`gemini-3.1-flash-live-preview`, fallback `gemini-3.8-flash` / `gemini-2.5-flash`)
+ * - Tier 'medium', 'lite' & 'chat': Gemini 2.5 Flash (`gemini-2.5-flash`)
+ * - Tier 'live': Gemini 2.5 Flash Live (`gemini-2.5-flash`)
  */
 export function getGeminiModel(tier: ModelTier = 'pro'): string {
   if (tier === 'live') {
@@ -104,23 +159,23 @@ export function getGeminiModelForArchitecture(archId?: string): string {
  * Guarantees that the Judge / Critic model evaluating a diagram, refactor, patch, or specification
  * report is NEVER the same model ID that generated the artifact from user inputs.
  *
- * - Generator = Flash (`gemini-3.8-flash` / `gemini-2.5-flash` / `gemini-3.1-flash-live-preview`)
+ * - Generator = Flash (`gemini-2.5-flash` / `gemini-2.5-flash` / `gemini-3.1-flash-live-preview`)
  *   -> Judge = `gemini-3.1-pro-preview` (fallback `gemini-2.5-pro`)
  * - Generator = Pro (`gemini-3.1-pro-preview`)
- *   -> Judge = `gemini-3.8-flash` (fallback `gemini-2.5-pro`)
+ *   -> Judge = `gemini-2.5-flash` (fallback `gemini-2.5-pro`)
  * - Generator = Fallback Pro (`gemini-2.5-pro`)
- *   -> Judge = `gemini-3.1-pro-preview` (fallback `gemini-3.8-flash`)
+ *   -> Judge = `gemini-3.1-pro-preview` (fallback `gemini-2.5-flash`)
  */
 export function getDistinctJudgeModel(generatorModelId?: string): string {
   const normalizedGen = (generatorModelId || '').trim().toLowerCase();
   const proModel = getGeminiModel('pro'); // gemini-3.1-pro-preview
-  const flashModel = getGeminiModel('chat'); // gemini-3.8-flash
+  const flashModel = getGeminiModel('chat'); // gemini-2.5-flash
 
   if (!normalizedGen) {
     return proModel;
   }
   if (normalizedGen === proModel.toLowerCase()) {
-    // Generator used Gemini 3.1 Pro -> use Gemini 3.8 Flash as orthogonal cross-family Judge
+    // Generator used Gemini 3.1 Pro -> use Gemini 2.5 Flash as orthogonal cross-family Judge
     return flashModel;
   }
   if (normalizedGen === flashModel.toLowerCase() || normalizedGen.includes('flash')) {

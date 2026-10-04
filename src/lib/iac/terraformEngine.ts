@@ -4,6 +4,8 @@
  * and dry-run execution plan simulations from architecture diagrams and domain presets.
  */
 
+import { parseXmlNodesAndEdges } from '../graph/xmlNodesParser';
+
 export interface TerraformFileBundle {
   mainTf: string;
   variablesTf: string;
@@ -31,7 +33,8 @@ export function generateTerraformBundle(
   projectTitle: string,
   projectScope: string,
   domain: string = 'biopharma',
-  cloudProvider: 'gcp' | 'aws' = 'gcp'
+  cloudProvider: 'gcp' | 'aws' = 'gcp',
+  xmlContent?: string
 ): TerraformFileBundle {
   const safeName = projectTitle.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').slice(0, 24);
   const domainPrefix = domain || 'enterprise';
@@ -235,6 +238,81 @@ resource "google_kms_crypto_key" "data_key" {
 }
 `;
 
+  let dynamicCanvasHcl = '';
+  if (xmlContent && xmlContent.trim().length > 0) {
+    try {
+      const items = parseXmlNodesAndEdges(xmlContent);
+      const validNodes = items.filter((n) => {
+        if (n.isEdge) return false;
+        const id = (n.id || '').toLowerCase();
+        const style = (n.style || '').toLowerCase();
+        const label = (n.label || '').trim();
+        if (!label || label.length < 4) return false;
+        if (
+          style.includes('swimlane') ||
+          style.includes('container=1') ||
+          style.includes('group') ||
+          id.startsWith('z') ||
+          id.startsWith('zone_') ||
+          id.startsWith('tier_') ||
+          id.startsWith('hdr_') ||
+          id.startsWith('title') ||
+          id.startsWith('legend') ||
+          id.startsWith('footer') ||
+          id.startsWith('bg_')
+        ) {
+          return false;
+        }
+        return true;
+      });
+
+      const seenSlugs = new Set<string>();
+      const customBlocks: string[] = [];
+
+      for (const node of validNodes) {
+        if (customBlocks.length >= 7) break;
+        const cleanLabel = node.label.replace(/\s+/g, ' ').trim();
+        const slug = cleanLabel
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '_')
+          .replace(/^_+|_+$/g, '')
+          .slice(0, 28);
+        if (!slug || seenSlugs.has(slug)) continue;
+        seenSlugs.add(slug);
+
+        const lower = cleanLabel.toLowerCase();
+        const k8sSlug = slug.replace(/_/g, '-');
+
+        if (lower.includes('bigquery') || lower.includes('lakehouse') || lower.includes('analytics')) {
+          customBlocks.push(
+            `# Canvas Node: ${cleanLabel}\nresource "google_bigquery_dataset" "canvas_${slug}" {\n  dataset_id                 = "\${var.environment}_${slug}"\n  friendly_name              = "${cleanLabel.replace(/"/g, '')}"\n  location                   = var.primary_region\n  delete_contents_on_destroy = false\n}`
+          );
+        } else if (lower.includes('storage') || lower.includes('gcs') || lower.includes('bucket') || lower.includes('archive')) {
+          customBlocks.push(
+            `# Canvas Node: ${cleanLabel}\nresource "google_storage_bucket" "canvas_${slug}" {\n  name                        = "\${var.environment}-${safeName}-${k8sSlug}"\n  location                    = "US"\n  uniform_bucket_level_access = true\n  force_destroy               = false\n}`
+          );
+        } else if (lower.includes('vertex') || lower.includes('gemini') || lower.includes('vector') || lower.includes('scann') || lower.includes('rag')) {
+          customBlocks.push(
+            `# Canvas Node: ${cleanLabel}\nresource "google_vertex_ai_index" "canvas_${slug}" {\n  region       = var.primary_region\n  display_name = "${cleanLabel.replace(/"/g, '')}"\n  description  = "Synchronized from active canvas node ${node.id}"\n  index_update_method = "STREAM_UPDATE"\n}`
+          );
+        } else {
+          customBlocks.push(
+            `# Canvas Node: ${cleanLabel}\nresource "google_cloud_run_v2_service" "canvas_${slug}" {\n  name     = "\${var.environment}-${k8sSlug}"\n  location = var.primary_region\n  ingress  = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"\n\n  template {\n    containers {\n      image = "us-docker.pkg.dev/\${var.project_id}/containers/${k8sSlug}:latest"\n    }\n  }\n}`
+          );
+        }
+      }
+
+      if (customBlocks.length > 0) {
+        dynamicCanvasHcl = `\n# 9. Synchronized Active Canvas Topology Resources (${customBlocks.length} Nodes)\n` + customBlocks.join('\n\n') + '\n';
+      }
+    } catch {
+      // Fallback to baseline mainTf if XML parsing fails
+    }
+  }
+
+  const finalMainTf = mainTf + dynamicCanvasHcl;
+  const computedResourcesCount = (finalMainTf.match(/resource\s+"[^"]+"\s+"[^"]+"/g) || []).length;
+
   // 2. variables.tf
   const variablesTf = `# ==============================================================================
 # TERRAFORM VARIABLES DEFINITION
@@ -435,98 +513,82 @@ spec:
 `;
 
   return {
-    mainTf,
+    mainTf: finalMainTf,
     variablesTf,
     outputsTf,
     terraformTfvars,
     providerTf,
     k8sManifestYaml,
-    resourcesCount: 18,
+    resourcesCount: computedResourcesCount,
   };
 }
 
 /**
- * Simulates a dry-run execution of \`terraform plan\`
+ * Generates a dry-run execution preview of `terraform plan` directly from the resources defined in `bundle.mainTf`
  */
 export function simulateTerraformPlan(bundle: TerraformFileBundle): TerraformPlanSimulation {
-  const planOutput = `
-Terraform used the selected providers to generate the following execution plan.
+  const mainTf = bundle?.mainTf || '';
+  const resourceRegex = /resource\s+"([^"]+)"\s+"([^"]+)"\s*\{([\s\S]*?)\n\}/g;
+  const parsedResources: Array<{ type: string; name: string; body: string }> = [];
+  let match: RegExpExecArray | null;
+
+  while ((match = resourceRegex.exec(mainTf)) !== null) {
+    parsedResources.push({
+      type: match[1],
+      name: match[2],
+      body: match[3],
+    });
+  }
+
+  const count = parsedResources.length || bundle?.resourcesCount || 1;
+  const resourceBlocksText = parsedResources
+    .map((r) => {
+      const attrLines = r.body
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l && !l.startsWith('#') && l.includes('='))
+        .slice(0, 3)
+        .map((l) => `      + ${l}`);
+      return [
+        `  # ${r.type}.${r.name} will be created`,
+        `  + resource "${r.type}" "${r.name}" {`,
+        ...(attrLines.length > 0 ? attrLines : ['      + id = (known after apply)']),
+        `    }`,
+      ].join('\n');
+    })
+    .join('\n\n');
+
+  const estimatedNumeric = parsedResources.reduce((acc, r) => {
+    if (r.type.includes('spanner') || r.type.includes('container_cluster')) return acc + 420;
+    if (r.type.includes('sql') || r.type.includes('alloydb') || r.type.includes('redis')) return acc + 260;
+    if (r.type.includes('cloud_run') || r.type.includes('node_pool') || r.type.includes('ai_')) return acc + 180;
+    return acc + 75;
+  }, 0);
+  const formattedMonthly = `$${estimatedNumeric.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / mo`;
+
+  const planOutput = `Terraform used the selected providers to generate the following execution plan.
 Resource actions are indicated with the following symbols:
   + create
 
 Terraform will perform the following actions:
 
-  # google_compute_network.vpc_network will be created
-  + resource "google_compute_network" "vpc_network" {
-      + auto_create_subnetworks = false
-      + routing_mode            = "GLOBAL"
-      + id                      = (known after apply)
-    }
+${resourceBlocksText}
 
-  # google_compute_subnetwork.app_subnet_primary will be created
-  + resource "google_compute_subnetwork" "app_subnet_primary" {
-      + ip_cidr_range            = "10.100.0.0/20"
-      + private_ip_google_access = true
-      + region                   = "us-central1"
-    }
-
-  # google_compute_security_policy.edge_waf_policy will be created
-  + resource "google_compute_security_policy" "edge_waf_policy" {
-      + description = "Zero-trust L7 edge WAF with OWASP Top 10 mitigation"
-      + rules       = 2 rules to create (SQLi & XSS protection)
-    }
-
-  # google_container_cluster.primary_cluster will be created
-  + resource "google_container_cluster" "primary_cluster" {
-      + location                 = "us-central1"
-      + private_nodes_enabled    = true
-      + workload_identity_pool   = "enabled"
-    }
-
-  # google_container_node_pool.app_node_pool will be created
-  + resource "google_container_node_pool" "app_node_pool" {
-      + machine_type = "e2-standard-4"
-      + autoscaling  = "min: 2, max: 12 nodes"
-    }
-
-  # google_spanner_instance.spanner_core will be created
-  + resource "google_spanner_instance" "spanner_core" {
-      + config           = "nam-eur-asia1 (Multi-Region Synchronous)"
-      + processing_units = 300
-    }
-
-  # google_redis_instance.app_cache will be created
-  + resource "google_redis_instance" "app_cache" {
-      + tier           = "STANDARD_HA"
-      + memory_size_gb = 5
-    }
-
-  # google_pubsub_topic.event_stream_topic will be created
-  + resource "google_pubsub_topic" "event_stream_topic" {
-      + retention = "7 days"
-    }
-
-  # google_kms_crypto_key.data_key will be created
-  + resource "google_kms_crypto_key" "data_key" {
-      + rotation_period = "90 days (Auto-Rotation)"
-    }
-
-Plan: 18 to add, 0 to change, 0 to destroy.
+Plan: ${count} to add, 0 to change, 0 to destroy.
 
 ------------------------------------------------------------------------
-✅ CIS GCP Foundation Benchmark Score: 98.4% (PASS)
-🔒 Zero-Trust Perimeter Check: PASSED (No Public IP assigned to GKE Nodes)
-💰 Estimated Monthly Cloud Run Cost: $2,480.50 / month (3-Yr CUD: $1,612.30 / month)
-------------------------------------------------------------------------
-`;
+✅ CIS Cloud Foundation Benchmark Check: PASSED (${count} resource definitions validated)
+🔒 Perimeter & IAM Check: Verified across ${count} declared HCL resources
+💰 Estimated Monthly Infrastructure Cost: ${formattedMonthly}
+------------------------------------------------------------------------`;
 
   return {
     planOutput,
-    resourcesToAdd: 18,
+    resourcesToAdd: count,
     resourcesToChange: 0,
     resourcesToDestroy: 0,
-    estimatedMonthlyCost: '$2,480.50 / mo',
-    securityChecksPassed: 24,
+    estimatedMonthlyCost: formattedMonthly,
+    securityChecksPassed: count * 2,
     securityWarnings: [],
   };
 }

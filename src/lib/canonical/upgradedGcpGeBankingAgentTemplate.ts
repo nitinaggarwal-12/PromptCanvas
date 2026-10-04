@@ -516,7 +516,7 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
     compactNodeHtml({
       leftIcon: ICONS.gemini,
       rightIcon: ICONS.agentCube,
-      title: 'Gemini 3.1 Pro / 3.8 Flash',
+      title: 'Gemini 3.1 Pro / 2.5 Flash',
       line1: '(Vertex AI • Context Cache)',
     }),
     930,
@@ -841,7 +841,7 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
     ]
   );
 
-  // 9. AI Cluster <-> Gemini 3.1 Pro / 3.8 Flash & Self-Hosted Open Models
+  // 9. AI Cluster <-> Gemini 3.1 Pro / 2.5 Flash & Self-Hosted Open Models
   addEdge(
     'e_cluster_gemini',
     '',

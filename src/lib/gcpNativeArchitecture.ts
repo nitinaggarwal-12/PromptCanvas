@@ -4,7 +4,7 @@
  * 1. Ingress & Edge (Anycast Edge, Cloud Armor, External HTTPS GCLB, Apigee X)
  * 2. Application Core Mesh (GKE Autopilot, Cloud Run, Memorystore Redis)
  * 3. Real-Time Event Streaming (Cloud Pub/Sub, Datastream CDC, Cloud Dataflow Engine)
- * 4. Vertex AI & Intelligence Hub (ScaNN Vector Search, Model Armor Shield, Gemini 3.8 Flash & Pro Hybrid Engine)
+ * 4. Vertex AI & Intelligence Hub (ScaNN Vector Search, Model Armor Shield, Gemini 2.5 Flash & Pro Hybrid Engine)
  * 5. Multi-Region Lakehouse & DB (Cloud Spanner nam3, BigQuery Lakehouse, Cloud Storage Dual-Region)
  * 6. Zero-Trust Security, SRE Observability & Governance Baseline (VPC-SC, Workload Identity, Cloud KMS HSM, Secret Manager, Dataplex, Cloud SCC)
  */
@@ -266,7 +266,7 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
     `<div style="display:flex;align-items:center;gap:18px;font-size:11px;color:#E2E8F0;font-weight:600;">` +
     `<span style="display:inline-flex;align-items:center;gap:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Dual-Hub VPC: <b style="color:#FFFFFF;">10.100.0.0/16 • 10.200.0.0/16</b></span>` +
     `<span style="color:#34D399;">● ${encodeXml(slaText)} (${encodeXml(drText)})</span>` +
-    `<span style="color:#C084FC;">✦ Vertex AI & Gemini 3.8 Flash Reasoning</span>` +
+    `<span style="color:#C084FC;">✦ Vertex AI & Gemini 2.5 Flash Reasoning</span>` +
     `</div>` +
     `</div>`;
 
@@ -511,8 +511,8 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
       ], isDark)
     );
     cells.push(
-      createNodeCard("n_gemini", "Gemini 3.8 Flash & Pro Engine", "3.8 Flash (Thinking) + 2.5 Pro (Deep ReAct)", "2M Context • Dynamic Thinking", "HYBRID REASONING", "gemini", 1270, 130, 350, 300, "#9333EA", [
-        "Gemini 3.8 Flash Native Dynamic Thinking & Reasoning",
+      createNodeCard("n_gemini", "Gemini 2.5 Flash & Pro Engine", "2.5 Flash (Thinking) + 2.5 Pro (Deep ReAct)", "2M Context • Dynamic Thinking", "HYBRID REASONING", "gemini", 1270, 130, 350, 300, "#9333EA", [
+        "Gemini 2.5 Flash Native Dynamic Thinking & Reasoning",
         "Gemini 2.5 Pro Deep ReAct Orchestration & Planning",
         "Vertex AI Context Caching (TTL-based KV Memory)",
         "Tool Calling AST & Ephemeral Sandbox Execution",
@@ -535,8 +535,8 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
       ], isDark)
     );
     cells.push(
-      createNodeCard("n_gemini", "Gemini 3.8 Flash & Pro Engine", "3.8 Flash (Thinking) + 2.5 Pro (Deep ReAct)", "2M Context • Dynamic Thinking", "HYBRID REASONING", "gemini", 1270, 130, 350, 300, "#9333EA", [
-        "Gemini 3.8 Flash Native Dynamic Thinking & Reasoning",
+      createNodeCard("n_gemini", "Gemini 2.5 Flash & Pro Engine", "2.5 Flash (Thinking) + 2.5 Pro (Deep ReAct)", "2M Context • Dynamic Thinking", "HYBRID REASONING", "gemini", 1270, 130, 350, 300, "#9333EA", [
+        "Gemini 2.5 Flash Native Dynamic Thinking & Reasoning",
         "Gemini 2.5 Pro Deep ReAct Orchestration & Planning",
         "Vertex AI Context Caching (TTL-based KV Memory)",
         "Tool Calling AST & Ephemeral Sandbox Execution",
