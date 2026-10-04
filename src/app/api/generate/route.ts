@@ -152,8 +152,7 @@ export async function POST(request: Request) {
 
         const isContextHarnessLoopGraph =
           (promptLower.includes('harness') && promptLower.includes('loop') && promptLower.includes('context')) ||
-          promptLower.includes('context + harness') ||
-          promptLower.includes('charlie hills');
+          promptLower.includes('context + harness');
 
         if (isContextHarnessLoopGraph) {
           const result = await executeUnifiedDiagramPipeline({

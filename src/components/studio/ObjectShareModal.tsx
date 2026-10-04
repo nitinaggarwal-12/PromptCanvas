@@ -69,7 +69,7 @@ export function ObjectShareModal({
   if (!isOpen) return null;
 
   // Build canonical deep link
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://promptcanvas.up.railway.app';
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://promptcanvas-887605034827.us-central1.run.app';
   let deepLink = `${origin}/studio?project=${encodeURIComponent(projectTitle)}&v=${activeVersionTag}`;
 
   if (targetType === 'doc' && activeDoc) {

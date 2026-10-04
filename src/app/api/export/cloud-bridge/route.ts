@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
       saveBridgeFileToDisk(bridgeId, 'drawio', title, drawioBuf, CURRENT_BRIDGE_SCHEMA_VERSION);
     }
 
-    const host = req.headers.get('host') || 'promptcanvas.up.railway.app';
+    const host = req.headers.get('host') || 'promptcanvas-887605034827.us-central1.run.app';
     const proto = host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https';
     // Clean filename path ending in .pptx or .docx so Google Docs Viewer URL parser succeeds 100%
     const publicUrl = `${proto}://${host}/api/export/cloud-bridge/${bridgeId}.${entry.format}`;

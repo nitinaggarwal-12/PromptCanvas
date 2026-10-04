@@ -122,13 +122,13 @@ export const GOOGLE_OPEN_KNOWLEDGE_CATALOG: OKFEntity[] = [
     description: 'Enterprise GPT-4o deployments with Azure AI Search, Microsoft Fabric, and enterprise tenant isolation.',
     vendor: 'Microsoft Azure Cloud',
     officialIconUrl: 'https://api.iconify.design/logos:microsoft-azure.svg',
-    compatibleWith: ['gcp_serverless_web_app', 'unified_system_view', 'secure_deployment_map'],
+    compatibleWith: ['canonical_42_azure_enterprise', 'unified_system_view', 'secure_deployment_map'],
     technicalSpecifications: {
       'Hybrid Retrieval': 'Azure AI Hybrid Vector Search',
       'Integration': 'Microsoft Fabric OneLake Integration',
       'Network Boundary': 'Azure Private Link & VNet Injection'
     },
-    blueprintId: 'gcp_serverless_web_app'
+    blueprintId: 'canonical_42_azure_enterprise'
   },
 
   // ==========================================
@@ -177,13 +177,13 @@ export const GOOGLE_OPEN_KNOWLEDGE_CATALOG: OKFEntity[] = [
     category: 'CloudProvider',
     description: 'Azure Container Apps, Azure OpenAI Service, Microsoft Fabric OneLake, and Azure Synapse Analytics.',
     officialIconUrl: 'https://api.iconify.design/logos:microsoft-azure.svg',
-    compatibleWith: ['gcp_serverless_web_app', 'unified_system_view', 'secure_deployment_map'],
+    compatibleWith: ['canonical_42_azure_enterprise', 'unified_system_view', 'secure_deployment_map'],
     technicalSpecifications: {
       'Container Compute': 'Azure Container Apps & AKS',
       'Enterprise Analytics': 'Microsoft Fabric OneLake',
       'Identity Control': 'Microsoft Entra ID (Azure AD)'
     },
-    blueprintId: 'gcp_serverless_web_app'
+    blueprintId: 'canonical_42_azure_enterprise'
   },
   {
     '@context': 'https://schema.org',
@@ -194,13 +194,13 @@ export const GOOGLE_OPEN_KNOWLEDGE_CATALOG: OKFEntity[] = [
     category: 'CloudProvider',
     description: 'Oracle Autonomous Database, OCI High-Bandwidth GPU Clusters, OCI Streaming, and OCI Vault.',
     officialIconUrl: 'https://api.iconify.design/logos:oracle.svg',
-    compatibleWith: ['gcp_industrial_iot', 'data_ai_pipeline', 'unified_system_view'],
+    compatibleWith: ['canonical_43_multicloud_interconnect', 'data_ai_pipeline', 'unified_system_view'],
     technicalSpecifications: {
       'Autonomous DB': 'OCI Autonomous Transaction Processing',
       'High-Speed Streaming': 'OCI Streaming Service (Kafka)',
       'Security Enclave': 'OCI Vault & KMS Envelope Encryption'
     },
-    blueprintId: 'gcp_industrial_iot'
+    blueprintId: 'canonical_43_multicloud_interconnect'
   },
   {
     '@context': 'https://schema.org',
@@ -218,6 +218,46 @@ export const GOOGLE_OPEN_KNOWLEDGE_CATALOG: OKFEntity[] = [
       'Secrets Vault': 'HashiCorp Vault External Secrets'
     },
     blueprintId: 'unified_system_view'
+  },
+
+  // ==========================================
+  // 3. CANONICAL BLUEPRINTS & DATABASES (OKF ENTITIES)
+  // ==========================================
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Blueprint',
+    '@id': 'okf:blueprint:canonical-76-whiteboard',
+    name: 'Whiteboard Architecture Sketch (#76)',
+    alternateName: 'Interactive Marker Whiteboard Topology',
+    category: 'Blueprint',
+    description: 'Hand-drawn whiteboard architecture blueprint with physical marker frame, rough strokes, and sticky callouts.',
+    vendor: 'PromptCanvas Studio',
+    officialIconUrl: 'https://api.iconify.design/lucide:pen-tool.svg',
+    compatibleWith: ['canonical_76_whiteboard', 'unified_system_view'],
+    technicalSpecifications: {
+      'Canvas Aesthetic': 'Whiteboard Frame & Marker Strokes',
+      'Layout Geometry': '16:9 Non-Overlapping Orthogonal Grid',
+      'Adaptation Mode': 'Perspective-Locked Prompt Mutation'
+    },
+    blueprintId: 'canonical_76_whiteboard'
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'DatabaseOrTool',
+    '@id': 'okf:db:cloud-spanner-alloydb',
+    name: 'Google Cloud Spanner & AlloyDB Vector',
+    alternateName: 'Globally Distributed Relational & Vector Storage',
+    category: 'DatabaseOrTool',
+    description: '99.999% availability globally distributed ACID database paired with AlloyDB pgvector for sub-millisecond hybrid RAG.',
+    vendor: 'Google Cloud Platform (GCP)',
+    officialIconUrl: 'https://api.iconify.design/logos:postgresql.svg',
+    compatibleWith: ['gcp_ai_cognitive_rag', 'gcp_project_itacs_production'],
+    technicalSpecifications: {
+      'Availability': '99.999% Multi-Region TrueTime ACID',
+      'Vector Index': 'ScaNN / HNSW Sub-10ms Hybrid Search',
+      'Encryption': 'Cloud KMS CMEK + VPC-SC Enclave'
+    },
+    blueprintId: 'gcp_ai_cognitive_rag'
   }
 ];
 

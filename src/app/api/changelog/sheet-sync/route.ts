@@ -77,7 +77,7 @@ export async function GET(request: Request) {
  * Automatically pushes cell edits (Users, Comments, Status changes) to PromptCanvas
  * and pulls UI changes into the 4 tabs: Tracker, Users, Comments, Changelog.
  */
-const PROMPTCANVAS_API_URL = "https://promptcanvas.up.railway.app/api/changelog/sheet-sync";
+const PROMPTCANVAS_API_URL = "https://promptcanvas-887605034827.us-central1.run.app/api/changelog/sheet-sync";
 
 function onEdit(e) {
   if (!e || !e.range) return;

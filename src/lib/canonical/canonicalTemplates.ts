@@ -1,11 +1,13 @@
 import { CANONICAL_CONTRACTS, CanonicalContract } from './canonicalContracts';
 import { INFOGRAPHIC_BLUEPRINTS_LIST, generateInfographicBlueprintXmlById } from './infographicBlueprints52to66';
 import { FLOW_DIAGRAM_BLUEPRINTS_67_TO_74, generateFlowDiagramBlueprintXmlById } from './flowDiagramBlueprints67to74';
+import { generateWhiteboardGcpAgentArchXml } from './templateWhiteboardGcpAgentArch';
+import { generatePaperGcpAgentArchXml } from './templatePaperGcpAgentArch';
 
 export interface CanonicalTemplate {
-  id: string; // e.g. "01", "02" ... "66"
+  id: string; // e.g. "01", "02" ... "77"
   name: string;
-  family: 'Infographic' | 'Understand' | 'Process' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
+  family: 'Infographic' | 'Understand' | 'Process' | 'Whiteboard' | 'Paper' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: 'L1' | 'L2' | 'L3';
   primaryPurpose: string;
   examples: string;
@@ -25,6 +27,8 @@ export const CANONICAL_FAMILIES = [
   'Infographic',
   'Understand',
   'Process',
+  'Whiteboard',
+  'Paper',
   'Structure',
   'Flow',
   'Infrastructure',
@@ -150,7 +154,7 @@ import { generateTemplate52ContextHarnessLoopGraphXml } from "./template52Contex
 interface RawCanonicalTemplate {
   id: string;
   name: string;
-  family: 'Infographic' | 'Understand' | 'Process' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
+  family: 'Infographic' | 'Understand' | 'Process' | 'Whiteboard' | 'Paper' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: 'L1' | 'L2' | 'L3';
   primaryPurpose: string;
   examples: string;
@@ -808,7 +812,31 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     previewImage: fb.previewImage,
     keyComponents: fb.keyComponents,
     generateXml: () => generateFlowDiagramBlueprintXmlById(fb.id)
-  }))
+  })),
+  {
+    id: '76',
+    name: 'Multi-Agent Intelligence Core — Whiteboard Sketch',
+    family: 'Whiteboard',
+    level: 'L2',
+    primaryPurpose: 'Hand-drawn dry-erase whiteboard architecture blueprint with physical marker tray, rough strokes, and sticky callouts',
+    examples: 'Whiteboard Sketch, Dry-Erase Marker Architecture, Multi-Agent Intelligence Core, A2A & MCP Sketch',
+    defaultDomain: 'Google Cloud Enterprise Agentic AI (Whiteboard Sketch)',
+    previewImage: '/templates/canonical_00.png',
+    keyComponents: ['Presentation Layer', 'Edge Layer (API Gateway, Identity Platform, Model Armor)', 'Orchestrator Agent (Coordinator)', 'Accounts, Transactions & Customer Service Agents', 'LLM Layer & Vector Knowledge Search', 'Governance & Operations (IAM, Observability)', 'Cloud Spanner, Bigtable, Firestore & Vector Databases'],
+    generateXml: () => generateWhiteboardGcpAgentArchXml()
+  },
+  {
+    id: '77',
+    name: 'Multi-Agent Orchestration — Spiral Graph Paper Sketch',
+    family: 'Paper',
+    level: 'L2',
+    primaryPurpose: 'Spiral-bound graph-paper notebook architecture sketch with wood desk border, ruled lines, and highlighter callouts',
+    examples: 'Paper Sketch, Spiral Notebook Graph-Paper Architecture, Multi-Agent Orchestration, Highlighter Sketch',
+    defaultDomain: 'Google Cloud Enterprise Agentic AI (Paper Sketch)',
+    previewImage: '/templates/canonical_00.png',
+    keyComponents: ['Presentation Layer', 'Edge Layer (API Gateway, Identity Platform, Model Armor)', 'Coordinator Agent', 'Accounts, Transactions & Service Agents', 'LLM Layer & Vector Knowledge Search', 'Governance & Operations (IAM, Observability)', 'Cloud Spanner, Bigtable, Firestore & Vector Databases'],
+    generateXml: () => generatePaperGcpAgentArchXml()
+  }
 ];
 
 
@@ -1681,18 +1709,19 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
         .replace(/\bRaw\s+Gemini\s+API\b/gi, 'Stateless Foundation API')
         .replace(/\bVertex\s+AI\s+Agent\s+Engine\b/gi, 'Governed Agent Engine')
         .replace(/^Google\s+Cloud\s+/i, 'Enterprise Cloud ');
+  const isSketchBp = t.id === '76' || t.id === '77';
   return {
     ...t,
     name: cleanName,
-    previewImage: `/templates/canonical_${paddedId}.png`,
-    sourceImageId: `/templates/canonical_${paddedId}.png`,
+    previewImage: isSketchBp ? (t.previewImage || '/templates/canonical_00.png') : `/templates/canonical_${paddedId}.png`,
+    sourceImageId: isSketchBp ? (t.previewImage || '/templates/canonical_00.png') : `/templates/canonical_${paddedId}.png`,
     generatorVersion: contract ? contract.generatorVersion : "1.0",
-    fidelityScore: contract && contract.certificationStatus === "certified" ? 0.98 : 0.90,
-    certificationStatus: contract ? contract.certificationStatus : "in_review",
+    fidelityScore: isSketchBp || (contract && contract.certificationStatus === "certified") ? 0.98 : 0.90,
+    certificationStatus: isSketchBp ? "certified" : contract ? contract.certificationStatus : "in_review",
     contract,
     generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => {
       const baseXml = t.generateXml(domainFlavor, theme);
-      if (t.id === '00' && (!domainFlavor || domainFlavor === 'general')) {
+      if (isSketchBp || (t.id === '00' && (!domainFlavor || domainFlavor === 'general'))) {
         return baseXml;
       }
       return sanitizeAndHealCanonicalBlueprintXml(injectDomainFlavorXml(baseXml, domainFlavor), t.id);

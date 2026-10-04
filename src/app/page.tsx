@@ -157,10 +157,10 @@ export default function LandingPage() {
               <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-300 font-mono font-black">PRO</span>
             </Link>
 
-            <Link href="/canonical" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="75 High-Contrast Architecture Blueprints">
+            <Link href="/canonical" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="77 High-Contrast Architecture Blueprints">
               <Sparkles className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
               <span>Canonical Hub</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-300 font-mono font-bold">75</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-300 font-mono font-bold">77</span>
             </Link>
 
             <Link href="/docgen" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="17 Enterprise Specification Blueprints (BRD, PRD, SDD, TDD)">

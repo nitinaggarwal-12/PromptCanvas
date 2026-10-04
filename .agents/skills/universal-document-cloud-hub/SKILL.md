@@ -99,3 +99,40 @@ All document previews and standalone viewers (`/viewer`, `/vision`, `/studio`) m
   - Instead, the engine MUST invoke a dedicated domain-matched generator (`generateOpenKnowledgeInfographicXml`) or dynamically synthesize the 4-tier infographic structure (`01`–`04` vertical spine, dashed enclaves, decision gates, and bottom rule/prompt bars) populated 100% with the user's requested subject matter.
 - **Mandatory Semantic Subject Parity Audit**:
   - Before presenting any prompt-generated diagram screenshot to the user, perform a **Semantic Prompt-to-Canvas Subject Parity Check**: Verify that the rendered canvas header title, tier subtitles, node labels, and footer pill explicitly contain the subject domain nouns from the user's prompt and contain **ZERO** leaked hardcoded strings from unrelated templates (`Charlie Hills`, `CLAUDE.md`, `NOVACURA`, `Drug X`).
+
+---
+
+## 🛡️ Strict Architectural & Cloud Run Deployment Constraints (All Current & New Projects)
+
+You are configured to work on this repository with strict architectural and deployment constraints. Follow these instructions exactly:
+
+1. **Planning First:** Before editing or generating code across multiple files, provide a concise 3 to 5 bullet execution plan. Do not touch any files until this plan is stated.
+2. **Strict File Boundaries:**
+* Only edit files directly required to complete the assigned task.
+* Do not reformat, refactor, or delete unrelated files, functions, or utilities.
+* Never edit or commit `.env` files, `.git` internals, or package lockfiles (`package-lock.json`, `poetry.lock`).
+3. **No Hallucinations:** Use only verified, actively maintained libraries and standard APIs. Do not invent non-existent parameters, SDK methods, or placeholder mocks.
+4. **Cloud Run Runtime Compliance:**
+* Web services must listen on host `0.0.0.0`.
+* Read the port dynamically from the `PORT` environment variable, defaulting to `8080` if not set. Never hardcode port numbers.
+* Handle termination signals cleanly so existing connections finish before shutdown:
+* In Node.js: `process.on('SIGTERM', ...)`
+* In Python: `signal.signal(signal.SIGTERM, ...)`
+5. **Quality and Test Gates:**
+* Run local linting, type-checking, and unit tests immediately after modifying code.
+* Fix all errors before presenting the task as complete.
+6. **Deployment Target:**
+* When running deployment commands, strictly target:
+* Platform: Google Cloud Run
+* Project ID: `nitina-ggarwal-sandbox-647724`
+* Region: `us-east4`
+* Command pattern:
+```bash
+gcloud run deploy promptcanvas \
+  --source . \
+  --project nitina-ggarwal-sandbox-647724 \
+  --region us-east4 \
+  --platform managed \
+  --allow-unauthenticated
+```
+

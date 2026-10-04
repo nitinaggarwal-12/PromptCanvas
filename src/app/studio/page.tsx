@@ -145,7 +145,7 @@ Feel free to ask me about:
 
 1. **Dual-Sync Living Architecture**: Compiles high-contrast, certified Draw.io diagrams that stay 100% bidirectionally synchronized with 16 comprehensive Living Specifications (PRD, HLD, STRIDE Threat Model, Spanner DDL, BCDR Plan, and FinOps runbooks).
 2. **Multi-Persona AI Co-Pilot**: Simulate inputs from Product Managers, Lead Architects, CISOs, and FinOps engineers to refine both visual topology and technical specs simultaneously.
-3. **53 Canonical Certified Blueprints**: Pre-engineered Google Cloud reference topologies covering event streaming, multi-region lakehouses, Vertex AI RAG hubs, and Zero-Trust perimeters.
+3. **${CANONICAL_TEMPLATES.length} Canonical Certified Blueprints**: Pre-engineered Google Cloud reference topologies covering event streaming, multi-region lakehouses, Vertex AI RAG hubs, Whiteboard/Paper sketches, and Zero-Trust perimeters.
 4. **Draw.io Native Interop**: Fully compatible with diagrams.net. Download standard \`.drawio\` XML, export high-res diagrams, or open directly in the web editor.
 5. **Auditory Briefings**: Generate 2-minute executive audio briefings summarizing architecture tradeoffs and SLAs.
 
@@ -857,7 +857,7 @@ function StudioMain() {
       {
         id: `msg_new_${Date.now()}`,
         sender: 'assistant',
-        text: `✨ **New Diagram Workspace Ready (Default: 2026 GCP & Gemini Enterprise Native Technical Architecture)**.\n\nEnter your architecture prompt in the canvas composer or below (e.g., *"Design a GCP native technical architecture with Gemini Enterprise, ADK, A2A, MCP & Cloud Spanner"*), or click any of the 75 certified blueprints on the canvas to generate **v1.0**.`,
+        text: `✨ **New Diagram Workspace Ready (Default: 2026 GCP & Gemini Enterprise Native Technical Architecture)**.\n\nEnter your architecture prompt in the canvas composer or below (e.g., *"Design a GCP native technical architecture with Gemini Enterprise, ADK, A2A, MCP & Cloud Spanner"*), or click any of the ${CANONICAL_TEMPLATES.length} certified blueprints on the canvas to generate **v1.0**.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       },
     ]);
@@ -1093,8 +1093,6 @@ function StudioMain() {
             ? targetUseCaseMatch[1].trim()
             : isAwsProjectWithGcpXml
             ? awsUserMsgMatch?.[0]?.trim() || 'AWS Cloud AI Architecture on Amazon Bedrock, SageMaker, Redshift & Claude'
-            : (urlId === 'ses_6jozjki_muf7vj1y' || projTitle === 'abc')
-            ? 'AWS Cloud Architecture on Bedrock and Sagemaker and Redshift and Claude'
             : '';
 
           if (extractedUseCasePrompt && (restoredXml.includes('id="z1_bg"') || restoredXml.includes('id="z1"') || restoredXml.includes('id="spatial_gcp_reference_arch"') || !restoredXml.includes('Generative Prompt:') || !restoredXml.includes('AWS CLOUD ARCHITECTURE'))) {
@@ -1168,38 +1166,6 @@ function StudioMain() {
 
       } catch {
         // storage fallback
-      }
-
-      if (!loadedFromLocal && (urlId === 'ses_6jozjki_muf7vj1y' || (searchParams.get('project') || '').toLowerCase() === 'abc')) {
-        const awsPrompt = 'AWS Cloud Architecture on Bedrock and Sagemaker and Redshift and Claude';
-        const awsTitle = '11 • AWS Cloud Architecture on Amazon Bedrock, SageMaker, Redshift & Claude';
-        const awsXml = synthesizePromptDrivenDiagramXml(awsPrompt, awsTitle, 'Enterprise Cloud');
-        setXml(awsXml);
-        setSelectedBlueprintId('custom');
-        setPromptInput(awsPrompt);
-        setAst(prev => ({
-          ...prev,
-          metadata: {
-            ...prev.metadata,
-            projectTitle: awsTitle,
-            version: 'v1.0',
-            lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          }
-        }));
-        setMessages([
-          {
-            id: `msg_user_aws_${Date.now()}`,
-            sender: 'user',
-            text: awsPrompt,
-            timestamp: 'Original Prompt'
-          },
-          {
-            id: `msg_ai_aws_${Date.now() + 1}`,
-            sender: 'assistant',
-            text: `🚀 Synthesized **${awsTitle}** using Modified Saved Template #41 (AWS Well-Architected Cloud Reference Architecture v2.0).\n\n*Target Use Case:* ${awsPrompt}\n\nAll 7 architectural layers (Route 53/CloudFront/WAF, Amazon Bedrock Agents & Guardrails, Claude 3.7 Sonnet / Nova Pro, Amazon SageMaker HyperPod & Real-Time Inference, OpenSearch Serverless & Aurora pgvector, AWS Glue/Kinesis, and Amazon Redshift Serverless & S3 Data Lake) are rendered on the canvas.`,
-            timestamp: 'Verified'
-          }
-        ]);
       }
 
       // 2. Always fetch from /api/diagrams/:id so Library & Audit deep links load the latest DB diagram XML AND restore its Generative Prompt
@@ -1470,7 +1436,25 @@ function StudioMain() {
         ]);
       } else if (bp) {
         hasLoadedUrlBlueprintRef.current = true;
-        handleSelectBlueprint(bp, domainParam);
+        const resolvedBp =
+          perspectiveParam === 'Whiteboard' && bp.id === '00'
+            ? CANONICAL_TEMPLATES.find((t) => t.id === '76') || bp
+            : perspectiveParam === 'Paper' && bp.id === '00'
+            ? CANONICAL_TEMPLATES.find((t) => t.id === '77') || bp
+            : bp;
+        handleSelectBlueprint(resolvedBp, domainParam);
+        try {
+          const rawPending = sessionStorage.getItem('promptcanvas_pending_studio_launch');
+          if (rawPending) {
+            const parsed = JSON.parse(rawPending);
+            if (
+              parsed?.preRenderedXml &&
+              (parsed.blueprintId === resolvedBp.id || parsed.blueprintId === bp.id)
+            ) {
+              setXml(parsed.preRenderedXml);
+            }
+          }
+        } catch {}
       }
     }
 

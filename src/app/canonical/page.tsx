@@ -9,6 +9,7 @@ import {
   DOMAIN_PRESETS,
   CanonicalTemplate,
 } from '@/lib/canonical/canonicalTemplates';
+import { executeGcpPromptModification } from '@/lib/gcpCoPilotModifier';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import {
   Layers,
@@ -204,9 +205,14 @@ function CanonicalContent() {
   const handleRunAdaptation = async () => {
     if (!activeTemplate) return;
     setIsGenerating(true);
-    const effectiveDomain = customPrompt.trim() ? customPrompt : selectedDomain;
     const domainLabel = DOMAIN_PRESETS.find((d) => d.id === selectedDomain)?.name || selectedDomain;
-    const healedXml = activeTemplate.generateXml(effectiveDomain, themeMode);
+    let healedXml = activeTemplate.generateXml(selectedDomain, themeMode);
+    if (customPrompt.trim()) {
+      const modRes = executeGcpPromptModification(healedXml, customPrompt.trim(), 0, activeTemplate.id, false);
+      if (modRes.updatedXml) {
+        healedXml = modRes.updatedXml;
+      }
+    }
     try {
       await fetch('/api/diagrams', {
         method: 'POST',
