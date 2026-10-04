@@ -180,29 +180,30 @@ export function NewProjectModal({ isOpen, onClose, onCreateProject }: NewProject
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-150">
-      <div 
-        className="w-full max-w-2xl bg-[#0B111E] border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
-        onClick={e => e.stopPropagation()}
-      >
-        {/* Modal Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
-              <Layers className="w-4 h-4" />
-            </div>
-            <div>
-              <h2 className="text-base font-bold text-white tracking-tight">Create Architecture Canvas</h2>
-              <p className="text-xs text-slate-400 font-mono">Launch a dedicated canvas with unique Session ID &amp; AI Co-Pilot</p>
-            </div>
+    <aside
+      data-testid="studio-right-new-project-panel"
+      className="h-full shrink-0 w-[400px] sm:w-[440px] bg-[#0B111E] border-l border-slate-700 shadow-xl z-30 overflow-hidden flex flex-col justify-between animate-in slide-in-from-right duration-200"
+      onClick={e => e.stopPropagation()}
+    >
+      {/* Panel Header */}
+      <div className="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60 shrink-0">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 shrink-0">
+            <Layers className="w-4 h-4" />
           </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="min-w-0">
+            <h2 className="text-sm font-bold text-white tracking-tight truncate">Create Architecture Canvas</h2>
+            <p className="text-[11px] text-slate-400 font-mono truncate">Starter Blueprint or Vision AI Decompile</p>
+          </div>
         </div>
+        <button
+          onClick={onClose}
+          title="Collapse right panel"
+          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition shrink-0 cursor-pointer"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
 
         {/* Tab Switcher: Template vs Vision Image Upload */}
         <div className="px-6 pt-3 pb-2 border-b border-slate-800/80 bg-slate-900/30 flex items-center justify-between">
@@ -536,8 +537,6 @@ export function NewProjectModal({ isOpen, onClose, onCreateProject }: NewProject
 
           </div>
         )}
-
-      </div>
-    </div>
+    </aside>
   );
 }

@@ -167,30 +167,35 @@ export function AudioBriefingModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-150">
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 space-y-5">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white shadow-sm">
-              <Volume2 className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="font-bold text-sm text-slate-900">Executive Audio Briefing (Web Speech TTS)</h3>
-              <p className="text-[10px] text-slate-400 font-mono">Live Canvas-Grounded Architecture Narration</p>
-            </div>
+    <aside
+      data-testid="studio-right-audio-panel"
+      className="h-full shrink-0 w-[390px] sm:w-[420px] bg-white border-l border-slate-200 shadow-xl z-30 flex flex-col justify-between animate-in slide-in-from-right duration-200 text-slate-900"
+    >
+      {/* Header */}
+      <div className="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/90 shrink-0">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-sm shrink-0">
+            <Volume2 className="w-4 h-4" />
           </div>
-          <button
-            onClick={() => {
-              stopSpeech();
-              onClose();
-            }}
-            className="p-1 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-700"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="min-w-0">
+            <h3 className="font-bold text-sm text-slate-900 truncate">Executive Audio Briefing</h3>
+            <p className="text-[11px] text-slate-500 font-mono truncate">Live Canvas-Grounded TTS Narration</p>
+          </div>
         </div>
+        <button
+          onClick={() => {
+            stopSpeech();
+            onClose();
+          }}
+          title="Collapse right panel"
+          className="p-1.5 hover:bg-slate-200 rounded-lg text-slate-500 hover:text-slate-800 transition shrink-0 cursor-pointer"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
 
+      {/* Scrollable Body */}
+      <div className="flex-1 overflow-y-auto p-5 space-y-5 text-xs">
         {/* Audio Player Card */}
         <div className="bg-slate-900 text-white p-5 rounded-2xl space-y-4 shadow-xl">
           <div className="space-y-1">
@@ -237,11 +242,25 @@ export function AudioBriefingModal({
         </div>
 
         {/* Live Grounded Transcript */}
-        <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs text-slate-600 leading-relaxed space-y-1.5">
+        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs text-slate-600 leading-relaxed space-y-2">
           <div className="font-bold text-slate-800 text-[11px]">Live Canvas-Derived Transcript:</div>
           <p className="text-[11px] leading-relaxed">{transcript}</p>
         </div>
       </div>
-    </div>
+
+      {/* Footer */}
+      <div className="px-5 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs shrink-0">
+        <span className="text-[11px] text-slate-500 font-mono">Web Speech API • Side-by-Side Mode</span>
+        <button
+          onClick={() => {
+            stopSpeech();
+            onClose();
+          }}
+          className="px-3.5 py-1.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 transition cursor-pointer"
+        >
+          Collapse
+        </button>
+      </div>
+    </aside>
   );
 }

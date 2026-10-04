@@ -35,7 +35,10 @@ export function ComponentInspectorDrawer({ component, onClose, onAiRefinePrompt,
   };
 
   return (
-    <aside className="fixed inset-y-0 right-0 w-[420px] bg-white border-l border-slate-200 shadow-2xl z-50 flex flex-col justify-between animate-in slide-in-from-right duration-200">
+    <aside
+      data-testid="studio-right-inspector-panel"
+      className="h-full shrink-0 w-[390px] sm:w-[420px] bg-white border-l border-slate-200 shadow-xl z-30 flex flex-col justify-between animate-in slide-in-from-right duration-200"
+    >
       
       {/* Header */}
       <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/80">

@@ -204,156 +204,157 @@ ${githubChecklist}
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/85 backdrop-blur-md animate-fadeIn">
-      <div
-        className={`relative w-full max-w-5xl max-h-[92vh] flex flex-col rounded-3xl border shadow-2xl overflow-hidden ${
-          isLight ? 'bg-white border-slate-300 text-slate-900' : 'bg-[#070A13] border-slate-800 text-white'
-        }`}
-      >
-        {/* HEADER */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-600 via-indigo-600 to-cyan-500 text-white flex items-center justify-center shadow-md">
-              <Share2 className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base font-black truncate max-w-md">
-                  Enterprise Webhook &amp; Toolchain Export
-                </h3>
-                <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30">
-                  Jira &bull; Confluence &bull; GitHub
-                </span>
-              </div>
-              <p className="text-xs text-slate-400">
-                Section-Grounded Export for Jira Backlogs, Confluence Wiki, and GitHub Issue Templates
-              </p>
-            </div>
+    <aside
+      data-testid="right-enterprise-sync-panel"
+      aria-label="Enterprise Toolchain Sync Panel"
+      className={`fixed top-12 bottom-0 right-0 z-40 w-[460px] sm:w-[520px] flex flex-col border-l shadow-2xl overflow-hidden animate-in slide-in-from-right duration-200 ${
+        isLight ? 'bg-white border-slate-300 text-slate-900' : 'bg-[#070A13] border-slate-800 text-white'
+      }`}
+    >
+      {/* HEADER */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-sky-600 via-indigo-600 to-cyan-500 text-white flex items-center justify-center shadow-md shrink-0">
+            <Share2 className="w-4 h-4" />
           </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleCopy}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors"
-            >
-              {copiedSuccess ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copiedSuccess ? 'Copied' : 'Copy'}</span>
-            </button>
-
-            <button
-              onClick={onClose}
-              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-rose-500/20 hover:text-rose-500 text-slate-600 dark:text-slate-300 transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs font-black truncate">
+                Enterprise Webhook &amp; Toolchain Export
+              </h3>
+              <span className="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded-full bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30 shrink-0">
+                Jira &bull; GitHub
+              </span>
+            </div>
+            <p className="text-[10px] text-slate-400 truncate">
+              Non-blocking right panel &bull; Jira, Confluence, and GitHub Sync
+            </p>
           </div>
         </div>
 
-        {/* TABS */}
-        <div className="flex items-center gap-1 px-6 py-2.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 overflow-x-auto text-xs font-bold">
-          {[
-            { id: 'jira', label: 'Jira Epics & Stories', icon: Boxes },
-            { id: 'confluence', label: 'Confluence Wiki Page', icon: FileText },
-            { id: 'github', label: 'GitHub PRD Issues', icon: Code },
-            { id: 'webhook', label: 'Custom Webhook Dispatcher', icon: Send },
-          ].map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl transition-all ${
-                  isActive
-                    ? 'bg-sky-600 text-white shadow-sm'
-                    : 'text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            onClick={handleCopy}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer"
+          >
+            {copiedSuccess ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+            <span>{copiedSuccess ? 'Copied' : 'Copy'}</span>
+          </button>
 
-        {/* BODY */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
-          {activeTab === 'webhook' ? (
-            <div className="space-y-4">
-              <div className="p-4 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-xs text-sky-600 dark:text-sky-400 space-y-1">
-                <div className="font-bold flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4" /> HTTP POST Webhook Dispatcher
-                </div>
-                <p>
-                  Sends a live HTTP POST request with the JSON specification payload below to your configured endpoint.
-                </p>
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-slate-400 block mb-1.5">
-                  Destination Webhook URL:
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://hooks.slack.com/services/T000/B000/X000"
-                  value={webhookUrl}
-                  onChange={(e) => setWebhookUrl(e.target.value)}
-                  className={`w-full px-3 py-2 rounded-xl border text-xs font-mono outline-none ${
-                    isLight ? 'bg-white border-slate-300 text-slate-900' : 'bg-slate-950 border-slate-700 text-white'
-                  }`}
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-slate-400 block mb-1.5">
-                  Payload JSON:
-                </label>
-                <pre className="p-4 rounded-2xl bg-[#0B111E] text-teal-300 font-mono text-xs overflow-x-auto border border-slate-800">
-                  {getActivePayload()}
-                </pre>
-              </div>
-
-              <div className="flex items-center justify-between pt-2 gap-3">
-                {webhookStatusMsg ? (
-                  <span
-                    className={`text-xs font-bold flex items-center gap-1.5 ${
-                      webhookStatusMsg.ok ? 'text-emerald-500' : 'text-rose-500'
-                    }`}
-                  >
-                    {webhookStatusMsg.ok ? (
-                      <CheckCircle2 className="w-4 h-4 shrink-0" />
-                    ) : (
-                      <AlertCircle className="w-4 h-4 shrink-0" />
-                    )}
-                    <span>{webhookStatusMsg.text}</span>
-                  </span>
-                ) : (
-                  <span className="text-xs text-slate-400">Enter a valid endpoint URL to dispatch</span>
-                )}
-
-                <button
-                  onClick={handleDispatchWebhook}
-                  disabled={isSendingWebhook}
-                  className="flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-md hover:scale-[1.02] transition-transform cursor-pointer disabled:opacity-50"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>{isSendingWebhook ? 'Dispatching...' : 'Dispatch Webhook Now'}</span>
-                </button>
-              </div>
-            </div>
-          ) : (
-            <pre className="p-4 rounded-2xl bg-[#0B111E] text-sky-300 font-mono text-xs overflow-x-auto leading-relaxed border border-slate-800">
-              {getActivePayload()}
-            </pre>
-          )}
-        </div>
-
-        {/* FOOTER */}
-        <div className="flex items-center justify-between px-6 py-3 border-t border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md text-xs text-slate-400">
-          <span>Formatted for native import into Jira, Confluence, and GitHub</span>
-          <span className="font-mono text-[11px]">JSON &bull; Storage Format &bull; Markdown</span>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-rose-500/20 hover:text-rose-500 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+            title="Collapse Right Panel"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
       </div>
-    </div>
+
+      {/* TABS */}
+      <div className="flex items-center gap-1 px-4 py-2 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 overflow-x-auto text-[11px] font-bold">
+        {[
+          { id: 'jira', label: 'Jira Epics', icon: Boxes },
+          { id: 'confluence', label: 'Confluence', icon: FileText },
+          { id: 'github', label: 'GitHub Issues', icon: Code },
+          { id: 'webhook', label: 'Webhook POST', icon: Send },
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg transition-all whitespace-nowrap cursor-pointer ${
+                isActive
+                  ? 'bg-sky-600 text-white shadow-sm'
+                  : 'text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'
+              }`}
+            >
+              <Icon className="w-3 h-3" />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* BODY */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {activeTab === 'webhook' ? (
+          <div className="space-y-4">
+            <div className="p-3.5 rounded-xl bg-sky-500/10 border border-sky-500/20 text-xs text-sky-600 dark:text-sky-400 space-y-1">
+              <div className="font-bold flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" /> HTTP POST Webhook Dispatcher
+              </div>
+              <p className="text-[11px]">
+                Sends a live HTTP POST request with the JSON specification payload below to your configured endpoint.
+              </p>
+            </div>
+
+            <div>
+              <label className="text-[11px] font-bold text-slate-400 block mb-1.5">
+                Destination Webhook URL:
+              </label>
+              <input
+                type="url"
+                placeholder="https://hooks.slack.com/services/T000/B000/X000"
+                value={webhookUrl}
+                onChange={(e) => setWebhookUrl(e.target.value)}
+                className={`w-full px-3 py-2 rounded-xl border text-xs font-mono outline-none ${
+                  isLight ? 'bg-white border-slate-300 text-slate-900' : 'bg-slate-950 border-slate-700 text-white'
+                }`}
+              />
+            </div>
+
+            <div>
+              <label className="text-[11px] font-bold text-slate-400 block mb-1.5">
+                Payload JSON:
+              </label>
+              <pre className="p-3.5 rounded-xl bg-[#0B111E] text-teal-300 font-mono text-[11px] overflow-x-auto border border-slate-800">
+                {getActivePayload()}
+              </pre>
+            </div>
+
+            <div className="flex items-center justify-between pt-2 gap-3">
+              {webhookStatusMsg ? (
+                <span
+                  className={`text-xs font-bold flex items-center gap-1.5 ${
+                    webhookStatusMsg.ok ? 'text-emerald-500' : 'text-rose-500'
+                  }`}
+                >
+                  {webhookStatusMsg.ok ? (
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  ) : (
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                  )}
+                  <span>{webhookStatusMsg.text}</span>
+                </span>
+              ) : (
+                <span className="text-[11px] text-slate-400">Enter a valid endpoint URL</span>
+              )}
+
+              <button
+                onClick={handleDispatchWebhook}
+                disabled={isSendingWebhook}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-md hover:scale-[1.02] transition-transform cursor-pointer disabled:opacity-50"
+              >
+                <Send className="w-3.5 h-3.5" />
+                <span>{isSendingWebhook ? 'Dispatching...' : 'Dispatch Webhook'}</span>
+              </button>
+            </div>
+          </div>
+        ) : (
+          <pre className="p-3.5 rounded-xl bg-[#0B111E] text-sky-300 font-mono text-[11px] overflow-x-auto leading-relaxed border border-slate-800">
+            {getActivePayload()}
+          </pre>
+        )}
+      </div>
+
+      {/* FOOTER */}
+      <div className="flex items-center justify-between px-4 py-2.5 border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md text-[11px] text-slate-400">
+        <span>Native Jira, Confluence &amp; GitHub Import</span>
+        <span className="font-mono text-[10px]">JSON &bull; MD</span>
+      </div>
+    </aside>
   );
 }

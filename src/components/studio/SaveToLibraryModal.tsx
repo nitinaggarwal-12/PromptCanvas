@@ -49,7 +49,7 @@ export function SaveToLibraryModal({
   const [title, setTitle] = useState(initialProjectTitle || 'My Cloud Architecture Blueprint');
   const [domain, setDomain] = useState(initialDomain || 'Life Sciences & Pharma');
   const [description, setDescription] = useState(
-    'Production-grade Google Cloud Enterprise Reference Architecture featuring multi-region resiliency, zero-trust perimeter, and synchronized 10-document Living Specifications suite.'
+    'Production-grade Google Cloud Enterprise Reference Architecture featuring multi-region resiliency, zero-trust perimeter, and synchronized 16-document Living Specifications suite.'
   );
   const [tags, setTags] = useState<string>('GCP, Spanner, Vertex AI, GxP, 99.999% SLA');
   const [visibility, setVisibility] = useState<'team' | 'private'>('team');
@@ -99,7 +99,7 @@ export function SaveToLibraryModal({
       versions: versions,
       messages: messages,
       nodeCount: ast.components.length,
-      specCount: 10,
+      specCount: 16,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -140,7 +140,7 @@ export function SaveToLibraryModal({
           description: description,
           tags: blueprintPayload.tags,
           nodeCount: ast.components.length,
-          specCount: 10,
+          specCount: 16,
           activeVersionTag: activeVersionTag,
           updatedAt: new Date().toISOString()
         },
@@ -167,90 +167,91 @@ export function SaveToLibraryModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="w-full max-w-xl bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-150 text-slate-900">
-        
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
-              <Bookmark className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="font-bold text-sm text-slate-900 leading-tight">Save Sandbox to Architecture Library</h3>
-              <p className="text-[11px] text-slate-500 font-mono">
-                Promote live sandbox into a permanent, versioned enterprise blueprint
-              </p>
-            </div>
+    <aside
+      data-testid="studio-right-save-panel"
+      className="h-full shrink-0 w-[390px] sm:w-[420px] bg-white border-l border-slate-200 shadow-xl z-30 flex flex-col justify-between animate-in slide-in-from-right duration-200 text-slate-900"
+    >
+      {/* Header */}
+      <div className="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/90 shrink-0">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm shadow-emerald-500/20 shrink-0">
+            <Bookmark className="w-4 h-4" />
           </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 hover:bg-slate-200 text-slate-400 hover:text-slate-700 rounded-lg transition"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="min-w-0">
+            <h3 className="font-bold text-sm text-slate-900 leading-tight truncate">Save to Architecture Library</h3>
+            <p className="text-[11px] text-slate-500 font-mono truncate">
+              Promote live canvas into a versioned blueprint
+            </p>
+          </div>
         </div>
+        <button
+          onClick={onClose}
+          title="Collapse right panel"
+          className="p-1.5 hover:bg-slate-200 text-slate-500 hover:text-slate-800 rounded-lg transition shrink-0 cursor-pointer"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
 
-        {/* Success State */}
-        {isSuccess ? (
-          <div className="p-8 text-center space-y-4">
-            <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-sm animate-in zoom-in">
-              <Check className="w-6 h-6 stroke-[3]" />
-            </div>
-            <div>
-              <h4 className="text-base font-bold text-slate-900">Successfully Saved to Your Library!</h4>
-              <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">
-                Your sandbox blueprint has been permanently minted with Unique ID <span className="font-mono font-bold text-emerald-700">{savedId}</span>.
-              </p>
-            </div>
+      {/* Success State */}
+      {isSuccess ? (
+        <div className="flex-1 overflow-y-auto p-6 text-center space-y-4 flex flex-col justify-center">
+          <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
+            <Check className="w-6 h-6 stroke-[3]" />
+          </div>
+          <div>
+            <h4 className="text-base font-bold text-slate-900">Saved to Your Library!</h4>
+            <p className="text-xs text-slate-500 mt-1">
+              Minted with Unique ID <span className="font-mono font-bold text-emerald-700">{savedId}</span>.
+            </p>
+          </div>
 
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 max-w-md mx-auto text-left text-xs space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500">Blueprint Title:</span>
-                <span className="font-bold text-slate-900">{title}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500">Industry Track:</span>
-                <span className="font-medium text-blue-700">{domain}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500">Version & Specs:</span>
-                <span className="font-mono text-emerald-700">{activeVersionTag} • 10 Living Specs</span>
-              </div>
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-left text-xs space-y-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-slate-500">Blueprint Title:</span>
+              <span className="font-bold text-slate-900 truncate ml-2">{title}</span>
             </div>
-
-            <div className="flex items-center justify-center gap-3 pt-2">
-              <button
-                onClick={onClose}
-                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition shadow-2xs"
-              >
-                Keep Working in Studio
-              </button>
-              <a
-                href="/library"
-                className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5"
-              >
-                <span>View in Library</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </a>
+            <div className="flex items-center justify-between">
+              <span className="text-slate-500">Industry Track:</span>
+              <span className="font-medium text-blue-700 truncate ml-2">{domain}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-slate-500">Version & Specs:</span>
+              <span className="font-mono text-emerald-700">{activeVersionTag} • 16 Living Specs</span>
             </div>
           </div>
-        ) : (
-          
-          /* Save Form */
-          <div className="p-6 space-y-4 text-xs">
-            
+
+          <div className="flex items-center justify-center gap-2.5 pt-2">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition cursor-pointer"
+            >
+              Keep Working
+            </button>
+            <a
+              href="/library"
+              className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5"
+            >
+              <span>View in Library</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Scrollable Save Form */}
+          <div className="flex-1 overflow-y-auto p-5 space-y-4 text-xs">
             {/* Title Input */}
             <div className="space-y-1">
               <label className="text-[11px] font-bold text-slate-700 flex items-center justify-between">
                 <span>Blueprint / Project Name: *</span>
-                <span className="text-[10px] text-slate-400 font-normal">Displayed across Studio & Library</span>
+                <span className="text-[10px] text-slate-400 font-normal">Studio & Library</span>
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={e => setTitle(e.target.value)}
-                placeholder="e.g. PharmaTrial GenOS - NovaCura Global R&D"
+                placeholder="e.g. Global Real-Time Payments Mesh"
                 className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 font-medium focus:outline-none focus:border-blue-500 focus:bg-white shadow-2xs"
               />
             </div>
@@ -279,56 +280,55 @@ export function SaveToLibraryModal({
               <textarea
                 value={description}
                 onChange={e => setDescription(e.target.value)}
-                rows={2}
+                rows={3}
                 className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white resize-none shadow-2xs leading-relaxed"
               />
             </div>
 
-            {/* Tags & Visibility Grid */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1">
-                <label className="text-[11px] font-bold text-slate-700 flex items-center gap-1">
-                  <Tag className="w-3 h-3 text-slate-500" />
-                  <span>Tags (Comma-Separated):</span>
-                </label>
-                <input
-                  type="text"
-                  value={tags}
-                  onChange={e => setTags(e.target.value)}
-                  placeholder="GCP, Spanner, Vertex AI"
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white shadow-2xs"
-                />
-              </div>
+            {/* Tags */}
+            <div className="space-y-1">
+              <label className="text-[11px] font-bold text-slate-700 flex items-center gap-1">
+                <Tag className="w-3 h-3 text-slate-500" />
+                <span>Tags (Comma-Separated):</span>
+              </label>
+              <input
+                type="text"
+                value={tags}
+                onChange={e => setTags(e.target.value)}
+                placeholder="GCP, Spanner, Vertex AI"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white shadow-2xs"
+              />
+            </div>
 
-              <div className="space-y-1">
-                <label className="text-[11px] font-bold text-slate-700 flex items-center gap-1">
-                  <Globe className="w-3 h-3 text-slate-500" />
-                  <span>Workspace Access:</span>
-                </label>
-                <div className="flex items-center gap-2 pt-0.5">
-                  <button
-                    type="button"
-                    onClick={() => setVisibility('team')}
-                    className={`flex-1 py-1.5 px-2 rounded-lg border text-center transition ${
-                      visibility === 'team'
-                        ? 'bg-blue-50 border-blue-400 text-blue-900 font-semibold'
-                        : 'bg-slate-50 border-slate-200 text-slate-600'
-                    }`}
-                  >
-                    Team Shared
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setVisibility('private')}
-                    className={`flex-1 py-1.5 px-2 rounded-lg border text-center transition ${
-                      visibility === 'private'
-                        ? 'bg-blue-50 border-blue-400 text-blue-900 font-semibold'
-                        : 'bg-slate-50 border-slate-200 text-slate-600'
-                    }`}
-                  >
-                    Private Draft
-                  </button>
-                </div>
+            {/* Visibility */}
+            <div className="space-y-1">
+              <label className="text-[11px] font-bold text-slate-700 flex items-center gap-1">
+                <Globe className="w-3 h-3 text-slate-500" />
+                <span>Workspace Access:</span>
+              </label>
+              <div className="flex items-center gap-2 pt-0.5">
+                <button
+                  type="button"
+                  onClick={() => setVisibility('team')}
+                  className={`flex-1 py-2 px-2 rounded-xl border text-center transition cursor-pointer ${
+                    visibility === 'team'
+                      ? 'bg-blue-50 border-blue-400 text-blue-900 font-semibold'
+                      : 'bg-slate-50 border-slate-200 text-slate-600'
+                  }`}
+                >
+                  Team Shared
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setVisibility('private')}
+                  className={`flex-1 py-2 px-2 rounded-xl border text-center transition cursor-pointer ${
+                    visibility === 'private'
+                      ? 'bg-blue-50 border-blue-400 text-blue-900 font-semibold'
+                      : 'bg-slate-50 border-slate-200 text-slate-600'
+                  }`}
+                >
+                  Private Draft
+                </button>
               </div>
             </div>
 
@@ -340,7 +340,7 @@ export function SaveToLibraryModal({
               </div>
               <div className="h-6 w-px bg-slate-200" />
               <div>
-                <div className="font-bold text-indigo-600 text-sm">10 Docs</div>
+                <div className="font-bold text-indigo-600 text-sm">16 Docs</div>
                 <div className="text-[10px] text-slate-500 font-mono">Living Specs</div>
               </div>
               <div className="h-6 w-px bg-slate-200" />
@@ -349,44 +349,42 @@ export function SaveToLibraryModal({
                 <div className="text-[10px] text-slate-500 font-mono">Timeline Tag</div>
               </div>
             </div>
+          </div>
 
-            {/* Footer Buttons */}
-            <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+          {/* Sticky Footer Buttons */}
+          <div className="px-5 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2 shrink-0 text-xs">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-3 py-2 rounded-xl text-slate-600 hover:text-slate-900 font-bold transition text-xs cursor-pointer"
+            >
+              Collapse
+            </button>
+
+            <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={onClose}
-                className="px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 font-bold transition text-xs"
+                disabled={isSaving}
+                onClick={() => handleSave(false)}
+                className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold transition text-xs shadow-sm flex items-center gap-1.5 cursor-pointer"
               >
-                Cancel
+                <Bookmark className="w-3.5 h-3.5" />
+                <span>{isSaving ? 'Saving...' : 'Save'}</span>
               </button>
 
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  disabled={isSaving}
-                  onClick={() => handleSave(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold transition text-xs shadow-sm flex items-center gap-1.5"
-                >
-                  <Bookmark className="w-3.5 h-3.5" />
-                  <span>{isSaving ? 'Saving...' : 'Save to Library'}</span>
-                </button>
-                
-                <button
-                  type="button"
-                  disabled={isSaving}
-                  onClick={() => handleSave(true)}
-                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition text-xs shadow-sm flex items-center gap-1.5"
-                >
-                  <span>Save & Go to Library</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
+              <button
+                type="button"
+                disabled={isSaving}
+                onClick={() => handleSave(true)}
+                className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition text-xs shadow-sm flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Save & Library</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             </div>
-
           </div>
-        )}
-
-      </div>
-    </div>
+        </>
+      )}
+    </aside>
   );
 }

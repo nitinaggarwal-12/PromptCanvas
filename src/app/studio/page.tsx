@@ -1038,12 +1038,85 @@ function StudioMain() {
     handleSelectBlueprint(bp, selectedDomain);
   }, [handleSelectBlueprint, selectedDomain]);
 
+  const closeAllOverlayRightPanels = useCallback(() => {
+    setIsShareModalOpen(false);
+    setIsNewProjectModalOpen(false);
+    setIsSaveModalOpen(false);
+    setIsMajorVersionModalOpen(false);
+    setIsBrainModalOpen(false);
+    setIsAudioModalOpen(false);
+  }, []);
+
   const handleOpenShare = useCallback((type: 'project' | 'doc' | 'node' | 'version', id: string, title: string) => {
+    closeAllOverlayRightPanels();
+    setSelectedComponent(null);
     setShareTargetType(type);
     setShareTargetId(id);
     setShareTargetTitle(title);
     setIsShareModalOpen(true);
-  }, []);
+  }, [closeAllOverlayRightPanels]);
+
+  const handleToggleRightCompanionPanel = useCallback(
+    (panel: 'share' | 'new' | 'save' | 'major' | 'brain' | 'audio' | 'governance') => {
+      if (panel === 'governance') {
+        setIsLaunchpadMode(false);
+        setIsRightGovernanceOpen((prev) => !prev);
+        return;
+      }
+      setSelectedComponent(null);
+      if (panel === 'share') {
+        const next = !isShareModalOpen;
+        closeAllOverlayRightPanels();
+        if (next) {
+          if (activeView === 'specs') {
+            const doc = generateAll10LivingSpecs(ast, xml).find((d) => d.id === activeDocId);
+            setShareTargetType('doc');
+            setShareTargetId(activeDocId);
+            setShareTargetTitle(doc ? `${doc.id}: ${doc.title}` : activeDocId);
+          } else {
+            setShareTargetType('project');
+            setShareTargetId(sessionId);
+            setShareTargetTitle(ast.metadata.projectTitle);
+          }
+          setIsShareModalOpen(true);
+        }
+      } else if (panel === 'new') {
+        const next = !isNewProjectModalOpen;
+        closeAllOverlayRightPanels();
+        setIsNewProjectModalOpen(next);
+      } else if (panel === 'save') {
+        const next = !isSaveModalOpen;
+        closeAllOverlayRightPanels();
+        setIsSaveModalOpen(next);
+      } else if (panel === 'major') {
+        const next = !isMajorVersionModalOpen;
+        closeAllOverlayRightPanels();
+        setIsMajorVersionModalOpen(next);
+      } else if (panel === 'brain') {
+        const next = !isBrainModalOpen;
+        closeAllOverlayRightPanels();
+        setIsBrainModalOpen(next);
+      } else if (panel === 'audio') {
+        const next = !isAudioModalOpen;
+        closeAllOverlayRightPanels();
+        setIsAudioModalOpen(next);
+      }
+    },
+    [
+      isShareModalOpen,
+      isNewProjectModalOpen,
+      isSaveModalOpen,
+      isMajorVersionModalOpen,
+      isBrainModalOpen,
+      isAudioModalOpen,
+      closeAllOverlayRightPanels,
+      activeView,
+      ast,
+      xml,
+      activeDocId,
+      sessionId,
+    ]
+  );
 
   const hasLoadedUrlBlueprintRef = useRef(false);
 
@@ -2965,8 +3038,24 @@ function StudioMain() {
             </button>
           </div>
 
-          {/* Right: Clean Non-Redundant Action Controls ([ Export ▾ ]) */}
+          {/* Right: Clean Non-Redundant Action Controls ([ Share ] & [ Export ▾ ]) */}
           <div className="flex items-center gap-2 shrink-0">
+            {/* Share & Comments Right-Side Panel Toggle (Google Docs / Slides style) */}
+            <button
+              id="studio-header-share-btn"
+              data-testid="studio-header-share-btn"
+              onClick={() => handleToggleRightCompanionPanel('share')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer border ${
+                isShareModalOpen
+                  ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
+                  : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+              }`}
+              title="Toggle non-blocking right-side Share & Comments panel"
+            >
+              <Share2 className="w-3.5 h-3.5 text-blue-400" />
+              <span>{isShareModalOpen ? 'Close Share ►' : '◄ Share & Comment'}</span>
+            </button>
+
             {/* Primary: Export Bundle Dropdown */}
             <div className="relative">
               <button
@@ -5133,6 +5222,203 @@ function StudioMain() {
               </div>
             )}
           </aside>
+
+          {/* INLINE EXPANDABLE RIGHT-SIDE PANELS (Google Docs / Slides style — pushes center workspace without overlapping toolbars or documents) */}
+          <ComponentInspectorDrawer
+            component={selectedComponent}
+            onClose={() => setSelectedComponent(null)}
+            onAiRefinePrompt={(prompt) => handleExecutePrompt(prompt)}
+            onShareNode={(node) => handleOpenShare('node', node.id, node.name)}
+          />
+
+          <BrainGroundingModal
+            isOpen={isBrainModalOpen}
+            onClose={() => setIsBrainModalOpen(false)}
+            onAutoHeal={handleAutoHeal}
+            isHealing={isHealing}
+            currentXml={xml}
+          />
+
+          <AudioBriefingModal
+            isOpen={isAudioModalOpen}
+            onClose={() => setIsAudioModalOpen(false)}
+            title={ast.metadata.projectTitle}
+            ast={ast}
+            currentXml={xml}
+          />
+
+          <ObjectShareModal
+            isOpen={isShareModalOpen}
+            onClose={() => setIsShareModalOpen(false)}
+            targetType={shareTargetType}
+            targetId={shareTargetId}
+            targetTitle={shareTargetTitle}
+            projectTitle={ast.metadata.projectTitle}
+            domain={ast.metadata.domain}
+            activeVersionTag={activeVersionTag}
+            activeDoc={livingSpecs.find((d) => d.id === activeDocId)}
+            activeNode={selectedComponent}
+          />
+
+          <SaveToLibraryModal
+            isOpen={isSaveModalOpen}
+            onClose={() => setIsSaveModalOpen(false)}
+            onSaveSuccess={({ id, name, domain }) => {
+              setIsSavedInLibrary(true);
+              setSessionId(id);
+              setAst((prev) => ({
+                ...prev,
+                metadata: {
+                  ...prev.metadata,
+                  projectTitle: name,
+                  domain: domain
+                }
+              }));
+            }}
+            initialProjectTitle={ast.metadata.projectTitle}
+            initialDomain={ast.metadata.domain}
+            ast={ast}
+            xml={xml}
+            versions={versions}
+            messages={messages}
+            activeVersionTag={activeVersionTag}
+          />
+
+          <NewProjectModal
+            isOpen={isNewProjectModalOpen}
+            onClose={() => setIsNewProjectModalOpen(false)}
+            onCreateProject={handleCreateNewProject}
+          />
+
+          <MajorVersionModal
+            isOpen={isMajorVersionModalOpen}
+            onClose={() => setIsMajorVersionModalOpen(false)}
+            currentVersion={activeVersionTag}
+            nextMajorVersion={getNextMajorVersion(activeVersionTag)}
+            onConfirmMajorVersion={handleConfirmMajorVersion}
+          />
+
+          {/* GOOGLE DOCS / SLIDES-STYLE RIGHT-EDGE COMPANION ACTION RAIL (w-11, non-blocking input panels) */}
+          <aside
+            id="studio-right-companion-rail"
+            data-testid="studio-right-companion-rail"
+            aria-label="Workspace Right Companion Rail"
+            className="w-11 shrink-0 bg-white border-l border-slate-200 flex flex-col items-center py-3 gap-2 z-50 select-none shadow-2xs"
+          >
+            <button
+              id="right-rail-share-btn"
+              data-testid="right-rail-share-btn"
+              onClick={() => handleToggleRightCompanionPanel('share')}
+              title="Share & Comments Panel (Right Slide-Out)"
+              aria-label="Toggle Share & Comments Right Panel"
+              aria-expanded={isShareModalOpen}
+              className={`w-8 h-8 rounded-xl flex items-center justify-center transition cursor-pointer ${
+                isShareModalOpen
+                  ? 'bg-blue-600 text-white shadow-sm ring-2 ring-blue-200'
+                  : 'text-slate-600 hover:bg-blue-50 hover:text-blue-600'
+              }`}
+            >
+              <Share2 className="w-4 h-4" />
+            </button>
+
+            <button
+              id="right-rail-new-project-btn"
+              data-testid="right-rail-new-project-btn"
+              onClick={() => handleToggleRightCompanionPanel('new')}
+              title="Create Project / Vision Decompile Panel (Right Slide-Out)"
+              aria-label="Toggle Create Project Right Panel"
+              aria-expanded={isNewProjectModalOpen}
+              className={`w-8 h-8 rounded-xl flex items-center justify-center transition cursor-pointer ${
+                isNewProjectModalOpen
+                  ? 'bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-200'
+                  : 'text-slate-600 hover:bg-emerald-50 hover:text-emerald-600'
+              }`}
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+
+            <button
+              id="right-rail-save-btn"
+              data-testid="right-rail-save-btn"
+              onClick={() => handleToggleRightCompanionPanel('save')}
+              title="Save Blueprint to Library Panel (Right Slide-Out)"
+              aria-label="Toggle Save to Library Right Panel"
+              aria-expanded={isSaveModalOpen}
+              className={`w-8 h-8 rounded-xl flex items-center justify-center transition cursor-pointer ${
+                isSaveModalOpen
+                  ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-200'
+                  : 'text-slate-600 hover:bg-indigo-50 hover:text-indigo-600'
+              }`}
+            >
+              <Bookmark className="w-4 h-4" />
+            </button>
+
+            <button
+              id="right-rail-major-version-btn"
+              data-testid="right-rail-major-version-btn"
+              onClick={() => handleToggleRightCompanionPanel('major')}
+              title="Tag Major Version Milestone Panel (Right Slide-Out)"
+              aria-label="Toggle Tag Major Version Right Panel"
+              aria-expanded={isMajorVersionModalOpen}
+              className={`w-8 h-8 rounded-xl flex items-center justify-center transition cursor-pointer ${
+                isMajorVersionModalOpen
+                  ? 'bg-teal-600 text-white shadow-sm ring-2 ring-teal-200'
+                  : 'text-slate-600 hover:bg-teal-50 hover:text-teal-600'
+              }`}
+            >
+              <Tag className="w-4 h-4" />
+            </button>
+
+            <div className="w-6 h-px bg-slate-200 my-1" />
+
+            <button
+              id="right-rail-brain-btn"
+              data-testid="right-rail-brain-btn"
+              onClick={() => handleToggleRightCompanionPanel('brain')}
+              title="Architecture Brain Grounding Panel (Right Slide-Out)"
+              aria-label="Toggle Architecture Brain Right Panel"
+              aria-expanded={isBrainModalOpen}
+              className={`w-8 h-8 rounded-xl flex items-center justify-center transition cursor-pointer ${
+                isBrainModalOpen
+                  ? 'bg-purple-600 text-white shadow-sm ring-2 ring-purple-200'
+                  : 'text-slate-600 hover:bg-purple-50 hover:text-purple-600'
+              }`}
+            >
+              <Cpu className="w-4 h-4" />
+            </button>
+
+            <button
+              id="right-rail-audio-btn"
+              data-testid="right-rail-audio-btn"
+              onClick={() => handleToggleRightCompanionPanel('audio')}
+              title="Executive Audio Briefing Panel (Right Slide-Out)"
+              aria-label="Toggle Audio Briefing Right Panel"
+              aria-expanded={isAudioModalOpen}
+              className={`w-8 h-8 rounded-xl flex items-center justify-center transition cursor-pointer ${
+                isAudioModalOpen
+                  ? 'bg-amber-600 text-white shadow-sm ring-2 ring-amber-200'
+                  : 'text-slate-600 hover:bg-amber-50 hover:text-amber-600'
+              }`}
+            >
+              <Volume2 className="w-4 h-4" />
+            </button>
+
+            <button
+              id="right-rail-governance-btn"
+              data-testid="right-rail-governance-btn"
+              onClick={() => handleToggleRightCompanionPanel('governance')}
+              title="Governance & Compliance Inspector (280px Inline Right Panel)"
+              aria-label="Toggle Governance Inspector Right Panel"
+              aria-expanded={!isLaunchpadMode && isRightGovernanceOpen}
+              className={`w-8 h-8 rounded-xl flex items-center justify-center transition cursor-pointer mt-auto ${
+                !isLaunchpadMode && isRightGovernanceOpen
+                  ? 'bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-200'
+                  : 'text-slate-600 hover:bg-emerald-50 hover:text-emerald-600'
+              }`}
+            >
+              <Shield className="w-4 h-4" />
+            </button>
+          </aside>
         </main>
 
         {/* 3. FOOTER STATUS BAR (v2.2 Section 3) */}
@@ -5169,67 +5455,7 @@ function StudioMain() {
         </footer>
       </div>
 
-      {/* 4. MODALS & SLIDEOUT DRAWERS */}
-      <ComponentInspectorDrawer
-        component={selectedComponent}
-        onClose={() => setSelectedComponent(null)}
-        onAiRefinePrompt={(prompt) => handleExecutePrompt(prompt)}
-        onShareNode={(node) => handleOpenShare('node', node.id, node.name)}
-      />
-
-      <BrainGroundingModal
-        isOpen={isBrainModalOpen}
-        onClose={() => setIsBrainModalOpen(false)}
-        onAutoHeal={handleAutoHeal}
-        isHealing={isHealing}
-        currentXml={xml}
-      />
-
-      <AudioBriefingModal
-        isOpen={isAudioModalOpen}
-        onClose={() => setIsAudioModalOpen(false)}
-        title={ast.metadata.projectTitle}
-        ast={ast}
-        currentXml={xml}
-      />
-
-      <ObjectShareModal
-        isOpen={isShareModalOpen}
-        onClose={() => setIsShareModalOpen(false)}
-        targetType={shareTargetType}
-        targetId={shareTargetId}
-        targetTitle={shareTargetTitle}
-        projectTitle={ast.metadata.projectTitle}
-        domain={ast.metadata.domain}
-        activeVersionTag={activeVersionTag}
-        activeDoc={livingSpecs.find((d) => d.id === activeDocId)}
-        activeNode={selectedComponent}
-      />
-
-      <SaveToLibraryModal
-        isOpen={isSaveModalOpen}
-        onClose={() => setIsSaveModalOpen(false)}
-        onSaveSuccess={({ id, name, domain }) => {
-          setIsSavedInLibrary(true);
-          setSessionId(id);
-          setAst((prev) => ({
-            ...prev,
-            metadata: {
-              ...prev.metadata,
-              projectTitle: name,
-              domain: domain
-            }
-          }));
-        }}
-        initialProjectTitle={ast.metadata.projectTitle}
-        initialDomain={ast.metadata.domain}
-        ast={ast}
-        xml={xml}
-        versions={versions}
-        messages={messages}
-        activeVersionTag={activeVersionTag}
-      />
-
+      {/* 4. BLUEPRINT CATALOG SLIDE-OVER DRAWER */}
       <BlueprintCatalogModal
         isOpen={isCatalogOpen}
         onClose={() => setIsCatalogOpen(false)}
@@ -5238,20 +5464,6 @@ function StudioMain() {
         currentBlueprintId={selectedBlueprintId}
         currentDomainPresetId={selectedDomain}
         theme="light"
-      />
-
-      <NewProjectModal
-        isOpen={isNewProjectModalOpen}
-        onClose={() => setIsNewProjectModalOpen(false)}
-        onCreateProject={handleCreateNewProject}
-      />
-
-      <MajorVersionModal
-        isOpen={isMajorVersionModalOpen}
-        onClose={() => setIsMajorVersionModalOpen(false)}
-        currentVersion={activeVersionTag}
-        nextMajorVersion={getNextMajorVersion(activeVersionTag)}
-        onConfirmMajorVersion={handleConfirmMajorVersion}
       />
     </div>
   );

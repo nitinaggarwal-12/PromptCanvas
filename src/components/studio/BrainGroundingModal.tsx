@@ -38,31 +38,70 @@ export function BrainGroundingModal({ isOpen, onClose, onAutoHeal, isHealing, cu
     : 100;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-150">
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-xl w-full p-6 space-y-6">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-purple-500/20">
-              <Cpu className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="font-bold text-base text-slate-900 tracking-tight">Architecture Brain & Skill Grounding</h2>
-              <p className="text-xs text-slate-500 font-mono">Immutable Enterprise Standards • Live AST & Geometry Validator</p>
+    <aside
+      data-testid="studio-right-brain-panel"
+      className="h-full shrink-0 w-[390px] sm:w-[420px] bg-white border-l border-slate-200 shadow-xl z-30 flex flex-col justify-between animate-in slide-in-from-right duration-200 text-slate-900"
+    >
+      {/* Header */}
+      <div className="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/90 shrink-0">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-sm shadow-purple-500/20 shrink-0">
+            <Cpu className="w-4 h-4" />
+          </div>
+          <div className="min-w-0">
+            <h2 className="font-bold text-sm text-slate-900 tracking-tight truncate">Architecture Brain & Grounding</h2>
+            <p className="text-[11px] text-slate-500 font-mono truncate">Live AST & 2D AABB Geometry Validator</p>
+          </div>
+        </div>
+        <button
+          onClick={onClose}
+          title="Collapse right panel"
+          className="p-1.5 hover:bg-slate-200 rounded-lg text-slate-500 hover:text-slate-800 transition shrink-0 cursor-pointer"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Scrollable Body */}
+      <div className="flex-1 overflow-y-auto p-5 space-y-5 text-xs">
+        {/* Quality Score Badges */}
+        <div className="grid grid-cols-3 gap-2.5 text-center">
+          <div className={`${qualityScore >= 90 ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'} border p-2.5 rounded-xl`}>
+            <div className={`text-[10px] ${qualityScore >= 90 ? 'text-emerald-800' : 'text-amber-800'} uppercase font-mono font-bold`}>Quality</div>
+            <div className={`text-base font-black ${qualityScore >= 90 ? 'text-emerald-700' : 'text-amber-700'} mt-0.5`}>{qualityScore} / 100</div>
+          </div>
+          <div className={`${overlapDefects === 0 ? 'bg-blue-50 border-blue-200' : 'bg-amber-50 border-amber-200'} border p-2.5 rounded-xl`}>
+            <div className={`text-[10px] ${overlapDefects === 0 ? 'text-blue-800' : 'text-amber-800'} uppercase font-mono font-bold`}>Collisions</div>
+            <div className={`text-base font-black ${overlapDefects === 0 ? 'text-blue-700' : 'text-amber-700'} mt-0.5`}>
+              {overlapDefects} {overlapDefects === 1 ? 'Defect' : 'Defects'}
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-700 transition">
-            <X className="w-4 h-4" />
-          </button>
+          <div className="bg-purple-50 border border-purple-200 p-2.5 rounded-xl">
+            <div className="text-[10px] text-purple-800 uppercase font-mono font-bold">Contrast</div>
+            <div className="text-base font-black text-purple-700 mt-0.5">WCAG AAA</div>
+          </div>
         </div>
 
+        {validation && validation.errors.length > 0 && (
+          <div className="rounded-xl bg-amber-50 border border-amber-200 p-3 text-xs text-amber-900 space-y-1">
+            <div className="font-bold flex items-center gap-1.5">
+              <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              <span>Detected {validation.errors.length} live geometry/structural finding(s):</span>
+            </div>
+            {validation.errors.slice(0, 4).map((err, i) => (
+              <div key={i} className="text-[11px] text-amber-800 font-mono break-words">
+                • [{err.code}] {err.detail}
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Active Skills List */}
-        <div className="space-y-3">
-          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Ground-Truth Skills Loaded:</h4>
-          
+        <div className="space-y-2.5">
+          <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Active Ground-Truth Skills Loaded:</h4>
+
           <div className="space-y-2 text-xs">
-            <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               <div>
                 <div className="font-bold text-slate-900 font-mono">gcp-enterprise-diagram-engine</div>
@@ -70,7 +109,7 @@ export function BrainGroundingModal({ isOpen, onClose, onAutoHeal, isHealing, cu
               </div>
             </div>
 
-            <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               <div>
                 <div className="font-bold text-slate-900 font-mono">diagram-generation-engine</div>
@@ -78,7 +117,7 @@ export function BrainGroundingModal({ isOpen, onClose, onAutoHeal, isHealing, cu
               </div>
             </div>
 
-            <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               <div>
                 <div className="font-bold text-slate-900 font-mono">living-specs-engine (16 Documents)</div>
@@ -87,55 +126,22 @@ export function BrainGroundingModal({ isOpen, onClose, onAutoHeal, isHealing, cu
             </div>
           </div>
         </div>
-
-        {/* Quality Score Badges */}
-        <div className="grid grid-cols-3 gap-3 text-center">
-          <div className={`${qualityScore >= 90 ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'} border p-3 rounded-xl`}>
-            <div className={`text-[10px] ${qualityScore >= 90 ? 'text-emerald-800' : 'text-amber-800'} uppercase font-mono font-bold`}>Quality Score</div>
-            <div className={`text-xl font-black ${qualityScore >= 90 ? 'text-emerald-700' : 'text-amber-700'} mt-0.5`}>{qualityScore} / 100</div>
-          </div>
-          <div className={`${overlapDefects === 0 ? 'bg-blue-50 border-blue-200' : 'bg-amber-50 border-amber-200'} border p-3 rounded-xl`}>
-            <div className={`text-[10px] ${overlapDefects === 0 ? 'text-blue-800' : 'text-amber-800'} uppercase font-mono font-bold`}>AABB Collisions</div>
-            <div className={`text-xl font-black ${overlapDefects === 0 ? 'text-blue-700' : 'text-amber-700'} mt-0.5`}>
-              {overlapDefects} {overlapDefects === 1 ? 'Defect' : 'Defects'}
-            </div>
-          </div>
-          <div className="bg-purple-50 border border-purple-200 p-3 rounded-xl">
-            <div className="text-[10px] text-purple-800 uppercase font-mono font-bold">Contrast Standards</div>
-            <div className="text-xl font-black text-purple-700 mt-0.5">WCAG AAA</div>
-          </div>
-        </div>
-
-        {validation && validation.errors.length > 0 && (
-          <div className="rounded-xl bg-amber-50 border border-amber-200 p-3 text-xs text-amber-900 space-y-1 max-h-28 overflow-y-auto">
-            <div className="font-bold flex items-center gap-1.5">
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-              <span>Detected {validation.errors.length} live geometry/structural finding(s):</span>
-            </div>
-            {validation.errors.slice(0, 3).map((err, i) => (
-              <div key={i} className="text-[11px] text-amber-800 font-mono truncate">
-                • [{err.code}] {err.detail}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Action Button */}
-        <div className="border-t border-slate-100 pt-4 flex items-center justify-between">
-          <span className="text-[11px] text-slate-500 font-mono">
-            {totalErrors === 0 ? 'Status: Grounded & Enforced (0 Defects)' : `Status: ${totalErrors} Finding(s) — Ready to Auto-Heal`}
-          </span>
-          <button
-            onClick={onAutoHeal}
-            disabled={isHealing}
-            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-md shadow-blue-600/20 transition disabled:opacity-50"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${isHealing ? 'animate-spin' : ''}`} />
-            <span>{isHealing ? 'Re-Verifying & Healing...' : 'Re-Ground & Auto-Heal Architecture'}</span>
-          </button>
-        </div>
-
       </div>
-    </div>
+
+      {/* Footer Action Bar */}
+      <div className="px-5 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2 shrink-0">
+        <span className="text-[11px] text-slate-500 font-mono truncate">
+          {totalErrors === 0 ? 'Grounded (0 Defects)' : `${totalErrors} Finding(s)`}
+        </span>
+        <button
+          onClick={onAutoHeal}
+          disabled={isHealing}
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition disabled:opacity-50 cursor-pointer shrink-0"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${isHealing ? 'animate-spin' : ''}`} />
+          <span>{isHealing ? 'Healing...' : 'Re-Ground & Auto-Heal'}</span>
+        </button>
+      </div>
+    </aside>
   );
 }
