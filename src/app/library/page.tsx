@@ -70,6 +70,7 @@ import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { AppHeader } from '@/components/AppHeader';
 import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 import { generateUpgradedGcpGeBankingArchitectureXml } from '@/lib/canonical/upgradedGcpGeBankingAgentTemplate';
+import GoogleWorkspaceDirectOpenModal from '@/components/GoogleWorkspaceDirectOpenModal';
 
 interface DiagramVersionItem {
   id: string;
@@ -145,6 +146,10 @@ function ArchitectureLibraryContent() {
   const [selectedVersionIndex, setSelectedVersionIndex] = useState<number>(0);
   const [isLoadingVersions, setIsLoadingVersions] = useState<boolean>(false);
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
+  const [cloudViewerTarget, setCloudViewerTarget] = useState<{
+    isOpen: boolean;
+    targetApp: 'slides' | 'docs' | 'pdf';
+  }>({ isOpen: false, targetApp: 'slides' });
 
   // Starred Canvases
   const [starredIds, setStarredIds] = useState<Set<string>>(() => {
@@ -1109,6 +1114,16 @@ function ArchitectureLibraryContent() {
                       <Download className="w-3.5 h-3.5 text-sky-400" />
                       <span>Download .drawio</span>
                     </button>
+                    <button
+                      id="library-preview-open-cloud-viewer-btn"
+                      type="button"
+                      onClick={() => setCloudViewerTarget({ isOpen: true, targetApp: 'slides' })}
+                      className="px-3.5 py-2 rounded-xl border border-amber-500/40 bg-amber-500/15 hover:bg-amber-500 hover:text-slate-950 text-amber-300 text-xs font-black transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+                      title="Open Same-Screen Cloud Viewer (Google Slides, Google Docs, PDF)"
+                    >
+                      <span>📊</span>
+                      <span>Slides / Docs / PDF Viewer</span>
+                    </button>
                   </>
                 )}
                 <button
@@ -2023,6 +2038,18 @@ function ArchitectureLibraryContent() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Same-Screen Cloud Viewer Modal (Google Slides / Google Docs / PDF) */}
+      {activeModalCanvas && activeVersion && (
+        <GoogleWorkspaceDirectOpenModal
+          isOpen={cloudViewerTarget.isOpen}
+          onClose={() => setCloudViewerTarget((prev) => ({ ...prev, isOpen: false }))}
+          mode={cloudViewerTarget.targetApp}
+          xmlContent={activeVersion.xml_content}
+          diagramName={activeModalCanvas.name}
+          blueprintId={activeModalCanvas.id}
+        />
       )}
 
     </div>

@@ -1281,12 +1281,18 @@ function StudioMain() {
         .then(res => (res.ok ? res.json() : null))
         .then(data => {
           if (!data) return;
+          if (data.is_ephemeral_session && loadedFromLocal) return;
           const fetchedXml = data.xml_content || data.versions?.[0]?.xml_content || '';
-          const fetchedName = data.name || `Architecture ${urlId}`;
+          const fetchedName =
+            (data.is_ephemeral_session && searchParams.get('project')) ||
+            data.name ||
+            `Architecture ${urlId}`;
           const fetchedPrompt = data.prompt || data.versions?.[0]?.prompt || data.latest_prompt || '';
           if (fetchedXml && fetchedXml.includes('<mxCell')) {
             setXml(fetchedXml);
-            setSelectedBlueprintId('custom');
+            if (!data.is_ephemeral_session) {
+              setSelectedBlueprintId('custom');
+            }
             setAst(prev => ({
               ...prev,
               metadata: {

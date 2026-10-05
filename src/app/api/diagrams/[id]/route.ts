@@ -6,6 +6,10 @@ import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditE
 import { generateGeminiEnterpriseArchitectureXml } from '@/lib/masterBuilders/build_master_gemini_enterprise_agent_platform';
 import { generateAzureLandingZoneArchitectureXml } from '@/lib/masterBuilders/build_master_azure_landing_zone';
 import { generateAgenticAiArchitectureXml } from '@/lib/masterBuilders/build_master_agentic_ai_architecture';
+import { generateGoogleMultiagentArchitectureXml } from '@/lib/masterBuilders/build_master_google_multiagent_ai_system';
+import { generateUpgradedGcpGeBankingArchitectureXml } from '@/lib/canonical/upgradedGcpGeBankingAgentTemplate';
+import { generateGcpNativeArchitectureXml } from '@/lib/gcpNativeArchitecture';
+import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 import { enrichDrawioXmlWithVectorIcons } from '@/lib/vectorIcons/visionIconEnricher';
 
 interface RouteParams {
@@ -22,13 +26,20 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     const isCatalogBlueprint = id.startsWith('bp_');
     const blueprintArchitectureId = isCatalogBlueprint ? id.slice(3) : null;
+    const cleanBpNum = id.replace(/^(bp_|canonical_)/i, '');
+    const matchedCanonicalTemplate = CANONICAL_TEMPLATES.find(
+      (t) => t.id === cleanBpNum || t.id === cleanBpNum.padStart(2, '0')
+    );
     const liveMasterXml = blueprintArchitectureId
-      ? getDefaultXmlForArchitecture(blueprintArchitectureId)
+      ? getDefaultXmlForArchitecture(blueprintArchitectureId) ||
+        (matchedCanonicalTemplate ? matchedCanonicalTemplate.generateXml('enterprise', 'light') : null)
+      : matchedCanonicalTemplate && (id.startsWith('canonical_') || /^\d{1,2}$/.test(id))
+      ? matchedCanonicalTemplate.generateXml('enterprise', 'light')
       : null;
 
     let diagram = await getDiagram(id, user?.id);
 
-    // If not found by exact primary key, check if id is a short display code (e.g. VIS-6505, VIS-3093, VIS-1787, VIS-5965)
+    // If not found by exact primary key, check if id is a short display code (e.g. VIS-6505, VIS-3093, VIS-1787, VIS-5965, VIS-9745)
     if (!diagram) {
       const allDiagrams = await listDiagrams(user?.id);
       const shortMatch = allDiagrams.find(d => {
@@ -56,7 +67,7 @@ export async function GET(request: Request, { params }: RouteParams) {
           return true;
         }
         if (
-          id.toUpperCase() === 'VIS-5965' &&
+          (id.toUpperCase() === 'VIS-5965' || id.toUpperCase() === 'VIS-9745') &&
           (d.name || '').toLowerCase().includes('landing zone')
         ) {
           return true;
@@ -74,13 +85,65 @@ export async function GET(request: Request, { params }: RouteParams) {
       }
     }
 
-    // Catalog blueprint deep links or VIS-3093 / VIS-1787 / VIS-5965 / VIS-AGENTIC-01 self-healing deep links must not depend on a persisted DB row.
+    // Catalog blueprint deep links or preset library / studio session deep links must not fail when not yet persisted in SQLite.
     if (!diagram) {
-      if (id.toUpperCase() === 'VIS-3093' || id.toUpperCase() === 'VIS-1787') {
+      const upperId = id.toUpperCase();
+
+      if (upperId === 'GCP-GE-BANKING-2026') {
+        const now = '2026-09-30T12:00:00.000Z';
+        const bankingXml = generateUpgradedGcpGeBankingArchitectureXml();
+        return NextResponse.json({
+          id: 'GCP-GE-BANKING-2026',
+          name: '2026 Upgraded GCP & Gemini Enterprise Multi-Agent Banking Architecture',
+          architecture_type: 'vision_gcp_multiagent',
+          is_private: false,
+          created_at: now,
+          updated_at: now,
+          access_level: 'Owner',
+          xml_content: bankingXml,
+          versions: [{
+            id: 'GCP-GE-BANKING-2026__live_master',
+            diagram_id: 'GCP-GE-BANKING-2026',
+            version_number: 1,
+            xml_content: bankingXml,
+            comment: 'Initial Master Reference Blueprint',
+            created_by: 'System',
+            created_at: now,
+            architecture_type: 'vision_gcp_multiagent'
+          }]
+        });
+      }
+
+      if (upperId === 'GCP-MULTIAGENT-01') {
+        const now = '2026-08-15T12:00:00.000Z';
+        const multiagentXml = generateGoogleMultiagentArchitectureXml();
+        return NextResponse.json({
+          id: 'GCP-MULTIAGENT-01',
+          name: 'Google Multiagent AI System (87 Objects)',
+          architecture_type: 'vision_gcp_multiagent',
+          is_private: false,
+          created_at: now,
+          updated_at: now,
+          access_level: 'Owner',
+          xml_content: multiagentXml,
+          versions: [{
+            id: 'GCP-MULTIAGENT-01__live_master',
+            diagram_id: 'GCP-MULTIAGENT-01',
+            version_number: 1,
+            xml_content: multiagentXml,
+            comment: 'Initial Master Reference Blueprint',
+            created_by: 'System',
+            created_at: now,
+            architecture_type: 'vision_gcp_multiagent'
+          }]
+        });
+      }
+
+      if (upperId === 'VIS-3093' || upperId === 'VIS-1787') {
         const now = new Date().toISOString();
         const geminiMasterXml = enrichDrawioXmlWithVectorIcons(generateGeminiEnterpriseArchitectureXml());
         return NextResponse.json({
-          id: id.toUpperCase(),
+          id: upperId,
           name: 'Gemini Enterprise Agent Platform',
           architecture_type: 'vision_decompiled',
           is_private: false,
@@ -89,8 +152,8 @@ export async function GET(request: Request, { params }: RouteParams) {
           access_level: 'Owner',
           xml_content: geminiMasterXml,
           versions: [{
-            id: `${id.toUpperCase()}__live_master`,
-            diagram_id: id.toUpperCase(),
+            id: `${upperId}__live_master`,
+            diagram_id: upperId,
             version_number: 1,
             xml_content: geminiMasterXml,
             comment: 'Gemini Enterprise Agent Platform — Self-healed Master Vector Blueprint',
@@ -101,12 +164,12 @@ export async function GET(request: Request, { params }: RouteParams) {
         });
       }
 
-      if (id.toUpperCase() === 'VIS-5965' || id.toLowerCase().includes('landing_zone')) {
+      if (upperId === 'VIS-5965' || upperId === 'VIS-9745' || id.toLowerCase().includes('landing_zone')) {
         const now = new Date().toISOString();
         const azureMasterXml = enrichDrawioXmlWithVectorIcons(generateAzureLandingZoneArchitectureXml());
         return NextResponse.json({
-          id: 'VIS-5965',
-          name: 'Azure Application Landing Zone (VIS-5965)',
+          id: upperId.startsWith('VIS-') ? upperId : 'VIS-5965',
+          name: `Azure Application Landing Zone (${upperId.startsWith('VIS-') ? upperId : 'VIS-5965'})`,
           architecture_type: 'vision_decompiled',
           is_private: false,
           created_at: now,
@@ -114,8 +177,8 @@ export async function GET(request: Request, { params }: RouteParams) {
           access_level: 'Owner',
           xml_content: azureMasterXml,
           versions: [{
-            id: 'VIS-5965__live_master',
-            diagram_id: 'VIS-5965',
+            id: `${upperId.startsWith('VIS-') ? upperId : 'VIS-5965'}__live_master`,
+            diagram_id: upperId.startsWith('VIS-') ? upperId : 'VIS-5965',
             version_number: 1,
             xml_content: azureMasterXml,
             comment: 'Azure Application Landing Zone (42 Nodes, 9 Subnets) — Self-healed Master Blueprint',
@@ -126,7 +189,7 @@ export async function GET(request: Request, { params }: RouteParams) {
         });
       }
 
-      if (id.toUpperCase() === 'VIS-AGENTIC-01' || id.toLowerCase().includes('agentic')) {
+      if (upperId === 'VIS-AGENTIC-01' || id.toLowerCase().includes('agentic')) {
         const now = new Date().toISOString();
         const agenticMasterXml = enrichDrawioXmlWithVectorIcons(generateAgenticAiArchitectureXml());
         return NextResponse.json({
@@ -151,12 +214,15 @@ export async function GET(request: Request, { params }: RouteParams) {
         });
       }
 
-      if (isCatalogBlueprint && liveMasterXml) {
+      if ((isCatalogBlueprint || matchedCanonicalTemplate) && liveMasterXml) {
         const now = new Date().toISOString();
+        const resolvedName = matchedCanonicalTemplate
+          ? `#${matchedCanonicalTemplate.id} • ${matchedCanonicalTemplate.name}`
+          : blueprintArchitectureId || 'Catalog Blueprint';
         return NextResponse.json({
           id,
-          name: blueprintArchitectureId || 'Catalog Blueprint',
-          architecture_type: blueprintArchitectureId,
+          name: resolvedName,
+          architecture_type: blueprintArchitectureId || `canonical_${matchedCanonicalTemplate?.id || '00'}`,
           is_private: false,
           created_at: now,
           updated_at: now,
@@ -170,7 +236,39 @@ export async function GET(request: Request, { params }: RouteParams) {
             comment: 'Current catalog master',
             created_by: 'System',
             created_at: now,
-            architecture_type: blueprintArchitectureId
+            architecture_type: blueprintArchitectureId || `canonical_${matchedCanonicalTemplate?.id || '00'}`
+          }]
+        });
+      }
+
+      // Client-side Studio session IDs (e.g. ses_studio_v22, proj_*, tab_*) resolve cleanly with 200 OK
+      if (
+        id.startsWith('ses_') ||
+        id.startsWith('proj_') ||
+        id.startsWith('tab_') ||
+        id.startsWith('session_')
+      ) {
+        const now = new Date().toISOString();
+        const defaultStudioXml = generateGcpNativeArchitectureXml();
+        return NextResponse.json({
+          id,
+          name: 'ENTERPRISE CLOUD - 2026 Upgraded GCP & Gemini Enterprise Native Architecture',
+          architecture_type: 'gcp_enterprise_reference',
+          is_private: false,
+          is_ephemeral_session: true,
+          created_at: now,
+          updated_at: now,
+          access_level: 'Owner',
+          xml_content: defaultStudioXml,
+          versions: [{
+            id: `${id}__session_default`,
+            diagram_id: id,
+            version_number: 1,
+            xml_content: defaultStudioXml,
+            comment: 'Studio Session Baseline (v1.0)',
+            created_by: 'System',
+            created_at: now,
+            architecture_type: 'gcp_enterprise_reference'
           }]
         });
       }
