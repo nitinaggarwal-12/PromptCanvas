@@ -40,6 +40,16 @@ interface GoogleWorkspaceDirectOpenModalProps {
   diagramName: string;
   blueprintId: string;
   masterImageSrc?: string;
+  isFullPage?: boolean;
+}
+
+function escapeXmlText(str: string): string {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 }
 
 function blobToBase64(blob: Blob): Promise<string> {
@@ -95,13 +105,14 @@ export default function GoogleWorkspaceDirectOpenModal({
   diagramName,
   blueprintId,
   masterImageSrc,
+  isFullPage = false,
 }: GoogleWorkspaceDirectOpenModalProps) {
   const [activeMode, setActiveMode] = useState<'slides' | 'docs' | 'pdf'>(mode);
   const [showOpenWithDropdown, setShowOpenWithDropdown] = useState<boolean>(false);
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [slide1ViewMode, setSlide1ViewMode] = useState<'interactive-twin' | 'decomposed-shapes'>('interactive-twin');
   const [docsDiagramViewMode, setDocsDiagramViewMode] = useState<'decomposed-shapes' | 'interactive-twin'>('decomposed-shapes');
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(isFullPage);
   const [pngPreviewUrl, setPngPreviewUrl] = useState<string | null>(masterImageSrc || null);
   const [isGeneratingPreview, setIsGeneratingPreview] = useState<boolean>(false);
   const [launchAssistantModal, setLaunchAssistantModal] = useState<'slides' | 'docs' | null>(null);
@@ -144,56 +155,6 @@ export default function GoogleWorkspaceDirectOpenModal({
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedToken = localStorage.getItem('pc_google_drive_access_token') || '';
-      const savedClientId = localStorage.getItem('pc_google_oauth_client_id') || '';
-      setGoogleAccessToken(savedToken);
-      setGoogleClientId(savedClientId);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (masterImageSrc) {
-      setPngPreviewUrl(masterImageSrc);
-      setIsGeneratingPreview(false);
-      return;
-    }
-    if (!isOpen || !xmlContent) return;
-    let cancelled = false;
-    setIsGeneratingPreview(true);
-    exportDiagramPng(xmlContent, { scale: 2, transparent: false })
-      .then((dataUrl) => {
-        if (!cancelled && dataUrl) {
-          setPngPreviewUrl(dataUrl);
-        }
-      })
-      .catch((err) => console.warn('Preview rasterization warning:', err))
-      .finally(() => {
-        if (!cancelled) setIsGeneratingPreview(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [isOpen, xmlContent, masterImageSrc]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') {
-        setActiveSlideIndex((prev) => Math.min(2, prev + 1));
-      } else if (e.key === 'ArrowLeft') {
-        setActiveSlideIndex((prev) => Math.max(0, prev - 1));
-      } else if (e.key === 'Escape' && isFullscreen) {
-        setIsFullscreen(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, isFullscreen]);
-
-  if (!isOpen) return null;
-
   // Strictly sort vertices by depth ascending, then area descending so containers draw behind child nodes
   const sortedVertices = useMemo(() => {
     return parsedTopology.cells
@@ -214,9 +175,226 @@ export default function GoogleWorkspaceDirectOpenModal({
     return s;
   }, [parsedTopology.cells]);
 
-  const edges = parsedTopology.cells.filter((c) => c.edge);
+  const edges = useMemo(() => parsedTopology.cells.filter((c) => c.edge), [parsedTopology.cells]);
   const graphW = Math.max(600, parsedTopology.maxX - parsedTopology.minX);
   const graphH = Math.max(400, parsedTopology.maxY - parsedTopology.minY);
+
+  const selectedNode = useMemo(() => {
+    if (!selectedNodeId) return null;
+    return sortedVertices.find((v) => v.id === selectedNodeId) || null;
+  }, [selectedNodeId, sortedVertices]);
+
+  /**
+   * Instant Synchronous Vector Diagram SVG Data URL (0ms latency, zero dependency on external embed.diagrams.net iframe)
+   * Guarantees Slide 1, PDF Print Dossier, and PPTX/DOCX exports always have a crisp 1600x900 visual twin immediately.
+   */
+  const instantSvgDataUrl = useMemo(() => {
+    if (sortedVertices.length === 0) return '';
+    const svgW = 1600;
+    const svgH = 900;
+    const padX = 48;
+    const padY = 48;
+    const usableW = svgW - padX * 2;
+    const usableH = svgH - padY * 2;
+
+    const toX = (x: number) => ((x - parsedTopology.minX) / graphW) * usableW + padX;
+    const toY = (y: number) => ((y - parsedTopology.minY) / graphH) * usableH + padY;
+    const toW = (w: number) => Math.max(24, (w / graphW) * usableW);
+    const toH = (h: number) => Math.max(20, (h / graphH) * usableH);
+
+    const bgHex = parsedTopology.isDarkDiagram ? `#${parsedTopology.diagramBgHex || '0F172A'}` : '#FFFFFF';
+
+    const rectElements: string[] = [];
+    sortedVertices.forEach((node) => {
+      if ((node.id === 'bg' || node.id.includes('bg')) && node.width >= 700 && node.height >= 400) {
+        return;
+      }
+      const x = toX(node.absX);
+      const y = toY(node.absY);
+      const w = toW(node.width);
+      const h = toH(node.height);
+
+      const parsedText = cleanHtmlToPlainText(node.value);
+      const ov = editableOverrides[node.id];
+      const title = escapeXmlText(ov ? ov.title : parsedText.title);
+      const subtitle = escapeXmlText(ov ? ov.subtitle : parsedText.subtitle);
+
+      const isContainer =
+        node.style.container === '1' ||
+        parentIds.has(node.id) ||
+        (node.style.verticalAlign === 'top' && node.width * node.height > 18000) ||
+        (node.width > 240 && node.height > 120);
+
+      const fill =
+        node.style.fillColor && node.style.fillColor !== 'none' && node.style.fillColor !== 'transparent'
+          ? node.style.fillColor
+          : isContainer
+          ? '#F8FAFC'
+          : '#FFFFFF';
+      const stroke =
+        node.style.strokeColor && node.style.strokeColor !== 'none' && node.style.strokeColor !== 'transparent'
+          ? node.style.strokeColor
+          : '#94A3B8';
+      const rx = node.style.rounded === '1' ? 8 : 3;
+      const dash = node.style.dashed === '1' ? 'stroke-dasharray="6,4"' : '';
+      const textColor = node.htmlTitleColor
+        ? `#${node.htmlTitleColor}`
+        : node.style.fontColor
+        ? node.style.fontColor
+        : parsedTopology.isDarkDiagram
+        ? '#F8FAFC'
+        : '#0F172A';
+
+      rectElements.push(
+        `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${rx}" fill="${escapeXmlText(
+          fill
+        )}" stroke="${escapeXmlText(stroke)}" stroke-width="${isContainer ? '1.8' : '1.5'}" ${dash} />`
+      );
+
+      if (title) {
+        if (isContainer) {
+          rectElements.push(
+            `<text x="${(x + 10).toFixed(1)}" y="${(y + 18).toFixed(
+              1
+            )}" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" fill="${escapeXmlText(
+              textColor
+            )}">${title.slice(0, 65)}</text>`
+          );
+        } else {
+          const centerY = subtitle ? y + h / 2 - 3 : y + h / 2 + 4;
+          rectElements.push(
+            `<text x="${(x + w / 2).toFixed(1)}" y="${centerY.toFixed(
+              1
+            )}" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="700" fill="${escapeXmlText(
+              textColor
+            )}">${title.slice(0, 42)}</text>`
+          );
+          if (subtitle) {
+            rectElements.push(
+              `<text x="${(x + w / 2).toFixed(1)}" y="${(centerY + 14).toFixed(
+                1
+              )}" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" fill="#475569">${subtitle.slice(
+                0,
+                48
+              )}</text>`
+            );
+          }
+        }
+      }
+    });
+
+    const edgeElements: string[] = [];
+    edges.forEach((edge) => {
+      const src = sortedVertices.find((v) => v.id === edge.source);
+      const tgt = sortedVertices.find((v) => v.id === edge.target);
+      const exitX = parseFloat(edge.style.exitX ?? '0.5');
+      const exitY = parseFloat(edge.style.exitY ?? '0.5');
+      const entryX = parseFloat(edge.style.entryX ?? '0.5');
+      const entryY = parseFloat(edge.style.entryY ?? '0.5');
+
+      const ptStart = src
+        ? { x: src.absX + src.width * exitX, y: src.absY + src.height * exitY }
+        : edge.sourcePoint;
+      const ptEnd = tgt
+        ? { x: tgt.absX + tgt.width * entryX, y: tgt.absY + tgt.height * entryY }
+        : edge.targetPoint;
+      if (!ptStart || !ptEnd) return;
+
+      let routedWaypoints = [...edge.waypoints];
+      if (routedWaypoints.length === 0 && Math.abs(ptStart.x - ptEnd.x) > 4 && Math.abs(ptStart.y - ptEnd.y) > 4) {
+        const isHorizontalExit =
+          exitX === 0 || exitX === 1 || Math.abs(ptEnd.x - ptStart.x) >= Math.abs(ptEnd.y - ptStart.y);
+        if (isHorizontalExit) {
+          const midX = (ptStart.x + ptEnd.x) / 2;
+          routedWaypoints = [
+            { x: midX, y: ptStart.y },
+            { x: midX, y: ptEnd.y },
+          ];
+        } else {
+          const midY = (ptStart.y + ptEnd.y) / 2;
+          routedWaypoints = [
+            { x: ptStart.x, y: midY },
+            { x: ptEnd.x, y: midY },
+          ];
+        }
+      }
+      const allPts = [ptStart, ...routedWaypoints, ptEnd];
+      const ptsStr = allPts.map((p) => `${toX(p.x).toFixed(1)},${toY(p.y).toFixed(1)}`).join(' ');
+      const strokeColor = edge.style.strokeColor || '#2563EB';
+      const dash = edge.style.dashed === '1' ? 'stroke-dasharray="5,4"' : '';
+      edgeElements.push(
+        `<polyline fill="none" points="${ptsStr}" stroke="${escapeXmlText(
+          strokeColor
+        )}" stroke-width="2" ${dash} marker-end="url(#instant-arrow)" />`
+      );
+    });
+
+    const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${svgW} ${svgH}" width="${svgW}" height="${svgH}">
+      <defs>
+        <marker id="instant-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#2563EB" />
+        </marker>
+      </defs>
+      <rect width="100%" height="100%" fill="${escapeXmlText(bgHex)}" />
+      ${rectElements.join('\n')}
+      ${edgeElements.join('\n')}
+    </svg>`;
+
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgStr)}`;
+  }, [sortedVertices, parentIds, edges, parsedTopology, graphW, graphH, editableOverrides]);
+
+  const effectivePreviewUrl = pngPreviewUrl || masterImageSrc || instantSvgDataUrl;
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedToken = localStorage.getItem('pc_google_drive_access_token') || '';
+      const savedClientId = localStorage.getItem('pc_google_oauth_client_id') || '';
+      setGoogleAccessToken(savedToken);
+      setGoogleClientId(savedClientId);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (masterImageSrc) {
+      setPngPreviewUrl(masterImageSrc);
+      setIsGeneratingPreview(false);
+      return;
+    }
+    if (!isOpen || !xmlContent) return;
+    let cancelled = false;
+    exportDiagramPng(xmlContent, { scale: 2, transparent: false })
+      .then((dataUrl) => {
+        if (!cancelled && dataUrl) {
+          setPngPreviewUrl(dataUrl);
+        }
+      })
+      .catch(() => {
+        // Fallback to instantSvgDataUrl already active
+      })
+      .finally(() => {
+        if (!cancelled) setIsGeneratingPreview(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, xmlContent, masterImageSrc]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') {
+        setActiveSlideIndex((prev) => Math.min(2, prev + 1));
+      } else if (e.key === 'ArrowLeft') {
+        setActiveSlideIndex((prev) => Math.max(0, prev - 1));
+      } else if (e.key === 'Escape' && isFullscreen && !isFullPage) {
+        setIsFullscreen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isFullscreen, isFullPage]);
+
+  if (!isOpen) return null;
 
   const handleSaveAuthSettings = (token: string, clientId: string) => {
     setGoogleAccessToken(token);
@@ -228,8 +406,7 @@ export default function GoogleWorkspaceDirectOpenModal({
   };
 
   /**
-   * Helper: Uploads compiled blob to Cloud Bridge (both local and live Cloud Run if running on localhost)
-   * so Google Docs Viewer (`docs.google.com/viewer?url=...`) can fetch the public HTTPS `.pptx` file 100% reliably.
+   * Helper: Uploads compiled blob to Cloud Bridge
    */
   const uploadToCloudBridgeAndGetPublicUrl = async (
     base64Data: string,
@@ -248,7 +425,6 @@ export default function GoogleWorkspaceDirectOpenModal({
       googleAccessToken: activeToken || undefined,
     };
 
-    // 1. Upload to local / current host API
     const localRes = await fetch('/api/export/cloud-bridge', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -263,37 +439,8 @@ export default function GoogleWorkspaceDirectOpenModal({
       };
     }
 
-    // 2. If running on localhost, ALSO push to live Cloud Run cloud-bridge so docs.google.com/viewer can download it over public HTTPS!
-    const isLocalhost =
-      typeof window !== 'undefined' &&
-      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-
     const targetPublicUrl = `https://promptcanvas-248990048888.cr.gclb.goog/api/export/cloud-bridge/${bridgeId}.${format}`;
-
-    if (isLocalhost) {
-      try {
-        const remoteRes = await fetch('https://promptcanvas-248990048888.cr.gclb.goog/api/export/cloud-bridge', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        if (remoteRes.ok) {
-          await fetch(targetPublicUrl, { method: 'HEAD' }).catch(() => {});
-          return {
-            publicUrl: targetPublicUrl,
-          };
-        }
-      } catch (e) {
-        console.warn('Remote Cloud Run cloud-bridge sync notice:', e);
-      }
-      await fetch(targetPublicUrl, { method: 'HEAD' }).catch(() => {});
-      return {
-        publicUrl: targetPublicUrl,
-      };
-    }
-
     const finalPublicUrl = localData?.publicUrl || targetPublicUrl;
-    await fetch(finalPublicUrl, { method: 'HEAD' }).catch(() => {});
     return {
       publicUrl: finalPublicUrl,
     };
@@ -315,13 +462,13 @@ export default function GoogleWorkspaceDirectOpenModal({
       if (activeMode === 'slides') {
         blob = await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
           returnBlob: true,
-          masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
+          masterImageSrc: effectivePreviewUrl || undefined,
         });
       } else {
         blob = await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, {
           returnBlob: true,
           bridgeId: generatedBridgeId,
-          masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
+          masterImageSrc: effectivePreviewUrl || undefined,
           editableOverrides,
         });
       }
@@ -409,143 +556,111 @@ export default function GoogleWorkspaceDirectOpenModal({
   };
 
   /**
+   * Print / Save Executive PDF Report — 100% Synchronous window.open (Zero Popup Blocking & 0ms Wait)
+   */
+  const handlePrintPdfReport = () => {
+    try {
+      const imgUrl = effectivePreviewUrl;
+      const printWin = typeof window !== 'undefined' ? window.open('', '_blank') : null;
+      if (!printWin) {
+        setStatusMessage({
+          type: 'info',
+          text: 'Switched to Same-Screen PDF Document Viewer. Use Ctrl+P / ⌘P or allow popups to open the print window.',
+        });
+        setActiveMode('pdf');
+        return;
+      }
+
+      const rowsHtml = sortedVertices
+        .filter((v) => cleanHtmlToPlainText(v.value).title.length > 0)
+        .slice(0, 80)
+        .map((node, idx) => {
+          const parsed = cleanHtmlToPlainText(node.value);
+          const ov = editableOverrides[node.id];
+          const t = escapeXmlText(ov ? ov.title : parsed.title || node.id);
+          const s = escapeXmlText(ov ? ov.subtitle : parsed.subtitle || 'Enterprise Cloud Architecture Component');
+          return `<tr>
+            <td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:11px;color:#475569;">OBJ-${String(
+              idx + 1
+            ).padStart(2, '0')}</td>
+            <td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;font-weight:700;font-size:12px;color:#0f172a;">${t}</td>
+            <td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;font-size:11.5px;color:#334155;">${s}</td>
+          </tr>`;
+        })
+        .join('');
+
+      printWin.document.write(`<!DOCTYPE html>
+        <html>
+          <head>
+            <title>${escapeXmlText(diagramName)} (${escapeXmlText(blueprintId)}) — Executive Architecture PDF</title>
+            <style>
+              @page { size: landscape; margin: 14mm; }
+              body { font-family: system-ui, -apple-system, sans-serif; padding: 24px 32px; color: #0f172a; margin: 0; background: #ffffff; }
+              .hdr { border-bottom: 2px solid #0d9488; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+              h1 { font-size: 22px; margin: 4px 0 0 0; color: #0f172a; }
+              .badge { font-family: monospace; font-size: 12px; font-weight: 700; color: #0d9488; text-transform: uppercase; }
+              img { width: 100%; max-height: 520px; object-fit: contain; border: 1px solid #cbd5e1; border-radius: 10px; margin-bottom: 24px; background: #ffffff; }
+              table { width: 100%; border-collapse: collapse; page-break-inside: auto; }
+              tr { page-break-inside: avoid; page-break-after: auto; }
+              th { text-align: left; padding: 8px 10px; background: #0f172a; color: #ffffff; font-size: 11px; text-transform: uppercase; }
+            </style>
+          </head>
+          <body>
+            <div class="hdr">
+              <div>
+                <div class="badge">BLUEPRINT ${escapeXmlText(blueprintId)} • 1:1 MASTER ARCHITECTURE DOSSIER</div>
+                <h1>${escapeXmlText(diagramName)}</h1>
+              </div>
+              <div style="font-size:11px;color:#64748b;font-weight:600;">Vector Nodes: ${sortedVertices.length} • Connectors: ${edges.length}</div>
+            </div>
+            ${imgUrl ? `<img src="${imgUrl}" alt="${escapeXmlText(diagramName)}" />` : ''}
+            <h2 style="font-size:15px;margin-bottom:8px;">Component Inventory &amp; Technical Specification (${sortedVertices.length} Objects)</h2>
+            <table>
+              <thead><tr><th style="width:90px;">Object ID</th><th style="width:260px;">Component Name</th><th>Technical Role &amp; Specification</th></tr></thead>
+              <tbody>${rowsHtml}</tbody>
+            </table>
+            <script>window.onload = function() { setTimeout(function() { window.print(); }, 200); };</script>
+          </body>
+        </html>`);
+      printWin.document.close();
+      setStatusMessage({
+        type: 'success',
+        text: `🖨️ Opened Printable Executive PDF Dossier for ${diagramName} (${blueprintId})!`,
+      });
+    } catch (e: any) {
+      setStatusMessage({ type: 'error', text: 'PDF Print error: ' + (e?.message || 'Unknown error') });
+    }
+  };
+
+  /**
    * Method 2: Switch Same-Screen Preview Mode OR Launch Populated Deck in Google Workspace
-   * Note: Behind BeyondCorp (.cr.gclb.goog), external docs.google.com/viewer receives UberProxy CORP_SSO HTML,
-   * so we switch the same-screen preview directly and trigger the Guided Google Workspace Launch Assistant.
    */
   const handleOpenGoogleCloudViewer = async (targetMode?: 'slides' | 'docs' | 'pdf', forceExternalLaunch = false) => {
     const modeToUse = targetMode || activeMode;
-    if (targetMode && targetMode !== activeMode) {
-      setActiveMode(targetMode);
-      setShowOpenWithDropdown(false);
+    setShowOpenWithDropdown(false);
+
+    if (modeToUse !== activeMode) {
+      setActiveMode(modeToUse);
+      setStatusMessage({
+        type: 'info',
+        text:
+          modeToUse === 'slides'
+            ? `📊 Switched same-screen preview to Google Slides 3-Slide Widescreen Deck (${sortedVertices.length} vector nodes).`
+            : modeToUse === 'docs'
+            ? `📄 Switched same-screen preview to Google Docs Architecture Specification (${sortedVertices.length} vector nodes).`
+            : `🖨️ Switched same-screen preview to 2-Page Executive PDF Document Viewer.`,
+      });
       if (!forceExternalLaunch) {
         return;
       }
     }
+
     if (modeToUse === 'pdf') {
       handlePrintPdfReport();
       return;
     }
 
-    const isBeyondCorpOrLocal =
-      typeof window !== 'undefined' &&
-      (window.location.hostname.endsWith('.cr.gclb.goog') ||
-        window.location.hostname.endsWith('.run.app') ||
-        window.location.hostname === 'localhost' ||
-        window.location.hostname === '127.0.0.1');
-
-    if (isBeyondCorpOrLocal) {
-      await handleCopyAndLaunchNewTab(modeToUse);
-      return;
-    }
-
-    setIsOpeningCloudViewer(true);
-    setStatusMessage({
-      type: 'info',
-      text: `Compiling 1:1 Master & Editable Vector ${modeToUse === 'slides' ? 'Deck (.pptx)' : 'Specification (.docx)'} and launching separate Google tab...`,
-    });
-
-    try {
-      let blob: Blob | string | void;
-      const generatedBridgeId = `${blueprintId.toLowerCase().replace(/[^a-z0-9]/g, '')}_${Date.now()}`;
-      if (modeToUse === 'slides') {
-        blob = await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
-          returnBlob: true,
-          masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
-        });
-      } else {
-        blob = await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, {
-          returnBlob: true,
-          bridgeId: generatedBridgeId,
-          masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
-          editableOverrides,
-        });
-      }
-      if (!blob || typeof blob === 'string') throw new Error('Failed to compile blob');
-
-      const base64Data = await blobToBase64(blob);
-      const { publicUrl } = await uploadToCloudBridgeAndGetPublicUrl(
-        base64Data,
-        modeToUse === 'slides' ? 'pptx' : 'docx',
-        undefined,
-        generatedBridgeId
-      );
-
-      const externalGoogleTabUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(publicUrl)}`;
-      setStatusMessage({
-        type: 'success',
-        text: `🌐 Opened populated ${modeToUse === 'slides' ? 'Google Slides Presentation' : 'Google Docs Specification'} in a separate Google tab (docs.google.com)!`,
-        url: externalGoogleTabUrl,
-      });
-      window.open(externalGoogleTabUrl, '_blank');
-    } catch (err: any) {
-      setStatusMessage({
-        type: 'error',
-        text: err?.message || 'Failed to launch Google Cloud Viewer',
-      });
-    } finally {
-      setIsOpeningCloudViewer(false);
-    }
-  };
-
-  /**
-   * Print / Save Executive PDF Report
-   */
-  const handlePrintPdfReport = async () => {
-    try {
-      const imgUrl = pngPreviewUrl || (await exportDiagramPng(xmlContent, { scale: 2, transparent: false }));
-      const printWin = window.open('', '_blank');
-      if (printWin) {
-        const rowsHtml = sortedVertices
-          .slice(0, 80)
-          .map((node, idx) => {
-            const parsed = cleanHtmlToPlainText(node.value);
-            const ov = editableOverrides[node.id];
-            const t = ov ? ov.title : parsed.title || node.id;
-            const s = ov ? ov.subtitle : parsed.subtitle || 'Enterprise Architecture Component';
-            return `<tr>
-              <td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:11px;color:#475569;">${idx + 1}</td>
-              <td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;font-weight:700;font-size:12px;color:#0f172a;">${t}</td>
-              <td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;font-size:11.5px;color:#334155;">${s}</td>
-            </tr>`;
-          })
-          .join('');
-        printWin.document.write(`<!DOCTYPE html>
-          <html>
-            <head>
-              <title>${diagramName} (${blueprintId}) — Executive Architecture PDF</title>
-              <style>
-                body { font-family: system-ui, -apple-system, sans-serif; padding: 32px; color: #0f172a; margin: 0; }
-                .hdr { border-bottom: 2px solid #0d9488; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
-                h1 { font-size: 22px; margin: 0; color: #0f172a; }
-                .badge { font-family: monospace; font-size: 12px; font-weight: 700; color: #0d9488; }
-                img { width: 100%; max-height: 540px; object-fit: contain; border: 1px solid #cbd5e1; border-radius: 10px; margin-bottom: 24px; }
-                table { width: 100%; border-collapse: collapse; }
-                th { text-align: left; padding: 8px 10px; background: #f1f5f9; border-bottom: 2px solid #cbd5e1; font-size: 11px; text-transform: uppercase; color: #334155; }
-              </style>
-            </head>
-            <body>
-              <div class="hdr">
-                <div>
-                  <div class="badge">BLUEPRINT ${blueprintId} • 1:1 MASTER ARCHITECTURE DOSSIER</div>
-                  <h1>${diagramName}</h1>
-                </div>
-                <div style="font-size:11px;color:#64748b;">Nodes: ${sortedVertices.length} • Edges: ${edges.length}</div>
-              </div>
-              ${imgUrl ? `<img src="${imgUrl}" alt="${diagramName}" />` : ''}
-              <h2 style="font-size:15px;margin-bottom:8px;">Component Inventory &amp; Technical Specification (${sortedVertices.length} Objects)</h2>
-              <table>
-                <thead><tr><th>#</th><th>Component Title</th><th>Technical Role &amp; Specification</th></tr></thead>
-                <tbody>${rowsHtml}</tbody>
-              </table>
-              <script>window.onload = function() { setTimeout(function() { window.print(); }, 250); };</script>
-            </body>
-          </html>`);
-        printWin.document.close();
-      }
-    } catch (e: any) {
-      setStatusMessage({ type: 'error', text: 'PDF Print error: ' + (e?.message || 'Unknown error') });
-    }
+    await handleCopyAndLaunchNewTab(modeToUse, true);
   };
 
   /**
@@ -553,18 +668,18 @@ export default function GoogleWorkspaceDirectOpenModal({
    */
   const handleDirectDownloadFile = async () => {
     if (activeMode === 'pdf') {
-      await handlePrintPdfReport();
+      handlePrintPdfReport();
       return;
     }
     setIsDownloadingDeck(true);
     try {
       if (activeMode === 'slides') {
         await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
-          masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
+          masterImageSrc: effectivePreviewUrl || undefined,
         });
       } else {
         await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, {
-          masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
+          masterImageSrc: effectivePreviewUrl || undefined,
           editableOverrides,
         });
       }
@@ -583,43 +698,85 @@ export default function GoogleWorkspaceDirectOpenModal({
   };
 
   /**
-   * Method 3: Auto-Copy Populated Rich HTML + Guaranteed PNG Image & Open Guided Launch Assistant
+   * Method 3: Unconditionally Compile & Download Populated .PPTX / .DOCX + Copy Complete Rich Specification + Synchronously Open Google Slides/Docs Tab
    */
-  const handleCopyAndLaunchNewTab = async (overrideMode?: 'slides' | 'docs') => {
+  const handleCopyAndLaunchNewTab = async (overrideMode?: 'slides' | 'docs', openCloudTabImmediately = true) => {
     const targetMode = overrideMode || (activeMode === 'pdf' ? 'docs' : activeMode);
+    setActiveMode(targetMode);
+    setShowOpenWithDropdown(false);
     setIsCopyingAndLaunching(true);
+
+    // Open cloud editor tab SYNCHRONOUSLY inside the click gesture so Chrome's popup blocker never blocks it!
+    const targetCloudUrl = targetMode === 'slides' ? 'https://slides.new' : 'https://docs.new';
+    const cloudWin =
+      openCloudTabImmediately && typeof window !== 'undefined' ? window.open('', '_blank') : null;
+    if (cloudWin) {
+      cloudWin.document.write(`<!DOCTYPE html>
+        <html>
+          <head><title>Launching Google ${targetMode === 'slides' ? 'Slides' : 'Docs'} — ${escapeXmlText(diagramName)}</title></head>
+          <body style="background:#090D16;color:#F8FAFC;font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
+            <div style="text-align:center;max-width:520px;padding:32px;background:#0F172A;border:1px solid #334155;border-radius:16px;">
+              <div style="font-size:13px;font-weight:700;color:#38BDF8;text-transform:uppercase;margin-bottom:8px;">PromptCanvas Cloud Bridge</div>
+              <h2 style="margin:0 0 12px 0;font-size:20px;">Preparing Populated Google ${targetMode === 'slides' ? 'Slides Deck (.pptx)' : 'Docs Specification (.docx)'}...</h2>
+              <p style="font-size:13px;color:#94A3B8;line-height:1.5;">Downloading your 1:1 editable file and copying the rich architecture specification to your clipboard. Redirecting to Google ${targetMode === 'slides' ? 'Slides' : 'Docs'}...</p>
+            </div>
+          </body>
+        </html>`);
+    }
+
     try {
-      const publicDiagramImgUrl =
-        pngPreviewUrl && pngPreviewUrl.startsWith('http')
-          ? pngPreviewUrl
-          : 'https://promptcanvas-248990048888.cr.gclb.goog/blueprints/azure_application_landing_zone.png';
+      const tableRowsHtml = sortedVertices
+        .filter((v) => cleanHtmlToPlainText(v.value).title.length > 0)
+        .slice(0, 60)
+        .map((node, idx) => {
+          const parsed = cleanHtmlToPlainText(node.value);
+          const ov = editableOverrides[node.id];
+          const t = escapeXmlText(ov ? ov.title : parsed.title);
+          const s = escapeXmlText(ov ? ov.subtitle : parsed.subtitle || 'Core Enterprise Cloud Service');
+          return `<tr>
+            <td style="padding:6px 10px;border:1px solid #cbd5e1;font-family:monospace;font-size:10pt;">OBJ-${String(idx + 1).padStart(2, '0')}</td>
+            <td style="padding:6px 10px;border:1px solid #cbd5e1;font-weight:bold;font-size:10.5pt;color:#0f172a;">${t}</td>
+            <td style="padding:6px 10px;border:1px solid #cbd5e1;font-size:10pt;color:#334155;">${s}</td>
+          </tr>`;
+        })
+        .join('');
 
       const richHtml = `
         <div style="font-family: Arial, sans-serif; color: #0f172a;">
-          <h1 style="color: #0f172a; font-size: 20pt; margin-bottom: 4px;">${diagramName} — Editable Architecture Diagram (${blueprintId})</h1>
-          <p style="color: #475569; font-size: 10.5pt; margin-top: 0;">100% Native Editable Word Vector Architecture Diagram</p>
-          <div style="margin: 12px 0;">
-            <img src="${publicDiagramImgUrl}" width="840" style="max-width: 100%; height: auto; border: 1px solid #cbd5e1; border-radius: 8px;" alt="${diagramName}" />
-          </div>
+          <h1 style="color: #0f172a; font-size: 18pt; margin-bottom: 4px;">${escapeXmlText(diagramName)} — Architecture Specification (${escapeXmlText(blueprintId)})</h1>
+          <p style="color: #0d9488; font-weight: bold; font-size: 10.5pt; margin-top: 0;">1:1 Master Architecture Topology • ${sortedVertices.length} Interactive Vector Components • ${edges.length} Connectors</p>
+          <h2 style="font-size: 13pt; color: #0f172a; margin-top: 16px; margin-bottom: 8px;">Component Inventory &amp; Technical Specification Matrix</h2>
+          <table style="width: 100%; border-collapse: collapse; border: 1px solid #cbd5e1;">
+            <thead>
+              <tr style="background-color: #0f172a; color: #ffffff;">
+                <th style="padding: 8px 10px; text-align: left; border: 1px solid #0f172a;">Object ID</th>
+                <th style="padding: 8px 10px; text-align: left; border: 1px solid #0f172a;">Component Name</th>
+                <th style="padding: 8px 10px; text-align: left; border: 1px solid #0f172a;">Technical Role &amp; Specification</th>
+              </tr>
+            </thead>
+            <tbody>${tableRowsHtml}</tbody>
+          </table>
         </div>
       `;
 
       const clipboardItems: Record<string, Blob> = {
         'text/html': new Blob([richHtml], { type: 'text/html' }),
-        'text/plain': new Blob([`${diagramName} (${blueprintId}) - Editable Architecture Diagram`], { type: 'text/plain' }),
+        'text/plain': new Blob([`${diagramName} (${blueprintId}) - Editable Architecture Specification`], { type: 'text/plain' }),
       };
 
-      if (targetMode === 'slides' && pngPreviewUrl) {
-        const pngBlob = await convertAnyImageUrlToPngBlob(pngPreviewUrl);
-        if (pngBlob) {
-          clipboardItems['image/png'] = pngBlob;
+      if (targetMode === 'slides') {
+        if (effectivePreviewUrl) {
+          const pngBlob = await convertAnyImageUrlToPngBlob(effectivePreviewUrl);
+          if (pngBlob) {
+            clipboardItems['image/png'] = pngBlob;
+          }
         }
         await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
-          masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
+          masterImageSrc: effectivePreviewUrl || undefined,
         });
-      } else if (targetMode === 'docs') {
+      } else {
         await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, {
-          masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
+          masterImageSrc: effectivePreviewUrl || undefined,
           editableOverrides,
         });
       }
@@ -630,36 +787,38 @@ export default function GoogleWorkspaceDirectOpenModal({
         // Fallback if clipboard write is blocked in non-focused context
       }
 
+      if (cloudWin) {
+        cloudWin.location.href = targetCloudUrl;
+      }
+
       setLaunchAssistantModal(targetMode);
       setStatusMessage({
         type: 'success',
-        text: `✅ Prepared populated ${targetMode === 'slides' ? 'Slide Deck (.pptx)' : 'Editable Word Architecture Specification (.docx)'}! Use the 1-click button below to launch Google ${targetMode === 'slides' ? 'Slides' : 'Docs'}.`,
+        text: `✅ Downloaded populated ${targetMode === 'slides' ? 'Slide Deck (.pptx)' : 'Editable Word Specification (.docx)'} & opened Google ${targetMode === 'slides' ? 'Slides' : 'Docs'}! (Press ⌘V / Ctrl+V in the new tab or import the downloaded file).`,
       });
     } catch (err: any) {
+      if (cloudWin) {
+        cloudWin.location.href = targetCloudUrl;
+      }
       setStatusMessage({
         type: 'error',
-        text: 'Clipboard copy notice: ' + (err?.message || 'Please allow clipboard permissions'),
+        text: 'Export notice: ' + (err?.message || 'Opened Google Workspace tab.'),
       });
     } finally {
       setIsCopyingAndLaunching(false);
     }
   };
 
-  const selectedNode = useMemo(() => {
-    if (!selectedNodeId) return null;
-    return sortedVertices.find((v) => v.id === selectedNodeId) || null;
-  }, [selectedNodeId, sortedVertices]);
-
   return (
     <div
-      className={`fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/85 backdrop-blur-md p-2 md:p-4 ${
-        isFullscreen ? 'p-0' : ''
+      className={`fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/85 backdrop-blur-md ${
+        isFullscreen || isFullPage ? 'p-0' : 'p-2 md:p-4'
       }`}
       data-testid="google-workspace-direct-open-modal"
     >
       <div
-        className={`bg-[#0B111E] border border-slate-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-200 ${
-          isFullscreen ? 'w-screen h-screen rounded-none' : 'w-full max-w-[1560px] h-[94vh]'
+        className={`bg-[#0B111E] border border-slate-800 shadow-2xl flex flex-col overflow-hidden transition-all duration-200 ${
+          isFullscreen || isFullPage ? 'w-screen h-screen rounded-none border-0' : 'w-full max-w-[1560px] h-[94vh] rounded-2xl'
         }`}
       >
         {/* Top Dark Gmail-Style Preview Header Bar */}
@@ -1271,15 +1430,10 @@ export default function GoogleWorkspaceDirectOpenModal({
                       {activeSlideIndex === 0 && slide1ViewMode === 'interactive-twin' ? (
                         /* 1:1 PIXEL-ACCURATE MASTER ARCHITECTURE WITH INTERACTIVE HOTSPOTS */
                         <div className="relative w-full h-full flex items-center justify-center p-1">
-                          {isGeneratingPreview ? (
-                            <div className="flex flex-col items-center gap-3 text-slate-500">
-                              <Loader2 className="w-8 h-8 animate-spin text-sky-500" />
-                              <span className="text-xs font-medium">Rendering 1:1 High-Resolution Architecture Slide...</span>
-                            </div>
-                          ) : pngPreviewUrl ? (
+                          {effectivePreviewUrl ? (
                             <div className="relative w-full h-full flex items-center justify-center">
                               <img
-                                src={pngPreviewUrl}
+                                src={effectivePreviewUrl}
                                 alt={diagramName}
                                 className="w-full h-full object-contain select-none pointer-events-none"
                               />
@@ -1685,40 +1839,187 @@ export default function GoogleWorkspaceDirectOpenModal({
                 </div>
               </div>
             </>
+          ) : activeMode === 'pdf' ? (
+            /* =========================================================================
+               DEDICATED 2-PAGE CHROME / GMAIL-STYLE PDF DOCUMENT VIEWER (activeMode === 'pdf')
+               ========================================================================= */
+            <>
+              {/* Left PDF Pages & Print Controls Rail */}
+              <div className="w-full md:w-72 bg-slate-100 border-r border-slate-200 p-3.5 flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto shrink-0">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-0.5 hidden md:block">
+                  Executive PDF Dossier (2 Pages)
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-white border-2 border-rose-500 shadow-sm space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-extrabold text-slate-900">Page 1 &amp; 2 • PDF Dossier</span>
+                    <span className="px-2 py-0.5 text-[10px] font-bold rounded bg-rose-100 text-rose-800">
+                      A4 Landscape
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-600 leading-relaxed">
+                    Page 1: 1:1 High-Resolution Architecture Diagram ({sortedVertices.length} nodes).<br />
+                    Page 2: Complete Component Inventory &amp; Technical Specification Matrix.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handlePrintPdfReport}
+                    data-testid="pdf-viewer-print-save-btn"
+                    className="w-full py-2.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md cursor-pointer transition"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>Print / Save as PDF (.pdf)</span>
+                  </button>
+                </div>
+
+                <div className="mt-auto pt-3 border-t border-slate-200 hidden md:block">
+                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-950 text-xs space-y-1">
+                    <div className="font-bold flex items-center gap-1.5">
+                      <Printer className="w-3.5 h-3.5 text-rose-600" />
+                      <span>Vector-Grade PDF Output</span>
+                    </div>
+                    <p className="text-[11px] text-rose-900 leading-relaxed">
+                      Click &ldquo;Print / Save as PDF&rdquo; above to open the native browser PDF print dialog in landscape mode.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Main Chrome/Gmail Dark Gray PDF Reader Backdrop (#525659) */}
+              <div
+                className="flex-1 overflow-y-auto bg-[#525659] flex flex-col items-center"
+                data-testid="live-browser-pdf-canvas"
+              >
+                {/* Sticky Top PDF Reader Toolbar */}
+                <div className="sticky top-0 z-30 w-full bg-[#323639] text-slate-100 px-6 py-2.5 shadow-lg border-b border-black/30 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 font-mono text-[11px] font-bold">
+                      PDF
+                    </span>
+                    <span className="text-xs font-bold truncate">
+                      {diagramName.replace(/\s+/g, '_')}_{blueprintId.replace('#', '')}_Architecture_Dossier.pdf
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs font-mono text-slate-300">
+                    <span className="px-2.5 py-1 rounded bg-black/40">Page 1 – 2 / 2</span>
+                    <span className="hidden sm:inline px-2.5 py-1 rounded bg-black/40">100% Landscape</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handlePrintPdfReport}
+                    className="px-3.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center gap-1.5 shadow cursor-pointer transition"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>Print / Save PDF</span>
+                  </button>
+                </div>
+
+                {/* PDF Pages Stack */}
+                <div className="w-full max-w-[1060px] p-6 md:p-8 space-y-8">
+                  {/* PDF PAGE 1: WIDESCREEN ARCHITECTURE DIAGRAM SHEET */}
+                  <div className="bg-white shadow-2xl border border-slate-400 p-8 text-slate-900 space-y-5">
+                    <div className="border-b-2 border-teal-600 pb-3 flex items-end justify-between gap-4">
+                      <div>
+                        <div className="text-[11px] font-mono font-bold text-teal-700 uppercase">
+                          BLUEPRINT {blueprintId} • PAGE 1 OF 2 • 1:1 MASTER ARCHITECTURE TOPOLOGY
+                        </div>
+                        <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 mt-0.5">{diagramName}</h1>
+                      </div>
+                      <div className="text-xs font-mono text-slate-500 shrink-0">
+                        Nodes: {sortedVertices.length} • Edges: {edges.length}
+                      </div>
+                    </div>
+
+                    <div className="w-full aspect-[16/9] border border-slate-300 rounded-lg overflow-hidden bg-white flex items-center justify-center p-2">
+                      <img
+                        src={effectivePreviewUrl}
+                        alt={diagramName}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+
+                    <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500">
+                      <span>Generated by PromptCanvas Enterprise Architecture Engine (Omni 1.1)</span>
+                      <span>Page 1 of 2</span>
+                    </div>
+                  </div>
+
+                  {/* PDF PAGE 2: COMPONENT INVENTORY & TECHNICAL SPECIFICATION SHEET */}
+                  <div className="bg-white shadow-2xl border border-slate-400 p-8 text-slate-900 space-y-5">
+                    <div className="border-b-2 border-teal-600 pb-3 flex items-end justify-between gap-4">
+                      <div>
+                        <div className="text-[11px] font-mono font-bold text-teal-700 uppercase">
+                          BLUEPRINT {blueprintId} • PAGE 2 OF 2 • COMPONENT SPECIFICATION INVENTORY
+                        </div>
+                        <h2 className="text-lg md:text-xl font-extrabold text-slate-900 mt-0.5">
+                          Component Inventory &amp; Technical Specification ({sortedVertices.length} Objects)
+                        </h2>
+                      </div>
+                      <span className="text-xs font-mono text-slate-500">Page 2 of 2</span>
+                    </div>
+
+                    <table className="w-full border-collapse text-xs">
+                      <thead>
+                        <tr className="bg-slate-900 text-white">
+                          <th className="p-2.5 text-left border border-slate-800 w-24">Object ID</th>
+                          <th className="p-2.5 text-left border border-slate-800 w-64">Component Name</th>
+                          <th className="p-2.5 text-left border border-slate-800">Technical Role &amp; Specification</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sortedVertices
+                          .filter((v) => cleanHtmlToPlainText(v.value).title.length > 0)
+                          .slice(0, 40)
+                          .map((node, idx) => {
+                            const parsed = cleanHtmlToPlainText(node.value);
+                            const override = editableOverrides[node.id];
+                            const title = override ? override.title : parsed.title;
+                            const subtitle = override ? override.subtitle : parsed.subtitle;
+                            return (
+                              <tr key={node.id} className="border-b border-slate-200 even:bg-slate-50">
+                                <td className="p-2 font-mono font-bold text-slate-700">
+                                  OBJ-{String(idx + 1).padStart(2, '0')}
+                                </td>
+                                <td className="p-2 font-bold text-slate-900">{title}</td>
+                                <td className="p-2 text-slate-600">{subtitle || 'Core Enterprise Cloud Component'}</td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </>
           ) : (
-            /* GOOGLE DOCS SPECIFICATION LIVE STUDIO VIEW (WITH 100% EDITABLE DIAGRAM + LIVE NODE EDITOR) */
+            /* GOOGLE DOCS SPECIFICATION LIVE STUDIO VIEW (WITH 100% EDITABLE DIAGRAM + LIVE NODE EDITOR + COMPONENT TABLE) */
             <>
               {/* Left Document Outline & Live Node Editor Rail */}
               <div className="w-full md:w-72 bg-slate-100 border-r border-slate-200 p-3.5 flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto shrink-0">
                 <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-0.5 hidden md:block">
-                  {activeMode === 'pdf' ? 'Executive PDF Dossier Sections' : 'Google Docs Specification Sections'}
+                  Google Docs Specification Sections
                 </div>
 
                 <div className="flex md:flex-col gap-2 shrink-0">
-                  <div className={`p-3 rounded-xl bg-white border-2 shadow-xs ${activeMode === 'pdf' ? 'border-rose-500' : 'border-sky-500'}`}>
+                  <div className="p-3 rounded-xl bg-white border-2 border-sky-500 shadow-xs space-y-2">
                     <div className="flex items-center justify-between gap-2 mb-1">
-                      <span className="text-xs font-bold text-slate-900">
-                        {activeMode === 'pdf' ? '1. Printable Vector PDF Dossier' : '1. Editable Vector Diagram'}
-                      </span>
-                      <span className={`px-2 py-0.5 text-[10px] font-bold rounded ${activeMode === 'pdf' ? 'bg-rose-100 text-rose-800' : 'bg-sky-100 text-sky-800'}`}>
+                      <span className="text-xs font-bold text-slate-900">1. Editable Vector Diagram</span>
+                      <span className="px-2 py-0.5 text-[10px] font-bold rounded bg-sky-100 text-sky-800">
                         {sortedVertices.length} Vector Nodes
                       </span>
                     </div>
                     <p className="text-[11px] text-slate-600">
-                      {activeMode === 'pdf'
-                        ? 'High-resolution architecture canvas & component inventory formatted for executive PDF printing.'
-                        : '100% Native Editable Word DrawingML Vector Diagram (Page 1 / 1 Widescreen Landscape).'}
+                      100% Native Editable Word DrawingML Vector Diagram + Full Component Specification Table.
                     </p>
-                    {activeMode === 'pdf' && (
-                      <button
-                        type="button"
-                        onClick={handlePrintPdfReport}
-                        className="mt-2.5 w-full py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-sm cursor-pointer transition"
-                      >
-                        <Printer className="w-3.5 h-3.5" />
-                        <span>Print / Save as PDF</span>
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => handleCopyAndLaunchNewTab('docs', true)}
+                      data-testid="docs-sidebar-launch-btn"
+                      className="w-full py-2 px-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-sm cursor-pointer transition"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>Download .DOCX &amp; Open Docs ↗</span>
+                    </button>
                   </div>
                 </div>
 
@@ -1803,16 +2104,24 @@ export default function GoogleWorkspaceDirectOpenModal({
                     <div>
                       <div className="flex items-center gap-2 text-xs font-bold text-sky-600 uppercase tracking-wider mb-1.5">
                         <FileText className="w-4 h-4" />
-                        <span>Google Docs Widescreen Architecture Diagram (.docx)</span>
+                        <span>Google Docs Architecture Specification &amp; Editable Diagram (.docx)</span>
                       </div>
                       <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900">{diagramName}</h1>
                       <p className="text-sm text-slate-500 mt-1">
                         Blueprint ID: <span className="font-mono font-bold text-slate-700">{blueprintId}</span> •{' '}
                         <span className="text-emerald-700 font-semibold">
-                          100% Native Editable Word Vector Diagram (Page 1 / 1 Widescreen Landscape)
+                          100% Native Editable Word Vector Diagram &amp; Specification Table
                         </span>
                       </p>
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => handleCopyAndLaunchNewTab('docs', true)}
+                      className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-xs flex items-center gap-1.5 shadow-md cursor-pointer transition shrink-0"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>Download .DOCX &amp; Open in Google Docs ↗</span>
+                    </button>
                   </div>
 
                   {/* SECTION 1: INTERACTIVE EDITABLE ARCHITECTURE TOPOLOGY DIAGRAM */}
@@ -1839,7 +2148,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                           }`}
                         >
                           <Layers className="w-3.5 h-3.5" />
-                          <span>Editable Decomposed Vector Diagram (177 Shapes)</span>
+                          <span>Editable Decomposed Vector Diagram ({sortedVertices.length} Shapes)</span>
                         </button>
                         <button
                           onClick={() => setDocsDiagramViewMode('interactive-twin')}
@@ -1906,13 +2215,13 @@ export default function GoogleWorkspaceDirectOpenModal({
                               const src = sortedVertices.find((v) => v.id === edge.source);
                               const tgt = sortedVertices.find((v) => v.id === edge.target);
 
-                              let ptStart = src
+                              const ptStart = src
                                 ? {
                                     x: src.absX + src.width * parseFloat(edge.style.exitX ?? '0.5'),
                                     y: src.absY + src.height * parseFloat(edge.style.exitY ?? '0.5'),
                                   }
                                 : edge.sourcePoint;
-                              let ptEnd = tgt
+                              const ptEnd = tgt
                                 ? {
                                     x: tgt.absX + tgt.width * parseFloat(edge.style.entryX ?? '0.5'),
                                     y: tgt.absY + tgt.height * parseFloat(edge.style.entryY ?? '0.5'),
@@ -2081,10 +2390,10 @@ export default function GoogleWorkspaceDirectOpenModal({
                       ) : (
                         /* 1:1 MASTER VISUAL TWIN WITH INTERACTIVE VECTOR HOTSPOTS */
                         <div className="relative w-full h-full flex items-center justify-center p-1">
-                          {pngPreviewUrl ? (
+                          {effectivePreviewUrl ? (
                             <div className="relative w-full h-full flex items-center justify-center">
                               <img
-                                src={pngPreviewUrl}
+                                src={effectivePreviewUrl}
                                 alt={diagramName}
                                 className="w-full h-full object-contain select-none pointer-events-none"
                               />
@@ -2132,6 +2441,72 @@ export default function GoogleWorkspaceDirectOpenModal({
                         </div>
                       )}
                     </div>
+                  </div>
+
+                  {/* SECTION 2: COMPONENT INVENTORY & TECHNICAL SPECIFICATION TABLE IN GOOGLE DOCS */}
+                  <div className="space-y-3 pt-4 border-t border-slate-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h2 className="text-lg font-bold text-slate-900">
+                          2. Component Inventory &amp; Technical Specification Matrix ({sortedVertices.length} Objects)
+                        </h2>
+                        <p className="text-xs text-slate-500">
+                          Click any row below to edit the component title or technical role live before launching Google Docs.
+                        </p>
+                      </div>
+                    </div>
+
+                    <table className="w-full border-collapse text-xs">
+                      <thead>
+                        <tr className="bg-slate-900 text-white">
+                          <th className="p-2.5 text-left border border-slate-800 w-24">Object ID</th>
+                          <th className="p-2.5 text-left border border-slate-800 w-64">Component Name</th>
+                          <th className="p-2.5 text-left border border-slate-800">Technical Role &amp; Specification</th>
+                          <th className="p-2.5 text-left border border-slate-800 w-32">Classification</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sortedVertices
+                          .filter((v) => cleanHtmlToPlainText(v.value).title.length > 0)
+                          .slice(0, 30)
+                          .map((node, idx) => {
+                            const parsed = cleanHtmlToPlainText(node.value);
+                            const override = editableOverrides[node.id];
+                            const title = override ? override.title : parsed.title;
+                            const subtitle = override ? override.subtitle : parsed.subtitle;
+                            const isContainer =
+                              node.style.container === '1' ||
+                              parentIds.has(node.id) ||
+                              node.width * node.height > 90000;
+                            return (
+                              <tr
+                                key={node.id}
+                                onClick={() => setSelectedNodeId(node.id)}
+                                className={`border-b border-slate-200 cursor-pointer transition ${
+                                  selectedNodeId === node.id ? 'bg-sky-50' : 'hover:bg-slate-50'
+                                }`}
+                              >
+                                <td className="p-2 font-mono font-bold text-slate-800">
+                                  OBJ-{String(idx + 1).padStart(2, '0')}
+                                </td>
+                                <td className="p-2 font-bold text-sky-900">{title}</td>
+                                <td className="p-2 text-slate-600">{subtitle || 'Core Enterprise Cloud Service'}</td>
+                                <td className="p-2">
+                                  <span
+                                    className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                      isContainer
+                                        ? 'bg-purple-100 text-purple-800'
+                                        : 'bg-sky-100 text-sky-800'
+                                    }`}
+                                  >
+                                    {isContainer ? 'Enclave / Tier' : 'Service Node'}
+                                  </span>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
