@@ -28,8 +28,7 @@ export default function SuperAdminDashboard() {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const { theme } = useTheme();
-  // Content locked to light theme (clean tables, white cards) while top header is dark
-  const isLight = true;
+  const isLight = theme === 'light';
 
   const fetchUsers = async () => {
     setLoading(true);

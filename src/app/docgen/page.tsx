@@ -128,7 +128,7 @@ import {
 import { AppHeader } from '@/components/AppHeader';
 
 export const DIAGRAM_FAMILY_PRESETS = [
-  { id: 'all', label: 'All 50 Blueprints', icon: '⚡' },
+  { id: 'all', label: `All ${CANONICAL_TEMPLATES.length} Blueprints`, icon: '⚡' },
   { id: 'structure', label: 'Structure & Containers', icon: '🏛️' },
   { id: 'flow', label: 'Flow & Sequences', icon: '🔄' },
   { id: 'infrastructure', label: 'Cloud & Network', icon: '☁️' },
@@ -140,13 +140,13 @@ export const DIAGRAM_FAMILY_PRESETS = [
 
 export const FAMILY_TO_TEMPLATE_IDS: Record<string, string[]> = {
   all: CANONICAL_TEMPLATES.map(t => t.id),
-  structure: ['06', '07', '08', '12', '14', '46'],
-  flow: ['03', '05', '09', '10', '11', '13', '20', '43'],
-  infrastructure: ['15', '16', '19', '34', '37', '38', '48'],
-  data: ['09', '14', '29', '42', '43'],
-  ai: ['23', '24', '25', '26', '40', '41', '47'],
-  security: ['17', '18', '27', '39', '44'],
-  business: ['01', '02', '04', '30', '31', '32', '33', '35', '36', '49', '50'],
+  structure: CANONICAL_TEMPLATES.filter(t => t.family === 'Structure' || ['06', '07', '08', '12', '14', '46'].includes(t.id)).map(t => t.id),
+  flow: CANONICAL_TEMPLATES.filter(t => t.family === 'Flow' || t.family === 'Process' || ['03', '05', '09', '10', '11', '13', '20', '28', '43'].includes(t.id)).map(t => t.id),
+  infrastructure: CANONICAL_TEMPLATES.filter(t => t.family === 'Infrastructure' || t.family === 'Delivery & Operations' || ['15', '16', '19', '21', '22', '34', '37', '38', '45', '48'].includes(t.id)).map(t => t.id),
+  data: CANONICAL_TEMPLATES.filter(t => ['09', '14', '29', '42', '43', '51', '54', '57', '69', '70', '71', '72'].includes(t.id)).map(t => t.id),
+  ai: CANONICAL_TEMPLATES.filter(t => t.family === 'Whiteboard' || t.family === 'Paper' || ['23', '24', '25', '26', '40', '41', '47', '51', '52', '53', '55', '56', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '73', '74', '75', '76', '77'].includes(t.id)).map(t => t.id),
+  security: CANONICAL_TEMPLATES.filter(t => t.family === 'Security & Governance' || ['17', '18', '27', '39', '44', '59', '60'].includes(t.id)).map(t => t.id),
+  business: CANONICAL_TEMPLATES.filter(t => t.family === 'Understand' || t.family === 'Analysis & Planning' || t.family === 'Infographic' || ['01', '02', '04', '30', '31', '32', '33', '35', '36', '49', '50'].includes(t.id)).map(t => t.id),
 };
 
 export function getTemplatesForFamily(familyId: string): CanonicalTemplate[] {
@@ -511,8 +511,7 @@ function DocGenContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { theme } = useTheme();
-  // Content is locked to light theme (white cards, clean documents) while top header is dark
-  const isLight = true;
+  const isLight = theme === 'light';
 
   // Navigation and active tabs (Defaults to 'catalog' so all 17 Document Archetypes load immediately)
   const tabParam = searchParams.get('tab');
@@ -2696,7 +2695,7 @@ function DocGenContent() {
                         5. Architectural Scope &amp; Topology Requirements Prompt
                       </label>
                       <span className="text-[10px] font-mono text-slate-500">
-                        Gemini 2.5 Flash &bull; Real-Time AST
+                        Gemini 3.8 Flash &bull; Real-Time AST
                       </span>
                     </div>
                     <textarea
@@ -2800,7 +2799,7 @@ function DocGenContent() {
                           setProjectName('Bio-Pharma Clinical Platform');
                           setUseCaseName('FDA 21 CFR Part 11 PV Platform');
                           setProjectTitle('Bio-Pharma Clinical Platform — FDA 21 CFR Part 11 PV Platform');
-                          setProjectScopePrompt('Automated pharmacovigilance adverse event triage with Gemini 2.5 flash reasoning, GxP audit ledgers, and human-in-the-loop safety board review.');
+                          setProjectScopePrompt('Automated pharmacovigilance adverse event triage with Gemini 3.8 Flash reasoning, GxP audit ledgers, and human-in-the-loop safety board review.');
                         }}
                         className={`p-2 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
                           isLight ? 'bg-slate-50 hover:bg-teal-50 border-slate-200' : 'bg-slate-900 hover:bg-teal-950/30 border-slate-800'
@@ -3310,7 +3309,7 @@ function DocGenContent() {
                                   </div>
                                   <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
                                     <span>Inference &amp; Grounding</span>
-                                    <span>Gemini 2.5 Flash / Pro</span>
+                                    <span>Gemini 3.8 Flash / 3.1 Pro</span>
                                     <span className="text-purple-600 font-bold">Toxicity &lt; 0.01</span>
                                   </div>
                                 </div>

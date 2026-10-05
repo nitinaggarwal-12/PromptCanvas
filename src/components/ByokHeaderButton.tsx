@@ -156,6 +156,7 @@ export default function ByokHeaderButton({ compact = false }: { compact?: boolea
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: loginEmail.trim() }),
       });
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
         setLoginEmail('');
         window.dispatchEvent(new CustomEvent('promptcanvas-auth-changed'));
@@ -163,6 +164,11 @@ export default function ByokHeaderButton({ compact = false }: { compact?: boolea
         setFeedback({
           type: 'success',
           message: 'Signed in! You can now save your personal Gemini API key tied to your account.',
+        });
+      } else {
+        setFeedback({
+          type: 'error',
+          message: data.error || 'Unable to sign in with that email address.',
         });
       }
     } catch {
@@ -304,7 +310,7 @@ export default function ByokHeaderButton({ compact = false }: { compact?: boolea
                   </span>
                   <span className="font-mono text-slate-200">
                     {status?.activeModels?.pro || 'gemini-3.1-pro-preview'} ·{' '}
-                    {status?.activeModels?.flash || 'gemini-2.5-flash'}
+                    {status?.activeModels?.flash || 'gemini-3.8-flash'}
                   </span>
                 </div>
               </div>

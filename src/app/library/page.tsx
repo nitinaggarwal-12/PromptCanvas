@@ -105,8 +105,7 @@ function ArchitectureLibraryContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { theme } = useTheme();
-  // Content locked to light theme (white cards, clean grids) while top header is dark
-  const isLight = true;
+  const isLight = theme === 'light';
 
   // Navigation State
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);

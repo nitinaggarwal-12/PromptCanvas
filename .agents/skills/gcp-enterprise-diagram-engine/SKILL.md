@@ -45,8 +45,9 @@ Canvas Dimensions: **$1680 \times 1040\text{px}$** (16:9 widescreen).
 Never guess or hallucinate outdated version numbers. Adhere strictly to verified Google Cloud facts:
 
 1. **AI & Foundation Models**:
-   - **Gemini 3.7 Flash**: Dynamic Thinking & Native Hybrid Reasoning (fast + deep thinking modes in one model).
-   - **Gemini 2.5 Pro**: Deep ReAct Planning, Long-Context (2M tokens), Tool Calling AST.
+   - **Google Omni 1.1 (`google-omni-1.1`)**: Primary reasoning & architecture orchestration engine.
+   - **Gemini 3.8 Flash (`gemini-3.8-flash`)**: Dynamic Thinking & Native Hybrid Reasoning (fast + deep thinking modes in one model).
+   - **Gemini 3.1 Pro (`gemini-3.1-pro-preview`)**: Deep ReAct Planning, Long-Context (2M tokens), Multimodal Vision & Tool Calling AST.
    - **Vertex Vector Search (ScaNN)**: Tree-AH Quantized Vector Indexing, $p99 < 2.5\text{ms}$ at 10M+ vectors.
    - **Model Armor & Sensitive Data Protection (DLP)**: Real-time prompt sanitization, jailbreak mitigation, automated PII redaction.
 2. **Ingress & Edge**:
@@ -187,15 +188,15 @@ You are configured to work on this repository with strict architectural and depl
 6. **Deployment Target:**
 * When running deployment commands, strictly target:
 * Platform: Google Cloud Run
-* Project ID: `nitina-ggarwal-sandbox-647724`
-* Region: `us-east4`
+* Project ID: `ramp-portal-dev` (Project Number `248990048888`)
+* Region: `us-west1`
+* Canonical BeyondCorp URL: `https://promptcanvas-248990048888.cr.gclb.goog`
 * Command pattern:
 ```bash
 gcloud run deploy promptcanvas \
   --source . \
-  --project nitina-ggarwal-sandbox-647724 \
-  --region us-east4 \
-  --platform managed \
-  --allow-unauthenticated
+  --project ramp-portal-dev \
+  --region us-west1 \
+  --platform managed
 ```
 

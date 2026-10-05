@@ -316,7 +316,7 @@ export function InsertDiagramModal({
                   <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
                   <input
                     type="text"
-                    placeholder="Search 50 blueprints..."
+                    placeholder={`Search ${CANONICAL_TEMPLATES.length} blueprints...`}
                     value={blueprintSearch}
                     onChange={(e) => setBlueprintSearch(e.target.value)}
                     className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500"

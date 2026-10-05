@@ -455,7 +455,7 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
 
   return {
     prompt,
-    modelUsed: 'gemini-2.5-flash (cached/fallback)',
+    modelUsed: 'gemini-3.8-flash (cached/fallback)',
     isLiveGeminiDecision: false,
     recommendedPerspective: 'Logical',
     perspectiveReasoning:

@@ -168,7 +168,7 @@ Verify the generated 2x Retina PNG screenshot:
 
 ---
 
-## 🏛️ Pillar 7: Ground-Truth Structural Parity Quality Gate (Master Blueprints 01–37)
+## 🏛️ Pillar 7: Ground-Truth Structural Parity Quality Gate (Master Blueprints 01–77)
 
 Never declare any canonical master template complete based solely on compilation (`tsc`) or non-crashing headless renders (`svg.length > 0`).
 
@@ -274,15 +274,15 @@ You are configured to work on this repository with strict architectural and depl
 6. **Deployment Target:**
 * When running deployment commands, strictly target:
 * Platform: Google Cloud Run
-* Project ID: `nitina-ggarwal-sandbox-647724`
-* Region: `us-east4`
+* Project ID: `ramp-portal-dev` (Project Number `248990048888`)
+* Region: `us-west1`
+* Canonical BeyondCorp URL: `https://promptcanvas-248990048888.cr.gclb.goog`
 * Command pattern:
 ```bash
 gcloud run deploy promptcanvas \
   --source . \
-  --project nitina-ggarwal-sandbox-647724 \
-  --region us-east4 \
-  --platform managed \
-  --allow-unauthenticated
+  --project ramp-portal-dev \
+  --region us-west1 \
+  --platform managed
 ```
 

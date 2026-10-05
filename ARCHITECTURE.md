@@ -36,7 +36,7 @@ Welcome to the **PromptCanvas** Architecture Specification. This document outlin
                       ▼                     ▼                    ▼
 ┌──────────────────────────┐ ┌─────────────────────────┐ ┌───────────────────────────────┐
 │     PROMPT COMPILER      │ │  CANONICAL MASTER ENGINE│ │    PERSISTENCE & LINEAGE      │
-│  • 5-Tier Gemini Stack   │ │  • 75 Blueprints (01-75)│ │  • Dual SQLite / PostgreSQL   │
+│  • 5-Tier Gemini Stack   │ │  • 77 Blueprints (01-77)│ │  • Dual SQLite / PostgreSQL   │
 │  • Clause Synthesizer    │ │  • 60 Certified Matrix  │ │  • Deep-link UUID routing     │
 │  • 4-Cat Intent Guard    │ │  • 16:9 Master Geometry │ │  • Version History Lineage    │
 └─────────────┬────────────┘ └──────────────┬──────────┘ └───────────────┬───────────────┘
@@ -69,7 +69,7 @@ Welcome to the **PromptCanvas** Architecture Specification. This document outlin
   - `formatTwoLineCardClause(text, maxLine1, maxLine2)`: Word-boundary line splitter ensuring card subtitles never clip mid-word (`Cloud S...`).
 
 ### 3.2 Master Blueprint Catalog (`src/lib/canonical/`, `templates/master_blueprints/`)
-- Contains **75 canonical templates (`01` through `75`)** in `src/lib/canonical/canonicalTemplates.ts` (including Infographics `#52–#66` and Flow Diagrams `#67–#74` + `#75`) and **60 certified architecture blueprints** in `src/lib/blueprintKnowledgeMatrixNormalized.ts`.
+- Contains **77 canonical templates (`01` through `77`)** in `src/lib/canonical/canonicalTemplates.ts` (including Infographics `#52–#66`, Flow Diagrams `#67–#75`, Whiteboard `#76`, and Paper `#77`) and **60 certified architecture blueprints** in `src/lib/blueprintKnowledgeMatrixNormalized.ts`.
 - **Zero-Mutation Preflight Passthrough**: `validateAndHealDrawioXml` and `preflightVerifyAndHealXmlAcrossAll6Audits` pass canonical templates through with **zero coordinate or geometric mutation**.
 - **Domain Flavoring**: Re-flavors titles, descriptions, and metric badges across financial, healthcare, supply chain, and retail domains without altering the master 2D geometry.
 
@@ -124,10 +124,10 @@ PromptCanvas/
 ├── skills.json                # Layer 1: Machine-readable skill manifest (symlinked to ~/.gemini/config/skills.json)
 ├── ARCHITECTURE.md            # Layer 2: System topology, 5-Tier model stack, compiler pipelines
 ├── SECURITY.md                # Layer 2: Threat model, route guards, SVG XSS, workstation safety
-├── RUNBOOK.md                 # Layer 2: Operational commands, 28-workflow E2E audit, Argolis Cloud Run deploy
+├── RUNBOOK.md                 # Layer 2: Operational commands, 28-workflow E2E audit, Cloud Run deploy
 ├── .agents/
 │   ├── hooks.json             # Jetski lifecycle governance hooks (symlinked to ~/.gemini/config/hooks.json)
-│   └── skills/                # Layer 3: Executable project skills (13 registered skill suites synced with ~/.gemini/config/skills/)
+│   └── skills/                # Layer 3: Executable project skills (13 registered skill suites)
 │       ├── ai-prompt-evals/
 │       ├── cross-viewport-auditor/
 │       ├── database-schema-guard/
@@ -142,9 +142,9 @@ PromptCanvas/
 │       ├── universal-document-cloud-hub/
 │       └── visual-regression-testing/
 ├── src/
-│   ├── app/                   # Next.js 16 App Router pages (/studio, /gallery, /docgen, /vision, etc.) & API routes
+│   ├── app/                   # Next.js 16 App Router pages (/studio, /canonical, /library, /docgen, /vision, etc.) & API routes
 │   └── lib/                   # Core engine, 5-tier geminiConfig, validators, DB, icons, canonical blueprints
-│       ├── canonical/         # 75 Canonical blueprint implementations (01 - 75)
+│       ├── canonical/         # 77 Canonical blueprint implementations (01 - 77)
 │       ├── geminiConfig.ts    # Authoritative 5-Tier Google/Gemini/DeepMind model registry
 │       ├── promptDrivenDiagramSynthesizer.ts # Clause-driven architecture & flowchart synthesizer
 │       ├── deepmindVisionDecompiler.ts       # 2-Stage Vision image-to-Draw.io XML decompiler

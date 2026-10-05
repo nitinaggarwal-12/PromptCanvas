@@ -9,6 +9,7 @@ import { GEMINI_MODEL_ID, getEffectiveGeminiApiKey } from '@/lib/geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
+import { generateTerraformBundle, TERRAFORM_PINS } from '@/lib/iac/terraformEngine';
 
 const TERRAFORM_GCP_SYSTEM_PROMPT = `
 You are an expert Principal Google Cloud Infrastructure Engineer and HashiCorp Terraform Specialist.
@@ -19,7 +20,7 @@ Respond strictly in JSON matching the requested schema:
 1. \`mainTf\`: Complete HCL code for \`main.tf\` defining all resources (e.g. \`google_compute_network\`, \`google_compute_subnetwork\`, \`google_cloud_run_v2_service\`, \`google_sql_database_instance\`, \`google_storage_bucket\`, \`google_pubsub_topic\`, \`google_compute_security_policy\` for Cloud Armor WAF, \`google_kms_crypto_key\`). Use clear resource names and standard GCP Terraform syntax.
 2. \`variablesTf\`: Complete HCL code for \`variables.tf\` declaring \`project_id\` (required), \`region\` (default: "us-central1"), \`zone\` (default: "us-central1-a"), and \`environment\` (default: "prod").
 3. \`outputsTf\`: Complete HCL code for \`outputs.tf\` exporting resource endpoints, connection strings, bucket names, and service URLs.
-4. \`providerTf\`: Complete HCL code for \`provider.tf\` specifying \`terraform { required_providers { google = { source = "hashicorp/google", version = "~> 5.0" } } }\` and \`provider "google"\`.
+4. \`providerTf\`: Complete HCL code for \`provider.tf\` specifying \`terraform { required_version = "${TERRAFORM_PINS.requiredVersion}" required_providers { google = { source = "hashicorp/google", version = "${TERRAFORM_PINS.google}" } } }\` and \`provider "google"\`.
 5. \`readme\`: Concise markdown guide with deployment prerequisites (\`gcloud auth application-default login\`), \`terraform init\`, \`terraform plan\`, and \`terraform apply\`.
 
 Ensure all generated HCL is valid, executable, and follows Google Cloud Provider best practices.
@@ -91,22 +92,28 @@ export async function POST(request: Request) {
     }
 
     let terraformData: { mainTf?: string; variablesTf?: string; outputsTf?: string; providerTf?: string; readme?: string } = {};
+    let groundingSource: 'gemini' | 'deterministic-canvas-xml' | 'deterministic-baseline' = 'gemini';
 
     try {
       if (!textOutput) throw new Error('Empty upstream Terraform response');
       terraformData = JSON.parse(textOutput);
     } catch (e) {
+      // Deterministic fallback: ground the HCL on the actual canvas XML instead of
+      // the previous fixed two-resource stub that ignored the diagram entirely.
+      const bundle = generateTerraformBundle('promptcanvas-export', '', 'enterprise', 'gcp', xmlContent);
+      groundingSource = bundle.groundingSource === 'canvas-xml' ? 'deterministic-canvas-xml' : 'deterministic-baseline';
       terraformData = {
-        providerTf: `terraform {\n  required_version = ">= 1.5.0"\n  required_providers {\n    google = {\n      source  = "hashicorp/google"\n      version = "~> 5.0"\n    }\n  }\n}\n\nprovider "google" {\n  project = var.project_id\n  region  = var.region\n  zone    = var.zone\n}\n`,
-        variablesTf: `variable "project_id" {\n  description = "GCP Project ID"\n  type        = string\n}\n\nvariable "region" {\n  description = "GCP Region"\n  type        = string\n  default     = "us-central1"\n}\n\nvariable "zone" {\n  description = "GCP Zone"\n  type        = string\n  default     = "us-central1-a"\n}\n`,
-        mainTf: `# Main GCP Architecture Terraform Config\nresource "google_compute_network" "vpc_network" {\n  name                    = "custom-vpc-network"\n  auto_create_subnetworks = false\n}\n\nresource "google_compute_subnetwork" "subnet" {\n  name          = "custom-subnet"\n  ip_cidr_range = "10.0.1.0/24"\n  region        = var.region\n  network       = google_compute_network.vpc_network.id\n}\n`,
-        outputsTf: `output "vpc_id" {\n  value       = google_compute_network.vpc_network.id\n  description = "The ID of the VPC network"\n}\n`,
-        readme: `# GCP Terraform Deployment Guide\n\n1. Install Terraform & Google Cloud SDK.\n2. Run \`gcloud auth application-default login\`.\n3. Run \`terraform init\`.\n4. Run \`terraform apply -var="project_id=YOUR_GCP_PROJECT_ID"\`.\n`
+        providerTf: bundle.providerTf,
+        variablesTf: bundle.variablesTf,
+        mainTf: bundle.mainTf,
+        outputsTf: bundle.outputsTf,
+        readme: `# Terraform Deployment Guide\n\nGenerated offline from the canvas (${bundle.mappedNodeCount}/${bundle.canvasNodeCount} nodes mapped${bundle.unmappedNodeLabels.length ? `; unmapped: ${bundle.unmappedNodeLabels.slice(0, 8).join(', ')}` : ''}).\n\n1. Install Terraform ${TERRAFORM_PINS.requiredVersion} & Google Cloud SDK.\n2. Run \`gcloud auth application-default login\`.\n3. Run \`terraform init\`.\n4. Run \`terraform validate\` and \`terraform plan -var="project_id=YOUR_GCP_PROJECT_ID"\`.\n5. Review the plan, then \`terraform apply\`.\n`
       };
     }
 
     return NextResponse.json({
       success: true,
+      groundingSource,
       terraform: terraformData,
     });
   } catch (error: unknown) {

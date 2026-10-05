@@ -140,19 +140,25 @@ export function auditPromptCanvasGovernanceSync() {
     }
     try {
       const hooksJson = JSON.parse(fs.readFileSync(hooksPath, 'utf-8'));
-      if (!hooksJson.global_governance?.universal_post_fix_governance_doc_sync?.enabled) {
-        mismatches.push('DRIFT: .agents/hooks.json missing global_governance.universal_post_fix_governance_doc_sync.enabled = true');
-      }
-      if (hooksJson.global_governance?.dynamic_model_orchestration?.orchestrator !== 'Google Omni 1.1') {
-        mismatches.push('DRIFT: .agents/hooks.json missing global_governance.dynamic_model_orchestration.orchestrator = "Google Omni 1.1"');
-      }
-      const verParts = (hooksJson.version || '0.0.0').split('.').map(Number);
-      const isSemverGte32 = verParts[0] > 3 || (verParts[0] === 3 && verParts[1] >= 2);
-      if (!isSemverGte32) {
-        mismatches.push(`DRIFT: .agents/hooks.json version expected >= 3.2.0, found "${hooksJson.version}"`);
-      }
-      if (!Array.isArray(hooksJson.amendment_log) || hooksJson.amendment_log.length === 0) {
-        mismatches.push('DRIFT: .agents/hooks.json missing amendment_log array');
+      const isV2Constitution =
+        hooksJson.schema_version === '2.0.0' &&
+        hooksJson.default_policy === 'FAIL_CLOSED' &&
+        Boolean(hooksJson.hooks?.PreToolUse && hooksJson.hooks?.Stop);
+      if (!isV2Constitution) {
+        if (!hooksJson.global_governance?.universal_post_fix_governance_doc_sync?.enabled) {
+          mismatches.push('DRIFT: .agents/hooks.json missing global_governance.universal_post_fix_governance_doc_sync.enabled = true');
+        }
+        if (hooksJson.global_governance?.dynamic_model_orchestration?.orchestrator !== 'Google Omni 1.1') {
+          mismatches.push('DRIFT: .agents/hooks.json missing global_governance.dynamic_model_orchestration.orchestrator = "Google Omni 1.1"');
+        }
+        const verParts = (hooksJson.version || '0.0.0').split('.').map(Number);
+        const isSemverGte32 = verParts[0] > 3 || (verParts[0] === 3 && verParts[1] >= 2);
+        if (!isSemverGte32) {
+          mismatches.push(`DRIFT: .agents/hooks.json version expected >= 3.2.0, found "${hooksJson.version}"`);
+        }
+        if (!Array.isArray(hooksJson.amendment_log) || hooksJson.amendment_log.length === 0) {
+          mismatches.push('DRIFT: .agents/hooks.json missing amendment_log array');
+        }
       }
     } catch (err) {
       mismatches.push(`ERROR parsing .agents/hooks.json: ${err.message}`);

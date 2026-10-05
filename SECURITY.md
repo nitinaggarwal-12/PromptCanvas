@@ -83,6 +83,6 @@ On managed developer workstations (macOS):
 - **Bypass Santa Policy Blocks**:
   - Never execute unverified third-party binaries or default `Google Chrome for Testing` packages, which trigger macOS Santa security policy execution blocks.
   - Puppeteer scripts MUST explicitly target the Google-signed Chrome binary (`executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'`) with an isolated `userDataDir` in `/tmp` and `--password-store=basic`.
-- **Argolis Cloud Run & Railway CLI Isolation**:
-  - Deployments to **Argolis Google Cloud Run** (`project: nitinagga-ge-2`, `region: us-central1`) use the isolated `CLOUDSDK_CONFIG="/Users/nitinagga/.config/gcloud_argolis"` configuration and `CLOUDSDK_METRICS_ENVIRONMENT="datacloud.antigravity"`.
-  - Do not execute raw `railway` CLI binaries directly on local macOS workstations; use Cloudtop (`rw nitinagga.c.googlers.com`) or live HTTP polling.
+- **Google Cloud Run & BeyondCorp Isolation**:
+  - Deployments to **Google Cloud Run** (`project: ramp-portal-dev`, `region: us-west1`, `https://promptcanvas-248990048888.cr.gclb.goog`) enforce mandatory resource attribution (`CLOUDSDK_METRICS_ENVIRONMENT="datacloud.antigravity"`) and BeyondCorp IAP perimeter protection.
+  - Do not execute unverified third-party CLI binaries directly on local macOS workstations.

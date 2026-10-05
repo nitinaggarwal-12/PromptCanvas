@@ -138,13 +138,13 @@ export const BLUEPRINT_CATALOG_ITEMS: BlueprintCatalogItem[] = [
     category: 'Industry 4.0',
     icon: '🛍️',
     strategicScore: '5.0 / 5.0',
-    whenToUse: 'Vertex AI Search & Recommendations for Retail, AlloyDB AI pgvector product discovery, Gemini 2.5 Flash agentic concierge, and multi-region Cloud Spanner cart.',
+    whenToUse: 'Vertex AI Search & Recommendations for Retail, AlloyDB AI pgvector product discovery, Gemini 3.8 Flash agentic concierge, and multi-region Cloud Spanner cart.',
     whereToUse: 'Retail Digital Architecture Blueprint; E-Commerce Replatforming RFC; PCI-DSS Audit Package.',
     personas: {
       creator: 'Principal E-Commerce Architect / Lead Retail Systems Engineer',
       consumer: 'Chief Digital Officer, VP E-Commerce Engineering, Head of Merchandising'
     },
-    bigTechStandpoint: 'Vertex AI Search & Recommendations, AlloyDB pgvector Discovery, Gemini 2.5 Flash Agentic Concierge, Multimodal Vision, Multi-Region Cloud Spanner Cart, Pub/Sub Event Bus & BigQuery Lakehouse.',
+    bigTechStandpoint: 'Vertex AI Search & Recommendations, AlloyDB pgvector Discovery, Gemini 3.8 Flash Agentic Concierge, Multimodal Vision, Multi-Region Cloud Spanner Cart, Pub/Sub Event Bus & BigQuery Lakehouse.',
     consultingStandpoint: 'Sub-10ms visual similarity lookup, omnichannel cart sync, and real-time conversion funnel telemetry.'
   },
   {
@@ -160,7 +160,7 @@ export const BLUEPRINT_CATALOG_ITEMS: BlueprintCatalogItem[] = [
       creator: 'Principal Industrial IoT Architect / OT-IT Convergence Lead',
       consumer: 'VP Global Manufacturing, Plant Operations Managers, Reliability Engineering Leads'
     },
-    bigTechStandpoint: 'Asset Sensor Telemetry, GDC Edge Gateway, Cloud Dataflow Streaming, AlloyDB Digital Twin, Gemini 2.5 Flash Multimodal Anomaly Fuser & Looker OEE Operations Cockpit.',
+    bigTechStandpoint: 'Asset Sensor Telemetry, GDC Edge Gateway, Cloud Dataflow Streaming, AlloyDB Digital Twin, Gemini 3.8 Flash Multimodal Anomaly Fuser & Looker OEE Operations Cockpit.',
     consultingStandpoint: 'Overall Equipment Effectiveness (OEE) optimization cockpit reducing scrap rates and automating SAP PM work orders.'
   },
   {
@@ -170,13 +170,13 @@ export const BLUEPRINT_CATALOG_ITEMS: BlueprintCatalogItem[] = [
     category: 'Industry 4.0',
     icon: '👔',
     strategicScore: '5.0 / 5.0',
-    whenToUse: 'Document AI resume parsing, Cloud DLP PII blind screening, AlloyDB pgvector enterprise skills graph, and Gemini 2.5 Flash match evaluator.',
+    whenToUse: 'Document AI resume parsing, Cloud DLP PII blind screening, AlloyDB pgvector enterprise skills graph, and Gemini 3.8 Flash match evaluator.',
     whereToUse: 'HR Technology Strategy Roadmap; EEOC & Bias Compliance Dossier; Talent Acquisition Steering Committee.',
     personas: {
       creator: 'Principal People Analytics Architect / HR Tech Lead',
       consumer: 'Chief People Officer (CPO), VP Talent Acquisition, Legal & Compliance Counsel'
     },
-    bigTechStandpoint: 'Document AI resume parser, Cloud DLP PII screening shield, AlloyDB pgvector skills graph, Gemini 2.5 Flash match evaluator, and Looker Talent Cockpit.',
+    bigTechStandpoint: 'Document AI resume parser, Cloud DLP PII screening shield, AlloyDB pgvector skills graph, Gemini 3.8 Flash match evaluator, and Looker Talent Cockpit.',
     consultingStandpoint: 'Reduces time-to-hire by 65% while providing auditable Four-Fifths compliance logs for regulatory defense.'
   },
   {
@@ -186,13 +186,13 @@ export const BLUEPRINT_CATALOG_ITEMS: BlueprintCatalogItem[] = [
     category: 'Industry 4.0',
     icon: '🏥',
     strategicScore: '5.0 / 5.0',
-    whenToUse: 'Hospital EHR interoperability (HL7v2/FHIR R4/DICOM), HIPAA BAA transit, OMOP BigQuery Lakehouse, and Gemini 2.5 Flash clinical reasoner.',
+    whenToUse: 'Hospital EHR interoperability (HL7v2/FHIR R4/DICOM), HIPAA BAA transit, OMOP BigQuery Lakehouse, and Gemini 3.8 Flash clinical reasoner.',
     whereToUse: 'Healthcare Interoperability RFC; HIPAA Security & Privacy Audit Package; Clinical Operations Steering Committee.',
     personas: {
       creator: 'Principal Healthcare Solutions Architect / Health Informatics Lead',
       consumer: 'Chief Medical Information Officer (CMIO), CISO Healthcare, Clinical Research Directors'
     },
-    bigTechStandpoint: 'Cloud Healthcare API, BigQuery FHIR & OMOP CDM Lakehouse, Vertex AI Search for Healthcare & Medical Vision, Gemini 2.5 Flash Clinical Reasoner, and Looker Operations Cockpit.',
+    bigTechStandpoint: 'Cloud Healthcare API, BigQuery FHIR & OMOP CDM Lakehouse, Vertex AI Search for Healthcare & Medical Vision, Gemini 3.8 Flash Clinical Reasoner, and Looker Operations Cockpit.',
     consultingStandpoint: 'OMOP CDM BigQuery lakehouse accelerating clinical trial matching and reducing 30-day patient readmissions.'
   },
   {

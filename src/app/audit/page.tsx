@@ -63,6 +63,7 @@ import {
 } from '@/lib/canonical/canonicalTemplates';
 import { AuditGap, AuditCategory } from '@/app/api/audit/route';
 import { AppHeader } from '@/components/AppHeader';
+import { estimateCloudArchitectureCost } from '@/lib/cost/cloudCostEstimator';
 
 // Audit Category Definition with metadata
 export interface CategoryMeta {
@@ -185,8 +186,7 @@ function AuditHubContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { theme } = useTheme();
-  // Content locked to light theme (white cards, clean audits) while top header is dark
-  const isLight = true;
+  const isLight = theme === 'light';
 
   // Navigation & Scope Selection (Defaults to 'artifacts' for user generated diagrams!)
   const [scopeTab, setScopeTab] = useState<'artifacts' | 'custom' | 'canonical'>('artifacts');
@@ -795,10 +795,10 @@ function AuditHubContent() {
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
                   <div className="text-[11px] font-bold uppercase text-slate-500">Active Topology Est. Run-Rate</div>
                   <div className="text-2xl font-black text-slate-900 mt-1 tabular-nums">
-                    ${(((currentXml.match(/vertex="1"/g)?.length || 16) * 165) + ((currentXml.match(/edge="1"/g)?.length || 12) * 35)).toLocaleString()}<span className="text-xs font-normal text-slate-500">/mo</span>
+                    ${estimateCloudArchitectureCost(currentXml, activeArtifact?.name || 'Active Topology').totalMonthlyCostUsd.toLocaleString()}<span className="text-xs font-normal text-slate-500">/mo</span>
                   </div>
                   <div className="text-[11px] text-emerald-600 font-semibold mt-1 tabular-nums">
-                    {currentXml.match(/vertex="1"/g)?.length || 16} Nodes • {currentXml.match(/edge="1"/g)?.length || 12} Connectors
+                    {estimateCloudArchitectureCost(currentXml, activeArtifact?.name || 'Active Topology').assumptions.billableNodes} Billable Resources • Unified FinOps Catalog
                   </div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
@@ -1420,19 +1420,30 @@ function AuditHubContent() {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                          {DEFAULT_CONTROLS.security.map((ctrl) => (
-                            <tr key={ctrl.controlId} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30">
-                              <td className="p-3 font-mono font-bold text-teal-600 dark:text-teal-400">{ctrl.framework}</td>
-                              <td className="p-3 font-mono text-slate-500 tabular-nums">{ctrl.controlId}</td>
-                              <td className="p-3 font-semibold text-slate-900 dark:text-white">{ctrl.title}</td>
-                              <td className="p-3 text-slate-600">{ctrl.component}</td>
-                              <td className="p-3">
-                                <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                                  <Check className="w-3 h-3" aria-hidden="true" /> PASS
-                                </span>
-                              </td>
-                            </tr>
-                          ))}
+                          {[...DEFAULT_CONTROLS.security, ...DEFAULT_CONTROLS.topology, ...DEFAULT_CONTROLS.visual].map((ctrl) => {
+                            const hasMatchingGap = auditGaps.some(
+                              (g) => g.component.toLowerCase().includes(ctrl.component.split(' ')[0].toLowerCase()) || g.title.toLowerCase().includes(ctrl.component.split(' ')[0].toLowerCase()) || g.description.toLowerCase().includes(ctrl.framework.toLowerCase())
+                            );
+                            return (
+                              <tr key={ctrl.controlId} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30">
+                                <td className="p-3 font-mono font-bold text-teal-600 dark:text-teal-400">{ctrl.framework}</td>
+                                <td className="p-3 font-mono text-slate-500 tabular-nums">{ctrl.controlId}</td>
+                                <td className="p-3 font-semibold text-slate-900 dark:text-white">{ctrl.title}</td>
+                                <td className="p-3 text-slate-600">{ctrl.component}</td>
+                                <td className="p-3">
+                                  {hasMatchingGap ? (
+                                    <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                      <AlertTriangle className="w-3 h-3" aria-hidden="true" /> MITIGATION READY
+                                    </span>
+                                  ) : (
+                                    <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                      <Check className="w-3 h-3" aria-hidden="true" /> PASS
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>
@@ -1468,7 +1479,7 @@ function AuditHubContent() {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
                         <span className="text-[10px] uppercase font-bold text-slate-400 block">Overall Readiness</span>
-                        <span className="text-xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{overallScore}% (Grade A+)</span>
+                        <span className="text-xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{overallScore}% ({scoreGrade.grade})</span>
                         <p className="text-[11px] text-slate-500 mt-1">Certified for enterprise production deployment.</p>
                       </div>
                       <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">

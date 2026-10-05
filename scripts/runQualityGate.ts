@@ -51,11 +51,19 @@ const steps: GateStep[] = [
         throw new Error(`Invalid JSON syntax in .agents/hooks.json: ${err.message}`);
       }
 
-      // Verify official Jetski schema
+      // Verify official Jetski schema (supports v2.0.0 FAIL_CLOSED constitution and legacy omni-governance-guard)
       const guard = parsed['omni-governance-guard'];
-      if (!guard) throw new Error('Missing top-level named hook "omni-governance-guard" in .agents/hooks.json');
-      if (!Array.isArray(guard.PreToolUse)) throw new Error('PreToolUse must be an array in omni-governance-guard');
-      if (!Array.isArray(guard.Stop)) throw new Error('Stop must be an array in omni-governance-guard');
+      const isV2Constitution =
+        parsed.schema_version === '2.0.0' &&
+        parsed.default_policy === 'FAIL_CLOSED' &&
+        Boolean(parsed.hooks?.PreToolUse && parsed.hooks?.Stop);
+      if (!guard && !isV2Constitution) {
+        throw new Error('Missing valid hook schema ("omni-governance-guard" or v2.0.0 FAIL_CLOSED hooks) in .agents/hooks.json');
+      }
+      if (guard) {
+        if (!Array.isArray(guard.PreToolUse)) throw new Error('PreToolUse must be an array in omni-governance-guard');
+        if (!Array.isArray(guard.Stop)) throw new Error('Stop must be an array in omni-governance-guard');
+      }
 
       // Verify referenced scripts exist
       const requiredScripts = [

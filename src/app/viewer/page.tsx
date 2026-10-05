@@ -14,7 +14,7 @@ function CloudViewerContent() {
   const blueprintId = searchParams.get('id') || 'VIS-9745';
 
   // Default to the live public Railway Cloud Bridge .pptx if no ?url= parameter is supplied
-  const defaultPublicPptxUrl = 'https://promptcanvas.up.railway.app/api/export/cloud-bridge/azure_landing_zone.pptx';
+  const defaultPublicPptxUrl = 'https://promptcanvas-248990048888.cr.gclb.goog/api/export/cloud-bridge/azure_landing_zone.pptx';
   const rawUrl = rawUrlParam || defaultPublicPptxUrl;
 
   const [engine] = useState<'microsoft' | 'google'>('google');
@@ -43,7 +43,7 @@ function CloudViewerContent() {
       const origin =
         typeof window !== 'undefined' && !window.location.origin.includes('localhost')
           ? window.location.origin
-          : 'https://promptcanvas.up.railway.app';
+          : 'https://promptcanvas-248990048888.cr.gclb.goog';
 
       if (targetFormat === 'slides' && rawUrl && rawUrl.endsWith('.pptx') && !rawUrl.includes('localhost')) {
         const googleTabUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(rawUrl)}`;
@@ -90,7 +90,7 @@ function CloudViewerContent() {
       const fallbackUrl =
         targetFormat === 'slides'
           ? `https://docs.google.com/viewer?url=${encodeURIComponent(defaultPublicPptxUrl)}`
-          : `https://docs.google.com/viewer?url=${encodeURIComponent('https://promptcanvas.up.railway.app/api/export/cloud-bridge/azure_landing_zone.docx')}`;
+          : `https://docs.google.com/viewer?url=${encodeURIComponent('https://promptcanvas-248990048888.cr.gclb.goog/api/export/cloud-bridge/azure_landing_zone.docx')}`;
       window.open(fallbackUrl, '_blank');
     } finally {
       setIsLaunchingTab(null);

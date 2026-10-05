@@ -100,7 +100,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         stepNumber: 1,
         title: 'Architecture Studio Orientation',
         whereToClick: 'Architecture Studio / Blueprint Catalog',
-        description: 'PromptCanvas provides a streamlined architecture workspace. Access 53 blueprints in the Blueprint Catalog and 17 archetypes in Document Studio, directly from the sidebar.',
+        description: 'PromptCanvas provides a streamlined architecture workspace. Access 77 blueprints in the Blueprint Catalog and 17 archetypes in Document Studio, directly from the sidebar.',
         validationChecklist: [
           'Left Studio is ready for prompt input or blueprint selection',
           'Canvas is set to high-DPI 1600px 16:9 desktop grid'
@@ -116,7 +116,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         stepNumber: 2,
         title: 'Prompt Entry & Architecture Selection',
         whereToClick: 'Architecture Studio -> "ACTIVE USE CASE PROMPT" text area',
-        description: 'Type plain English requirements or select from 50 canonical master blueprints (e.g. Microservices, Event Buses, and Zero-Trust Mesh).',
+        description: 'Type plain English requirements or select from 77 canonical master blueprints (e.g. Microservices, Event Buses, and Zero-Trust Mesh).',
         promptRecipe: 'Design an Enterprise Cloud Platform on Google Cloud featuring Cloud Armor WAF, GKE Autopilot microservices with private VPC peering, Cloud SQL high availability, and Pub/Sub event ingestion.',
         validationChecklist: [
           'Active prompt input with concrete cloud infrastructure components',
@@ -623,8 +623,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
 
 export default function GuidePage() {
   const { theme } = useTheme();
-  // Content locked to light theme (clean cards, light viewports) while top header is dark
-  const isLight = true;
+  const isLight = theme === 'light';
 
   const [activePersona, setActivePersona] = useState<PersonaKey>('quickstart');
   const [currentFrameIndex, setCurrentFrameIndex] = useState<number>(0);

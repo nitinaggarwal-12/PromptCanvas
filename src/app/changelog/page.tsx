@@ -23,8 +23,11 @@ import {
   ArrowLeftRight,
   Check,
   Copy,
+  Menu,
 } from 'lucide-react';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
+import ByokHeaderButton from '@/components/ByokHeaderButton';
+import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 
 interface ChangelogEntry {
   id: string;
@@ -217,6 +220,18 @@ export default function ChangelogAndSheetSyncPage() {
   useEffect(() => {
     fetchChangelogData();
   }, [fetchChangelogData]);
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.user?.email && !data.user.email.endsWith('@promptcanvas.guest')) {
+          if (data.user.name) setActorName(data.user.name);
+          setActorEmail(data.user.email);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleUiStatusChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -440,6 +455,14 @@ export default function ChangelogAndSheetSyncPage() {
         <header className="dark sticky top-0 z-30 w-full bg-[#0B111E] border-b border-slate-800 text-white px-6 md:px-10 py-4">
           <div className="w-full max-w-none flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent('promptcanvas_toggle_sidebar'))}
+                className="lg:hidden p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition cursor-pointer"
+                aria-label="Toggle navigation sidebar"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
               <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
                 <ArrowLeftRight className="w-5 h-5" />
               </div>
@@ -460,6 +483,8 @@ export default function ChangelogAndSheetSyncPage() {
             </div>
 
             <div className="flex items-center gap-3">
+              <ByokHeaderButton compact />
+              <ThemeToggleBtn />
               <a
                 href="/api/changelog/sheet-sync?format=csv"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs md:text-sm font-semibold bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 transition"

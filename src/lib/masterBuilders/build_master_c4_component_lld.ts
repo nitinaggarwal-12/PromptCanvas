@@ -18,12 +18,12 @@ export function buildOldC4ComponentLldXml(): string {
         <mxCell id="main_title" value="&lt;b style=&quot;font-size:17px;color:#0F172A;letter-spacing:-0.2px;&quot;&gt;C4 MODEL LEVEL 3.5: GKE MICROSERVICES LLD &amp;amp; GEMINI AI DEEP DIVE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="65" y="10" width="1250" height="22" as="geometry"/>
         </mxCell>
-        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:9.5px;color:#475569;font-weight:700;letter-spacing:0.2px;&quot;&gt;Blueprint v2.1 | GKE Autopilot Cluster | Gemini 1.5 Pro | Security: VPC-SC&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:9.5px;color:#475569;font-weight:700;letter-spacing:0.2px;&quot;&gt;Blueprint v2.1 | GKE Autopilot Cluster | Gemini 3.1 Pro | Security: VPC-SC&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="65" y="32" width="1250" height="16" as="geometry"/>
         </mxCell>
         
-        <!-- Gemini 2.5 Flash Badge (Dark HUD Glassmorphic Pill) -->
-        <mxCell id="top_gemini_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#38BDF8;&quot;&gt;✨ Gemini 2.5 Flash&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#94A3B8;font-weight:600;&quot;&gt;Software Arch Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+        <!-- Gemini 3.8 Flash Badge (Dark HUD Glassmorphic Pill) -->
+        <mxCell id="top_gemini_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#38BDF8;&quot;&gt;✨ Gemini 3.8 Flash&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#94A3B8;font-weight:600;&quot;&gt;Software Arch Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="1400" y="8" width="175" height="42" as="geometry"/>
         </mxCell>
 
@@ -169,7 +169,7 @@ export function buildOldC4ComponentLldXml(): string {
         </mxCell>
 
         <!-- 1. Vertex AI Model Garden Card -->
-        <mxCell id="box_vertex_garden" value="&lt;table style=&quot;width:100%;text-align:left;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;Vertex AI Model Garden&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#64748B;padding-bottom:6px;&quot;&gt;Foundation models&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;color:#475569;&quot;&gt;• Vertex AI Model Garden&lt;br&gt;• Vertex AI Model (Gemini 1.5 Pro)&lt;br&gt;• Vertex AI Model (Gemini Flash)&lt;br&gt;• Vertex AI Embeddings (Text-Gecko)&lt;br&gt;• Vertex AI Custom Fine-Tuned Models&lt;br&gt;• Model Safety &amp;amp; Content Filtering&lt;br&gt;• ...&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
+        <mxCell id="box_vertex_garden" value="&lt;table style=&quot;width:100%;text-align:left;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;Vertex AI Model Garden&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#64748B;padding-bottom:6px;&quot;&gt;Foundation models&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:7.5px;color:#475569;&quot;&gt;• Vertex AI Model Garden&lt;br&gt;• Vertex AI Model (Gemini 3.1 Pro)&lt;br&gt;• Vertex AI Model (Gemini 3.8 Flash)&lt;br&gt;• Vertex AI Embeddings (gemini-embedding-001)&lt;br&gt;• Vertex AI Custom Fine-Tuned Models&lt;br&gt;• Model Safety &amp;amp; Content Filtering&lt;br&gt;• ...&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;" vertex="1" parent="1">
           <mxGeometry x="1010" y="120" width="245" height="220" as="geometry"/>
         </mxCell>
 

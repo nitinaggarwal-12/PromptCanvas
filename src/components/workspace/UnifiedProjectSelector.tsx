@@ -36,6 +36,7 @@ import {
 } from '@/lib/architectureHierarchy';
 import { normalizeArchitectureId } from '@/lib/architectureTypes';
 import { BlueprintKnowledgeItem, BLUEPRINT_KNOWLEDGE_MATRIX } from '@/lib/blueprintKnowledgeMatrix';
+import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 import { Diagram } from '@/lib/db';
 import { formatRelativeTime } from '@/lib/graph/xmlNodesParser';
 
@@ -324,7 +325,7 @@ export const UnifiedProjectSelector: React.FC<UnifiedProjectSelectorProps> = ({
                 <input
                   type="text"
                   autoFocus
-                  placeholder="Search projects, custom diagrams, or all 50 blueprints (e.g. ApexPay, Lakehouse, RAG)..."
+                  placeholder={`Search projects, custom diagrams, or all ${CANONICAL_TEMPLATES.length} blueprints (e.g. ApexPay, Lakehouse, RAG)...`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-500 outline-none font-medium"

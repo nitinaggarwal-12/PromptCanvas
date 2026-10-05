@@ -60,7 +60,7 @@ interface NavGroup {
  * works. It also removes the old "Canvas > Design Canvas" parent/child stutter:
  * Design Canvas is now a peer under CREATE.
  *
- * NOTE ON BADGE COUNTS: '52' and '17' are literals rather than
+ * NOTE ON BADGE COUNTS: '77' and '17' are literals rather than
  * CANONICAL_TEMPLATES.length / DOC_ARCHETYPES_META.length on purpose — this
  * component renders on every route, and importing those modules would pull
  * ~130KB of template and archetype source into every client bundle for the sake

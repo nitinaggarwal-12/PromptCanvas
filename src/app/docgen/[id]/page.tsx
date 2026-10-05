@@ -338,8 +338,7 @@ function DocDetailPageContent() {
   const docId = (rawId || 'sdd').toLowerCase() as ArchetypeId;
 
   const { theme } = useTheme();
-  // Content locked to light theme (clean documents, white cards) while top header is dark
-  const isLight = true;
+  const isLight = theme === 'light';
 
   const initialDomain = searchParams?.get('domain') || 'retail';
   const initialTitle = searchParams?.get('title') ? decodeURIComponent(searchParams.get('title')!) : '';

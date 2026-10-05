@@ -7,7 +7,6 @@ import {
   Copy,
   Check,
   Globe,
-  Lock,
   Users,
   MessageSquare,
   Shield,
@@ -15,11 +14,32 @@ import {
   FileText,
   Network,
   ExternalLink,
-  Sparkles,
   UserCheck
 } from 'lucide-react';
 import { AstComponent } from '@/lib/ast/architectureAst';
 import { LivingSpecDocument } from '@/lib/spec/livingSpecsGenerator';
+import { getPublicAppOrigin } from '@/lib/appOrigin';
+import { copyTextToClipboard } from '@/lib/clipboard';
+
+type ShareRole = 'viewer' | 'commenter' | 'editor';
+interface StoredComment { id: string; author: string; role: string; text: string; time: string }
+
+function loadStoredRole(targetId: string): ShareRole {
+  if (typeof window === 'undefined' || !targetId) return 'commenter';
+  const saved = window.localStorage.getItem(`promptcanvas_share_role_${targetId}`);
+  return saved === 'viewer' || saved === 'commenter' || saved === 'editor' ? saved : 'commenter';
+}
+
+function loadStoredComments(targetId: string): StoredComment[] {
+  if (typeof window === 'undefined' || !targetId) return [];
+  try {
+    const raw = window.localStorage.getItem(`promptcanvas_object_comments_${targetId}`);
+    const parsed = raw ? JSON.parse(raw) : null;
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
 export interface ObjectShareModalProps {
   isOpen: boolean;
@@ -46,38 +66,19 @@ export function ObjectShareModal({
   activeDoc,
   activeNode
 }: ObjectShareModalProps) {
-  const [copied, setCopied] = useState(false);
-  const [accessRole, setAccessRole] = useState<'viewer' | 'commenter' | 'editor'>(() => {
-    if (typeof window !== 'undefined' && targetId) {
-      const saved = window.localStorage.getItem(`promptcanvas_share_role_${targetId}`);
-      if (saved === 'viewer' || saved === 'commenter' || saved === 'editor') return saved;
-    }
-    return 'commenter';
-  });
-  const [comments, setComments] = useState<Array<{ id: string; author: string; role: string; text: string; time: string }>>([]);
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const [accessRole, setAccessRole] = useState<'viewer' | 'commenter' | 'editor'>(() => loadStoredRole(targetId));
+  const [comments, setComments] = useState<StoredComment[]>(() => loadStoredComments(targetId));
   const [newComment, setNewComment] = useState('');
 
-  React.useEffect(() => {
-    if (typeof window !== 'undefined' && targetId) {
-      const savedRole = window.localStorage.getItem(`promptcanvas_share_role_${targetId}`);
-      if (savedRole === 'viewer' || savedRole === 'commenter' || savedRole === 'editor') {
-        setAccessRole(savedRole);
-      }
-      try {
-        const rawComments = window.localStorage.getItem(`promptcanvas_object_comments_${targetId}`);
-        if (rawComments) {
-          const parsed = JSON.parse(rawComments);
-          if (Array.isArray(parsed)) {
-            setComments(parsed);
-            return;
-          }
-        }
-      } catch {
-        // Ignore parse errors
-      }
-      setComments([]);
-    }
-  }, [targetId, isOpen]);
+  // Re-hydrate when the anchored object changes. Adjusting state during render for a
+  // changed prop is React's recommended alternative to setState inside an effect.
+  const [hydratedFor, setHydratedFor] = useState(targetId);
+  if (hydratedFor !== targetId) {
+    setHydratedFor(targetId);
+    setAccessRole(loadStoredRole(targetId));
+    setComments(loadStoredComments(targetId));
+  }
 
   const handleSelectRole = (role: 'viewer' | 'commenter' | 'editor') => {
     setAccessRole(role);
@@ -88,8 +89,9 @@ export function ObjectShareModal({
 
   if (!isOpen) return null;
 
-  // Build canonical deep link with active accessRole encoded
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://promptcanvas-887605034827.us-central1.run.app';
+  // Build canonical deep link with active accessRole encoded. The origin resolves to the
+  // current host in the browser and to the verified BeyondCorp endpoint otherwise.
+  const origin = getPublicAppOrigin();
   let deepLink = `${origin}/studio?project=${encodeURIComponent(projectTitle)}&v=${activeVersionTag}&role=${accessRole}`;
 
   if (targetType === 'doc' && activeDoc) {
@@ -98,10 +100,10 @@ export function ObjectShareModal({
     deepLink = `${origin}/studio?project=${encodeURIComponent(projectTitle)}&view=diagram&node=${activeNode.id}&v=${activeVersionTag}&role=${accessRole}`;
   }
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(deepLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+  const handleCopyLink = async () => {
+    const ok = await copyTextToClipboard(deepLink);
+    setCopyState(ok ? 'copied' : 'failed');
+    setTimeout(() => setCopyState('idle'), 2500);
   };
 
   const handleAddComment = () => {
@@ -165,9 +167,13 @@ export function ObjectShareModal({
           </div>
         </div>
 
-        <span className="text-[10px] text-emerald-700 bg-emerald-100/80 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>Live Link</span>
+        <span
+          data-testid="share-link-kind-badge"
+          className="text-[10px] text-slate-700 bg-slate-100 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0"
+          title="A URL that restores this exact project/doc/node view. It is not a live-sync session."
+        >
+          <ExternalLink className="w-3 h-3 text-slate-500" />
+          <span>Deep link</span>
         </span>
       </div>
 
@@ -189,13 +195,16 @@ export function ObjectShareModal({
             <button
               onClick={handleCopyLink}
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shrink-0 shadow-sm cursor-pointer ${
-                copied
+                copyState === 'copied'
                   ? 'bg-emerald-600 text-white'
-                  : 'bg-blue-600 hover:bg-blue-700 text-white'
+                  : copyState === 'failed'
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
               }`}
+              title={copyState === 'failed' ? 'Clipboard access was blocked — select the URL and copy manually' : 'Copy deep link'}
             >
-              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copied ? 'Copied!' : 'Copy'}</span>
+              {copyState === 'copied' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+              <span>{copyState === 'copied' ? 'Copied!' : copyState === 'failed' ? 'Select & copy' : 'Copy'}</span>
             </button>
           </div>
         </div>
@@ -204,8 +213,12 @@ export function ObjectShareModal({
         <div className="space-y-2 pt-3 border-t border-slate-100">
           <label className="text-[11px] font-bold text-slate-700 flex items-center justify-between">
             <span>Collaboration Permissions:</span>
-            <span className="text-[10px] font-mono text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
-              Enterprise RBAC
+            <span
+              data-testid="share-rbac-badge"
+              className="text-[10px] font-mono text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200"
+              title="The selected role is encoded as a ?role= parameter in the link so the recipient's studio opens in that mode. It is not enforced by the server."
+            >
+              Link hint · not enforced
             </span>
           </label>
           <div className="grid grid-cols-3 gap-2">
@@ -251,7 +264,7 @@ export function ObjectShareModal({
                 <Shield className="w-3 h-3 text-purple-500 shrink-0" />
                 <span>Editor</span>
               </div>
-              <p className="text-[10px] text-slate-500 mt-0.5 leading-tight">Live edit & sync</p>
+              <p className="text-[10px] text-slate-500 mt-0.5 leading-tight">Opens in edit mode</p>
             </button>
           </div>
         </div>
@@ -261,9 +274,15 @@ export function ObjectShareModal({
           <div className="flex items-center justify-between text-[11px] font-bold text-slate-700">
             <span className="flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5 text-blue-600" />
-              <span>Comments & Sign-offs ({comments.length})</span>
+              <span>Comments & Notes ({comments.length})</span>
             </span>
-            <span className="text-[10px] text-slate-400 font-normal">Anchored to {targetId}</span>
+            <span
+              data-testid="share-comments-scope"
+              className="text-[10px] text-slate-500 font-normal"
+              title="Notes are kept in this browser's localStorage, keyed by anchor ID. They are not shared with link recipients."
+            >
+              This browser only · {targetId}
+            </span>
           </div>
 
           <div className="space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-200 min-h-[140px]">

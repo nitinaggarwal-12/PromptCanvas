@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
-import { LivingSpecDocument } from "@/lib/spec/livingSpecsGenerator";
+import React, { useEffect, useState } from "react";
+import { LivingSpecDocument, SpecGroundingSummary } from "@/lib/spec/livingSpecsGenerator";
 import { RichSpecRenderer } from "./RichSpecRenderer";
 import DiagramViewerRenderSafe from "../DiagramViewerRenderSafe";
+import { copyTextToClipboard } from "@/lib/clipboard";
 import { 
   FileText, 
   Copy, 
@@ -21,7 +22,9 @@ import {
   CheckCircle2,
   BadgeCheck,
   Zap,
-  Lock
+  Lock,
+  AlertTriangle,
+  CircleDashed
 } from "lucide-react";
 
 import { ARCHITECTURE_DOCUMENT_BINDINGS } from "@/lib/canonical/canonicalTemplates";
@@ -37,6 +40,24 @@ interface LivingSpecsViewerProps {
   useCaseName?: string;
   versionName?: string;
   onSelectBlueprintById?: (templateId: string) => void;
+  /** Optional grounding summary so badges reflect what the documents were really built from. */
+  grounding?: SpecGroundingSummary;
+}
+
+function editsStorageKey(projectName: string, versionName: string): string {
+  const safe = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "_").slice(0, 64);
+  return `promptcanvas_spec_edits_${safe(projectName)}_${safe(versionName)}`;
+}
+
+function loadStoredEdits(key: string): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = window.localStorage.getItem(key);
+    const parsed = raw ? JSON.parse(raw) : null;
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
 }
 
 export function LivingSpecsViewer({
@@ -49,28 +70,73 @@ export function LivingSpecsViewer({
   projectName = "Google Cloud Enterprise",
   useCaseName = "Multi-Tier Native Reference Architecture",
   versionName = "v1.2",
-  onSelectBlueprintById
+  onSelectBlueprintById,
+  grounding
 }: LivingSpecsViewerProps) {
-  const [copied, setCopied] = useState(false);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
   const [isEditing, setIsEditing] = useState(false);
-  const [editedContentById, setEditedContentById] = useState<Record<string, string>>({});
+  const storageKey = editsStorageKey(projectName, versionName);
+  const [editedContentById, setEditedContentById] = useState<Record<string, string>>(() => loadStoredEdits(storageKey));
+
+  // Re-hydrate when the project/version changes (render-time reset on key change).
+  const [editsLoadedFor, setEditsLoadedFor] = useState(storageKey);
+  if (editsLoadedFor !== storageKey) {
+    setEditsLoadedFor(storageKey);
+    setEditedContentById(loadStoredEdits(storageKey));
+  }
+
+  // Persist local edits so they survive view switches and page reloads. Edits are
+  // browser-local; they are NOT pushed back to the canvas or any server.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      if (Object.keys(editedContentById).length === 0) {
+        window.localStorage.removeItem(storageKey);
+      } else {
+        window.localStorage.setItem(storageKey, JSON.stringify(editedContentById));
+      }
+    } catch {
+      // Quota or privacy-mode failures are non-fatal: the in-memory copy still works.
+    }
+  }, [editedContentById, storageKey]);
 
   const activeDoc = specs.find(d => d.id === activeDocId) || specs[0];
   const effectiveMarkdown = activeDoc
     ? (editedContentById[activeDoc.id] ?? activeDoc.markdownContent)
     : "";
-  const hasUnsavedEdits = Boolean(
-    activeDoc &&
-    editedContentById[activeDoc.id] !== undefined &&
-    editedContentById[activeDoc.id] !== activeDoc.markdownContent
-  );
+  const docHasLocalEdits = (doc: LivingSpecDocument) =>
+    editedContentById[doc.id] !== undefined && editedContentById[doc.id] !== doc.markdownContent;
+  const hasUnsavedEdits = Boolean(activeDoc && docHasLocalEdits(activeDoc));
 
-  const handleCopy = () => {
-    if (activeDoc) {
-      navigator.clipboard.writeText(effectiveMarkdown);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+  // Truthful sync status: local edits always win, then the generator's own flag, then grounding.
+  const syncBadge = (() => {
+    if (hasUnsavedEdits) {
+      return { tone: "amber", Icon: AlertTriangle, label: "Local edits — diverged from canvas" } as const;
     }
+    if (activeDoc?.isSynced) {
+      return {
+        tone: "emerald",
+        Icon: CheckCircle2,
+        label: `Synchronized with canvas${grounding ? ` (${grounding.componentCount} nodes)` : ""}`,
+      } as const;
+    }
+    if (grounding?.source === "ast") {
+      return { tone: "sky", Icon: CircleDashed, label: `Derived from architecture AST (${grounding.componentCount}) — canvas XML not loaded` } as const;
+    }
+    return { tone: "slate", Icon: CircleDashed, label: "Template content — not grounded on canvas" } as const;
+  })();
+  const syncToneClasses: Record<typeof syncBadge.tone, string> = {
+    amber: "bg-amber-50 text-amber-800 border border-amber-200",
+    emerald: "bg-emerald-50 text-emerald-700",
+    sky: "bg-sky-50 text-sky-800 border border-sky-200",
+    slate: "bg-slate-100 text-slate-600 border border-slate-200",
+  };
+
+  const handleCopy = async () => {
+    if (!activeDoc) return;
+    const ok = await copyTextToClipboard(effectiveMarkdown);
+    setCopyState(ok ? "copied" : "failed");
+    setTimeout(() => setCopyState("idle"), 2000);
   };
 
   const handleDownload = () => {
@@ -134,9 +200,11 @@ export function LivingSpecsViewer({
               >
                 {getDocIcon(doc.category)}
                 <span>{doc.shortTitle}</span>
-                {doc.isSynced && (
-                  <span className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-emerald-300" : "bg-emerald-500"}`}></span>
-                )}
+                {docHasLocalEdits(doc) ? (
+                  <span title="Local edits" className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-amber-300" : "bg-amber-500"}`}></span>
+                ) : doc.isSynced ? (
+                  <span title="Synchronized with canvas" className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-emerald-300" : "bg-emerald-500"}`}></span>
+                ) : null}
               </button>
             );
           })}
@@ -154,9 +222,9 @@ export function LivingSpecsViewer({
 
           {onShareDoc && (
             <button
-              onClick={() => onShareDoc(activeDoc)}
+              onClick={() => onShareDoc(hasUnsavedEdits ? { ...activeDoc, markdownContent: effectiveMarkdown, isSynced: false } : activeDoc)}
               className="px-2.5 py-1 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold flex items-center gap-1.5 shadow-2xs transition"
-              title="Share Document Deep Link"
+              title={hasUnsavedEdits ? "Share Document Deep Link (includes your local edits)" : "Share Document Deep Link"}
             >
               <Share2 className="w-3.5 h-3.5 text-blue-600" />
               <span>Share Doc</span>
@@ -184,9 +252,10 @@ export function LivingSpecsViewer({
           <button
             onClick={handleCopy}
             className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 shadow-2xs transition"
+            title={copyState === "failed" ? "Clipboard blocked by the browser — use Download (.md) instead" : "Copy current spec markdown"}
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>{copied ? "Copied!" : "Copy Spec"}</span>
+            {copyState === "copied" ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+            <span>{copyState === "copied" ? "Copied!" : copyState === "failed" ? "Copy blocked" : "Copy Spec"}</span>
           </button>
         </div>
       </div>
@@ -204,9 +273,20 @@ export function LivingSpecsViewer({
               <span className="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 font-mono text-[11px] font-bold uppercase tracking-wider">
                 {activeDoc.category}
               </span>
-              <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-sans text-[11px] font-bold flex items-center gap-1">
-                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                <span>Synchronized with Canvas</span>
+              <span
+                data-testid="spec-sync-badge"
+                data-sync-tone={syncBadge.tone}
+                className={`px-2 py-0.5 rounded-md font-sans text-[11px] font-bold flex items-center gap-1 ${syncToneClasses[syncBadge.tone]}`}
+                title={
+                  hasUnsavedEdits
+                    ? "You edited this document in this browser. Edits are kept locally and are not written back to the canvas."
+                    : grounding
+                      ? `Grounding source: ${grounding.source}`
+                      : undefined
+                }
+              >
+                <syncBadge.Icon className="w-3 h-3" />
+                <span>{syncBadge.label}</span>
               </span>
             </div>
 
@@ -226,7 +306,10 @@ export function LivingSpecsViewer({
           {(() => {
             const combinedContext = `${projectName} ${useCaseName} ${effectiveMarkdown} ${specs[0]?.markdownContent || ""}`;
             const slaMatch = combinedContext.match(/\b(99\.\d{1,3}%)\b/);
-            const resolvedSla = slaMatch ? `${slaMatch[1]} Multi-Reg` : "99.999% Multi-Reg";
+            const declaredSla = grounding?.declaredSlaTarget || (slaMatch ? slaMatch[1] : null);
+            const compositePct = grounding?.compositeAvailabilityPct ?? null;
+            const declaredPct = declaredSla ? Number((declaredSla.match(/(\d{2,3}(?:\.\d+)?)/) || [])[1]) : NaN;
+            const compositeShortfall = compositePct !== null && Number.isFinite(declaredPct) && compositePct < declaredPct;
             const lowerCtx = combinedContext.toLowerCase();
             const resolvedCompliance =
               lowerCtx.includes("hipaa") || lowerCtx.includes("clinical") || lowerCtx.includes("hospital") || lowerCtx.includes("patient")
@@ -245,11 +328,24 @@ export function LivingSpecsViewer({
 
             return (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
-                <div className="bg-slate-50 rounded-lg p-2.5 border border-slate-100 flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-amber-500 shrink-0" />
+                <div
+                  data-testid="spec-sla-tile"
+                  className={`rounded-lg p-2.5 border flex items-center gap-2 ${compositeShortfall ? "bg-amber-50 border-amber-200" : "bg-slate-50 border-slate-100"}`}
+                  title={
+                    compositePct !== null
+                      ? `Serial composite of ${grounding?.compositeSampleSize ?? 0} in-path component SLAs = ${compositePct.toFixed(4)}%${compositeShortfall ? " — below the declared target" : ""}`
+                      : "Declared target from architecture metadata"
+                  }
+                >
+                  <Zap className={`w-4 h-4 shrink-0 ${compositeShortfall ? "text-amber-600" : "text-amber-500"}`} />
                   <div className="min-w-0">
-                    <div className="text-[10px] uppercase font-mono font-bold text-slate-400">Target SLA</div>
-                    <div className="text-xs font-bold text-slate-800">{resolvedSla}</div>
+                    <div className="text-[10px] uppercase font-mono font-bold text-slate-400">Declared SLA</div>
+                    <div className="text-xs font-bold text-slate-800">{declaredSla || "Not declared"}</div>
+                    {compositePct !== null && (
+                      <div className={`text-[10px] font-mono ${compositeShortfall ? "text-amber-700" : "text-slate-500"}`}>
+                        composite {compositePct.toFixed(3)}%{compositeShortfall ? " ⚠" : ""}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -378,7 +474,7 @@ export function LivingSpecsViewer({
         <div className="bg-white border border-slate-200/90 rounded-2xl p-8 shadow-sm space-y-3">
           {hasUnsavedEdits && (
             <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900">
-              <span className="font-semibold">Custom edits active for {activeDoc.id} ({activeDoc.shortTitle})</span>
+              <span className="font-semibold">Local edits active for {activeDoc.id} ({activeDoc.shortTitle}) — saved in this browser only, not written back to the canvas</span>
               <button
                 onClick={() => {
                   if (!activeDoc) return;

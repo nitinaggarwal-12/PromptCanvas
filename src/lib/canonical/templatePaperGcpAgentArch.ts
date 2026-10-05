@@ -79,7 +79,7 @@ export function generatePaperGcpAgentArchXml(
 
   const gridAndSpiralXml = generateGraphPaperGridAndSpiralXml();
 
-  return `<mxfile host="PromptCanvas-Paper-Engine" modified="2026-04-02T12:00:00.000Z" agent="PromptCanvas-Paper-Replica" version="24.0.0" type="device">
+  return `<mxfile host="embed.diagrams.net" modified="2026-04-02T12:00:00.000Z" agent="Enterprise-Paper-Replica" version="24.0.0" type="device">
   <diagram id="paper-gcp-ge-multi-agent-2026" name="Paper Architecture Sketch — Multi-Agent Orchestration">
     <mxGraphModel dx="1400" dy="840" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1400" pageHeight="840" background="#F8FAFC" math="0" shadow="0">
       <root>
@@ -197,13 +197,13 @@ ${gridAndSpiralXml}
         </mxCell>
 
         <!-- Dual Vertical Arrows between EDGE LAYER and AI CLUSTER -->
-        <mxCell id="pp_edge_tier2_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${inkStroke};strokeWidth=2.3;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1">
+        <mxCell id="pp_edge_tier2_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${inkStroke};strokeWidth=2.3;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="edge_layer" target="ai_cluster">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="668" y="208" as="sourcePoint" />
             <mxPoint x="668" y="246" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="pp_edge_tier2_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${inkStroke};strokeWidth=2.3;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1">
+        <mxCell id="pp_edge_tier2_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${inkStroke};strokeWidth=2.3;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="edge_layer" target="ai_cluster">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="692" y="208" as="sourcePoint" />
             <mxPoint x="692" y="246" as="targetPoint" />
@@ -236,13 +236,13 @@ ${gridAndSpiralXml}
         </mxCell>
 
         <!-- 2 Striped Double-Headed Arrows <===> between GOVERNANCE and AI CLUSTER -->
-        <mxCell id="pp_striped_arrow_1" value="|||" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;strokeColor=${inkStroke};strokeWidth=2;fillColor=#E2E8F0;${font}fontSize=10;fontStyle=1;fontColor=${ink};width=11;endSize=5;startSize=5;" edge="1" parent="1">
+        <mxCell id="pp_striped_arrow_1" value="|||" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;strokeColor=${inkStroke};strokeWidth=2;fillColor=#E2E8F0;${font}fontSize=10;fontStyle=1;fontColor=${ink};labelBackgroundColor=${paperFill};width=11;endSize=5;startSize=5;" edge="1" parent="1" source="obs_container" target="ai_cluster">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="334" y="350" as="sourcePoint" />
             <mxPoint x="392" y="350" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="pp_striped_arrow_2" value="|||" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;strokeColor=${inkStroke};strokeWidth=2;fillColor=#E2E8F0;${font}fontSize=10;fontStyle=1;fontColor=${ink};width=11;endSize=5;startSize=5;" edge="1" parent="1">
+        <mxCell id="pp_striped_arrow_2" value="|||" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;strokeColor=${inkStroke};strokeWidth=2;fillColor=#E2E8F0;${font}fontSize=10;fontStyle=1;fontColor=${ink};labelBackgroundColor=${paperFill};width=11;endSize=5;startSize=5;" edge="1" parent="1" source="obs_container" target="ai_cluster">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="334" y="452" as="sourcePoint" />
             <mxPoint x="392" y="452" as="targetPoint" />
@@ -337,13 +337,13 @@ ${gridAndSpiralXml}
         </mxCell>
 
         <!-- Bidirectional Arrows between AI CLUSTER and AI FOUNDATION -->
-        <mxCell id="pp_edge_cluster_llm_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${inkStroke};strokeWidth=2.3;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1">
+        <mxCell id="pp_edge_cluster_llm_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${inkStroke};strokeWidth=2.3;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="ai_cluster" target="llm_container">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="932" y="398" as="sourcePoint" />
             <mxPoint x="968" y="398" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="pp_edge_cluster_llm_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${inkStroke};strokeWidth=2.3;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1">
+        <mxCell id="pp_edge_cluster_llm_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${inkStroke};strokeWidth=2.3;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="ai_cluster" target="llm_container">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="932" y="426" as="sourcePoint" />
             <mxPoint x="968" y="426" as="targetPoint" />

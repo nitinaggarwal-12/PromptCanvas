@@ -1,5 +1,15 @@
 import { ArchitectureAst, createDefaultFintechAst, inferServiceAndTierFromLabel } from "../ast/architectureAst";
 import { estimateCloudArchitectureCost } from "../cost/cloudCostEstimator";
+import {
+  COST_MODEL_ASSUMPTIONS,
+  PRICING_CATALOG,
+  applyCudDiscount,
+  classifyLabelToPricingCategory,
+  costPer10kRequests,
+  formatUsd,
+  unitCostForCategory,
+} from "../cost/unifiedPricing";
+import { generateTerraformBundle } from "../iac/terraformEngine";
 
 export interface LivingSpecDocument {
   id: string;
@@ -15,7 +25,61 @@ export interface LivingSpecDocument {
   };
   markdownContent: string;
   lastUpdated: string;
+  /** True only when the document body was derived from live canvas XML nodes. */
   isSynced: boolean;
+}
+
+/** Where the component inventory that drives the documents actually came from. */
+export type SpecGroundingSource = "canvas-xml" | "ast" | "default-template";
+
+export interface SpecGroundingSummary {
+  source: SpecGroundingSource;
+  componentCount: number;
+  /** Serial-chain availability computed from per-component SLAs (null when none are parseable). */
+  compositeAvailabilityPct: number | null;
+  /** Number of component SLAs that fed the composite figure. */
+  compositeSampleSize: number;
+  /** The SLA target declared in AST metadata (what the PRD promises). */
+  declaredSlaTarget: string;
+  unifiedMonthlyCostUsd: number;
+  costSource: "canvas-xml" | "component-catalog";
+}
+
+type LiveComponent = { name: string; service: string; tier: string; sla: string };
+
+export function parseSlaPercent(sla: string | undefined | null): number | null {
+  if (!sla) return null;
+  const m = String(sla).match(/(\d{2,3}(?:\.\d+)?)\s*%/);
+  if (!m) return null;
+  const v = Number(m[1]);
+  if (!Number.isFinite(v) || v <= 0 || v > 100) return null;
+  return v;
+}
+
+/**
+ * Serial composite availability: the product of each component's availability. Components
+ * that exist to *raise* availability (DR replicas, observability) are excluded because they
+ * are not in the synchronous request path.
+ */
+export function computeCompositeAvailability(components: LiveComponent[]): { pct: number | null; sampleSize: number } {
+  const inPath = components.filter((c) => !/(^|\b)(dr|disaster|standby|observability|monitoring|logging|telemetry)(\b|$)/i.test(`${c.tier} ${c.name}`));
+  const pcts = inPath.map((c) => parseSlaPercent(c.sla)).filter((v): v is number => v !== null);
+  if (pcts.length === 0) return { pct: null, sampleSize: 0 };
+  const product = pcts.reduce((acc, p) => acc * (p / 100), 1);
+  return { pct: Math.round(product * 100 * 10000) / 10000, sampleSize: pcts.length };
+}
+
+export function downtimeMinutesPerYear(slaPct: number | null): number | null {
+  if (slaPct === null) return null;
+  return Math.round((1 - slaPct / 100) * 525_600 * 100) / 100;
+}
+
+function formatDowntime(slaPct: number | null): string {
+  const mins = downtimeMinutesPerYear(slaPct);
+  if (mins === null) return "downtime budget n/a";
+  if (mins < 1) return `< 1 min/yr downtime`;
+  if (mins < 120) return `≈ ${mins.toFixed(2)} mins/yr downtime`;
+  return `≈ ${(mins / 60).toFixed(1)} hrs/yr downtime`;
 }
 
 function inferDomainLabel(projectTitle: string, rawDomain: string): string {
@@ -44,15 +108,19 @@ function inferDomainLabel(projectTitle: string, rawDomain: string): string {
   return 'ENTERPRISE CLOUD & AI ARCHITECTURE';
 }
 
-function extractActiveCanvasComponentTitles(ast: ArchitectureAst, activeXml?: string): Array<{ name: string; service: string; tier: string; sla: string }> {
+function extractActiveCanvasComponentTitles(
+  ast: ArchitectureAst,
+  activeXml?: string
+): { components: LiveComponent[]; source: SpecGroundingSource } {
   const DEFAULT_IDS = new Set([
     'c_armor', 'c_apigee', 'c_gke', 'c_redis', 'c_pubsub', 'c_vertex', 'c_spanner', 'c_bq',
     'comp_armor', 'comp_glb', 'comp_gke', 'comp_spanner', 'comp_pubsub', 'comp_bq', 'comp_kms', 'comp_monitoring', 'comp_dr_gke', 'comp_dr_spanner'
   ]);
   const customAstComps = (ast.components || []).filter((c) => !DEFAULT_IDS.has(c.id));
+  const slaFor = (c: { name: string; sla?: string }) => c.sla || inferServiceAndTierFromLabel(c.name).sla;
 
-  const priorityNodes: Array<{ name: string; service: string; tier: string; sla: string }> = [];
-  const secondaryNodes: Array<{ name: string; service: string; tier: string; sla: string }> = [];
+  const priorityNodes: LiveComponent[] = [];
+  const secondaryNodes: LiveComponent[] = [];
 
   if (activeXml && typeof activeXml === 'string') {
     const valRegex = /<mxCell[^>]*\bvalue="([^"]+)"[^>]*\bvertex="1"/gi;
@@ -118,19 +186,20 @@ function extractActiveCanvasComponentTitles(ast: ArchitectureAst, activeXml?: st
     }
   }
 
-  const combined = [
+  const xmlDerivedCount = priorityNodes.length + secondaryNodes.length;
+  const combined: LiveComponent[] = [
     ...priorityNodes,
     ...customAstComps.map((c) => ({
       name: c.name,
       service: c.service,
       tier: c.tier,
-      sla: c.sla || '99.999%',
+      sla: slaFor(c),
     })),
     ...secondaryNodes,
   ];
 
   if (combined.length > 0) {
-    const unique: Array<{ name: string; service: string; tier: string; sla: string }> = [];
+    const unique: LiveComponent[] = [];
     const seenNames = new Set<string>();
     for (const item of combined) {
       const k = item.name.toLowerCase();
@@ -140,15 +209,47 @@ function extractActiveCanvasComponentTitles(ast: ArchitectureAst, activeXml?: st
       }
       if (unique.length >= 10) break;
     }
-    return unique;
+    return { components: unique, source: xmlDerivedCount > 0 ? 'canvas-xml' : 'ast' };
   }
 
-  return (ast.components || []).slice(0, 8).map((c) => ({
-    name: c.name,
-    service: c.service,
-    tier: c.tier,
-    sla: c.sla || '99.999%',
-  }));
+  return {
+    components: (ast.components || []).slice(0, 8).map((c) => ({
+      name: c.name,
+      service: c.service,
+      tier: c.tier,
+      sla: slaFor(c),
+    })),
+    source: 'default-template',
+  };
+}
+
+/**
+ * Lightweight grounding summary for UI badges — mirrors exactly what the documents were
+ * generated from so the "Synchronized" badge can never claim more than the content delivers.
+ */
+export function summarizeSpecGrounding(rawAst: ArchitectureAst, activeXml?: string): SpecGroundingSummary {
+  const defaultAst = createDefaultFintechAst(rawAst?.metadata?.projectTitle, rawAst?.metadata?.domain);
+  const ast: ArchitectureAst = {
+    metadata: { ...defaultAst.metadata, ...(rawAst?.metadata || {}) },
+    components: Array.isArray(rawAst?.components) && rawAst.components.length > 0 ? rawAst.components : defaultAst.components,
+    connections: Array.isArray(rawAst?.connections) && rawAst.connections.length > 0 ? rawAst.connections : defaultAst.connections,
+  };
+  const { components, source } = extractActiveCanvasComponentTitles(ast, activeXml);
+  const composite = computeCompositeAvailability(components);
+  const costEstimate = estimateCloudArchitectureCost(activeXml || "", ast.metadata.projectTitle);
+  const usingCanvasCost = costEstimate.items.length > 0;
+  const catalogTotal = components
+    .slice(0, 8)
+    .reduce((sum, comp) => sum + unitCostForCategory(classifyLabelToPricingCategory(`${comp.name} ${comp.service}`)), 0);
+  return {
+    source,
+    componentCount: components.length,
+    compositeAvailabilityPct: composite.pct,
+    compositeSampleSize: composite.sampleSize,
+    declaredSlaTarget: ast.metadata.slaTarget,
+    unifiedMonthlyCostUsd: usingCanvasCost ? costEstimate.totalMonthlyCostUsd : catalogTotal,
+    costSource: usingCanvasCost ? "canvas-xml" : "component-catalog",
+  };
 }
 
 export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: string): LivingSpecDocument[] {
@@ -178,52 +279,65 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
   const meta = ast.metadata;
   const drRegion = meta.drRegions[0] || "europe-west1";
   const resolvedDomain = inferDomainLabel(meta.projectTitle, meta.domain);
-  const liveComps = extractActiveCanvasComponentTitles(ast, activeXml);
+  const { components: liveComps, source: groundingSource } = extractActiveCanvasComponentTitles(ast, activeXml);
+  const isCanvasSynced = groundingSource === "canvas-xml";
+  const groundingSentence =
+    groundingSource === "canvas-xml"
+      ? `synchronized with the active architecture canvas (${liveComps.length} live nodes)`
+      : groundingSource === "ast"
+        ? `derived from the architecture AST (${liveComps.length} components) — no canvas XML was supplied`
+        : `generated from the default reference template — no canvas content was available; replace the inventory below with real components`;
+  const composite = computeCompositeAvailability(liveComps);
+  const declaredSlaPct = parseSlaPercent(meta.slaTarget);
+  const compositeBelowDeclared =
+    composite.pct !== null && declaredSlaPct !== null && composite.pct < declaredSlaPct;
   const c0 = liveComps[0]?.name || "Edge Telemetry & API Ingress";
   const c1 = liveComps[1]?.name || "Core Stream Orchestrator";
   const c2 = liveComps[2]?.name || "Real-Time Decision & Policy Gate";
-  const c3 = liveComps[3]?.name || "Gemini 3.1 Pro + 2.5 Flash Reasoning Mesh";
+  const c3 = liveComps[3]?.name || "AI Reasoning & Inference Tier";
   const c4 = liveComps[4]?.name || "Distributed State & Vector Store";
 
-  const projectSlug = (meta.projectTitle || "enterprise-core")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 28) || "enterprise-core";
-  const tfPrefix = projectSlug.replace(/-/g, "_");
-  const primaryComplianceSlug = (meta.compliance[0] || "soc2-type-ii")
-    .toLowerCase()
-    .replace(/[^a-z0-9.-]+/g, "-");
   const isFintechDomain = resolvedDomain === "FINANCIAL SERVICES & BANKING";
   const primaryTableName = isFintechDomain ? "Accounts" : "DomainEntities";
   const primaryKeyCol = isFintechDomain ? "AccountId" : "EntityId";
   const secondaryTableName = isFintechDomain ? "PaymentTransactions" : "DomainExecutionLedger";
   const secondaryKeyCol = isFintechDomain ? "TransactionId" : "ExecutionId";
 
+  // Unified pricing: canvas-derived estimate when XML is present, otherwise the same
+  // per-category catalog the Cost overlay and Terraform static analysis use. No magic numbers.
   const costEstimate = estimateCloudArchitectureCost(activeXml || "", meta.projectTitle);
-  const finopsRows =
-    costEstimate.items.length > 0
-      ? costEstimate.items
-          .slice(0, 8)
-          .map((item) => {
-            const cudCost = (item.totalMonthlyCostUsd * 0.68).toFixed(2);
-            const per10k = (item.totalMonthlyCostUsd / 75000).toFixed(3);
-            return `| **${item.resourceName}** (${item.category}) | ${item.pricingTierDescription} | $${item.totalMonthlyCostUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} | $${Number(cudCost).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (32% CUD) | $${per10k} |`;
-          })
-          .join("\n")
-      : liveComps
-          .slice(0, 5)
-          .map((comp, idx) => {
-            const listUsd = [1850, 1420, 1150, 980, 640][idx] || 750;
-            const cudUsd = (listUsd * 0.68).toFixed(2);
-            const per10k = (listUsd / 75000).toFixed(3);
-            return `| **${comp.name}** | ${comp.service} (${comp.tier.toUpperCase()}) | $${listUsd.toLocaleString("en-US", { minimumFractionDigits: 2 })} | $${Number(cudUsd).toLocaleString("en-US", { minimumFractionDigits: 2 })} (32% CUD) | $${per10k} |`;
-          })
-          .join("\n");
-  const totalMonthlyUsd =
-    costEstimate.items.length > 0 ? costEstimate.totalMonthlyCostUsd : 6040;
-  const totalCudUsd = Math.round(totalMonthlyUsd * 0.68 * 100) / 100;
-  const totalPer10k = (totalMonthlyUsd / 75000).toFixed(3);
+  const usingCanvasCost = costEstimate.items.length > 0;
+  const cudPct = COST_MODEL_ASSUMPTIONS.cudDiscountPct;
+  const requestBaselineLabel = COST_MODEL_ASSUMPTIONS.monthlyRequestBaseline.toLocaleString("en-US");
+  const catalogFallbackItems = liveComps.slice(0, 8).map((comp) => {
+    const categoryId = classifyLabelToPricingCategory(`${comp.name} ${comp.service}`);
+    return {
+      name: comp.name,
+      sizing: `${comp.service} (${comp.tier.toUpperCase()}) — ${PRICING_CATALOG[categoryId].label}`,
+      listUsd: unitCostForCategory(categoryId),
+    };
+  });
+  const finopsRows = usingCanvasCost
+    ? costEstimate.items
+        .slice(0, 8)
+        .map((item) =>
+          `| **${item.resourceName}** (${item.category}) | ${item.pricingTierDescription} | ${formatUsd(item.totalMonthlyCostUsd)} | ${formatUsd(applyCudDiscount(item.totalMonthlyCostUsd))} (${cudPct}% CUD) | $${costPer10kRequests(item.totalMonthlyCostUsd).toFixed(3)} |`
+        )
+        .join("\n")
+    : catalogFallbackItems
+        .map((row) =>
+          `| **${row.name}** | ${row.sizing} | ${formatUsd(row.listUsd)} | ${formatUsd(applyCudDiscount(row.listUsd))} (${cudPct}% CUD) | $${costPer10kRequests(row.listUsd).toFixed(3)} |`
+        )
+        .join("\n");
+  const totalMonthlyUsd = usingCanvasCost
+    ? costEstimate.totalMonthlyCostUsd
+    : catalogFallbackItems.reduce((sum, row) => sum + row.listUsd, 0);
+  const totalCudUsd = applyCudDiscount(totalMonthlyUsd);
+  const totalPer10k = costPer10kRequests(totalMonthlyUsd).toFixed(3);
+  const billableTierCount = usingCanvasCost ? costEstimate.items.length : catalogFallbackItems.length;
+
+  // DOC-08 embeds the same canvas-grounded HCL the Terraform IaC Inspector renders.
+  const terraformBundle = generateTerraformBundle(meta.projectTitle, "", meta.domain, "gcp", activeXml);
 
   const migrationWaveRows = liveComps
     .slice(0, 6)
@@ -258,17 +372,24 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
       category: "product",
       description: `Business requirements, synchronized canvas components, functional constraints, and KPIs for ${meta.projectTitle}.`,
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# Product Requirements Document (PRD)",
         "",
         "> [!NOTE]",
-        "> This document serves as the authoritative product specification for **" + meta.projectTitle + "** (**" + resolvedDomain + "**), dynamically synchronized with the active architecture canvas and defining business objectives, latency boundaries, regulatory compliance, and functional requirements.",
+        "> This document serves as the authoritative product specification for **" + meta.projectTitle + "** (**" + resolvedDomain + "**), " + groundingSentence + ", and defines business objectives, latency boundaries, regulatory compliance, and functional requirements.",
         "",
+        ...(compositeBelowDeclared
+          ? [
+              "> [!WARNING]",
+              "> The declared availability target is **" + meta.slaTarget + "**, but the serial composite of the " + composite.sampleSize + " in-path component SLAs is **" + composite.pct!.toFixed(4) + "%** (" + formatDowntime(composite.pct) + "). Either raise component tiers / add redundancy, or lower the declared target before sign-off.",
+              "",
+            ]
+          : []),
         "## 1.0 Executive Problem Statement & Architecture Scope",
         "Mission-critical **" + resolvedDomain + "** workloads for **" + meta.projectTitle + "** require continuous high-throughput orchestration across **" + c0 + "**, **" + c1 + "**, and **" + c2 + "** with strict **" + meta.slaTarget + " availability** and zero data loss (**RPO = " + meta.targetRpo + "**). The platform unifies edge ingestion, real-time event streaming, and **Gemini 3.1 Pro + Gemini 2.5 Flash** grounded inference into an integrated, Zero-Trust ecosystem.",
         "",
-        "## 1.5 Live Synchronized Canvas Component Inventory",
+        "## 1.5 " + (isCanvasSynced ? "Live Synchronized Canvas Component Inventory" : "Component Inventory (" + (groundingSource === "ast" ? "from architecture AST" : "default reference template") + ")"),
         "| Component ID | Active Canvas Node / Subsystem | Cloud Backing Service | Architectural Tier | Target SLA |",
         "| :--- | :--- | :--- | :--- | :--- |",
         liveInventoryRows,
@@ -276,16 +397,21 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         "## 2.0 Key Performance Indicators (KPIs) & SLA Targets",
         "| Metric Category | Target KPI | Verification Mechanism | Incident Severity |",
         "| :--- | :--- | :--- | :--- |",
-        "| **System Availability** | **" + meta.slaTarget + "** (< 5.26 mins/yr downtime) | Multi-Region Active-Active Dual-Hub (" + drRegion + ") | P1 Executive Escalation |",
+        "| **Declared System Availability** | **" + meta.slaTarget + "** (" + formatDowntime(declaredSlaPct) + ") | " + (meta.drRegions.length > 0 ? "Multi-region failover to " + drRegion : "Single-region deployment (no DR region declared)") + " | P1 Executive Escalation |",
+        ...(composite.pct !== null
+          ? [
+              "| **Composite Availability (serial, computed)** | **" + composite.pct.toFixed(4) + "%** (" + formatDowntime(composite.pct) + ") across " + composite.sampleSize + " in-path components | Product of per-component SLAs in §1.5 — " + (compositeBelowDeclared ? "⚠ below declared target" : "meets declared target") + " | " + (compositeBelowDeclared ? "Design gap — resolve before sign-off" : "Informational") + " |",
+            ]
+          : []),
         "| **End-to-End Latency** | **p95 < 25ms • p99 < 50ms** | " + c0 + " + Memorystore Redis 7.2 + ScaNN Index | P2 SRE Alert Threshold |",
         "| **Data Recovery Point** | **" + meta.targetRpo + " (Zero Data Loss)** | Cloud Spanner TrueTime Multi-Region Commit | P1 Regulatory Breach |",
         "| **Failover Recovery** | **" + meta.targetRto + "** | Automated Cloud DNS Healthcheck & Witness Quorum | P1 SLA Violation |",
-        "| **AI Inference Precision**| **> 99.8% Precision @ < 20ms** | Vertex AI Gemini 2.5 Flash + Gemini 3.1 Pro Multimodal Audit | Automated Fallback |",
+        "| **AI Inference Precision**| **> 99.8% Precision @ < 20ms** | Vertex AI Gemini 3.8 Flash + Gemini 3.1 Pro Multimodal Audit | Automated Fallback |",
         "",
         "## 3.0 Functional Requirements (FR)",
         "* **FR-101 (Deterministic Ingress & Telemetry)**: Every incoming payload across **" + c0 + "** must supply an idempotent UUIDv4 token cached in Redis 7.2 for 86,400s to guarantee exactly-once processing under high concurrency.",
         "* **FR-102 (Zero-Cleartext Perimeter)**: Sensitive credentials, telemetry secrets, and regulated payloads traversing **" + c1 + "** must be tokenized at edge ingress via Cloud KMS HSM; cleartext secrets must never touch unencrypted storage.",
-        "* **FR-103 (Sub-20ms AI Grounding)**: Domain payloads in **" + c2 + "** must be vectorized into 768-dimensional `text-embedding-004` embeddings and evaluated by **Gemini 2.5 Flash** (`gemini-2.5-flash`) and **Gemini 3.1 Pro** (`gemini-3.1-pro-preview`) in under 20ms.",
+        "* **FR-103 (Sub-20ms AI Grounding)**: Domain payloads in **" + c2 + "** must be vectorized with `gemini-embedding-001` (3072-dim, Matryoshka-truncatable to 768) and evaluated by **Gemini 3.8 Flash** (`gemini-3.8-flash`) and **Gemini 3.1 Pro** (`gemini-3.1-pro-preview`) in under 20ms.",
         "* **FR-104 (Distributed ACID Consistency)**: State transitions across **" + c4 + "** must execute as two-phase ACID commits in Cloud Spanner, with continuous Change-Data-Capture (CDC) streamed to BigQuery Lakehouse for real-time auditability.",
         "* **FR-105 (Multi-Region Disaster Recovery)**: System state must continuously replicate between primary region (" + meta.primaryRegion + ") and standby region (" + drRegion + ") with automated health-check failover.",
         "* **FR-106 (Zero-Trust Identity Federation)**: All inter-service communications must enforce short-lived (3600s) SPIFFE/OIDC tokens via Workload Identity Federation without static API keys.",
@@ -312,7 +438,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
       category: "product",
       description: `Business logic rules, state machine transitions, and interactive workflows for ${meta.projectTitle}.`,
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# Functional Design Document (FDD)",
         "",
@@ -350,7 +476,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         diagramType: "topology"
       },
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# High-Level Architecture Design (HLD)",
         "",
@@ -388,7 +514,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         diagramType: "sequence"
       },
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# Low-Level Technical Design (LLD)",
         "",
@@ -416,7 +542,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
       category: "engineering",
       description: `Distributed SQL DDL definitions, interleaved schemas, and indexing strategies for ${meta.projectTitle}.`,
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# Data Architecture & Database Schemas (" + meta.projectTitle + ")",
         "",
@@ -442,7 +568,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         "  " + primaryKeyCol + " STRING(36) NOT NULL,",
         "  " + secondaryKeyCol + " STRING(64) NOT NULL,",
         "  OrchestratorNode STRING(128) NOT NULL DEFAULT ('" + c2.replace(/'/g, "") + "'),",
-        "  ReasoningModel STRING(64) NOT NULL DEFAULT ('gemini-2.5-flash'),",
+        "  ReasoningModel STRING(64) NOT NULL DEFAULT ('gemini-3.8-flash'),",
         "  ConfidenceScore FLOAT64,",
         "  PolicyDecision STRING(24) NOT NULL,",
         "  PayloadHash STRING(64) NOT NULL,",
@@ -475,7 +601,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         diagramType: "security"
       },
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# Threat Model & Security Architecture (STRIDE)",
         "",
@@ -504,17 +630,17 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
       category: "architecture",
       description: "Model provenance, RAG Triad benchmark metrics, and prompt safety guardrails.",
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# AI System Card & Cognitive Architecture Spec",
         "",
         "## 1.0 Foundation Model Provenance & 5-Tier Routing",
-        "* **Tier 0 Multimodal Certification Gate**: **Gemini 3.1 Pro** (`gemini-3.1-pro-preview` — 6-Audit Visual & Structural Judge).",
-        "* **Tier 1 Deep Reasoning & Architecture Synthesis**: **Gemini 3.1 Pro** (`gemini-3.1-pro-preview` — Deep ReAct Planning, Tool Calling AST, 2M context window) & **Gemini 2.5 Pro** (`gemini-2.5-pro`).",
-        "* **Tier 2 High-Speed Interactive Copilot**: **Gemini 2.5 Flash** (`gemini-2.5-flash` — Sub-second Hybrid Reasoning & Intent Routing).",
-        "* **Tier 3 Real-Time Bidirectional Voice/Video**: **Gemini 2.5 Flash Live** (`gemini-2.5-flash`).",
-        "* **Tier 4 Multimodal Media Synthesis**: **Veo 2** (`veo-2.0-generate-001`), **Lyria 002** (`lyria-002`), **Imagen 3** (`imagen-3.0-generate-002`), **Cloud TTS** (`en-US-Journey-D`).",
-        "* **Embedding Model**: **text-embedding-004** (768-dimensional normalized dense vectors).",
+        "* **Tier 0 Multimodal Certification Gate**: **Google Omni 1.1** (`google-omni-1.1` — 6-Audit Visual & Structural Judge).",
+        "* **Tier 1 Deep Reasoning & Architecture Synthesis**: **Gemini 3.1 Pro** (`gemini-3.1-pro-preview` — Deep ReAct Planning, Tool Calling AST, 2M context window).",
+        "* **Tier 2 High-Speed Interactive Copilot**: **Gemini 3.8 Flash** (`gemini-3.8-flash` — Sub-second Hybrid Reasoning & Intent Routing).",
+        "* **Tier 3 Real-Time Bidirectional Voice/Video**: **Gemini 3.1 Flash Live** (`gemini-3.1-flash-live-preview`).",
+        "* **Tier 4 Multimodal Media Synthesis**: **Veo 3.1** (`veo-3.1-generate-preview`), **Lyria 3.5** (`lyria-3.5`), **Gemini 3.1 Flash Image** (`gemini-3.1-flash-image-preview`), **Gemini 3.1 Flash TTS** (`gemini-3.1-flash-tts-preview`).",
+        "* **Embedding Model**: **text-embedding-005** & **gemini-embedding-001** (3072-dimensional; Matryoshka-truncatable to 1536 / 768 for ScaNN index sizing).",
         "",
         "## 2.0 RAG Triad Evaluation Benchmarks",
         "| Evaluation Metric | Target Benchmark | Measured Production Score | Enforcement Mechanism |",
@@ -536,55 +662,32 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
       category: "engineering",
       description: `Declarative Terraform modules synchronized with ${meta.projectTitle} canvas components.`,
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# Infrastructure as Code (Terraform HCL — " + meta.projectTitle + ")",
         "",
+        "> [!NOTE]",
+        "> " +
+          (terraformBundle.groundingSource === "canvas-xml"
+            ? "Generated from the live canvas: **" + terraformBundle.mappedNodeCount + "/" + terraformBundle.canvasNodeCount + " nodes** mapped to " + terraformBundle.resourcesCount + " " + terraformBundle.cloudProvider.toUpperCase() + " resources."
+            : "No canvas XML was supplied — this is the **baseline reference template** (" + terraformBundle.resourcesCount + " resources). Open the project canvas to regenerate a grounded bundle.") +
+          " Offline static analysis only; run `terraform validate` / `terraform plan` in CI before `apply`. The full bundle (variables.tf, outputs.tf, terraform.tfvars, k8s manifest) is available in the Terraform IaC Inspector.",
+        ...(terraformBundle.unmappedNodeLabels.length > 0
+          ? [
+              "",
+              "> [!WARNING]",
+              "> " + terraformBundle.unmappedNodeLabels.length + " canvas node(s) had no Terraform mapping and are **not** represented below: " + terraformBundle.unmappedNodeLabels.slice(0, 8).map((l) => "`" + l.replace(/`/g, "'") + "`").join(", ") + (terraformBundle.unmappedNodeLabels.length > 8 ? ", …" : "") + ".",
+            ]
+          : []),
+        "",
+        "## 1.0 provider.tf",
         String.fromCharCode(96, 96, 96) + "hcl",
-        "# Primary Multi-Region State & Ledger Instance (" + c4 + ")",
-        "resource \"google_spanner_instance\" \"" + tfPrefix + "_state\" {",
-        "  name         = \"spanner-" + projectSlug + "-prod\"",
-        "  config       = \"nam-eur-dual1\"",
-        "  display_name = \"" + meta.projectTitle.replace(/"/g, "") + " State Cluster\"",
-        "  num_nodes    = 3",
+        terraformBundle.providerTf.trimEnd(),
+        String.fromCharCode(96, 96, 96),
         "",
-        "  labels = {",
-        "    environment = \"production\"",
-        "    domain      = \"" + projectSlug + "\"",
-        "    compliance  = \"" + primaryComplianceSlug + "\"",
-        "    primary_reg = \"" + meta.primaryRegion + "\"",
-        "  }",
-        "}",
-        "",
-        "# Primary Orchestration Runtime (" + c1 + " / " + c2 + ")",
-        "resource \"google_container_cluster\" \"" + tfPrefix + "_orchestrator\" {",
-        "  name             = \"gke-" + projectSlug + "-" + meta.primaryRegion + "\"",
-        "  location         = \"" + meta.primaryRegion + "\"",
-        "  enable_autopilot = true",
-        "}",
-        "",
-        "# Cloud Armor Enterprise Security Policy (" + c0 + ")",
-        "resource \"google_compute_security_policy\" \"" + tfPrefix + "_armor_waf\" {",
-        "  name        = \"sp-" + projectSlug + "-armor-waf\"",
-        "  description = \"Enterprise WAF Rule Set for " + meta.projectTitle.replace(/"/g, "") + " (" + c0.replace(/"/g, "") + ")\"",
-        "",
-        "  rule {",
-        "    action   = \"rate_based_ban\"",
-        "    priority = 1000",
-        "    match {",
-        "      versioned_expr = \"SRC_IPS_V1\"",
-        "      config { src_ip_ranges = [\"*\"] }",
-        "    }",
-        "    rate_limit_options {",
-        "      conform_action = \"allow\"",
-        "      exceed_action  = \"deny(429)\"",
-        "      rate_limit_threshold {",
-        "        count        = 1000",
-        "        interval_sec = 60",
-        "      }",
-        "    }",
-        "  }",
-        "}",
+        "## 2.0 main.tf",
+        String.fromCharCode(96, 96, 96) + "hcl",
+        terraformBundle.mainTf.trimEnd(),
         String.fromCharCode(96, 96, 96),
         "",
         "---"
@@ -605,7 +708,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         diagramType: "dr"
       },
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# Business Continuity & Disaster Recovery Plan",
         "",
@@ -637,7 +740,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
       category: "operations",
       description: "GitOps deployment pipelines, progressive canary rollouts, and rollback playbooks.",
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# Software Delivery & GitOps CI/CD Specification",
         "",
@@ -660,7 +763,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
       category: "operations",
       description: "SLOs/SLIs, error budget policies, OpenTelemetry distributed tracing, and PromQL rules.",
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# SRE & Telemetry Specification",
         "",
@@ -684,7 +787,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
       category: "architecture",
       description: `Workload modernization matrix and wave cutover planning synchronized with ${meta.projectTitle}.`,
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# Cloud Migration & Modernization Strategy (6-Rs — " + meta.projectTitle + ")",
         "",
@@ -705,7 +808,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
       category: "operations",
       description: "Minute-by-minute execution steps for launch, war room operations, and rollback gates.",
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# Production Go-Live & Cutover War Runbook",
         "",
@@ -730,18 +833,22 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
       category: "governance",
       description: `Live monthly bill of materials (BOM), committed use discounts, and unit economics for ${meta.projectTitle}.`,
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# Cloud FinOps & Unit Economics Cost Model (" + meta.projectTitle + ")",
         "",
         "> [!NOTE]",
-        "> Dynamically calculated from active diagram nodes using the Cloud FinOps Cost Estimator (**" + costEstimate.provider + "** pricing catalog).",
+        "> " +
+          (usingCanvasCost
+            ? "Calculated from **" + costEstimate.items.length + " active canvas nodes** via the unified pricing catalog (**" + costEstimate.provider + "**)."
+            : "No priced canvas nodes were detected — rows below use the **per-category catalog fallback** for the " + catalogFallbackItems.length + " inventory components.") +
+          " Pricing basis: " + COST_MODEL_ASSUMPTIONS.pricingBasis + ". Unit economics assume **" + requestBaselineLabel + " requests / month**; CUD column assumes a **" + cudPct + "%** 3-year commitment discount. This is the same catalog used by the Cost overlay and the Terraform static analysis, so the three figures reconcile.",
         "",
         "## 1.0 Monthly Bill of Materials (BOM) Breakdown",
-        "| Active Component / Service | Sizing / Allocation | Monthly List Cost | 3-Year CUD Cost | Cost per 10k Operations |",
+        "| Active Component / Service | Sizing / Allocation | Monthly List Cost | 3-Year CUD Cost | Cost per 10k Requests (@ " + requestBaselineLabel + "/mo) |",
         "| :--- | :--- | :--- | :--- | :--- |",
         finopsRows,
-        "| **TOTAL MONTHLY SPEND** | **" + (costEstimate.items.length || liveComps.length) + " Billable Tiers** | **$" + totalMonthlyUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "** | **$" + totalCudUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " (32.0% savings)** | **$" + totalPer10k + " / 10k Ops** |",
+        "| **TOTAL MONTHLY SPEND** | **" + billableTierCount + " Billable Tiers** | **" + formatUsd(totalMonthlyUsd) + "** | **" + formatUsd(totalCudUsd) + " (" + cudPct + "% savings)** | **$" + totalPer10k + " / 10k requests** |",
         "",
         "---"
       ].join("\n")
@@ -755,7 +862,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
       category: "governance",
       description: "21 CFR Part 11 electronic records, HIPAA audit trails, and sovereign cloud controls.",
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# Regulatory Compliance & GxP / HIPAA Validation Pack",
         "",
@@ -782,7 +889,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
       category: "governance",
       description: "Formal record of architectural trade-offs, technology evaluations, and approved decision rationale.",
       lastUpdated: meta.lastSyncTimestamp,
-      isSynced: true,
+      isSynced: isCanvasSynced,
       markdownContent: [
         "# Architecture Decision Record (ADR) Log",
         "",
@@ -796,7 +903,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         `* **Status**: APPROVED (${new Date().toISOString().split('T')[0]})`,
         "* **Context**: Low-latency inference, vector indexing, and analytical telemetry required across production workloads.",
         "* **Decision**: Deploy managed cloud analytics and AI endpoints with strict schema validation and VPC perimeter controls.",
-        "* **Consequences**: Sub-10ms p99 retrieval latency and seamless integration with Gemini 2.5 Flash and Gemini 3.1 Pro reasoning pipelines.",
+        "* **Consequences**: Sub-10ms p99 retrieval latency and seamless integration with Gemini 3.8 Flash and Gemini 3.1 Pro reasoning pipelines.",
         "",
         "---"
       ].join("\n")

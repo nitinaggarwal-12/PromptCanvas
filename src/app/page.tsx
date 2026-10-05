@@ -36,8 +36,7 @@ import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 export default function LandingPage() {
   const router = useRouter();
   const { theme } = useTheme();
-  // Landing page is strictly all dark theme as requested
-  const isLight = false;
+  const isLight = theme === 'light';
   const [user, setUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -174,7 +173,7 @@ export default function LandingPage() {
               <span>Playbooks &amp; GIFs</span>
             </Link>
 
-            <Link href="/test-status" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-emerald-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="Enterprise Quality & Test Status (2,359 Tests Passed)">
+            <Link href="/test-status" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-emerald-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="Enterprise Quality & Test Status (285 Tests Passed across 37 Suites)">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" aria-hidden="true" />
               <span>Test Status</span>
               <span className="px-1.5 py-0.2 rounded text-[10px] bg-emerald-500/20 text-emerald-400 font-mono font-bold">100%</span>
@@ -266,12 +265,52 @@ export default function LandingPage() {
                 How It Works
               </a>
               <Link 
+                href="/studio" 
+                onClick={() => setIsMobileNavOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-800 text-teal-400 font-bold flex items-center justify-between"
+              >
+                <span>Architecture Studio</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-teal-500/20 text-teal-300">Live Canvas</span>
+              </Link>
+              <Link 
                 href="/canonical" 
                 onClick={() => setIsMobileNavOpen(false)}
                 className="p-2 rounded-lg hover:bg-slate-800 text-sky-400 font-bold flex items-center justify-between"
               >
-                <span>Canonical Architecture Hub</span>
-                <span className="px-2 py-0.5 rounded-full text-xs bg-sky-500/20 text-sky-300">34 Schemas</span>
+                <span>Blueprint Catalog</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-sky-500/20 text-sky-300">77 Blueprints</span>
+              </Link>
+              <Link 
+                href="/docgen" 
+                onClick={() => setIsMobileNavOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-800 text-indigo-400 font-bold flex items-center justify-between"
+              >
+                <span>Document Studio</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-indigo-500/20 text-indigo-300">17 Archetypes</span>
+              </Link>
+              <Link 
+                href="/vision" 
+                onClick={() => setIsMobileNavOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-800 text-purple-400 font-bold flex items-center justify-between"
+              >
+                <span>Image to Diagram</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-purple-500/20 text-purple-300">Decompiler</span>
+              </Link>
+              <Link 
+                href="/library" 
+                onClick={() => setIsMobileNavOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-800 text-emerald-400 font-bold flex items-center justify-between"
+              >
+                <span>Master Library</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-emerald-500/20 text-emerald-300">Cloud Hub</span>
+              </Link>
+              <Link 
+                href="/audit" 
+                onClick={() => setIsMobileNavOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-800 text-amber-400 font-bold flex items-center justify-between"
+              >
+                <span>Forensic Audit</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-amber-500/20 text-amber-300">Compliance</span>
               </Link>
               <Link 
                 href="/guide" 
@@ -280,14 +319,6 @@ export default function LandingPage() {
               >
                 <span>User Guide &amp; GIFs</span>
                 <span className="px-2 py-0.5 rounded-full text-xs bg-teal-500/20 text-teal-300">Playbooks</span>
-              </Link>
-              <Link 
-                href="/canonical" 
-                onClick={() => setIsMobileNavOpen(false)}
-                className="p-2 rounded-lg hover:bg-slate-800 text-teal-400 font-bold flex items-center justify-between"
-              >
-                <span>Templates Matrix</span>
-                <span className="px-2 py-0.5 rounded-full text-xs bg-teal-500/20 text-teal-300">50 Blueprints</span>
               </Link>
               <a 
                 href="#value" 
@@ -324,7 +355,7 @@ export default function LandingPage() {
       <section className="relative w-full max-w-8xl mx-auto px-4 sm:px-6 md:px-12 pt-8 sm:pt-12 md:pt-20 pb-16 md:pb-20 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-center z-10">
         <div className="lg:col-span-7 flex flex-col items-start text-left space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-600 dark:text-teal-300 text-sm font-semibold tracking-wide animate-pulse">
-            <Sparkles className="w-4 h-4" aria-hidden="true" /> Powered by Gemini 2.5 Flash &amp; Draw.io
+            <Sparkles className="w-4 h-4" aria-hidden="true" /> Powered by Gemini 3.1 Pro, 3.8 Flash &amp; Draw.io
           </div>
           
           <h1 className={`text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] ${isLight ? 'text-slate-900' : 'text-white'}`}>
@@ -513,7 +544,7 @@ export default function LandingPage() {
             </div>
             <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Ready-To-Go Templates</h4>
             <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-              Launch with 10 production-grade blueprints (Data Lakehouse, AWS EKS Microservices, RAG/Gemini AI pipelines, VPC networks) to instantly experiment and validate stacks.
+              Launch with 77 production-grade blueprints (Data Lakehouse, AWS EKS Microservices, RAG/Gemini AI pipelines, VPC networks) to instantly experiment and validate stacks.
             </p>
           </div>
 
@@ -580,14 +611,14 @@ export default function LandingPage() {
             Bootstrap with Production-Grade Blueprints
           </h3>
           <p className={`text-lg mt-4 max-w-2xl mx-auto ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-            Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>50 complete multi-cloud reference blueprints</strong> directly in the interactive studio.
+            Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>77 complete multi-cloud reference blueprints</strong> directly in the interactive studio.
           </p>
           <div className="mt-4">
             <Link
               href="/canonical"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>View All 50 Production Blueprints in Templates Gallery →</span>
+              <span>View All 77 Production Blueprints in Templates Gallery →</span>
             </Link>
           </div>
         </div>
@@ -610,7 +641,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/studio"
+              href="/studio?blueprint=24"
               aria-label="Launch Vertex AI RAG blueprint in Studio"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
@@ -636,7 +667,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/studio"
+              href="/studio?blueprint=16"
               aria-label="Launch Kubernetes EKS Microservices blueprint in Studio"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-300 hover:text-indigo-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
@@ -662,7 +693,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/studio"
+              href="/studio?blueprint=15"
               aria-label="Launch Serverless Web Application blueprint in Studio"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-300 hover:text-purple-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
@@ -688,7 +719,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/studio"
+              href="/studio?blueprint=09"
               aria-label="Launch Modern AWS Data Lakehouse blueprint in Studio"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
@@ -714,7 +745,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/studio"
+              href="/studio?blueprint=29"
               aria-label="Launch Real-time Streaming Analytics blueprint in Studio"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-300 hover:text-indigo-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
@@ -740,7 +771,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/studio"
+              href="/studio?blueprint=06"
               aria-label="Launch Event-Driven Microservices blueprint in Studio"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-300 hover:text-purple-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
@@ -785,7 +816,7 @@ export default function LandingPage() {
               </div>
               <h4 className={`font-bold text-xl md:text-2xl ${isLight ? 'text-slate-900' : 'text-white'}`}>Gemini Generates XML</h4>
               <p className={`text-base max-w-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                Our backend compiler calls Gemini 2.5 Flash, generating a valid XML diagram with sequential node numbering, structured tiers, and descriptive connections.
+                Our backend compiler calls Gemini 3.8 Flash &amp; 3.1 Pro, generating a valid XML diagram with sequential node numbering, structured tiers, and descriptive connections.
               </p>
             </div>
 
@@ -851,7 +882,7 @@ export default function LandingPage() {
           <div className="flex flex-wrap gap-6 text-sm text-slate-300">
             <Link href="/test-status" className="hover:text-emerald-400 hover:underline underline-offset-4 transition-colors flex items-center gap-1.5 font-bold text-emerald-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
-              <span>Test Status (2,359 Passed)</span>
+              <span>Test Status (285 Passed)</span>
             </Link>
             <Link href="/privacy" className="hover:text-teal-400 hover:underline underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-teal-400 hover:underline underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded">Terms of Service</Link>

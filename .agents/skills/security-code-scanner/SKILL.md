@@ -10,7 +10,7 @@ This skill performs automated Static Application Security Testing (SAST) to dete
 ## 1. SAST Audit Protocols
 
 1. **Dependency Audit**: Run `npm audit --json` to detect known high or critical CVEs in `node_modules`.
-2. **SVG XSS Sanitization Audit**: Verify that user-controlled XML/SVG tags rendered in `DiagramViewer.tsx` or iframe bridges pass through sanitization (`DOMPurify` or safe text node creation).
+2. **SVG XSS Sanitization Audit**: Verify that user-controlled XML/SVG tags rendered in `DiagramViewerRenderSafe.tsx` or iframe bridges pass through sanitization (`DOMPurify` or safe text node creation).
 3. **Secret Leak Detection**: Check for hardcoded API keys, JWT secrets, or un-hashed database credentials in `src/` files.
 
 ## 2. Automated SAST Audit Runner (`scratch/run_security_sast.js`)
@@ -80,15 +80,15 @@ You are configured to work on this repository with strict architectural and depl
 6. **Deployment Target:**
 * When running deployment commands, strictly target:
 * Platform: Google Cloud Run
-* Project ID: `nitina-ggarwal-sandbox-647724`
-* Region: `us-east4`
+* Project ID: `ramp-portal-dev` (Project Number `248990048888`)
+* Region: `us-west1`
+* Canonical BeyondCorp URL: `https://promptcanvas-248990048888.cr.gclb.goog`
 * Command pattern:
 ```bash
 gcloud run deploy promptcanvas \
   --source . \
-  --project nitina-ggarwal-sandbox-647724 \
-  --region us-east4 \
-  --platform managed \
-  --allow-unauthenticated
+  --project ramp-portal-dev \
+  --region us-west1 \
+  --platform managed
 ```
 

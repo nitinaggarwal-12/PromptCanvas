@@ -137,21 +137,24 @@ All development follows a strict 3-step sequence:
 │  • git commit -m "feat/fix: ..."       │
 │  • Immediately execute:                │
 │    git push origin main                │
-│  • 1-minute Railway deployment loop    │
+│  • Cloud Run / BeyondCorp verification │
 └────────────────────────────────────────┘
 ```
 
 ---
 
-## 5. Post-Push Railway Deployment Monitoring
+## 5. Post-Push Cloud Run & BeyondCorp Deployment Verification
 
-Whenever code is pushed to `origin/main`, execute an automated background monitoring loop:
-1. **Bypass Local Railway CLI**: Avoid running the raw `railway` binary locally on macOS.
-2. **1-Minute Polling Cadence**: Poll the live endpoint at 1-minute intervals:
+Whenever code is pushed to `origin/main` and deployed to Google Cloud Run (`ramp-portal-dev`, `us-west1`), execute verification against the canonical BeyondCorp URL:
+1. **Deploy to Cloud Run**:
    ```bash
-   curl -sI https://promptcanvas.up.railway.app
+   gcloud run deploy promptcanvas --source . --project ramp-portal-dev --region us-west1 --platform managed
    ```
-3. **Independent String Verification**: Perform an HTTP request (`curl -s https://promptcanvas.up.railway.app`) searching the delivered HTML/JS asset for a **unique string literal** present only in the new commit to confirm CDN cache invalidation before reporting completion.
+2. **Health & Endpoint Verification**: Poll the canonical BeyondCorp endpoint:
+   ```bash
+   curl -sI https://promptcanvas-248990048888.cr.gclb.goog
+   ```
+3. **Independent String Verification**: Verify the active Cloud Run revision and HTTP response before reporting completion.
 
 ---
 

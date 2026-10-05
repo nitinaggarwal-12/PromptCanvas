@@ -14,9 +14,9 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: 'dark',
-  isLight: false,
-  isDark: true,
+  theme: 'light',
+  isLight: true,
+  isDark: false,
   setTheme: () => {},
   toggleTheme: () => {},
 });
@@ -25,25 +25,27 @@ function applyThemeToDocument(newTheme: ThemeMode) {
   if (typeof document !== 'undefined') {
     const root = document.documentElement;
     root.setAttribute('data-theme', newTheme);
-    // The design specification mandates:
-    // Only the left menu and topmost header are dark. All pages and tabs are light theme (matching Image 2).
-    // We avoid applying global `.dark` to <html> so child content cards retain crisp light styling.
-    root.classList.remove('dark');
-    root.classList.add('light');
+    if (newTheme === 'dark') {
+      root.classList.remove('light');
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+      root.classList.add('light');
+    }
   }
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Hydration-safe: 'dark' is rendered on the server and during hydration, then the
+  // Hydration-safe: 'light' is rendered on the server and during hydration, then the
   // persisted preference is applied in a pre-paint layout effect.
-  const [theme, setThemeState] = useHydratedState<ThemeMode>('dark', () => {
+  const [theme, setThemeState] = useHydratedState<ThemeMode>('light', () => {
     try {
       const savedTheme = localStorage.getItem('promptcanvas_theme') as ThemeMode;
       if (savedTheme === 'light' || savedTheme === 'dark') {
         return savedTheme;
       }
     } catch {}
-    return 'dark';
+    return 'light';
   });
 
   useEffect(() => {

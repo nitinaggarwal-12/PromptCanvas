@@ -47,7 +47,7 @@ export const EXTENDED_PROMPT_LIBRARY: PromptOption[] = [
   {
     id: 'bio-1',
     label: 'FDA 21 CFR Part 11 Adverse Event Triage',
-    prompt: 'Automated pharmacovigilance adverse event triage with Gemini 2.5 Flash reasoning, GxP audit ledgers, and human-in-the-loop safety board review.',
+    prompt: 'Automated pharmacovigilance adverse event triage with Gemini 3.8 Flash reasoning, GxP audit ledgers, and human-in-the-loop safety board review.',
     domainId: 'biopharma',
     domainName: 'Bio-Pharma Precision Oncology',
     category: 'Life Sciences',
@@ -229,12 +229,12 @@ export const EXTENDED_PROMPT_LIBRARY: PromptOption[] = [
   {
     id: 'ai-1',
     label: 'Vertex AI Multi-Agent Cognitive Swarm',
-    prompt: 'Multi-agent ReAct orchestration platform with Gemini 2.5 Flash, Tool-use protocols, Redis semantic cache, and ScaNN vector grounding.',
+    prompt: 'Multi-agent ReAct orchestration platform with Gemini 3.8 Flash, Tool-use protocols, Redis semantic cache, and ScaNN vector grounding.',
     domainId: 'saas',
     domainName: 'Enterprise SaaS Cloud Platform',
     category: 'Enterprise Software',
     icon: '🧠',
-    tags: ['Multi-Agent', 'Gemini 2.5', 'Tool Protocol', 'ScaNN', 'Redis'],
+    tags: ['Multi-Agent', 'Gemini 3.8', 'Tool Protocol', 'ScaNN', 'Redis'],
   },
   {
     id: 'ai-2',
@@ -417,7 +417,7 @@ export const CURATED_PROJECT_PRESETS: ProjectPreset[] = [
     icon: '🧠',
     description: 'Multi-agent ReAct tool calling, semantic prompt caching & ScaNN grounding',
     useCases: [
-      'Multi-Agent ReAct Tool Orchestrator with Gemini 2.5 Flash',
+      'Multi-Agent ReAct Tool Orchestrator with Gemini 3.8 Flash',
       'Enterprise Knowledge Base Grounding on Vertex Vector Search',
       'Context Window Prompt Caching & Token Reduction Pipeline',
       'Enterprise Role-Based Access Control (RBAC) & PII Redaction'

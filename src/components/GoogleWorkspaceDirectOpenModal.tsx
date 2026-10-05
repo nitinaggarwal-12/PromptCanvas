@@ -265,11 +265,11 @@ export default function GoogleWorkspaceDirectOpenModal({
       typeof window !== 'undefined' &&
       (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
-    const targetPublicUrl = `https://promptcanvas-887605034827.us-central1.run.app/api/export/cloud-bridge/${bridgeId}.${format}`;
+    const targetPublicUrl = `https://promptcanvas-248990048888.cr.gclb.goog/api/export/cloud-bridge/${bridgeId}.${format}`;
 
     if (isLocalhost) {
       try {
-        const remoteRes = await fetch('https://promptcanvas-887605034827.us-central1.run.app/api/export/cloud-bridge', {
+        const remoteRes = await fetch('https://promptcanvas-248990048888.cr.gclb.goog/api/export/cloud-bridge', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -501,7 +501,7 @@ export default function GoogleWorkspaceDirectOpenModal({
       const publicDiagramImgUrl =
         pngPreviewUrl && pngPreviewUrl.startsWith('http')
           ? pngPreviewUrl
-          : 'https://promptcanvas-887605034827.us-central1.run.app/blueprints/azure_application_landing_zone.png';
+          : 'https://promptcanvas-248990048888.cr.gclb.goog/blueprints/azure_application_landing_zone.png';
 
       const richHtml = `
         <div style="font-family: Arial, sans-serif; color: #0f172a;">

@@ -89,7 +89,7 @@ module.exports = { runConcurrentLoadTest };
 
 ## 2. Load Testing Protocol
 
-1. Run `runConcurrentLoadTest()` on key endpoints (`/api/diagrams`, `/workspace?tab=audit`) before major release deployments.
+1. Run `runConcurrentLoadTest()` on key endpoints (`/api/diagrams`, `/audit`) before major release deployments.
 2. Verify `requestsPerSec > 50` and `errorCount === 0`.
 3. Save test reports to `scratch/load_test_reports/`.
 
@@ -117,15 +117,15 @@ You are configured to work on this repository with strict architectural and depl
 6. **Deployment Target:**
 * When running deployment commands, strictly target:
 * Platform: Google Cloud Run
-* Project ID: `nitina-ggarwal-sandbox-647724`
-* Region: `us-east4`
+* Project ID: `ramp-portal-dev` (Project Number `248990048888`)
+* Region: `us-west1`
+* Canonical BeyondCorp URL: `https://promptcanvas-248990048888.cr.gclb.goog`
 * Command pattern:
 ```bash
 gcloud run deploy promptcanvas \
   --source . \
-  --project nitina-ggarwal-sandbox-647724 \
-  --region us-east4 \
-  --platform managed \
-  --allow-unauthenticated
+  --project ramp-portal-dev \
+  --region us-west1 \
+  --platform managed
 ```
 

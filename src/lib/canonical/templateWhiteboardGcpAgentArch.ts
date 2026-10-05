@@ -52,7 +52,7 @@ export function generateWhiteboardGcpAgentArchXml(
   const downArrow = (extra = '') =>
     `edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${blackStroke};strokeWidth=2.5;endArrow=classic;endFill=1;${extra}`;
 
-  return `<mxfile host="PromptCanvas-Whiteboard-Engine" modified="2026-04-02T12:00:00.000Z" agent="PromptCanvas-Whiteboard-Replica" version="24.0.0" type="device">
+  return `<mxfile host="embed.diagrams.net" modified="2026-04-02T12:00:00.000Z" agent="Enterprise-Whiteboard-Replica" version="24.0.0" type="device">
   <diagram id="whiteboard-gcp-ge-multi-agent-2026" name="Whiteboard Architecture — Multi-Agent Intelligence Core">
     <mxGraphModel dx="1400" dy="840" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1400" pageHeight="840" background="#F8FAFC" math="0" shadow="0">
       <root>
@@ -183,13 +183,13 @@ export function generateWhiteboardGcpAgentArchXml(
         </mxCell>
 
         <!-- Dual Vertical Arrows between EDGE LAYER and AI CLUSTER -->
-        <mxCell id="wb_edge_tier2_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${blackStroke};strokeWidth=2.6;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1">
+        <mxCell id="wb_edge_tier2_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${blackStroke};strokeWidth=2.6;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="edge_layer" target="ai_cluster">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="688" y="214" as="sourcePoint" />
             <mxPoint x="688" y="252" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="wb_edge_tier2_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${blackStroke};strokeWidth=2.6;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1">
+        <mxCell id="wb_edge_tier2_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${blackStroke};strokeWidth=2.6;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="edge_layer" target="ai_cluster">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="712" y="214" as="sourcePoint" />
             <mxPoint x="712" y="252" as="targetPoint" />
@@ -212,8 +212,8 @@ export function generateWhiteboardGcpAgentArchXml(
           <mxGeometry x="66" y="264" width="215" height="48" as="geometry" />
         </mxCell>
 
-        <!-- Hand-Drawn 5-Point Star Doodle ☆ in Top-Right of Governance Box -->
-        <mxCell id="wb_star_doodle" value="☆" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;${font}fontSize=30;fontStyle=1;fontColor=${blackInk};" vertex="1" parent="1">
+        <!-- Hand-Drawn 5-Point Star Doodle in Top-Right of Governance Box -->
+        <mxCell id="wb_star_doodle" value="&lt;svg width=&quot;28&quot; height=&quot;28&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0F172A&quot; stroke-width=&quot;2.2&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;polygon points=&quot;12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2&quot;/&gt;&lt;/svg&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;${font}fontSize=14;fontStyle=1;fontColor=${blackInk};" vertex="1" parent="1">
           <mxGeometry x="282" y="260" width="40" height="40" as="geometry" />
         </mxCell>
 
@@ -228,13 +228,13 @@ export function generateWhiteboardGcpAgentArchXml(
         </mxCell>
 
         <!-- 2 Striped Double-Headed Arrows <===> between GOVERNANCE and AI CLUSTER -->
-        <mxCell id="wb_striped_arrow_1" value="|||" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;strokeColor=${blackStroke};strokeWidth=2.2;fillColor=#F1F5F9;${font}fontSize=10;fontStyle=1;fontColor=${blackInk};width=12;endSize=5;startSize=5;" edge="1" parent="1">
+        <mxCell id="wb_striped_arrow_1" value="|||" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;strokeColor=${blackStroke};strokeWidth=2.2;fillColor=#F1F5F9;${font}fontSize=10;fontStyle=1;fontColor=${blackInk};labelBackgroundColor=#FFFFFF;width=12;endSize=5;startSize=5;" edge="1" parent="1" source="obs_container" target="ai_cluster">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="336" y="355" as="sourcePoint" />
             <mxPoint x="394" y="355" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="wb_striped_arrow_2" value="|||" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;strokeColor=${blackStroke};strokeWidth=2.2;fillColor=#F1F5F9;${font}fontSize=10;fontStyle=1;fontColor=${blackInk};width=12;endSize=5;startSize=5;" edge="1" parent="1">
+        <mxCell id="wb_striped_arrow_2" value="|||" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;strokeColor=${blackStroke};strokeWidth=2.2;fillColor=#F1F5F9;${font}fontSize=10;fontStyle=1;fontColor=${blackInk};labelBackgroundColor=#FFFFFF;width=12;endSize=5;startSize=5;" edge="1" parent="1" source="obs_container" target="ai_cluster">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="336" y="456" as="sourcePoint" />
             <mxPoint x="394" y="456" as="targetPoint" />
@@ -315,13 +315,13 @@ export function generateWhiteboardGcpAgentArchXml(
         </mxCell>
 
         <!-- Bidirectional Arrows between AI CLUSTER and AI FOUNDATION -->
-        <mxCell id="wb_edge_cluster_llm_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${blackStroke};strokeWidth=2.6;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1">
+        <mxCell id="wb_edge_cluster_llm_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${blackStroke};strokeWidth=2.6;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="ai_cluster" target="llm_container">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="954" y="405" as="sourcePoint" />
             <mxPoint x="996" y="405" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="wb_edge_cluster_llm_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${blackStroke};strokeWidth=2.6;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1">
+        <mxCell id="wb_edge_cluster_llm_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=${blackStroke};strokeWidth=2.6;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="ai_cluster" target="llm_container">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="954" y="435" as="sourcePoint" />
             <mxPoint x="996" y="435" as="targetPoint" />

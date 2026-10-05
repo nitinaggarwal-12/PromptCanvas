@@ -47,9 +47,8 @@ export default function CanonicalTemplateDetailPage() {
   const rawId = Array.isArray(params?.id) ? params.id[0] : params?.id;
   const templateId = String(rawId || '01').padStart(2, '0');
   const { theme } = useTheme();
-  // Content locked to light theme while top header is dark
-  const isDark = false;
-  const themeMode: 'light' | 'dark' = 'light';
+  const isDark = theme === 'dark';
+  const themeMode: 'light' | 'dark' = theme;
 
   const [selectedDomain, setSelectedDomain] = useState<string>(domainParam || 'biopharma');
   const [copiedXml, setCopiedXml] = useState<boolean>(false);

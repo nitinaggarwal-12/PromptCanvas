@@ -176,6 +176,8 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
                             id.startsWith('cluster_') ||
                             id.startsWith('network_') ||
                             id.startsWith('env_') ||
+                            id.includes('container') ||
+                            id.includes('cluster') ||
                             id.includes('frame') ||
                             id.includes('panel')) && !id.endsWith('_box') && !id.endsWith('_pill'));
 
@@ -565,7 +567,17 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
   // 1. HARD BLOCKING ORPHAN_NODE RULE
   for (const [id, v] of verticesMap.entries()) {
     const isFoundation = id.startsWith('cloud_') && (id.includes('monitoring') || id.includes('iam') || id.includes('vpc') || id.includes('telemetry') || id.includes('governance'));
-    if (!v.isContainer && !v.isLabelOrHeader && !isFoundation && !connectedNodeIds.has(id)) {
+    const isEnclosedInConnectedContainer = Array.from(verticesMap.values()).some(
+      (c) =>
+        c.isContainer &&
+        c.id !== id &&
+        connectedNodeIds.has(c.id) &&
+        v.absX >= c.absX - 2 &&
+        v.absY >= c.absY - 2 &&
+        v.absX + v.width <= c.absX + c.width + 2 &&
+        v.absY + v.height <= c.absY + c.height + 2
+    );
+    if (!v.isContainer && !v.isLabelOrHeader && !isFoundation && !connectedNodeIds.has(id) && !isEnclosedInConnectedContainer) {
       errors.push({
         code: 'ORPHAN_NODE',
         cells: [id],

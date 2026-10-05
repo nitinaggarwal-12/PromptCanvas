@@ -3,6 +3,7 @@
 import React, { useMemo } from 'react';
 import { X, CheckCircle2, RefreshCw, Cpu, AlertTriangle } from 'lucide-react';
 import { validateDrawioXml } from '@/lib/validate/validator';
+import { auditXmlContrast, type ContrastGrade } from '@/lib/validate/contrast';
 
 interface BrainGroundingModalProps {
   isOpen: boolean;
@@ -11,6 +12,14 @@ interface BrainGroundingModalProps {
   isHealing: boolean;
   currentXml?: string;
 }
+
+const CONTRAST_TONES: Record<ContrastGrade, { box: string; label: string; value: string }> = {
+  'AAA': { box: 'bg-purple-50 border-purple-200', label: 'text-purple-800', value: 'text-purple-700' },
+  'AA': { box: 'bg-blue-50 border-blue-200', label: 'text-blue-800', value: 'text-blue-700' },
+  'AA Large': { box: 'bg-amber-50 border-amber-200', label: 'text-amber-800', value: 'text-amber-700' },
+  'Fail': { box: 'bg-rose-50 border-rose-200', label: 'text-rose-800', value: 'text-rose-700' },
+  'N/A': { box: 'bg-slate-50 border-slate-200', label: 'text-slate-600', value: 'text-slate-500' },
+};
 
 export function BrainGroundingModal({ isOpen, onClose, onAutoHeal, isHealing, currentXml }: BrainGroundingModalProps) {
   const validation = useMemo(() => {
@@ -21,6 +30,10 @@ export function BrainGroundingModal({ isOpen, onClose, onAutoHeal, isHealing, cu
       return null;
     }
   }, [currentXml]);
+
+  // Real WCAG 2.x fill/font contrast computed from the live XML — replaces the
+  // previous hardcoded "WCAG AAA" badge that was shown regardless of the canvas.
+  const contrast = useMemo(() => auditXmlContrast(currentXml || ''), [currentXml]);
 
   if (!isOpen) return null;
 
@@ -76,11 +89,43 @@ export function BrainGroundingModal({ isOpen, onClose, onAutoHeal, isHealing, cu
               {overlapDefects} {overlapDefects === 1 ? 'Defect' : 'Defects'}
             </div>
           </div>
-          <div className="bg-purple-50 border border-purple-200 p-2.5 rounded-xl">
-            <div className="text-[10px] text-purple-800 uppercase font-mono font-bold">Contrast</div>
-            <div className="text-base font-black text-purple-700 mt-0.5">WCAG AAA</div>
+          <div
+            data-testid="brain-contrast-badge"
+            className={`${CONTRAST_TONES[contrast.grade].box} border p-2.5 rounded-xl`}
+            title={
+              contrast.worst
+                ? `Weakest pair: "${contrast.worst.label}" (${contrast.worst.font} on ${contrast.worst.fill}) = ${contrast.worst.ratio}:1 across ${contrast.pairsEvaluated} labelled nodes`
+                : 'No labelled vertices to evaluate'
+            }
+          >
+            <div className={`text-[10px] ${CONTRAST_TONES[contrast.grade].label} uppercase font-mono font-bold`}>Contrast</div>
+            <div className={`text-base font-black ${CONTRAST_TONES[contrast.grade].value} mt-0.5`}>
+              {contrast.grade === 'N/A' ? 'N/A' : `WCAG ${contrast.grade}`}
+            </div>
+            {contrast.minRatio !== null && (
+              <div className={`text-[10px] font-mono ${CONTRAST_TONES[contrast.grade].label} opacity-80`}>
+                min {contrast.minRatio}:1 · {contrast.pairsEvaluated} nodes
+              </div>
+            )}
           </div>
         </div>
+
+        {contrast.failing.length > 0 && (
+          <div
+            data-testid="brain-contrast-findings"
+            className="rounded-xl bg-rose-50 border border-rose-200 p-3 text-xs text-rose-900 space-y-1"
+          >
+            <div className="font-bold flex items-center gap-1.5">
+              <AlertTriangle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+              <span>{contrast.failing.length} node(s) below WCAG AA (4.5:1) text contrast:</span>
+            </div>
+            {contrast.failing.map((p) => (
+              <div key={p.cellId} className="text-[11px] text-rose-800 font-mono break-words">
+                • {p.ratio}:1 — &ldquo;{p.label}&rdquo; ({p.font} on {p.fill})
+              </div>
+            ))}
+          </div>
+        )}
 
         {validation && validation.errors.length > 0 && (
           <div className="rounded-xl bg-amber-50 border border-amber-200 p-3 text-xs text-amber-900 space-y-1">

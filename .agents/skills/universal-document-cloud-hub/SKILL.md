@@ -46,7 +46,7 @@ All document previews and standalone viewers (`/viewer`, `/vision`, `/studio`) m
 2. **Strict Ban on `image/png` in Google Docs ClipboardItem (`mode === 'docs'`)**:
    - **CRITICAL CHROME / GOOGLE DOCS QUIRK**: If a `ClipboardItem` contains both `'image/png'` and `'text/html'`, Google Docs (`docs.new`) prioritizes the raw PNG image and **completely drops the 177-row HTML specification table and document headings**.
    - Furthermore, Google Docs' HTML paste sanitizer strips inline `data:image/png;base64,...` URLs inside `text/html`.
-   - **Mandatory Solution**: When copying in Google Docs mode (`activeMode === 'docs'`), omit `'image/png'` from `ClipboardItem` and write **only `'text/html'` and `'text/plain'`**, using an **absolute public HTTPS image URL** (`https://promptcanvas.up.railway.app/blueprints/...`) inside the HTML `<img>` tag. This guarantees that pressing `⌘V` in `docs.new` pastes the complete Executive Heading + High-Res Architecture Diagram Image + 177-Row Formatted Specification Table in one operation.
+   - **Mandatory Solution**: When copying in Google Docs mode (`activeMode === 'docs'`), omit `'image/png'` from `ClipboardItem` and write **only `'text/html'` and `'text/plain'`**, using an **absolute public HTTPS image URL** (`https://promptcanvas-248990048888.cr.gclb.goog/blueprints/...`) inside the HTML `<img>` tag. This guarantees that pressing `⌘V` in `docs.new` pastes the complete Executive Heading + High-Res Architecture Diagram Image + 177-Row Formatted Specification Table in one operation.
 
 ---
 
@@ -124,15 +124,15 @@ You are configured to work on this repository with strict architectural and depl
 6. **Deployment Target:**
 * When running deployment commands, strictly target:
 * Platform: Google Cloud Run
-* Project ID: `nitina-ggarwal-sandbox-647724`
-* Region: `us-east4`
+* Project ID: `ramp-portal-dev` (Project Number `248990048888`)
+* Region: `us-west1`
+* Canonical BeyondCorp URL: `https://promptcanvas-248990048888.cr.gclb.goog`
 * Command pattern:
 ```bash
 gcloud run deploy promptcanvas \
   --source . \
-  --project nitina-ggarwal-sandbox-647724 \
-  --region us-east4 \
-  --platform managed \
-  --allow-unauthenticated
+  --project ramp-portal-dev \
+  --region us-west1 \
+  --platform managed
 ```
 

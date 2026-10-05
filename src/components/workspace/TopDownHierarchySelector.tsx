@@ -29,6 +29,7 @@ import {
 } from '@/lib/architectureHierarchy';
 import { normalizeArchitectureId } from '@/lib/architectureTypes';
 import { BlueprintKnowledgeItem } from '@/lib/blueprintKnowledgeMatrix';
+import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 
 interface TopDownHierarchySelectorProps {
   selectedArchType: string;
@@ -242,7 +243,7 @@ export const TopDownHierarchySelector: React.FC<TopDownHierarchySelectorProps> =
               <input
                 type="text"
                 autoFocus
-                placeholder="Search across all 50 blueprints (e.g. Lakehouse, RAG, Zero-Trust, EDA, FinOps)..."
+                placeholder={`Search across all ${CANONICAL_TEMPLATES.length} blueprints (e.g. Lakehouse, RAG, Zero-Trust, EDA, FinOps)...`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-500 outline-none font-medium"
@@ -260,7 +261,7 @@ export const TopDownHierarchySelector: React.FC<TopDownHierarchySelectorProps> =
 
             <div className="flex items-center gap-2 shrink-0">
               <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">
-                Top-Down Hierarchy (50 Blueprints)
+                Top-Down Hierarchy ({CANONICAL_TEMPLATES.length} Blueprints)
               </span>
               <button
                 type="button"

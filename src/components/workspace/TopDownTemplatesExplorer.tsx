@@ -31,6 +31,7 @@ import {
   ArchitectureHierarchyDomain
 } from '@/lib/architectureHierarchy';
 import { BlueprintKnowledgeItem } from '@/lib/blueprintKnowledgeMatrix';
+import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 import { useTheme } from '@/lib/themeContext';
 
 interface TopDownTemplatesExplorerProps {
@@ -315,7 +316,7 @@ export const TopDownTemplatesExplorer: React.FC<TopDownTemplatesExplorerProps> =
             }}
             className="px-5 py-2.5 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-black text-xs transition-all shadow-md cursor-pointer"
           >
-            Reset to All 50 Blueprints
+            Reset to All {CANONICAL_TEMPLATES.length} Blueprints
           </button>
         </div>
       ) : viewMode === 'tree' ? (

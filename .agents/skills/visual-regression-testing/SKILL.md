@@ -108,7 +108,7 @@ if (!converged) {
 **Strict Rule**: Never declare visual parity based on file sizes or image header metadata. Always validate actual image raster buffers:
 - Validate dimensions match target canvas ($1600 \times 1000$ or $1840 \times 1040$).
 - Validate that the rendered image contains non-white/non-transparent foreground content across all grid columns.
-- Physically compare against ground-truth master image baselines (`images/01.png` to `images/37.png`).
+- Physically compare against ground-truth master image baselines (`images/01.png` to `images/77.png`).
 
 ---
 
@@ -134,15 +134,15 @@ You are configured to work on this repository with strict architectural and depl
 6. **Deployment Target:**
 * When running deployment commands, strictly target:
 * Platform: Google Cloud Run
-* Project ID: `nitina-ggarwal-sandbox-647724`
-* Region: `us-east4`
+* Project ID: `ramp-portal-dev` (Project Number `248990048888`)
+* Region: `us-west1`
+* Canonical BeyondCorp URL: `https://promptcanvas-248990048888.cr.gclb.goog`
 * Command pattern:
 ```bash
 gcloud run deploy promptcanvas \
   --source . \
-  --project nitina-ggarwal-sandbox-647724 \
-  --region us-east4 \
-  --platform managed \
-  --allow-unauthenticated
+  --project ramp-portal-dev \
+  --region us-west1 \
+  --platform managed
 ```
 

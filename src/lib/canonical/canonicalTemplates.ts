@@ -39,6 +39,7 @@ export const CANONICAL_FAMILIES = [
 ] as const;
 
 export const DOMAIN_PRESETS = [
+  { id: 'enterprise', name: 'Enterprise Cloud & AI Reference Architecture', prefix: 'ENTERPRISE CLOUD' },
   { id: 'biopharma', name: 'Bio-Pharma Precision Oncology & Regulatory AI', prefix: 'CLINICAL AI' },
   { id: 'fintech', name: 'FinTech Autonomous Wealth & High-Speed Payments', prefix: 'FINTECH CORE' },
   { id: 'manufacturing', name: 'Smart Manufacturing & Industrial IoT Digital Twin', prefix: 'INDUSTRIAL IOT' },

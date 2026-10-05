@@ -53,7 +53,7 @@ Pass `layoutEngineV2: true` (or `false`) in the `POST /api/generate` request bod
 ## 🧪 Testing & Validation CLI
 
 ### Master Omni 1.1 Architecture Quality Gate (11 Gates)
-Executes the comprehensive 11-step quality verification gate covering render safety, master catalog quality (75 blueprints), canvas generator self-healing, hooks schema validation, governance doc sync, and 5-tier model stack verification:
+Executes the comprehensive 11-step quality verification gate covering render safety, master catalog quality (77 blueprints), canvas generator self-healing, hooks schema validation, governance doc sync, and 5-tier model stack verification:
 ```bash
 npm run quality-gate
 ```
@@ -121,16 +121,16 @@ You are configured to work on this repository with strict architectural and depl
 6. **Deployment Target:**
 * When running deployment commands, strictly target:
 * Platform: Google Cloud Run
-* Project ID: `nitina-ggarwal-sandbox-647724`
-* Region: `us-east4`
+* Project ID: `ramp-portal-dev` (Project Number `248990048888`)
+* Region: `us-west1`
+* Canonical BeyondCorp URL: `https://promptcanvas-248990048888.cr.gclb.goog`
 * Command pattern:
 ```bash
 gcloud run deploy promptcanvas \
   --source . \
-  --project nitina-ggarwal-sandbox-647724 \
-  --region us-east4 \
-  --platform managed \
-  --allow-unauthenticated
+  --project ramp-portal-dev \
+  --region us-west1 \
+  --platform managed
 ```
 
 

@@ -1,16 +1,16 @@
-export const OMNI_ORCHESTRATOR_ID = process.env.OMNI_ORCHESTRATOR_ID || 'gemini-3.1-pro-preview';
-export const OMNI_FLASH_MODEL_ID = process.env.OMNI_FLASH_MODEL_ID || 'gemini-2.5-flash';
+export const OMNI_ORCHESTRATOR_ID = process.env.OMNI_ORCHESTRATOR_ID || 'google-omni-1.1';
+export const OMNI_FLASH_MODEL_ID = process.env.OMNI_FLASH_MODEL_ID || 'gemini-omni-1.1-flash';
 export const GEMINI_PRO_MODEL_ID = process.env.GEMINI_PRO_MODEL_ID || 'gemini-3.1-pro-preview';
-export const GEMINI_FLASH_MODEL_ID = process.env.GEMINI_FLASH_MODEL_ID || 'gemini-2.5-flash';
-export const GEMINI_FLASH_LIVE_MODEL_ID = process.env.GEMINI_FLASH_LIVE_MODEL_ID || 'gemini-2.5-flash';
+export const GEMINI_FLASH_MODEL_ID = process.env.GEMINI_FLASH_MODEL_ID || 'gemini-3.8-flash';
+export const GEMINI_FLASH_LIVE_MODEL_ID = process.env.GEMINI_FLASH_LIVE_MODEL_ID || 'gemini-3.1-flash-live-preview';
 export const GEMINI_FALLBACK_PRO_MODEL_ID = process.env.GEMINI_FALLBACK_PRO_MODEL_ID || 'gemini-2.5-pro';
 export const GEMINI_FALLBACK_FLASH_MODEL_ID = process.env.GEMINI_FALLBACK_FLASH_MODEL_ID || 'gemini-2.5-flash';
 export const GEMINI_FALLBACK_FLASH_LIVE_MODEL_ID = process.env.GEMINI_FALLBACK_FLASH_LIVE_MODEL_ID || 'gemini-2.5-flash';
-export const DEEPMIND_VEO_MODEL_ID = process.env.DEEPMIND_VEO_MODEL_ID || 'veo-2.0-generate-001';
-export const DEEPMIND_IMAGEN_MODEL_ID = process.env.DEEPMIND_IMAGEN_MODEL_ID || 'imagen-3.0-generate-002';
-export const DEEPMIND_LYRIA_MODEL_ID = process.env.DEEPMIND_LYRIA_MODEL_ID || 'lyria-002';
-export const GEMINI_TTS_MODEL_ID = process.env.GEMINI_TTS_MODEL_ID || 'gemini-2.5-flash-preview-tts';
-export const GEMINI_EMBEDDING_MODEL_ID = process.env.GEMINI_EMBEDDING_MODEL_ID || 'text-embedding-004';
+export const DEEPMIND_VEO_MODEL_ID = process.env.DEEPMIND_VEO_MODEL_ID || 'veo-3.1-generate-preview';
+export const DEEPMIND_IMAGEN_MODEL_ID = process.env.DEEPMIND_IMAGEN_MODEL_ID || 'gemini-3.1-flash-image-preview';
+export const DEEPMIND_LYRIA_MODEL_ID = process.env.DEEPMIND_LYRIA_MODEL_ID || 'lyria-3.5';
+export const GEMINI_TTS_MODEL_ID = process.env.GEMINI_TTS_MODEL_ID || 'gemini-3.1-flash-tts-preview';
+export const GEMINI_EMBEDDING_MODEL_ID = process.env.GEMINI_EMBEDDING_MODEL_ID || 'text-embedding-005';
 export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL_ID || GEMINI_FLASH_MODEL_ID;
 
 export const GEMINI_MODELS = {

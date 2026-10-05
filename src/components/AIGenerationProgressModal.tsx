@@ -78,7 +78,7 @@ export function AIGenerationProgressModal({ isOpen, promptTitle, onCancel }: AIG
         {/* Title */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs md:text-sm font-extrabold mb-3">
           <Sparkles className="w-4 h-4 text-teal-accent animate-spin" />
-          <span>Gemini 2.5 Flash Architecture Engine</span>
+          <span>Gemini 3.8 Flash Architecture Engine</span>
         </div>
 
         <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight mb-2">

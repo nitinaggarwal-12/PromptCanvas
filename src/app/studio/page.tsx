@@ -42,8 +42,10 @@ import {
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { generateGcpNativeArchitectureXml } from '@/lib/gcpNativeArchitecture';
 import { generateGoogleMultiagentArchitectureXml } from '@/lib/masterBuilders/build_master_google_multiagent_ai_system';
-import { createDefaultFintechAst, ArchitectureAst, AstComponent } from '@/lib/ast/architectureAst';
-import { generateAll10LivingSpecs, LivingSpecDocument } from '@/lib/spec/livingSpecsGenerator';
+import { createDefaultFintechAst, ArchitectureAst, AstComponent, inferServiceAndTierFromLabel } from '@/lib/ast/architectureAst';
+import { formatResilienceReply } from '@/lib/ast/resilienceAnalysis';
+import { buildDomainExpansionPack, resolveExpansionDomain } from '@/lib/ast/domainExpansionPacks';
+import { generateAll10LivingSpecs, summarizeSpecGrounding, LivingSpecDocument } from '@/lib/spec/livingSpecsGenerator';
 import { ComponentInspectorDrawer } from '@/components/studio/ComponentInspectorDrawer';
 import { BrainGroundingModal } from '@/components/studio/BrainGroundingModal';
 import { AudioBriefingModal } from '@/components/studio/AudioBriefingModal';
@@ -179,7 +181,7 @@ To build your own project, click **"+ New Canvas"** in the top navigation!`;
 - **Target RPO < 1 Second**: Synchronous multi-region Paxos guarantees zero data loss across regional network partitions.
 - **Target RTO < 15 Seconds**: Automated leader election and health checking without manual human intervention.
 - **Active-Active Routing**: Global Cloud Load Balancing (GCLB) routes traffic to the nearest healthy region with sub-30ms failover.
-- **Live Governance**: All DR parameters and SLA commitments (99.999%) are continuously audited in **DOC-08 (Disaster Recovery & BCDR Plan)**.`;
+- **Live Governance**: All DR parameters and SLA commitments (99.999%) are continuously audited in **DOC-09 (BCDR Plan)**.`;
   }
 
   if (lower.includes('living spec') || lower.includes('specs') || lower.includes('prd') || lower.includes('hld') || lower.includes('document')) {
@@ -1604,6 +1606,7 @@ function StudioMain() {
 
   // Living Specs derived from AST + Active Canvas XML
   const livingSpecs = useMemo(() => generateAll10LivingSpecs(ast, xml), [ast, xml]);
+  const specGrounding = useMemo(() => summarizeSpecGrounding(ast, xml), [ast, xml]);
 
   // Handle Co-Pilot Prompt Execution with Dynamic Micro-Versioning (v1.0 -> v1.1 -> v1.2)
   const handleExecutePrompt = useCallback((promptText: string, explicitPersona?: string) => {
@@ -1761,10 +1764,17 @@ function StudioMain() {
         replyText = `🤖 I am ArcAssist, the AI Co-Pilot in PromptCanvas Studio. I specialize in bidirectional synchronization between visual Draw.io diagrams and living engineering specifications (PRDs, ADRs, Threat Models, DDL). I support 4 architectural personas: Product Manager, Lead Cloud Architect, CISO / Security Architect, and FinOps & SRE Lead.`;
       } else if (intentResult.intent === 'conversational') {
         replyText = `You're welcome! Let me know when you'd like to evolve this architecture or run an audit.`;
-      } else if (promptLower.includes('disaster recovery') || promptLower.includes('dr') || promptLower.includes('rpo') || promptLower.includes('rto') || promptLower.includes('spof') || promptLower.includes('single point')) {
-        replyText = `📊 **Inline Architectural Resilience & SPOF Analysis (${ast.metadata.projectTitle} • ${activeVersionTag} Unchanged)**:\n\n• **Disaster Recovery Capability**: Multi-region active-active **Cloud Spanner (\`nam3\`)** with synchronous Paxos replication across \`us-central1\` and \`us-east4\` plus a witness node in \`europe-west1\`. Guarantees **RPO < 1 Second (Zero Data Loss)** and **RTO < 15 Seconds** automated failover.\n• **Single Point of Failure (SPOF) Audit**: **0 SPOFs detected.** Global Anycast Cloud Load Balancing paired with Cloud Armor WAF and multi-zone GKE/Cloud Run compute pools eliminates regional and zonal single points of failure.\n• **Canvas Guardrail**: Non-mutating analytical query — diagram topology and version (**${activeVersionTag}**) remain unchanged.`;
+      } else if (/\b(disaster recovery|dr|rpo|rto|spof|single point|failover|resilien\w*)\b/i.test(cleanPrompt)) {
+        replyText = formatResilienceReply(ast, activeVersionTag);
       } else {
-        replyText = `📊 **Inline Architectural Analysis (${ast.metadata.projectTitle} • ${activeVersionTag} Unchanged)**:\n\nThis topology enforces Google Cloud Zero-Trust security (Cloud Armor L7 WAF, IAP, Cloud KMS HSM CMEK) and 99.999% HA across ${ast.components.length} synchronized nodes. To mutate the diagram or bump micro-versions, provide an instruction such as *"Add Redis cache layer"*, *"Connect Cloud Armor to Load Balancer"*, or *"Upgrade Spanner to multi-region"*.`;
+        const securityComps = ast.components.filter((c) => c.tier === 'security').map((c) => c.name);
+        const securityLine = securityComps.length > 0
+          ? `Security-tier components on canvas: ${securityComps.slice(0, 4).join(', ')}${securityComps.length > 4 ? ` (+${securityComps.length - 4})` : ''}.`
+          : 'No security-tier component (WAF / KMS / IAM) is present on the canvas yet — ask me to "Add Cloud Armor WAF" or "Enforce CMEK".';
+        const slaLine = specGrounding.compositeAvailabilityPct !== null
+          ? `Declared SLA target **${ast.metadata.slaTarget}**; serial composite of ${specGrounding.compositeSampleSize} in-path component SLAs ≈ **${specGrounding.compositeAvailabilityPct.toFixed(3)}%**${specGrounding.compositeAvailabilityPct < (parseFloat(ast.metadata.slaTarget) || 0) ? ' (⚠ below declared target)' : ''}.`
+          : `Declared SLA target **${ast.metadata.slaTarget}** (no per-component SLAs available to compute a composite).`;
+        replyText = `📊 **Inline Architectural Analysis (${ast.metadata.projectTitle} • ${activeVersionTag} Unchanged)**:\n\n• ${ast.components.length} components / ${ast.connections.length} connections across ${Array.from(new Set(ast.components.map((c) => c.region).filter(Boolean))).length || 0} region(s); grounding source: ${specGrounding.source}.\n• ${slaLine}\n• ${securityLine}\n\nTo mutate the diagram or bump micro-versions, provide an instruction such as *"Add Redis cache layer"*, *"Connect Cloud Armor to Load Balancer"*, or *"Upgrade Spanner to multi-region"*.`;
       }
 
       const aiMsg: StudioChatMessage = {
@@ -1925,109 +1935,92 @@ function StudioMain() {
         tier: inferredTier,
         region: inferredTier === 'ingress' || inferredTier === 'security' ? 'global' : isAwsContext ? 'us-east-1' : 'us-central1',
         role: `Prompt #${turnNumber} Synthesized Node`,
-        description: `Provisioned via Studio Prompt #${turnNumber} ("${rawPrompt}") with mTLS zero-trust enforcement.`,
-        sla: '99.999%',
+        description: `Provisioned via Studio Prompt #${turnNumber} ("${rawPrompt}").`,
+        sla: inferServiceAndTierFromLabel(`${titleCaseSubject} ${inferredService}`).sla,
         protocols: isWaf || isLb ? ['HTTPS', 'TLS 1.3', 'HTTP/3'] : ['gRPC mTLS', 'HTTPS']
       };
     };
 
     if (lower.includes('4 more') || lower.includes('4 component') || (lower.includes('cdn') && (lower.includes('vault') || lower.includes('kafka') || lower.includes('doc')))) {
-      const newComps: AstComponent[] = [
-        {
-          id: 'comp_cdn',
-          name: 'Cloud CDN & Media Edge',
-          service: 'Cloud CDN',
-          tier: 'ingress',
-          region: 'global',
-          role: 'Global Anycast Edge Cache & HTTP/3 Ingress',
-          description: 'Low-latency static and dynamic media caching with sub-8ms p99 cache hits.',
-          sla: '99.99%',
-          protocols: ['HTTP/3', 'QUIC', 'TLS 1.3']
-        },
-        {
-          id: 'comp_token_vault',
-          name: 'Payment Token Vault',
-          service: 'Cloud Run',
-          tier: 'compute',
-          region: 'us-central1',
-          role: 'Confidential Computing Tokenization Enclave',
-          description: 'Hardware-isolated microservice for PCI-DSS Level 1 tokenization.',
-          sla: '99.999%',
-          protocols: ['gRPC mTLS', 'Cloud KMS API']
-        },
-        {
-          id: 'comp_event_bus',
-          name: 'Kafka Event Mesh Buffer',
-          service: 'Pub/Sub',
-          tier: 'data',
-          region: 'us-central1',
-          role: 'Asynchronous Financial Event Distribution Engine',
-          description: 'Partitioned event stream handling 250,000 tx/sec burst throughput.',
-          sla: '99.999%',
-          protocols: ['Kafka Protocol', 'Pub/Sub gRPC']
-        },
-        {
-          id: 'comp_doc_ai',
-          name: 'Document AI OCR Extractor',
-          service: 'Document AI',
-          tier: 'compute',
-          region: 'us-central1',
-          role: 'Multimodal Identity & Document Parsing',
-          description: 'Automated KYC extraction pipeline converting image payloads to structured JSON.',
-          sla: '99.9%',
-          protocols: ['HTTPS REST', 'gRPC']
-        }
-      ];
+      const existingIds = new Set(updated.components.map((c) => c.id));
+      const newComps: AstComponent[] = buildDomainExpansionPack(
+        updated.metadata.projectTitle,
+        updated.metadata.domain,
+        updated.metadata.primaryRegion || 'us-central1'
+      ).filter((c) => !existingIds.has(c.id));
 
       updated.components = [...updated.components, ...newComps];
-      canvasDiff = '+ Added Cloud CDN, Payment Token Vault, Kafka Event Mesh, and Document AI OCR Extractor (4 new nodes).';
-      specDiff = 'Reconciled DOC-03 (System Architecture), DOC-04 (API Protocols), and DOC-06 (Security Model).';
+      const packDomain = resolveExpansionDomain(updated.metadata.projectTitle, updated.metadata.domain);
+      canvasDiff = newComps.length > 0
+        ? `+ Added ${newComps.map((c) => c.name).join(', ')} (${newComps.length} new ${packDomain} node${newComps.length === 1 ? '' : 's'}).`
+        : '• The expansion pack components (CDN, vault, event mesh, document extractor) are already present on this canvas — no nodes added.';
+      specDiff = 'Reconciled DOC-03 (HLD), DOC-04 (LLD), and DOC-06 (Threat Model).';
     } else if (explicitPersona === 'Product Manager') {
+      // Keep the project's own domain/title/SLA — the previous behaviour silently rewrote every
+      // project into a healthcare "Emergency Patient Ingress & Care Mesh".
+      const pmDomain = resolveExpansionDomain(updated.metadata.projectTitle, updated.metadata.domain);
+      const portalByDomain: Record<string, { name: string; role: string; description: string; protocols: string[] }> = {
+        healthcare: { name: 'Patient & Clinician Ingress Portal', role: 'Priority Admission & Triage Gateway', description: 'Fast-track triage ingress with FHIR R4 intake and consent capture.', protocols: ['HTTPS', 'FHIR R4', 'TLS 1.3'] },
+        fintech: { name: 'Customer Onboarding & Payments Portal', role: 'Primary Customer Journey Gateway', description: 'Account onboarding, KYC hand-off and payment initiation entry point.', protocols: ['HTTPS', 'OpenID Connect', 'TLS 1.3'] },
+        robotics: { name: 'Fleet Operator Console', role: 'Mission Planning & Live Telemetry Gateway', description: 'Operator-facing console for mission dispatch, geofence management and live telemetry.', protocols: ['HTTPS', 'WebSocket', 'TLS 1.3'] },
+        manufacturing: { name: 'Plant Operations Portal', role: 'Shop-Floor & Planner Gateway', description: 'Planner and operator entry point for work orders, quality holds and OEE dashboards.', protocols: ['HTTPS', 'OPC-UA Bridge', 'TLS 1.3'] },
+        secops: { name: 'Analyst Triage Console', role: 'SOC Analyst Case Gateway', description: 'Analyst-facing console for detections, case management and playbook approvals.', protocols: ['HTTPS', 'OpenID Connect', 'TLS 1.3'] },
+        agentic: { name: 'Assistant Experience Portal', role: 'End-User Conversational Gateway', description: 'Tenant-aware chat and document upload entry point feeding the agent runtime.', protocols: ['HTTPS', 'Server-Sent Events', 'TLS 1.3'] },
+        enterprise: { name: 'Primary User Ingress Portal', role: 'Primary User Journey Gateway', description: 'Authenticated entry point for the primary user journey defined in DOC-01.', protocols: ['HTTPS', 'OpenID Connect', 'TLS 1.3'] },
+      };
+      const portal = portalByDomain[pmDomain] || portalByDomain.enterprise;
       updated.metadata = {
         ...updated.metadata,
-        domain: 'Healthcare & Life Sciences',
-        projectTitle: 'Emergency Patient Ingress & Care Mesh',
-        slaTarget: '99.999%',
         lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
-      if (!updated.components.some(c => c.id === 'comp_patient_portal')) {
+      const portalAdded = !updated.components.some(c => c.id === 'comp_user_portal');
+      if (portalAdded) {
         updated.components = [
           ...updated.components,
           {
-            id: 'comp_patient_portal',
-            name: 'Emergency Patient Ingress Portal',
+            id: 'comp_user_portal',
+            name: portal.name,
             service: 'Cloud Run',
             tier: 'ingress',
-            region: 'us-central1',
-            role: 'High-Priority Emergency Admission Gateway',
-            description: 'Fast-track triage ingress with zero cold-starts and 99.999% SLA.',
-            sla: '99.999%',
-            protocols: ['HTTPS', 'FHIR API', 'TLS 1.3']
+            region: updated.metadata.primaryRegion || 'us-central1',
+            role: portal.role,
+            description: portal.description,
+            sla: inferServiceAndTierFromLabel('Cloud Run').sla,
+            protocols: portal.protocols
           }
         ];
       }
-      canvasDiff = '+ Added Emergency Patient Ingress Portal (Cloud Run) with 99.999% SLA gateway.';
-      specDiff = 'Reconciled DOC-01 (Product Vision), DOC-02 (Personas), and DOC-04 (Architecture Overview).';
-    } else if (explicitPersona === 'Lead Cloud Architect' || (!isGenerativeDesignPrompt && (lower.includes('spanner') || lower.includes('multi-region') || lower.includes('dr') || lower.includes('rpo')))) {
+      canvasDiff = portalAdded
+        ? `+ Added ${portal.name} (Cloud Run, ${pmDomain} persona journey).`
+        : `• ${portal.name} already exists on this canvas — no nodes added.`;
+      specDiff = 'Reconciled DOC-01 (PRD), DOC-02 (FDD), and DOC-03 (HLD).';
+    } else if (explicitPersona === 'Lead Cloud Architect' || (!isGenerativeDesignPrompt && (lower.includes('spanner') || lower.includes('multi-region') || /\b(dr|rpo)\b/.test(lower)))) {
+      // Spanner `nam3` = read-write us-east4 + us-central1 with a witness in us-central2 (North America only).
+      // A Europe DR region requires a different config (e.g. nam-eur-asia1 read-only replicas), so we do
+      // not claim a europe-west1 witness.
+      const spannerNodes = updated.components.filter(c => c.service.includes('Spanner') || c.id.includes('spanner'));
       updated.metadata = {
         ...updated.metadata,
-        drRegions: ['europe-west1', 'us-east4'],
-        targetRpo: '< 1 Second (Zero Data Loss)',
-        targetRto: '< 15 Seconds (Automated Failover)',
+        drRegions: ['us-east4'],
+        targetRpo: '< 1 Second (synchronous multi-region commit)',
+        targetRto: '< 15 Seconds (automated leader failover)',
         lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       updated.components = updated.components.map(c => {
         if (c.service.includes('Spanner') || c.id.includes('spanner')) {
           return {
             ...c,
-            role: 'Active-Active Multi-Region nam3 Leader with Witness in europe-west1',
-            description: 'Synchronous Paxos replication across us-central1 and europe-west1 with 99.999% SLA.'
+            role: 'Multi-Region nam3 (RW us-east4 + us-central1, witness us-central2)',
+            description: 'Synchronous Paxos replication across us-east4 and us-central1 with a us-central2 witness; 99.999% multi-region SLA.',
+            sla: '99.999%'
           };
         }
         return c;
       });
-      canvasDiff = '⚡ Upgraded Cloud Spanner to Active-Active Multi-Region nam3 with Witness in europe-west1.';
-      specDiff = 'Reconciled DOC-03 (System Architecture), DOC-05 (Infrastructure & DDL), and DOC-08 (Disaster Recovery).';
+      canvasDiff = spannerNodes.length > 0
+        ? `⚡ Upgraded ${spannerNodes.length} Cloud Spanner node${spannerNodes.length === 1 ? '' : 's'} to multi-region nam3 (RW us-east4 + us-central1, witness us-central2); DR region set to us-east4.`
+        : '• No Cloud Spanner node exists on this canvas — set DR region metadata to us-east4 only. Ask me to "Add Cloud Spanner" first to apply a multi-region configuration.';
+      specDiff = 'Reconciled DOC-03 (HLD), DOC-05 (Data Model), DOC-08 (Terraform IaC), and DOC-09 (BCDR Plan).';
     } else if (explicitPersona === 'CISO / Security Architect') {
       updated.metadata = {
         ...updated.metadata,
@@ -2051,23 +2044,24 @@ function StudioMain() {
         ];
       }
       canvasDiff = '🔒 Enforced Cloud KMS HSM CMEK envelope encryption and VPC-SC perimeter controls.';
-      specDiff = 'Reconciled DOC-06 (Security & Threat Model) and DOC-10 (Compliance & Audit Matrix).';
+      specDiff = 'Reconciled DOC-06 (Threat Model) and DOC-15 (Compliance Pack).';
     } else if (explicitPersona === 'FinOps & SRE Lead' || (!isGenerativeDesignPrompt && (lower.includes('finops') || lower.includes('cost') || lower.includes('autoscaling') || lower.includes('sre')))) {
+      const previousBudget = updated.metadata.latencyBudgetMs;
       updated.metadata = {
         ...updated.metadata,
         latencyBudgetMs: 35,
         lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
-      canvasDiff = '💰 Configured Cloud Run scale-to-zero off-peak policies & BigQuery BI Engine 50GB cache.';
-      specDiff = 'Reconciled DOC-07 (SRE & Observability Runbook) and DOC-09 (FinOps & Cost Optimization).';
+      canvasDiff = `💰 Set the end-to-end latency budget to 35 ms (was ${previousBudget ?? 'unset'} ms) in architecture metadata — no topology nodes were added or removed. Open DOC-14 (FinOps Model) for the catalog-based cost breakdown.`;
+      specDiff = 'Reconciled DOC-11 (SRE & Telemetry) and DOC-14 (FinOps Model).';
     } else if (/^connect\b/i.test(cleanPrompt)) {
       updated.metadata.lastSyncTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       canvasDiff = `🔗 Connected topology endpoints (${cleanPrompt.replace(/^connect\s+/i, '')}) via orthogonal zero-trust corridor.`;
-      specDiff = `Synchronized TLS 1.3 / mTLS link protocol across DOC-04 (API & Integration Protocols) and DOC-06 (Security).`;
+      specDiff = `Synchronized TLS 1.3 / mTLS link protocol across DOC-04 (LLD) and DOC-06 (Threat Model).`;
     } else if (/^group\b/i.test(cleanPrompt)) {
       updated.metadata.lastSyncTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       canvasDiff = `🛡️ Grouped ingress & extension nodes into a Zero-Trust DMZ Enclave (${cleanPrompt}).`;
-      specDiff = `Synchronized enclave boundary across DOC-03 (System Architecture) and DOC-06 (Security & Threat Model).`;
+      specDiff = `Synchronized enclave boundary across DOC-03 (HLD) and DOC-06 (Threat Model).`;
     }
 
     const BASELINE_DEFAULT_IDS = new Set([
@@ -2279,7 +2273,7 @@ function StudioMain() {
       updated.metadata.lastSyncTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       setIsSavedInLibrary(false);
       canvasDiff = `+ Added P${currentTurnNumber}: ${newComp.name} (${newComp.service}) into project topology (${updated.components.length} Nodes total).`;
-      specDiff = `Synchronized ${newComp.name} across DOC-03 (System Architecture), DOC-06 (Security), and DOC-10 (Compliance).`;
+      specDiff = `Synchronized ${newComp.name} across DOC-03 (HLD), DOC-06 (Threat Model), and DOC-15 (Compliance Pack).`;
     }
 
     // Clear any stale pendingPlan and transition out of New Diagram Draft immediately on prompt execution
@@ -2584,6 +2578,7 @@ function StudioMain() {
     selectedAbstractionLevel,
     selectedFlowDirection,
     isNewDiagramDraft,
+    specGrounding,
   ]);
 
   // 1-Click Starter Chips
@@ -5134,6 +5129,7 @@ function StudioMain() {
               useCaseName={ast.metadata.domain}
               versionName={activeVersionTag}
               onSelectBlueprintById={handleSelectBlueprintById}
+              grounding={specGrounding}
             />
           )}
 

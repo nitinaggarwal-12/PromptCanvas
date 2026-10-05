@@ -293,7 +293,7 @@ function getCanonicalBaselineForPerspective(
 function DashboardContent() {
   const router = useRouter();
   const { theme } = useTheme();
-  const isLight = true;
+  const isLight = theme === 'light';
 
   // 1. STEP 1: CATEGORY SELECTION
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -1088,7 +1088,7 @@ function DashboardContent() {
       );
 
       const persona = modResult.newVersion.author || 'Lead Cloud Architect';
-      const modelUsed = apiDecision?.modelUsed || 'gemini-2.5-flash';
+      const modelUsed = apiDecision?.modelUsed || 'gemini-3.8-flash';
       const aiReasoning =
         `${modResult.newVersion.canvasDiff} ${modResult.newVersion.specDiff} ` +
         (apiDecision?.perspectiveReasoning

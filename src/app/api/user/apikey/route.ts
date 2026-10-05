@@ -12,8 +12,11 @@ function maskApiKey(raw: string): string {
 function isGuestAccount(user: { email?: string; is_guest?: number | boolean } | null): boolean {
   if (!user) return true;
   if (user.is_guest === 1 || user.is_guest === true) return true;
-  if (typeof user.email === 'string' && user.email.toLowerCase().endsWith('@guest.promptcanvas.local')) {
-    return true;
+  if (typeof user.email === 'string') {
+    const lower = user.email.toLowerCase();
+    if (lower.endsWith('@promptcanvas.guest') || lower.endsWith('@guest.promptcanvas.local')) {
+      return true;
+    }
   }
   return false;
 }

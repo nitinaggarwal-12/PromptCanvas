@@ -59,9 +59,8 @@ function CanonicalContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { theme } = useTheme();
-  // Content is locked to light theme (whiteboard, white cards, light slate) while top header is dark
-  const isDark = false;
-  const themeMode: 'light' | 'dark' = 'light';
+  const isDark = theme === 'dark';
+  const themeMode: 'light' | 'dark' = theme;
 
   const [selectedFamily, setSelectedFamily] = useState<string>('All');
   const [selectedLevel, setSelectedLevel] = useState<string>('All');
