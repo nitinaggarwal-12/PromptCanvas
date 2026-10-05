@@ -64,6 +64,7 @@ import { MajorVersionModal } from '@/components/studio/MajorVersionModal';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
 import { AppHeader } from '@/components/AppHeader';
+import GoogleWorkspaceDirectOpenModal from '@/components/GoogleWorkspaceDirectOpenModal';
 import { generateOpenKnowledgeInfographicXml } from '@/lib/canonical/openKnowledgeInfographic';
 import { generateDynamicTieredInfographicXml } from '@/lib/canonical/dynamicTieredInfographic';
 import { INFOGRAPHIC_BLUEPRINTS_LIST, generateInfographicBlueprintXmlById } from '@/lib/canonical/infographicBlueprints52to66';
@@ -324,6 +325,34 @@ function StudioMain() {
   const [isToolsDropdownOpen, setIsToolsDropdownOpen] = useState(false);
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
   const [isMajorVersionModalOpen, setIsMajorVersionModalOpen] = useState(false);
+  const [cloudViewerModalMode, setCloudViewerModalMode] = useState<'slides' | 'docs' | 'pdf' | null>(null);
+
+  useEffect(() => {
+    if (!isExportDropdownOpen && !isVersionDropdownOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsExportDropdownOpen(false);
+        setIsVersionDropdownOpen(false);
+      }
+    };
+    const handlePointerDown = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      if (
+        !target.closest('#studio-export-dropdown-container') &&
+        !target.closest('#studio-version-dropdown-container')
+      ) {
+        setIsExportDropdownOpen(false);
+        setIsVersionDropdownOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('mousedown', handlePointerDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('mousedown', handlePointerDown);
+    };
+  }, [isExportDropdownOpen, isVersionDropdownOpen]);
 
   // 3. Version History Snapshots
   const [versions, setVersions] = useState<StudioVersionSnapshot[]>([
@@ -1047,6 +1076,8 @@ function StudioMain() {
     setIsMajorVersionModalOpen(false);
     setIsBrainModalOpen(false);
     setIsAudioModalOpen(false);
+    setIsExportDropdownOpen(false);
+    setIsVersionDropdownOpen(false);
   }, []);
 
   const handleOpenShare = useCallback((type: 'project' | 'doc' | 'node' | 'version', id: string, title: string) => {
@@ -1060,6 +1091,8 @@ function StudioMain() {
 
   const handleToggleRightCompanionPanel = useCallback(
     (panel: 'share' | 'new' | 'save' | 'major' | 'brain' | 'audio' | 'governance') => {
+      setIsExportDropdownOpen(false);
+      setIsVersionDropdownOpen(false);
       if (panel === 'governance') {
         setIsLaunchpadMode(false);
         setIsRightGovernanceOpen((prev) => !prev);
@@ -2945,9 +2978,12 @@ function StudioMain() {
             </div>
 
             {/* Version Snapshot Pill */}
-            <div className="relative shrink-0 hidden md:block">
+            <div id="studio-version-dropdown-container" className="relative shrink-0 hidden md:block">
               <button
-                onClick={() => setIsVersionDropdownOpen(!isVersionDropdownOpen)}
+                onClick={() => {
+                  setIsExportDropdownOpen(false);
+                  setIsVersionDropdownOpen(!isVersionDropdownOpen);
+                }}
                 className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs text-slate-200 transition font-mono font-bold cursor-pointer"
                 title="View Version History Snapshots"
               >
@@ -2957,7 +2993,7 @@ function StudioMain() {
               </button>
 
               {isVersionDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1.5 w-72 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2 z-50 text-xs space-y-1.5 animate-in fade-in duration-100">
+                <div className="absolute top-full left-0 mt-1.5 w-72 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2 z-[130] text-xs space-y-1.5 animate-in fade-in duration-100">
                   <div className="flex items-center justify-between px-2 py-1">
                     <span className="text-[10px] uppercase font-mono text-slate-400 font-bold">Version History</span>
                     <button
@@ -3033,7 +3069,7 @@ function StudioMain() {
             </button>
           </div>
 
-          {/* Right: Clean Non-Redundant Action Controls ([ Share ] & [ Export ▾ ]) */}
+          {/* Right: Clean Non-Redundant Action Controls ([ Share ] & [ Cloud Viewer ] & [ Export ▾ ]) */}
           <div className="flex items-center gap-2 shrink-0">
             {/* Share & Comments Right-Side Panel Toggle (Google Docs / Slides style) */}
             <button
@@ -3051,11 +3087,30 @@ function StudioMain() {
               <span>{isShareModalOpen ? 'Close Share ►' : '◄ Share & Comment'}</span>
             </button>
 
-            {/* Primary: Export Bundle Dropdown */}
-            <div className="relative">
+            {/* Same-Screen Gmail-Style Cloud Viewer Button (Slides / Docs / PDF) */}
+            <button
+              id="studio-cloud-viewer-btn"
+              data-testid="studio-cloud-viewer-btn"
+              onClick={() => {
+                setIsExportDropdownOpen(false);
+                setIsVersionDropdownOpen(false);
+                setCloudViewerModalMode('slides');
+              }}
+              className="px-3 py-1.5 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/40 text-amber-300 hover:text-amber-200 text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
+              title="Open Gmail-Style Same-Screen Cloud Viewer with Open with Google Slides, Google Docs, or PDF dropdown"
+            >
+              <Eye className="w-3.5 h-3.5 text-amber-400" />
+              <span>Cloud Viewer</span>
+            </button>
+
+            {/* Primary: Export & Cloud Viewer Dropdown */}
+            <div id="studio-export-dropdown-container" className="relative">
               <button
                 id="studio-export-dropdown-btn"
-                onClick={() => setIsExportDropdownOpen(!isExportDropdownOpen)}
+                onClick={() => {
+                  setIsVersionDropdownOpen(false);
+                  setIsExportDropdownOpen(!isExportDropdownOpen);
+                }}
                 className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-sm shadow-blue-500/20 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
               >
                 <span>Export</span>
@@ -3063,9 +3118,53 @@ function StudioMain() {
               </button>
 
               {isExportDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-72 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2 z-[120] text-xs space-y-1 animate-in fade-in duration-100">
+                <div className="absolute right-0 top-full mt-1.5 w-80 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2 z-[130] text-xs space-y-1 animate-in fade-in duration-100">
                   <div className="text-[10px] uppercase font-mono text-slate-400 font-bold px-2 py-1">
-                    Zero-Distortion Document &amp; Slide Export
+                    Gmail-Style Same-Screen Cloud Viewer (Zero Download)
+                  </div>
+                  <button
+                    onClick={() => {
+                      setIsExportDropdownOpen(false);
+                      setCloudViewerModalMode('slides');
+                    }}
+                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center justify-between transition cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Eye className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Open with Google Slides (Cloud Viewer)</span>
+                    </span>
+                    <span className="text-[9px] font-mono text-amber-300 bg-amber-950/80 border border-amber-500/30 px-1.5 py-0.5 rounded">Preview</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsExportDropdownOpen(false);
+                      setCloudViewerModalMode('docs');
+                    }}
+                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center justify-between transition cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2">
+                      <FileText className="w-3.5 h-3.5 text-blue-400" />
+                      <span>Open with Google Docs (Cloud Viewer)</span>
+                    </span>
+                    <span className="text-[9px] font-mono text-blue-300 bg-blue-950/80 border border-blue-500/30 px-1.5 py-0.5 rounded">Preview</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsExportDropdownOpen(false);
+                      setCloudViewerModalMode('pdf');
+                    }}
+                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center justify-between transition cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2">
+                      <FileText className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Open as Executive PDF (Cloud Viewer)</span>
+                    </span>
+                    <span className="text-[9px] font-mono text-rose-300 bg-rose-950/80 border border-rose-500/30 px-1.5 py-0.5 rounded">Preview</span>
+                  </button>
+
+                  <div className="my-1 border-t border-slate-800" />
+                  <div className="text-[10px] uppercase font-mono text-slate-400 font-bold px-2 py-1">
+                    Direct Editor &amp; Bundle Exports
                   </div>
                   <button
                     onClick={() => {
@@ -3075,29 +3174,10 @@ function StudioMain() {
                     className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center justify-between transition cursor-pointer"
                   >
                     <span className="flex items-center gap-2">
-                      <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
-                      <span>Google Slides / Docs (Linked SVG)</span>
+                      <ExternalLink className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Open in Draw.io Editor Tab</span>
                     </span>
-                    <span className="text-[9px] font-mono text-blue-400 bg-blue-950 px-1.5 py-0.5 rounded">High-DPI</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      const blob = new Blob([xml], { type: 'application/xml' });
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.href = url;
-                      a.download = `${ast.metadata.projectId}-powerpoint-vector.drawio.svg`;
-                      a.click();
-                      URL.revokeObjectURL(url);
-                      setIsExportDropdownOpen(false);
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center justify-between transition cursor-pointer"
-                  >
-                    <span className="flex items-center gap-2">
-                      <Download className="w-3.5 h-3.5 text-purple-400" />
-                      <span>MS PowerPoint / Word (EMF / SVG)</span>
-                    </span>
-                    <span className="text-[9px] font-mono text-purple-400 bg-purple-950 px-1.5 py-0.5 rounded">Native</span>
+                    <span className="text-[9px] font-mono text-purple-400 bg-purple-950 px-1.5 py-0.5 rounded">Live Sync</span>
                   </button>
                   <button
                     onClick={() => {
@@ -4574,7 +4654,7 @@ function StudioMain() {
             // ACTIVE CANVAS STATE: INTERACTIVE DRAW.IO NATIVE MXGRAPH EDITOR + PARENT Z-100 ESCAPE CONTROLS
             <section className="flex-1 min-h-0 h-full bg-[#F1F5F9] flex flex-col relative overflow-hidden">
               {/* Inset Canvas Toolbar (Section 3 & 3.1) */}
-              <div className="px-4 py-2 border-b border-slate-200 bg-white flex items-center justify-between gap-2 text-xs flex-shrink-0 overflow-x-auto z-[100]">
+              <div className="px-4 py-2 border-b border-slate-200 bg-white flex items-center justify-between gap-2 text-xs flex-shrink-0 overflow-x-auto z-20">
                 <div className="flex items-center gap-2 shrink-0">
                   {isLeftDrawerCollapsed && (
                     <button
@@ -5461,6 +5541,18 @@ function StudioMain() {
         currentDomainPresetId={selectedDomain}
         theme="light"
       />
+
+      {/* 5. GMAIL-STYLE SAME-SCREEN CLOUD VIEWER MODAL (SLIDES / DOCS / PDF) */}
+      {cloudViewerModalMode && (
+        <GoogleWorkspaceDirectOpenModal
+          isOpen={Boolean(cloudViewerModalMode)}
+          onClose={() => setCloudViewerModalMode(null)}
+          mode={cloudViewerModalMode}
+          xmlContent={xml}
+          diagramName={ast.metadata.projectTitle || 'Enterprise Architecture'}
+          blueprintId={`#${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}`}
+        />
+      )}
     </div>
   );
 }

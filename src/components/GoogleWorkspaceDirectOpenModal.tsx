@@ -633,26 +633,24 @@ export default function GoogleWorkspaceDirectOpenModal({
   };
 
   /**
-   * Method 2: Switch Same-Screen Preview Mode OR Launch Populated Deck in Google Workspace
+   * Method 2: Switch Same-Screen Preview Mode (Zero Forced File Downloads)
    */
   const handleOpenGoogleCloudViewer = async (targetMode?: 'slides' | 'docs' | 'pdf', forceExternalLaunch = false) => {
     const modeToUse = targetMode || activeMode;
     setShowOpenWithDropdown(false);
+    setActiveMode(modeToUse);
 
-    if (modeToUse !== activeMode) {
-      setActiveMode(modeToUse);
+    if (!forceExternalLaunch) {
       setStatusMessage({
         type: 'info',
         text:
           modeToUse === 'slides'
-            ? `📊 Switched same-screen preview to Google Slides 3-Slide Widescreen Deck (${sortedVertices.length} vector nodes).`
+            ? `📊 Viewing Same-Screen Google Slides 3-Slide Widescreen Deck (${sortedVertices.length} interactive vector nodes).`
             : modeToUse === 'docs'
-            ? `📄 Switched same-screen preview to Google Docs Architecture Specification (${sortedVertices.length} vector nodes).`
-            : `🖨️ Switched same-screen preview to 2-Page Executive PDF Document Viewer.`,
+            ? `📄 Viewing Same-Screen Google Docs Architecture Specification (${sortedVertices.length} interactive vector nodes).`
+            : `🖨️ Viewing Same-Screen 2-Page Executive PDF Document Dossier.`,
       });
-      if (!forceExternalLaunch) {
-        return;
-      }
+      return;
     }
 
     if (modeToUse === 'pdf') {
@@ -664,7 +662,7 @@ export default function GoogleWorkspaceDirectOpenModal({
   };
 
   /**
-   * Direct Download .pptx / .docx / .pdf locally
+   * Direct Download .pptx / .docx / .pdf locally (ONLY invoked when user explicitly clicks Download)
    */
   const handleDirectDownloadFile = async () => {
     if (activeMode === 'pdf') {
@@ -698,7 +696,7 @@ export default function GoogleWorkspaceDirectOpenModal({
   };
 
   /**
-   * Method 3: Unconditionally Compile & Download Populated .PPTX / .DOCX + Copy Complete Rich Specification + Synchronously Open Google Slides/Docs Tab
+   * Method 3: Zero-Download Clipboard Copy + Synchronously Open Google Slides/Docs Tab (Never forces a .pptx or .docx file download!)
    */
   const handleCopyAndLaunchNewTab = async (overrideMode?: 'slides' | 'docs', openCloudTabImmediately = true) => {
     const targetMode = overrideMode || (activeMode === 'pdf' ? 'docs' : activeMode);
@@ -709,25 +707,17 @@ export default function GoogleWorkspaceDirectOpenModal({
     // Open cloud editor tab SYNCHRONOUSLY inside the click gesture so Chrome's popup blocker never blocks it!
     const targetCloudUrl = targetMode === 'slides' ? 'https://slides.new' : 'https://docs.new';
     const cloudWin =
-      openCloudTabImmediately && typeof window !== 'undefined' ? window.open('', '_blank') : null;
-    if (cloudWin) {
-      cloudWin.document.write(`<!DOCTYPE html>
-        <html>
-          <head><title>Launching Google ${targetMode === 'slides' ? 'Slides' : 'Docs'} — ${escapeXmlText(diagramName)}</title></head>
-          <body style="background:#090D16;color:#F8FAFC;font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
-            <div style="text-align:center;max-width:520px;padding:32px;background:#0F172A;border:1px solid #334155;border-radius:16px;">
-              <div style="font-size:13px;font-weight:700;color:#38BDF8;text-transform:uppercase;margin-bottom:8px;">PromptCanvas Cloud Bridge</div>
-              <h2 style="margin:0 0 12px 0;font-size:20px;">Preparing Populated Google ${targetMode === 'slides' ? 'Slides Deck (.pptx)' : 'Docs Specification (.docx)'}...</h2>
-              <p style="font-size:13px;color:#94A3B8;line-height:1.5;">Downloading your 1:1 editable file and copying the rich architecture specification to your clipboard. Redirecting to Google ${targetMode === 'slides' ? 'Slides' : 'Docs'}...</p>
-            </div>
-          </body>
-        </html>`);
-    }
+      openCloudTabImmediately && typeof window !== 'undefined' ? window.open(targetCloudUrl, '_blank') : null;
 
     try {
+      const publicDiagramImgUrl =
+        effectivePreviewUrl && effectivePreviewUrl.startsWith('http')
+          ? effectivePreviewUrl
+          : 'https://promptcanvas-248990048888.cr.gclb.goog/blueprints/azure_application_landing_zone.png';
+
       const tableRowsHtml = sortedVertices
         .filter((v) => cleanHtmlToPlainText(v.value).title.length > 0)
-        .slice(0, 60)
+        .slice(0, 80)
         .map((node, idx) => {
           const parsed = cleanHtmlToPlainText(node.value);
           const ov = editableOverrides[node.id];
@@ -745,6 +735,9 @@ export default function GoogleWorkspaceDirectOpenModal({
         <div style="font-family: Arial, sans-serif; color: #0f172a;">
           <h1 style="color: #0f172a; font-size: 18pt; margin-bottom: 4px;">${escapeXmlText(diagramName)} — Architecture Specification (${escapeXmlText(blueprintId)})</h1>
           <p style="color: #0d9488; font-weight: bold; font-size: 10.5pt; margin-top: 0;">1:1 Master Architecture Topology • ${sortedVertices.length} Interactive Vector Components • ${edges.length} Connectors</p>
+          <div style="margin: 12px 0;">
+            <img src="${publicDiagramImgUrl}" width="840" style="max-width: 100%; height: auto; border: 1px solid #cbd5e1; border-radius: 8px;" alt="${escapeXmlText(diagramName)}" />
+          </div>
           <h2 style="font-size: 13pt; color: #0f172a; margin-top: 16px; margin-bottom: 8px;">Component Inventory &amp; Technical Specification Matrix</h2>
           <table style="width: 100%; border-collapse: collapse; border: 1px solid #cbd5e1;">
             <thead>
@@ -764,21 +757,12 @@ export default function GoogleWorkspaceDirectOpenModal({
         'text/plain': new Blob([`${diagramName} (${blueprintId}) - Editable Architecture Specification`], { type: 'text/plain' }),
       };
 
-      if (targetMode === 'slides') {
-        if (effectivePreviewUrl) {
-          const pngBlob = await convertAnyImageUrlToPngBlob(effectivePreviewUrl);
-          if (pngBlob) {
-            clipboardItems['image/png'] = pngBlob;
-          }
+      // Per SKILL.md Rule 49: Only include image/png in Slides mode; omit image/png in Docs mode so Google Docs pastes the full HTML + table
+      if (targetMode === 'slides' && effectivePreviewUrl) {
+        const pngBlob = await convertAnyImageUrlToPngBlob(effectivePreviewUrl);
+        if (pngBlob) {
+          clipboardItems['image/png'] = pngBlob;
         }
-        await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
-          masterImageSrc: effectivePreviewUrl || undefined,
-        });
-      } else {
-        await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, {
-          masterImageSrc: effectivePreviewUrl || undefined,
-          editableOverrides,
-        });
       }
 
       try {
@@ -787,22 +771,15 @@ export default function GoogleWorkspaceDirectOpenModal({
         // Fallback if clipboard write is blocked in non-focused context
       }
 
-      if (cloudWin) {
-        cloudWin.location.href = targetCloudUrl;
-      }
-
       setLaunchAssistantModal(targetMode);
       setStatusMessage({
         type: 'success',
-        text: `✅ Downloaded populated ${targetMode === 'slides' ? 'Slide Deck (.pptx)' : 'Editable Word Specification (.docx)'} & opened Google ${targetMode === 'slides' ? 'Slides' : 'Docs'}! (Press ⌘V / Ctrl+V in the new tab or import the downloaded file).`,
+        text: `✅ Copied high-res ${targetMode === 'slides' ? 'Widescreen Slide Visual' : 'Architecture Specification & Component Table'} to clipboard${cloudWin ? ` & opened Google ${targetMode === 'slides' ? 'Slides' : 'Docs'}` : ''}! Press ⌘V / Ctrl+V in the Google tab to paste immediately (Zero file download required).`,
       });
     } catch (err: any) {
-      if (cloudWin) {
-        cloudWin.location.href = targetCloudUrl;
-      }
       setStatusMessage({
         type: 'error',
-        text: 'Export notice: ' + (err?.message || 'Opened Google Workspace tab.'),
+        text: 'Cloud launch notice: ' + (err?.message || 'Opened Google Workspace tab.'),
       });
     } finally {
       setIsCopyingAndLaunching(false);
@@ -811,7 +788,7 @@ export default function GoogleWorkspaceDirectOpenModal({
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/85 backdrop-blur-md ${
+      className={`fixed inset-0 z-[150] flex items-center justify-center bg-slate-950/85 backdrop-blur-md ${
         isFullscreen || isFullPage ? 'p-0' : 'p-2 md:p-4'
       }`}
       data-testid="google-workspace-direct-open-modal"
@@ -899,14 +876,11 @@ export default function GoogleWorkspaceDirectOpenModal({
                 className="absolute left-1/2 -translate-x-1/2 mt-2 w-80 rounded-2xl bg-[#0F172A] border border-slate-700 shadow-2xl py-2 z-50"
               >
                 <div className="px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-                  Switch Same-Screen Preview Format
+                  Switch Same-Screen Preview Format (Zero Download)
                 </div>
                 <button
                   type="button"
-                  onClick={() => {
-                    setActiveMode('slides');
-                    setShowOpenWithDropdown(false);
-                  }}
+                  onClick={() => handleOpenGoogleCloudViewer('slides', false)}
                   className={`w-full text-left px-3.5 py-2.5 text-xs flex items-center gap-3 hover:bg-slate-800 transition cursor-pointer ${
                     activeMode === 'slides' ? 'bg-amber-500/10 text-amber-300 font-bold' : 'text-slate-200'
                   }`}
@@ -925,10 +899,7 @@ export default function GoogleWorkspaceDirectOpenModal({
 
                 <button
                   type="button"
-                  onClick={() => {
-                    setActiveMode('docs');
-                    setShowOpenWithDropdown(false);
-                  }}
+                  onClick={() => handleOpenGoogleCloudViewer('docs', false)}
                   className={`w-full text-left px-3.5 py-2.5 text-xs flex items-center gap-3 hover:bg-slate-800 transition cursor-pointer ${
                     activeMode === 'docs' ? 'bg-sky-500/10 text-sky-300 font-bold' : 'text-slate-200'
                   }`}
@@ -947,10 +918,7 @@ export default function GoogleWorkspaceDirectOpenModal({
 
                 <button
                   type="button"
-                  onClick={() => {
-                    setActiveMode('pdf');
-                    setShowOpenWithDropdown(false);
-                  }}
+                  onClick={() => handleOpenGoogleCloudViewer('pdf', false)}
                   className={`w-full text-left px-3.5 py-2.5 text-xs flex items-center gap-3 hover:bg-slate-800 transition cursor-pointer ${
                     activeMode === 'pdf' ? 'bg-rose-500/10 text-rose-300 font-bold' : 'text-slate-200'
                   }`}
@@ -969,18 +937,18 @@ export default function GoogleWorkspaceDirectOpenModal({
 
                 <div className="h-px bg-slate-800 my-1.5" />
                 <div className="px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-                  Launch in External Cloud Editor
+                  Launch External Google Cloud Tab (Zero Download)
                 </div>
 
                 <button
                   type="button"
                   onClick={() => {
                     setShowOpenWithDropdown(false);
-                    handleCopyAndLaunchNewTab('slides');
+                    handleCopyAndLaunchNewTab('slides', true);
                   }}
                   className="w-full text-left px-3.5 py-2 text-xs flex items-center justify-between hover:bg-slate-800 text-amber-300 font-semibold cursor-pointer"
                 >
-                  <span>🚀 Launch in Google Slides (slides.new + .pptx)</span>
+                  <span>🚀 Launch in Google Slides (slides.new + Copy)</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </button>
 
@@ -988,11 +956,11 @@ export default function GoogleWorkspaceDirectOpenModal({
                   type="button"
                   onClick={() => {
                     setShowOpenWithDropdown(false);
-                    handleCopyAndLaunchNewTab('docs');
+                    handleCopyAndLaunchNewTab('docs', true);
                   }}
                   className="w-full text-left px-3.5 py-2 text-xs flex items-center justify-between hover:bg-slate-800 text-sky-300 font-semibold cursor-pointer"
                 >
-                  <span>🚀 Launch in Google Docs (docs.new + .docx)</span>
+                  <span>🚀 Launch in Google Docs (docs.new + Copy)</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </button>
 
@@ -1011,10 +979,10 @@ export default function GoogleWorkspaceDirectOpenModal({
             )}
           </div>
 
-          {/* Right Action Controls: Quick Format Switchers + Print/Download + Close */}
+          {/* Right Action Controls: Quick Same-Screen Format Switchers + Cloud Launch + Download + Close */}
           <div className="flex items-center gap-2 shrink-0">
             <button
-              onClick={() => handleOpenGoogleCloudViewer('slides')}
+              onClick={() => handleOpenGoogleCloudViewer('slides', false)}
               disabled={isOpeningCloudViewer}
               data-testid="switch-to-google-slides-btn"
               className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold shadow-md transition-all cursor-pointer disabled:opacity-60 ${
@@ -1022,7 +990,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                   ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 ring-2 ring-amber-400/50'
                   : 'bg-slate-800/90 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30'
               }`}
-              title="Preview as Google Slides 3-Slide Deck (or click again to launch Google Slides)"
+              title="Switch same-screen preview to Google Slides 3-Slide Widescreen Deck (Zero file download)"
             >
               {isOpeningCloudViewer && activeMode === 'slides' ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -1033,7 +1001,7 @@ export default function GoogleWorkspaceDirectOpenModal({
             </button>
 
             <button
-              onClick={() => handleOpenGoogleCloudViewer('docs')}
+              onClick={() => handleOpenGoogleCloudViewer('docs', false)}
               disabled={isOpeningCloudViewer}
               data-testid="switch-to-google-docs-btn"
               className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold shadow-md transition-all cursor-pointer disabled:opacity-60 ${
@@ -1041,7 +1009,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                   ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white ring-2 ring-sky-400/50'
                   : 'bg-slate-800/90 hover:bg-sky-500/20 text-sky-300 border border-sky-500/30'
               }`}
-              title="Preview as Google Docs Specification (or click again to launch Google Docs)"
+              title="Switch same-screen preview to Google Docs Specification (Zero file download)"
             >
               {isOpeningCloudViewer && activeMode === 'docs' ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -1052,14 +1020,14 @@ export default function GoogleWorkspaceDirectOpenModal({
             </button>
 
             <button
-              onClick={() => setActiveMode('pdf')}
+              onClick={() => handleOpenGoogleCloudViewer('pdf', false)}
               data-testid="switch-to-pdf-btn"
               className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold shadow-md transition-all cursor-pointer ${
                 activeMode === 'pdf'
                   ? 'bg-gradient-to-r from-rose-500 to-red-600 text-white ring-2 ring-rose-400/50'
                   : 'bg-slate-800/90 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30'
               }`}
-              title="Preview as Printable Executive PDF Document"
+              title="Switch same-screen preview to Printable Executive PDF Document (Zero file download)"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>PDF</span>
@@ -1069,7 +1037,7 @@ export default function GoogleWorkspaceDirectOpenModal({
               onClick={handleDirectDownloadFile}
               disabled={isDownloadingDeck}
               className="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition-all cursor-pointer"
-              title="Download current document (.pptx / .docx / .pdf)"
+              title="Explicitly download local file (.pptx / .docx / .pdf)"
             >
               <Download className="w-4 h-4" />
             </button>
@@ -1094,21 +1062,25 @@ export default function GoogleWorkspaceDirectOpenModal({
                 <Check className="w-4 h-4 text-emerald-400" />
                 <span>
                   {launchAssistantModal === 'docs'
-                    ? '✅ Complete 177-Node Specification & High-Res Diagram Copied to Clipboard!'
-                    : '✅ Populated 3-Slide Editable Vector Deck (.pptx) Downloaded & Slide Copied!'}
+                    ? '✅ Complete Architecture Specification & High-Res Diagram Copied to Clipboard!'
+                    : '✅ High-Resolution 16:9 Widescreen Architecture Slide Copied to Clipboard!'}
                 </span>
               </div>
               {launchAssistantModal === 'docs' ? (
                 <p className="text-xs text-slate-200 leading-relaxed">
-                  Google&apos;s <code className="text-sky-300 font-mono">docs.new</code> shortcut opens a fresh document tab. As soon as it opens, press{' '}
+                  Google&apos;s <code className="text-sky-300 font-mono">docs.new</code> tab is open. Press{' '}
                   <kbd className="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-extrabold font-mono text-xs shadow">
                     ⌘V (Mac) / Ctrl+V (Win)
                   </kbd>{' '}
-                  once to paste your entire <strong>1:1 Architecture Diagram + All 177 Editable Specification Table Rows</strong>!
+                  inside the Google Docs tab to paste your entire <strong>1:1 Architecture Diagram + Editable Specification Table</strong> with zero file downloads!
                 </p>
               ) : (
                 <p className="text-xs text-slate-200 leading-relaxed">
-                  To edit all 3 slides &amp; 89 native vector shapes in Google Slides: click <strong>File → Import slides → Upload</strong> in the new tab and select the downloaded <code className="text-amber-300 font-mono">{diagramName}.pptx</code> file (or press <kbd className="px-1.5 py-0.5 rounded bg-amber-500 text-slate-950 font-bold font-mono text-xs">⌘V</kbd> to paste the widescreen slide immediately!).
+                  Google&apos;s <code className="text-amber-300 font-mono">slides.new</code> tab is open. Press{' '}
+                  <kbd className="px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-extrabold font-mono text-xs shadow">
+                    ⌘V (Mac) / Ctrl+V (Win)
+                  </kbd>{' '}
+                  inside the Google Slides tab to paste your high-resolution widescreen slide immediately (zero file download required)!
                 </p>
               )}
             </div>
@@ -1125,7 +1097,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                 <span>
                   {launchAssistantModal === 'docs'
                     ? '🚀 Open Google Docs (docs.new) & Press ⌘V ↗'
-                    : '🚀 Open Google Slides (slides.new) & Import ↗'}
+                    : '🚀 Open Google Slides (slides.new) & Press ⌘V ↗'}
                 </span>
               </button>
               <button
@@ -1133,7 +1105,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                 className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 font-bold text-xs transition-all cursor-pointer flex items-center gap-1.5"
               >
                 <Download className="w-3.5 h-3.5" />
-                <span>Download .{launchAssistantModal === 'slides' ? 'pptx' : 'docx'}</span>
+                <span>Optional: Download .{launchAssistantModal === 'slides' ? 'pptx' : 'docx'}</span>
               </button>
               <button
                 onClick={() => setLaunchAssistantModal(null)}
@@ -2018,7 +1990,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                       className="w-full py-2 px-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-sm cursor-pointer transition"
                     >
                       <FileText className="w-3.5 h-3.5" />
-                      <span>Download .DOCX &amp; Open Docs ↗</span>
+                      <span>Copy &amp; Open in Google Docs ↗</span>
                     </button>
                   </div>
                 </div>
@@ -2104,13 +2076,13 @@ export default function GoogleWorkspaceDirectOpenModal({
                     <div>
                       <div className="flex items-center gap-2 text-xs font-bold text-sky-600 uppercase tracking-wider mb-1.5">
                         <FileText className="w-4 h-4" />
-                        <span>Google Docs Architecture Specification &amp; Editable Diagram (.docx)</span>
+                        <span>Google Docs Architecture Specification &amp; Editable Diagram</span>
                       </div>
                       <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900">{diagramName}</h1>
                       <p className="text-sm text-slate-500 mt-1">
                         Blueprint ID: <span className="font-mono font-bold text-slate-700">{blueprintId}</span> •{' '}
                         <span className="text-emerald-700 font-semibold">
-                          100% Native Editable Word Vector Diagram &amp; Specification Table
+                          100% Native Editable Vector Diagram &amp; Specification Table
                         </span>
                       </p>
                     </div>
@@ -2120,7 +2092,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                       className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-xs flex items-center gap-1.5 shadow-md cursor-pointer transition shrink-0"
                     >
                       <FileText className="w-3.5 h-3.5" />
-                      <span>Download .DOCX &amp; Open in Google Docs ↗</span>
+                      <span>Copy &amp; Open in Google Docs ↗</span>
                     </button>
                   </div>
 

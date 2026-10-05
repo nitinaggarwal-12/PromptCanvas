@@ -156,7 +156,7 @@ export function AppHeader({
   actions,
   children,
   noPrint = false,
-  zIndexClass = 'z-40',
+  zIndexClass = 'z-[120]',
   className = '',
 }: AppHeaderProps) {
   const t = TONES[tone] ?? TONES.blue;
