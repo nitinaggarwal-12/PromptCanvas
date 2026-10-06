@@ -11,7 +11,7 @@
 import fs from 'fs';
 import path from 'path';
 import { generateAzureLandingZoneArchitectureXml } from '../src/lib/masterBuilders/build_master_azure_landing_zone';
-import { parseDrawioXmlForPptx } from '../src/lib/export/editablePptxCompiler';
+import { parseDrawioXmlForPptx, cleanHtmlToPlainText } from '../src/lib/export/editablePptxCompiler';
 
 function runExportSlidesQualityGate() {
   console.log('📊 Running Export & Google Slides/Docs Studio Quality Gate...');
@@ -202,8 +202,56 @@ function runExportSlidesQualityGate() {
     }
   }
 
+  // 7. Blueprint #00 ("2026 Upgraded GCP & Gemini Enterprise Native Architecture") Zero-Corruption Gate
+  const { CANONICAL_TEMPLATES } = require('../src/lib/canonical/canonicalTemplates');
+  const bp00 = CANONICAL_TEMPLATES.find((t: any) => t.id === '00');
+  if (!bp00) {
+    console.error('❌ EXPORT GATE FAILED: Missing canonical template #00.');
+    process.exit(1);
+  }
+  const bp00Xml = bp00.generateXml('enterprise', 'light');
+  if (
+    bp00Xml.includes('Frontier LLM.1') ||
+    bp00Xml.includes('Serverless Container Runtime Gen2') ||
+    !bp00Xml.includes('Gemini 3.1 Pro') ||
+    !bp00Xml.includes('Cloud Run Gen2')
+  ) {
+    console.error(
+      '❌ EXPORT GATE FAILED: Blueprint #00 generateXml("enterprise") corrupted Gemini 3.1 Pro or Cloud Run Gen2 labels!'
+    );
+    process.exit(1);
+  }
+  const bp00Parsed = parseDrawioXmlForPptx(bp00Xml);
+  const uiCell = bp00Parsed.cells.find((c) => c.id === 'ui_chat');
+  const llmCell = bp00Parsed.cells.find((c) => c.id === 'llm_container');
+  const obsCell = bp00Parsed.cells.find((c) => c.id === 'obs_container');
+  if (!uiCell || !llmCell || !obsCell) {
+    console.error('❌ EXPORT GATE FAILED: Missing ui_chat, llm_container, or obs_container in Blueprint #00.');
+    process.exit(1);
+  }
+  const uiText = cleanHtmlToPlainText(uiCell.value);
+  const llmText = cleanHtmlToPlainText(llmCell.value);
+  const obsText = cleanHtmlToPlainText(obsCell.value);
+  if (
+    !uiText.title.startsWith('1. User Interface') ||
+    !llmText.title.startsWith('5. LLM Layer') ||
+    !obsText.title.includes('GCP Observability, AgentOps & FinOps') ||
+    obsText.lines.length < 5
+  ) {
+    console.error(
+      `❌ EXPORT GATE FAILED: Blueprint #00 step-badge or observability row parsing failed: ui="${uiText.title}", llm="${llmText.title}", obs="${obsText.title}" (${obsText.lines.length} lines)`
+    );
+    process.exit(1);
+  }
+  if (llmCell.htmlTitleColor && /^(CA8A04|FFFFFF)$/i.test(llmCell.htmlTitleColor)) {
+    console.error(
+      `❌ EXPORT GATE FAILED: llm_container picked up step-badge color #${llmCell.htmlTitleColor} as htmlTitleColor!`
+    );
+    process.exit(1);
+  }
+
   console.log(
-    `✅ Export & Slides/Docs Studio Quality Gate PASSED! (${verticesWithIcons.length} Azure vector icons verified, Docs Editable Diagram Parity, Native Word 4-Layer DrawingML verified, /viewer Google Workspace buttons & Cloud Bridge certified, Anti-Static-Spoofing Rule 41 & Universal Dynamic Tiered Infographic Engine certified)`
+    `✅ Export & Slides/Docs Studio Quality Gate PASSED! (${verticesWithIcons.length} Azure vector icons verified, Blueprint #00 Zero-Corruption certified, Docs Editable Diagram Parity, Native Word 4-Layer DrawingML verified, /viewer Google Workspace buttons & Cloud Bridge certified, Anti-Static-Spoofing Rule 41 & Universal Dynamic Tiered Infographic Engine certified)`
   );
 }
 

@@ -982,7 +982,7 @@ const COMPANY_AND_VENDOR_REPLACEMENTS: [RegExp, string][] = [
   [/\bGoogle\s+Gemini\b/gi, 'Frontier Multimodal'],
   [/\bRaw\s+Gemini\s+API\b/gi, 'Stateless Foundation Model API'],
   [/\bGemini\s+Apps\b/gi, 'Enterprise Copilot Apps'],
-  [/\bGemini\s+3\b/gi, 'Frontier LLM'],
+  [/\bGemini\s+3(?:\.\d+)?\b/gi, 'Frontier LLM'],
   [/\bGem\s*ini\b/gi, 'Frontier LLM'],
   [/Vertex(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Matching(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Engine/gi, 'Vector Similarity Index'],
   [/\bVertex\s+Embeddings\b/gi, 'Dense Vector Embeddings'],
@@ -1722,7 +1722,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
     contract,
     generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => {
       const baseXml = t.generateXml(domainFlavor, theme);
-      if (isSketchBp || (t.id === '00' && (!domainFlavor || domainFlavor === 'general'))) {
+      if (isSketchBp || t.id === '00') {
         return baseXml;
       }
       return sanitizeAndHealCanonicalBlueprintXml(injectDomainFlavorXml(baseXml, domainFlavor), t.id);

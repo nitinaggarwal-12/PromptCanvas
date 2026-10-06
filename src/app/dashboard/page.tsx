@@ -2890,6 +2890,11 @@ function DashboardContent() {
           xmlContent={activeCanvasXml}
           diagramName={canvasTitle || 'Enterprise Architecture Blueprint'}
           blueprintId={`#${loadedBlueprintId}`}
+          masterImageSrc={
+            !isSessionForked && Number(loadedBlueprintId.replace(/^#/, '')) <= 74
+              ? `/templates/canonical_${loadedBlueprintId.replace(/^#/, '').padStart(2, '0')}.png`
+              : undefined
+          }
         />
       )}
 

@@ -69,6 +69,13 @@ function CloudViewerContent() {
 
   useEffect(() => {
     const bpId = rawBlueprintParam || '00';
+    const matchedTemplate = CANONICAL_TEMPLATES.find(
+      (t) => t.id === bpId || t.id === bpId.replace(/^#/, '').padStart(2, '0')
+    );
+    const defaultCanonicalPng =
+      matchedTemplate && Number(matchedTemplate.id) <= 74
+        ? `/templates/canonical_${matchedTemplate.id.padStart(2, '0')}.png`
+        : undefined;
 
     if (typeof window !== 'undefined') {
       try {
@@ -81,9 +88,23 @@ function CloudViewerContent() {
             if (!rawBlueprintParam || payloadBp === cleanReqBp || Date.now() - (parsed.updatedAt || 0) < 600_000) {
               setResolvedId(parsed.blueprintId || bpId);
               setResolvedTitle(rawTitleParam || parsed.diagramName || 'Enterprise Cloud Architecture');
-              setXmlContent(parsed.xmlContent);
-              if (typeof parsed.masterImageSrc === 'string' && parsed.masterImageSrc.length > 0) {
+              const isStaleCorrupted =
+                matchedTemplate &&
+                (parsed.xmlContent.includes('Frontier LLM.1') ||
+                  parsed.xmlContent.includes('Serverless Container Runtime Gen2'));
+              setXmlContent(
+                isStaleCorrupted
+                  ? matchedTemplate.generateXml('enterprise', isLight ? 'light' : 'dark')
+                  : parsed.xmlContent
+              );
+              if (
+                typeof parsed.masterImageSrc === 'string' &&
+                parsed.masterImageSrc.length > 0 &&
+                !parsed.masterImageSrc.startsWith('data:image/svg+xml')
+              ) {
                 setResolvedMasterImage(parsed.masterImageSrc);
+              } else if (defaultCanonicalPng) {
+                setResolvedMasterImage(defaultCanonicalPng);
               }
               return;
             }
@@ -94,14 +115,13 @@ function CloudViewerContent() {
       }
     }
 
-    const matchedTemplate = CANONICAL_TEMPLATES.find(
-      (t) => t.id === bpId || t.id === bpId.replace(/^#/, '').padStart(2, '0')
-    );
-
     if (matchedTemplate) {
       setResolvedId(`#${matchedTemplate.id}`);
       setResolvedTitle(rawTitleParam || matchedTemplate.name);
       setXmlContent(matchedTemplate.generateXml('enterprise', isLight ? 'light' : 'dark'));
+      if (defaultCanonicalPng) {
+        setResolvedMasterImage(defaultCanonicalPng);
+      }
       return;
     }
 

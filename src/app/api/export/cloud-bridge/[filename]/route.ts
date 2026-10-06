@@ -7,6 +7,7 @@ import {
   CURRENT_BRIDGE_SCHEMA_VERSION,
 } from '../route';
 import { generateAzureLandingZoneArchitectureXml } from '@/lib/masterBuilders/build_master_azure_landing_zone';
+import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 import { exportDrawioToEditablePptx } from '@/lib/export/editablePptxCompiler';
 import { exportDrawioToEditableDocx } from '@/lib/export/editableDocxCompiler';
 
@@ -55,22 +56,42 @@ async function resolveOrHealEntryByFilename(filename: string): Promise<CloudBrid
     entry = null;
   }
 
+  // Check if cleanId matches a canonical blueprint (e.g., bp_00, bp_00_177..., canonical_00, 00_177...)
+  const canonicalMatch = cleanId.match(/^(?:bp_|canonical_)?(\d{2})(?:_|$)/i);
+  const matchedCanonicalTemplate = canonicalMatch
+    ? CANONICAL_TEMPLATES.find((t) => t.id === canonicalMatch[1])
+    : null;
+
   const isAzureBlueprint =
-    cleanId.toLowerCase().includes('vis9745') ||
-    cleanId.toLowerCase().includes('vis_9745') ||
-    cleanId.toLowerCase().includes('vis5965') ||
-    cleanId.toLowerCase().includes('vis_5965') ||
-    cleanId.toLowerCase().includes('azure') ||
-    cleanId.toLowerCase().includes('vis');
+    !matchedCanonicalTemplate &&
+    (cleanId.toLowerCase().includes('vis9745') ||
+      cleanId.toLowerCase().includes('vis_9745') ||
+      cleanId.toLowerCase().includes('vis5965') ||
+      cleanId.toLowerCase().includes('vis_5965') ||
+      cleanId.toLowerCase().includes('azure') ||
+      cleanId.toLowerCase().includes('vis'));
 
   // Self-heal on demand if missing or outdated
-  if (!entry && isAzureBlueprint) {
+  if (!entry && (matchedCanonicalTemplate || isAzureBlueprint)) {
     try {
-      const xmlContent = generateAzureLandingZoneArchitectureXml();
-      const blueprintTitle = cleanId.toLowerCase().includes('5965')
+      const xmlContent = matchedCanonicalTemplate
+        ? matchedCanonicalTemplate.generateXml('enterprise', 'light')
+        : generateAzureLandingZoneArchitectureXml();
+      const blueprintTitle = matchedCanonicalTemplate
+        ? matchedCanonicalTemplate.name
+        : cleanId.toLowerCase().includes('5965')
         ? 'Azure Application Landing Zone (VIS-5965)'
         : 'Microsoft Azure Application Landing Zone';
-      const blueprintCode = cleanId.toLowerCase().includes('5965') ? 'VIS-5965' : 'VIS-9745';
+      const blueprintCode = matchedCanonicalTemplate
+        ? `#${matchedCanonicalTemplate.id}`
+        : cleanId.toLowerCase().includes('5965')
+        ? 'VIS-5965'
+        : 'VIS-9745';
+      const masterImgSrc = matchedCanonicalTemplate
+        ? Number(matchedCanonicalTemplate.id) <= 74
+          ? `/templates/canonical_${matchedCanonicalTemplate.id.padStart(2, '0')}.png`
+          : undefined
+        : '/blueprints/azure_application_landing_zone.png';
 
       if (requestedFormat === 'drawio') {
         const healedEntry: CloudBridgeEntry = {
@@ -92,7 +113,7 @@ async function resolveOrHealEntryByFilename(filename: string): Promise<CloudBrid
           {
             returnBase64: true,
             bridgeId: cleanId,
-            masterImageSrc: '/blueprints/azure_application_landing_zone.png',
+            masterImageSrc: masterImgSrc,
           }
         )) as string;
 
@@ -108,7 +129,6 @@ async function resolveOrHealEntryByFilename(filename: string): Promise<CloudBrid
           vault.set(`${cleanId}.docx`, healedEntry);
           vault.set(cleanId, healedEntry);
           saveBridgeFileToDisk(cleanId, 'docx', healedEntry.title, healedEntry.buffer, CURRENT_BRIDGE_SCHEMA_VERSION);
-          // Also pre-save companion .drawio file for instant 1-click Draw.io Web Editor opening
           saveBridgeFileToDisk(
             cleanId,
             'drawio',
@@ -125,7 +145,7 @@ async function resolveOrHealEntryByFilename(filename: string): Promise<CloudBrid
           blueprintCode,
           {
             returnBase64: true,
-            masterImageSrc: '/blueprints/azure_application_landing_zone.png',
+            masterImageSrc: masterImgSrc,
           }
         )) as string;
 

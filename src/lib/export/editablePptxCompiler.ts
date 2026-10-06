@@ -116,9 +116,11 @@ function extractHtmlColorsAndSvgs(
     svgs.push(match[0]);
   }
 
-  const withoutSvg = decoded.replace(svgRegex, '');
+  const withoutSvg = decoded
+    .replace(svgRegex, '')
+    .replace(/<span[^>]*border-radius\s*:\s*(?:50%|999\d*px)[^>]*>[\s\S]*?<\/span>/gi, '');
   const colorMatches: string[] = [];
-  const cssColorRegex = /(?:color\s*:\s*|color\s*=\s*["'])(#[0-9a-fA-F]{3,6})/gi;
+  const cssColorRegex = /(?:^|[;"'\s])color\s*:\s*(#[0-9a-fA-F]{3,6})/gi;
   let cm;
   while ((cm = cssColorRegex.exec(withoutSvg)) !== null) {
     let hex = cm[1].replace('#', '').trim().toUpperCase();
@@ -137,8 +139,13 @@ function extractHtmlColorsAndSvgs(
   };
 }
 
-export function cleanHtmlToPlainText(html: string): { title: string; subtitle: string; fullText: string } {
-  if (!html) return { title: '', subtitle: '', fullText: '' };
+export function cleanHtmlToPlainText(html: string): {
+  title: string;
+  subtitle: string;
+  fullText: string;
+  lines: string[];
+} {
+  if (!html) return { title: '', subtitle: '', fullText: '', lines: [] };
   const decoded = html
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
@@ -150,12 +157,21 @@ export function cleanHtmlToPlainText(html: string): { title: string; subtitle: s
   // Remove inline <svg>...</svg> blocks completely so SVG paths don't leak into text
   const noSvg = decoded.replace(/<svg[\s\S]*?<\/svg>/gi, '');
 
-  // Replace block tags and line breaks with newlines
-  const withNewlines = noSvg
+  // Format circular/pill step badges (<span style="...border-radius:50%...">1</span>) with a clean ". " separator
+  const withFormattedStepBadges = noSvg.replace(
+    /<span[^>]*border-radius\s*:\s*(?:50%|999\d*px)[^>]*>\s*([0-9A-Za-z]+)\s*<\/span>\s*/gi,
+    '$1. '
+  );
+
+  // Replace block tags, table rows, and line breaks with newlines
+  const withNewlines = withFormattedStepBadges
+    .replace(/<\/td>\s*<td[^>]*>/gi, ' ')
+    .replace(/<\/tr>/gi, '\n')
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/div>/gi, '\n')
     .replace(/<\/p>/gi, '\n')
     .replace(/<\/li>/gi, '\n')
+    .replace(/<\/span>\s*<span/gi, '</span> <span')
     .replace(/<[^>]+>/g, '');
 
   const lines = withNewlines
@@ -164,13 +180,26 @@ export function cleanHtmlToPlainText(html: string): { title: string; subtitle: s
     .filter(Boolean);
 
   if (lines.length === 0) {
-    return { title: '', subtitle: '', fullText: '' };
+    return { title: '', subtitle: '', fullText: '', lines: [] };
+  }
+
+  // Merge wrapped multi-line titles ending in ",", "&", "/", or "-" (e.g., "GCP Observability,\nAgentOps & FinOps")
+  if (lines.length >= 2 && /[,&/\-]$/.test(lines[0])) {
+    const mergedTitle = `${lines[0]} ${lines[1]}`.replace(/\s+/g, ' ').trim();
+    const rest = lines.slice(2);
+    const mergedLines = [mergedTitle, ...rest];
+    return {
+      title: mergedTitle,
+      subtitle: rest.join(' • '),
+      fullText: mergedLines.join('\n'),
+      lines: mergedLines,
+    };
   }
 
   const title = lines[0];
   const subtitle = lines.slice(1).join(' • ');
   const fullText = lines.join('\n');
-  return { title, subtitle, fullText };
+  return { title, subtitle, fullText, lines };
 }
 
 function normalizeHexColor(colorStr: string | undefined, fallback: string): string {
@@ -601,13 +630,24 @@ async function resolveImageSourceToDataUri(
   blueprintId?: string
 ): Promise<string | null> {
   let targetSrc = src || null;
-  if (!targetSrc || targetSrc.includes('azure-landing-zone.png')) {
+  if (!targetSrc || targetSrc.includes('azure-landing-zone.png') || targetSrc.startsWith('data:image/svg+xml')) {
     const idLower = (blueprintId || '').toLowerCase();
     if (idLower.includes('9745') || idLower.includes('azure') || targetSrc?.includes('azure')) {
       targetSrc = '/blueprints/azure_application_landing_zone.png';
+    } else {
+      const bpNumMatch = (blueprintId || '').replace(/^#/, '').match(/^(?:canonical_)?(\d{1,2})$/);
+      if (bpNumMatch) {
+        const num = parseInt(bpNumMatch[1], 10);
+        if (num >= 0 && num <= 74) {
+          targetSrc = `/templates/canonical_${String(num).padStart(2, '0')}.png`;
+        }
+      }
     }
   }
   if (!targetSrc) return null;
+  if (targetSrc.startsWith('data:image/svg+xml')) {
+    return await renderInlineSvgToPngDataUrl(targetSrc, 1600, 900);
+  }
   if (targetSrc.startsWith('data:image/')) return targetSrc;
 
   if (typeof window !== 'undefined') {
@@ -664,8 +704,8 @@ function getImageDimensionsFromDataUri(dataUrl: string): { width: number; height
 
     // PNG signature: 89 50 4E 47
     if (bytes.length >= 24 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
-      const width = ((bytes[16] << 24) | (bytes[17] << 16) | (bytes[18] << 8) | bytes[19]) >>> 0;
-      const height = ((bytes[20] << 24) | (bytes[21] << 16) | (bytes[22] << 8) | bytes[23]) >>> 0;
+      const width = ((bytes[16] << 24) | (bytes[17] << 16) | (bytes[18] << 8) | (bytes[19])) >>> 0;
+      const height = ((bytes[20] << 24) | (bytes[21] << 16) | (bytes[22] << 8) | (bytes[23])) >>> 0;
       if (width > 0 && height > 0) return { width, height };
     }
 
@@ -854,13 +894,34 @@ export async function exportDrawioToEditablePptx(
   const cellMap = new Map<string, ParsedMxCell>();
   cells.forEach((c) => cellMap.set(c.id, c));
 
-  // Identify which cells have children so we treat them as containers
+  // Identify which cells have children (either via parent attribute or geometric containment)
   const parentIds = new Set<string>();
   cells.forEach((c) => {
     if (c.parent && c.parent !== '0' && c.parent !== '1') {
       parentIds.add(c.parent);
     }
   });
+  for (const outer of vertices) {
+    if ((outer.id === 'bg' || outer.id.includes('bg')) && outer.width >= 700 && outer.height >= 400) continue;
+    const outerArea = outer.width * outer.height;
+    if (outerArea < 12000) continue;
+    for (const inner of vertices) {
+      if (inner.id === outer.id) continue;
+      const innerArea = inner.width * inner.height;
+      if (innerArea >= outerArea * 0.85) continue;
+      const cx = inner.absX + inner.width / 2;
+      const cy = inner.absY + inner.height / 2;
+      if (
+        cx >= outer.absX + 4 &&
+        cx <= outer.absX + outer.width - 4 &&
+        cy >= outer.absY + 4 &&
+        cy <= outer.absY + outer.height - 4
+      ) {
+        parentIds.add(outer.id);
+        break;
+      }
+    }
+  }
 
   for (const node of vertices) {
     const bx = toSlideX(node.absX);
@@ -917,6 +978,8 @@ export async function exportDrawioToEditablePptx(
 
     if (isDarkNodeFill && isDarkColor(resolvedTitleColor)) {
       resolvedTitleColor = 'FFFFFF';
+    } else if (!isDarkNodeFill && !isDarkColor(resolvedTitleColor)) {
+      resolvedTitleColor = '0F172A';
     }
 
     let resolvedSubtitleColor = node.htmlSubtitleColor
@@ -926,17 +989,15 @@ export async function exportDrawioToEditablePptx(
       : '475569';
     if (isDarkNodeFill && isDarkColor(resolvedSubtitleColor)) {
       resolvedSubtitleColor = 'CBD5E1';
+    } else if (!isDarkNodeFill && !isDarkColor(resolvedSubtitleColor)) {
+      resolvedSubtitleColor = '475569';
     }
 
     const rawFontSize = parseFloat(style.fontSize || '10');
     const scaledTitleSize = Math.min(10, Math.max(6, Math.round(rawFontSize * Math.sqrt(scaleY) * 0.82)));
     const scaledSubSize = Math.max(5.5, scaledTitleSize - 1);
 
-    const isContainer =
-      style.container === '1' ||
-      parentIds.has(node.id) ||
-      (style.verticalAlign === 'top' && node.width * node.height > 18000) ||
-      (node.width > 240 && node.height > 120 && !isImageShape);
+    const isContainer = style.container === '1' || parentIds.has(node.id);
 
     const iconSource = node.extractedSvgs[0] || node.imageDataUrl;
 

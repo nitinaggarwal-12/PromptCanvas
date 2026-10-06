@@ -116,7 +116,18 @@ export default function GoogleWorkspaceDirectOpenModal({
   const [isFullscreen, setIsFullscreen] = useState<boolean>(isFullPage);
   const [isSlideshowPlaying, setIsSlideshowPlaying] = useState<boolean>(false);
   const [editableDocTitle, setEditableDocTitle] = useState<string>(`${diagramName} (${blueprintId})`);
-  const [pngPreviewUrl, setPngPreviewUrl] = useState<string | null>(masterImageSrc || null);
+  const resolvedMasterImageProp = useMemo(() => {
+    if (masterImageSrc && !masterImageSrc.startsWith('data:image/svg+xml')) {
+      return masterImageSrc;
+    }
+    const cleanId = (blueprintId || '').replace(/^#/, '').trim();
+    const numId = Number(cleanId);
+    if (cleanId !== '' && !Number.isNaN(numId) && numId >= 0 && numId <= 74) {
+      return `/templates/canonical_${cleanId.padStart(2, '0')}.png`;
+    }
+    return null;
+  }, [masterImageSrc, blueprintId]);
+  const [pngPreviewUrl, setPngPreviewUrl] = useState<string | null>(resolvedMasterImageProp);
   const [isGeneratingPreview, setIsGeneratingPreview] = useState<boolean>(false);
   const [launchAssistantModal, setLaunchAssistantModal] = useState<'slides' | 'docs' | null>(null);
 
@@ -180,6 +191,24 @@ export default function GoogleWorkspaceDirectOpenModal({
         s.add(c.parent);
       }
     });
+    // Also detect visual containers that geometrically enclose smaller vertices
+    parsedTopology.cells.forEach((c) => {
+      if (!c.vertex || c.width < 140 || c.height < 90) return;
+      if ((c.id === 'bg' || c.id.includes('bg')) && c.width >= 700 && c.height >= 400) return;
+      const containsChild = parsedTopology.cells.some(
+        (other) =>
+          other.vertex &&
+          other.id !== c.id &&
+          other.absX >= c.absX - 6 &&
+          other.absY >= c.absY - 6 &&
+          other.absX + other.width <= c.absX + c.width + 6 &&
+          other.absY + other.height <= c.absY + c.height + 6 &&
+          other.width * other.height < c.width * c.height * 0.85
+      );
+      if (containsChild) {
+        s.add(c.id);
+      }
+    });
     return s;
   }, [parsedTopology.cells]);
 
@@ -230,34 +259,41 @@ export default function GoogleWorkspaceDirectOpenModal({
       const isContainer =
         node.style.container === '1' ||
         parentIds.has(node.id) ||
-        (node.style.verticalAlign === 'top' && node.width * node.height > 18000) ||
-        (node.width > 240 && node.height > 120);
+        node.width * node.height > 75000;
 
-      const fill =
-        node.style.fillColor && node.style.fillColor !== 'none' && node.style.fillColor !== 'transparent'
-          ? node.style.fillColor
-          : isContainer
-          ? '#F8FAFC'
-          : '#FFFFFF';
-      const stroke =
-        node.style.strokeColor && node.style.strokeColor !== 'none' && node.style.strokeColor !== 'transparent'
-          ? node.style.strokeColor
-          : '#94A3B8';
+      const hasFill =
+        Boolean(node.style.fillColor) &&
+        node.style.fillColor !== 'none' &&
+        node.style.fillColor !== 'transparent';
+      const hasStroke =
+        Boolean(node.style.strokeColor) &&
+        node.style.strokeColor !== 'none' &&
+        node.style.strokeColor !== 'transparent';
+
+      const fill = hasFill ? node.style.fillColor : 'none';
+      const stroke = hasStroke ? node.style.strokeColor : 'none';
       const rx = node.style.rounded === '1' ? 8 : 3;
       const dash = node.style.dashed === '1' ? 'stroke-dasharray="6,4"' : '';
-      const textColor = node.htmlTitleColor
+
+      const isDarkFill = hasFill && /^#?(0f172a|1e293b|1e1b4b|090d16|111827|18181b|020617|172554)/i.test(fill);
+      let textColor = node.htmlTitleColor
         ? `#${node.htmlTitleColor}`
-        : node.style.fontColor
+        : node.style.fontColor && node.style.fontColor !== 'none'
         ? node.style.fontColor
-        : parsedTopology.isDarkDiagram
+        : parsedTopology.isDarkDiagram || isDarkFill
         ? '#F8FAFC'
         : '#0F172A';
+      if (!isDarkFill && !parsedTopology.isDarkDiagram && /^#?(ffffff|fff|f8fafc|fefce8|ca8a04|eab308)$/i.test(textColor)) {
+        textColor = '#0F172A';
+      }
 
-      rectElements.push(
-        `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${rx}" fill="${escapeXmlText(
-          fill
-        )}" stroke="${escapeXmlText(stroke)}" stroke-width="${isContainer ? '1.8' : '1.5'}" ${dash} />`
-      );
+      if (hasFill || hasStroke) {
+        rectElements.push(
+          `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${rx}" fill="${escapeXmlText(
+            fill
+          )}" stroke="${escapeXmlText(stroke)}" stroke-width="${hasStroke ? (isContainer ? '1.8' : '1.5') : '0'}" ${dash} />`
+        );
+      }
 
       if (title) {
         if (isContainer) {
@@ -266,8 +302,35 @@ export default function GoogleWorkspaceDirectOpenModal({
               1
             )}" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" fill="${escapeXmlText(
               textColor
-            )}">${title.slice(0, 65)}</text>`
+            )}">${title.slice(0, 72)}</text>`
           );
+          if (subtitle) {
+            rectElements.push(
+              `<text x="${(x + 10).toFixed(1)}" y="${(y + 32).toFixed(
+                1
+              )}" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" fill="#475569">${subtitle.slice(
+                0,
+                85
+              )}</text>`
+            );
+          }
+        } else if (!ov && parsedText.lines.length > 4) {
+          rectElements.push(
+            `<text x="${(x + 10).toFixed(1)}" y="${(y + 20).toFixed(
+              1
+            )}" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="${escapeXmlText(
+              textColor
+            )}">${title.slice(0, 56)}</text>`
+          );
+          parsedText.lines.slice(1, 9).forEach((rowLine, rIdx) => {
+            rectElements.push(
+              `<text x="${(x + 10).toFixed(1)}" y="${(y + 38 + rIdx * 16).toFixed(
+                1
+              )}" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#334155">${escapeXmlText(
+                rowLine.slice(0, 58)
+              )}</text>`
+            );
+          });
         } else {
           const centerY = subtitle ? y + h / 2 - 3 : y + h / 2 + 4;
           rectElements.push(
@@ -275,7 +338,7 @@ export default function GoogleWorkspaceDirectOpenModal({
               1
             )}" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="700" fill="${escapeXmlText(
               textColor
-            )}">${title.slice(0, 42)}</text>`
+            )}">${title.slice(0, 52)}</text>`
           );
           if (subtitle) {
             rectElements.push(
@@ -283,7 +346,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                 1
               )}" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" fill="#475569">${subtitle.slice(
                 0,
-                48
+                58
               )}</text>`
             );
           }
@@ -351,7 +414,8 @@ export default function GoogleWorkspaceDirectOpenModal({
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgStr)}`;
   }, [sortedVertices, parentIds, edges, parsedTopology, graphW, graphH, editableOverrides]);
 
-  const effectivePreviewUrl = pngPreviewUrl || masterImageSrc || instantSvgDataUrl;
+  const effectivePreviewUrl = pngPreviewUrl || resolvedMasterImageProp || instantSvgDataUrl;
+  const exportableMasterPngUrl = pngPreviewUrl || resolvedMasterImageProp || undefined;
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -363,8 +427,8 @@ export default function GoogleWorkspaceDirectOpenModal({
   }, []);
 
   useEffect(() => {
-    if (masterImageSrc) {
-      setPngPreviewUrl(masterImageSrc);
+    if (resolvedMasterImageProp) {
+      setPngPreviewUrl(resolvedMasterImageProp);
       setIsGeneratingPreview(false);
       return;
     }
@@ -385,7 +449,7 @@ export default function GoogleWorkspaceDirectOpenModal({
     return () => {
       cancelled = true;
     };
-  }, [isOpen, xmlContent, masterImageSrc]);
+  }, [isOpen, xmlContent, resolvedMasterImageProp]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -477,13 +541,13 @@ export default function GoogleWorkspaceDirectOpenModal({
       if (activeMode === 'slides') {
         blob = await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
           returnBlob: true,
-          masterImageSrc: effectivePreviewUrl || undefined,
+          masterImageSrc: exportableMasterPngUrl,
         });
       } else {
         blob = await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, {
           returnBlob: true,
           bridgeId: generatedBridgeId,
-          masterImageSrc: effectivePreviewUrl || undefined,
+          masterImageSrc: exportableMasterPngUrl,
           editableOverrides,
         });
       }
@@ -670,7 +734,7 @@ export default function GoogleWorkspaceDirectOpenModal({
             'pc_cloud_viewer_payload',
             JSON.stringify({
               ...basePayload,
-              masterImageSrc: effectivePreviewUrl || undefined,
+              masterImageSrc: exportableMasterPngUrl,
             })
           );
         } catch {
@@ -713,11 +777,11 @@ export default function GoogleWorkspaceDirectOpenModal({
     try {
       if (activeMode === 'slides') {
         await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
-          masterImageSrc: effectivePreviewUrl || undefined,
+          masterImageSrc: exportableMasterPngUrl,
         });
       } else {
         await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, {
-          masterImageSrc: effectivePreviewUrl || undefined,
+          masterImageSrc: exportableMasterPngUrl,
           editableOverrides,
         });
       }
@@ -834,7 +898,7 @@ export default function GoogleWorkspaceDirectOpenModal({
               diagramName,
               blueprintId,
               editableOverrides,
-              masterImageSrc: effectivePreviewUrl || undefined,
+              masterImageSrc: exportableMasterPngUrl,
               updatedAt: Date.now(),
             })
           );
@@ -1144,8 +1208,9 @@ export default function GoogleWorkspaceDirectOpenModal({
                       type="text"
                       value={editableDocTitle}
                       onChange={(e) => setEditableDocTitle(e.target.value)}
+                      size={Math.max(28, Math.min(72, editableDocTitle.length + 2))}
                       aria-label="Presentation Title"
-                      className="text-[16px] font-medium text-[#1F1F1F] bg-transparent hover:border-slate-400 focus:border-[#0B57D0] focus:bg-white border border-transparent rounded px-1.5 py-0.5 focus:outline-none max-w-[520px] lg:max-w-[700px] w-auto"
+                      className="text-[16px] font-medium text-[#1F1F1F] bg-transparent hover:border-slate-400 focus:border-[#0B57D0] focus:bg-white border border-transparent rounded px-1.5 py-0.5 focus:outline-none max-w-[540px] lg:max-w-[740px] w-auto"
                     />
                     {/* Authentic Screenshot 3 Yellow ".PPTX" Pill Badge */}
                     <span className="px-1.5 py-0.5 rounded bg-[#F4B400] text-[#1F1F1F] font-extrabold text-[10px] tracking-tight shrink-0">
@@ -1472,8 +1537,9 @@ export default function GoogleWorkspaceDirectOpenModal({
                       type="text"
                       value={editableDocTitle}
                       onChange={(e) => setEditableDocTitle(e.target.value)}
+                      size={Math.max(28, Math.min(72, editableDocTitle.length + 2))}
                       aria-label="Document Title"
-                      className="text-[16px] font-medium text-[#1F1F1F] bg-transparent hover:border-slate-400 focus:border-[#0B57D0] focus:bg-white border border-transparent rounded px-1.5 py-0.5 focus:outline-none truncate max-w-[260px] sm:max-w-[440px]"
+                      className="text-[16px] font-medium text-[#1F1F1F] bg-transparent hover:border-slate-400 focus:border-[#0B57D0] focus:bg-white border border-transparent rounded px-1.5 py-0.5 focus:outline-none max-w-[540px] lg:max-w-[740px] w-auto"
                     />
                     <span className="px-1.5 py-0.5 rounded bg-[#4285F4] text-white font-extrabold text-[10px] tracking-tight shrink-0">
                       .DOCX
@@ -2160,8 +2226,9 @@ export default function GoogleWorkspaceDirectOpenModal({
                                   const isContainer =
                                     node.style.container === '1' ||
                                     parentIds.has(node.id) ||
-                                    (node.style.verticalAlign === 'top' && node.width * node.height > 18000) ||
-                                    (node.width > 240 && node.height > 120 && !isImageShape);
+                                    node.width * node.height > 75000;
+
+                                  const isMultiRowCard = !isContainer && !override && parsedText.lines.length > 4;
 
                                   const isStandaloneIconWithBottomLabel =
                                     (node.style.verticalLabelPosition === 'bottom' ||
@@ -2169,13 +2236,25 @@ export default function GoogleWorkspaceDirectOpenModal({
                                     !isContainer;
 
                                   const isSelected = selectedNodeId === node.id;
-                                  const titleHex = node.htmlTitleColor
+                                  const isDarkFill =
+                                    hasFill &&
+                                    /^#?(0f172a|1e293b|1e1b4b|090d16|111827|18181b|020617|172554)/i.test(
+                                      node.style.fillColor || ''
+                                    );
+                                  let titleHex = node.htmlTitleColor
                                     ? `#${node.htmlTitleColor}`
-                                    : node.style.fontColor
+                                    : node.style.fontColor && node.style.fontColor !== 'none'
                                     ? node.style.fontColor
-                                    : parsedTopology.isDarkDiagram
+                                    : parsedTopology.isDarkDiagram || isDarkFill
                                     ? '#FFFFFF'
                                     : '#0F172A';
+                                  if (
+                                    !isDarkFill &&
+                                    !parsedTopology.isDarkDiagram &&
+                                    /^#?(ffffff|fff|f8fafc|fefce8|ca8a04|eab308)$/i.test(titleHex)
+                                  ) {
+                                    titleHex = '#0F172A';
+                                  }
 
                                   return (
                                     <div
@@ -2202,15 +2281,15 @@ export default function GoogleWorkspaceDirectOpenModal({
                                         borderWidth: isSelected ? '2px' : hasStroke ? '1.2px' : '0px',
                                       }}
                                       className={`absolute transition-all cursor-pointer select-none flex ${
-                                        isContainer
-                                          ? 'flex-col justify-start items-start p-1'
+                                        isContainer || isMultiRowCard
+                                          ? 'flex-col justify-start items-start p-1 overflow-hidden'
                                           : isStandaloneIconWithBottomLabel
                                           ? 'flex-col items-center justify-center overflow-visible'
                                           : 'flex-row items-center justify-center px-1 gap-1'
                                       }`}
                                     >
                                       {/* Render SVG Icon or Data URL */}
-                                      {iconMarkupOrUrl && (
+                                      {iconMarkupOrUrl && !isMultiRowCard && (
                                         <div
                                           className={`${
                                             isStandaloneIconWithBottomLabel ? 'w-full h-full' : 'w-4 h-4 shrink-0'
@@ -2231,23 +2310,37 @@ export default function GoogleWorkspaceDirectOpenModal({
                                         </div>
                                       )}
 
-                                      {/* Render Label (Top of Container, Below Standalone Icon, or Inside Card) */}
+                                      {/* Render Label (Top of Container, Multi-Row Card, Below Standalone Icon, or Inside Card) */}
                                       {title && (
                                         <div
                                           style={{ color: titleHex }}
                                           className={`${
                                             isStandaloneIconWithBottomLabel
                                               ? 'absolute top-full mt-0.5 left-1/2 -translate-x-1/2 text-center w-max max-w-[115px] whitespace-normal leading-[1.05] px-1 py-0.2 rounded bg-white/95 shadow-2xs text-[7.5px] font-bold z-30'
-                                              : isContainer
-                                              ? 'text-[8.5px] font-bold leading-[1.1] px-1 py-0.5 whitespace-normal break-words max-w-full'
+                                              : isContainer || isMultiRowCard
+                                              ? 'text-[8px] font-bold leading-[1.1] px-1 py-0.5 whitespace-normal break-words w-full'
                                               : 'text-[8px] font-bold leading-[1.05] text-center whitespace-normal break-words line-clamp-2 max-w-full'
                                           }`}
                                         >
                                           {title}
-                                          {subtitle && !isStandaloneIconWithBottomLabel && (
-                                            <span className="block text-[7px] font-normal opacity-85 leading-[1.05] whitespace-normal line-clamp-2">
-                                              {subtitle}
-                                            </span>
+                                          {isMultiRowCard ? (
+                                            <div className="mt-1 space-y-0.5 border-t border-slate-300/70 pt-0.5">
+                                              {parsedText.lines.slice(1, 9).map((rowLine, rIdx) => (
+                                                <div
+                                                  key={rIdx}
+                                                  className="text-[6.5px] font-medium text-slate-700 leading-[1.08] truncate"
+                                                >
+                                                  {rowLine.startsWith('(') ? `  ${rowLine}` : `• ${rowLine}`}
+                                                </div>
+                                              ))}
+                                            </div>
+                                          ) : (
+                                            subtitle &&
+                                            !isStandaloneIconWithBottomLabel && (
+                                              <span className="block text-[7px] font-normal opacity-85 leading-[1.05] whitespace-normal line-clamp-2">
+                                                {subtitle}
+                                              </span>
+                                            )
                                           )}
                                         </div>
                                       )}
@@ -2840,8 +2933,9 @@ export default function GoogleWorkspaceDirectOpenModal({
                               const isContainer =
                                 node.style.container === '1' ||
                                 parentIds.has(node.id) ||
-                                (node.style.verticalAlign === 'top' && node.width * node.height > 18000) ||
-                                (node.width > 240 && node.height > 120 && !isImageShape);
+                                node.width * node.height > 75000;
+
+                              const isMultiRowCard = !isContainer && !override && parsedText.lines.length > 4;
 
                               const isStandaloneIconWithBottomLabel =
                                 (node.style.verticalLabelPosition === 'bottom' ||
@@ -2850,13 +2944,25 @@ export default function GoogleWorkspaceDirectOpenModal({
                                 !isContainer;
 
                               const isSelected = selectedNodeId === node.id;
-                              const titleHex = node.htmlTitleColor
+                              const isDarkFill =
+                                hasFill &&
+                                /^#?(0f172a|1e293b|1e1b4b|090d16|111827|18181b|020617|172554)/i.test(
+                                  node.style.fillColor || ''
+                                );
+                              let titleHex = node.htmlTitleColor
                                 ? `#${node.htmlTitleColor}`
-                                : node.style.fontColor
+                                : node.style.fontColor && node.style.fontColor !== 'none'
                                 ? node.style.fontColor
-                                : parsedTopology.isDarkDiagram
+                                : parsedTopology.isDarkDiagram || isDarkFill
                                 ? '#FFFFFF'
                                 : '#0F172A';
+                              if (
+                                !isDarkFill &&
+                                !parsedTopology.isDarkDiagram &&
+                                /^#?(ffffff|fff|f8fafc|fefce8|ca8a04|eab308)$/i.test(titleHex)
+                              ) {
+                                titleHex = '#0F172A';
+                              }
 
                               const iconMarkupOrUrl = node.extractedSvgs[0] || node.imageDataUrl;
 
@@ -2885,14 +2991,14 @@ export default function GoogleWorkspaceDirectOpenModal({
                                     borderWidth: isSelected ? '2px' : hasStroke ? '1.2px' : '0px',
                                   }}
                                   className={`absolute transition-all cursor-pointer select-none flex ${
-                                    isContainer
-                                      ? 'flex-col justify-start items-start p-1 overflow-visible'
+                                    isContainer || isMultiRowCard
+                                      ? 'flex-col justify-start items-start p-1 overflow-hidden'
                                       : isStandaloneIconWithBottomLabel
                                       ? 'flex-col items-center justify-center overflow-visible'
                                       : 'flex-row items-center justify-center px-1 gap-1'
                                   }`}
                                 >
-                                  {iconMarkupOrUrl && (
+                                  {iconMarkupOrUrl && !isMultiRowCard && (
                                     <div
                                       className={`${
                                         isStandaloneIconWithBottomLabel ? 'w-full h-full' : 'w-4 h-4 shrink-0'
@@ -2919,16 +3025,30 @@ export default function GoogleWorkspaceDirectOpenModal({
                                       className={`${
                                         isStandaloneIconWithBottomLabel
                                           ? 'absolute top-full mt-0.5 left-1/2 -translate-x-1/2 text-center w-max max-w-[135px] whitespace-normal break-normal leading-[1.05] px-1 py-0.2 rounded bg-white/95 shadow-2xs text-[7.5px] font-bold z-30'
-                                          : isContainer
-                                          ? 'text-[8.5px] font-bold leading-[1.1] px-1 py-0.5 w-max max-w-[98%] whitespace-nowrap overflow-visible'
+                                          : isContainer || isMultiRowCard
+                                          ? 'text-[8px] font-bold leading-[1.1] px-1 py-0.5 whitespace-normal break-words w-full'
                                           : 'text-[8px] font-bold leading-[1.05] text-center whitespace-normal break-normal line-clamp-2 max-w-full'
                                       }`}
                                     >
                                       {title}
-                                      {subtitle && !isStandaloneIconWithBottomLabel && (
-                                        <span className="block text-[7px] font-normal opacity-85 leading-[1.05] whitespace-normal break-normal line-clamp-2">
-                                          {subtitle}
-                                        </span>
+                                      {isMultiRowCard ? (
+                                        <div className="mt-1 space-y-0.5 border-t border-slate-300/70 pt-0.5">
+                                          {parsedText.lines.slice(1, 9).map((rowLine, rIdx) => (
+                                            <div
+                                              key={rIdx}
+                                              className="text-[6.5px] font-medium text-slate-700 leading-[1.08] truncate"
+                                            >
+                                              {rowLine.startsWith('(') ? `  ${rowLine}` : `• ${rowLine}`}
+                                            </div>
+                                          ))}
+                                        </div>
+                                      ) : (
+                                        subtitle &&
+                                        !isStandaloneIconWithBottomLabel && (
+                                          <span className="block text-[7px] font-normal opacity-85 leading-[1.05] whitespace-normal break-normal line-clamp-2">
+                                            {subtitle}
+                                          </span>
+                                        )
                                       )}
                                     </div>
                                   )}

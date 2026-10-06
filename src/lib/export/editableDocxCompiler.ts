@@ -93,15 +93,27 @@ function stripHtmlLines(html: string): string[] {
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
     .replace(/&nbsp;/g, ' ');
-  const noSvg = decoded.replace(/<svg[\s\S]*?<\/svg>/gi, '');
-  return noSvg
+  const noSvg = decoded
+    .replace(/<svg[\s\S]*?<\/svg>/gi, '')
+    .replace(
+      /<span[^>]*border-radius\s*:\s*(?:50%|999\d*px)[^>]*>\s*([0-9A-Za-z]+)\s*<\/span>\s*/gi,
+      '$1. '
+    );
+  const lines = noSvg
+    .replace(/<\/td>\s*<td[^>]*>/gi, ' ')
+    .replace(/<\/tr>/gi, '\n')
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/div>/gi, '\n')
     .replace(/<\/p>/gi, '\n')
+    .replace(/<\/span>\s*<span/gi, '</span> <span')
     .replace(/<[^>]+>/g, '')
     .split('\n')
-    .map((l) => l.trim())
+    .map((l) => l.replace(/\s+/g, ' ').trim())
     .filter(Boolean);
+  if (lines.length >= 2 && /[,&/\-]$/.test(lines[0])) {
+    return [`${lines[0]} ${lines[1]}`.replace(/\s+/g, ' ').trim(), ...lines.slice(2)];
+  }
+  return lines;
 }
 
 function sanitizeXmlText(str: string): string {
