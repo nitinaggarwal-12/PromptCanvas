@@ -4,27 +4,21 @@ import React, { useState, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import {
   Sparkles,
-  Layers,
   X,
   ArrowRight,
   Check,
-  ShieldCheck,
-  Database,
-  Cpu,
   FileCode2,
-  Workflow,
   Upload,
   Image as ImageIcon,
   Loader2,
   ExternalLink,
   Search,
   Plus,
-  Cloud,
-  FileText,
   FileUp,
   LayoutGrid
 } from 'lucide-react';
 import { CANONICAL_TEMPLATES, CanonicalTemplate } from '@/lib/canonical/canonicalTemplates';
+import { useTheme } from '@/lib/themeContext';
 
 export interface NewDiagramSelectionResult {
   mode: 'prompt' | 'blueprint' | 'vision' | 'blank' | 'import_xml';
@@ -76,8 +70,11 @@ export function NewDiagramInputSelectionModal({
   isOpen,
   onClose,
   onSelectOption,
-  isLight = false
+  isLight: propIsLight
 }: NewDiagramInputSelectionModalProps) {
+  const { theme } = useTheme();
+  const isLight = propIsLight !== undefined ? propIsLight : theme === 'light';
+
   const [activeTab, setActiveTab] = useState<'prompt' | 'blueprint' | 'vision' | 'blank' | 'import'>('prompt');
 
   // Prompt Mode State
@@ -216,34 +213,65 @@ export function NewDiagramInputSelectionModal({
     });
   };
 
+  const inactiveTabClass = isLight
+    ? 'bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200 border border-slate-200'
+    : 'bg-slate-800/60 text-slate-300 hover:text-white hover:bg-slate-800';
+
+  const inputClass = isLight
+    ? 'w-full bg-white border border-slate-300 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 rounded-xl px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 outline-none transition font-medium'
+    : 'w-full bg-slate-950 border border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 outline-none transition font-medium';
+
+  const cancelBtnClass = isLight
+    ? 'px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer'
+    : 'px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer';
+
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-labelledby="new-diagram-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200"
+      className={`fixed inset-0 z-[140] flex items-center justify-center p-3 sm:p-6 backdrop-blur-md animate-in fade-in duration-200 ${
+        isLight ? 'bg-slate-900/40' : 'bg-slate-950/80'
+      }`}
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-4xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] text-slate-100"
+        className={`relative w-full max-w-4xl border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] transition-colors ${
+          isLight
+            ? 'bg-white border-slate-200 text-slate-900'
+            : 'bg-slate-900 border-slate-800 text-slate-100'
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* MODAL HEADER */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60 shrink-0">
+        <div
+          className={`px-6 py-4 border-b flex items-center justify-between shrink-0 ${
+            isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950/60 border-slate-800'
+          }`}
+        >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/20">
               <Plus className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 id="new-diagram-modal-title" className="text-base font-extrabold tracking-tight text-white">
+                <h2
+                  id="new-diagram-modal-title"
+                  className={`text-base font-extrabold tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}
+                >
                   Create New Architecture Diagram
                 </h2>
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                <span
+                  className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${
+                    isLight
+                      ? 'bg-sky-50 text-sky-700 border-sky-200'
+                      : 'bg-sky-500/20 text-sky-400 border-sky-500/30'
+                  }`}
+                >
                   INPUT SELECTION
                 </span>
               </div>
-              <p className="text-xs text-slate-400">
+              <p className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                 Choose how you want to initiate your architecture canvas
               </p>
             </div>
@@ -252,24 +280,30 @@ export function NewDiagramInputSelectionModal({
             type="button"
             onClick={onClose}
             aria-label="Close new diagram dialog"
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+            className={`p-2 rounded-xl transition cursor-pointer ${
+              isLight ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/70' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+            }`}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* INPUT SELECTION TABS */}
-        <div className="px-6 pt-3 pb-2 border-b border-slate-800/80 bg-slate-950/30 flex items-center gap-2 overflow-x-auto shrink-0">
+        <div
+          className={`px-6 pt-3 pb-2 border-b flex items-center gap-2 overflow-x-auto shrink-0 ${
+            isLight ? 'border-slate-200 bg-slate-50/70' : 'border-slate-800/80 bg-slate-950/30'
+          }`}
+        >
           <button
             type="button"
             onClick={() => setActiveTab('prompt')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shrink-0 ${
               activeTab === 'prompt'
                 ? 'bg-sky-600 text-white shadow-md shadow-sky-600/30'
-                : 'bg-slate-800/60 text-slate-300 hover:text-white hover:bg-slate-800'
+                : inactiveTabClass
             }`}
           >
-            <Sparkles className="w-4 h-4 text-sky-300" />
+            <Sparkles className={`w-4 h-4 ${activeTab === 'prompt' ? 'text-sky-200' : 'text-sky-500'}`} />
             <span>1. Prompt to Architecture (AI)</span>
           </button>
 
@@ -279,10 +313,10 @@ export function NewDiagramInputSelectionModal({
             className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shrink-0 ${
               activeTab === 'blueprint'
                 ? 'bg-sky-600 text-white shadow-md shadow-sky-600/30'
-                : 'bg-slate-800/60 text-slate-300 hover:text-white hover:bg-slate-800'
+                : inactiveTabClass
             }`}
           >
-            <LayoutGrid className="w-4 h-4 text-amber-300" />
+            <LayoutGrid className={`w-4 h-4 ${activeTab === 'blueprint' ? 'text-amber-200' : 'text-amber-500'}`} />
             <span>2. 77 Certified Blueprints</span>
           </button>
 
@@ -292,10 +326,10 @@ export function NewDiagramInputSelectionModal({
             className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shrink-0 ${
               activeTab === 'vision'
                 ? 'bg-teal-600 text-white shadow-md shadow-teal-600/30'
-                : 'bg-slate-800/60 text-slate-300 hover:text-white hover:bg-slate-800'
+                : inactiveTabClass
             }`}
           >
-            <ImageIcon className="w-4 h-4 text-teal-300" />
+            <ImageIcon className={`w-4 h-4 ${activeTab === 'vision' ? 'text-teal-200' : 'text-teal-500'}`} />
             <span>3. Image Decompile (Vision AI)</span>
           </button>
 
@@ -305,10 +339,10 @@ export function NewDiagramInputSelectionModal({
             className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shrink-0 ${
               activeTab === 'blank'
                 ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                : 'bg-slate-800/60 text-slate-300 hover:text-white hover:bg-slate-800'
+                : inactiveTabClass
             }`}
           >
-            <FileCode2 className="w-4 h-4 text-indigo-300" />
+            <FileCode2 className={`w-4 h-4 ${activeTab === 'blank' ? 'text-indigo-200' : 'text-indigo-500'}`} />
             <span>4. Blank Canvas</span>
           </button>
 
@@ -318,10 +352,10 @@ export function NewDiagramInputSelectionModal({
             className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shrink-0 ${
               activeTab === 'import'
                 ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
-                : 'bg-slate-800/60 text-slate-300 hover:text-white hover:bg-slate-800'
+                : inactiveTabClass
             }`}
           >
-            <FileUp className="w-4 h-4 text-purple-300" />
+            <FileUp className={`w-4 h-4 ${activeTab === 'import' ? 'text-purple-200' : 'text-purple-500'}`} />
             <span>5. Import XML</span>
           </button>
         </div>
@@ -333,7 +367,11 @@ export function NewDiagramInputSelectionModal({
             <form onSubmit={handlePromptSubmit} className="space-y-5">
               {/* Quick suggestions */}
               <div>
-                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
+                <span
+                  className={`text-[11px] font-bold uppercase tracking-wider block mb-2 ${
+                    isLight ? 'text-slate-500' : 'text-slate-400'
+                  }`}
+                >
                   ⚡ 1-Click Starter Prompts:
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -342,17 +380,27 @@ export function NewDiagramInputSelectionModal({
                       key={idx}
                       type="button"
                       onClick={() => handleApplySuggestion(sug)}
-                      className="text-left p-2.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 hover:border-sky-500/50 text-slate-200 transition group cursor-pointer"
+                      className={`text-left p-2.5 rounded-xl border transition group cursor-pointer ${
+                        isLight
+                          ? 'bg-slate-50 hover:bg-sky-50/60 border-slate-200 hover:border-sky-400 text-slate-800'
+                          : 'bg-slate-800/60 hover:bg-slate-800 border-slate-700/80 hover:border-sky-500/50 text-slate-200'
+                      }`}
                     >
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-bold text-sky-400 group-hover:text-sky-300">
+                        <span className={`text-xs font-bold ${isLight ? 'text-sky-700 group-hover:text-sky-800' : 'text-sky-400 group-hover:text-sky-300'}`}>
                           {sug.title}
                         </span>
-                        <span className="text-[9.5px] uppercase font-mono px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-700">
+                        <span
+                          className={`text-[9.5px] uppercase font-mono px-1.5 py-0.5 rounded border ${
+                            isLight
+                              ? 'bg-white text-slate-600 border-slate-200'
+                              : 'bg-slate-900 text-slate-400 border-slate-700'
+                          }`}
+                        >
                           {sug.provider}
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">
+                      <p className={`text-[11px] line-clamp-2 leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                         {sug.prompt}
                       </p>
                     </button>
@@ -363,7 +411,7 @@ export function NewDiagramInputSelectionModal({
               {/* Cloud Provider & Architectural Style selectors */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                  <label className={`block text-xs font-bold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
                     Cloud Provider Ecosystem
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -379,7 +427,11 @@ export function NewDiagramInputSelectionModal({
                         onClick={() => setSelectedProvider(p.id as any)}
                         className={`p-2 rounded-xl text-xs font-bold text-center border transition cursor-pointer ${
                           selectedProvider === p.id
-                            ? 'bg-sky-500/20 border-sky-500 text-sky-300 shadow-xs'
+                            ? isLight
+                              ? 'bg-sky-50 border-sky-500 text-sky-800 shadow-2xs'
+                              : 'bg-sky-500/20 border-sky-500 text-sky-300 shadow-xs'
+                            : isLight
+                            ? 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                             : 'bg-slate-800/40 border-slate-700/80 text-slate-400 hover:text-slate-200'
                         }`}
                       >
@@ -390,7 +442,7 @@ export function NewDiagramInputSelectionModal({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                  <label className={`block text-xs font-bold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
                     Diagram Perspective &amp; Style
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -406,7 +458,11 @@ export function NewDiagramInputSelectionModal({
                         onClick={() => setSelectedStyle(s.id as any)}
                         className={`p-2 rounded-xl text-xs font-bold text-center border transition cursor-pointer ${
                           selectedStyle === s.id
-                            ? 'bg-indigo-500/20 border-indigo-500 text-indigo-300 shadow-xs'
+                            ? isLight
+                              ? 'bg-indigo-50 border-indigo-500 text-indigo-800 shadow-2xs'
+                              : 'bg-indigo-500/20 border-indigo-500 text-indigo-300 shadow-xs'
+                            : isLight
+                            ? 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                             : 'bg-slate-800/40 border-slate-700/80 text-slate-400 hover:text-slate-200'
                         }`}
                       >
@@ -419,9 +475,11 @@ export function NewDiagramInputSelectionModal({
 
               {/* Natural Language Prompt Input */}
               <div>
-                <label className="block text-xs font-bold text-slate-200 mb-1.5 flex items-center justify-between">
-                  <span>Describe Your Architecture Architecture Goals</span>
-                  <span className="text-[11px] text-slate-400 font-normal">Gemini 3.8 Flash AI Synthesis</span>
+                <label className={`block text-xs font-bold mb-1.5 flex items-center justify-between ${isLight ? 'text-slate-800' : 'text-slate-200'}`}>
+                  <span>Describe Your Architecture Goals</span>
+                  <span className={`text-[11px] font-normal ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                    Gemini 3.8 Flash AI Synthesis
+                  </span>
                 </label>
                 <textarea
                   rows={4}
@@ -429,17 +487,17 @@ export function NewDiagramInputSelectionModal({
                   value={promptText}
                   onChange={(e) => setPromptText(e.target.value)}
                   placeholder="e.g. Design a multi-region retail checkout system with Cloud Spanner dual-region nam3, Cloud Armor WAF, GKE autopilot, Pub/Sub order queue, and Gemini real-time fraud scoring..."
-                  className="w-full bg-slate-950 border border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 rounded-2xl p-3.5 text-xs text-white placeholder-slate-500 outline-none transition leading-relaxed resize-none font-medium"
+                  className={`w-full border focus:border-sky-500 focus:ring-1 focus:ring-sky-500 rounded-2xl p-3.5 text-xs outline-none transition leading-relaxed resize-none font-medium ${
+                    isLight
+                      ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
+                      : 'bg-slate-950 border-slate-700 text-white placeholder-slate-500'
+                  }`}
                 />
               </div>
 
               {/* Action Buttons */}
               <div className="pt-2 flex items-center justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
-                >
+                <button type="button" onClick={onClose} className={cancelBtnClass}>
                   Cancel
                 </button>
                 <button
@@ -465,7 +523,11 @@ export function NewDiagramInputSelectionModal({
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search 77 certified reference architectures..."
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-3.5 py-2 text-xs text-white placeholder-slate-500 outline-none focus:border-sky-500 font-medium"
+                    className={`w-full border rounded-xl pl-9 pr-3.5 py-2 text-xs outline-none focus:border-sky-500 font-medium ${
+                      isLight
+                        ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
+                        : 'bg-slate-950 border-slate-700 text-white placeholder-slate-500'
+                    }`}
                   />
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0 overflow-x-auto w-full sm:w-auto">
@@ -476,7 +538,11 @@ export function NewDiagramInputSelectionModal({
                       onClick={() => setSelectedCategory(f)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer ${
                         selectedCategory === f
-                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                          ? isLight
+                            ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                            : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                          : isLight
+                          ? 'bg-slate-100 text-slate-600 hover:text-slate-900'
                           : 'bg-slate-800/60 text-slate-400 hover:text-slate-200'
                       }`}
                     >
@@ -496,13 +562,23 @@ export function NewDiagramInputSelectionModal({
                       onClick={() => setSelectedBlueprintId(bp.id)}
                       className={`p-3 rounded-2xl border transition-all text-left flex flex-col justify-between cursor-pointer ${
                         isSelected
-                          ? 'bg-amber-500/15 border-amber-500 shadow-md shadow-amber-500/10'
+                          ? isLight
+                            ? 'bg-amber-50 border-amber-400 shadow-sm'
+                            : 'bg-amber-500/15 border-amber-500 shadow-md shadow-amber-500/10'
+                          : isLight
+                          ? 'bg-slate-50/70 hover:bg-slate-100/80 border-slate-200 hover:border-slate-300'
                           : 'bg-slate-950/60 hover:bg-slate-900 border-slate-800 hover:border-slate-700'
                       }`}
                     >
                       <div>
                         <div className="flex items-center justify-between mb-1.5">
-                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-amber-300 border border-slate-700">
+                          <span
+                            className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${
+                              isLight
+                                ? 'bg-white text-amber-800 border-amber-200'
+                                : 'bg-slate-800 text-amber-300 border-slate-700'
+                            }`}
+                          >
                             #{bp.id} • {bp.family}
                           </span>
                           {isSelected && (
@@ -511,16 +587,20 @@ export function NewDiagramInputSelectionModal({
                             </div>
                           )}
                         </div>
-                        <h4 className="text-xs font-bold text-white mb-1 leading-snug">
+                        <h4 className={`text-xs font-bold mb-1 leading-snug ${isLight ? 'text-slate-900' : 'text-white'}`}>
                           {bp.name}
                         </h4>
-                        <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">
+                        <p className={`text-[11px] line-clamp-2 leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                           {bp.primaryPurpose}
                         </p>
                       </div>
 
-                      <div className="mt-2.5 pt-2 border-t border-slate-800/60 flex items-center justify-between">
-                        <span className="text-[10px] text-slate-400 truncate max-w-[160px]">
+                      <div
+                        className={`mt-2.5 pt-2 border-t flex items-center justify-between ${
+                          isLight ? 'border-slate-200' : 'border-slate-800/60'
+                        }`}
+                      >
+                        <span className={`text-[10px] truncate max-w-[160px] ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                           {bp.examples || 'Enterprise Cloud Topology'}
                         </span>
                         <button
@@ -529,7 +609,11 @@ export function NewDiagramInputSelectionModal({
                             e.stopPropagation();
                             handleBlueprintSubmit(bp);
                           }}
-                          className="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold text-[10px] transition border border-amber-500/30 flex items-center gap-1 cursor-pointer"
+                          className={`px-2.5 py-1 rounded-lg font-bold text-[10px] transition border flex items-center gap-1 cursor-pointer ${
+                            isLight
+                              ? 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300'
+                              : 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/30'
+                          }`}
                         >
                           <span>Load Diagram</span>
                           <ArrowRight className="w-3 h-3" />
@@ -541,16 +625,16 @@ export function NewDiagramInputSelectionModal({
               </div>
 
               {/* Action bar */}
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
-                <span className="text-xs text-slate-400">
+              <div
+                className={`pt-2 border-t flex items-center justify-between ${
+                  isLight ? 'border-slate-200' : 'border-slate-800'
+                }`}
+              >
+                <span className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                   Showing {filteredBlueprints.length} of 77 Reference Blueprints
                 </span>
                 <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
-                  >
+                  <button type="button" onClick={onClose} className={cancelBtnClass}>
                     Cancel
                   </button>
                   <button
@@ -584,7 +668,10 @@ export function NewDiagramInputSelectionModal({
 
               <div
                 onClick={() => fileInputRef.current?.click()}
-                onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
                 onDrop={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -593,7 +680,11 @@ export function NewDiagramInputSelectionModal({
                 }}
                 className={`p-8 rounded-2xl border-2 border-dashed transition-all cursor-pointer text-center flex flex-col items-center justify-center gap-3 ${
                   uploadedImageBase64
-                    ? 'border-teal-500/80 bg-teal-950/20'
+                    ? isLight
+                      ? 'border-teal-500 bg-teal-50/50'
+                      : 'border-teal-500/80 bg-teal-950/20'
+                    : isLight
+                    ? 'border-slate-300 hover:border-teal-500 bg-slate-50 hover:bg-teal-50/30'
                     : 'border-slate-700 hover:border-teal-500 bg-slate-950/40 hover:bg-teal-950/10'
                 }`}
               >
@@ -605,20 +696,28 @@ export function NewDiagramInputSelectionModal({
                       className="max-h-44 object-contain rounded-xl border border-teal-500/40 shadow-lg"
                     />
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-teal-300">{uploadedFileName}</span>
+                      <span className={`text-xs font-bold ${isLight ? 'text-teal-700' : 'text-teal-300'}`}>
+                        {uploadedFileName}
+                      </span>
                       <span className="text-[10px] text-slate-400 font-mono">(Click to change)</span>
                     </div>
                   </div>
                 ) : (
                   <>
-                    <div className="w-12 h-12 rounded-2xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400">
+                    <div
+                      className={`w-12 h-12 rounded-2xl border flex items-center justify-center ${
+                        isLight
+                          ? 'bg-teal-50 border-teal-200 text-teal-600'
+                          : 'bg-teal-500/10 border-teal-500/30 text-teal-400'
+                      }`}
+                    >
                       <Upload className="w-6 h-6" />
                     </div>
                     <div>
-                      <span className="text-xs font-bold text-white block">
+                      <span className={`text-xs font-bold block ${isLight ? 'text-slate-900' : 'text-white'}`}>
                         Drop architecture screenshot, diagram PNG, or whiteboard photo here
                       </span>
-                      <span className="text-[11px] text-slate-400">
+                      <span className={`text-[11px] ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                         Supports PNG, JPG, WEBP, SVG • Analyzed with Gemini 2.5 Pro Vision
                       </span>
                     </div>
@@ -627,7 +726,7 @@ export function NewDiagramInputSelectionModal({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                <label className={`block text-xs font-bold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
                   Diagram Title (Optional)
                 </label>
                 <input
@@ -635,35 +734,49 @@ export function NewDiagramInputSelectionModal({
                   value={visionProjectName}
                   onChange={(e) => setVisionProjectName(e.target.value)}
                   placeholder="e.g. Decompiled Cloud Infrastructure Topology"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 outline-none focus:border-teal-500 font-medium"
+                  className={inputClass}
                 />
               </div>
 
               {decompileStatus && (
-                <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs flex items-center gap-2">
-                  {isDecompiling && <Loader2 className="w-4 h-4 animate-spin text-teal-400 shrink-0" />}
-                  <span className={decompileStatus.startsWith('Error') ? 'text-red-400' : 'text-teal-300 font-medium'}>
+                <div
+                  className={`p-3 rounded-xl border text-xs flex items-center gap-2 ${
+                    isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
+                  }`}
+                >
+                  {isDecompiling && <Loader2 className="w-4 h-4 animate-spin text-teal-500 shrink-0" />}
+                  <span
+                    className={
+                      decompileStatus.startsWith('Error')
+                        ? 'text-red-500 font-medium'
+                        : isLight
+                        ? 'text-teal-700 font-medium'
+                        : 'text-teal-300 font-medium'
+                    }
+                  >
                     {decompileStatus}
                   </span>
                 </div>
               )}
 
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
+              <div
+                className={`pt-2 border-t flex items-center justify-between ${
+                  isLight ? 'border-slate-200' : 'border-slate-800'
+                }`}
+              >
                 <Link
                   href="/vision"
                   onClick={onClose}
-                  className="text-xs text-teal-400 hover:text-teal-300 flex items-center gap-1 font-semibold hover:underline"
+                  className={`text-xs flex items-center gap-1 font-semibold hover:underline ${
+                    isLight ? 'text-teal-700 hover:text-teal-800' : 'text-teal-400 hover:text-teal-300'
+                  }`}
                 >
                   <span>Open Full Side-by-Side Vision Studio</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </Link>
 
                 <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
-                  >
+                  <button type="button" onClick={onClose} className={cancelBtnClass}>
                     Cancel
                   </button>
                   <button
@@ -678,9 +791,7 @@ export function NewDiagramInputSelectionModal({
                         <span>Decompiling Blueprint...</span>
                       </>
                     ) : (
-                      <>
-                        <span>Decompile &amp; Open Canvas →</span>
-                      </>
+                      <span>Decompile &amp; Open Canvas →</span>
                     )}
                   </button>
                 </div>
@@ -691,18 +802,30 @@ export function NewDiagramInputSelectionModal({
           {/* TAB 4: BLANK CANVAS */}
           {activeTab === 'blank' && (
             <form onSubmit={handleBlankCanvasSubmit} className="space-y-5">
-              <div className="p-6 rounded-2xl bg-slate-950/60 border border-slate-800 text-center space-y-3">
-                <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 mx-auto">
+              <div
+                className={`p-6 rounded-2xl border text-center space-y-3 ${
+                  isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950/60 border-slate-800'
+                }`}
+              >
+                <div
+                  className={`w-14 h-14 rounded-2xl border flex items-center justify-center mx-auto ${
+                    isLight
+                      ? 'bg-indigo-50 border-indigo-200 text-indigo-600'
+                      : 'bg-indigo-500/10 border-indigo-500/30 text-indigo-400'
+                  }`}
+                >
                   <FileCode2 className="w-7 h-7" />
                 </div>
-                <h3 className="text-sm font-bold text-white">Start with a Fresh, Empty Canvas</h3>
-                <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+                <h3 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                  Start with a Fresh, Empty Canvas
+                </h3>
+                <p className={`text-xs max-w-md mx-auto leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                   Initializes a clean slate 16:9 canvas with zero pre-loaded components. You can add components with the AI prompt composer or use Draw.io vector tools.
                 </p>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                <label className={`block text-xs font-bold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
                   Canvas Name
                 </label>
                 <input
@@ -711,16 +834,16 @@ export function NewDiagramInputSelectionModal({
                   value={blankCanvasTitle}
                   onChange={(e) => setBlankCanvasTitle(e.target.value)}
                   placeholder="e.g. Multi-Cloud Event Mesh"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 outline-none focus:border-indigo-500 font-medium"
+                  className={inputClass}
                 />
               </div>
 
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
-                >
+              <div
+                className={`pt-2 border-t flex items-center justify-end gap-3 ${
+                  isLight ? 'border-slate-200' : 'border-slate-800'
+                }`}
+              >
+                <button type="button" onClick={onClose} className={cancelBtnClass}>
                   Cancel
                 </button>
                 <button
@@ -737,7 +860,7 @@ export function NewDiagramInputSelectionModal({
           {activeTab === 'import' && (
             <form onSubmit={handleImportXmlSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                <label className={`block text-xs font-bold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
                   Diagram Title
                 </label>
                 <input
@@ -745,12 +868,12 @@ export function NewDiagramInputSelectionModal({
                   value={importTitle}
                   onChange={(e) => setImportTitle(e.target.value)}
                   placeholder="e.g. Imported Enterprise Architecture"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 outline-none focus:border-purple-500 font-medium"
+                  className={inputClass}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                <label className={`block text-xs font-bold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
                   Paste Draw.io XML or MxGraph Code
                 </label>
                 <textarea
@@ -759,16 +882,20 @@ export function NewDiagramInputSelectionModal({
                   value={pastedXml}
                   onChange={(e) => setPastedXml(e.target.value)}
                   placeholder="<mxGraphModel>...</mxGraphModel>"
-                  className="w-full bg-slate-950 border border-slate-700 font-mono text-[11px] p-3 rounded-xl text-slate-200 focus:border-purple-500 outline-none transition resize-none"
+                  className={`w-full border font-mono text-[11px] p-3 rounded-xl focus:border-purple-500 outline-none transition resize-none ${
+                    isLight
+                      ? 'bg-slate-50 border-slate-300 text-slate-800 placeholder-slate-400'
+                      : 'bg-slate-950 border-slate-700 text-slate-200 placeholder-slate-500'
+                  }`}
                 />
               </div>
 
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
-                >
+              <div
+                className={`pt-2 border-t flex items-center justify-end gap-3 ${
+                  isLight ? 'border-slate-200' : 'border-slate-800'
+                }`}
+              >
+                <button type="button" onClick={onClose} className={cancelBtnClass}>
                   Cancel
                 </button>
                 <button

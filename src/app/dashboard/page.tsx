@@ -480,8 +480,13 @@ function DashboardContent() {
     return versionHistory[activeVersionIndex] || versionHistory[0];
   }, [versionHistory, activeVersionIndex]);
 
-  // Active XML rendered on canvas
-  const activeCanvasXml = currentVersion.xml;
+  // Active XML rendered on canvas (dynamically adapts to Light/Dark theme for canonical baseline)
+  const activeCanvasXml = useMemo(() => {
+    if (!isSessionForked && currentVersion.source === 'initial_load') {
+      return getCanonicalBaselineForPerspective(loadedBlueprintId, canvasPerspective, isLight).xml;
+    }
+    return currentVersion.xml;
+  }, [isSessionForked, currentVersion, loadedBlueprintId, canvasPerspective, isLight]);
 
   // 7. DYNAMIC CONTEXTUAL 3 TOP NEXT-UPDATE SUGGESTIONS (Rotates as user applies prompts!)
   const contextualSuggestions = useMemo(() => {
@@ -1742,14 +1747,16 @@ function DashboardContent() {
   return (
     <div
       onClickCapture={handleDashboardClickCapture}
-      className="flex h-screen w-full bg-[#F8FAFC] text-slate-900 font-sans overflow-hidden"
+      className={`flex h-screen w-full font-sans overflow-hidden transition-colors ${
+        isLight ? 'bg-[#F8FAFC] text-slate-900' : 'dark bg-[#070B14] text-slate-100'
+      }`}
     >
-      {/* 1. LEFT DARK APPLICATION SIDEBAR */}
+      {/* 1. LEFT APPLICATION SIDEBAR */}
       <UnifiedAppSidebar />
 
       {/* MAIN VIEWPORT: 32 / 68 WORKSPACE SPLIT */}
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        {/* Top Dark Header */}
+        {/* Top Header */}
         <AppHeader>
           <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-3">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 to-indigo-600 flex items-center justify-center shadow-md shrink-0">
@@ -1758,9 +1765,19 @@ function DashboardContent() {
               </div>
             </div>
             <div className="min-w-0 flex-1">
-              <h1 className="font-black text-xs md:text-sm tracking-tight flex items-center gap-1.5 text-white whitespace-nowrap overflow-hidden">
+              <h1
+                className={`font-black text-xs md:text-sm tracking-tight flex items-center gap-1.5 whitespace-nowrap overflow-hidden ${
+                  isLight ? 'text-slate-900' : 'text-white'
+                }`}
+              >
                 <span className="shrink-0">PromptCanvas &mdash; Architecture Dashboard</span>
-                <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 shrink-0">
+                <span
+                  className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border shrink-0 ${
+                    isLight
+                      ? 'bg-teal-50 text-teal-700 border-teal-200'
+                      : 'bg-teal-500/10 text-teal-400 border-teal-500/20'
+                  }`}
+                >
                   {currentVersion.versionTag} LIVE
                 </span>
                 {isSessionForked ? (
@@ -1768,22 +1785,30 @@ function DashboardContent() {
                     id="dashboard-session-copy-badge"
                     data-session-copy-id={sessionCopyId || ''}
                     title={`Isolated Session Copy (${sessionCopyId})`}
-                    className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/40 flex items-center gap-1 shrink-0"
+                    className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 shrink-0 ${
+                      isLight
+                        ? 'bg-amber-50 text-amber-800 border-amber-300'
+                        : 'bg-amber-500/20 text-amber-300 border-amber-400/40'
+                    }`}
                   >
-                    <GitFork className="w-2.5 h-2.5 text-amber-300" />
+                    <GitFork className={`w-2.5 h-2.5 ${isLight ? 'text-amber-700' : 'text-amber-300'}`} />
                     <span>Session Copy &bull; Unsaved</span>
                   </span>
                 ) : (
                   <span
                     id="dashboard-canonical-baseline-badge"
-                    className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 shrink-0"
+                    className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 shrink-0 ${
+                      isLight
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                        : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                    }`}
                   >
-                    <Lock className="w-2.5 h-2.5 text-emerald-400" />
+                    <Lock className={`w-2.5 h-2.5 ${isLight ? 'text-emerald-600' : 'text-emerald-400'}`} />
                     <span>Immutable Canonical Baseline</span>
                   </span>
                 )}
               </h1>
-              <p className="text-[10.5px] text-slate-400 font-medium truncate">
+              <p className={`text-[10.5px] font-medium truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                 {isSessionForked
                   ? `Isolated Session Copy forked from Blueprint #${loadedBlueprintId} • Dashboard Canonical Blueprint remains untouched for all users`
                   : 'Canonical Blueprints never change globally • Any prompt edit automatically forks an isolated copy for your session'}
@@ -1809,9 +1834,13 @@ function DashboardContent() {
                   type="button"
                   onClick={() => loadPristineCanonicalBlueprint(loadedBlueprintId)}
                   title="Discard session copy and restore canonical baseline v1.0"
-                  className="flex items-center gap-1 px-2 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-500/30 font-bold text-[11px] whitespace-nowrap transition cursor-pointer shrink-0"
+                  className={`flex items-center gap-1 px-2 py-1.5 rounded-xl border font-bold text-[11px] whitespace-nowrap transition cursor-pointer shrink-0 ${
+                    isLight
+                      ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200'
+                      : 'bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border-rose-500/30'
+                  }`}
                 >
-                  <RotateCcw className="w-3 h-3 text-rose-300" />
+                  <RotateCcw className={`w-3 h-3 ${isLight ? 'text-rose-600' : 'text-rose-300'}`} />
                   <span>Discard &amp; Reset</span>
                 </button>
               </>
@@ -1830,10 +1859,14 @@ function DashboardContent() {
                 }
               }}
               data-testid="dashboard-share-btn"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs transition cursor-pointer shrink-0"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-bold text-xs transition cursor-pointer shrink-0 ${
+                isLight
+                  ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                  : 'bg-slate-800/90 hover:bg-slate-700 text-slate-200 border-slate-700'
+              }`}
               title="Copy shareable link to this architecture"
             >
-              <Share2 className="w-3.5 h-3.5 text-sky-400" />
+              <Share2 className={`w-3.5 h-3.5 ${isLight ? 'text-sky-600' : 'text-sky-400'}`} />
               <span>Share</span>
             </button>
 
@@ -1845,10 +1878,14 @@ function DashboardContent() {
                 setCloudViewerModalMode('slides');
               }}
               data-testid="dashboard-cloud-viewer-btn"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-extrabold text-xs transition shadow-xs cursor-pointer shrink-0"
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border font-extrabold text-xs transition shadow-xs cursor-pointer shrink-0 ${
+                isLight
+                  ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-300'
+                  : 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/40'
+              }`}
               title="Open Gmail Attachment Opener Cloud Preview (Open with Google Slides, Google Docs, or PDF)"
             >
-              <Eye className="w-3.5 h-3.5 text-amber-400" />
+              <Eye className={`w-3.5 h-3.5 ${isLight ? 'text-amber-600' : 'text-amber-400'}`} />
               <span>Cloud Viewer</span>
             </button>
 
@@ -1872,13 +1909,27 @@ function DashboardContent() {
           {/* ========================================================================= */}
           {/* 2. LEFT 32% COMPOSER & UNIFIED HISTORY LOG STREAM                         */}
           {/* ========================================================================= */}
-          <div className="w-full lg:w-[34%] xl:w-[32%] bg-white border border-slate-200 rounded-3xl flex flex-col h-full shrink-0 shadow-sm overflow-hidden">
+          <div
+            className={`w-full lg:w-[34%] xl:w-[32%] border rounded-3xl flex flex-col h-full shrink-0 shadow-sm overflow-hidden transition-colors ${
+              isLight ? 'bg-white border-slate-200' : 'bg-[#0F1626] border-slate-800'
+            }`}
+          >
             
             {/* TOP CONTROLS: COMPACT BLUEPRINT SELECTOR BAR */}
-            <div className="p-3 bg-slate-50 border-b border-slate-200 space-y-2">
+            <div
+              className={`p-3 border-b space-y-2 ${
+                isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/70 border-slate-800'
+              }`}
+            >
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-wider text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200 flex items-center gap-1">
-                  <Lock className="w-2.5 h-2.5 text-teal-600" />
+                <span
+                  className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border flex items-center gap-1 ${
+                    isLight
+                      ? 'text-teal-700 bg-teal-50 border-teal-200'
+                      : 'text-teal-300 bg-teal-500/15 border-teal-500/30'
+                  }`}
+                >
+                  <Lock className={`w-2.5 h-2.5 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
                   <span>Canonical Baseline (Read-Only)</span>
                 </span>
                 <div className="flex items-center gap-1.5">
@@ -1891,7 +1942,7 @@ function DashboardContent() {
                     <Plus className="w-3 h-3 stroke-[2.5]" />
                     <span>+ New</span>
                   </button>
-                  <span className="text-[10px] font-mono text-slate-500 font-bold">
+                  <span className={`text-[10px] font-mono font-bold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                     {filteredTemplates.length} Blueprints
                   </span>
                 </div>
@@ -1907,7 +1958,11 @@ function DashboardContent() {
                       setOpenBlueprintDropdown(false);
                       setOpenLevelDropdown(false);
                     }}
-                    className="w-full bg-white border border-slate-300 hover:border-teal-500 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800 flex items-center justify-between shadow-2xs transition-all text-left cursor-pointer"
+                    className={`w-full border hover:border-teal-500 rounded-xl px-2.5 py-1.5 text-xs font-bold flex items-center justify-between shadow-2xs transition-all text-left cursor-pointer ${
+                      isLight
+                        ? 'bg-white border-slate-300 text-slate-800'
+                        : 'bg-slate-950 border-slate-700 text-slate-100'
+                    }`}
                   >
                     <span className="truncate flex items-center gap-1.5">
                       <span>{selectedCategoryObj.icon}</span>
@@ -1917,7 +1972,11 @@ function DashboardContent() {
                   </button>
 
                   {openCategoryDropdown && (
-                    <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-2 space-y-1">
+                    <div
+                      className={`absolute left-0 right-0 top-full mt-1 border rounded-2xl shadow-xl z-50 p-2 space-y-1 ${
+                        isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-700'
+                      }`}
+                    >
                       <div className="relative">
                         <Search className="w-3 h-3 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                         <input
@@ -1925,7 +1984,11 @@ function DashboardContent() {
                           placeholder="Search category..."
                           value={categorySearchQuery}
                           onChange={(e) => setCategorySearchQuery(e.target.value)}
-                          className="w-full pl-7 pr-2 py-1 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none"
+                          className={`w-full pl-7 pr-2 py-1 border rounded-xl text-xs focus:outline-none ${
+                            isLight
+                              ? 'bg-slate-50 border-slate-200 text-slate-800'
+                              : 'bg-slate-950 border-slate-700 text-slate-100'
+                          }`}
                           autoFocus
                         />
                       </div>
@@ -1938,8 +2001,12 @@ function DashboardContent() {
                             }}
                             className={`p-1.5 rounded-lg cursor-pointer text-xs flex items-center justify-between ${
                               selectedCategory === cat.id
-                                ? 'bg-teal-50 text-teal-900 font-bold'
-                                : 'hover:bg-slate-50 text-slate-700'
+                                ? isLight
+                                  ? 'bg-teal-50 text-teal-900 font-bold'
+                                  : 'bg-teal-500/20 text-teal-300 font-bold'
+                                : isLight
+                                ? 'hover:bg-slate-50 text-slate-700'
+                                : 'hover:bg-slate-800 text-slate-300'
                             }`}
                           >
                             <span className="truncate">{cat.icon} {cat.name}</span>
@@ -1960,17 +2027,27 @@ function DashboardContent() {
                       setOpenCategoryDropdown(false);
                       setOpenLevelDropdown(false);
                     }}
-                    className="w-full bg-white border border-slate-300 hover:border-teal-500 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800 flex items-center justify-between shadow-2xs transition-all text-left cursor-pointer"
+                    className={`w-full border hover:border-teal-500 rounded-xl px-2.5 py-1.5 text-xs font-bold flex items-center justify-between shadow-2xs transition-all text-left cursor-pointer ${
+                      isLight
+                        ? 'bg-white border-slate-300 text-slate-800'
+                        : 'bg-slate-950 border-slate-700 text-slate-100'
+                    }`}
                   >
                     <span className="truncate flex items-center gap-1.5">
-                      <span className="text-[10px] font-mono text-teal-700 font-bold">#{selectedBlueprintObj.id}</span>
+                      <span className={`text-[10px] font-mono font-bold ${isLight ? 'text-teal-700' : 'text-teal-400'}`}>
+                        #{selectedBlueprintObj.id}
+                      </span>
                       <span className="truncate">{selectedBlueprintObj.name}</span>
                     </span>
                     <ChevronDown className="w-3 h-3 text-slate-400 shrink-0" />
                   </button>
 
                   {openBlueprintDropdown && (
-                    <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-2 space-y-1">
+                    <div
+                      className={`absolute left-0 right-0 top-full mt-1 border rounded-2xl shadow-xl z-50 p-2 space-y-1 ${
+                        isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-700'
+                      }`}
+                    >
                       <div className="relative">
                         <Search className="w-3 h-3 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                         <input
@@ -1978,7 +2055,11 @@ function DashboardContent() {
                           placeholder="Search blueprint..."
                           value={blueprintSearchQuery}
                           onChange={(e) => setBlueprintSearchQuery(e.target.value)}
-                          className="w-full pl-7 pr-2 py-1 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none"
+                          className={`w-full pl-7 pr-2 py-1 border rounded-xl text-xs focus:outline-none ${
+                            isLight
+                              ? 'bg-slate-50 border-slate-200 text-slate-800'
+                              : 'bg-slate-950 border-slate-700 text-slate-100'
+                          }`}
                           autoFocus
                         />
                       </div>
@@ -1991,8 +2072,12 @@ function DashboardContent() {
                             }}
                             className={`p-1.5 rounded-lg cursor-pointer text-xs flex items-center justify-between ${
                               selectedBlueprintId === bp.id
-                                ? 'bg-teal-50 text-teal-900 font-bold'
-                                : 'hover:bg-slate-50 text-slate-700'
+                                ? isLight
+                                  ? 'bg-teal-50 text-teal-900 font-bold'
+                                  : 'bg-teal-500/20 text-teal-300 font-bold'
+                                : isLight
+                                ? 'hover:bg-slate-50 text-slate-700'
+                                : 'hover:bg-slate-800 text-slate-300'
                             }`}
                           >
                             <span className="truncate">#{bp.id} {bp.name}</span>
@@ -2009,10 +2094,14 @@ function DashboardContent() {
               {isSessionForked && (
                 <div
                   id="left-panel-session-copy-banner"
-                  className="p-2 rounded-xl bg-amber-50 border border-amber-300 text-[11px] text-amber-900 flex items-center justify-between gap-2"
+                  className={`p-2 rounded-xl border text-[11px] flex items-center justify-between gap-2 ${
+                    isLight
+                      ? 'bg-amber-50 border-amber-300 text-amber-900'
+                      : 'bg-amber-500/15 border-amber-500/40 text-amber-200'
+                  }`}
                 >
                   <div className="flex items-center gap-1.5 min-w-0">
-                    <GitFork className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                    <GitFork className={`w-3.5 h-3.5 shrink-0 ${isLight ? 'text-amber-700' : 'text-amber-400'}`} />
                     <span className="truncate font-semibold">
                       Working in Session Copy &bull; Blueprint #{loadedBlueprintId} unchanged
                     </span>
@@ -2020,7 +2109,7 @@ function DashboardContent() {
                   <button
                     type="button"
                     onClick={() => openSaveOrDiscardModal({ type: 'manual_save' })}
-                    className="px-2 py-0.5 rounded-lg bg-amber-700 hover:bg-amber-800 text-white font-bold text-[10px] shrink-0 cursor-pointer"
+                    className="px-2 py-0.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold text-[10px] shrink-0 cursor-pointer"
                   >
                     Save Project
                   </button>
@@ -2029,14 +2118,28 @@ function DashboardContent() {
             </div>
 
             {/* CENTER SECTION: SINGLE CENTRAL PROMPT COMPOSER & 3 CONTEXTUAL SUGGESTION CHIPS */}
-            <div className="p-3.5 bg-gradient-to-b from-white to-slate-50/80 border-b border-slate-200 space-y-2.5">
+            <div
+              className={`p-3.5 border-b space-y-2.5 ${
+                isLight
+                  ? 'bg-gradient-to-b from-white to-slate-50/80 border-slate-200'
+                  : 'bg-gradient-to-b from-[#0F1626] to-slate-900/80 border-slate-800'
+              }`}
+            >
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-teal-600 animate-pulse" />
-                  <span className="text-xs font-black text-slate-800">Architecture Prompt Composer</span>
+                  <Sparkles className={`w-3.5 h-3.5 animate-pulse ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
+                  <span className={`text-xs font-black ${isLight ? 'text-slate-800' : 'text-slate-100'}`}>
+                    Architecture Prompt Composer
+                  </span>
                 </div>
-                <span className="text-[9px] font-mono font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
+                <span
+                  className={`text-[9px] font-mono font-semibold px-2 py-0.5 rounded border ${
+                    isLight
+                      ? 'bg-slate-100 text-slate-600 border-slate-200'
+                      : 'bg-slate-800 text-slate-300 border-slate-700'
+                  }`}
+                >
                   {isSessionForked
                     ? `Session Copy: ${currentVersion.versionTag} → v${currentVersion.major}.${currentVersion.minor + 1}`
                     : `Forks Session Copy: v1.0 → v1.1`}
@@ -2044,7 +2147,11 @@ function DashboardContent() {
               </div>
 
               {/* Central Single Prompt Composer Input */}
-              <div className="relative bg-white rounded-2xl border-2 border-teal-500/40 focus-within:border-teal-500 focus-within:ring-2 focus-within:ring-teal-500/20 shadow-xs p-2.5 transition-all">
+              <div
+                className={`relative rounded-2xl border-2 border-teal-500/40 focus-within:border-teal-500 focus-within:ring-2 focus-within:ring-teal-500/20 shadow-xs p-2.5 transition-all ${
+                  isLight ? 'bg-white' : 'bg-slate-950'
+                }`}
+              >
                 <textarea
                   id="dashboard-prompt-composer-input"
                   rows={2}
@@ -2057,10 +2164,16 @@ function DashboardContent() {
                     }
                   }}
                   placeholder="Ask Gemini to modify architecture (automatically forks a private session copy)..."
-                  className="w-full bg-transparent text-xs text-slate-800 placeholder-slate-400 focus:outline-none resize-none font-medium leading-relaxed"
+                  className={`w-full bg-transparent text-xs focus:outline-none resize-none font-medium leading-relaxed ${
+                    isLight ? 'text-slate-800 placeholder-slate-400' : 'text-slate-100 placeholder-slate-500'
+                  }`}
                 />
 
-                <div className="flex items-center justify-between pt-2 border-t border-slate-100 mt-1">
+                <div
+                  className={`flex items-center justify-between pt-2 border-t mt-1 ${
+                    isLight ? 'border-slate-100' : 'border-slate-800'
+                  }`}
+                >
                   <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono">
                     <Zap className="w-3 h-3 text-amber-500" />
                     <span>Enter to synthesize in session copy</span>
@@ -2074,7 +2187,9 @@ function DashboardContent() {
                     className={`px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-sm ${
                       activeComposerPrompt.trim() && !isProcessingAi
                         ? 'bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-600 hover:to-indigo-700 text-white shadow-teal-500/25'
-                        : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                        : isLight
+                        ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                        : 'bg-slate-800 text-slate-500 cursor-not-allowed'
                     }`}
                   >
                     {isProcessingAi ? (
@@ -2096,14 +2211,18 @@ function DashboardContent() {
               {aiPlanningStatus && (
                 <div
                   id="dashboard-ai-planning-status"
-                  className="p-2.5 rounded-2xl bg-indigo-50 border border-indigo-200 text-[11px] text-indigo-950 flex items-start gap-2 shadow-2xs"
+                  className={`p-2.5 rounded-2xl border text-[11px] flex items-start gap-2 shadow-2xs ${
+                    isLight
+                      ? 'bg-indigo-50 border-indigo-200 text-indigo-950'
+                      : 'bg-indigo-950/50 border-indigo-500/30 text-indigo-200'
+                  }`}
                 >
-                  <Loader2 className="w-3.5 h-3.5 text-indigo-600 animate-spin shrink-0 mt-0.5" />
+                  <Loader2 className={`w-3.5 h-3.5 animate-spin shrink-0 mt-0.5 ${isLight ? 'text-indigo-600' : 'text-indigo-400'}`} />
                   <div className="space-y-0.5 min-w-0">
-                    <div className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-700">
+                    <div className={`text-[10px] font-extrabold uppercase tracking-wider ${isLight ? 'text-indigo-700' : 'text-indigo-300'}`}>
                       Gemini Architect Reasoning &amp; Planning
                     </div>
-                    <div className="text-[11px] text-slate-700 font-medium leading-snug">
+                    <div className={`text-[11px] font-medium leading-snug ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
                       {aiPlanningStatus}
                     </div>
                   </div>
@@ -2114,10 +2233,14 @@ function DashboardContent() {
               {conversationalReply && (
                 <div
                   id="dashboard-conversational-reply"
-                  className="p-2.5 rounded-2xl bg-teal-50/90 border border-teal-200 text-[11px] text-teal-950 space-y-1 shadow-2xs"
+                  className={`p-2.5 rounded-2xl border text-[11px] space-y-1 shadow-2xs ${
+                    isLight
+                      ? 'bg-teal-50/90 border-teal-200 text-teal-950'
+                      : 'bg-teal-950/50 border-teal-500/30 text-teal-100'
+                  }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-extrabold text-[10px] uppercase tracking-wider text-teal-700 flex items-center gap-1">
+                    <span className={`font-extrabold text-[10px] uppercase tracking-wider flex items-center gap-1 ${isLight ? 'text-teal-700' : 'text-teal-300'}`}>
                       <MessageSquare className="w-3 h-3" />
                       <span>Co-Pilot Advisory (Zero Canvas Mutation)</span>
                     </span>
@@ -2129,17 +2252,19 @@ function DashboardContent() {
                       <X className="w-3 h-3" />
                     </button>
                   </div>
-                  <p className="leading-relaxed text-slate-700">{conversationalReply}</p>
+                  <p className={`leading-relaxed ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>{conversationalReply}</p>
                 </div>
               )}
 
               {/* 3 Top Next Updates Contextual Suggestions */}
               <div className="space-y-1.5 pt-0.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
+                  <span className={`text-[10px] font-black uppercase tracking-wider ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                     Recommended Next Updates
                   </span>
-                  <span className="text-[9px] text-teal-600 font-bold">Click to apply in session copy</span>
+                  <span className={`text-[9px] font-bold ${isLight ? 'text-teal-600' : 'text-teal-400'}`}>
+                    Click to apply in session copy
+                  </span>
                 </div>
 
                 <div className="space-y-1">
@@ -2150,10 +2275,14 @@ function DashboardContent() {
                       type="button"
                       onClick={() => handleExecutePrompt(suggestion)}
                       disabled={isProcessingAi}
-                      className="w-full text-left px-2.5 py-1.5 rounded-xl bg-teal-50/60 hover:bg-teal-100/80 text-teal-900 border border-teal-200/80 text-[11px] font-semibold transition-all flex items-center justify-between group cursor-pointer shadow-2xs"
+                      className={`w-full text-left px-2.5 py-1.5 rounded-xl border text-[11px] font-semibold transition-all flex items-center justify-between group cursor-pointer shadow-2xs ${
+                        isLight
+                          ? 'bg-teal-50/60 hover:bg-teal-100/80 text-teal-900 border-teal-200/80'
+                          : 'bg-teal-500/10 hover:bg-teal-500/20 text-teal-200 border-teal-500/25'
+                      }`}
                     >
                       <span className="truncate pr-2">{suggestion}</span>
-                      <ArrowRight className="w-3 h-3 text-teal-600 shrink-0 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+                      <ArrowRight className={`w-3 h-3 shrink-0 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
                     </button>
                   ))}
                 </div>
@@ -2162,11 +2291,21 @@ function DashboardContent() {
             </div>
 
             {/* BOTTOM SECTION: DUAL CHANGE HISTORY & SNAPSHOT ROLLBACK LOG STREAM */}
-            <div className="flex-1 flex flex-col justify-between bg-slate-50/50 min-h-0 overflow-hidden">
-              <div className="px-3.5 py-2 bg-white border-b border-slate-200 flex items-center justify-between shrink-0">
+            <div
+              className={`flex-1 flex flex-col justify-between min-h-0 overflow-hidden ${
+                isLight ? 'bg-slate-50/50' : 'bg-slate-950/40'
+              }`}
+            >
+              <div
+                className={`px-3.5 py-2 border-b flex items-center justify-between shrink-0 ${
+                  isLight ? 'bg-white border-slate-200' : 'bg-slate-900/80 border-slate-800'
+                }`}
+              >
                 <div className="flex items-center gap-2">
-                  <History className="w-3.5 h-3.5 text-indigo-600" />
-                  <span className="text-xs font-bold text-slate-800">Version Lineage &amp; History Log</span>
+                  <History className={`w-3.5 h-3.5 ${isLight ? 'text-indigo-600' : 'text-indigo-400'}`} />
+                  <span className={`text-xs font-bold ${isLight ? 'text-slate-800' : 'text-slate-100'}`}>
+                    Version Lineage &amp; History Log
+                  </span>
                 </div>
                 <span className="text-[10px] text-slate-400 font-mono font-bold">
                   {versionHistory.length} {versionHistory.length === 1 ? 'Snapshot' : 'Snapshots'}
@@ -2183,36 +2322,50 @@ function DashboardContent() {
                       onClick={() => setActiveVersionIndex(idx)}
                       className={`p-3 rounded-2xl border transition-all cursor-pointer space-y-1.5 shadow-2xs ${
                         isActive
-                          ? 'bg-white border-teal-500 ring-2 ring-teal-500/20 shadow-md'
-                          : 'bg-white/80 hover:bg-white border-slate-200 hover:border-slate-300'
+                          ? isLight
+                            ? 'bg-white border-teal-500 ring-2 ring-teal-500/20 shadow-md'
+                            : 'bg-slate-900 border-teal-500 ring-2 ring-teal-500/20 shadow-md'
+                          : isLight
+                          ? 'bg-white/80 hover:bg-white border-slate-200 hover:border-slate-300'
+                          : 'bg-slate-900/50 hover:bg-slate-900 border-slate-800 hover:border-slate-700'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5 min-w-0">
-                          <span className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-black shrink-0 ${
-                            isActive
-                              ? 'bg-teal-600 text-white'
-                              : 'bg-slate-100 text-slate-700'
-                          }`}>
+                          <span
+                            className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-black shrink-0 ${
+                              isActive
+                                ? 'bg-teal-600 text-white'
+                                : isLight
+                                ? 'bg-slate-100 text-slate-700'
+                                : 'bg-slate-800 text-slate-300'
+                            }`}
+                          >
                             {ver.versionTag}
                           </span>
-                          <span className="text-[10px] font-bold text-slate-700 truncate max-w-[140px]">
+                          <span className={`text-[10px] font-bold truncate max-w-[140px] ${isLight ? 'text-slate-700' : 'text-slate-200'}`}>
                             {ver.persona ? `${ver.persona}` : ver.sourceLabel}
                           </span>
                         </div>
                         <div className="flex items-center gap-1 shrink-0">
-                          <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
-                            ver.versionTag === 'v1.0' && ver.source === 'initial_load'
-                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                              : 'bg-amber-50 text-amber-700 border border-amber-200'
-                          }`}>
+                          <span
+                            className={`px-1.5 py-0.5 rounded text-[9px] font-bold border ${
+                              ver.versionTag === 'v1.0' && ver.source === 'initial_load'
+                                ? isLight
+                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                  : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                                : isLight
+                                ? 'bg-amber-50 text-amber-700 border-amber-200'
+                                : 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                            }`}
+                          >
                             {ver.versionTag === 'v1.0' && ver.source === 'initial_load' ? 'Canonical' : 'Session Copy'}
                           </span>
                           <span className="text-[9px] text-slate-400 font-mono">{ver.timestamp}</span>
                         </div>
                       </div>
 
-                      <p className="text-[11px] text-slate-700 font-semibold line-clamp-2 leading-relaxed">
+                      <p className={`text-[11px] font-semibold line-clamp-2 leading-relaxed ${isLight ? 'text-slate-700' : 'text-slate-200'}`}>
                         {ver.prompt}
                       </p>
 
@@ -2220,11 +2373,13 @@ function DashboardContent() {
                       {ver.plannedSteps && ver.plannedSteps.length > 0 && (
                         <div
                           id={isActive ? 'dashboard-ai-reasoning-plan-card' : undefined}
-                          className="p-2 rounded-xl bg-slate-50 border border-slate-200/90 space-y-1 text-[10px]"
+                          className={`p-2 rounded-xl border space-y-1 text-[10px] ${
+                            isLight ? 'bg-slate-50 border-slate-200/90' : 'bg-slate-950 border-slate-800'
+                          }`}
                         >
-                          <div className="flex items-center justify-between text-[9.5px] font-extrabold uppercase tracking-wider text-indigo-700">
+                          <div className={`flex items-center justify-between text-[9.5px] font-extrabold uppercase tracking-wider ${isLight ? 'text-indigo-700' : 'text-indigo-400'}`}>
                             <span className="flex items-center gap-1">
-                              <Sparkles className="w-2.5 h-2.5 text-indigo-600" />
+                              <Sparkles className={`w-2.5 h-2.5 ${isLight ? 'text-indigo-600' : 'text-indigo-400'}`} />
                               <span>Gemini Reasoning &amp; Execution Plan</span>
                             </span>
                             {ver.modelUsed && (
@@ -2233,7 +2388,7 @@ function DashboardContent() {
                               </span>
                             )}
                           </div>
-                          <ul className="space-y-0.5 text-slate-600 leading-snug">
+                          <ul className={`space-y-0.5 leading-snug ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                             {ver.plannedSteps.map((stepStr, sIdx) => (
                               <li key={sIdx} className="truncate" title={stepStr}>
                                 {stepStr}
@@ -2243,17 +2398,17 @@ function DashboardContent() {
                         </div>
                       )}
 
-                      <div className="pt-1 flex items-center justify-between border-t border-slate-100 text-[10px]">
-                        <span className="text-teal-700 font-medium truncate max-w-[205px]" title={ver.diffSummary}>
+                      <div className={`pt-1 flex items-center justify-between border-t text-[10px] ${isLight ? 'border-slate-100' : 'border-slate-800'}`}>
+                        <span className={`font-medium truncate max-w-[205px] ${isLight ? 'text-teal-700' : 'text-teal-400'}`} title={ver.diffSummary}>
                           {ver.diffSummary}
                         </span>
                         {isActive ? (
-                          <span className="text-teal-700 font-bold flex items-center gap-0.5 shrink-0">
+                          <span className={`font-bold flex items-center gap-0.5 shrink-0 ${isLight ? 'text-teal-700' : 'text-teal-400'}`}>
                             <CheckCircle2 className="w-3 h-3" />
                             <span>Active</span>
                           </span>
                         ) : (
-                          <span className="text-slate-400 hover:text-indigo-600 font-semibold flex items-center gap-0.5 shrink-0">
+                          <span className="text-slate-400 hover:text-indigo-500 font-semibold flex items-center gap-0.5 shrink-0">
                             <RotateCcw className="w-2.5 h-2.5" />
                             <span>View / Restore</span>
                           </span>
@@ -2264,7 +2419,6 @@ function DashboardContent() {
                 })}
               </div>
 
-
             </div>
 
           </div>
@@ -2272,13 +2426,25 @@ function DashboardContent() {
           {/* ========================================================================= */}
           {/* 3. RIGHT 68% HIGH-FIDELITY INTERACTIVE CANVAS                             */}
           {/* ========================================================================= */}
-          <div className="flex-1 bg-[#EAEDF1] rounded-3xl border border-slate-300 p-3.5 lg:p-4 flex flex-col justify-between overflow-hidden shadow-sm relative">
+          <div
+            className={`flex-1 rounded-3xl border p-3.5 lg:p-4 flex flex-col justify-between overflow-hidden shadow-sm relative transition-colors ${
+              isLight ? 'bg-[#EAEDF1] border-slate-300' : 'bg-[#0B111E] border-slate-800'
+            }`}
+          >
             
             {/* Streamlined Single-Row Canvas Header Control Strip */}
-            <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-slate-300/80 mb-2">
+            <div
+              className={`flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b mb-2 ${
+                isLight ? 'border-slate-300/80' : 'border-slate-800'
+              }`}
+            >
               {/* Left: Perspective Switcher + Zoom Controls */}
               <div className="flex items-center gap-2 shrink-0">
-                <div className="flex items-center bg-white p-0.5 rounded-xl border border-slate-300 text-xs shadow-2xs">
+                <div
+                  className={`flex items-center p-0.5 rounded-xl border text-xs shadow-2xs ${
+                    isLight ? 'bg-white border-slate-300' : 'bg-slate-900 border-slate-700'
+                  }`}
+                >
                   {(["Technical", "Logical", "Conceptual", "Process", "Whiteboard", "Paper"] as ArchitecturePerspective[]).map((p) => (
                     <button
                       key={p}
@@ -2286,7 +2452,11 @@ function DashboardContent() {
                       type="button"
                       onClick={() => handleSwitchPerspective(p)}
                       className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
-                        canvasPerspective === p ? 'bg-teal-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                        canvasPerspective === p
+                          ? 'bg-teal-600 text-white shadow-xs'
+                          : isLight
+                          ? 'text-slate-600 hover:text-slate-900'
+                          : 'text-slate-300 hover:text-white'
                       }`}
                     >
                       {p}
@@ -2294,31 +2464,41 @@ function DashboardContent() {
                   ))}
                 </div>
 
-                <div className="h-4 w-px bg-slate-300" />
+                <div className={`h-4 w-px ${isLight ? 'bg-slate-300' : 'bg-slate-700'}`} />
 
                 {/* Zoom Controls */}
-                <div className="flex items-center gap-1 bg-white p-0.5 rounded-xl border border-slate-300 shadow-2xs">
+                <div
+                  className={`flex items-center gap-1 p-0.5 rounded-xl border shadow-2xs ${
+                    isLight ? 'bg-white border-slate-300' : 'bg-slate-900 border-slate-700'
+                  }`}
+                >
                   <button
                     type="button"
                     onClick={() => setZoomScale((z) => Math.min(z + 0.1, 1.8))}
-                    className="w-6 h-6 flex items-center justify-center text-slate-700 hover:bg-slate-100 rounded-lg text-xs font-bold cursor-pointer"
+                    className={`w-6 h-6 flex items-center justify-center rounded-lg text-xs font-bold cursor-pointer ${
+                      isLight ? 'text-slate-700 hover:bg-slate-100' : 'text-slate-200 hover:bg-slate-800'
+                    }`}
                   >
                     ＋
                   </button>
-                  <span className="text-[10px] font-mono font-bold text-slate-600 px-1">
+                  <span className={`text-[10px] font-mono font-bold px-1 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                     {Math.round(zoomScale * 100)}%
                   </span>
                   <button
                     type="button"
                     onClick={() => setZoomScale((z) => Math.max(z - 0.1, 0.6))}
-                    className="w-6 h-6 flex items-center justify-center text-slate-700 hover:bg-slate-100 rounded-lg text-xs font-bold cursor-pointer"
+                    className={`w-6 h-6 flex items-center justify-center rounded-lg text-xs font-bold cursor-pointer ${
+                      isLight ? 'text-slate-700 hover:bg-slate-100' : 'text-slate-200 hover:bg-slate-800'
+                    }`}
                   >
                     －
                   </button>
                   <button
                     type="button"
                     onClick={() => setZoomScale(1.0)}
-                    className="w-6 h-6 flex items-center justify-center text-slate-700 hover:bg-slate-100 rounded-lg text-xs cursor-pointer"
+                    className={`w-6 h-6 flex items-center justify-center rounded-lg text-xs cursor-pointer ${
+                      isLight ? 'text-slate-700 hover:bg-slate-100' : 'text-slate-200 hover:bg-slate-800'
+                    }`}
                   >
                     <Maximize2 className="w-3 h-3" />
                   </button>
@@ -2326,7 +2506,11 @@ function DashboardContent() {
               </div>
 
               {/* Right: Canvas Actions (Edit Inline, Cloud Viewer, Audit, Auto-Fix) */}
-              <div className="flex items-center gap-1.5 bg-white/80 backdrop-blur-xs p-1 rounded-2xl border border-slate-300/80 shadow-2xs">
+              <div
+                className={`flex items-center gap-1.5 backdrop-blur-xs p-1 rounded-2xl border shadow-2xs ${
+                  isLight ? 'bg-white/80 border-slate-300/80' : 'bg-slate-900/80 border-slate-700'
+                }`}
+              >
                 {isSessionForked && (
                   <button
                     id="toolbar-save-session-project-btn"
@@ -2344,9 +2528,13 @@ function DashboardContent() {
                   type="button"
                   onClick={() => setIsInlineEditOpen(true)}
                   title="Edit Inline with Draw.io"
-                  className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700 font-bold text-[11px] flex items-center gap-1 transition cursor-pointer"
+                  className={`px-2.5 py-1 rounded-xl font-bold text-[11px] flex items-center gap-1 transition cursor-pointer ${
+                    isLight
+                      ? 'bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700'
+                      : 'bg-slate-800 hover:bg-teal-500/20 hover:text-teal-300 text-slate-200'
+                  }`}
                 >
-                  <Edit3 className="w-3.5 h-3.5 text-teal-600" />
+                  <Edit3 className={`w-3.5 h-3.5 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
                   <span>Edit Inline</span>
                 </button>
 
@@ -2358,9 +2546,13 @@ function DashboardContent() {
                     setCloudViewerModalMode('slides');
                   }}
                   title="Open Gmail Attachment Opener Cloud Preview (Open with Google Slides, Google Docs, or PDF)"
-                  className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 font-bold text-[11px] flex items-center gap-1 transition cursor-pointer"
+                  className={`px-2.5 py-1 rounded-xl font-bold text-[11px] flex items-center gap-1 transition cursor-pointer ${
+                    isLight
+                      ? 'bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700'
+                      : 'bg-slate-800 hover:bg-indigo-500/20 hover:text-indigo-300 text-slate-200'
+                  }`}
                 >
-                  <Eye className="w-3.5 h-3.5 text-indigo-600" />
+                  <Eye className={`w-3.5 h-3.5 ${isLight ? 'text-indigo-600' : 'text-indigo-400'}`} />
                   <span>Cloud Viewer</span>
                 </button>
 
@@ -2369,9 +2561,13 @@ function DashboardContent() {
                   type="button"
                   onClick={() => setIsAuditModalOpen(true)}
                   title="Run Omni Sanity Audit"
-                  className="px-2.5 py-1 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-[11px] flex items-center gap-1 transition cursor-pointer"
+                  className={`px-2.5 py-1 rounded-xl border font-bold text-[11px] flex items-center gap-1 transition cursor-pointer ${
+                    isLight
+                      ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
+                      : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/30'
+                  }`}
                 >
-                  <ShieldAlert className="w-3.5 h-3.5 text-amber-600" />
+                  <ShieldAlert className={`w-3.5 h-3.5 ${isLight ? 'text-amber-600' : 'text-amber-400'}`} />
                   <span>Audit</span>
                 </button>
 
@@ -2393,7 +2589,9 @@ function DashboardContent() {
             <div className="flex-1 min-h-0 flex items-center justify-center overflow-auto p-2">
               <div
                 style={{ transform: `scale(${zoomScale})`, transformOrigin: 'center center' }}
-                className="w-full h-full max-w-[1440px] max-h-full min-h-0 bg-white rounded-2xl border border-slate-300 shadow-xl overflow-hidden flex items-center justify-center relative transition-transform duration-200"
+                className={`w-full h-full max-w-[1440px] max-h-full min-h-0 rounded-2xl border shadow-xl overflow-hidden flex items-center justify-center relative transition-transform duration-200 ${
+                  isLight ? 'bg-white border-slate-300' : 'bg-[#090D16] border-slate-800'
+                }`}
               >
                 <DiagramViewerRenderSafe
                   key={`${loadedBlueprintId}_${canvasPerspective}_${isLight ? 'light' : 'dark'}_${currentVersion.versionTag}_${currentVersion.id}`}

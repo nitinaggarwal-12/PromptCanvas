@@ -110,8 +110,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { theme } = useTheme();
-  // Left navigation menu is strictly dark theme as specified in design system
-  const isLight = false;
+  const isLight = theme === 'light';
 
   const isItemActive = (href: string) => {
     const [targetPath, targetQuery] = href.split('?');
@@ -178,11 +177,6 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
     return () => window.removeEventListener('promptcanvas_toggle_sidebar', handleToggleEvent);
   }, [setInternalIsOpen]);
 
-  // (isCanvasActive / isCanvasGroupOpen removed: the Canvas expandable group was
-  // dissolved when Design Canvas and My Architectures became peers in the
-  // CREATE and REFERENCE groups. Its /workspace tab-exclusion rule now lives in
-  // isItemActive above.)
-
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [user, setUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
@@ -221,16 +215,16 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
       <aside
         id="unified-app-sidebar"
         aria-label="Global Application Navigation Rail"
-        className={`dark ${
+        className={`${isLight ? '' : 'dark'} ${
           isSidebarOpen ? 'w-64' : 'w-16'
         } hidden lg:flex border-r transition-all duration-300 flex-col justify-between z-40 shrink-0 sticky top-0 h-screen select-none ${
-          isLight ? 'bg-white border-slate-200 text-slate-800 shadow-sm' : 'bg-[#090d16]/95 border-slate-800/80 text-slate-100'
+          isLight ? 'bg-white border-slate-200 text-slate-800 shadow-xs' : 'bg-[#090d16]/95 border-slate-800/80 text-slate-100'
         } ${className}`}
       >
         {/* Top Branding & Navigation */}
         <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
           {/* Brand Header */}
-          <div className={`h-14 border-b flex items-center justify-between px-3.5 shrink-0 ${isLight ? 'border-slate-200' : 'border-slate-800/60'}`}>
+          <div className={`h-14 border-b flex items-center justify-between px-3.5 shrink-0 ${isLight ? 'border-slate-200 bg-white' : 'border-slate-800/60'}`}>
             {isSidebarOpen ? (
               <>
                 <Link
@@ -245,7 +239,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                   </div>
                   <div className="flex flex-col">
                     <span className={`font-extrabold tracking-wider text-xs uppercase ${isLight ? 'text-slate-900' : 'text-white'}`}>Prompt Canvas</span>
-                    <span className="text-[9px] text-sky-600 dark:text-sky-400 font-semibold tracking-wider">Enterprise AI</span>
+                    <span className={`text-[9px] font-semibold tracking-wider ${isLight ? 'text-sky-600' : 'text-sky-400'}`}>Enterprise AI</span>
                   </div>
                 </Link>
                 <button
@@ -254,7 +248,9 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                   onClick={toggleSidebar}
                   aria-expanded={isSidebarOpen}
                   aria-controls="unified-primary-nav"
-                  className="min-w-[40px] min-h-[40px] p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer transition-colors flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95"
+                  className={`min-w-[40px] min-h-[40px] p-2 rounded-lg cursor-pointer transition-colors flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95 ${
+                    isLight ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-900' : 'hover:bg-slate-800 text-slate-300 hover:text-white'
+                  }`}
                   title="Collapse Left Navigation Menu"
                   aria-label="Collapse Left Navigation Menu"
                 >
@@ -269,7 +265,11 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                   onClick={toggleSidebar}
                   aria-expanded={isSidebarOpen}
                   aria-controls="unified-primary-nav"
-                  className="min-w-[42px] min-h-[42px] p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-sky-500/15 text-slate-300 hover:text-sky-500 dark:hover:text-sky-400 cursor-pointer transition-all border border-slate-200/60 dark:border-slate-700/60 hover:border-sky-500/40 shadow-xs flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95"
+                  className={`min-w-[42px] min-h-[42px] p-2 rounded-xl cursor-pointer transition-all border shadow-xs flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95 ${
+                    isLight
+                      ? 'bg-slate-100 hover:bg-sky-50 text-slate-600 hover:text-sky-600 border-slate-200 hover:border-sky-300'
+                      : 'bg-slate-800/80 hover:bg-sky-500/15 text-slate-300 hover:text-sky-400 border-slate-700/60 hover:border-sky-500/40'
+                  }`}
                   title="Expand Left Navigation Menu"
                   aria-label="Expand Left Navigation Menu"
                 >
@@ -308,13 +308,13 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
             {NAV_GROUPS.map((group, groupIndex) => (
               <div key={group.id} role="group" aria-label={group.label}>
                 {groupIndex > 0 && (
-                  <div className="border-t border-slate-200 dark:border-slate-800/80 my-2" />
+                  <div className={`border-t my-2 ${isLight ? 'border-slate-200' : 'border-slate-800/80'}`} />
                 )}
 
                 {/* Collapsed rail has no room for a visual label; the rule above is
                     enough to keep the groups legible. */}
                 {isSidebarOpen && (
-                  <div className="px-2 py-1 text-[9.5px] font-mono font-bold tracking-wider uppercase text-slate-300">
+                  <div className={`px-2 py-1 text-[9.5px] font-mono font-bold tracking-wider uppercase ${isLight ? 'text-slate-500' : 'text-slate-300'}`}>
                     {group.label}
                   </div>
                 )}
@@ -340,7 +340,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                             isActive
                               ? 'bg-sky-600 text-white font-extrabold shadow-sm'
                               : isLight
-                              ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                              ? 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
                               : 'text-slate-200 hover:text-white hover:bg-slate-800/80'
                           }`}
                         >
@@ -354,7 +354,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                             <Icon
                               aria-hidden="true"
                               className={`w-4 h-4 shrink-0 ${
-                                isActive ? 'text-white' : 'text-slate-300'
+                                isActive ? 'text-white' : isLight ? 'text-slate-500' : 'text-slate-300'
                               }`}
                             />
                             <span className={isSidebarOpen ? 'truncate' : 'sr-only'}>{item.name}</span>
@@ -364,6 +364,8 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                               className={`shrink-0 ml-2 text-[9px] font-mono font-bold px-1.5 py-0.2 rounded border ${
                                 isActive
                                   ? 'bg-white/20 text-white border-white/20'
+                                  : isLight
+                                  ? 'bg-sky-50 text-sky-700 border-sky-200'
                                   : item.badgeColor ??
                                     'bg-sky-500/20 text-sky-400 border-sky-500/30'
                               }`}
@@ -379,7 +381,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
               </div>
             ))}
 
-            <div className="border-t border-slate-200 dark:border-slate-800/80 my-2" />
+            <div className={`border-t my-2 ${isLight ? 'border-slate-200' : 'border-slate-800/80'}`} />
 
             {/* BYOK API KEY & SETTINGS */}
             <div className="pt-2 space-y-1">
@@ -399,12 +401,12 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                     isProfileModalOpen
                       ? 'bg-sky-600 text-white font-extrabold shadow-sm'
                       : isLight
-                      ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                      ? 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
                       : 'text-slate-200 hover:text-white hover:bg-slate-800/80'
                   }`}
                 >
                   <div className={`flex items-center ${isSidebarOpen ? 'gap-3 min-w-0' : 'justify-center'} shrink-0`}>
-                    <Settings aria-hidden="true" className={`w-4 h-4 shrink-0 ${isProfileModalOpen ? 'text-white' : 'text-slate-300'}`} />
+                    <Settings aria-hidden="true" className={`w-4 h-4 shrink-0 ${isProfileModalOpen ? 'text-white' : isLight ? 'text-slate-500' : 'text-slate-300'}`} />
                     <span className={isSidebarOpen ? 'truncate' : 'sr-only'}>Settings &amp; AI Tier</span>
                   </div>
                 </div>
@@ -415,11 +417,6 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
 
         {/* Bottom Sidebar: Theme & Profile */}
         <div className={`p-3 border-t space-y-2 ${isLight ? 'border-slate-200 bg-slate-50' : 'border-slate-800/60 bg-slate-950/40'}`}>
-          {/*
-            Collapsed rail is 64px wide (40px inside p-3). A labelled toggle
-            (71px) beside the chevron (28px) overflowed it by 19px and 47px
-            respectively, painting over page content. Stack them when collapsed.
-          */}
           <div className={`flex items-center ${isSidebarOpen ? 'justify-between' : 'flex-col gap-2'}`}>
             <ThemeToggleBtn iconOnly={!isSidebarOpen} />
             {!isSidebarOpen && (
@@ -428,7 +425,9 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                 onClick={toggleSidebar}
                 aria-label="Expand Left Navigation Sidebar"
                 aria-expanded={isSidebarOpen}
-                className="min-w-[40px] min-h-[40px] p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95"
+                className={`min-w-[40px] min-h-[40px] p-2 rounded-lg cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95 ${
+                  isLight ? 'hover:bg-slate-200 text-slate-600 hover:text-slate-900' : 'hover:bg-slate-800 text-slate-300 hover:text-white'
+                }`}
                 title="Expand Sidebar"
               >
                 <ChevronRight className="w-4 h-4" aria-hidden="true" />
@@ -447,12 +446,12 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                 }`}
               >
                 <div className="flex items-center gap-2.5 truncate">
-                  <div className="w-7 h-7 rounded-full bg-sky-500/20 text-sky-600 dark:text-sky-400 font-bold flex items-center justify-center text-xs shrink-0">
+                  <div className={`w-7 h-7 rounded-full bg-sky-500/20 font-bold flex items-center justify-center text-xs shrink-0 ${isLight ? 'text-sky-700' : 'text-sky-400'}`}>
                     {(user.name || user.email)[0].toUpperCase()}
                   </div>
                   <div className="truncate">
                     <p className={`text-xs font-bold truncate ${isLight ? 'text-slate-900' : 'text-slate-200'}`}>{user.name || user.email}</p>
-                    <p className="text-[10px] text-sky-600 dark:text-sky-400 font-mono">{user.is_guest ? 'Guest Session' : 'Verified Enterprise'}</p>
+                    <p className={`text-[10px] font-mono ${isLight ? 'text-sky-700' : 'text-sky-400'}`}>{user.is_guest ? 'Guest Session' : 'Verified Enterprise'}</p>
                   </div>
                 </div>
               </button>
@@ -462,7 +461,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                 onClick={() => setIsAuthOpen(true)}
                 aria-label="Sign In or Open Profile"
                 className={`w-full min-h-[44px] py-2 px-3 rounded-xl border font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
-                  isLight ? 'bg-white hover:bg-slate-100 border-slate-300 text-sky-800' : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-sky-300'
+                  isLight ? 'bg-white hover:bg-slate-100 border-slate-300 text-sky-700 shadow-2xs' : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-sky-300'
                 }`}
               >
                 <User className="w-3.5 h-3.5" aria-hidden="true" />
@@ -475,7 +474,9 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                 type="button"
                 onClick={() => setIsProfileModalOpen(true)}
                 aria-label={`Open User Profile (${user.name || user.email})`}
-                className="w-10 h-10 min-w-[40px] min-h-[40px] mx-auto rounded-full bg-sky-500/20 text-sky-600 dark:text-sky-400 font-bold flex items-center justify-center text-xs shrink-0 hover:bg-sky-500/30 transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+                className={`w-10 h-10 min-w-[40px] min-h-[40px] mx-auto rounded-full bg-sky-500/20 font-bold flex items-center justify-center text-xs shrink-0 hover:bg-sky-500/30 transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
+                  isLight ? 'text-sky-700' : 'text-sky-400'
+                }`}
                 title={user.name || user.email}
               >
                 {(user.name || user.email)[0].toUpperCase()}
@@ -485,7 +486,9 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                 type="button"
                 onClick={() => setIsAuthOpen(true)}
                 aria-label="Sign In or Open Profile"
-                className="w-10 h-10 min-w-[40px] min-h-[40px] mx-auto rounded-xl bg-slate-200/80 dark:bg-slate-800 text-slate-300 hover:text-sky-400 flex items-center justify-center transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+                className={`w-10 h-10 min-w-[40px] min-h-[40px] mx-auto rounded-xl flex items-center justify-center transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
+                  isLight ? 'bg-slate-200/80 text-slate-600 hover:text-sky-600' : 'bg-slate-800 text-slate-300 hover:text-sky-400'
+                }`}
                 title="Sign In / Profile"
               >
                 <User className="w-4 h-4" aria-hidden="true" />

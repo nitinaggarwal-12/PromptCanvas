@@ -2,44 +2,26 @@
 
 /**
  * AppHeader — the single consolidated application header bar.
- *
- * WHY THIS EXISTS
- * Before consolidation every route hand-rolled its own `<header>`. An audit of
- * all 18 page files found the intent was identical everywhere but every
- * geometric property had drifted:
- *
- *   height    7 distinct  (h-11, h-14, h-16, h-16 md:h-18, py-2.5, py-3.5, none)
- *   z-index   4 distinct  (z-30, z-40, z-50, none)
- *   position  2 distinct  (sticky top-0 vs. bare flex shrink-0)
- *   padding  12 distinct  (px-1..px-6 x md:px-4..md:px-12 x sm: variants)
- *   blur      3 distinct  (backdrop-blur-md, backdrop-blur-xl, none)
- *   shadow    3 distinct  (shadow-md, shadow-xs, none)
- *   max-w     6 distinct  (none, max-w-none, max-w-8xl, 1600px, 1680px, ...)
- *
- * This component fixes the shell chrome (height / z / position / padding /
- * surface / dark-scoping) and exposes only the parts that legitimately differ
- * per route as slots. Pages keep their own distinct controls; they no longer
- * own the geometry.
- *
- * DESIGN LAWS ENFORCED HERE (see AGENTS.md)
- *  - Dark Shell + Light Workspace: the `dark` class is scoped to THIS element.
- *    It must never be lifted onto <html>/<body>, which would activate
- *    `dark:` variants across the light-mode content workspaces below.
- *  - Sticky Full-Width Navbars: the background wrapper bleeds edge-to-edge.
- *  - Zero Surrounding Empty Space: full-bleed by default, no centered gutter.
+ * Adapts to active Light and Dark themes via useTheme().
  */
 
 import React from 'react';
 import Link from 'next/link';
 import { Menu } from 'lucide-react';
+import { useTheme } from '@/lib/themeContext';
 import ByokHeaderButton from './ByokHeaderButton';
 
 /** Canonical geometry. Change it here and every route moves together. */
 export const APP_HEADER_HEIGHT_PX = 56;
 
-const SHELL =
+const SHELL_DARK =
   'dark sticky top-0 w-full h-14 shrink-0 border-b flex items-center justify-between gap-3 ' +
   'px-4 md:px-8 bg-[#0B111E]/95 backdrop-blur-md border-slate-800 text-white shadow-md ' +
+  'transition-colors';
+
+const SHELL_LIGHT =
+  'sticky top-0 w-full h-14 shrink-0 border-b flex items-center justify-between gap-3 ' +
+  'px-4 md:px-8 bg-white/95 backdrop-blur-md border-slate-200 text-slate-900 shadow-xs ' +
   'transition-colors';
 
 export type HeaderTone =
@@ -53,53 +35,58 @@ export type HeaderTone =
   | 'slate';
 
 /** Icon-tile + badge tints, kept in one place so routes stay visually distinct
- *  from each other but internally consistent. */
+ *  from each other but internally consistent across Light and Dark themes. */
 const TONES: Record<HeaderTone, { tile: string; badge: string }> = {
   blue: {
-    tile: 'bg-blue-600/20 border-blue-500/30 text-blue-400',
-    badge: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
+    tile: 'bg-blue-50 border-blue-200 text-blue-600 dark:bg-blue-600/20 dark:border-blue-500/30 dark:text-blue-400',
+    badge: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/15 dark:text-blue-400 dark:border-blue-500/30',
   },
   teal: {
-    tile: 'bg-teal-500/15 border-teal-500/30 text-teal-400',
-    badge: 'bg-teal-500/15 text-teal-300 border-teal-500/30',
+    tile: 'bg-teal-50 border-teal-200 text-teal-600 dark:bg-teal-500/15 dark:border-teal-500/30 dark:text-teal-400',
+    badge: 'bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-500/15 dark:text-teal-300 dark:border-teal-500/30',
   },
   indigo: {
-    tile: 'bg-indigo-500/15 border-indigo-500/30 text-indigo-400',
-    badge: 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30',
+    tile: 'bg-indigo-50 border-indigo-200 text-indigo-600 dark:bg-indigo-500/15 dark:border-indigo-500/30 dark:text-indigo-400',
+    badge: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-500/15 dark:text-indigo-300 dark:border-indigo-500/30',
   },
   sky: {
-    tile: 'bg-sky-500/15 border-sky-500/30 text-sky-400',
-    badge: 'bg-sky-500/15 text-sky-300 border-sky-500/30',
+    tile: 'bg-sky-50 border-sky-200 text-sky-600 dark:bg-sky-500/15 dark:border-sky-500/30 dark:text-sky-400',
+    badge: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/15 dark:text-sky-300 dark:border-sky-500/30',
   },
   emerald: {
-    tile: 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400',
-    badge: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+    tile: 'bg-emerald-50 border-emerald-200 text-emerald-600 dark:bg-emerald-500/15 dark:border-emerald-500/30 dark:text-emerald-400',
+    badge: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30',
   },
   violet: {
-    tile: 'bg-violet-500/15 border-violet-500/30 text-violet-400',
-    badge: 'bg-violet-500/15 text-violet-300 border-violet-500/30',
+    tile: 'bg-violet-50 border-violet-200 text-violet-600 dark:bg-violet-500/15 dark:border-violet-500/30 dark:text-violet-400',
+    badge: 'bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-500/15 dark:text-violet-300 dark:border-violet-500/30',
   },
   amber: {
-    tile: 'bg-amber-500/15 border-amber-500/30 text-amber-400',
-    badge: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+    tile: 'bg-amber-50 border-amber-200 text-amber-600 dark:bg-amber-500/15 dark:border-amber-500/30 dark:text-amber-400',
+    badge: 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30',
   },
   slate: {
-    tile: 'bg-slate-700/40 border-slate-600/50 text-slate-300',
-    badge: 'bg-slate-700/50 text-slate-300 border-slate-600/50',
+    tile: 'bg-slate-100 border-slate-200 text-slate-600 dark:bg-slate-700/40 dark:border-slate-600/50 dark:text-slate-300',
+    badge: 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-700/50 dark:text-slate-300 dark:border-slate-600/50',
   },
 };
 
-/** Shared action-button recipes. The right-hand controls had drifted too
- *  (px-3 py-1.5 text-xs on /gcp vs px-2.5 py-1 text-[11px] on /vision). */
+/** Shared action-button recipes with Light & Dark support. */
 export const headerBtn = {
   base:
     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border ' +
     'transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ' +
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 active:scale-95',
-  neutral: 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700',
+  neutral:
+    'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300 ' +
+    'dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 dark:border-slate-700',
   primary: 'bg-blue-600 hover:bg-blue-700 text-white border-blue-500',
-  ghost: 'bg-transparent hover:bg-slate-800 text-slate-300 border-transparent',
-  success: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+  ghost:
+    'bg-transparent hover:bg-slate-100 text-slate-600 border-transparent ' +
+    'dark:hover:bg-slate-800 dark:text-slate-300',
+  success:
+    'bg-emerald-50 text-emerald-700 border-emerald-200 ' +
+    'dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30',
 } as const;
 
 /** Compose a header action button className: `btnClass('neutral')`. */
@@ -108,40 +95,17 @@ export function btnClass(variant: keyof Omit<typeof headerBtn, 'base'> = 'neutra
 }
 
 export interface AppHeaderProps {
-  /**
-   * Raw content mode. When supplied, `children` are rendered directly inside
-   * the canonical shell and the identity/actions scaffold is skipped.
-   *
-   * This exists because the headers on /studio (385 lines), /workspace (227)
-   * and /vision (151) carry multi-cluster layouts — inline tab strips,
-   * editable breadcrumbs, version pickers — that do not reduce to
-   * "identity on the left, buttons on the right". Forcing them through the
-   * slot API would mangle them. They still share this element, so the
-   * geometry and dark-scoping stay centralised, which is the whole point.
-   */
   children?: React.ReactNode;
-  /** lucide icon rendered in the left identity tile */
   icon?: React.ElementType;
-  /** accent used by the icon tile and the title badge */
   tone?: HeaderTone;
-  /** page title, rendered as the document <h1>. Omit in raw `children` mode. */
   title?: React.ReactNode;
-  /** short uppercase pill next to the title */
   badge?: React.ReactNode;
-  /** if set, the icon+title identity cluster becomes a link */
   href?: string;
-  /** rendered before the identity cluster — sidebar toggles, back buttons */
   leading?: React.ReactNode;
-  /** rendered after the badge — status dots, breadcrumbs, tabs */
   meta?: React.ReactNode;
-  /** right-hand controls; each page keeps its own */
   actions?: React.ReactNode;
-  /** hide from print output (used by /docgen) */
   noPrint?: boolean;
-  /** escape hatch for stacking contexts, e.g. the /workspace guided tour
-   *  needs to out-rank the spotlight mask. Defaults to `z-40`. */
   zIndexClass?: string;
-  /** extra classes appended to the header element */
   className?: string;
 }
 
@@ -159,9 +123,11 @@ export function AppHeader({
   zIndexClass = 'z-[120]',
   className = '',
 }: AppHeaderProps) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const t = TONES[tone] ?? TONES.blue;
 
-  const shell = [SHELL, zIndexClass, noPrint ? 'no-print' : '', className]
+  const shell = [isLight ? SHELL_LIGHT : SHELL_DARK, zIndexClass, noPrint ? 'no-print' : '', className]
     .filter(Boolean)
     .join(' ');
 
@@ -171,11 +137,19 @@ export function AppHeader({
       onClick={() => window.dispatchEvent(new CustomEvent('promptcanvas_toggle_sidebar'))}
       aria-label="Open navigation menu"
       title="Open navigation menu"
-      className="lg:hidden min-w-[38px] min-h-[38px] p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-700/80 transition cursor-pointer shrink-0 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 active:scale-95"
+      className={`lg:hidden min-w-[38px] min-h-[38px] p-2 rounded-lg border transition cursor-pointer shrink-0 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 active:scale-95 ${
+        isLight
+          ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 border-slate-200'
+          : 'text-slate-300 hover:text-white hover:bg-slate-800 border-slate-700/80'
+      }`}
     >
       <Menu className="w-4 h-4" />
     </button>
   );
+
+  const refreshBtnClass = isLight
+    ? 'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 hover:text-slate-900 text-[11px] font-semibold transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95'
+    : 'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-[11px] font-semibold transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95';
 
   // Raw mode: the page owns the internal layout, the shell owns the geometry.
   if (children) {
@@ -187,15 +161,28 @@ export function AppHeader({
             {children}
           </div>
         </div>
-        <div className="flex items-center gap-1.5 shrink-0 pl-2 border-l border-slate-800/80">
+        <div
+          className={`flex items-center gap-1.5 shrink-0 pl-2 border-l ${
+            isLight ? 'border-slate-200' : 'border-slate-800/80'
+          }`}
+        >
           <button
             type="button"
             onClick={() => window.location.reload()}
             aria-label="Refresh page and sync latest changes"
             title="Refresh page & sync latest changes"
-            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-[11px] font-semibold transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95"
+            className={refreshBtnClass}
           >
-            <svg className="w-3.5 h-3.5 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <svg
+              className={`w-3.5 h-3.5 ${isLight ? 'text-sky-600' : 'text-sky-400'}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
               <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
               <path d="M3 3v5h5" />
               <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
@@ -218,7 +205,9 @@ export function AppHeader({
         </div>
       )}
       <div className="flex items-center gap-2.5 min-w-0">
-        <h1 className="text-sm font-black tracking-tight truncate text-white">{title}</h1>
+        <h1 className={`text-sm font-black tracking-tight truncate ${isLight ? 'text-slate-900' : 'text-white'}`}>
+          {title}
+        </h1>
         {badge && (
           <span
             className={`hidden sm:inline-block text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border shrink-0 ${t.badge}`}
@@ -253,9 +242,18 @@ export function AppHeader({
           onClick={() => window.location.reload()}
           aria-label="Refresh page and sync latest changes"
           title="Refresh page & sync latest changes"
-          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-[11px] font-semibold transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95"
+          className={refreshBtnClass}
         >
-          <svg className="w-3.5 h-3.5 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <svg
+            className={`w-3.5 h-3.5 ${isLight ? 'text-sky-600' : 'text-sky-400'}`}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
             <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
             <path d="M3 3v5h5" />
             <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />

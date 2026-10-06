@@ -244,7 +244,7 @@ export async function POST(req: NextRequest) {
         bridgeId,
         publicUrl,
         localPublicUrl,
-        googleViewerUrl: `https://docs.google.com/viewer?url=${encodeURIComponent(publicUrl)}&embedded=true`,
+        googleViewerUrl: `https://docs.google.com/viewerng/viewer?url=${encodeURIComponent(publicUrl)}&embedded=true`,
         googleWebViewLink,
         googleFileId,
         googleDriveError,

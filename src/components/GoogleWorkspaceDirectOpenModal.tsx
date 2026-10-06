@@ -553,10 +553,10 @@ export default function GoogleWorkspaceDirectOpenModal({
         window.open(googleWebViewLink, '_blank');
       } else {
         // Launch actual Google Docs Viewer with the public Railway bridge URL (renders populated presentation + native 'Open with Google Slides' button)
-        const externalGoogleTabUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(publicUrl)}`;
+        const externalGoogleTabUrl = `https://docs.google.com/viewerng/viewer?url=${encodeURIComponent(publicUrl)}`;
         setStatusMessage({
           type: 'success',
-          text: `🎉 Opened ${diagramName} (${blueprintId}) in Google Cloud Viewer! Click Google's top 'Open with Google Slides' button to edit directly in Google Drive.`,
+          text: `🎉 Opened ${diagramName} (${blueprintId}) in Google Cloud Viewer!`,
           url: externalGoogleTabUrl,
         });
         window.open(externalGoogleTabUrl, '_blank');
