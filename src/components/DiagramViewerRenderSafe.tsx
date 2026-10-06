@@ -201,7 +201,10 @@ ${origin ? `<base href="${origin}/">` : ''}
       ? `width: 1600px !important; min-width: 1600px !important; height: 1000px !important; min-height: 1000px !important; display: block;`
       : `width: 100% !important; max-width: 100% !important; min-width: 0 !important; height: 100% !important; max-height: 100% !important; min-height: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important;`}
   }
-  .geEditor { background-color: transparent !important; }
+  .geEditor, .mxgraph, .mxgraph > div, .mxgraph svg {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
 
   /* High-contrast dark canvas text overrides: prevent invisible black text on dark canvas */
   ${bgTheme === 'dark' ? `
@@ -266,10 +269,14 @@ ${origin ? `<base href="${origin}/">` : ''}
 
   const canvasContainer = document.querySelector('.canvas-container');
   const aggressiveOverlayGuard = ${aggressiveOverlayGuard ? 'true' : 'false'};
+  const isDarkTheme = ${bgTheme === 'dark' ? 'true' : 'false'};
 
   function getCleanGraphXml(xmlStr) {
     if (!xmlStr) return '';
-    const trimmed = xmlStr.trim();
+    let trimmed = xmlStr.trim();
+    if (isDarkTheme) {
+      trimmed = trimmed.replace(/background="#(?:FFFFFF|ffffff|F8FAFC|f8fafc)"/g, 'background="#0F172A"');
+    }
     if (trimmed.startsWith('<mxfile') || trimmed.includes('<mxfile')) {
       const s = trimmed.indexOf('<mxfile');
       const e = trimmed.lastIndexOf('</mxfile>');

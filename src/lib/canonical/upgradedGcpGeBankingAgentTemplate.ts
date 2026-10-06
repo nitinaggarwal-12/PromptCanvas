@@ -1006,7 +1006,7 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
     ast?.metadata?.projectTitle ||
     'Upgraded GCP & Gemini Enterprise Multi-Agent Architecture';
 
-  return `<mxfile host="embed.diagrams.net" modified="2026-09-30T21:08:00.000Z" agent="PromptCanvas-2026-Upgrader" version="24.7.8">
+  const lightXml = `<mxfile host="embed.diagrams.net" modified="2026-09-30T21:08:00.000Z" agent="PromptCanvas-2026-Upgrader" version="24.7.8">
   <diagram id="upgraded-gcp-ge-multi-agent-banking-2026" name="${escAttr(diagramTitle)}">
     <mxGraphModel dx="1280" dy="${totalPageHeight}" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1280" pageHeight="${totalPageHeight}" background="#FFFFFF" math="0" shadow="0">
       <root>
@@ -1017,4 +1017,33 @@ ${cells.join('\n')}
     </mxGraphModel>
   </diagram>
 </mxfile>`;
+
+  if (options?.theme === 'dark') {
+    return lightXml
+      .replace('background="#FFFFFF"', 'background="#0F172A"')
+      .replace(/fillColor=#FFFFFF;strokeColor=#1E293B;/g, 'fillColor=#0F172A;strokeColor=#475569;')
+      .replace(/fillColor=#FFFFFF;strokeColor=#334155;/g, 'fillColor=#0F172A;strokeColor=#475569;')
+      .replace(/fillColor=#DBEAFE;strokeColor=#60A5FA;/g, 'fillColor=#1E293B;strokeColor=#3B82F6;')
+      .replace(/fillColor=#DCFCE7;strokeColor=#4ADE80;/g, 'fillColor=#064E3B;strokeColor=#10B981;')
+      .replace(/fillColor=#FEF9C3;strokeColor=#EAB308;/g, 'fillColor=#1E293B;strokeColor=#F59E0B;')
+      .replace(/fillColor=#F8FAFC;strokeColor=#94A3B8;/g, 'fillColor=#0F172A;strokeColor=#64748B;')
+      .replace(/fillColor=#F8FAFC;strokeColor=#64748B;/g, 'fillColor=#0F172A;strokeColor=#64748B;')
+      .replace(/fillColor=#FEE2E2;strokeColor=#F87171;/g, 'fillColor=#450A0A;strokeColor=#F87171;')
+      .replace(/fillColor=#E5E7EB;strokeColor=#9CA3AF;/g, 'fillColor=#0F172A;strokeColor=#475569;')
+      .replace(/fillColor=#F3F4F6;strokeColor=#6B7280;/g, 'fillColor=#1E293B;strokeColor=#64748B;')
+      .replace(
+        /strokeColor=#1E293B;strokeWidth=1\.6;endArrow=block;endFill=1;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;/g,
+        'strokeColor=#94A3B8;strokeWidth=1.6;endArrow=block;endFill=1;fontColor=#F8FAFC;labelBackgroundColor=#0F172A;'
+      )
+      .replace(/color:#0F172A/g, 'color:#F8FAFC')
+      .replace(/color:#1E293B/g, 'color:#E2E8F0')
+      .replace(/color:#334155/g, 'color:#CBD5E1')
+      .replace(/color:#475569/g, 'color:#94A3B8')
+      .replace(/color:#7F1D1D/g, 'color:#FECACA')
+      .replace(/color:#15803D/g, 'color:#4ADE80')
+      .replace(/color:#2563EB/g, 'color:#60A5FA');
+  }
+
+  return lightXml;
 }
+

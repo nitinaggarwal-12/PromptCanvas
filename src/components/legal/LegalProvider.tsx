@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { Shield, Cookie, FileText, Scale, X, Check, Sliders, ExternalLink } from 'lucide-react';
+import { useTheme } from '@/lib/themeContext';
 
 export type LegalModalType = 'privacy' | 'terms' | 'disclaimer' | 'cookies' | null;
 
@@ -36,6 +37,8 @@ const LegalContext = createContext<LegalContextType>({
 export const useLegal = () => useContext(LegalContext);
 
 export function LegalProvider({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const [activeModal, setActiveModal] = useState<LegalModalType>(null);
   const [cookieConsent, setCookieConsent] = useState<CookiePreferences>(defaultPreferences);
   const [showBanner, setShowBanner] = useState(false);
@@ -107,24 +110,34 @@ export function LegalProvider({ children }: { children: React.ReactNode }) {
           aria-label="Cookie consent banner"
           className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-50 animate-in fade-in slide-in-from-bottom-3 duration-200 max-w-sm sm:max-w-[420px] w-[calc(100vw-24px)]"
         >
-          <div className="bg-[#0B111E]/95 border border-slate-700/80 rounded-2xl p-3 sm:p-3.5 shadow-2xl backdrop-blur-xl text-slate-200 space-y-2.5">
+          <div className={`rounded-2xl p-3 sm:p-3.5 shadow-2xl backdrop-blur-xl space-y-2.5 border ${
+            isLight
+              ? 'bg-white/95 border-slate-200 text-slate-800 shadow-slate-300/60'
+              : 'bg-[#0B111E]/95 border-slate-700/80 text-slate-200'
+          }`}>
             {/* Header Row: Icon, Title, Badge, Dismiss Button */}
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 min-w-0">
-                <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 shrink-0">
+                <div className={`p-1.5 rounded-lg border shrink-0 ${
+                  isLight ? 'bg-blue-50 text-blue-600 border-blue-200' : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                }`}>
                   <Cookie className="w-3.5 h-3.5" />
                 </div>
-                <h4 className="text-xs font-semibold text-white truncate">
+                <h4 className={`text-xs font-semibold truncate ${isLight ? 'text-slate-900' : 'text-white'}`}>
                   Privacy &amp; Cookie Preferences
                 </h4>
-                <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
+                <span className={`px-1.5 py-0.5 rounded text-[9px] font-mono border shrink-0 ${
+                  isLight ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                }`}>
                   GDPR
                 </span>
               </div>
               <button
                 type="button"
                 onClick={handleRejectNonEssential}
-                className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition shrink-0 cursor-pointer"
+                className={`p-1 rounded-md transition shrink-0 cursor-pointer ${
+                  isLight ? 'text-slate-400 hover:text-slate-800 hover:bg-slate-100' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
                 title="Dismiss"
                 aria-label="Dismiss cookie preferences"
               >
@@ -133,7 +146,7 @@ export function LegalProvider({ children }: { children: React.ReactNode }) {
             </div>
 
             {/* Concise Explanatory Text */}
-            <p className="text-[11px] text-slate-400 leading-snug">
+            <p className={`text-[11px] leading-snug ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
               We use telemetry tokens to optimize Draw.io rendering and secure Vertex AI sessions. No prompt data is shared with external ad networks.
             </p>
 
@@ -142,15 +155,23 @@ export function LegalProvider({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={() => setActiveModal('cookies')}
-                className="px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-[11px] font-medium border border-slate-700/80 transition flex items-center gap-1 cursor-pointer"
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition flex items-center gap-1 cursor-pointer ${
+                  isLight
+                    ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
+                    : 'bg-slate-800/80 hover:bg-slate-700 text-slate-300 border-slate-700/80'
+                }`}
               >
-                <Sliders className="w-3 h-3 text-slate-400" />
+                <Sliders className={`w-3 h-3 ${isLight ? 'text-slate-500' : 'text-slate-400'}`} />
                 <span>Customize</span>
               </button>
               <button
                 type="button"
                 onClick={handleRejectNonEssential}
-                className="px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-[11px] font-medium border border-slate-700/80 transition cursor-pointer"
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition cursor-pointer ${
+                  isLight
+                    ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
+                    : 'bg-slate-800/80 hover:bg-slate-700 text-slate-300 border-slate-700/80'
+                }`}
               >
                 Essential Only
               </button>
