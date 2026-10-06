@@ -126,6 +126,7 @@ export default function GoogleWorkspaceDirectOpenModal({
 
   useEffect(() => {
     setEditableDocTitle(`${diagramName} (${blueprintId})`);
+    setActiveSlideIndex(0);
   }, [diagramName, blueprintId]);
 
   // Cloud / OAuth states
@@ -548,10 +549,14 @@ export default function GoogleWorkspaceDirectOpenModal({
         });
         window.open(googleWebViewLink, '_blank');
       } else {
-        const externalGoogleTabUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(publicUrl)}`;
+        // Trigger clean local download so the user has the compiled .pptx/.docx
+        await handleDirectDownloadFile();
+
+        // Launch slides.new or docs.new in the next tab
+        const externalGoogleTabUrl = activeMode === 'slides' ? 'https://slides.new' : 'https://docs.new';
         setStatusMessage({
           type: 'success',
-          text: `✨ Opened populated ${activeMode === 'slides' ? 'Google Slides Presentation' : 'Google Docs Specification'} in a separate Google tab (docs.google.com)!`,
+          text: `📥 Downloaded ${diagramName} (${blueprintId}).${activeMode === 'slides' ? 'pptx' : 'docx'} and opened Google ${activeMode === 'slides' ? 'Slides (slides.new)' : 'Docs (docs.new)'} in the next tab! In Google, click File → ${activeMode === 'slides' ? 'Import slides → Upload' : 'Open → Upload'} to edit immediately.`,
           url: externalGoogleTabUrl,
         });
         window.open(externalGoogleTabUrl, '_blank');
@@ -1140,7 +1145,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                       value={editableDocTitle}
                       onChange={(e) => setEditableDocTitle(e.target.value)}
                       aria-label="Presentation Title"
-                      className="text-[16px] font-medium text-[#1F1F1F] bg-transparent hover:border-slate-400 focus:border-[#0B57D0] focus:bg-white border border-transparent rounded px-1.5 py-0.5 focus:outline-none truncate max-w-[240px] sm:max-w-[380px]"
+                      className="text-[16px] font-medium text-[#1F1F1F] bg-transparent hover:border-slate-400 focus:border-[#0B57D0] focus:bg-white border border-transparent rounded px-1.5 py-0.5 focus:outline-none max-w-[520px] lg:max-w-[700px] w-auto"
                     />
                     {/* Authentic Screenshot 3 Yellow ".PPTX" Pill Badge */}
                     <span className="px-1.5 py-0.5 rounded bg-[#F4B400] text-[#1F1F1F] font-extrabold text-[10px] tracking-tight shrink-0">
@@ -1229,14 +1234,14 @@ export default function GoogleWorkspaceDirectOpenModal({
                   onClick={handleDirectGoogleDriveOpen}
                   disabled={isUploadingToGoogleDrive}
                   className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-300 bg-white hover:bg-slate-100 text-[#1F1F1F] text-xs font-semibold transition cursor-pointer shadow-2xs"
-                  title="Push presentation directly to your Google Drive (docs.google.com/presentation)"
+                  title="Open presentation in Google Slides (slides.new) or save to Google Drive"
                 >
                   {isUploadingToGoogleDrive ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-600" />
                   ) : (
                     <CloudUpload className="w-3.5 h-3.5 text-amber-600" />
                   )}
-                  <span>Sync to docs.google.com</span>
+                  <span>Open with Google Slides</span>
                 </button>
 
                 <button
@@ -1500,7 +1505,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                   className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-300 bg-white hover:bg-slate-100 text-[#1F1F1F] text-xs font-semibold transition cursor-pointer shadow-2xs"
                 >
                   <CloudUpload className="w-3.5 h-3.5 text-sky-600" />
-                  <span>Sync to docs.google.com</span>
+                  <span>Open with Google Docs</span>
                 </button>
                 <button
                   type="button"
