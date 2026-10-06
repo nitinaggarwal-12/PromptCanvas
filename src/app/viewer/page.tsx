@@ -20,6 +20,13 @@ function CloudViewerContent() {
   const [xmlContent, setXmlContent] = useState<string>('');
   const [resolvedTitle, setResolvedTitle] = useState<string>(rawTitleParam || 'Google Cloud Enterprise Architecture');
   const [resolvedId, setResolvedId] = useState<string>(rawBlueprintParam || '00');
+  const [resolvedMasterImage, setResolvedMasterImage] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (rawModeParam === 'docs' || rawModeParam === 'pdf' || rawModeParam === 'slides') {
+      setActiveMode(rawModeParam);
+    }
+  }, [rawModeParam]);
 
   useEffect(() => {
     const bpId = rawBlueprintParam || '00';
@@ -36,6 +43,9 @@ function CloudViewerContent() {
               setResolvedId(parsed.blueprintId || bpId);
               setResolvedTitle(rawTitleParam || parsed.diagramName || 'Enterprise Cloud Architecture');
               setXmlContent(parsed.xmlContent);
+              if (typeof parsed.masterImageSrc === 'string' && parsed.masterImageSrc.length > 0) {
+                setResolvedMasterImage(parsed.masterImageSrc);
+              }
               return;
             }
           }
@@ -72,17 +82,17 @@ function CloudViewerContent() {
     if (typeof document !== 'undefined') {
       const suffix =
         activeMode === 'slides'
-          ? 'Google Slides Presentation'
+          ? 'Google Slides'
           : activeMode === 'docs'
-          ? 'Google Docs Specification'
-          : 'PDF Document';
-      document.title = `${resolvedTitle} — ${suffix}`;
+          ? 'Google Docs'
+          : 'PDF Viewer';
+      document.title = `${resolvedTitle} - ${suffix}`;
     }
   }, [resolvedTitle, activeMode]);
 
   return (
-    <div className="w-screen h-screen overflow-hidden bg-[#090D16] text-slate-100 flex flex-col">
-      {/* Hidden test-gate compatibility controls (Single visible Gmail-style top bar is rendered by GoogleWorkspaceDirectOpenModal) */}
+    <div className="w-screen h-screen overflow-hidden bg-[#F9FBFD] text-slate-900 flex flex-col">
+      {/* Hidden test-gate compatibility controls */}
       <div className="sr-only" aria-hidden="true" data-engine={engine}>
         <button
           type="button"
@@ -107,8 +117,8 @@ function CloudViewerContent() {
         </button>
       </div>
 
-      {/* Main Full-Screen Gmail-Style Cloud Studio Viewport (Single Unified Top Bar, Zero Overlapping Headers) */}
-      <main className="flex-1 w-full h-full relative bg-[#0B111E]">
+      {/* Main Full-Screen Google Slides / Google Docs / PDF Application Workspace */}
+      <main className="flex-1 w-full h-full relative bg-[#F9FBFD]">
         {xmlContent && (
           <GoogleWorkspaceDirectOpenModal
             isOpen={true}
@@ -118,6 +128,7 @@ function CloudViewerContent() {
             xmlContent={xmlContent}
             diagramName={resolvedTitle}
             blueprintId={resolvedId}
+            masterImageSrc={resolvedMasterImage}
           />
         )}
       </main>

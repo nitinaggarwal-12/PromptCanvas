@@ -114,6 +114,8 @@ export default function GoogleWorkspaceDirectOpenModal({
   const [slide1ViewMode, setSlide1ViewMode] = useState<'interactive-twin' | 'decomposed-shapes'>('interactive-twin');
   const [docsDiagramViewMode, setDocsDiagramViewMode] = useState<'decomposed-shapes' | 'interactive-twin'>('decomposed-shapes');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(isFullPage);
+  const [isSlideshowPlaying, setIsSlideshowPlaying] = useState<boolean>(false);
+  const [editableDocTitle, setEditableDocTitle] = useState<string>(`${diagramName} (${blueprintId})`);
   const [pngPreviewUrl, setPngPreviewUrl] = useState<string | null>(masterImageSrc || null);
   const [isGeneratingPreview, setIsGeneratingPreview] = useState<boolean>(false);
   const [launchAssistantModal, setLaunchAssistantModal] = useState<'slides' | 'docs' | null>(null);
@@ -121,6 +123,10 @@ export default function GoogleWorkspaceDirectOpenModal({
   useEffect(() => {
     setActiveMode(mode);
   }, [mode]);
+
+  useEffect(() => {
+    setEditableDocTitle(`${diagramName} (${blueprintId})`);
+  }, [diagramName, blueprintId]);
 
   // Cloud / OAuth states
   const [googleAccessToken, setGoogleAccessToken] = useState<string>('');
@@ -387,13 +393,17 @@ export default function GoogleWorkspaceDirectOpenModal({
         setActiveSlideIndex((prev) => Math.min(2, prev + 1));
       } else if (e.key === 'ArrowLeft') {
         setActiveSlideIndex((prev) => Math.max(0, prev - 1));
-      } else if (e.key === 'Escape' && isFullscreen && !isFullPage) {
-        setIsFullscreen(false);
+      } else if (e.key === 'Escape') {
+        if (isSlideshowPlaying) {
+          setIsSlideshowPlaying(false);
+        } else if (isFullscreen && !isFullPage) {
+          setIsFullscreen(false);
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, isFullscreen, isFullPage]);
+  }, [isOpen, isFullscreen, isFullPage, isSlideshowPlaying]);
 
   if (!isOpen) return null;
 
@@ -643,30 +653,40 @@ export default function GoogleWorkspaceDirectOpenModal({
 
     try {
       if (typeof window !== 'undefined') {
-        const payload = {
+        const basePayload = {
           xmlContent,
           diagramName,
           blueprintId,
           editableOverrides,
           updatedAt: Date.now(),
         };
-        localStorage.setItem('pc_cloud_viewer_payload', JSON.stringify(payload));
+        try {
+          localStorage.setItem(
+            'pc_cloud_viewer_payload',
+            JSON.stringify({
+              ...basePayload,
+              masterImageSrc: effectivePreviewUrl || undefined,
+            })
+          );
+        } catch {
+          localStorage.setItem('pc_cloud_viewer_payload', JSON.stringify(basePayload));
+        }
         if (xmlContent && xmlContent.includes('<mxCell')) {
           localStorage.setItem('pc_vision_last_xml', xmlContent);
         }
         const viewerUrl = `/viewer?mode=${encodeURIComponent(modeToUse)}&id=${encodeURIComponent(
           blueprintId
         )}&title=${encodeURIComponent(diagramName)}`;
-        window.open(viewerUrl, '_blank', 'noopener,noreferrer');
+        window.open(viewerUrl, '_blank');
       }
       setStatusMessage({
         type: 'success',
         text:
           modeToUse === 'slides'
-            ? `📊 Opened populated Google Slides Presentation (${diagramName}) in a new tab!`
+            ? `📊 Opened populated Google Slides Presentation (${diagramName}) in the next tab!`
             : modeToUse === 'docs'
-            ? `📄 Opened populated Google Docs Specification (${diagramName}) in a new tab!`
-            : `🖨️ Opened populated PDF Document (${diagramName}) in a new tab!`,
+            ? `📄 Opened populated Google Docs Specification (${diagramName}) in the next tab!`
+            : `🖨️ Opened populated PDF Document (${diagramName}) in the next tab!`,
       });
     } catch (err: any) {
       setStatusMessage({
@@ -801,27 +821,43 @@ export default function GoogleWorkspaceDirectOpenModal({
       }
 
       if (typeof window !== 'undefined') {
-        localStorage.setItem(
-          'pc_cloud_viewer_payload',
-          JSON.stringify({
-            xmlContent,
-            diagramName,
-            blueprintId,
-            editableOverrides,
-            updatedAt: Date.now(),
-          })
-        );
+        try {
+          localStorage.setItem(
+            'pc_cloud_viewer_payload',
+            JSON.stringify({
+              xmlContent,
+              diagramName,
+              blueprintId,
+              editableOverrides,
+              masterImageSrc: effectivePreviewUrl || undefined,
+              updatedAt: Date.now(),
+            })
+          );
+        } catch {
+          localStorage.setItem(
+            'pc_cloud_viewer_payload',
+            JSON.stringify({
+              xmlContent,
+              diagramName,
+              blueprintId,
+              editableOverrides,
+              updatedAt: Date.now(),
+            })
+          );
+        }
       }
 
-      const viewerUrl = `/viewer?mode=${encodeURIComponent(targetMode)}&id=${encodeURIComponent(
-        blueprintId
-      )}&title=${encodeURIComponent(diagramName)}`;
+      const targetExternalUrl = targetMode === 'slides' ? 'https://slides.new' : 'https://docs.new';
       const cloudWin =
-        openCloudTabImmediately && typeof window !== 'undefined' ? window.open(viewerUrl, '_blank') : null;
+        openCloudTabImmediately && typeof window !== 'undefined'
+          ? window.open(isFullPage ? targetExternalUrl : `/viewer?mode=${encodeURIComponent(targetMode)}&id=${encodeURIComponent(blueprintId)}&title=${encodeURIComponent(diagramName)}`, '_blank')
+          : null;
 
       setStatusMessage({
         type: 'success',
-        text: `✅ ${copiedSuccessfully ? 'Copied' : 'Prepared'} ${targetMode === 'slides' ? 'Google Slides Presentation' : 'Google Docs Specification'}${cloudWin ? ` & opened populated ${targetMode === 'slides' ? 'Google Slides' : 'Google Docs'} in a new tab` : ''}!`,
+        text: isFullPage
+          ? `✅ Copied high-res diagram & spec to clipboard! Press Ctrl+V / ⌘V inside the newly opened ${targetMode === 'slides' ? 'slides.new' : 'docs.new'} tab.`
+          : `✅ ${copiedSuccessfully ? 'Copied' : 'Prepared'} ${targetMode === 'slides' ? 'Google Slides Presentation' : 'Google Docs Specification'}${cloudWin ? ` & opened populated ${targetMode === 'slides' ? 'Google Slides' : 'Google Docs'} in a new tab` : ''}!`,
       });
     } catch (err: any) {
       setStatusMessage({
@@ -835,183 +871,722 @@ export default function GoogleWorkspaceDirectOpenModal({
 
   return (
     <div
-      className={`fixed inset-0 z-[150] flex items-center justify-center bg-slate-950/90 backdrop-blur-md ${
-        isFullscreen || isFullPage ? 'p-0' : 'p-0'
+      className={`fixed inset-0 z-[150] flex items-center justify-center ${
+        isFullPage ? 'bg-[#F9FBFD] p-0' : 'bg-slate-950/90 backdrop-blur-md p-0'
       }`}
       data-testid="google-workspace-direct-open-modal"
     >
       <div
-        className="bg-[#0B111E] w-screen h-screen flex flex-col overflow-hidden transition-all duration-200"
+        className={`${
+          isFullPage
+            ? activeMode === 'pdf'
+              ? 'bg-[#323639]'
+              : 'bg-[#F9FBFD]'
+            : 'bg-[#0B111E]'
+        } w-screen h-screen flex flex-col overflow-hidden transition-all duration-200`}
       >
-        {/* Top Dark Gmail Attachment Opener Header Bar */}
-        <div className="grid grid-cols-3 items-center px-4 py-2.5 bg-[#090D16] border-b border-slate-800/90 relative z-50 shrink-0">
-          {/* Left: Back/Close + Attachment Icon & Filename */}
-          <div className="flex items-center gap-3 min-w-0">
-            <button
-              type="button"
-              onClick={onClose}
-              className="p-2 rounded-full hover:bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer shrink-0"
-              title="Back to Studio (Esc)"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <div
-              className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-inner shrink-0 ${
-                activeMode === 'slides'
-                  ? 'bg-amber-500/20 border border-amber-500/40 text-amber-400'
-                  : activeMode === 'docs'
-                  ? 'bg-sky-500/20 border border-sky-500/40 text-sky-400'
-                  : 'bg-rose-500/20 border border-rose-500/40 text-rose-400'
-              }`}
-            >
-              {activeMode === 'slides' ? (
-                <Presentation className="w-4 h-4" />
-              ) : activeMode === 'docs' ? (
-                <FileText className="w-4 h-4" />
-              ) : (
-                <Printer className="w-4 h-4" />
-              )}
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <h2 className="text-xs md:text-sm font-bold text-white tracking-tight truncate max-w-[200px] lg:max-w-[360px]">
-                  {diagramName}
-                </h2>
-                <span className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono font-bold rounded bg-slate-800 text-sky-300 border border-slate-700 shrink-0">
-                  {blueprintId}
-                </span>
-              </div>
-              <p className="text-[10.5px] text-slate-400 truncate">
-                {isFullPage
-                  ? activeMode === 'slides'
-                    ? 'Google Slides Presentation • 3 Populated Widescreen Slides'
-                    : activeMode === 'docs'
-                    ? 'Google Docs Specification • Architecture & Component Inventory'
-                    : 'PDF Document Viewer • 2-Page Executive Architecture Dossier'
-                  : `Cloud Attachment Preview • ${sortedVertices.length} interactive architecture nodes`}
-              </p>
-            </div>
-          </div>
-
-          {/* Center: Authentic Gmail-Style Centered "Open with ▾" Dropdown */}
-          <div className="flex items-center justify-center">
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowOpenWithDropdown((prev) => !prev)}
-                data-testid="gmail-open-with-dropdown-btn"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1E293B] hover:bg-[#334155] border border-slate-600/90 text-xs md:text-sm font-bold text-white shadow-lg transition cursor-pointer whitespace-nowrap"
-              >
-                <span>Open with</span>
-                <ChevronDown
-                  className={`w-4 h-4 text-slate-300 transition-transform duration-150 ${
-                    showOpenWithDropdown ? 'rotate-180' : ''
-                  }`}
-                />
-              </button>
-
-              {showOpenWithDropdown && (
-                <div
-                  data-testid="gmail-open-with-dropdown-menu"
-                  className="absolute left-1/2 -translate-x-1/2 mt-2 w-72 rounded-xl bg-[#1E2430] border border-slate-700 shadow-[0_20px_50px_rgba(0,0,0,0.75)] py-1.5 z-[200]"
+        {/* ===========================================================================
+            TOP HEADER BAR:
+            - When !isFullPage (Modal on /dashboard): Dark Gmail Attachment Opener Bar with "Open with ▾"
+            - When isFullPage && activeMode === 'slides': Authentic Google Slides Light Chrome & Pill Toolbar (#F9FBFD / #EDF2FA)
+            - When isFullPage && activeMode === 'docs': Authentic Google Docs Light Chrome & Pill Toolbar (#F9FBFD / #EDF2FA)
+            - When isFullPage && activeMode === 'pdf': Authentic Chrome PDF Viewer Top Bar (#323639)
+           =========================================================================== */}
+        {!isFullPage ? (
+          /* ===========================================================================
+             SCREENSHOT 1 & 2: AUTHENTIC GMAIL ATTACHMENT PROJECTOR HEADER & PILL BAR
+             =========================================================================== */
+          <div className="bg-[#131314]/95 text-[#E3E3E3] shrink-0 select-none z-50">
+            {/* Row 1: Left File Title & Menu + Right Split Pill Button "[🟨 Open with Google Slides | ▼]" */}
+            <div className="flex items-center justify-between px-4 pt-2.5 pb-1.5 gap-4">
+              {/* Left: Close X + PowerPoint P Icon + Filename.pptx + Drive Icon + File/View/Tools/Help */}
+              <div className="flex items-center gap-3 min-w-0">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  data-testid="close-google-workspace-modal-btn"
+                  className="p-2 rounded-full hover:bg-white/10 text-[#E3E3E3] transition cursor-pointer shrink-0"
+                  title="Close Preview (Esc)"
                 >
-                  <button
-                    type="button"
-                    data-testid="open-with-slides-option"
-                    onClick={() => handleOpenGoogleCloudViewer('slides', true)}
-                    className="w-full text-left px-4 py-2.5 text-xs md:text-sm flex items-center gap-3 hover:bg-slate-700/70 text-white transition cursor-pointer"
-                  >
-                    <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 shrink-0">
-                      <Presentation className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-bold text-white flex items-center justify-between">
-                        <span>Open with Google Slides</span>
-                        <ExternalLink className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      </div>
-                      <div className="text-[11px] text-slate-400 truncate">
-                        Opens populated 3-Slide deck in new tab
-                      </div>
-                    </div>
-                  </button>
+                  <X className="w-5 h-5" />
+                </button>
 
-                  <button
-                    type="button"
-                    data-testid="open-with-docs-option"
-                    onClick={() => handleOpenGoogleCloudViewer('docs', true)}
-                    className="w-full text-left px-4 py-2.5 text-xs md:text-sm flex items-center gap-3 hover:bg-slate-700/70 text-white transition cursor-pointer"
-                  >
-                    <div className="p-1.5 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/30 shrink-0">
-                      <FileText className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-bold text-white flex items-center justify-between">
-                        <span>Open with Google Docs</span>
-                        <ExternalLink className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      </div>
-                      <div className="text-[11px] text-slate-400 truncate">
-                        Opens populated spec &amp; table in new tab
-                      </div>
-                    </div>
-                  </button>
+                {/* Authentic PowerPoint .pptx Red/Orange Badge Icon */}
+                <div className="w-7 h-7 rounded bg-[#D24726] flex items-center justify-center text-white font-extrabold text-xs shadow-sm shrink-0">
+                  P
+                </div>
 
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-sm md:text-[15px] font-medium text-white truncate max-w-[240px] sm:max-w-[460px]">
+                      {diagramName} .pptx
+                    </h2>
+                    {/* Google Drive Triangle Icon */}
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 text-[#E3E3E3] shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d="M9 3L2 15l3.5 6h13L22 15 15 3H9z" />
+                      <path d="M2 15h20" />
+                    </svg>
+                  </div>
+                  <div className="flex items-center gap-3 text-[12px] text-[#C4C7C5] mt-0.5">
+                    <button type="button" onClick={handleDirectDownloadFile} className="hover:text-white cursor-pointer">
+                      File
+                    </button>
+                    <button type="button" onClick={() => handleOpenGoogleCloudViewer('slides', true)} className="hover:text-white cursor-pointer">
+                      View
+                    </button>
+                    <button type="button" onClick={handlePrintPdfReport} className="hover:text-white cursor-pointer">
+                      Tools
+                    </button>
+                    <span className="hover:text-white cursor-pointer">Help</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right: Screenshot 2 Split Pill Button "[🟨 Open with Google Slides | ▼]" */}
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="relative">
+                  <div className="inline-flex items-center rounded-full border border-[#8E918F] bg-[#1F1F1F] text-white shadow-lg">
+                    {/* Left Action: Immediate 1-Click Open with Google Slides in Next Tab */}
+                    <button
+                      type="button"
+                      onClick={() => handleOpenGoogleCloudViewer('slides', true)}
+                      className="flex items-center gap-2.5 pl-4 pr-3.5 py-1.5 rounded-l-full hover:bg-[#303134] text-xs md:text-sm font-medium text-white transition cursor-pointer whitespace-nowrap"
+                    >
+                      <span className="w-4 h-4 rounded-[2px] bg-[#F4B400] flex items-center justify-center shrink-0">
+                        <span className="w-2.5 h-1.5 bg-white rounded-[1px]" />
+                      </span>
+                      <span>Open with Google Slides</span>
+                    </button>
+
+                    {/* Right Action: Dropdown Chevron "▼" */}
+                    <button
+                      type="button"
+                      onClick={() => setShowOpenWithDropdown((prev) => !prev)}
+                      data-testid="gmail-open-with-dropdown-btn"
+                      aria-label="Open with options"
+                      className="px-2.5 py-1.5 rounded-r-full border-l border-[#8E918F] hover:bg-[#303134] text-white transition cursor-pointer flex items-center justify-center"
+                    >
+                      <ChevronDown
+                        className={`w-4 h-4 text-[#E3E3E3] transition-transform duration-150 ${
+                          showOpenWithDropdown ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Screenshot 2 Dark Popover Menu */}
+                  {showOpenWithDropdown && (
+                    <div
+                      data-testid="gmail-open-with-dropdown-menu"
+                      className="absolute right-0 mt-2 w-64 rounded-lg bg-[#28292A] border border-[#3C4043] shadow-[0_16px_40px_rgba(0,0,0,0.85)] py-2 z-[200]"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => handleOpenGoogleCloudViewer('slides', true)}
+                        className="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3.5 hover:bg-[#3C4043] text-[#E3E3E3] transition cursor-pointer"
+                      >
+                        <ExternalLink className="w-4 h-4 text-[#E3E3E3] shrink-0" />
+                        <span>Open in new tab</span>
+                      </button>
+
+                      <div className="my-1.5 border-t border-[#3C4043]" />
+
+                      <div className="px-4 py-1 text-xs font-medium text-[#E3E3E3]">
+                        Google apps
+                      </div>
+
+                      <button
+                        type="button"
+                        data-testid="open-with-slides-option"
+                        onClick={() => handleOpenGoogleCloudViewer('slides', true)}
+                        className="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3.5 hover:bg-[#3C4043] text-white transition cursor-pointer"
+                      >
+                        <span className="w-5 h-5 rounded-[3px] bg-[#F4B400] flex items-center justify-center shrink-0">
+                          <span className="w-3 h-2 bg-white rounded-[1px]" />
+                        </span>
+                        <span>Google Slides</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        data-testid="open-with-docs-option"
+                        onClick={() => handleOpenGoogleCloudViewer('docs', true)}
+                        className="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3.5 hover:bg-[#3C4043] text-white transition cursor-pointer"
+                      >
+                        <span className="w-5 h-5 rounded-[3px] bg-[#4285F4] flex flex-col items-center justify-center gap-0.5 shrink-0">
+                          <span className="w-3 h-[1.5px] bg-white" />
+                          <span className="w-3 h-[1.5px] bg-white" />
+                          <span className="w-2 h-[1.5px] bg-white self-start ml-1" />
+                        </span>
+                        <span>Google Docs</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        data-testid="open-with-pdf-option"
+                        onClick={() => handleOpenGoogleCloudViewer('pdf', true)}
+                        className="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3.5 hover:bg-[#3C4043] text-white transition cursor-pointer"
+                      >
+                        <span className="w-5 h-5 rounded-[3px] bg-[#EA4335] flex items-center justify-center text-[8px] font-extrabold text-white shrink-0">
+                          PDF
+                        </span>
+                        <span>PDF Document</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Row 2: Screenshot 1 Rounded Dark Gray Pill Toolbar ("Page [1] / 3 | Download | Print | - 100% +") */}
+            <div className="mx-3 mb-2.5 px-4 py-1.5 rounded-full bg-[#28292A] flex items-center justify-between text-xs text-[#E3E3E3]">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[#C4C7C5]">Page</span>
+                  <span className="px-2 py-0.5 rounded border border-[#5F6368] bg-[#1F1F1F] text-white font-medium">
+                    1
+                  </span>
+                  <span className="text-[#C4C7C5]">/ 3</span>
+                </div>
+
+                <span className="text-[#5F6368]">|</span>
+
+                <button
+                  type="button"
+                  onClick={handleDirectDownloadFile}
+                  disabled={isDownloadingDeck}
+                  className="p-1.5 rounded-full hover:bg-white/10 text-[#E3E3E3] transition cursor-pointer"
+                  title="Download (.pptx)"
+                >
+                  <Download className="w-4 h-4" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handlePrintPdfReport}
+                  data-testid="launch-external-pdf-print-btn"
+                  className="p-1.5 rounded-full hover:bg-white/10 text-[#E3E3E3] transition cursor-pointer"
+                  title="Print"
+                >
+                  <Printer className="w-4 h-4" />
+                </button>
+
+                <span className="text-[#5F6368]">|</span>
+
+                <div className="flex items-center gap-1.5">
                   <button
                     type="button"
-                    data-testid="open-with-pdf-option"
-                    onClick={() => handleOpenGoogleCloudViewer('pdf', true)}
-                    className="w-full text-left px-4 py-2.5 text-xs md:text-sm flex items-center gap-3 hover:bg-slate-700/70 text-white transition cursor-pointer"
+                    onClick={() => setPreviewZoom((z) => Math.max(50, z - 15))}
+                    className="px-2 py-0.5 rounded hover:bg-white/10 text-[#E3E3E3] font-bold cursor-pointer"
+                    title="Zoom Out"
                   >
-                    <div className="p-1.5 rounded-lg bg-rose-500/20 text-rose-400 border border-rose-500/30 shrink-0">
-                      <Printer className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-bold text-white flex items-center justify-between">
-                        <span>Open with PDF</span>
-                        <ExternalLink className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      </div>
-                      <div className="text-[11px] text-slate-400 truncate">
-                        Opens populated 2-page PDF in new tab
-                      </div>
-                    </div>
+                    −
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewZoom(100)}
+                    className="px-2 py-0.5 rounded hover:bg-white/10 text-[#E3E3E3] font-medium cursor-pointer flex items-center gap-1"
+                    title="Reset Zoom"
+                  >
+                    <span>{previewZoom}%</span>
+                    <ChevronDown className="w-3 h-3 text-[#9AA0A6]" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewZoom((z) => Math.min(175, z + 15))}
+                    className="px-2 py-0.5 rounded hover:bg-white/10 text-[#E3E3E3] font-bold cursor-pointer"
+                    title="Zoom In"
+                  >
+                    +
                   </button>
                 </div>
-              )}
+              </div>
+
+              <div className="hidden sm:flex items-center gap-2 text-[11px] text-[#9AA0A6]">
+                <span>{sortedVertices.length} Architecture Nodes</span>
+                <span>•</span>
+                <span>Click &ldquo;Open with Google Slides&rdquo; to edit in next tab</span>
+              </div>
             </div>
           </div>
+        ) : activeMode === 'slides' ? (
+          /* ===========================================================================
+             SCREENSHOT 3: AUTHENTIC GOOGLE SLIDES PRESENTATION WORKSPACE CHROME (#F9FBFD)
+             Opened in the next tab when the user clicks "Open with Google Slides"
+             =========================================================================== */
+          <div className="bg-[#F9FBFD] border-b border-[#E1E5EA] text-[#1F1F1F] shrink-0 select-none z-40">
+            {/* Row 1: Google Slides Icon + Title + .PPTX Badge + Star/Folder/Cloud + Menu Bar + Right Action Controls */}
+            <div className="flex items-center justify-between px-3 pt-2 pb-1 gap-3">
+              {/* Left: Official Yellow Google Slides Icon + Editable Title + .PPTX Badge + Menu Bar */}
+              <div className="flex items-center gap-2.5 min-w-0">
+                <button
+                  type="button"
+                  onClick={() => setActiveSlideIndex(0)}
+                  className="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-slate-200/70 transition cursor-pointer shrink-0"
+                  title="Google Slides Home"
+                >
+                  <svg viewBox="0 0 40 40" className="w-8 h-8">
+                    <rect x="6" y="3" width="28" height="34" rx="3.5" fill="#F4B400" />
+                    <path d="M25 3l9 9h-6.5A2.5 2.5 0 0125 9.5V3z" fill="#FDE293" />
+                    <rect x="11" y="16" width="18" height="12" rx="1.5" fill="#FFFFFF" />
+                    <rect x="13.5" y="18.5" width="13" height="7" rx="0.8" fill="#F4B400" />
+                  </svg>
+                </button>
 
-          {/* Right: Gmail Attachment Opener Action Icons (Print, Download, Close) */}
-          <div className="flex items-center justify-end gap-2 shrink-0">
-            <button
-              type="button"
-              onClick={handlePrintPdfReport}
-              data-testid="launch-external-pdf-print-btn"
-              className="p-2 rounded-full hover:bg-slate-800 text-slate-300 hover:text-white transition-all cursor-pointer"
-              title="Print / Save as PDF"
-            >
-              <Printer className="w-4 h-4" />
-            </button>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      type="text"
+                      value={editableDocTitle}
+                      onChange={(e) => setEditableDocTitle(e.target.value)}
+                      aria-label="Presentation Title"
+                      className="text-[16px] font-medium text-[#1F1F1F] bg-transparent hover:border-slate-400 focus:border-[#0B57D0] focus:bg-white border border-transparent rounded px-1.5 py-0.5 focus:outline-none truncate max-w-[240px] sm:max-w-[380px]"
+                    />
+                    {/* Authentic Screenshot 3 Yellow ".PPTX" Pill Badge */}
+                    <span className="px-1.5 py-0.5 rounded bg-[#F4B400] text-[#1F1F1F] font-extrabold text-[10px] tracking-tight shrink-0">
+                      .PPTX
+                    </span>
+                    <span className="hidden sm:inline text-slate-500 text-sm px-0.5" title="Star">
+                      ☆
+                    </span>
+                    <span className="hidden md:inline-flex items-center gap-1 text-slate-500 text-xs px-1" title="Saved to Drive">
+                      <Check className="w-3.5 h-3.5 text-slate-600" />
+                    </span>
+                  </div>
 
-            <button
-              type="button"
-              onClick={handleDirectDownloadFile}
-              disabled={isDownloadingDeck}
-              className="p-2 rounded-full hover:bg-slate-800 text-slate-300 hover:text-white transition-all cursor-pointer"
-              title="Download local file (.pptx / .docx / .pdf)"
-            >
-              <Download className="w-4 h-4" />
-            </button>
+                  {/* Classic Google Slides Menu Bar */}
+                  <div className="flex items-center gap-1 text-[12.5px] text-[#1F1F1F] mt-0.5 flex-wrap">
+                    <button
+                      type="button"
+                      onClick={handleDirectDownloadFile}
+                      className="px-1.5 py-0.5 rounded hover:bg-slate-200/80 cursor-pointer"
+                      title="Download Microsoft PowerPoint (.pptx)"
+                    >
+                      File
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (sortedVertices[0]) setSelectedNodeId(sortedVertices[0].id);
+                      }}
+                      className="px-1.5 py-0.5 rounded hover:bg-slate-200/80 cursor-pointer"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsSlideshowPlaying(true)}
+                      className="px-1.5 py-0.5 rounded hover:bg-slate-200/80 cursor-pointer"
+                    >
+                      View
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveSlideIndex(1)}
+                      className="px-1.5 py-0.5 rounded hover:bg-slate-200/80 cursor-pointer"
+                    >
+                      Insert
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setSlide1ViewMode((m) => (m === 'interactive-twin' ? 'decomposed-shapes' : 'interactive-twin'))
+                      }
+                      className="px-1.5 py-0.5 rounded hover:bg-slate-200/80 cursor-pointer"
+                    >
+                      Format
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveSlideIndex((p) => (p + 1) % 3)}
+                      className="px-1.5 py-0.5 rounded hover:bg-slate-200/80 cursor-pointer"
+                    >
+                      Slide
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveSlideIndex(1)}
+                      className="px-1.5 py-0.5 rounded hover:bg-slate-200/80 cursor-pointer"
+                    >
+                      Arrange
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveSlideIndex(2)}
+                      className="px-1.5 py-0.5 rounded hover:bg-slate-200/80 cursor-pointer"
+                    >
+                      Tools
+                    </button>
+                    <span className="hidden lg:inline px-1.5 py-0.5 rounded text-slate-600">Help</span>
+                  </div>
+                </div>
+              </div>
 
-            <button
-              type="button"
-              onClick={onClose}
-              data-testid="close-google-workspace-modal-btn"
-              className="p-2 rounded-full hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 transition-all cursor-pointer"
-              title="Close Cloud Viewer (Esc)"
-            >
-              <X className="w-4 h-4" />
-            </button>
+              {/* Right: Screenshot 3 Action Bar (Sync, Download, Slideshow | ▾, 🔒 Share | ▾, Gemini Sparkle) */}
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={handleDirectGoogleDriveOpen}
+                  disabled={isUploadingToGoogleDrive}
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-300 bg-white hover:bg-slate-100 text-[#1F1F1F] text-xs font-semibold transition cursor-pointer shadow-2xs"
+                  title="Push presentation directly to your Google Drive (docs.google.com/presentation)"
+                >
+                  {isUploadingToGoogleDrive ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-600" />
+                  ) : (
+                    <CloudUpload className="w-3.5 h-3.5 text-amber-600" />
+                  )}
+                  <span>Sync to docs.google.com</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowAuthConfig((v) => !v)}
+                  className="p-2 rounded-full border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 transition cursor-pointer"
+                  title="Configure Google Drive OAuth Token / Client ID"
+                >
+                  <KeyRound className="w-3.5 h-3.5" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDirectDownloadFile}
+                  disabled={isDownloadingDeck}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-300 bg-white hover:bg-slate-100 text-[#1F1F1F] text-xs font-semibold transition cursor-pointer shadow-2xs"
+                  title="Download Editable PowerPoint (.pptx)"
+                >
+                  <Download className="w-3.5 h-3.5 text-slate-700" />
+                  <span className="hidden md:inline">.pptx</span>
+                </button>
+
+                {/* Screenshot 3 Split "Slideshow | ▾" Pill Button */}
+                <div className="inline-flex items-center rounded-full border border-[#747775] bg-white overflow-hidden shadow-2xs">
+                  <button
+                    type="button"
+                    onClick={() => setIsSlideshowPlaying(true)}
+                    data-testid="google-slides-slideshow-btn"
+                    className="px-4 py-1.5 hover:bg-slate-100 text-[#1F1F1F] text-xs md:text-sm font-medium transition cursor-pointer"
+                  >
+                    Slideshow
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsSlideshowPlaying(true)}
+                    className="px-2 py-1.5 border-l border-[#747775] hover:bg-slate-100 text-[#1F1F1F] cursor-pointer"
+                  >
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {/* Screenshot 3 Light-Blue "🔒 Share | ▾" Pill (#C2E7FF) */}
+                <div className="inline-flex items-center rounded-full bg-[#C2E7FF] text-[#001D35] overflow-hidden shadow-2xs">
+                  <button
+                    type="button"
+                    onClick={() => handleCopyAndLaunchNewTab('slides', true)}
+                    className="flex items-center gap-1.5 pl-3.5 pr-3 py-1.5 hover:bg-[#B3DFFC] text-xs md:text-sm font-medium transition cursor-pointer"
+                    title="Copy & Share Presentation"
+                  >
+                    <Globe className="w-3.5 h-3.5 text-[#001D35]" />
+                    <span>Share</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyAndLaunchNewTab('slides', true)}
+                    className="px-2 py-1.5 border-l border-[#99C8F2] hover:bg-[#B3DFFC] cursor-pointer"
+                  >
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <Sparkles className="hidden md:block w-5 h-5 text-[#0B57D0] ml-1 shrink-0" />
+              </div>
+            </div>
+
+            {/* Optional Google Drive OAuth Bar when Key icon is clicked */}
+            {showAuthConfig && (
+              <div className="mx-3 mb-1.5 px-4 py-2 rounded-xl bg-amber-50 border border-amber-200 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div className="flex items-center gap-2 text-amber-950 font-medium">
+                  <KeyRound className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                  <span>Google Drive API Token / Client ID (for 1-click upload to docs.google.com/presentation):</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 flex-1 max-w-2xl">
+                  <input
+                    type="password"
+                    value={googleAccessToken}
+                    onChange={(e) => handleSaveAuthSettings(e.target.value, googleClientId)}
+                    placeholder="Paste Google OAuth Access Token (ya29...)"
+                    className="flex-1 min-w-[180px] px-2.5 py-1 rounded border border-amber-300 bg-white text-slate-900 text-xs"
+                  />
+                  <input
+                    type="text"
+                    value={googleClientId}
+                    onChange={(e) => handleSaveAuthSettings(googleAccessToken, e.target.value)}
+                    placeholder="Or OAuth Client ID (*.apps.googleusercontent.com)"
+                    className="flex-1 min-w-[180px] px-2.5 py-1 rounded border border-amber-300 bg-white text-slate-900 text-xs"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowAuthConfig(false)}
+                    className="px-2.5 py-1 rounded bg-slate-900 text-white font-semibold cursor-pointer"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Row 2: Screenshot 3 Google Slides Rounded Pill Toolbar (#EDF2FA) */}
+            <div className="mx-3 mb-1.5 px-3 py-1 rounded-full bg-[#EDF2FA] flex flex-wrap items-center justify-between gap-2 text-[#1F1F1F] text-xs">
+              <div className="flex items-center gap-1 flex-wrap">
+                <span className="px-3 py-1 rounded-full bg-white text-[#444746] text-xs font-medium flex items-center gap-1.5 shadow-2xs">
+                  <span>🔍</span>
+                  <span>Menus</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setActiveSlideIndex((p) => (p + 1) % 3)}
+                  className="px-2 py-1 rounded hover:bg-slate-300/60 font-bold cursor-pointer flex items-center gap-0.5"
+                  title="New / Next Slide"
+                >
+                  <span>+</span>
+                  <ChevronDown className="w-3 h-3 text-slate-500" />
+                </button>
+                <span className="text-slate-300 mx-0.5">|</span>
+                <button
+                  type="button"
+                  onClick={handlePrintPdfReport}
+                  data-testid="launch-external-pdf-print-btn"
+                  className="p-1 rounded hover:bg-slate-300/60 cursor-pointer"
+                  title="Print Presentation (PDF)"
+                >
+                  <Printer className="w-3.5 h-3.5 text-[#444746]" />
+                </button>
+                <span className="text-slate-300 mx-0.5">|</span>
+                <span className="px-2 py-0.5 rounded text-[11.5px] font-medium text-[#444746] flex items-center gap-1">
+                  <span>Fit</span>
+                  <ChevronDown className="w-3 h-3" />
+                </span>
+                <span className="text-slate-300 mx-0.5">|</span>
+                <button
+                  type="button"
+                  onClick={() => setSlide1ViewMode('interactive-twin')}
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition cursor-pointer flex items-center gap-1 ${
+                    slide1ViewMode === 'interactive-twin'
+                      ? 'bg-[#D3E3FD] text-[#041E49] font-bold'
+                      : 'hover:bg-slate-300/50 text-[#444746]'
+                  }`}
+                >
+                  <Eye className="w-3 h-3" />
+                  <span>1:1 Interactive Twin</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSlide1ViewMode('decomposed-shapes')}
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition cursor-pointer flex items-center gap-1 ${
+                    slide1ViewMode === 'decomposed-shapes'
+                      ? 'bg-[#D3E3FD] text-[#041E49] font-bold'
+                      : 'hover:bg-slate-300/50 text-[#444746]'
+                  }`}
+                >
+                  <Layers className="w-3 h-3" />
+                  <span>Editable Shapes ({sortedVertices.length})</span>
+                </button>
+                <span className="hidden md:inline text-slate-300 mx-0.5">|</span>
+                <button
+                  type="button"
+                  onClick={() => setActiveSlideIndex(0)}
+                  className="hidden md:inline px-2 py-0.5 rounded hover:bg-slate-300/50 text-[#444746] font-medium cursor-pointer"
+                >
+                  Background
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveSlideIndex(1)}
+                  className="hidden md:inline px-2 py-0.5 rounded hover:bg-slate-300/50 text-[#444746] font-medium cursor-pointer"
+                >
+                  Layout
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveSlideIndex(2)}
+                  className="hidden md:inline px-2 py-0.5 rounded hover:bg-slate-300/50 text-[#444746] font-medium cursor-pointer"
+                >
+                  Theme
+                </button>
+                <span className="hidden lg:inline px-2 py-0.5 rounded text-[#444746] font-medium">
+                  Transition
+                </span>
+              </div>
+
+              {/* Right side of Google Slides Pill Toolbar: Workspace Format Switcher */}
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setActiveMode('slides')}
+                  className="px-2.5 py-0.5 rounded-full bg-[#F4B400] text-[#1F1F1F] font-bold text-[11px] cursor-pointer"
+                >
+                  Slides
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveMode('docs')}
+                  className="px-2.5 py-0.5 rounded-full hover:bg-slate-300/60 text-[#444746] font-medium text-[11px] cursor-pointer"
+                >
+                  Docs
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveMode('pdf')}
+                  className="px-2.5 py-0.5 rounded-full hover:bg-slate-300/60 text-[#444746] font-medium text-[11px] cursor-pointer"
+                >
+                  PDF
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
+        ) : activeMode === 'docs' ? (
+          /* ===========================================================================
+             AUTHENTIC GOOGLE DOCS DOCUMENT WORKSPACE CHROME (#F9FBFD / #EDF2FA)
+             Opened in the next tab when the user clicks "Open with Google Docs"
+             =========================================================================== */
+          <div className="bg-[#F9FBFD] border-b border-[#E1E5EA] text-[#1F1F1F] shrink-0 select-none z-40">
+            <div className="flex items-center justify-between px-3 pt-2 pb-1 gap-3">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0">
+                  <svg viewBox="0 0 40 40" className="w-8 h-8">
+                    <rect x="6" y="3" width="28" height="34" rx="3.5" fill="#4285F4" />
+                    <path d="M25 3l9 9h-6.5A2.5 2.5 0 0125 9.5V3z" fill="#A1C2FA" />
+                    <rect x="11" y="16" width="18" height="2.2" rx="1" fill="#FFFFFF" />
+                    <rect x="11" y="21" width="18" height="2.2" rx="1" fill="#FFFFFF" />
+                    <rect x="11" y="26" width="12" height="2.2" rx="1" fill="#FFFFFF" />
+                  </svg>
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      type="text"
+                      value={editableDocTitle}
+                      onChange={(e) => setEditableDocTitle(e.target.value)}
+                      aria-label="Document Title"
+                      className="text-[16px] font-medium text-[#1F1F1F] bg-transparent hover:border-slate-400 focus:border-[#0B57D0] focus:bg-white border border-transparent rounded px-1.5 py-0.5 focus:outline-none truncate max-w-[260px] sm:max-w-[440px]"
+                    />
+                    <span className="px-1.5 py-0.5 rounded bg-[#4285F4] text-white font-extrabold text-[10px] tracking-tight shrink-0">
+                      .DOCX
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 text-[12.5px] text-[#1F1F1F] mt-0.5 flex-wrap">
+                    <button
+                      type="button"
+                      onClick={handleDirectDownloadFile}
+                      className="px-1.5 py-0.5 rounded hover:bg-slate-200/80 cursor-pointer"
+                    >
+                      File
+                    </button>
+                    <span className="px-1.5 py-0.5 rounded hover:bg-slate-200/80 cursor-pointer">Edit</span>
+                    <span className="px-1.5 py-0.5 rounded hover:bg-slate-200/80 cursor-pointer">View</span>
+                    <span className="px-1.5 py-0.5 rounded hover:bg-slate-200/80 cursor-pointer">Insert</span>
+                    <span className="px-1.5 py-0.5 rounded hover:bg-slate-200/80 cursor-pointer">Format</span>
+                    <span className="px-1.5 py-0.5 rounded hover:bg-slate-200/80 cursor-pointer">Tools</span>
+                    <span className="hidden lg:inline px-1.5 py-0.5 rounded text-slate-500">Help</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={handleDirectGoogleDriveOpen}
+                  disabled={isUploadingToGoogleDrive}
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-300 bg-white hover:bg-slate-100 text-[#1F1F1F] text-xs font-semibold transition cursor-pointer shadow-2xs"
+                >
+                  <CloudUpload className="w-3.5 h-3.5 text-sky-600" />
+                  <span>Sync to docs.google.com</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDirectDownloadFile}
+                  disabled={isDownloadingDeck}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-300 bg-white hover:bg-slate-100 text-[#1F1F1F] text-xs font-semibold transition cursor-pointer shadow-2xs"
+                >
+                  <Download className="w-3.5 h-3.5 text-slate-700" />
+                  <span>Download .docx</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleCopyAndLaunchNewTab('docs', true)}
+                  className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#C2E7FF] hover:bg-[#B3DFFC] text-[#001D35] text-xs md:text-sm font-semibold transition cursor-pointer shadow-2xs"
+                >
+                  <Globe className="w-3.5 h-3.5 text-[#001D35]" />
+                  <span>Share</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="mx-3 mb-1.5 px-3.5 py-1 rounded-full bg-[#EDF2FA] flex flex-wrap items-center justify-between gap-2 text-[#1F1F1F] text-xs">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <button
+                  type="button"
+                  onClick={handlePrintPdfReport}
+                  data-testid="launch-external-pdf-print-btn"
+                  className="p-1 rounded hover:bg-slate-300/60 cursor-pointer"
+                  title="Print Specification"
+                >
+                  <Printer className="w-3.5 h-3.5 text-[#444746]" />
+                </button>
+                <span className="text-slate-300">|</span>
+                <span className="px-2 py-0.5 rounded bg-white/80 text-[11px] font-semibold border border-slate-300/80">
+                  100%
+                </span>
+                <span className="text-slate-300">|</span>
+                <button
+                  type="button"
+                  onClick={() => setDocsDiagramViewMode('decomposed-shapes')}
+                  className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold cursor-pointer ${
+                    docsDiagramViewMode === 'decomposed-shapes'
+                      ? 'bg-[#D3E3FD] text-[#041E49] font-bold'
+                      : 'text-[#444746]'
+                  }`}
+                >
+                  Editable Vector Diagram ({sortedVertices.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDocsDiagramViewMode('interactive-twin')}
+                  className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold cursor-pointer ${
+                    docsDiagramViewMode === 'interactive-twin'
+                      ? 'bg-[#D3E3FD] text-[#041E49] font-bold'
+                      : 'text-[#444746]'
+                  }`}
+                >
+                  1:1 Visual Twin
+                </button>
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setActiveMode('slides')}
+                  className="px-2.5 py-0.5 rounded-full hover:bg-slate-300/60 text-[#444746] font-medium text-[11px] cursor-pointer"
+                >
+                  Slides
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveMode('docs')}
+                  className="px-2.5 py-0.5 rounded-full bg-sky-600 text-white font-bold text-[11px] cursor-pointer"
+                >
+                  Docs
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveMode('pdf')}
+                  className="px-2.5 py-0.5 rounded-full hover:bg-slate-300/60 text-[#444746] font-medium text-[11px] cursor-pointer"
+                >
+                  PDF
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
 
         {/* Status / Notification Banner */}
         {statusMessage && (
@@ -1038,30 +1613,30 @@ export default function GoogleWorkspaceDirectOpenModal({
           </div>
         )}
 
-        {/* Main Workspace Body:
-            - When !isFullPage (clicked "Cloud Viewer" on /studio): Authentic Gmail Attachment Opener Cloud Preview stage
-            - When isFullPage (opened in new tab /viewer?mode=slides|docs|pdf): Full Populated Slides / Docs / PDF workspace
-        */}
-        <div className="flex-1 flex flex-col md:flex-row overflow-hidden bg-[#F8FAFC] text-slate-900">
+        {/* Main Workspace Body */}
+        <div className="flex-1 flex flex-col md:flex-row overflow-hidden bg-[#F9FBFD] text-slate-900">
           {!isFullPage ? (
+            /* =========================================================================
+               SCREENSHOT 1: GMAIL ATTACHMENT PROJECTOR SCROLLABLE SLIDES STACK
+               Shows Slide 1 at top and Slide 2 Executive Summary Cards directly below!
+               ========================================================================= */
             <div
-              className="flex-1 bg-[#141821] overflow-auto flex flex-col items-center justify-start p-4 md:p-8 relative select-none"
+              className="flex-1 bg-[#0E0E10]/95 overflow-y-auto flex flex-col items-center justify-start py-6 px-4 gap-5 relative select-none"
               onClick={() => {
                 if (showOpenWithDropdown) setShowOpenWithDropdown(false);
               }}
             >
-              {/* Gmail Attachment Preview Floating Document Sheet */}
+              {/* SLIDE 1 IN PROJECTOR STACK: 1:1 MASTER ARCHITECTURE TOPOLOGY */}
               <div
                 style={{
-                  width: `${Math.min(1480, Math.round((1180 * previewZoom) / 100))}px`,
-                  maxWidth: '96vw',
+                  width: `${Math.min(1360, Math.round((980 * previewZoom) / 100))}px`,
+                  maxWidth: '94vw',
                 }}
-                className="bg-white rounded-lg shadow-[0_24px_70px_rgba(0,0,0,0.75)] border border-slate-700/80 overflow-hidden transition-all duration-150 my-auto"
+                className="bg-white aspect-[16/9] shadow-[0_20px_60px_rgba(0,0,0,0.85)] border border-slate-700 overflow-hidden flex flex-col shrink-0"
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Sheet Top Metadata Strip */}
-                <div className="px-6 py-4 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-3 border-b border-slate-800">
-                  <div className="flex items-center gap-3 min-w-0">
+                <div className="px-6 py-3 bg-[#0F172A] text-white flex items-center justify-between border-b border-slate-800 shrink-0">
+                  <div className="flex items-center gap-2.5 min-w-0">
                     <span className="px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 font-mono text-[11px] font-bold">
                       {blueprintId}
                     </span>
@@ -1069,129 +1644,169 @@ export default function GoogleWorkspaceDirectOpenModal({
                       {diagramName}
                     </h3>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-300">
-                    <span>{sortedVertices.length} Architecture Nodes</span>
-                    <span>•</span>
-                    <span>{edges.length} Connections</span>
-                  </div>
+                  <span className="text-xs text-slate-400 font-mono">Slide 1 / 3</span>
                 </div>
 
-                {/* High-Resolution 1:1 Architecture Preview Canvas */}
-                <div className="relative bg-white p-4 md:p-6 flex items-center justify-center min-h-[540px]">
+                <div className="flex-1 relative bg-white p-3 flex items-center justify-center overflow-hidden">
                   {effectivePreviewUrl ? (
                     <img
                       src={effectivePreviewUrl}
                       alt={diagramName}
-                      className="w-full h-auto max-h-[74vh] object-contain mx-auto"
+                      className="w-full h-full object-contain mx-auto"
                     />
                   ) : (
-                    <div className="py-24 text-center text-slate-400 text-sm flex flex-col items-center gap-2">
+                    <div className="py-16 text-center text-slate-400 text-sm flex flex-col items-center gap-2">
                       <Loader2 className="w-6 h-6 animate-spin text-sky-500" />
-                      <span>Rendering high-resolution cloud attachment preview...</span>
+                      <span>Rendering Slide 1...</span>
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Bottom Floating Gmail Attachment Zoom Pill */}
+              {/* SLIDE 2 IN PROJECTOR STACK (Matches Screenshot 1 Bottom Dark-Teal 6-Card Summary Slide!) */}
               <div
-                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-4 py-2 rounded-full bg-[#1E2430]/95 border border-slate-700 text-white shadow-2xl backdrop-blur-md text-xs font-semibold"
+                style={{
+                  width: `${Math.min(1360, Math.round((980 * previewZoom) / 100))}px`,
+                  maxWidth: '94vw',
+                }}
+                className="bg-[#071927] aspect-[16/9] shadow-[0_20px_60px_rgba(0,0,0,0.85)] border border-teal-500/40 overflow-hidden flex flex-col shrink-0 text-white"
                 onClick={(e) => e.stopPropagation()}
               >
-                <span className="text-slate-300 pr-2 border-r border-slate-700">Page 1 of 1</span>
-                <button
-                  type="button"
-                  onClick={() => setPreviewZoom((z) => Math.max(50, z - 15))}
-                  className="px-2 py-0.5 rounded hover:bg-slate-700 text-slate-200 font-bold cursor-pointer"
-                  title="Zoom Out"
-                >
-                  −
-                </button>
-                <span className="font-mono text-sky-300 min-w-[42px] text-center">{previewZoom}%</span>
-                <button
-                  type="button"
-                  onClick={() => setPreviewZoom((z) => Math.min(175, z + 15))}
-                  className="px-2 py-0.5 rounded hover:bg-slate-700 text-slate-200 font-bold cursor-pointer"
-                  title="Zoom In"
-                >
-                  +
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPreviewZoom(100)}
-                  className="pl-2 border-l border-slate-700 text-slate-300 hover:text-white cursor-pointer"
-                  title="Reset Zoom"
-                >
-                  Reset
-                </button>
+                <div className="h-2 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 shrink-0" />
+                <div className="px-7 pt-5 pb-3 flex items-end justify-between">
+                  <div>
+                    <h3 className="text-lg md:text-2xl font-extrabold text-white tracking-tight">
+                      {diagramName}: Architecture &amp; Use Cases Summary
+                    </h3>
+                    <p className="text-xs text-teal-300 mt-0.5">
+                      {sortedVertices.length} Enterprise Cloud Components &amp; {edges.length} Inter-Service Data Flows ({blueprintId})
+                    </p>
+                  </div>
+                  <span className="text-xs font-mono text-teal-300/80">Slide 2 / 3</span>
+                </div>
+
+                <div className="flex-1 px-7 pb-6 grid grid-cols-1 sm:grid-cols-3 gap-3.5 overflow-hidden">
+                  {sortedVertices
+                    .filter((v) => cleanHtmlToPlainText(v.value).title.length > 0)
+                    .slice(0, 6)
+                    .map((node, idx) => {
+                      const parsed = cleanHtmlToPlainText(node.value);
+                      return (
+                        <div
+                          key={node.id}
+                          className="rounded-lg bg-[#0D273D] border border-teal-500/30 flex flex-col overflow-hidden"
+                        >
+                          <div className="px-3 py-1.5 bg-[#00838F] text-white font-bold text-xs truncate">
+                            {idx + 1}. {parsed.title}
+                          </div>
+                          <div className="p-3 text-[11px] text-slate-200 space-y-1 flex-1">
+                            <div>• Function: {parsed.subtitle || 'Enterprise Cloud Tier'}</div>
+                            <div>• Object ID: OBJ-{String(idx + 1).padStart(2, '0')}</div>
+                            <div>• Geometry: {Math.round(node.width)}×{Math.round(node.height)}px Vector Node</div>
+                            <div>• Status: 1:1 Verified Topology</div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
               </div>
             </div>
           ) : activeMode === 'slides' ? (
+            /* =========================================================================
+               SCREENSHOT 3: AUTHENTIC GOOGLE SLIDES EDITOR WORKSPACE
+               Left Numbered Filmstrip (Blue #0B57D0 active ring) + Rulers + 16:9 Canvas
+               ========================================================================= */
             <>
-              {/* Left Slide Thumbnail Rail (Google Slides style) */}
-              <div className="w-full md:w-64 bg-slate-100 border-r border-slate-200 p-3.5 flex md:flex-col gap-2.5 overflow-x-auto md:overflow-y-auto shrink-0">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-0.5 hidden md:block">
-                  Populated Slides (3)
-                </div>
-
+              {/* Left Numbered Slide Filmstrip (#F9FBFD) */}
+              <div className="w-full md:w-56 bg-[#F9FBFD] border-r border-[#DADCE0] p-3 flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto shrink-0 select-none">
                 {[
                   {
                     idx: 0,
-                    title: 'Slide 1: 1:1 Interactive Architecture',
-                    subtitle: `${sortedVertices.length} Interactive Vector Objects`,
-                    badge: '1:1 Exact Twin',
+                    label: '1:1 Master Architecture',
+                    sub: `${sortedVertices.length} Interactive Nodes`,
                   },
                   {
                     idx: 1,
-                    title: 'Slide 2: Decomposed Vector Shapes',
-                    subtitle: 'Draggable PowerPoint Shapes & Icons',
-                    badge: 'Editable Shapes',
+                    label: 'Editable Vector Shapes',
+                    sub: `${sortedVertices.length} Shapes • ${edges.length} Edges`,
                   },
                   {
                     idx: 2,
-                    title: 'Slide 3: Component Spec Matrix',
-                    subtitle: 'Object Inventory & Roles Table',
-                    badge: 'Editable Table',
+                    label: 'Component Spec Matrix',
+                    sub: 'Structured Inventory Table',
                   },
                 ].map((slide) => (
                   <button
                     key={slide.idx}
+                    type="button"
                     onClick={() => setActiveSlideIndex(slide.idx)}
                     data-testid={`slide-thumbnail-${slide.idx}`}
-                    className={`flex flex-col text-left p-3 rounded-xl border-2 transition-all cursor-pointer shrink-0 w-56 md:w-full ${
-                      activeSlideIndex === slide.idx
-                        ? 'bg-white border-amber-500 shadow-md ring-2 ring-amber-500/20'
-                        : 'bg-white/70 border-slate-200 hover:border-slate-300'
-                    }`}
+                    className="group flex items-start gap-2.5 text-left cursor-pointer shrink-0 w-44 md:w-full focus:outline-none"
                   >
-                    <div className="flex items-center justify-between gap-2 mb-1">
-                      <span className="text-xs font-bold text-slate-900">Slide {slide.idx + 1}</span>
-                      <span className="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-100 text-amber-800">
-                        {slide.badge}
-                      </span>
+                    <span
+                      className={`text-xs font-semibold pt-1 w-4 text-right shrink-0 ${
+                        activeSlideIndex === slide.idx ? 'text-[#0B57D0] font-bold' : 'text-[#444746]'
+                      }`}
+                    >
+                      {slide.idx + 1}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div
+                        className={`w-full aspect-[16/9] rounded-[8px] bg-white overflow-hidden flex flex-col transition-all ${
+                          activeSlideIndex === slide.idx
+                            ? 'ring-2 ring-[#0B57D0] border border-[#0B57D0] shadow-sm'
+                            : 'border border-[#DADCE0] hover:border-slate-400'
+                        }`}
+                      >
+                        <div className="h-2.5 bg-[#0F172A] px-1.5 flex items-center justify-between shrink-0">
+                          <span className="text-[5px] font-bold text-sky-400 truncate">{diagramName}</span>
+                          <span className="text-[4.5px] font-mono text-slate-400">{blueprintId}</span>
+                        </div>
+                        <div className="flex-1 relative bg-white flex items-center justify-center p-1 overflow-hidden">
+                          {slide.idx === 0 || slide.idx === 1 ? (
+                            effectivePreviewUrl ? (
+                              <img
+                                src={effectivePreviewUrl}
+                                alt={slide.label}
+                                className="w-full h-full object-contain"
+                              />
+                            ) : (
+                              <div className="text-[7px] text-slate-400">Slide {slide.idx + 1}</div>
+                            )
+                          ) : (
+                            <div className="w-full h-full flex flex-col gap-0.5 p-1">
+                              <div className="h-1.5 w-full bg-slate-800 rounded-2xs" />
+                              <div className="h-1.5 w-full bg-slate-200 rounded-2xs" />
+                              <div className="h-1.5 w-full bg-slate-100 rounded-2xs" />
+                              <div className="h-1.5 w-full bg-slate-200 rounded-2xs" />
+                              <div className="h-1.5 w-3/4 bg-slate-100 rounded-2xs" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="mt-1 text-[10.5px] font-medium text-[#1F1F1F] truncate">{slide.label}</div>
                     </div>
-                    <div className="text-xs font-semibold text-slate-800 truncate">{slide.title}</div>
-                    <div className="text-[11px] text-slate-500 mt-0.5">{slide.subtitle}</div>
                   </button>
                 ))}
 
-                {/* Interactive Node Inspector Panel when a node is clicked */}
-                {selectedNode ? (
-                  <div className="mt-2 p-3 rounded-xl bg-slate-900 text-white border border-slate-700 space-y-2 shadow-lg">
+                {/* Interactive Node Inspector Panel when a node is clicked on the slide */}
+                {selectedNode && (
+                  <div className="mt-2 p-3 rounded-xl bg-white text-slate-900 border-2 border-[#0B57D0] space-y-2 shadow-md">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold text-amber-400 flex items-center gap-1">
+                      <span className="text-[11px] font-bold text-[#0B57D0] flex items-center gap-1">
                         <Edit3 className="w-3 h-3" />
-                        <span>Live Node Editor</span>
+                        <span>Shape Label Editor</span>
                       </span>
                       <button
+                        type="button"
                         onClick={() => setSelectedNodeId(null)}
-                        className="text-slate-400 hover:text-white text-xs cursor-pointer"
+                        className="text-slate-400 hover:text-slate-700 text-xs cursor-pointer"
                       >
                         ✕
                       </button>
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[10px] text-slate-400 block">Node Title / Label</label>
+                      <label className="text-[10px] text-slate-500 font-semibold block">Shape Title / Label</label>
                       <input
                         type="text"
                         value={
@@ -1207,9 +1822,9 @@ export default function GoogleWorkspaceDirectOpenModal({
                             [selectedNode.id]: { title: e.target.value, subtitle: curSub },
                           }));
                         }}
-                        className="w-full px-2 py-1 rounded bg-slate-950 border border-amber-500/50 text-xs text-amber-300 font-bold focus:outline-none"
+                        className="w-full px-2 py-1 rounded bg-slate-50 border border-slate-300 text-xs text-slate-900 font-bold focus:border-[#0B57D0] focus:outline-none"
                       />
-                      <label className="text-[10px] text-slate-400 block">Architectural Role / Subtitle</label>
+                      <label className="text-[10px] text-slate-500 font-semibold block">Role / Subtitle</label>
                       <input
                         type="text"
                         value={
@@ -1226,94 +1841,44 @@ export default function GoogleWorkspaceDirectOpenModal({
                           }));
                         }}
                         placeholder="Add role or protocol..."
-                        className="w-full px-2 py-1 rounded bg-slate-950 border border-slate-700 text-xs text-slate-200 focus:outline-none"
+                        className="w-full px-2 py-1 rounded bg-slate-50 border border-slate-300 text-xs text-slate-700 focus:border-[#0B57D0] focus:outline-none"
                       />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="mt-auto pt-3 border-t border-slate-200 hidden md:block">
-                    <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs space-y-1">
-                      <div className="font-bold flex items-center gap-1.5">
-                        <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                        <span>Zero-Deformity 1:1 Guarantee</span>
-                      </div>
-                      <p className="text-[11px] text-amber-800 leading-relaxed">
-                        Slide 1 renders your exact 1:1 architecture with clickable vector hotspots. Click any node to customize its label before exporting!
-                      </p>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Right Main Widescreen 16:9 Slide Canvas Stage */}
-              <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-6 bg-slate-200/70 overflow-auto relative">
-                {/* Slide Stage Controls */}
-                <div className="flex flex-wrap items-center justify-between w-full max-w-[1120px] mb-2.5 px-1 gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="px-3 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold">
-                      Slide {activeSlideIndex + 1} of 3
-                    </span>
-                    <span className="text-xs font-semibold text-slate-700">
-                      {activeSlideIndex === 0
-                        ? 'Slide 1: 100% 1:1 Widescreen Architecture & Interactive Vector Hotspots'
-                        : activeSlideIndex === 1
-                        ? 'Slide 2: 100% Decomposed Native Vector Shapes, Azure/GCP Icons & Connectors'
-                        : 'Slide 3: Editable Component Inventory & Specification Matrix'}
-                    </span>
+              {/* Right Main Widescreen 16:9 Google Slides Canvas Stage with Top Ruler (#F8F9FA) */}
+              <div
+                className={`${
+                  isSlideshowPlaying
+                    ? 'fixed inset-0 z-[300] bg-black p-0 flex flex-col items-center justify-center'
+                    : 'flex-1 flex flex-col items-center justify-between bg-[#F8F9FA] overflow-hidden relative'
+                }`}
+              >
+                {/* Screenshot 3 Google Slides Top Horizontal Ruler */}
+                {!isSlideshowPlaying && (
+                  <div className="w-full h-5 bg-[#F8F9FA] border-b border-[#DADCE0] flex items-center justify-around px-16 text-[9px] font-mono text-slate-400 select-none shrink-0">
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                    <span>5</span>
+                    <span>6</span>
+                    <span>7</span>
+                    <span>8</span>
+                    <span>9</span>
                   </div>
+                )}
 
-                  <div className="flex items-center gap-2">
-                    {activeSlideIndex === 0 && (
-                      <div className="inline-flex rounded-lg bg-slate-300/80 p-0.5 border border-slate-300">
-                        <button
-                          onClick={() => setSlide1ViewMode('interactive-twin')}
-                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition cursor-pointer flex items-center gap-1 ${
-                            slide1ViewMode === 'interactive-twin'
-                              ? 'bg-slate-900 text-amber-300 shadow-xs'
-                              : 'text-slate-700 hover:text-slate-900'
-                          }`}
-                        >
-                          <Eye className="w-3 h-3" />
-                          <span>1:1 Interactive Twin</span>
-                        </button>
-                        <button
-                          onClick={() => setSlide1ViewMode('decomposed-shapes')}
-                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition cursor-pointer flex items-center gap-1 ${
-                            slide1ViewMode === 'decomposed-shapes'
-                              ? 'bg-slate-900 text-amber-300 shadow-xs'
-                              : 'text-slate-700 hover:text-slate-900'
-                          }`}
-                        >
-                          <Layers className="w-3 h-3" />
-                          <span>Decomposed Shapes</span>
-                        </button>
-                      </div>
-                    )}
-
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => setActiveSlideIndex((p) => Math.max(0, p - 1))}
-                        disabled={activeSlideIndex === 0}
-                        className="p-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 disabled:opacity-40 hover:bg-slate-50 cursor-pointer"
-                      >
-                        <ChevronLeft className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => setActiveSlideIndex((p) => Math.min(2, p + 1))}
-                        disabled={activeSlideIndex === 2}
-                        className="p-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 disabled:opacity-40 hover:bg-slate-50 cursor-pointer"
-                      >
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Widescreen 16:9 Slide Container */}
-                <div
-                  className="w-full max-w-[1120px] aspect-[16/9] bg-white rounded-xl shadow-2xl border border-slate-300 flex flex-col overflow-hidden relative"
-                  data-testid="live-browser-slide-canvas"
-                >
+                <div className="flex-1 w-full flex items-center justify-center p-4 md:p-6 overflow-auto">
+                  {/* Widescreen 16:9 Slide Container */}
+                  <div
+                    className={`w-full ${
+                      isSlideshowPlaying ? 'max-w-[96vw] max-h-[92vh]' : 'max-w-[1100px]'
+                    } aspect-[16/9] bg-white shadow-[0_2px_12px_rgba(0,0,0,0.14)] border border-[#DADCE0] flex flex-col overflow-hidden relative`}
+                    data-testid="live-browser-slide-canvas"
+                  >
                   {/* Slide Top Header Banner */}
                   <div className="h-11 bg-[#0F172A] px-5 flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-2.5 min-w-0">
@@ -1756,8 +2321,68 @@ export default function GoogleWorkspaceDirectOpenModal({
                       </table>
                     </div>
                   )}
+                  </div>
                 </div>
+
+                {/* Floating Presentation Bar when Slideshow is active */}
+                {isSlideshowPlaying && (
+                  <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[310] bg-[#202124]/95 border border-white/15 rounded-full px-5 py-2 flex items-center gap-4 text-white text-xs shadow-2xl">
+                    <button
+                      type="button"
+                      onClick={() => setActiveSlideIndex((prev) => Math.max(0, prev - 1))}
+                      className="px-2 py-1 rounded hover:bg-white/10 cursor-pointer"
+                    >
+                      ◀ Prev
+                    </button>
+                    <span className="font-mono font-bold">
+                      Slide {activeSlideIndex + 1} / 3
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setActiveSlideIndex((prev) => Math.min(2, prev + 1))}
+                      className="px-2 py-1 rounded hover:bg-white/10 cursor-pointer"
+                    >
+                      Next ▶
+                    </button>
+                    <div className="h-4 w-px bg-white/20" />
+                    <button
+                      type="button"
+                      onClick={() => setIsSlideshowPlaying(false)}
+                      className="px-3 py-1 rounded-full bg-rose-600 hover:bg-rose-500 font-bold cursor-pointer"
+                    >
+                      Exit Slideshow (Esc)
+                    </button>
+                  </div>
+                )}
               </div>
+
+              {/* Screenshot 3 Right Vertical Google Slides Building-Blocks Rail (Slide, Image, Media, Uploads, Record, Speaker, Transform) */}
+              {!isSlideshowPlaying && (
+                <div
+                  className="hidden lg:flex w-16 bg-[#F9FBFD] border-l border-[#DADCE0] flex-col items-center py-3 gap-4 shrink-0 select-none"
+                  data-testid="google-slides-right-building-blocks-rail"
+                >
+                  {[
+                    { label: 'Slide', icon: '⊞', onClick: () => setActiveSlideIndex((prev) => (prev + 1) % 3) },
+                    { label: 'Image', icon: '🖼️', onClick: () => setSlide1ViewMode('interactive-twin') },
+                    { label: 'Media', icon: '❖', onClick: () => setSlide1ViewMode('decomposed-shapes') },
+                    { label: 'Uploads', icon: '☁️', onClick: () => void handleCopyAndLaunchNewTab('slides') },
+                    { label: 'Record', icon: '⏺', onClick: () => setIsSlideshowPlaying(true) },
+                    { label: 'Speaker', icon: '🗒️', onClick: () => setActiveSlideIndex(2) },
+                    { label: 'Transform', icon: '✨', onClick: () => setSlide1ViewMode((m) => (m === 'interactive-twin' ? 'decomposed-shapes' : 'interactive-twin')) },
+                  ].map((tool) => (
+                    <button
+                      key={tool.label}
+                      type="button"
+                      onClick={tool.onClick}
+                      className="flex flex-col items-center gap-0.5 text-[#444746] hover:text-[#0B57D0] hover:bg-[#EDF2FA] w-12 py-1.5 rounded-xl transition cursor-pointer"
+                    >
+                      <span className="text-sm leading-none">{tool.icon}</span>
+                      <span className="text-[9.5px] font-medium tracking-tight">{tool.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </>
           ) : activeMode === 'pdf' ? (
             /* =========================================================================
