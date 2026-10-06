@@ -31,6 +31,16 @@ import {
 } from '@/lib/export/editablePptxCompiler';
 import { exportDrawioToEditableDocx } from '@/lib/export/editableDocxCompiler';
 import { exportDiagramPng } from '@/lib/export/diagramRaster';
+import {
+  GoogleDriveDirectOpenError,
+  createGoogleWorkspaceFileFromBlob,
+  getCachedDriveToken,
+  getLocalGoogleOAuthClientIdOverride,
+  isValidGoogleOAuthClientId,
+  prepareDriveTokenClient,
+  resolveGoogleOAuthClientId,
+  saveLocalGoogleOAuthClientIdOverride,
+} from '@/lib/googleDriveDirectOpen';
 
 interface GoogleWorkspaceDirectOpenModalProps {
   isOpen: boolean;
@@ -50,19 +60,6 @@ function escapeXmlText(str: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;');
-}
-
-function blobToBase64(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const res = reader.result as string;
-      const base64Idx = res.indexOf(';base64,');
-      resolve(base64Idx !== -1 ? res.substring(base64Idx + 8) : res);
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
 }
 
 async function convertAnyImageUrlToPngBlob(url: string): Promise<Blob | null> {
@@ -140,9 +137,10 @@ export default function GoogleWorkspaceDirectOpenModal({
     setActiveSlideIndex(0);
   }, [diagramName, blueprintId]);
 
-  // Cloud / OAuth states
-  const [googleAccessToken, setGoogleAccessToken] = useState<string>('');
+  // Cloud / OAuth states — Google Identity Services token flow (drive.file) via @/lib/googleDriveDirectOpen
   const [googleClientId, setGoogleClientId] = useState<string>('');
+  const [googleClientIdSource, setGoogleClientIdSource] = useState<'none' | 'server' | 'local'>('none');
+  const [googleAccountEmail, setGoogleAccountEmail] = useState<string>('');
   const [showAuthConfig, setShowAuthConfig] = useState<boolean>(false);
   const [isUploadingToGoogleDrive, setIsUploadingToGoogleDrive] = useState<boolean>(false);
   const [isOpeningCloudViewer, setIsOpeningCloudViewer] = useState<boolean>(false);
@@ -418,13 +416,32 @@ export default function GoogleWorkspaceDirectOpenModal({
   const exportableMasterPngUrl = pngPreviewUrl || resolvedMasterImageProp || undefined;
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedToken = localStorage.getItem('pc_google_drive_access_token') || '';
-      const savedClientId = localStorage.getItem('pc_google_oauth_client_id') || '';
-      setGoogleAccessToken(savedToken);
-      setGoogleClientId(savedClientId);
+    if (!isOpen || typeof window === 'undefined') return;
+    let cancelled = false;
+    // Legacy (pre-GIS) raw access tokens are no longer used — sign-in always goes through Google Identity Services.
+    try {
+      localStorage.removeItem('pc_google_drive_access_token');
+    } catch {}
+    const localOverride = getLocalGoogleOAuthClientIdOverride();
+    if (localOverride) {
+      setGoogleClientId(localOverride);
+      setGoogleClientIdSource('local');
     }
-  }, []);
+    resolveGoogleOAuthClientId().then((resolved) => {
+      if (cancelled) return;
+      if (resolved) {
+        setGoogleClientId(resolved);
+        setGoogleClientIdSource(localOverride ? 'local' : 'server');
+        const cached = getCachedDriveToken(resolved);
+        if (cached?.email) setGoogleAccountEmail(cached.email);
+        // Warm up Google Identity Services so the click → popup path stays within the user gesture window.
+        prepareDriveTokenClient(resolved).catch(() => {});
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     if (resolvedMasterImageProp) {
@@ -472,167 +489,101 @@ export default function GoogleWorkspaceDirectOpenModal({
 
   if (!isOpen) return null;
 
-  const handleSaveAuthSettings = (token: string, clientId: string) => {
-    setGoogleAccessToken(token);
-    setGoogleClientId(clientId);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('pc_google_drive_access_token', token);
-      localStorage.setItem('pc_google_oauth_client_id', clientId);
-    }
+  const handleSaveGoogleClientId = (clientId: string) => {
+    const clean = clientId.trim();
+    setGoogleClientId(clean);
+    setGoogleClientIdSource(clean ? 'local' : 'none');
+    saveLocalGoogleOAuthClientIdOverride(clean);
   };
 
   /**
-   * Helper: Uploads compiled blob to Cloud Bridge
+   * Compiles the active presentation / specification in memory (never a browser download).
    */
-  const uploadToCloudBridgeAndGetPublicUrl = async (
-    base64Data: string,
-    format: 'pptx' | 'docx',
-    activeToken?: string,
-    customBridgeId?: string
-  ): Promise<{ publicUrl: string; googleWebViewLink?: string | null }> => {
-    const bridgeId = customBridgeId || `${blueprintId.toLowerCase().replace(/[^a-z0-9]/g, '')}_${Date.now()}`;
-    const payload = {
-      id: blueprintId,
-      title: diagramName,
-      format,
-      base64Data,
-      xmlContent,
-      bridgeId,
-      googleAccessToken: activeToken || undefined,
-    };
-
-    const localRes = await fetch('/api/export/cloud-bridge', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const localData = await localRes.json();
-
-    if (localData?.googleWebViewLink) {
-      return {
-        publicUrl: localData.publicUrl,
-        googleWebViewLink: localData.googleWebViewLink,
-      };
+  const compileActiveWorkspaceBlob = async (): Promise<Blob> => {
+    const generatedBridgeId = `${blueprintId.toLowerCase().replace(/[^a-z0-9]/g, '')}_${Date.now()}`;
+    const blob =
+      activeMode === 'slides'
+        ? await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
+            returnBlob: true,
+            masterImageSrc: exportableMasterPngUrl,
+          })
+        : await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, {
+            returnBlob: true,
+            bridgeId: generatedBridgeId,
+            masterImageSrc: exportableMasterPngUrl,
+            editableOverrides,
+          });
+    if (!blob || typeof blob === 'string') {
+      throw new Error('Failed to compile in-memory document blob.');
     }
-
-    const defaultGcsUrl =
-      format === 'docx'
-        ? 'https://storage.googleapis.com/promptcanvas-cloud-bridge-sandbox/bp_00_live.docx?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=merck-sheets-sync%40nitina-ggarwal-sandbox-647724.iam.gserviceaccount.com%2F20261006%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20261006T162914Z&X-Goog-Expires=604800&X-Goog-SignedHeaders=host&X-Goog-Signature=4431f5f25a2d7d7919b34de0eceb38f733dd4cd3a651829b58ed091908bd76fe96682f71168c4747f31947cec21e6d79f08df78086940d34b4991646b69860cc7cd752d3ec51c81d88f431b52f482224fb57ef5b694f50501a24a787ea2dbcc26130d5d395774fbc553dd87028ebdbf0308f0ec05b315ceefc52be357e69d591d77e2abc35958c7259ecfc0dc651611d96941a0ba57de3e4f2e981cee0bef4dbab5fa4989071e76e84b0083a0b75beb4aa9949fbd8e02d262ba269c44c4f0188f158285da562eb85352636a315fc13b51e5d2f4a16137e09fc5ec659997f7ea370f7cab92514e82955c31e8321df8156af9fbb638f51cf608d551c3a2a0a7c2b'
-        : 'https://storage.googleapis.com/promptcanvas-cloud-bridge-sandbox/bp_00_live.pptx?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=merck-sheets-sync%40nitina-ggarwal-sandbox-647724.iam.gserviceaccount.com%2F20261006%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20261006T162914Z&X-Goog-Expires=604800&X-Goog-SignedHeaders=host&X-Goog-Signature=08a6e6c90a06a5a4076fb3c7925f3a8fd1a51d7e8e5a9f9d041ffee6fdb337a3bc3e94d56e0ca9483eea425afe1a3d45541439c701a830d5eb650703f2a7dde4ce2db76eff6fc55fd1f92ef892f62fc7f9e66c76cde1650ee0dff03ae6039f35d7be6e881cf18c1dc361d59c9b228a9491e939314221b64c8984b766264de11fc59e0b583f6491dc7d4cc79cd8aa8136492eaadf98f2c8346b27de2d16c25a8cbeef8d9b3f4c0735d22d47931052851949306080ea157fed62b61f8b19f91d510fa8d6e91c12678167b39289bfeef9a43cd279a9bfaf8c015102d088b6e4d864b3c6bfde776c5f9b7c88028601e73634769f5cc9682aa8f4818ca9cd4775a316';
-    const finalPublicUrl =
-      localData?.publicUrl && !localData.publicUrl.includes('.cr.gclb.goog')
-        ? localData.publicUrl
-        : defaultGcsUrl;
-    return {
-      publicUrl: finalPublicUrl,
-    };
+    return blob;
   };
 
   /**
-   * Method 1: Direct 1-Click Upload & Conversion in Google Drive API -> Opens native populated Google Slide / Google Doc
+   * Method 1: 1-click "Open with Google Slides / Google Docs" — Google Identity Services sign-in (drive.file)
+   * + Drive API conversion into a NATIVE Google Slides / Google Docs file inside the signed-in user's own Drive.
+   * Result: a real https://docs.google.com/presentation/d/<id>/edit URL (never a download, never the read-only viewer).
    */
   const handleDirectGoogleDriveOpen = async () => {
-    setIsUploadingToGoogleDrive(true);
-    setStatusMessage({
-      type: 'info',
-      text: `Compiling 100% 1:1 Master & Editable ${activeMode === 'slides' ? 'Presentation (.pptx)' : 'Specification (.docx)'} in memory...`,
-    });
+    if (activeMode === 'pdf') return;
+    const productLabel = activeMode === 'docs' ? 'Google Docs' : 'Google Slides';
+    const clientId = googleClientId || (await resolveGoogleOAuthClientId());
 
-    try {
-      let blob: Blob | string | void;
-      const generatedBridgeId = `${blueprintId.toLowerCase().replace(/[^a-z0-9]/g, '')}_${Date.now()}`;
-      if (activeMode === 'slides') {
-        blob = await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
-          returnBlob: true,
-          masterImageSrc: exportableMasterPngUrl,
-        });
-      } else {
-        blob = await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, {
-          returnBlob: true,
-          bridgeId: generatedBridgeId,
-          masterImageSrc: exportableMasterPngUrl,
-          editableOverrides,
-        });
-      }
-
-      if (!blob || typeof blob === 'string') {
-        throw new Error('Failed to compile in-memory document blob.');
-      }
-
-      const base64Data = await blobToBase64(blob);
-      let activeToken = googleAccessToken.trim();
-
-      if (!activeToken && googleClientId.trim() && typeof window !== 'undefined') {
-        setStatusMessage({
-          type: 'info',
-          text: 'Opening Google Sign-In popup to authorize 1-click Drive file creation...',
-        });
-        activeToken = await new Promise<string>((resolve, reject) => {
-          const scriptId = 'google-gsi-client-script';
-          const initGsi = () => {
-            const googleObj = (window as any).google;
-            if (!googleObj?.accounts?.oauth2) {
-              reject(new Error('Google Identity Services failed to initialize'));
-              return;
-            }
-            const tokenClient = googleObj.accounts.oauth2.initTokenClient({
-              client_id: googleClientId.trim(),
-              scope: 'https://www.googleapis.com/auth/drive.file',
-              callback: (resp: any) => {
-                if (resp.error) {
-                  reject(new Error(resp.error_description || resp.error));
-                } else if (resp.access_token) {
-                  handleSaveAuthSettings(resp.access_token, googleClientId);
-                  resolve(resp.access_token);
-                }
-              },
-            });
-            tokenClient.requestAccessToken({ prompt: 'consent' });
-          };
-
-          if (document.getElementById(scriptId)) {
-            initGsi();
-          } else {
-            const script = document.createElement('script');
-            script.id = scriptId;
-            script.src = 'https://accounts.google.com/gsi/client';
-            script.async = true;
-            script.onload = initGsi;
-            script.onerror = () => reject(new Error('Could not load Google Identity Services script'));
-            document.body.appendChild(script);
-          }
-        });
-      }
-
-      const { publicUrl, googleWebViewLink } = await uploadToCloudBridgeAndGetPublicUrl(
-        base64Data,
-        activeMode === 'slides' ? 'pptx' : 'docx',
-        activeToken,
-        generatedBridgeId
-      );
-
-      if (googleWebViewLink) {
-        setStatusMessage({
-          type: 'success',
-          text: `🎉 Created native ${activeMode === 'slides' ? 'Google Slides Presentation' : 'Google Doc'} with 1:1 Master & Editable Shapes! Opening tab...`,
-          url: googleWebViewLink,
-        });
-        window.open(googleWebViewLink, '_blank');
-      } else {
-        // Launch actual Google Docs Viewer with the GCP Cloud Storage V4 Signed URL
-        const externalGoogleTabUrl = `https://docs.google.com/viewerng/viewer?url=${encodeURIComponent(publicUrl)}`;
-        setStatusMessage({
-          type: 'success',
-          text: `🎉 Opened ${diagramName} (${blueprintId}) in Google Cloud Viewer!`,
-          url: externalGoogleTabUrl,
-        });
-        window.open(externalGoogleTabUrl, '_blank');
-      }
-    } catch (err: any) {
+    if (!isValidGoogleOAuthClientId(clientId)) {
+      setShowAuthConfig(true);
       setStatusMessage({
         type: 'error',
-        text: err?.message || 'Direct Google Drive upload encountered an error.',
+        text: `One-time setup needed: add the Google OAuth Web Client ID (GOOGLE_OAUTH_CLIENT_ID on Cloud Run, or paste it in the setup bar) to open ${productLabel} directly in your Google Drive.`,
       });
+      return;
+    }
+
+    setIsUploadingToGoogleDrive(true);
+    try {
+      // 1. Google sign-in first (the popup must open inside the click gesture window); cached tokens skip this.
+      let token = getCachedDriveToken(clientId);
+      if (!token) {
+        setStatusMessage({
+          type: 'info',
+          text: `Opening Google sign-in to create the ${productLabel} file in your Google Drive…`,
+        });
+        const tokenClient = await prepareDriveTokenClient(clientId);
+        token = await tokenClient.requestToken({ prompt: '' });
+      }
+      if (token.email) setGoogleAccountEmail(token.email);
+
+      // 2. Compile the 1:1 master + editable shapes deck in memory.
+      setStatusMessage({
+        type: 'info',
+        text: `Compiling 100% 1:1 Master & Editable ${activeMode === 'slides' ? 'Presentation (.pptx)' : 'Specification (.docx)'} in memory…`,
+      });
+      const blob = await compileActiveWorkspaceBlob();
+
+      // 3. Drive API converts it into a native Google file owned by the user.
+      setStatusMessage({ type: 'info', text: `Creating native ${productLabel} file in Google Drive…` });
+      const result = await createGoogleWorkspaceFileFromBlob(token.accessToken, blob, {
+        name: `${diagramName} (${blueprintId})`,
+        kind: activeMode === 'docs' ? 'docs' : 'slides',
+        email: token.email,
+      });
+
+      // Direct external Google tab launcher — the REAL docs.google.com editor URL for the converted file.
+      const externalGoogleTabUrl = result.url;
+      setStatusMessage({
+        type: 'success',
+        text: `🎉 Created ${productLabel} in your Google Drive${token.email ? ` (${token.email})` : ''}. Opening…`,
+        url: externalGoogleTabUrl,
+      });
+      const opened = typeof window !== 'undefined' ? window.open(externalGoogleTabUrl, '_blank') : null;
+      if (!opened && isFullPage && typeof window !== 'undefined') {
+        window.location.assign(externalGoogleTabUrl);
+      }
+    } catch (err: any) {
+      const message =
+        err instanceof GoogleDriveDirectOpenError
+          ? err.message
+          : err?.message || 'Google Drive upload encountered an error.';
+      setStatusMessage({ type: 'error', text: message });
     } finally {
       setIsUploadingToGoogleDrive(false);
     }
@@ -755,9 +706,9 @@ export default function GoogleWorkspaceDirectOpenModal({
         type: 'success',
         text:
           modeToUse === 'slides'
-            ? `📊 Opened populated Google Slides Presentation (${diagramName}) in the next tab!`
+            ? `📊 Opening ${diagramName} in Google Slides — creating an editable copy in your Google Drive in the next tab…`
             : modeToUse === 'docs'
-            ? `📄 Opened populated Google Docs Specification (${diagramName}) in the next tab!`
+            ? `📄 Opening ${diagramName} in Google Docs — creating an editable copy in your Google Drive in the next tab…`
             : `🖨️ Opened populated PDF Document (${diagramName}) in the next tab!`,
       });
     } catch (err: any) {
@@ -1343,7 +1294,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                   onClick={handleDirectGoogleDriveOpen}
                   disabled={isUploadingToGoogleDrive}
                   className="hidden md:flex items-center gap-1 px-2.5 py-1.5 rounded-full hover:bg-slate-200/70 text-[#444746] text-xs font-medium transition cursor-pointer"
-                  title="Open in Google Cloud Viewer (docs.google.com)"
+                  title="Create an editable copy in your Google Drive and open it in Google Slides"
                 >
                   {isUploadingToGoogleDrive ? (
                     <Loader2 className="w-4 h-4 animate-spin text-amber-600" />
@@ -1380,20 +1331,26 @@ export default function GoogleWorkspaceDirectOpenModal({
                   <button
                     type="button"
                     onClick={handleDirectGoogleDriveOpen}
+                    disabled={isUploadingToGoogleDrive}
+                    data-testid="google-slides-share-drive-btn"
                     className="flex items-center gap-1.5 pl-3.5 pr-3 py-1.5 hover:bg-[#B3DFFC] text-xs md:text-sm font-medium transition cursor-pointer"
-                    title="Open in Google Cloud Viewer (docs.google.com)"
+                    title="Create an editable copy in your Google Drive and open it in Google Slides (docs.google.com/presentation)"
                   >
-                    <svg viewBox="0 0 20 20" className="w-3.5 h-3.5 text-[#001D35]" fill="none" stroke="currentColor" strokeWidth="1.7">
-                      <rect x="4" y="9" width="12" height="8" rx="1.8" />
-                      <path d="M6.5 9V6.5a3.5 3.5 0 017 0V9" />
-                    </svg>
+                    {isUploadingToGoogleDrive ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-[#001D35]" />
+                    ) : (
+                      <svg viewBox="0 0 20 20" className="w-3.5 h-3.5 text-[#001D35]" fill="none" stroke="currentColor" strokeWidth="1.7">
+                        <rect x="4" y="9" width="12" height="8" rx="1.8" />
+                        <path d="M6.5 9V6.5a3.5 3.5 0 017 0V9" />
+                      </svg>
+                    )}
                     <span>Share</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setShowAuthConfig((v) => !v)}
                     className="px-2 py-1.5 border-l border-[#99C8F2] hover:bg-[#B3DFFC] cursor-pointer"
-                    title="Configure Google Drive OAuth"
+                    title="Google Drive sign-in settings"
                   >
                     <ChevronDown className="w-3.5 h-3.5" />
                   </button>
@@ -1403,27 +1360,31 @@ export default function GoogleWorkspaceDirectOpenModal({
               </div>
             </div>
 
-            {/* Optional Google Drive OAuth Bar when Share Chevron is clicked */}
+            {/* Google Drive sign-in settings bar (Share ▾): one-time OAuth Web Client ID + signed-in account */}
             {showAuthConfig && (
-              <div className="mx-3 mb-1.5 px-4 py-2 rounded-xl bg-amber-50 border border-amber-200 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div
+                data-testid="google-drive-oauth-setup-bar"
+                className="mx-3 mb-1.5 px-4 py-2 rounded-xl bg-amber-50 border border-amber-200 flex flex-wrap items-center justify-between gap-2 text-xs"
+              >
                 <div className="flex items-center gap-2 text-amber-950 font-medium">
                   <KeyRound className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                  <span>Google Drive API Token / Client ID (for 1-click upload to docs.google.com/presentation):</span>
+                  <span>
+                    {googleClientIdSource === 'server'
+                      ? 'Google sign-in is configured on the server (GOOGLE_OAUTH_CLIENT_ID).'
+                      : googleClientIdSource === 'local'
+                      ? 'Google sign-in uses the OAuth Client ID saved in this browser.'
+                      : 'One-time setup: paste the Google OAuth Web Client ID (or set GOOGLE_OAUTH_CLIENT_ID on Cloud Run).'}
+                    {googleAccountEmail ? ` Signed in as ${googleAccountEmail}.` : ''}
+                  </span>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 flex-1 max-w-2xl">
                   <input
-                    type="password"
-                    value={googleAccessToken}
-                    onChange={(e) => handleSaveAuthSettings(e.target.value, googleClientId)}
-                    placeholder="Paste Google OAuth Access Token (ya29...)"
-                    className="flex-1 min-w-[180px] px-2.5 py-1 rounded border border-amber-300 bg-white text-slate-900 text-xs"
-                  />
-                  <input
                     type="text"
                     value={googleClientId}
-                    onChange={(e) => handleSaveAuthSettings(googleAccessToken, e.target.value)}
-                    placeholder="Or OAuth Client ID (*.apps.googleusercontent.com)"
-                    className="flex-1 min-w-[180px] px-2.5 py-1 rounded border border-amber-300 bg-white text-slate-900 text-xs"
+                    onChange={(e) => handleSaveGoogleClientId(e.target.value)}
+                    placeholder="1234567890-abc123.apps.googleusercontent.com"
+                    data-testid="google-drive-oauth-client-id-input"
+                    className="flex-1 min-w-[220px] px-2.5 py-1 rounded border border-amber-300 bg-white text-slate-900 text-xs font-mono"
                   />
                   <button
                     type="button"

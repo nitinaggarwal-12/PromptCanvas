@@ -1,0 +1,149 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import {
+  GoogleDriveDirectOpenError,
+  buildDriveMultipartBody,
+  buildGoogleEditorUrl,
+  createGoogleWorkspaceFileFromBlob,
+  describeDriveApiError,
+  isValidGoogleOAuthClientId,
+} from '@/lib/googleDriveDirectOpen';
+
+const PPTX_MIME = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+
+describe('googleDriveDirectOpen — OAuth client id validation', () => {
+  it('accepts a real Web OAuth client id shape', () => {
+    expect(isValidGoogleOAuthClientId('248990048888-abc123def456.apps.googleusercontent.com')).toBe(true);
+  });
+
+  it('rejects placeholders, tokens and empty values', () => {
+    expect(isValidGoogleOAuthClientId('')).toBe(false);
+    expect(isValidGoogleOAuthClientId(undefined)).toBe(false);
+    expect(isValidGoogleOAuthClientId('ya29.a0AfH6SMB-access-token')).toBe(false);
+    expect(isValidGoogleOAuthClientId('paste-client-id-here.apps.googleusercontent.com')).toBe(false);
+  });
+});
+
+describe('googleDriveDirectOpen — editor URLs', () => {
+  it('builds the real Google Slides editor URL (never viewerng)', () => {
+    const url = buildGoogleEditorUrl('slides', '1AbC_dEf');
+    expect(url).toBe('https://docs.google.com/presentation/d/1AbC_dEf/edit');
+    expect(url).not.toContain('viewerng');
+  });
+
+  it('pins the signed-in account with authuser for Docs', () => {
+    expect(buildGoogleEditorUrl('docs', 'xyz', 'nitinagga@google.com')).toBe(
+      'https://docs.google.com/document/d/xyz/edit?authuser=nitinagga%40google.com'
+    );
+  });
+});
+
+describe('googleDriveDirectOpen — multipart body', () => {
+  it('emits a Drive-compatible multipart/related envelope with conversion metadata', async () => {
+    const media = new Blob(['PK\u0003\u0004fake-pptx'], { type: PPTX_MIME });
+    const { body, contentType } = buildDriveMultipartBody(
+      { name: 'Deck (#00)', mimeType: 'application/vnd.google-apps.presentation' },
+      media,
+      PPTX_MIME,
+      'test-boundary'
+    );
+    expect(contentType).toBe('multipart/related; boundary=test-boundary');
+    const text = await body.text();
+    expect(text.startsWith('--test-boundary\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n')).toBe(true);
+    expect(text).toContain('"mimeType":"application/vnd.google-apps.presentation"');
+    expect(text).toContain(`--test-boundary\r\nContent-Type: ${PPTX_MIME}\r\n\r\nPK\u0003\u0004fake-pptx\r\n--test-boundary--`);
+  });
+});
+
+describe('googleDriveDirectOpen — Drive API error mapping', () => {
+  it('maps 401 to token_expired', () => {
+    const err = describeDriveApiError(401, '{"error":{"code":401,"message":"Invalid Credentials"}}');
+    expect(err).toBeInstanceOf(GoogleDriveDirectOpenError);
+    expect(err.code).toBe('token_expired');
+  });
+
+  it('maps accessNotConfigured to drive_api_disabled with actionable guidance', () => {
+    const err = describeDriveApiError(
+      403,
+      JSON.stringify({
+        error: {
+          code: 403,
+          message: 'Google Drive API has not been used in project 123 before or it is disabled.',
+          errors: [{ reason: 'accessNotConfigured' }],
+        },
+      })
+    );
+    expect(err.code).toBe('drive_api_disabled');
+    expect(err.message).toMatch(/Drive API is not enabled/);
+  });
+
+  it('maps storageQuotaExceeded to storage_quota', () => {
+    const err = describeDriveApiError(
+      403,
+      JSON.stringify({ error: { errors: [{ reason: 'storageQuotaExceeded' }], message: 'The user has exceeded their Drive storage quota' } })
+    );
+    expect(err.code).toBe('storage_quota');
+  });
+});
+
+describe('googleDriveDirectOpen — createGoogleWorkspaceFileFromBlob', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('uses the multipart endpoint for small decks and returns the Slides edit URL', async () => {
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      expect(url).toContain('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart');
+      expect((init?.headers as Record<string, string>).Authorization).toBe('Bearer tok-123');
+      expect((init?.headers as Record<string, string>)['Content-Type']).toMatch(/^multipart\/related; boundary=/);
+      return new Response(
+        JSON.stringify({ id: 'FILE_ID', name: 'Deck (#00)', webViewLink: 'https://docs.google.com/presentation/d/FILE_ID/edit?usp=drivesdk' }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await createGoogleWorkspaceFileFromBlob('tok-123', new Blob(['small'], { type: PPTX_MIME }), {
+      name: 'Deck (#00)',
+      kind: 'slides',
+      email: 'nitinagga@google.com',
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(result.id).toBe('FILE_ID');
+    expect(result.url).toBe('https://docs.google.com/presentation/d/FILE_ID/edit?authuser=nitinagga%40google.com');
+  });
+
+  it('switches to the resumable protocol for decks above the multipart limit', async () => {
+    const calls: string[] = [];
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      calls.push(`${init?.method} ${url}`);
+      if (url.includes('uploadType=resumable')) {
+        expect((init?.headers as Record<string, string>)['X-Upload-Content-Type']).toBe(PPTX_MIME);
+        return new Response(null, { status: 200, headers: { Location: 'https://www.googleapis.com/upload/session/abc' } });
+      }
+      expect(url).toBe('https://www.googleapis.com/upload/session/abc');
+      expect(init?.method).toBe('PUT');
+      return new Response(JSON.stringify({ id: 'BIG_ID' }), { status: 200 });
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const bigBlob = new Blob([new Uint8Array(5 * 1024 * 1024)], { type: PPTX_MIME });
+    const result = await createGoogleWorkspaceFileFromBlob('tok-123', bigBlob, { name: 'Big deck', kind: 'slides' });
+
+    expect(calls).toHaveLength(2);
+    expect(calls[0]).toContain('POST https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable');
+    expect(result.url).toBe('https://docs.google.com/presentation/d/BIG_ID/edit');
+  });
+
+  it('surfaces a typed error when Drive rejects the upload', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(JSON.stringify({ error: { code: 403, message: 'Insufficient Permission', errors: [{ reason: 'insufficientPermissions' }] } }), { status: 403 }))
+    );
+    await expect(
+      createGoogleWorkspaceFileFromBlob('tok-123', new Blob(['x'], { type: PPTX_MIME }), { name: 'Deck', kind: 'docs' })
+    ).rejects.toMatchObject({ code: 'insufficient_permissions' });
+  });
+});

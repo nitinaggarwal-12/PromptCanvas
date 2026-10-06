@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, Suspense, useEffect } from 'react';
+import React, { useState, Suspense, useEffect, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
   ArrowLeft,
-  Download,
   ExternalLink,
   Presentation,
   FileText,
@@ -20,6 +19,7 @@ import { exportDrawioToEditableDocx } from '@/lib/export/editableDocxCompiler';
 import { exportDiagramPng } from '@/lib/export/diagramRaster';
 import { useTheme } from '@/lib/themeContext';
 import GoogleWorkspaceDirectOpenModal from '@/components/GoogleWorkspaceDirectOpenModal';
+import GoogleWorkspaceDriveHandoff from '@/components/GoogleWorkspaceDriveHandoff';
 
 function blobToBase64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -43,11 +43,20 @@ function CloudViewerContent() {
   const rawBlueprintParam = searchParams.get('blueprint') || searchParams.get('id') || '';
   const rawTitleParam = searchParams.get('title') || '';
   const rawModeParam = searchParams.get('mode');
+  // `view=workspace` / `view=cloud-viewer` opt out of the Google Drive handoff (in-app previews only)
+  const rawViewParam = searchParams.get('view');
 
   const [engine] = useState<'microsoft' | 'google'>('google');
-  const [viewerSubMode, setViewerSubMode] = useState<'cloud-viewer' | 'interactive-editor'>('interactive-editor');
+  const [viewerSubMode, setViewerSubMode] = useState<'cloud-viewer' | 'interactive-editor'>(
+    rawViewParam === 'cloud-viewer' ? 'cloud-viewer' : 'interactive-editor'
+  );
   const [activeMode, setActiveMode] = useState<'slides' | 'docs' | 'pdf'>(
     rawModeParam === 'docs' ? 'docs' : rawModeParam === 'pdf' ? 'pdf' : 'slides'
+  );
+  // Default: "Open with Google Slides/Docs" creates a NATIVE Google file in the user's own Drive
+  // (docs.google.com/presentation/d/<id>/edit) instead of the read-only viewerng preview.
+  const [isDriveHandoffActive, setIsDriveHandoffActive] = useState<boolean>(
+    rawModeParam !== 'pdf' && rawViewParam !== 'workspace' && rawViewParam !== 'cloud-viewer'
   );
   const [xmlContent, setXmlContent] = useState<string>('');
   const [resolvedTitle, setResolvedTitle] = useState<string>(rawTitleParam || 'Google Cloud Enterprise Architecture');
@@ -62,7 +71,6 @@ function CloudViewerContent() {
 
   const [publicFileUrl, setPublicFileUrl] = useState<string>(DEFAULT_GCS_PPTX_URL);
   const [isSyncingBridge, setIsSyncingBridge] = useState<boolean>(true);
-  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   useEffect(() => {
     if (rawModeParam === 'docs' || rawModeParam === 'pdf' || rawModeParam === 'slides') {
@@ -141,8 +149,9 @@ function CloudViewerContent() {
   }, [rawBlueprintParam, rawTitleParam, isLight]);
 
   // Compile real .pptx or .docx and upload to GCP Cloud Storage Bridge so docs.google.com/viewerng/viewer renders it authentically
+  // (only needed for the in-app fallbacks — the Google Drive handoff uploads straight into the user's Drive instead)
   useEffect(() => {
-    if (!xmlContent) return;
+    if (!xmlContent || isDriveHandoffActive) return;
     let cancelled = false;
 
     async function syncPublicBridge() {
@@ -218,7 +227,37 @@ function CloudViewerContent() {
     return () => {
       cancelled = true;
     };
-  }, [xmlContent, activeMode, resolvedTitle, resolvedId, resolvedMasterImage]);
+  }, [xmlContent, activeMode, resolvedTitle, resolvedId, resolvedMasterImage, isDriveHandoffActive]);
+
+  // In-memory compile used by the Google Drive handoff (never triggers a browser download)
+  const compileWorkspaceBlob = useCallback(async (): Promise<Blob> => {
+    if (!xmlContent) {
+      throw new Error('The architecture diagram is still loading. Please try again in a moment.');
+    }
+    let previewImg = resolvedMasterImage;
+    if (!previewImg) {
+      try {
+        previewImg = await Promise.race([
+          exportDiagramPng(xmlContent, { scale: 2, transparent: false }),
+          new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), 1500))
+        ]);
+      } catch {}
+    }
+    const blob =
+      activeMode === 'docs'
+        ? await exportDrawioToEditableDocx(xmlContent, resolvedTitle, resolvedId, {
+            returnBlob: true,
+            masterImageSrc: previewImg
+          })
+        : await exportDrawioToEditablePptx(xmlContent, resolvedTitle, resolvedId, {
+            returnBlob: true,
+            masterImageSrc: previewImg
+          });
+    if (!blob || typeof blob === 'string') {
+      throw new Error('Could not compile the document in memory.');
+    }
+    return blob;
+  }, [xmlContent, resolvedMasterImage, activeMode, resolvedTitle, resolvedId]);
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
@@ -235,46 +274,31 @@ function CloudViewerContent() {
   // Use Google's active standalone viewer engine (viewerng/viewer) which returns HTTP 200 text/html
   // instead of legacy /viewer which returns HTTP 204 application/binary and triggers 'Save As: viewer'
   const googleEmbeddedViewerUrl = `https://docs.google.com/viewerng/viewer?url=${encodeURIComponent(publicFileUrl)}&embedded=true`;
-  const googleFullTabViewerUrl = `https://docs.google.com/viewerng/viewer?url=${encodeURIComponent(publicFileUrl)}`;
 
+  // "Open with Google Slides / Docs" → native Google file in the signed-in user's own Drive
+  // (real https://docs.google.com/presentation/d/<id>/edit URL, never the read-only viewer)
   const handleOpenInGoogleTab = (targetMode: 'slides' | 'docs') => {
-    if (activeMode !== targetMode) {
-      setActiveMode(targetMode);
-      setViewerSubMode('cloud-viewer');
-      return;
-    }
-    if (typeof window !== 'undefined') {
-      window.open(googleFullTabViewerUrl, '_blank');
-    }
+    setActiveMode(targetMode);
+    setIsDriveHandoffActive(true);
   };
 
-  const handleDownloadFile = async () => {
-    setIsDownloading(true);
-    try {
-      let previewImg = resolvedMasterImage;
-      if (!previewImg && xmlContent) {
-        try {
-          previewImg = await Promise.race([
-            exportDiagramPng(xmlContent, { scale: 2, transparent: false }),
-            new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), 1500))
-          ]);
-        } catch {}
-      }
-      if (activeMode === 'docs') {
-        await exportDrawioToEditableDocx(xmlContent, resolvedTitle, resolvedId, {
-          returnBlob: false,
-          masterImageSrc: previewImg
-        });
-      } else {
-        await exportDrawioToEditablePptx(xmlContent, resolvedTitle, resolvedId, {
-          returnBlob: false,
-          masterImageSrc: previewImg
-        });
-      }
-    } finally {
-      setIsDownloading(false);
-    }
-  };
+  // Native Google Slides / Docs handoff (signed-in user's Drive) — the in-app UI below is only a fallback
+  if (isDriveHandoffActive && (activeMode === 'slides' || activeMode === 'docs')) {
+    return (
+      <GoogleWorkspaceDriveHandoff
+        key={activeMode}
+        kind={activeMode}
+        title={resolvedTitle}
+        blueprintId={resolvedId}
+        isReady={Boolean(xmlContent)}
+        compileBlob={compileWorkspaceBlob}
+        onFallback={(target) => {
+          setIsDriveHandoffActive(false);
+          setViewerSubMode(target === 'workspace' ? 'interactive-editor' : 'cloud-viewer');
+        }}
+      />
+    );
+  }
 
   return (
     <div
@@ -346,7 +370,11 @@ function CloudViewerContent() {
               </div>
               <div className={`flex items-center gap-2 text-[11px] ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                 <Cloud className="w-3 h-3 text-sky-500" />
-                <span>Google Cloud Viewer (docs.google.com/viewerng)</span>
+                <span>
+                  {viewerSubMode === 'interactive-editor'
+                    ? `Interactive preview · "Open with ${activeMode === 'docs' ? 'Google Docs' : 'Google Slides'}" creates the real file in your Google Drive`
+                    : 'Read-only Google Cloud Viewer (docs.google.com/viewerng)'}
+                </span>
                 {isSyncingBridge && (
                   <span className="text-sky-500 flex items-center gap-1 font-medium">
                     <Loader2 className="w-3 h-3 animate-spin" />
@@ -393,7 +421,7 @@ function CloudViewerContent() {
                 ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300'
                 : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
             }`}
-            title="Open in full Google Cloud Viewer tab (.pptx)"
+            title="Create an editable copy in your Google Drive and open it in Google Slides (docs.google.com/presentation)"
           >
             <Presentation className="w-3.5 h-3.5" />
             <span>Open with Google Slides</span>
@@ -412,7 +440,7 @@ function CloudViewerContent() {
                 ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300'
                 : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
             }`}
-            title="Open in full Google Cloud Viewer tab (.docx)"
+            title="Create an editable copy in your Google Drive and open it in Google Docs (docs.google.com/document)"
           >
             <FileText className="w-3.5 h-3.5" />
             <span>Open with Google Docs</span>
