@@ -74,7 +74,6 @@ const NAV_GROUPS: NavGroup[] = [
     label: 'Create',
     items: [
       { id: 'dashboard', name: 'Home Dashboard', icon: Compass, href: '/dashboard', badge: 'HOME', badgeColor: 'bg-sky-500/20 text-sky-400 border-sky-500/30' },
-      { id: 'studio', name: 'Architecture Studio', icon: Layers, href: '/studio', badge: 'PRO' },
       { id: 'vision', name: 'Image to Diagram', icon: Sparkles, href: '/vision', badge: 'AI', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
       { id: 'docgen', name: 'Document Studio', icon: FileText, href: '/docgen', badge: '17' },
     ],
@@ -116,10 +115,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
 
   const isItemActive = (href: string) => {
     const [targetPath, targetQuery] = href.split('?');
-    if (targetPath === '/dashboard' && pathname === '/dashboard') {
-      return true;
-    }
-    if (targetPath === '/studio' && (pathname === '/studio' || pathname === '/studio1' || pathname === '/gcp')) {
+    if (targetPath === '/dashboard' && (pathname === '/dashboard' || pathname === '/studio' || pathname === '/studio1' || pathname === '/gcp')) {
       return true;
     }
     if (targetPath === '/library' && pathname === '/library') {

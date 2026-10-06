@@ -239,15 +239,15 @@ export default function CanonicalTemplateDetailPage() {
                 </select>
               </div>
 
-              {/* Open in Architecture Studio */}
+              {/* Open in Home Dashboard */}
               <Link
-                href={`/studio?mode=diagrams&blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
+                href={`/dashboard?blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-500 hover:bg-teal-400 text-slate-950 shadow-sm shadow-teal-500/20 transition-all hover:scale-[1.02] shrink-0"
-                title="Launch in Multi-Blueprint Studio & DocGen"
+                title="Open in Home Dashboard"
               >
                 <Sparkles className="w-3.5 h-3.5 fill-current" />
-                <span className="hidden sm:inline">Open in Studio</span>
-                <span className="sm:hidden">Studio</span>
+                <span className="hidden sm:inline">Open in Dashboard</span>
+                <span className="sm:hidden">Dashboard</span>
               </Link>
 
               {/* Generate Docs Button */}
@@ -435,10 +435,10 @@ export default function CanonicalTemplateDetailPage() {
                   </span>
                 </div>
                 <Link
-                  href={`/studio?mode=diagrams&blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
+                  href={`/dashboard?blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
                   className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10.5px] font-extrabold shrink-0"
                 >
-                  ✎ Edit in Studio
+                  ✎ Edit in Dashboard
                 </Link>
               </div>
               <div className="flex-1 min-h-0 relative overflow-hidden bg-slate-100/70">

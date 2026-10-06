@@ -975,12 +975,12 @@ function ArchitectureLibraryContent() {
             </Link>
 
             <Link
-              href="/studio"
+              href="/dashboard"
               className="px-3.5 py-1.5 bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-black text-xs rounded-xl shadow-md transition-all hover:scale-[1.02] flex items-center gap-1.5 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
-              title="Launch Multi-Diagram AI Studio"
+              title="Open in Home Dashboard"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Open in Studio</span>
+              <span>Open in Dashboard</span>
             </Link>
           </div>
         </AppHeader>
@@ -1122,7 +1122,7 @@ function ArchitectureLibraryContent() {
                       title="Open Same-Screen Cloud Viewer (Google Slides, Google Docs, PDF)"
                     >
                       <span>📊</span>
-                      <span>Slides / Docs / PDF Viewer</span>
+                      <span>Cloud Viewer</span>
                     </button>
                   </>
                 )}
@@ -1130,16 +1130,12 @@ function ArchitectureLibraryContent() {
                   type="button"
                   onClick={() => {
                     const cleanCanonicalId = activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '');
-                    if (getStudioCategory(activeModalCanvas) === 'canonical') {
-                      router.push(`/studio?blueprint=${encodeURIComponent(cleanCanonicalId)}`);
-                    } else {
-                      router.push(`/studio?diagram=${encodeURIComponent(activeModalCanvas.id)}`);
-                    }
+                    router.push(`/dashboard?blueprint=${encodeURIComponent(cleanCanonicalId)}`);
                   }}
                   className="px-4 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-black text-xs transition flex items-center gap-1.5 shadow-md cursor-pointer"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
-                  <span>Open Full Editor in Studio</span>
+                  <span>Open in Dashboard</span>
                 </button>
               </div>
             </div>
@@ -1541,15 +1537,15 @@ function ArchitectureLibraryContent() {
                         label: 'My Custom & Forked',
                         style: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/30',
                         btnStyle: 'bg-indigo-600 hover:bg-indigo-500 text-white',
-                        actionLabel: 'Open in Studio',
-                        route: `/studio?id=${encodeURIComponent(diagram.id)}`
+                        actionLabel: 'Open in Dashboard',
+                        route: `/dashboard?blueprint=${encodeURIComponent(cleanCanonicalId)}`
                       },
                       studio1: {
                         label: 'Guided Matrix',
                         style: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/30',
                         btnStyle: 'bg-teal-600 hover:bg-teal-500 text-white',
-                        actionLabel: 'Open in Studio',
-                        route: `/studio?id=${encodeURIComponent(diagram.id)}`
+                        actionLabel: 'Open in Dashboard',
+                        route: `/dashboard?blueprint=${encodeURIComponent(cleanCanonicalId)}`
                       },
                       canonical: {
                         label: 'Canonical Blueprint',
@@ -1733,7 +1729,7 @@ function ArchitectureLibraryContent() {
                         {/* Action Toolbar */}
                         <div className={`relative z-10 pt-3.5 border-t flex flex-col gap-2 ${isLight ? 'border-slate-200' : 'border-slate-800/80'}`}>
                           <div className="flex items-center gap-2">
-                            {/* Launch Native Studio */}
+                            {/* Launch Native Dashboard */}
                             <button
                               type="button"
                               onClick={(e) => {
@@ -1769,25 +1765,21 @@ function ArchitectureLibraryContent() {
                           </div>
 
                           <div className="flex items-center gap-1.5">
-                            {/* Studio */}
+                            {/* Dashboard */}
                             <button
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                if (studioCategory === 'canonical') {
-                                  router.push(`/studio?blueprint=${encodeURIComponent(cleanCanonicalId)}`);
-                                } else {
-                                  router.push(`/studio?id=${encodeURIComponent(diagram.id)}`);
-                                }
+                                router.push(`/dashboard?blueprint=${encodeURIComponent(cleanCanonicalId)}`);
                               }}
-                              aria-label={`Edit ${diagram.name} in Studio`}
+                              aria-label={`Edit ${diagram.name} in Dashboard`}
                               className={`flex-1 py-1.5 px-2.5 rounded-lg border text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
                                 isLight ? 'bg-teal-50 hover:bg-teal-100 border-teal-200 text-teal-800' : 'bg-teal-950/50 hover:bg-teal-900 border-teal-800 text-teal-300'
                               }`}
-                              title="Open full editable canvas in Architecture Studio"
+                              title="Open full editable canvas in Architecture Dashboard"
                             >
                               <ExternalLink className="w-3 h-3" aria-hidden="true" />
-                              <span>Studio</span>
+                              <span>Dashboard</span>
                             </button>
 
                             {/* Clone (with double-submit disabled lock UX-10 / UX-28) */}

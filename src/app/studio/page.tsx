@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect, useCallback, useRef, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useHydratedState } from '@/lib/hooks/useHydrationSafeState';
 import {
   Layers,
@@ -238,6 +238,13 @@ export default function StudioPage() {
 
 function StudioMain() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !window.location.search.includes('legacyStudio=1')) {
+      router.replace(`/dashboard${window.location.search}`);
+    }
+  }, [router]);
 
   // 1. Session Mode & v2.2 Single-Surface Paradigm State
   const [isEditorMode, setIsEditorMode] = useHydratedState<boolean>(true, () => {

@@ -150,12 +150,6 @@ export default function LandingPage() {
               <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-300 font-mono font-black">HOME</span>
             </Link>
 
-            <Link href="/studio" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="Conversational AI Architecture & Specification Studio">
-              <Layers className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
-              <span>Studio Canvas</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-300 font-mono font-black">PRO</span>
-            </Link>
-
             <Link href="/canonical" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="77 High-Contrast Architecture Blueprints">
               <Sparkles className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
               <span>Canonical Hub</span>
@@ -264,11 +258,11 @@ export default function LandingPage() {
                 How It Works
               </a>
               <Link 
-                href="/studio" 
+                href="/dashboard" 
                 onClick={() => setIsMobileNavOpen(false)}
                 className="p-2 rounded-lg hover:bg-slate-800 text-teal-400 font-bold flex items-center justify-between"
               >
-                <span>Architecture Studio</span>
+                <span>Home Dashboard</span>
                 <span className="px-2 py-0.5 rounded-full text-xs bg-teal-500/20 text-teal-300">Live Canvas</span>
               </Link>
               <Link 
@@ -640,8 +634,8 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/studio?blueprint=24"
-              aria-label="Launch Vertex AI RAG blueprint in Studio"
+              href="/dashboard?blueprint=24"
+              aria-label="Launch Vertex AI RAG blueprint in Dashboard"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
               <span>Launch Vertex AI RAG blueprint</span>
@@ -666,8 +660,8 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/studio?blueprint=16"
-              aria-label="Launch Kubernetes EKS Microservices blueprint in Studio"
+              href="/dashboard?blueprint=16"
+              aria-label="Launch Kubernetes EKS Microservices blueprint in Dashboard"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-300 hover:text-indigo-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
               <span>Launch Kubernetes EKS blueprint</span>
@@ -692,8 +686,8 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/studio?blueprint=15"
-              aria-label="Launch Serverless Web Application blueprint in Studio"
+              href="/dashboard?blueprint=15"
+              aria-label="Launch Serverless Web Application blueprint in Dashboard"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-300 hover:text-purple-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
               <span>Launch Serverless Web App blueprint</span>
@@ -718,8 +712,8 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/studio?blueprint=09"
-              aria-label="Launch Modern AWS Data Lakehouse blueprint in Studio"
+              href="/dashboard?blueprint=09"
+              aria-label="Launch Modern AWS Data Lakehouse blueprint in Dashboard"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
               <span>Launch AWS Data Lakehouse blueprint</span>
@@ -744,8 +738,8 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/studio?blueprint=29"
-              aria-label="Launch Real-time Streaming Analytics blueprint in Studio"
+              href="/dashboard?blueprint=29"
+              aria-label="Launch Real-time Streaming Analytics blueprint in Dashboard"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-300 hover:text-indigo-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
               <span>Launch Streaming Analytics blueprint</span>
@@ -770,8 +764,8 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/studio?blueprint=06"
-              aria-label="Launch Event-Driven Microservices blueprint in Studio"
+              href="/dashboard?blueprint=06"
+              aria-label="Launch Event-Driven Microservices blueprint in Dashboard"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-300 hover:text-purple-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
               <span>Launch Event-Driven Microservices blueprint</span>

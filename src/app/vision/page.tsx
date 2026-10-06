@@ -1147,9 +1147,9 @@ function VisionPageContent() {
         timestamp: Date.now()
       };
       sessionStorage.setItem('promptcanvas_imported_diagram', JSON.stringify(importPayload));
-      router.push('/studio?import=vision');
+      router.push('/dashboard?import=vision');
     } catch (e) {
-      router.push('/studio');
+      router.push('/dashboard');
     }
   };
 
@@ -1489,7 +1489,7 @@ function VisionPageContent() {
       <AppHeader>
         <div className="flex items-center gap-2.5 min-w-0">
           <Link 
-            href="/studio"
+            href="/dashboard"
             className="flex items-center gap-2 text-slate-400 hover:text-white transition group cursor-pointer shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400 rounded-md"
           >
             <div className="w-7 h-7 rounded-lg bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400 group-hover:scale-105 transition">
@@ -1743,7 +1743,7 @@ function VisionPageContent() {
             )}
           </div>
 
-          {/* 4. Open in Studio Primary CTA */}
+          {/* 4. Open in Dashboard Primary CTA */}
           <button
             type="button"
             onClick={handleOpenInStudio}
@@ -1751,7 +1751,7 @@ function VisionPageContent() {
             className="px-3.5 py-1 rounded-md bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-[11px] font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
           >
             <Layers className="w-3 h-3" aria-hidden="true" />
-            <span>Open in Studio</span>
+            <span>Open in Dashboard</span>
             <ArrowRight className="w-2.5 h-2.5" aria-hidden="true" />
           </button>
         </div>
@@ -2423,7 +2423,7 @@ function VisionPageContent() {
                 disabled={!decompiledXml || isDecompiling}
                 className="px-2.5 py-0.5 rounded-md bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-[10px] font-bold transition flex items-center gap-1 cursor-pointer shadow-xs flex-shrink-0"
               >
-                <span>Edit in Studio</span>
+                <span>Edit in Dashboard</span>
                 <ArrowRight className="w-2.5 h-2.5" />
               </button>
             </div>

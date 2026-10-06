@@ -324,12 +324,12 @@ function CanonicalContent() {
               </Link>
 
               <Link
-                href="/studio"
+                href="/dashboard"
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-md shadow-sky-500/20 transition-all cursor-pointer shrink-0"
-                title="Open in Architecture Studio"
+                title="Open in Home Dashboard"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Open in Studio</span>
+                <span>Open in Dashboard</span>
               </Link>
 
               <Link
@@ -421,11 +421,11 @@ function CanonicalContent() {
             {/* Right: Action Buttons */}
             <div className="flex items-center gap-2 flex-wrap">
               <Link
-                href={`/studio?mode=diagrams&blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
+                href={`/dashboard?blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
                 className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-teal-500 hover:bg-teal-400 text-slate-950 shadow-sm transition-all"
               >
                 <Sparkles className="w-3.5 h-3.5 fill-current" />
-                <span>Open in Studio</span>
+                <span>Open in Dashboard</span>
               </Link>
 
               <button
@@ -833,10 +833,10 @@ function CanonicalContent() {
                           <span>Open Full-Screen Stable Page</span>
                         </Link>
                         <Link
-                          href={`/studio?mode=diagrams&blueprint=${template.id}&domain=${selectedDomain}`}
+                          href={`/dashboard?blueprint=${template.id}&domain=${selectedDomain}`}
                           className="px-3.5 py-2.5 rounded-xl text-xs font-extrabold bg-teal-500 hover:bg-teal-400 text-slate-950 transition-all"
                         >
-                          Open in Studio
+                          Open in Dashboard
                         </Link>
                       </div>
                     </div>

@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/lib/themeContext";
 import { LegalProvider } from "@/components/legal/LegalProvider";
-import { PortalFooter } from "@/components/legal/PortalFooter";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,7 +46,6 @@ export default function RootLayout({
             <div id="main-content" tabIndex={-1} className="flex-1 flex flex-col outline-none">
               {children}
             </div>
-            <PortalFooter />
           </LegalProvider>
         </ThemeProvider>
       </body>
