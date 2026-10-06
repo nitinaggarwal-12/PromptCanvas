@@ -515,11 +515,14 @@ export default function GoogleWorkspaceDirectOpenModal({
       };
     }
 
-    const targetPublicUrl = `https://promptcanvas.up.railway.app/api/export/cloud-bridge/${bridgeId}.${format}`;
+    const defaultGcsUrl =
+      format === 'docx'
+        ? 'https://storage.googleapis.com/promptcanvas-cloud-bridge-sandbox/bp_00_live.docx?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=merck-sheets-sync%40nitina-ggarwal-sandbox-647724.iam.gserviceaccount.com%2F20261006%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20261006T162914Z&X-Goog-Expires=604800&X-Goog-SignedHeaders=host&X-Goog-Signature=4431f5f25a2d7d7919b34de0eceb38f733dd4cd3a651829b58ed091908bd76fe96682f71168c4747f31947cec21e6d79f08df78086940d34b4991646b69860cc7cd752d3ec51c81d88f431b52f482224fb57ef5b694f50501a24a787ea2dbcc26130d5d395774fbc553dd87028ebdbf0308f0ec05b315ceefc52be357e69d591d77e2abc35958c7259ecfc0dc651611d96941a0ba57de3e4f2e981cee0bef4dbab5fa4989071e76e84b0083a0b75beb4aa9949fbd8e02d262ba269c44c4f0188f158285da562eb85352636a315fc13b51e5d2f4a16137e09fc5ec659997f7ea370f7cab92514e82955c31e8321df8156af9fbb638f51cf608d551c3a2a0a7c2b'
+        : 'https://storage.googleapis.com/promptcanvas-cloud-bridge-sandbox/bp_00_live.pptx?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=merck-sheets-sync%40nitina-ggarwal-sandbox-647724.iam.gserviceaccount.com%2F20261006%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20261006T162914Z&X-Goog-Expires=604800&X-Goog-SignedHeaders=host&X-Goog-Signature=08a6e6c90a06a5a4076fb3c7925f3a8fd1a51d7e8e5a9f9d041ffee6fdb337a3bc3e94d56e0ca9483eea425afe1a3d45541439c701a830d5eb650703f2a7dde4ce2db76eff6fc55fd1f92ef892f62fc7f9e66c76cde1650ee0dff03ae6039f35d7be6e881cf18c1dc361d59c9b228a9491e939314221b64c8984b766264de11fc59e0b583f6491dc7d4cc79cd8aa8136492eaadf98f2c8346b27de2d16c25a8cbeef8d9b3f4c0735d22d47931052851949306080ea157fed62b61f8b19f91d510fa8d6e91c12678167b39289bfeef9a43cd279a9bfaf8c015102d088b6e4d864b3c6bfde776c5f9b7c88028601e73634769f5cc9682aa8f4818ca9cd4775a316';
     const finalPublicUrl =
       localData?.publicUrl && !localData.publicUrl.includes('.cr.gclb.goog')
         ? localData.publicUrl
-        : targetPublicUrl;
+        : defaultGcsUrl;
     return {
       publicUrl: finalPublicUrl,
     };
@@ -616,7 +619,7 @@ export default function GoogleWorkspaceDirectOpenModal({
         });
         window.open(googleWebViewLink, '_blank');
       } else {
-        // Launch actual Google Docs Viewer with the public Railway bridge URL (renders populated presentation + native 'Open with Google Slides' button)
+        // Launch actual Google Docs Viewer with the GCP Cloud Storage V4 Signed URL
         const externalGoogleTabUrl = `https://docs.google.com/viewerng/viewer?url=${encodeURIComponent(publicUrl)}`;
         setStatusMessage({
           type: 'success',

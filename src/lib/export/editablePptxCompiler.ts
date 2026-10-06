@@ -965,7 +965,7 @@ export async function exportDrawioToEditablePptx(
       shapeType = pptx.ShapeType.roundRect;
     }
 
-    const { title, subtitle } = cleanHtmlToPlainText(node.value);
+    const { title, subtitle, lines: parsedLines } = cleanHtmlToPlainText(node.value);
 
     const isDarkNodeFill = hasFill ? isDarkColor(fillColor) : isDarkDiagram;
     let resolvedTitleColor = style.fontColor
@@ -998,23 +998,26 @@ export async function exportDrawioToEditablePptx(
     const scaledSubSize = Math.max(5.5, scaledTitleSize - 1);
 
     const isContainer = style.container === '1' || parentIds.has(node.id);
+    const isMultiRowCard = !isContainer && parsedLines.length > 4;
 
     const iconSource = node.extractedSvgs[0] || node.imageDataUrl;
 
     const isStandaloneIconWithBottomLabel =
       (!hasFill && !hasStroke && Boolean(iconSource)) ||
       style.verticalLabelPosition === 'bottom' ||
-      (isImageShape && node.width <= 76 && node.height <= 76 && !isContainer);
+      (isImageShape && node.width <= 76 && node.height <= 76 && !isContainer && !isMultiRowCard);
 
     const isVerticalCardWithIcon =
       !isStandaloneIconWithBottomLabel &&
       !isContainer &&
+      !isMultiRowCard &&
       Boolean(iconSource) &&
       (node.value.includes('flex-direction:column') || bh >= bw * 0.65);
 
     const isHorizontalCardWithIcon =
       !isStandaloneIconWithBottomLabel &&
       !isContainer &&
+      !isMultiRowCard &&
       Boolean(iconSource) &&
       !isVerticalCardWithIcon;
 
@@ -1041,7 +1044,7 @@ export async function exportDrawioToEditablePptx(
     let computedIconBottomY = by;
     let computedIconRightX = bx;
 
-    if (iconSource) {
+    if (iconSource && !isMultiRowCard) {
       const iconDataUrl = await renderInlineSvgToPngDataUrl(iconSource, 128, 128);
       if (iconDataUrl) {
         if (isStandaloneIconWithBottomLabel) {
@@ -1095,6 +1098,21 @@ export async function exportDrawioToEditablePptx(
 
     // 3. Add crisp editable text overlay with accurate non-overlapping position
     if (title) {
+      let formattedSubtitle = subtitle;
+      if (isMultiRowCard) {
+        const bulletRows: string[] = [];
+        for (let i = 1; i < parsedLines.length; i++) {
+          const ln = parsedLines[i].trim();
+          if (!ln) continue;
+          if (ln.startsWith('(') && bulletRows.length > 0) {
+            bulletRows[bulletRows.length - 1] += ` ${ln}`;
+          } else {
+            bulletRows.push(`• ${ln}`);
+          }
+        }
+        formattedSubtitle = bulletRows.join('\n');
+      }
+
       const textRuns: PptxGenJS.TextProps[] = [
         {
           text: title,
@@ -1102,14 +1120,14 @@ export async function exportDrawioToEditablePptx(
             fontSize: scaledTitleSize,
             bold: true,
             color: resolvedTitleColor,
-            breakLine: Boolean(subtitle),
+            breakLine: Boolean(formattedSubtitle),
           },
         },
       ];
 
-      if (subtitle) {
+      if (formattedSubtitle) {
         textRuns.push({
-          text: subtitle,
+          text: (isMultiRowCard ? '\n' : '') + formattedSubtitle,
           options: {
             fontSize: scaledSubSize,
             bold: false,
@@ -1119,7 +1137,7 @@ export async function exportDrawioToEditablePptx(
       }
 
       if (isStandaloneIconWithBottomLabel) {
-        const lines = (title + (subtitle ? '\n' + subtitle : '')).split('\n');
+        const lines = (title + (formattedSubtitle ? '\n' + formattedSubtitle : '')).split('\n');
         const maxLineChars = Math.max(...lines.map((l) => l.trim().length), 4);
         const charW = scaledTitleSize * 0.0072;
         const estTextW = maxLineChars * charW + 0.12;
@@ -1148,6 +1166,18 @@ export async function exportDrawioToEditablePptx(
           align: style.align === 'left' ? 'left' : style.align === 'right' ? 'right' : 'center',
           valign: 'top',
           margin: [2, 4, 2, 4],
+          fontFace: 'Arial',
+          wrap: true,
+        });
+      } else if (isMultiRowCard) {
+        slide2.addText(textRuns, {
+          x: Number((bx + 0.04).toFixed(3)),
+          y: Number((by + 0.04).toFixed(3)),
+          w: Number(Math.max(0.4, bw - 0.08).toFixed(3)),
+          h: Number(Math.max(0.28, bh - 0.08).toFixed(3)),
+          align: 'left',
+          valign: 'top',
+          margin: [3, 4, 3, 4],
           fontFace: 'Arial',
           wrap: true,
         });

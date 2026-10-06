@@ -109,6 +109,22 @@ function runExportSlidesQualityGate() {
     process.exit(1);
   }
 
+  const bridgeMainRouteCode = fs.readFileSync(
+    path.join(process.cwd(), 'src/app/api/export/cloud-bridge/route.ts'),
+    'utf-8'
+  );
+  if (
+    bridgeMainRouteCode.includes('railway.app') ||
+    viewerCode.includes('railway.app') ||
+    modalCode.includes('railway.app') ||
+    !bridgeMainRouteCode.includes('promptcanvas-cloud-bridge-sandbox')
+  ) {
+    console.error(
+      '❌ EXPORT GATE FAILED: Cloud Bridge and Viewer must use 100% GCP Cloud Storage (promptcanvas-cloud-bridge-sandbox) with zero retired railway.app references!'
+    );
+    process.exit(1);
+  }
+
   // 5. Verify editableDocxCompiler.ts (Native Editable Word DrawingML Vector Diagram Engine)
   const docxCompilerPath = path.join(process.cwd(), 'src/lib/export/editableDocxCompiler.ts');
   const docxCode = fs.readFileSync(docxCompilerPath, 'utf-8');
