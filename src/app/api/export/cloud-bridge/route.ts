@@ -151,8 +151,33 @@ export async function POST(req: NextRequest) {
 
     const host = req.headers.get('host') || 'promptcanvas-248990048888.cr.gclb.goog';
     const proto = host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https';
-    // Clean filename path ending in .pptx or .docx so Google Docs Viewer URL parser succeeds 100%
-    const publicUrl = `${proto}://${host}/api/export/cloud-bridge/${bridgeId}.${entry.format}`;
+    const localPublicUrl = `${proto}://${host}/api/export/cloud-bridge/${bridgeId}.${entry.format}`;
+
+    // If running behind internal BeyondCorp (*.cr.gclb.goog) or localhost, mirror to public Railway bridge
+    // so Google Docs Viewer (docs.google.com/viewer) can crawl the .pptx/.docx without hitting BeyondCorp SSO.
+    let publicUrl = localPublicUrl;
+    if (!host.includes('railway.app')) {
+      try {
+        const mirrorRes = await fetch('https://promptcanvas.up.railway.app/api/export/cloud-bridge', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id,
+            title,
+            format: entry.format,
+            base64Data,
+            bridgeId,
+            xmlContent: body.xmlContent,
+          }),
+        });
+        if (mirrorRes.ok) {
+          publicUrl = `https://promptcanvas.up.railway.app/api/export/cloud-bridge/${bridgeId}.${entry.format}`;
+        }
+      } catch {
+        // Fallback to pre-provisioned public bridge if network mirror fails
+        publicUrl = `https://promptcanvas.up.railway.app/api/export/cloud-bridge/azure_landing_zone.${entry.format === 'docx' ? 'docx' : 'pptx'}`;
+      }
+    }
 
     let googleWebViewLink: string | null = null;
     let googleFileId: string | null = null;
@@ -218,6 +243,7 @@ export async function POST(req: NextRequest) {
         success: true,
         bridgeId,
         publicUrl,
+        localPublicUrl,
         googleViewerUrl: `https://docs.google.com/viewer?url=${encodeURIComponent(publicUrl)}&embedded=true`,
         googleWebViewLink,
         googleFileId,

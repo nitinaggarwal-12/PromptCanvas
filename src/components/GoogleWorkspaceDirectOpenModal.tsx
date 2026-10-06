@@ -451,8 +451,11 @@ export default function GoogleWorkspaceDirectOpenModal({
       };
     }
 
-    const targetPublicUrl = `https://promptcanvas-248990048888.cr.gclb.goog/api/export/cloud-bridge/${bridgeId}.${format}`;
-    const finalPublicUrl = localData?.publicUrl || targetPublicUrl;
+    const targetPublicUrl = `https://promptcanvas.up.railway.app/api/export/cloud-bridge/${bridgeId}.${format}`;
+    const finalPublicUrl =
+      localData?.publicUrl && !localData.publicUrl.includes('.cr.gclb.goog')
+        ? localData.publicUrl
+        : targetPublicUrl;
     return {
       publicUrl: finalPublicUrl,
     };
@@ -549,14 +552,11 @@ export default function GoogleWorkspaceDirectOpenModal({
         });
         window.open(googleWebViewLink, '_blank');
       } else {
-        // Trigger clean local download so the user has the compiled .pptx/.docx
-        await handleDirectDownloadFile();
-
-        // Launch slides.new or docs.new in the next tab
-        const externalGoogleTabUrl = activeMode === 'slides' ? 'https://slides.new' : 'https://docs.new';
+        // Launch actual Google Docs Viewer with the public Railway bridge URL (renders populated presentation + native 'Open with Google Slides' button)
+        const externalGoogleTabUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(publicUrl)}`;
         setStatusMessage({
           type: 'success',
-          text: `📥 Downloaded ${diagramName} (${blueprintId}).${activeMode === 'slides' ? 'pptx' : 'docx'} and opened Google ${activeMode === 'slides' ? 'Slides (slides.new)' : 'Docs (docs.new)'} in the next tab! In Google, click File → ${activeMode === 'slides' ? 'Import slides → Upload' : 'Open → Upload'} to edit immediately.`,
+          text: `🎉 Opened ${diagramName} (${blueprintId}) in Google Cloud Viewer! Click Google's top 'Open with Google Slides' button to edit directly in Google Drive.`,
           url: externalGoogleTabUrl,
         });
         window.open(externalGoogleTabUrl, '_blank');

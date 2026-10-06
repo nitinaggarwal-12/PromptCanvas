@@ -281,6 +281,30 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
 
           {/* UX-01 & UX-17: Semantic <nav aria-label="Primary Navigation"> with sr-only labels when collapsed */}
           <nav id="unified-primary-nav" aria-label="Primary Navigation" className="p-3 space-y-1">
+            {/* 1-Click New Diagram Input Selection Action Button */}
+            <div className="mb-2">
+              <button
+                type="button"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    if (pathname === '/dashboard') {
+                      window.dispatchEvent(new CustomEvent('promptcanvas_open_new_diagram'));
+                    } else {
+                      window.location.href = '/dashboard?new=true';
+                    }
+                  }
+                }}
+                className={`w-full flex items-center ${
+                  isSidebarOpen ? 'justify-start gap-2.5 px-3 py-2.5' : 'justify-center p-2.5'
+                } rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs shadow-md shadow-sky-500/20 transition-all cursor-pointer active:scale-95`}
+                title="Create New Architecture Diagram"
+                aria-label="Create New Architecture Diagram"
+              >
+                <Plus className="w-4 h-4 shrink-0 stroke-[2.5]" />
+                {isSidebarOpen ? <span>New Diagram</span> : <span className="sr-only">New Diagram</span>}
+              </button>
+            </div>
+
             {NAV_GROUPS.map((group, groupIndex) => (
               <div key={group.id} role="group" aria-label={group.label}>
                 {groupIndex > 0 && (
@@ -516,6 +540,28 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
               </div>
 
               <div className="py-4 space-y-1.5 overflow-y-auto max-h-[70vh]">
+                <div className="mb-3 px-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      if (typeof window !== 'undefined') {
+                        if (pathname === '/dashboard') {
+                          window.dispatchEvent(new CustomEvent('promptcanvas_open_new_diagram'));
+                        } else {
+                          window.location.href = '/dashboard?new=true';
+                        }
+                      }
+                    }}
+                    className="w-full flex items-center justify-start gap-2.5 px-3 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs shadow-md shadow-sky-500/20 transition-all cursor-pointer active:scale-95"
+                    title="Create New Architecture Diagram"
+                    aria-label="Create New Architecture Diagram"
+                  >
+                    <Plus className="w-4 h-4 shrink-0 stroke-[2.5]" />
+                    <span>New Diagram</span>
+                  </button>
+                </div>
+
                 {NAV_GROUPS.map((group, groupIndex) => (
                   <div key={group.id}>
                     {groupIndex > 0 && (

@@ -41,6 +41,7 @@ import {
   AlertCircle,
   X,
   FileText,
+  Plus,
   PlusCircle,
   ArrowUpRight,
   Loader2,
@@ -59,6 +60,10 @@ import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import GoogleWorkspaceDirectOpenModal from '@/components/GoogleWorkspaceDirectOpenModal';
+import {
+  NewDiagramInputSelectionModal,
+  NewDiagramSelectionResult
+} from '@/components/NewDiagramInputSelectionModal';
 import {
   CANONICAL_TEMPLATES,
   CANONICAL_FAMILIES,
@@ -345,6 +350,7 @@ function DashboardContent() {
   const [openPublishDropdown, setOpenPublishDropdown] = useState<boolean>(false);
   const [cloudViewerModalMode, setCloudViewerModalMode] = useState<'slides' | 'docs' | 'pdf' | null>(null);
   const [openViewerDropdown, setOpenViewerDropdown] = useState<boolean>(false);
+  const [isNewDiagramModalOpen, setIsNewDiagramModalOpen] = useState<boolean>(false);
 
   // Initial XML Generation
   const initialBaseXml = useMemo(() => {
@@ -432,6 +438,10 @@ function DashboardContent() {
           }
         }
 
+        if (params.get('new') === 'true') {
+          setIsNewDiagramModalOpen(true);
+        }
+
         const savedSessionRaw = sessionStorage.getItem(`promptcanvas_dashboard_session_${sid}_00`);
         if (savedSessionRaw) {
           const parsed = JSON.parse(savedSessionRaw);
@@ -445,6 +455,12 @@ function DashboardContent() {
         }
       } catch {}
     }
+  }, []);
+
+  useEffect(() => {
+    const handleOpenNewDiagram = () => setIsNewDiagramModalOpen(true);
+    window.addEventListener('promptcanvas_open_new_diagram', handleOpenNewDiagram);
+    return () => window.removeEventListener('promptcanvas_open_new_diagram', handleOpenNewDiagram);
   }, []);
 
   // Warn on browser tab close / reload when unsaved session copy changes exist
@@ -847,6 +863,123 @@ function DashboardContent() {
 
     setVersionHistory([baselineEntry]);
     setActiveVersionIndex(0);
+  };
+
+  // Handler for New Diagram Input Selection Modal results
+  const handleSelectNewDiagramOption = (result: NewDiagramSelectionResult) => {
+    setIsNewDiagramModalOpen(false);
+
+    if (result.mode === 'prompt' && result.prompt) {
+      if (result.style === 'infographic') {
+        setCanvasPerspective('Logical');
+      } else if (result.style === 'conceptual') {
+        setCanvasPerspective('Conceptual');
+      } else if (result.style === 'paper') {
+        setCanvasPerspective('Paper');
+      } else {
+        setCanvasPerspective('Technical');
+      }
+      handleExecutePrompt(result.prompt);
+      showToast('🚀 Synthesizing new architecture from prompt...');
+      return;
+    }
+
+    if (result.mode === 'blueprint' && result.blueprintId) {
+      const bp = CANONICAL_TEMPLATES.find((t) => t.id === result.blueprintId);
+      if (bp) {
+        loadPristineCanonicalBlueprint(bp.id);
+        showToast(`Loaded Blueprint #${bp.id}: ${bp.name}`);
+      }
+      return;
+    }
+
+    if (result.mode === 'vision' && result.customXml) {
+      const newTitle = result.projectName || 'Decompiled Architecture';
+      setCanvasTitle(newTitle);
+      setIsSessionForked(true);
+      setHasUnsavedSessionChanges(true);
+      const newEntry: DashboardVersionEntry = {
+        id: `ver_vision_${Date.now()}`,
+        versionTag: 'v1.1 (Vision Decompiled)',
+        major: 1,
+        minor: 1,
+        title: newTitle,
+        prompt: 'Decompiled via Gemini 2.5 Pro Vision AI',
+        source: 'manual_drawio',
+        sourceLabel: 'Gemini Vision AI',
+        diffSummary: 'Decompiled architectural vectors and components from image.',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        xml: result.customXml,
+        blueprintId: 'custom',
+        level: 'L2',
+        perspective: 'Technical',
+        status: 'draft',
+        perspectiveXmlMap: { Technical: result.customXml }
+      };
+      setVersionHistory((prev) => [newEntry, ...prev]);
+      setActiveVersionIndex(0);
+      showToast('🖼️ Decompiled architecture loaded into canvas!');
+      return;
+    }
+
+    if (result.mode === 'blank') {
+      const blankTitle = result.projectName || 'Blank Architecture Canvas';
+      const blankXml = `<mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel>`;
+      setCanvasTitle(blankTitle);
+      setIsSessionForked(true);
+      setHasUnsavedSessionChanges(true);
+      const blankEntry: DashboardVersionEntry = {
+        id: `ver_blank_${Date.now()}`,
+        versionTag: 'v1.0 (Blank Scratchpad)',
+        major: 1,
+        minor: 0,
+        title: blankTitle,
+        prompt: 'Blank Canvas Initialization',
+        source: 'initial_load',
+        sourceLabel: 'Clean Scratchpad',
+        diffSummary: 'Clean canvas initialized with 0 components.',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        xml: blankXml,
+        blueprintId: 'blank',
+        level: 'L2',
+        perspective: 'Technical',
+        status: 'draft',
+        perspectiveXmlMap: { Technical: blankXml }
+      };
+      setVersionHistory([blankEntry]);
+      setActiveVersionIndex(0);
+      showToast('📄 Blank canvas ready for design!');
+      return;
+    }
+
+    if (result.mode === 'import_xml' && result.customXml) {
+      const importTitle = result.projectName || 'Imported Draw.io Diagram';
+      setCanvasTitle(importTitle);
+      setIsSessionForked(true);
+      setHasUnsavedSessionChanges(true);
+      const importEntry: DashboardVersionEntry = {
+        id: `ver_import_${Date.now()}`,
+        versionTag: 'v1.1 (Imported)',
+        major: 1,
+        minor: 1,
+        title: importTitle,
+        prompt: 'External Draw.io XML Import',
+        source: 'manual_drawio',
+        sourceLabel: 'Draw.io XML Import',
+        diffSummary: 'Imported vector geometry from external Draw.io XML.',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        xml: result.customXml,
+        blueprintId: 'custom',
+        level: 'L2',
+        perspective: 'Technical',
+        status: 'draft',
+        perspectiveXmlMap: { Technical: result.customXml }
+      };
+      setVersionHistory((prev) => [importEntry, ...prev]);
+      setActiveVersionIndex(0);
+      showToast('📥 External Draw.io XML loaded successfully!');
+      return;
+    }
   };
 
   // Immediate Category Selection (after no unsaved changes or after modal resolution)
@@ -1718,6 +1851,18 @@ function DashboardContent() {
               <Eye className="w-3.5 h-3.5 text-amber-400" />
               <span>Cloud Viewer</span>
             </button>
+
+            {/* 3. New Diagram Button (Opens Input Selection Modal) */}
+            <button
+              type="button"
+              onClick={() => setIsNewDiagramModalOpen(true)}
+              data-testid="dashboard-new-diagram-btn"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs transition shadow-md shadow-sky-500/25 cursor-pointer shrink-0 active:scale-95"
+              title="Create New Architecture Diagram (Select Input Method: Prompt AI, 77 Blueprints, Image Decompile, Blank Canvas)"
+            >
+              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>+ New Diagram</span>
+            </button>
           </div>
         </AppHeader>
 
@@ -1736,9 +1881,20 @@ function DashboardContent() {
                   <Lock className="w-2.5 h-2.5 text-teal-600" />
                   <span>Canonical Baseline (Read-Only)</span>
                 </span>
-                <span className="text-[10px] font-mono text-slate-500 font-bold">
-                  {filteredTemplates.length} Blueprints
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setIsNewDiagramModalOpen(true)}
+                    className="text-[10.5px] font-extrabold px-2.5 py-0.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white transition flex items-center gap-1 shadow-xs cursor-pointer active:scale-95"
+                    title="Open Input Selection to create a new architecture"
+                  >
+                    <Plus className="w-3 h-3 stroke-[2.5]" />
+                    <span>+ New</span>
+                  </button>
+                  <span className="text-[10px] font-mono text-slate-500 font-bold">
+                    {filteredTemplates.length} Blueprints
+                  </span>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
@@ -2538,6 +2694,14 @@ function DashboardContent() {
           blueprintId={`#${loadedBlueprintId}`}
         />
       )}
+
+      {/* New Diagram Input Selection Modal */}
+      <NewDiagramInputSelectionModal
+        isOpen={isNewDiagramModalOpen}
+        onClose={() => setIsNewDiagramModalOpen(false)}
+        onSelectOption={handleSelectNewDiagramOption}
+        isLight={isLight}
+      />
 
       {/* Toast Notification */}
       {toastMessage && (
