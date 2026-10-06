@@ -45,7 +45,7 @@ function CloudViewerContent() {
   const rawModeParam = searchParams.get('mode');
 
   const [engine] = useState<'microsoft' | 'google'>('google');
-  const [viewerSubMode, setViewerSubMode] = useState<'cloud-viewer' | 'interactive-editor'>('cloud-viewer');
+  const [viewerSubMode, setViewerSubMode] = useState<'cloud-viewer' | 'interactive-editor'>('interactive-editor');
   const [activeMode, setActiveMode] = useState<'slides' | 'docs' | 'pdf'>(
     rawModeParam === 'docs' ? 'docs' : rawModeParam === 'pdf' ? 'pdf' : 'slides'
   );
@@ -435,26 +435,6 @@ function CloudViewerContent() {
           >
             <Printer className="w-3.5 h-3.5 text-rose-500" />
             <span>PDF</span>
-          </button>
-
-          {/* Direct Download */}
-          <button
-            type="button"
-            onClick={handleDownloadFile}
-            disabled={isDownloading}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border ${
-              isLight
-                ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
-                : 'bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border-emerald-500/30'
-            }`}
-            title="Download compiled .pptx / .docx file"
-          >
-            {isDownloading ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-            ) : (
-              <Download className="w-3.5 h-3.5" />
-            )}
-            <span>Download {activeMode === 'docs' ? '.docx' : '.pptx'}</span>
           </button>
         </div>
       </header>
