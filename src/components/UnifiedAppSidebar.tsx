@@ -32,6 +32,7 @@ import { usePersistentBoolean } from '@/lib/hooks/useHydrationSafeState';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 import { UserProfileModal } from '@/components/UserProfileModal';
 import { AuthModal } from '@/components/AuthModal';
+import ByokHeaderButton from '@/components/ByokHeaderButton';
 
 interface NavItem {
   id: string;
@@ -360,8 +361,10 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
 
             <div className="border-t border-slate-200 dark:border-slate-800/80 my-2" />
 
-            {/* SETTINGS */}
-            <div className="pt-2">
+            {/* BYOK API KEY & SETTINGS */}
+            <div className="pt-2 space-y-1">
+              <ByokHeaderButton sidebarMode isSidebarCollapsed={!isSidebarOpen} />
+
               <button
                 type="button"
                 onClick={() => setIsProfileModalOpen(true)}
@@ -564,8 +567,9 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                   </div>
                 ))}
 
-                {/* Settings */}
-                <div className="pt-2">
+                {/* BYOK & Settings */}
+                <div className="pt-2 space-y-1">
+                  <ByokHeaderButton sidebarMode isSidebarCollapsed={false} />
                   <button
                     onClick={() => {
                       setIsMobileMenuOpen(false);

@@ -23,6 +23,28 @@ function CloudViewerContent() {
 
   useEffect(() => {
     const bpId = rawBlueprintParam || '00';
+
+    if (typeof window !== 'undefined') {
+      try {
+        const rawPayload = localStorage.getItem('pc_cloud_viewer_payload');
+        if (rawPayload) {
+          const parsed = JSON.parse(rawPayload);
+          if (parsed && typeof parsed.xmlContent === 'string' && parsed.xmlContent.trim().length > 0) {
+            const payloadBp = String(parsed.blueprintId || '').replace(/^#/, '');
+            const cleanReqBp = bpId.replace(/^#/, '');
+            if (!rawBlueprintParam || payloadBp === cleanReqBp || Date.now() - (parsed.updatedAt || 0) < 600_000) {
+              setResolvedId(parsed.blueprintId || bpId);
+              setResolvedTitle(rawTitleParam || parsed.diagramName || 'Enterprise Cloud Architecture');
+              setXmlContent(parsed.xmlContent);
+              return;
+            }
+          }
+        }
+      } catch {
+        // fallback below
+      }
+    }
+
     const matchedTemplate = CANONICAL_TEMPLATES.find(
       (t) => t.id === bpId || t.id === bpId.replace(/^#/, '').padStart(2, '0')
     );
@@ -45,6 +67,18 @@ function CloudViewerContent() {
     setResolvedTitle(rawTitleParam || 'Azure Application Landing Zone');
     setXmlContent(loadedXml);
   }, [rawBlueprintParam, rawTitleParam]);
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const suffix =
+        activeMode === 'slides'
+          ? 'Google Slides Presentation'
+          : activeMode === 'docs'
+          ? 'Google Docs Specification'
+          : 'PDF Document';
+      document.title = `${resolvedTitle} — ${suffix}`;
+    }
+  }, [resolvedTitle, activeMode]);
 
   return (
     <div className="w-screen h-screen overflow-hidden bg-[#090D16] text-slate-100 flex flex-col">

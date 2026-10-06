@@ -203,7 +203,6 @@ export function AppHeader({
             </svg>
             <span className="hidden xl:inline">Refresh</span>
           </button>
-          <ByokHeaderButton compact />
         </div>
       </header>
     );
@@ -264,7 +263,6 @@ export function AppHeader({
           </svg>
           <span className="hidden xl:inline">Refresh</span>
         </button>
-        <ByokHeaderButton compact />
         {actions}
       </div>
     </header>

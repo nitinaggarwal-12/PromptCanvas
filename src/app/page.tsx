@@ -181,7 +181,6 @@ export default function LandingPage() {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <ByokHeaderButton compact />
             <ThemeToggleBtn id="landing-theme-toggle-btn" />
 
             {user ? (

@@ -483,7 +483,6 @@ export default function ChangelogAndSheetSyncPage() {
             </div>
 
             <div className="flex items-center gap-3">
-              <ByokHeaderButton compact />
               <ThemeToggleBtn />
               <a
                 href="/api/changelog/sheet-sync?format=csv"

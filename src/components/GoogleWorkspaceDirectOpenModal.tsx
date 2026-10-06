@@ -108,7 +108,8 @@ export default function GoogleWorkspaceDirectOpenModal({
   isFullPage = false,
 }: GoogleWorkspaceDirectOpenModalProps) {
   const [activeMode, setActiveMode] = useState<'slides' | 'docs' | 'pdf'>(mode);
-  const [showOpenWithDropdown, setShowOpenWithDropdown] = useState<boolean>(false);
+  const [showOpenWithDropdown, setShowOpenWithDropdown] = useState<boolean>(!isFullPage);
+  const [previewZoom, setPreviewZoom] = useState<number>(100);
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [slide1ViewMode, setSlide1ViewMode] = useState<'interactive-twin' | 'decomposed-shapes'>('interactive-twin');
   const [docsDiagramViewMode, setDocsDiagramViewMode] = useState<'decomposed-shapes' | 'interactive-twin'>('decomposed-shapes');
@@ -633,32 +634,46 @@ export default function GoogleWorkspaceDirectOpenModal({
   };
 
   /**
-   * Method 2: Switch Same-Screen Preview Mode (Zero Forced File Downloads)
+   * Open Populated Slides, Docs, or PDF in a New Browser Tab (Zero Forced File Downloads)
    */
-  const handleOpenGoogleCloudViewer = async (targetMode?: 'slides' | 'docs' | 'pdf', forceExternalLaunch = false) => {
+  const handleOpenGoogleCloudViewer = async (targetMode?: 'slides' | 'docs' | 'pdf', _forceExternalLaunch = false) => {
     const modeToUse = targetMode || activeMode;
     setShowOpenWithDropdown(false);
     setActiveMode(modeToUse);
 
-    if (!forceExternalLaunch) {
+    try {
+      if (typeof window !== 'undefined') {
+        const payload = {
+          xmlContent,
+          diagramName,
+          blueprintId,
+          editableOverrides,
+          updatedAt: Date.now(),
+        };
+        localStorage.setItem('pc_cloud_viewer_payload', JSON.stringify(payload));
+        if (xmlContent && xmlContent.includes('<mxCell')) {
+          localStorage.setItem('pc_vision_last_xml', xmlContent);
+        }
+        const viewerUrl = `/viewer?mode=${encodeURIComponent(modeToUse)}&id=${encodeURIComponent(
+          blueprintId
+        )}&title=${encodeURIComponent(diagramName)}`;
+        window.open(viewerUrl, '_blank', 'noopener,noreferrer');
+      }
       setStatusMessage({
-        type: 'info',
+        type: 'success',
         text:
           modeToUse === 'slides'
-            ? `📊 Viewing Same-Screen Google Slides 3-Slide Widescreen Deck (${sortedVertices.length} interactive vector nodes).`
+            ? `📊 Opened populated Google Slides Presentation (${diagramName}) in a new tab!`
             : modeToUse === 'docs'
-            ? `📄 Viewing Same-Screen Google Docs Architecture Specification (${sortedVertices.length} interactive vector nodes).`
-            : `🖨️ Viewing Same-Screen 2-Page Executive PDF Document Dossier.`,
+            ? `📄 Opened populated Google Docs Specification (${diagramName}) in a new tab!`
+            : `🖨️ Opened populated PDF Document (${diagramName}) in a new tab!`,
       });
-      return;
+    } catch (err: any) {
+      setStatusMessage({
+        type: 'error',
+        text: 'Failed to open new tab: ' + (err?.message || 'Unknown error'),
+      });
     }
-
-    if (modeToUse === 'pdf') {
-      handlePrintPdfReport();
-      return;
-    }
-
-    await handleCopyAndLaunchNewTab(modeToUse, true);
   };
 
   /**
@@ -747,14 +762,12 @@ export default function GoogleWorkspaceDirectOpenModal({
         </div>
       `;
 
-      // Write to clipboard BEFORE opening the new tab so the current document still has focus!
       let copiedSuccessfully = false;
       const clipboardItems: Record<string, Blob> = {
         'text/html': new Blob([richHtml], { type: 'text/html' }),
         'text/plain': new Blob([`${diagramName} (${blueprintId}) - Editable Architecture Specification`], { type: 'text/plain' }),
       };
 
-      // Per SKILL.md Rule 49: Only include image/png in Slides mode; omit image/png in Docs mode so Google Docs pastes the full HTML + table
       if (targetMode === 'slides' && effectivePreviewUrl) {
         const pngBlob = await convertAnyImageUrlToPngBlob(effectivePreviewUrl);
         if (pngBlob) {
@@ -766,7 +779,6 @@ export default function GoogleWorkspaceDirectOpenModal({
         await navigator.clipboard.write([new ClipboardItem(clipboardItems)]);
         copiedSuccessfully = true;
       } catch {
-        // Fallback DOM selection copy if navigator.clipboard.write is restricted
         try {
           const tempEl = document.createElement('div');
           tempEl.contentEditable = 'true';
@@ -788,14 +800,28 @@ export default function GoogleWorkspaceDirectOpenModal({
         }
       }
 
-      const targetCloudUrl = targetMode === 'slides' ? 'https://slides.new' : 'https://docs.new';
-      const cloudWin =
-        openCloudTabImmediately && typeof window !== 'undefined' ? window.open(targetCloudUrl, '_blank') : null;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(
+          'pc_cloud_viewer_payload',
+          JSON.stringify({
+            xmlContent,
+            diagramName,
+            blueprintId,
+            editableOverrides,
+            updatedAt: Date.now(),
+          })
+        );
+      }
 
-      setLaunchAssistantModal(targetMode);
+      const viewerUrl = `/viewer?mode=${encodeURIComponent(targetMode)}&id=${encodeURIComponent(
+        blueprintId
+      )}&title=${encodeURIComponent(diagramName)}`;
+      const cloudWin =
+        openCloudTabImmediately && typeof window !== 'undefined' ? window.open(viewerUrl, '_blank') : null;
+
       setStatusMessage({
         type: 'success',
-        text: `✅ ${copiedSuccessfully ? 'Copied' : 'Prepared'} high-res ${targetMode === 'slides' ? 'Widescreen Slide Visual' : 'Architecture Specification & Component Table'} to clipboard${cloudWin ? ` & opened Google ${targetMode === 'slides' ? 'Slides' : 'Docs'}` : ''}! Press ⌘V / Ctrl+V in the Google tab to paste immediately (Zero file download required).`,
+        text: `✅ ${copiedSuccessfully ? 'Copied' : 'Prepared'} ${targetMode === 'slides' ? 'Google Slides Presentation' : 'Google Docs Specification'}${cloudWin ? ` & opened populated ${targetMode === 'slides' ? 'Google Slides' : 'Google Docs'} in a new tab` : ''}!`,
       });
     } catch (err: any) {
       setStatusMessage({
@@ -809,27 +835,33 @@ export default function GoogleWorkspaceDirectOpenModal({
 
   return (
     <div
-      className={`fixed inset-0 z-[150] flex items-center justify-center bg-slate-950/85 backdrop-blur-md ${
-        isFullscreen || isFullPage ? 'p-0' : 'p-2 md:p-4'
+      className={`fixed inset-0 z-[150] flex items-center justify-center bg-slate-950/90 backdrop-blur-md ${
+        isFullscreen || isFullPage ? 'p-0' : 'p-0'
       }`}
       data-testid="google-workspace-direct-open-modal"
     >
       <div
-        className={`bg-[#0B111E] border border-slate-800 shadow-2xl flex flex-col overflow-hidden transition-all duration-200 ${
-          isFullscreen || isFullPage ? 'w-screen h-screen rounded-none border-0' : 'w-full max-w-[1560px] h-[94vh] rounded-2xl'
-        }`}
+        className="bg-[#0B111E] w-screen h-screen flex flex-col overflow-hidden transition-all duration-200"
       >
-        {/* Top Dark Gmail-Style Single-Row Preview Header Bar */}
-        <div className="flex items-center justify-between gap-2.5 px-4 py-2.5 bg-[#090D16] border-b border-slate-800 relative z-50 shrink-0">
-          {/* Left: Document Title & Metadata */}
-          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+        {/* Top Dark Gmail Attachment Opener Header Bar */}
+        <div className="grid grid-cols-3 items-center px-4 py-2.5 bg-[#090D16] border-b border-slate-800/90 relative z-50 shrink-0">
+          {/* Left: Back/Close + Attachment Icon & Filename */}
+          <div className="flex items-center gap-3 min-w-0">
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-2 rounded-full hover:bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer shrink-0"
+              title="Back to Studio (Esc)"
+            >
+              <X className="w-4 h-4" />
+            </button>
             <div
-              className={`w-8 h-8 rounded-xl flex items-center justify-center shadow-inner shrink-0 ${
+              className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-inner shrink-0 ${
                 activeMode === 'slides'
-                  ? 'bg-amber-500/15 border border-amber-500/40 text-amber-400'
+                  ? 'bg-amber-500/20 border border-amber-500/40 text-amber-400'
                   : activeMode === 'docs'
-                  ? 'bg-sky-500/15 border border-sky-500/40 text-sky-400'
-                  : 'bg-rose-500/15 border border-rose-500/40 text-rose-400'
+                  ? 'bg-sky-500/20 border border-sky-500/40 text-sky-400'
+                  : 'bg-rose-500/20 border border-rose-500/40 text-rose-400'
               }`}
             >
               {activeMode === 'slides' ? (
@@ -842,252 +874,138 @@ export default function GoogleWorkspaceDirectOpenModal({
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 shrink-0">
-                  {blueprintId}
-                </span>
-                <h2 className="text-xs md:text-sm font-bold text-white tracking-tight truncate max-w-[180px] lg:max-w-[300px] xl:max-w-[380px]">
+                <h2 className="text-xs md:text-sm font-bold text-white tracking-tight truncate max-w-[200px] lg:max-w-[360px]">
                   {diagramName}
                 </h2>
+                <span className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono font-bold rounded bg-slate-800 text-sky-300 border border-slate-700 shrink-0">
+                  {blueprintId}
+                </span>
               </div>
               <p className="text-[10.5px] text-slate-400 truncate">
-                Same-Screen Cloud Preview •{' '}
-                <span className="text-emerald-400 font-semibold">{sortedVertices.length} interactive vector nodes</span>
+                {isFullPage
+                  ? activeMode === 'slides'
+                    ? 'Google Slides Presentation • 3 Populated Widescreen Slides'
+                    : activeMode === 'docs'
+                    ? 'Google Docs Specification • Architecture & Component Inventory'
+                    : 'PDF Document Viewer • 2-Page Executive Architecture Dossier'
+                  : `Cloud Attachment Preview • ${sortedVertices.length} interactive architecture nodes`}
               </p>
             </div>
           </div>
 
-          {/* Center: Same-Screen Preview Switcher Tabs + Gmail-Style "Open with ▾" Dropdown */}
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="hidden md:inline-flex items-center bg-slate-900 border border-slate-700/80 p-1 rounded-xl gap-1">
-              <button
-                type="button"
-                onClick={() => handleOpenGoogleCloudViewer('slides', false)}
-                disabled={isOpeningCloudViewer}
-                data-testid="switch-to-google-slides-btn"
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  activeMode === 'slides'
-                    ? 'bg-amber-500 text-slate-950 shadow-xs'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800'
-                }`}
-                title="Switch same-screen preview to Google Slides 3-Slide Widescreen Deck (Zero file download)"
-              >
-                <Presentation className="w-3.5 h-3.5" />
-                <span>Slides Preview</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleOpenGoogleCloudViewer('docs', false)}
-                disabled={isOpeningCloudViewer}
-                data-testid="switch-to-google-docs-btn"
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  activeMode === 'docs'
-                    ? 'bg-sky-500 text-slate-950 shadow-xs'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800'
-                }`}
-                title="Switch same-screen preview to Google Docs Specification (Zero file download)"
-              >
-                <FileText className="w-3.5 h-3.5" />
-                <span>Docs Preview</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleOpenGoogleCloudViewer('pdf', false)}
-                data-testid="switch-to-pdf-btn"
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  activeMode === 'pdf'
-                    ? 'bg-rose-500 text-white shadow-xs'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800'
-                }`}
-                title="Switch same-screen preview to Printable Executive PDF Document (Zero file download)"
-              >
-                <Printer className="w-3.5 h-3.5" />
-                <span>PDF Preview</span>
-              </button>
-            </div>
-
+          {/* Center: Authentic Gmail-Style Centered "Open with ▾" Dropdown */}
+          <div className="flex items-center justify-center">
             <div className="relative">
-              <div className="inline-flex items-center rounded-xl bg-slate-800/95 border border-slate-600/80 shadow-lg overflow-hidden">
-                <button
-                  type="button"
-                  onClick={() => setShowOpenWithDropdown((prev) => !prev)}
-                  data-testid="gmail-open-with-dropdown-btn"
-                  className="flex items-center gap-1.5 px-3 py-2 text-xs font-extrabold text-white hover:bg-slate-700/80 transition cursor-pointer whitespace-nowrap"
-                >
-                  <span>Open with</span>
-                  <ChevronDown className={`w-3.5 h-3.5 text-slate-300 transition-transform ${showOpenWithDropdown ? 'rotate-180' : ''}`} />
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => setShowOpenWithDropdown((prev) => !prev)}
+                data-testid="gmail-open-with-dropdown-btn"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1E293B] hover:bg-[#334155] border border-slate-600/90 text-xs md:text-sm font-bold text-white shadow-lg transition cursor-pointer whitespace-nowrap"
+              >
+                <span>Open with</span>
+                <ChevronDown
+                  className={`w-4 h-4 text-slate-300 transition-transform duration-150 ${
+                    showOpenWithDropdown ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
 
               {showOpenWithDropdown && (
                 <div
                   data-testid="gmail-open-with-dropdown-menu"
-                  className="absolute right-0 mt-2 w-80 rounded-2xl bg-[#0F172A] border border-slate-700 shadow-2xl py-2 z-[200]"
+                  className="absolute left-1/2 -translate-x-1/2 mt-2 w-72 rounded-xl bg-[#1E2430] border border-slate-700 shadow-[0_20px_50px_rgba(0,0,0,0.75)] py-1.5 z-[200]"
                 >
-                  <div className="px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-                    Switch Same-Screen Preview Format (Zero Download)
-                  </div>
                   <button
                     type="button"
-                    onClick={() => handleOpenGoogleCloudViewer('slides', false)}
-                    className={`w-full text-left px-3.5 py-2.5 text-xs flex items-center gap-3 hover:bg-slate-800 transition cursor-pointer ${
-                      activeMode === 'slides' ? 'bg-amber-500/10 text-amber-300 font-bold' : 'text-slate-200'
-                    }`}
+                    data-testid="open-with-slides-option"
+                    onClick={() => handleOpenGoogleCloudViewer('slides', true)}
+                    className="w-full text-left px-4 py-2.5 text-xs md:text-sm flex items-center gap-3 hover:bg-slate-700/70 text-white transition cursor-pointer"
                   >
-                    <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                    <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 shrink-0">
                       <Presentation className="w-4 h-4" />
                     </div>
-                    <div className="flex-1">
-                      <div className="font-bold flex items-center justify-between">
-                        <span>Google Slides (3-Slide Deck)</span>
-                        {activeMode === 'slides' && <Check className="w-3.5 h-3.5 text-amber-400" />}
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-white flex items-center justify-between">
+                        <span>Open with Google Slides</span>
+                        <ExternalLink className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                       </div>
-                      <div className="text-[10.5px] text-slate-400">1:1 Visual Twin + Editable Vector Topology</div>
+                      <div className="text-[11px] text-slate-400 truncate">
+                        Opens populated 3-Slide deck in new tab
+                      </div>
                     </div>
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => handleOpenGoogleCloudViewer('docs', false)}
-                    className={`w-full text-left px-3.5 py-2.5 text-xs flex items-center gap-3 hover:bg-slate-800 transition cursor-pointer ${
-                      activeMode === 'docs' ? 'bg-sky-500/10 text-sky-300 font-bold' : 'text-slate-200'
-                    }`}
+                    data-testid="open-with-docs-option"
+                    onClick={() => handleOpenGoogleCloudViewer('docs', true)}
+                    className="w-full text-left px-4 py-2.5 text-xs md:text-sm flex items-center gap-3 hover:bg-slate-700/70 text-white transition cursor-pointer"
                   >
-                    <div className="p-1.5 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                    <div className="p-1.5 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/30 shrink-0">
                       <FileText className="w-4 h-4" />
                     </div>
-                    <div className="flex-1">
-                      <div className="font-bold flex items-center justify-between">
-                        <span>Google Docs (Specification)</span>
-                        {activeMode === 'docs' && <Check className="w-3.5 h-3.5 text-sky-400" />}
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-white flex items-center justify-between">
+                        <span>Open with Google Docs</span>
+                        <ExternalLink className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                       </div>
-                      <div className="text-[10.5px] text-slate-400">Interactive Architecture Spec &amp; Component Table</div>
+                      <div className="text-[11px] text-slate-400 truncate">
+                        Opens populated spec &amp; table in new tab
+                      </div>
                     </div>
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => handleOpenGoogleCloudViewer('pdf', false)}
-                    className={`w-full text-left px-3.5 py-2.5 text-xs flex items-center gap-3 hover:bg-slate-800 transition cursor-pointer ${
-                      activeMode === 'pdf' ? 'bg-rose-500/10 text-rose-300 font-bold' : 'text-slate-200'
-                    }`}
+                    data-testid="open-with-pdf-option"
+                    onClick={() => handleOpenGoogleCloudViewer('pdf', true)}
+                    className="w-full text-left px-4 py-2.5 text-xs md:text-sm flex items-center gap-3 hover:bg-slate-700/70 text-white transition cursor-pointer"
                   >
-                    <div className="p-1.5 rounded-lg bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                    <div className="p-1.5 rounded-lg bg-rose-500/20 text-rose-400 border border-rose-500/30 shrink-0">
                       <Printer className="w-4 h-4" />
                     </div>
-                    <div className="flex-1">
-                      <div className="font-bold flex items-center justify-between">
-                        <span>PDF Document Viewer</span>
-                        {activeMode === 'pdf' && <Check className="w-3.5 h-3.5 text-rose-400" />}
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-white flex items-center justify-between">
+                        <span>Open with PDF</span>
+                        <ExternalLink className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                       </div>
-                      <div className="text-[10.5px] text-slate-400">Multi-page Executive PDF Dossier &amp; Print</div>
+                      <div className="text-[11px] text-slate-400 truncate">
+                        Opens populated 2-page PDF in new tab
+                      </div>
                     </div>
-                  </button>
-
-                  <div className="h-px bg-slate-800 my-1.5" />
-                  <div className="px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-                    Launch External Google Cloud Tab (Zero Download)
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowOpenWithDropdown(false);
-                      handleCopyAndLaunchNewTab('slides', true);
-                    }}
-                    className="w-full text-left px-3.5 py-2 text-xs flex items-center justify-between hover:bg-slate-800 text-amber-300 font-semibold cursor-pointer"
-                  >
-                    <span>🚀 Launch in Google Slides (slides.new + Copy)</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowOpenWithDropdown(false);
-                      handleCopyAndLaunchNewTab('docs', true);
-                    }}
-                    className="w-full text-left px-3.5 py-2 text-xs flex items-center justify-between hover:bg-slate-800 text-sky-300 font-semibold cursor-pointer"
-                  >
-                    <span>🚀 Launch in Google Docs (docs.new + Copy)</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowOpenWithDropdown(false);
-                      handlePrintPdfReport();
-                    }}
-                    className="w-full text-left px-3.5 py-2 text-xs flex items-center justify-between hover:bg-slate-800 text-rose-300 font-semibold cursor-pointer"
-                  >
-                    <span>🖨️ Print / Save as PDF Report</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
                   </button>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Right Action Controls: Primary Cloud Launch + Download + Close */}
-          <div className="flex items-center gap-2 shrink-0">
-            {activeMode === 'slides' ? (
-              <button
-                onClick={() => handleOpenGoogleCloudViewer('slides', true)}
-                disabled={isCopyingAndLaunching}
-                data-testid="launch-external-google-slides-btn"
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold shadow-md transition-all cursor-pointer bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 whitespace-nowrap"
-                title="Copy 1:1 Widescreen Slide & Open Google Slides (slides.new) in a new tab — Zero file download"
-              >
-                {isCopyingAndLaunching ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <ExternalLink className="w-3.5 h-3.5" />
-                )}
-                <span>Open in Google Slides ↗</span>
-              </button>
-            ) : activeMode === 'docs' ? (
-              <button
-                onClick={() => handleOpenGoogleCloudViewer('docs', true)}
-                disabled={isCopyingAndLaunching}
-                data-testid="launch-external-google-docs-btn"
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold shadow-md transition-all cursor-pointer bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white whitespace-nowrap"
-                title="Copy Architecture Spec & Open Google Docs (docs.new) in a new tab — Zero file download"
-              >
-                {isCopyingAndLaunching ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <ExternalLink className="w-3.5 h-3.5" />
-                )}
-                <span>Open in Google Docs ↗</span>
-              </button>
-            ) : (
-              <button
-                onClick={handlePrintPdfReport}
-                data-testid="launch-external-pdf-print-btn"
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold shadow-md transition-all cursor-pointer bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-400 hover:to-red-500 text-white whitespace-nowrap"
-                title="Open Printable Executive PDF Dossier"
-              >
-                <Printer className="w-3.5 h-3.5" />
-                <span>Print / Save PDF ↗</span>
-              </button>
-            )}
+          {/* Right: Gmail Attachment Opener Action Icons (Print, Download, Close) */}
+          <div className="flex items-center justify-end gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={handlePrintPdfReport}
+              data-testid="launch-external-pdf-print-btn"
+              className="p-2 rounded-full hover:bg-slate-800 text-slate-300 hover:text-white transition-all cursor-pointer"
+              title="Print / Save as PDF"
+            >
+              <Printer className="w-4 h-4" />
+            </button>
 
             <button
+              type="button"
               onClick={handleDirectDownloadFile}
               disabled={isDownloadingDeck}
-              className="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition-all cursor-pointer"
-              title="Explicitly download local file (.pptx / .docx / .pdf)"
+              className="p-2 rounded-full hover:bg-slate-800 text-slate-300 hover:text-white transition-all cursor-pointer"
+              title="Download local file (.pptx / .docx / .pdf)"
             >
               <Download className="w-4 h-4" />
             </button>
 
-            {/* Close Modal */}
             <button
+              type="button"
               onClick={onClose}
               data-testid="close-google-workspace-modal-btn"
-              className="p-2 rounded-xl bg-slate-800/80 hover:bg-rose-500/20 border border-slate-700 hover:border-rose-500/40 text-slate-400 hover:text-rose-300 transition-all cursor-pointer ml-0.5"
+              className="p-2 rounded-full hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 transition-all cursor-pointer"
               title="Close Cloud Viewer (Esc)"
             >
               <X className="w-4 h-4" />
@@ -1095,73 +1013,10 @@ export default function GoogleWorkspaceDirectOpenModal({
           </div>
         </div>
 
-        {/* Guided Populated Google Launch Assistant Modal (Prevents Blank Doc / Blank Slide Confusion) */}
-        {launchAssistantModal && (
-          <div className="px-6 py-4 bg-gradient-to-r from-emerald-950/95 via-slate-900 to-emerald-950/95 border-b border-emerald-500/50 flex flex-col md:flex-row items-center justify-between gap-4 z-50">
-            <div className="space-y-1.5 max-w-3xl">
-              <div className="flex items-center gap-2 text-sm font-bold text-emerald-300">
-                <Check className="w-4 h-4 text-emerald-400" />
-                <span>
-                  {launchAssistantModal === 'docs'
-                    ? '✅ Complete Architecture Specification & High-Res Diagram Copied to Clipboard!'
-                    : '✅ High-Resolution 16:9 Widescreen Architecture Slide Copied to Clipboard!'}
-                </span>
-              </div>
-              {launchAssistantModal === 'docs' ? (
-                <p className="text-xs text-slate-200 leading-relaxed">
-                  Google&apos;s <code className="text-sky-300 font-mono">docs.new</code> tab is open. Press{' '}
-                  <kbd className="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-extrabold font-mono text-xs shadow">
-                    ⌘V (Mac) / Ctrl+V (Win)
-                  </kbd>{' '}
-                  inside the Google Docs tab to paste your entire <strong>1:1 Architecture Diagram + Editable Specification Table</strong> with zero file downloads!
-                </p>
-              ) : (
-                <p className="text-xs text-slate-200 leading-relaxed">
-                  Google&apos;s <code className="text-amber-300 font-mono">slides.new</code> tab is open. Press{' '}
-                  <kbd className="px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-extrabold font-mono text-xs shadow">
-                    ⌘V (Mac) / Ctrl+V (Win)
-                  </kbd>{' '}
-                  inside the Google Slides tab to paste your high-resolution widescreen slide immediately (zero file download required)!
-                </p>
-              )}
-            </div>
-            <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-              <button
-                onClick={() => {
-                  const target = launchAssistantModal === 'slides' ? 'https://slides.new' : 'https://docs.new';
-                  window.open(target, '_blank');
-                  setLaunchAssistantModal(null);
-                }}
-                data-testid="confirm-launch-google-tab-btn"
-                className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs shadow-lg transition-all cursor-pointer flex items-center gap-1.5"
-              >
-                <span>
-                  {launchAssistantModal === 'docs'
-                    ? '🚀 Open Google Docs (docs.new) & Press ⌘V ↗'
-                    : '🚀 Open Google Slides (slides.new) & Press ⌘V ↗'}
-                </span>
-              </button>
-              <button
-                onClick={handleDirectDownloadFile}
-                className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 font-bold text-xs transition-all cursor-pointer flex items-center gap-1.5"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>Optional: Download .{launchAssistantModal === 'slides' ? 'pptx' : 'docx'}</span>
-              </button>
-              <button
-                onClick={() => setLaunchAssistantModal(null)}
-                className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-        )}
-
         {/* Status / Notification Banner */}
         {statusMessage && (
           <div
-            className={`px-6 py-2 flex items-center justify-between gap-4 border-b text-xs font-medium ${
+            className={`px-6 py-2 flex items-center justify-between gap-4 border-b text-xs font-medium shrink-0 ${
               statusMessage.type === 'success'
                 ? 'bg-emerald-950/70 border-emerald-500/40 text-emerald-200'
                 : statusMessage.type === 'error'
@@ -1173,53 +1028,105 @@ export default function GoogleWorkspaceDirectOpenModal({
               <Sparkles className="w-4 h-4 shrink-0" />
               <span>{statusMessage.text}</span>
             </div>
+            <button
+              type="button"
+              onClick={() => setStatusMessage(null)}
+              className="text-slate-400 hover:text-white text-xs cursor-pointer"
+            >
+              ✕
+            </button>
           </div>
         )}
 
-        {/* Expandable Google Drive OAuth Quick-Connect Drawer */}
-        {showAuthConfig && (
-          <div className="px-6 py-3.5 bg-slate-900/95 border-b border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="space-y-1 max-w-xl">
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-400">
-                <KeyRound className="w-3.5 h-3.5" />
-                <span>Direct Google Drive API Integration (Optional for 1-Click Native Creation)</span>
-              </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Provide a Google Drive OAuth2 Access Token (with <code className="text-sky-300">drive.file</code> scope from{' '}
-                <a
-                  href="https://developers.google.com/oauthplayground/#step1&apisSelect=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.file"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sky-400 underline hover:text-sky-300"
-                >
-                  Google OAuth Playground ↗
-                </a>
-                ) to create &amp; open native Google Slides / Docs directly in your personal Google Drive with 1 click.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-              <input
-                type="password"
-                value={googleAccessToken}
-                onChange={(e) => handleSaveAuthSettings(e.target.value, googleClientId)}
-                placeholder="Paste Google OAuth Access Token (ya29.a0...)"
-                className="px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-500 w-full md:w-72 focus:outline-none focus:border-sky-500"
-              />
-              <button
-                onClick={() => {
-                  handleDirectGoogleDriveOpen();
-                }}
-                className="px-4 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition-all cursor-pointer"
-              >
-                Save &amp; Launch Now
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Main Workspace Body: In-Browser Populated Slide Deck OR Google Docs Spec */}
+        {/* Main Workspace Body:
+            - When !isFullPage (clicked "Cloud Viewer" on /studio): Authentic Gmail Attachment Opener Cloud Preview stage
+            - When isFullPage (opened in new tab /viewer?mode=slides|docs|pdf): Full Populated Slides / Docs / PDF workspace
+        */}
         <div className="flex-1 flex flex-col md:flex-row overflow-hidden bg-[#F8FAFC] text-slate-900">
-          {activeMode === 'slides' ? (
+          {!isFullPage ? (
+            <div
+              className="flex-1 bg-[#141821] overflow-auto flex flex-col items-center justify-start p-4 md:p-8 relative select-none"
+              onClick={() => {
+                if (showOpenWithDropdown) setShowOpenWithDropdown(false);
+              }}
+            >
+              {/* Gmail Attachment Preview Floating Document Sheet */}
+              <div
+                style={{
+                  width: `${Math.min(1480, Math.round((1180 * previewZoom) / 100))}px`,
+                  maxWidth: '96vw',
+                }}
+                className="bg-white rounded-lg shadow-[0_24px_70px_rgba(0,0,0,0.75)] border border-slate-700/80 overflow-hidden transition-all duration-150 my-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Sheet Top Metadata Strip */}
+                <div className="px-6 py-4 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-3 border-b border-slate-800">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 font-mono text-[11px] font-bold">
+                      {blueprintId}
+                    </span>
+                    <h3 className="text-sm md:text-base font-extrabold text-white truncate">
+                      {diagramName}
+                    </h3>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-300">
+                    <span>{sortedVertices.length} Architecture Nodes</span>
+                    <span>•</span>
+                    <span>{edges.length} Connections</span>
+                  </div>
+                </div>
+
+                {/* High-Resolution 1:1 Architecture Preview Canvas */}
+                <div className="relative bg-white p-4 md:p-6 flex items-center justify-center min-h-[540px]">
+                  {effectivePreviewUrl ? (
+                    <img
+                      src={effectivePreviewUrl}
+                      alt={diagramName}
+                      className="w-full h-auto max-h-[74vh] object-contain mx-auto"
+                    />
+                  ) : (
+                    <div className="py-24 text-center text-slate-400 text-sm flex flex-col items-center gap-2">
+                      <Loader2 className="w-6 h-6 animate-spin text-sky-500" />
+                      <span>Rendering high-resolution cloud attachment preview...</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Bottom Floating Gmail Attachment Zoom Pill */}
+              <div
+                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-4 py-2 rounded-full bg-[#1E2430]/95 border border-slate-700 text-white shadow-2xl backdrop-blur-md text-xs font-semibold"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span className="text-slate-300 pr-2 border-r border-slate-700">Page 1 of 1</span>
+                <button
+                  type="button"
+                  onClick={() => setPreviewZoom((z) => Math.max(50, z - 15))}
+                  className="px-2 py-0.5 rounded hover:bg-slate-700 text-slate-200 font-bold cursor-pointer"
+                  title="Zoom Out"
+                >
+                  −
+                </button>
+                <span className="font-mono text-sky-300 min-w-[42px] text-center">{previewZoom}%</span>
+                <button
+                  type="button"
+                  onClick={() => setPreviewZoom((z) => Math.min(175, z + 15))}
+                  className="px-2 py-0.5 rounded hover:bg-slate-700 text-slate-200 font-bold cursor-pointer"
+                  title="Zoom In"
+                >
+                  +
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPreviewZoom(100)}
+                  className="pl-2 border-l border-slate-700 text-slate-300 hover:text-white cursor-pointer"
+                  title="Reset Zoom"
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          ) : activeMode === 'slides' ? (
             <>
               {/* Left Slide Thumbnail Rail (Google Slides style) */}
               <div className="w-full md:w-64 bg-slate-100 border-r border-slate-200 p-3.5 flex md:flex-col gap-2.5 overflow-x-auto md:overflow-y-auto shrink-0">

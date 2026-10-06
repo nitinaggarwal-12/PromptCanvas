@@ -19,7 +19,15 @@ interface ByokStatus {
   };
 }
 
-export default function ByokHeaderButton({ compact = false }: { compact?: boolean }) {
+export default function ByokHeaderButton({
+  compact = false,
+  sidebarMode = false,
+  isSidebarCollapsed = false,
+}: {
+  compact?: boolean;
+  sidebarMode?: boolean;
+  isSidebarCollapsed?: boolean;
+}) {
   const [status, setStatus] = useState<ByokStatus | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState('');
@@ -202,27 +210,61 @@ export default function ByokHeaderButton({ compact = false }: { compact?: boolea
             : 'Bring Your Own Key — Configure Personal Gemini API Key'
         }
         data-testid="byok-header-button"
-        className={`inline-flex items-center gap-1.5 rounded-lg border transition-all font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95 ${
-          compact ? 'px-2.5 py-1.5 text-[11px] min-h-[36px]' : 'px-3 py-1.5 text-xs min-h-[38px]'
-        } ${
-          isByokActive
-            ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25 shadow-sm shadow-emerald-950/50'
-            : 'bg-slate-800/90 border-slate-700/80 text-amber-300 hover:text-amber-200 hover:border-amber-500/40 hover:bg-slate-800'
-        }`}
+        className={
+          sidebarMode
+            ? `w-full min-h-[42px] flex items-center ${
+                isSidebarCollapsed ? 'justify-center' : 'justify-between'
+              } p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
+                isByokActive
+                  ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25'
+                  : 'text-amber-300 hover:text-amber-200 hover:bg-slate-800/80 border border-amber-500/25 bg-amber-500/10'
+              }`
+            : `inline-flex items-center gap-1.5 rounded-lg border transition-all font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95 ${
+                compact ? 'px-2.5 py-1.5 text-[11px] min-h-[36px]' : 'px-3 py-1.5 text-xs min-h-[38px]'
+              } ${
+                isByokActive
+                  ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25 shadow-sm shadow-emerald-950/50'
+                  : 'bg-slate-800/90 border-slate-700/80 text-amber-300 hover:text-amber-200 hover:border-amber-500/40 hover:bg-slate-800'
+              }`
+        }
       >
-        <Key className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-        <span>{compact ? 'BYOK' : 'Bring Your Own Key'}</span>
-        <span
-          className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
-            isByokActive
-              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-              : isGuestMode
-              ? 'bg-slate-700/80 text-slate-300'
-              : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-          }`}
-        >
-          {isByokActive ? 'Active' : isGuestMode ? 'Guest Key' : 'System Key'}
-        </span>
+        {sidebarMode ? (
+          <>
+            <div className={`flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3 min-w-0'} shrink-0`}>
+              <Key className="w-4 h-4 shrink-0 text-amber-400" aria-hidden="true" />
+              <span className={isSidebarCollapsed ? 'sr-only' : 'truncate'}>BYOK API Key</span>
+            </div>
+            {!isSidebarCollapsed && (
+              <span
+                className={`shrink-0 ml-2 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider ${
+                  isByokActive
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                    : isGuestMode
+                    ? 'bg-slate-700/80 text-slate-300'
+                    : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                }`}
+              >
+                {isByokActive ? 'Active' : isGuestMode ? 'Guest' : 'System'}
+              </span>
+            )}
+          </>
+        ) : (
+          <>
+            <Key className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+            <span>{compact ? 'BYOK' : 'Bring Your Own Key'}</span>
+            <span
+              className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                isByokActive
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                  : isGuestMode
+                  ? 'bg-slate-700/80 text-slate-300'
+                  : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+              }`}
+            >
+              {isByokActive ? 'Active' : isGuestMode ? 'Guest Key' : 'System Key'}
+            </span>
+          </>
+        )}
       </button>
 
       {isOpen &&

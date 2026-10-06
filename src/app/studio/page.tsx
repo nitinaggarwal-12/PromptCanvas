@@ -2944,7 +2944,7 @@ function StudioMain() {
             <div className="h-4 w-px bg-slate-800 hidden xl:block shrink-0" />
 
             {/* v2.2 Multi-Tab Bar: [ Tab 1: ... ] [ + New Diagram ] */}
-            <div className="flex items-center gap-1.5 bg-slate-950/90 p-1 rounded-xl border border-slate-800">
+            <div className="flex items-center gap-1.5 bg-slate-950/90 p-1 rounded-xl border border-slate-800 min-w-0 overflow-hidden">
               {studioTabs.map((tab, idx) => {
                 const isActive = tab.id === activeTabId;
                 return (
@@ -2952,18 +2952,18 @@ function StudioMain() {
                     key={tab.id}
                     id={`studio-tab-${idx + 1}`}
                     onClick={() => handleSelectTab(tab)}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer min-w-0 ${
                       isActive
                         ? 'bg-blue-600 text-white shadow-xs'
                         : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/70'
                     }`}
                   >
                     <span
-                      className={`w-1.5 h-1.5 rounded-full ${
+                      className={`w-1.5 h-1.5 rounded-full shrink-0 ${
                         tab.mode === 'launchpad' ? 'bg-amber-400' : 'bg-emerald-400'
                       }`}
                     />
-                    <span className="truncate max-w-[200px]">
+                    <span className="truncate max-w-[140px]">
                       {tab.title.startsWith('Tab ') ? tab.title : `Tab ${idx + 1}: ${tab.title}`}
                     </span>
                   </button>
@@ -3075,7 +3075,7 @@ function StudioMain() {
             </button>
           </div>
 
-          {/* Right: Clean Non-Redundant Action Controls ([ Share ] & [ Cloud Viewer ] & [ Export ▾ ]) */}
+          {/* Right: ONLY Share & Cloud Viewer (plus Refresh from AppHeader) */}
           <div className="flex items-center gap-2 shrink-0">
             {/* Share & Comments Right-Side Panel Toggle (Google Docs / Slides style) */}
             <button
@@ -3093,7 +3093,7 @@ function StudioMain() {
               <span>{isShareModalOpen ? 'Close Share ►' : '◄ Share & Comment'}</span>
             </button>
 
-            {/* Same-Screen Gmail-Style Cloud Viewer Button (Slides / Docs / PDF) */}
+            {/* Gmail Attachment Opener Cloud Viewer Button (Open with Slides / Docs / PDF dropdown) */}
             <button
               id="studio-cloud-viewer-btn"
               data-testid="studio-cloud-viewer-btn"
@@ -3103,123 +3103,11 @@ function StudioMain() {
                 setCloudViewerModalMode('slides');
               }}
               className="px-3 py-1.5 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/40 text-amber-300 hover:text-amber-200 text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
-              title="Open Gmail-Style Same-Screen Cloud Viewer with Open with Google Slides, Google Docs, or PDF dropdown"
+              title="Open Gmail Attachment Cloud Preview with Open with Google Slides, Google Docs, or PDF dropdown"
             >
               <Eye className="w-3.5 h-3.5 text-amber-400" />
               <span>Cloud Viewer</span>
             </button>
-
-            {/* Primary: Export & Cloud Viewer Dropdown */}
-            <div id="studio-export-dropdown-container" className="relative">
-              <button
-                id="studio-export-dropdown-btn"
-                onClick={() => {
-                  setIsVersionDropdownOpen(false);
-                  setIsExportDropdownOpen(!isExportDropdownOpen);
-                }}
-                className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-sm shadow-blue-500/20 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
-              >
-                <span>Export</span>
-                <ChevronDown className="w-3 h-3 text-white/80" />
-              </button>
-
-              {isExportDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-80 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2 z-[130] text-xs space-y-1 animate-in fade-in duration-100">
-                  <div className="text-[10px] uppercase font-mono text-slate-400 font-bold px-2 py-1">
-                    Gmail-Style Same-Screen Cloud Viewer (Zero Download)
-                  </div>
-                  <button
-                    onClick={() => {
-                      setIsExportDropdownOpen(false);
-                      setCloudViewerModalMode('slides');
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center justify-between transition cursor-pointer"
-                  >
-                    <span className="flex items-center gap-2">
-                      <Eye className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Open with Google Slides (Cloud Viewer)</span>
-                    </span>
-                    <span className="text-[9px] font-mono text-amber-300 bg-amber-950/80 border border-amber-500/30 px-1.5 py-0.5 rounded">Preview</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setIsExportDropdownOpen(false);
-                      setCloudViewerModalMode('docs');
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center justify-between transition cursor-pointer"
-                  >
-                    <span className="flex items-center gap-2">
-                      <FileText className="w-3.5 h-3.5 text-blue-400" />
-                      <span>Open with Google Docs (Cloud Viewer)</span>
-                    </span>
-                    <span className="text-[9px] font-mono text-blue-300 bg-blue-950/80 border border-blue-500/30 px-1.5 py-0.5 rounded">Preview</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setIsExportDropdownOpen(false);
-                      setCloudViewerModalMode('pdf');
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center justify-between transition cursor-pointer"
-                  >
-                    <span className="flex items-center gap-2">
-                      <FileText className="w-3.5 h-3.5 text-rose-400" />
-                      <span>Open as Executive PDF (Cloud Viewer)</span>
-                    </span>
-                    <span className="text-[9px] font-mono text-rose-300 bg-rose-950/80 border border-rose-500/30 px-1.5 py-0.5 rounded">Preview</span>
-                  </button>
-
-                  <div className="my-1 border-t border-slate-800" />
-                  <div className="text-[10px] uppercase font-mono text-slate-400 font-bold px-2 py-1">
-                    Direct Editor &amp; Bundle Exports
-                  </div>
-                  <button
-                    onClick={() => {
-                      handleOpenDiagramsNet();
-                      setIsExportDropdownOpen(false);
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center justify-between transition cursor-pointer"
-                  >
-                    <span className="flex items-center gap-2">
-                      <ExternalLink className="w-3.5 h-3.5 text-purple-400" />
-                      <span>Open in Draw.io Editor Tab</span>
-                    </span>
-                    <span className="text-[9px] font-mono text-purple-400 bg-purple-950 px-1.5 py-0.5 rounded">Live Sync</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      const blob = new Blob([xml], { type: 'application/xml' });
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.href = url;
-                      a.download = `${ast.metadata.projectId}-architecture.drawio`;
-                      a.click();
-                      URL.revokeObjectURL(url);
-                      setIsExportDropdownOpen(false);
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center justify-between transition cursor-pointer"
-                  >
-                    <span className="flex items-center gap-2">
-                      <Code2 className="w-3.5 h-3.5 text-sky-400" />
-                      <span>Draw.io Native XML (.drawio)</span>
-                    </span>
-                    <span className="text-[9px] font-mono text-sky-400 bg-sky-950 px-1.5 py-0.5 rounded">mxGraph</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      handleExportMarkdownBundle();
-                      setIsExportDropdownOpen(false);
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center justify-between transition cursor-pointer"
-                  >
-                    <span className="flex items-center gap-2">
-                      <FileText className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Terraform (.tf) &amp; 16-Spec Bundle</span>
-                    </span>
-                    <span className="text-[9px] font-mono text-emerald-400 bg-emerald-950 px-1.5 py-0.5 rounded">IaC</span>
-                  </button>
-                </div>
-              )}
-            </div>
           </div>
         </AppHeader>
 
