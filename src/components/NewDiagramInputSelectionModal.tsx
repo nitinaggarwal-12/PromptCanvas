@@ -450,7 +450,7 @@ export function NewDiagramInputSelectionModal({
                       { id: 'technical', label: 'Technical Components' },
                       { id: 'infographic', label: 'Executive Infographic' },
                       { id: 'conceptual', label: 'Conceptual Flow' },
-                      { id: 'paper', label: 'Hand-Drawn Paper' }
+                      { id: 'whiteboard', label: 'Whiteboard Sketch' }
                     ].map((s) => (
                       <button
                         key={s.id}

@@ -336,7 +336,7 @@ export function executeGcpPromptModification(
   assistantMessage: GcpChatMessage;
 } {
   const cleanPrompt = promptText.replace(/^\[.*?\]\s*/, '').replace(/^\+\s*/, '').trim();
-  const lower = cleanPrompt.toLowerCase();
+  const lower = cleanPrompt.toLowerCase().replace(/\barmour\b/g, 'armor');
 
   // Negative Intent & Removal Detection (Prevents Prompt Inversion)
   const isNegativeRemoval = /\b(remove|delete|drop|strip|without|no\s+|omit|disable|exclude|take\s+away)\b/i.test(cleanPrompt);
@@ -903,10 +903,11 @@ export function executeGcpPromptModification(
       find: '(DLP PII Redaction &amp; Guardrails)',
       replace: '(Prompt-Injection Firewall &amp; DLP)',
     });
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'node_model_armor', '#7C3AED', '#FAF5FF');
     const resolved = resolveValidTargetNodeId(
       inPlaceUpgradedXml,
       'col_ingress_bg',
-      ['dlp_model_armor', 'edge_layer', 'api_cloud_run'],
+      ['dlp_model_armor', 'node_model_armor', 'edge_layer', 'api_cloud_run'],
       ['model_armor', 'armor', 'guardrail', 'security', 'gateway'],
       targetX
     );

@@ -113,7 +113,6 @@ const CATEGORY_GROUPS: CategoryGroup[] = [
   { id: 'understand', name: 'Understand & Context', icon: '🧭', count: 5, familyFilter: 'Understand' },
   { id: 'process', name: 'Process & Workflows', icon: '🔄', count: 4, familyFilter: 'Process' },
   { id: 'whiteboard', name: 'Whiteboard (Dry-Erase Sketch)', icon: '🖍️', count: 77, familyFilter: null },
-  { id: 'paper', name: 'Paper (Graph-Paper Sketch)', icon: '📝', count: 77, familyFilter: null },
   { id: 'structure', name: 'Structure & C4 Model', icon: '🏗️', count: 4, familyFilter: 'Structure' },
   { id: 'infrastructure', name: 'Infrastructure & Network', icon: '🌐', count: 4, familyFilter: 'Infrastructure' },
   { id: 'security', name: 'Security & Governance', icon: '🛡️', count: 4, familyFilter: 'Security & Governance' },
@@ -266,26 +265,6 @@ function getCanonicalBaselineForPerspective(
       title,
       level: 'L2',
       diffSummary: `Canonical Master Blueprint #${bp.id} (Hand-Drawn Dry-Erase Whiteboard Mode — Read-Only Baseline).`
-    };
-  }
-
-  if (perspective === 'Paper') {
-    const title =
-      blueprintId === '00'
-        ? 'Multi-Agent Orchestration — Spiral Graph-Paper Sketch'
-        : `${bp.name} — Paper Sketch`;
-    return {
-      xml:
-        blueprintId === '00'
-          ? generatePaperGcpAgentArchXml({
-              domain: 'enterprise',
-              theme: isLight ? 'light' : 'dark',
-              projectTitle: title
-            })
-          : convertXmlToPaperMode('', bp.name),
-      title,
-      level: 'L2',
-      diffSummary: `Canonical Master Blueprint #${bp.id} (Spiral Graph-Paper Pen & Highlighter Mode — Read-Only Baseline).`
     };
   }
 
@@ -445,7 +424,16 @@ function DashboardContent() {
         const savedSessionRaw = sessionStorage.getItem(`promptcanvas_dashboard_session_${sid}_00`);
         if (savedSessionRaw) {
           const parsed = JSON.parse(savedSessionRaw);
-          if (Array.isArray(parsed.versionHistory) && parsed.versionHistory.length > 1) {
+          const hasRemovedPaperView =
+            Array.isArray(parsed.versionHistory) &&
+            parsed.versionHistory.some(
+              (v: any) =>
+                v?.perspective === 'Paper' ||
+                (typeof v?.xml === 'string' && v.xml.includes('paper-gcp-ge-multi-agent-2026'))
+            );
+          if (hasRemovedPaperView) {
+            sessionStorage.removeItem(`promptcanvas_dashboard_session_${sid}_00`);
+          } else if (Array.isArray(parsed.versionHistory) && parsed.versionHistory.length > 1) {
             setIsSessionForked(true);
             setHasUnsavedSessionChanges(true);
             setSessionCopyId(parsed.sessionCopyId || `fork_bp00_${sid}`);
@@ -2445,7 +2433,7 @@ function DashboardContent() {
                     isLight ? 'bg-white border-slate-300' : 'bg-slate-900 border-slate-700'
                   }`}
                 >
-                  {(["Technical", "Logical", "Conceptual", "Process", "Whiteboard", "Paper"] as ArchitecturePerspective[]).map((p) => (
+                  {(["Technical", "Logical", "Conceptual", "Process", "Whiteboard"] as ArchitecturePerspective[]).map((p) => (
                     <button
                       key={p}
                       id={`perspective-tab-${p.toLowerCase()}`}

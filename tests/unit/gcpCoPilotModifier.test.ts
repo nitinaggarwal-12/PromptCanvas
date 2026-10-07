@@ -147,5 +147,22 @@ describe('GCP Architecture Co-Pilot Modifier & Quality Gates', () => {
     expect(step3.updatedXml).toContain('BigQuery Cost Intelligence &amp; Billing Anomaly AI');
     expect(step3.updatedXml).not.toContain('&amp; Clou"');
   });
+
+  it('normalizes British spelling "add model armour" to Model Armor in-place upgrade instead of generic custom box', async () => {
+    const { generateUpgradedGcpGeBankingArchitectureXml } = await import('@/lib/canonical/upgradedGcpGeBankingAgentTemplate');
+    const bp00Xml = generateUpgradedGcpGeBankingArchitectureXml({ theme: 'light' });
+
+    const res = executeGcpPromptModification(
+      bp00Xml,
+      'add model armour',
+      1,
+      'canonical_00',
+      false
+    );
+    expect(res.updatedXml).toContain('target="dlp_model_armor"');
+    expect(res.updatedXml).toContain('Vertex AI Model Armor Prompt-Injection Firewall');
+    expect(res.updatedXml).not.toContain('Synthesized &amp; connected by Google Cloud Architecture Co-Pilot');
+    expect(res.newVersion.author).toBe('CISO / Security Architect');
+  });
 });
 
