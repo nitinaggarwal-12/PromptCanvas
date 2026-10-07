@@ -245,3 +245,54 @@ describe('googleDriveDirectOpen — Primary Server Session Vault + Fallback IAP 
   });
 });
 
+describe('exportDrawioToEditableDocx — single editable vector document 1:1 fidelity', () => {
+  it('compiles Blueprint #00 into a 1:1 editable Google Docs / Word DrawingML vector diagram with cylinders, circled badges, all 4 Observability rows, and orthogonal connectors', async () => {
+    const JSZip = (await import('jszip')).default;
+    const { exportDrawioToEditableDocx } = await import('@/lib/export/editableDocxCompiler');
+    const { generateUpgradedGcpGeBankingArchitectureXml } = await import('@/lib/canonical/upgradedGcpGeBankingAgentTemplate');
+
+    const xml = generateUpgradedGcpGeBankingArchitectureXml({ theme: 'light' });
+    const blob = (await exportDrawioToEditableDocx(
+      xml,
+      'GCP + GE + ADK + A2A Banking Multi-Agent Reference Architecture (#00)',
+      '#00',
+      { returnBlob: true }
+    )) as Blob;
+    const zip = await JSZip.loadAsync(await blob.arrayBuffer());
+    const docXml = await zip.file('word/document.xml')!.async('string');
+
+    // 3D Cylinder geometry
+    expect(docXml).toContain('prst="can"');
+    // Circled step badges (1..7)
+    expect(docXml).toContain('❶');
+    expect(docXml).toContain('❹');
+    expect(docXml).toContain('❻');
+    expect(docXml).toContain('➐');
+    // Full untruncated 3rd-line subtitles (previously chopped by .slice(0, 2))
+    expect(docXml).toContain('Google ADK &amp; LangGraph)');
+    expect(docXml).toContain('ScaNN &amp; Valkey Memory)');
+    expect(docXml).toContain('vLLM &amp; Vertex Model Garden)');
+    // All 4 Observability rows & vector badges
+    expect(docXml).toContain('Cloud Logging');
+    expect(docXml).toContain('Cloud Monitoring');
+    expect(docXml).toContain('Vertex AI Evaluation');
+    expect(docXml).toContain('GCP FinOps Hub');
+    // Edge labels & IAM shield (no spurious AZ badge or top header clutter)
+    expect(docXml).toContain('A2A');
+    expect(docXml).toContain('MCP');
+    expect(docXml).not.toContain('>AZ<');
+    expect(docXml).not.toContain('Editable Word Architecture Diagram');
+
+    // Every connector line segment must be 100% orthogonal (either horizontal cy="0" or vertical cx="0")
+    const lineShapes = Array.from(
+      docXml.matchAll(/<a:xfrm[^>]*><a:off[^/]*\/><a:ext cx="(\d+)" cy="(\d+)"\/><\/a:xfrm><a:prstGeom prst="line">/g)
+    );
+    expect(lineShapes.length).toBeGreaterThanOrEqual(20);
+    for (const m of lineShapes) {
+      const cx = Number(m[1]);
+      const cy = Number(m[2]);
+      expect(cx === 0 || cy === 0).toBe(true);
+    }
+  });
+});
+

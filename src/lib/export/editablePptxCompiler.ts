@@ -739,7 +739,7 @@ function getImageDimensionsFromDataUri(dataUrl: string): { width: number; height
   return null;
 }
 
-const CIRCLED_STEP_DIGITS: Record<string, string> = {
+export const CIRCLED_STEP_DIGITS: Record<string, string> = {
   '1': '❶',
   '2': '❷',
   '3': '❸',
@@ -752,7 +752,7 @@ const CIRCLED_STEP_DIGITS: Record<string, string> = {
   '10': '➓',
 };
 
-interface StructuredIconRow {
+export interface StructuredIconRow {
   iconSvg?: string;
   title: string;
   subtitle?: string;
@@ -760,14 +760,14 @@ interface StructuredIconRow {
   subtitleColor?: string;
 }
 
-interface StructuredInlineSpan {
+export interface StructuredInlineSpan {
   text: string;
   color?: string;
   bold?: boolean;
   isSmall?: boolean;
 }
 
-interface StructuredNodeLayout {
+export interface StructuredNodeLayout {
   kind: 'multi-row-icon-list' | 'table-card' | 'standard';
   stepBadge?: { num: string; bgHex: string };
   leftIconSvg?: string;
@@ -811,7 +811,7 @@ function stripTagsToLines(fragment: string): string[] {
     .filter(Boolean);
 }
 
-function extractStructuredNodeLayout(rawHtml: string): StructuredNodeLayout {
+export function extractStructuredNodeLayout(rawHtml: string): StructuredNodeLayout {
   const decoded = decodeHtmlEntities(rawHtml);
   if (!decoded.trim()) {
     return { kind: 'standard', headerLines: [], bodyLines: [] };
