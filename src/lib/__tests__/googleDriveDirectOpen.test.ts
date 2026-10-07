@@ -3,9 +3,14 @@ import {
   GoogleDriveDirectOpenError,
   buildDriveMultipartBody,
   buildGoogleEditorUrl,
+  clearCachedDriveToken,
   createGoogleWorkspaceFileFromBlob,
   describeDriveApiError,
+  getCachedDriveToken,
+  getRememberedGoogleAccountEmail,
   isValidGoogleOAuthClientId,
+  resolveGoogleOAuthClientId,
+  saveRememberedGoogleAccountEmail,
 } from '@/lib/googleDriveDirectOpen';
 
 const PPTX_MIME = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
@@ -175,6 +180,68 @@ describe('exportDrawioToEditablePptx — single editable vector slide 1:1 fideli
     expect(slide1Xml).toContain('➐');
     expect(slide1Xml).not.toContain('OBJ-01');
     expect(slide1Xml).not.toContain('• (');
+  });
+});
+
+describe('googleDriveDirectOpen — Primary Server Session Vault + Fallback IAP login_hint', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('hydrates server-side sessionToken (Primary) and BeyondCorp iapEmail (Fallback) from /api/google-workspace/oauth-config', async () => {
+    const store = new Map<string, string>();
+    const storageMock = {
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => store.set(k, v),
+      removeItem: (k: string) => store.delete(k),
+    };
+    vi.stubGlobal('window', {
+      localStorage: storageMock,
+      sessionStorage: storageMock,
+      location: { origin: 'https://promptcanvas-248990048888.cr.gclb.goog' },
+    });
+
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url.includes('/api/google-workspace/oauth-config') && (!init?.method || init.method === 'GET')) {
+        return new Response(
+          JSON.stringify({
+            clientId: '248990048888-abc123def456.apps.googleusercontent.com',
+            configured: true,
+            iapEmail: 'nitinagga@google.com',
+            sessionToken: {
+              accessToken: 'ya29.server-vault-hydrated-token',
+              expiresAt: Date.now() + 50 * 60 * 1000,
+              email: 'nitinagga@google.com',
+            },
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const clientId = await resolveGoogleOAuthClientId();
+    expect(clientId).toBe('248990048888-abc123def456.apps.googleusercontent.com');
+
+    // Primary: Server-hydrated token is immediately available in browser cache
+    const cached = getCachedDriveToken();
+    expect(cached).not.toBeNull();
+    expect(cached?.accessToken).toBe('ya29.server-vault-hydrated-token');
+    expect(cached?.email).toBe('nitinagga@google.com');
+
+    // Fallback: BeyondCorp IAP email is remembered for GIS login_hint + prompt: ''
+    expect(getRememberedGoogleAccountEmail()).toBe('nitinagga@google.com');
+
+    // Updating remembered email persists normalized address
+    saveRememberedGoogleAccountEmail('  NitinAgga@google.com ');
+    expect(getRememberedGoogleAccountEmail()).toBe('nitinagga@google.com');
+
+    // Clearing cached token removes token but preserves remembered IAP email for fallback silent renewal
+    clearCachedDriveToken();
+    expect(getCachedDriveToken()).toBeNull();
+    expect(getRememberedGoogleAccountEmail()).toBe('nitinagga@google.com');
   });
 });
 

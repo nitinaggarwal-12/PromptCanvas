@@ -21,6 +21,7 @@ export const GOOGLE_OAUTH_SCOPES = `${GOOGLE_DRIVE_FILE_SCOPE} openid email`;
 
 export const GOOGLE_OAUTH_CLIENT_ID_STORAGE_KEY = 'pc_google_oauth_client_id';
 const DRIVE_TOKEN_STORAGE_KEY = 'pc_google_drive_token_v2';
+const REMEMBERED_EMAIL_STORAGE_KEY = 'pc_google_user_email';
 const OAUTH_CONFIG_CACHE_KEY = 'pc_google_oauth_config_v1';
 const OAUTH_CONFIG_CACHE_TTL_MS = 5 * 60 * 1000;
 const GIS_SCRIPT_ID = 'google-gsi-client-script';
@@ -83,7 +84,7 @@ export class GoogleDriveDirectOpenError extends Error {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  OAuth Client ID resolution                                                 */
+/*  OAuth Client ID + BeyondCorp IAP Email + Server Session Resolution        */
 /* -------------------------------------------------------------------------- */
 
 export function isValidGoogleOAuthClientId(candidate: string | null | undefined): boolean {
@@ -98,6 +99,27 @@ function safeStorage(kind: 'local' | 'session'): Storage | null {
   } catch {
     return null;
   }
+}
+
+export function getRememberedGoogleAccountEmail(): string | undefined {
+  const saved = safeStorage('local')?.getItem(REMEMBERED_EMAIL_STORAGE_KEY)?.trim();
+  if (saved && saved.includes('@')) return saved;
+  // Even if the local token has expired, preserve its email as a silent login_hint
+  const rawToken = safeStorage('local')?.getItem(DRIVE_TOKEN_STORAGE_KEY);
+  if (rawToken) {
+    try {
+      const parsed = JSON.parse(rawToken) as Partial<CachedDriveToken>;
+      if (parsed?.email && parsed.email.includes('@')) return parsed.email;
+    } catch {
+      // ignore
+    }
+  }
+  return undefined;
+}
+
+export function saveRememberedGoogleAccountEmail(email?: string): void {
+  if (!email || !email.includes('@')) return;
+  safeStorage('local')?.setItem(REMEMBERED_EMAIL_STORAGE_KEY, email.trim().toLowerCase());
 }
 
 /** Admin override stored by the in-app setup card (survives deploys, per browser). */
@@ -119,40 +141,66 @@ export function saveLocalGoogleOAuthClientIdOverride(clientId: string): void {
 }
 
 /**
- * Resolves the OAuth Web Client ID: local admin override → server runtime config
- * (`GOOGLE_OAUTH_CLIENT_ID` env on Cloud Run, exposed by /api/google-workspace/oauth-config).
+ * Resolves the OAuth Web Client ID AND hydrates:
+ *   1. PRIMARY: Active server-side Drive token (`sessionToken` from httpOnly cookie / GCS vault / refresh_token)
+ *   2. FALLBACK: Authenticated `@google.com` email from BeyondCorp IAP (`x-goog-authenticated-user-email`)
+ *      so GIS `requestAccessToken({ prompt: '', login_hint })` never prompts for an account picker.
  */
 export async function resolveGoogleOAuthClientId(): Promise<string> {
   const override = getLocalGoogleOAuthClientIdOverride();
-  if (override) return override;
-
+  const hasActiveLocalToken = Boolean(getCachedDriveToken(override || undefined));
   const session = safeStorage('session');
-  try {
-    const cachedRaw = session?.getItem(OAUTH_CONFIG_CACHE_KEY);
-    if (cachedRaw) {
-      const cached = JSON.parse(cachedRaw) as { clientId?: string; fetchedAt?: number };
-      if (cached && Date.now() - (cached.fetchedAt || 0) < OAUTH_CONFIG_CACHE_TTL_MS) {
-        return isValidGoogleOAuthClientId(cached.clientId) ? String(cached.clientId) : '';
+
+  if (hasActiveLocalToken) {
+    if (override) return override;
+    try {
+      const cachedRaw = session?.getItem(OAUTH_CONFIG_CACHE_KEY);
+      if (cachedRaw) {
+        const cached = JSON.parse(cachedRaw) as { clientId?: string; fetchedAt?: number };
+        if (cached && Date.now() - (cached.fetchedAt || 0) < OAUTH_CONFIG_CACHE_TTL_MS) {
+          return isValidGoogleOAuthClientId(cached.clientId) ? String(cached.clientId) : '';
+        }
       }
+    } catch {
+      // ignore cache corruption
     }
-  } catch {
-    // ignore cache corruption
   }
 
   try {
     const res = await fetch('/api/google-workspace/oauth-config', { cache: 'no-store' });
-    if (!res.ok) return '';
-    const data = (await res.json()) as { clientId?: string };
-    const clientId = isValidGoogleOAuthClientId(data?.clientId) ? String(data.clientId).trim() : '';
-    session?.setItem(OAUTH_CONFIG_CACHE_KEY, JSON.stringify({ clientId, fetchedAt: Date.now() }));
-    return clientId;
+    if (!res.ok) return override || '';
+    const data = (await res.json()) as {
+      clientId?: string;
+      iapEmail?: string;
+      sessionToken?: CachedDriveToken | null;
+    };
+    if (data?.iapEmail) {
+      saveRememberedGoogleAccountEmail(data.iapEmail);
+    }
+    if (
+      data?.sessionToken?.accessToken &&
+      typeof data.sessionToken.expiresAt === 'number' &&
+      data.sessionToken.expiresAt - 60_000 > Date.now()
+    ) {
+      // Hydrate local cache from the Primary server-side session vault without re-POSTing
+      safeStorage('local')?.setItem(DRIVE_TOKEN_STORAGE_KEY, JSON.stringify(data.sessionToken));
+      if (data.sessionToken.email) {
+        saveRememberedGoogleAccountEmail(data.sessionToken.email);
+      }
+    }
+    const serverClientId = isValidGoogleOAuthClientId(data?.clientId) ? String(data.clientId).trim() : '';
+    const finalClientId = override || serverClientId;
+    if (finalClientId) {
+      session?.setItem(OAUTH_CONFIG_CACHE_KEY, JSON.stringify({ clientId: finalClientId, fetchedAt: Date.now() }));
+    }
+    return finalClientId;
   } catch {
-    return '';
+    return override || '';
   }
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Token cache                                                                */
+/*  Token cache (LocalStorage + Server Cookie/GCS Session Vault Sync)          */
 /* -------------------------------------------------------------------------- */
 
 export function getCachedDriveToken(clientId?: string): CachedDriveToken | null {
@@ -160,6 +208,9 @@ export function getCachedDriveToken(clientId?: string): CachedDriveToken | null 
   if (!raw) return null;
   try {
     const parsed = JSON.parse(raw) as CachedDriveToken;
+    if (parsed?.email) {
+      saveRememberedGoogleAccountEmail(parsed.email);
+    }
     if (!parsed?.accessToken || typeof parsed.expiresAt !== 'number') return null;
     if (parsed.expiresAt - 60_000 <= Date.now()) return null;
     if (clientId && parsed.clientId && parsed.clientId !== clientId) return null;
@@ -170,11 +221,27 @@ export function getCachedDriveToken(clientId?: string): CachedDriveToken | null 
 }
 
 export function cacheDriveToken(token: CachedDriveToken): void {
+  if (!token.email) {
+    token.email = getRememberedGoogleAccountEmail();
+  } else {
+    saveRememberedGoogleAccountEmail(token.email);
+  }
   safeStorage('local')?.setItem(DRIVE_TOKEN_STORAGE_KEY, JSON.stringify(token));
+  // Sync to Primary server-side session vault (httpOnly cookie + GCS) in background
+  if (typeof window !== 'undefined' && typeof fetch === 'function') {
+    void fetch('/api/google-workspace/oauth-config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(token),
+    }).catch(() => {});
+  }
 }
 
 export function clearCachedDriveToken(): void {
   safeStorage('local')?.removeItem(DRIVE_TOKEN_STORAGE_KEY);
+  if (typeof window !== 'undefined' && typeof fetch === 'function') {
+    void fetch('/api/google-workspace/oauth-config', { method: 'DELETE' }).catch(() => {});
+  }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -253,10 +320,13 @@ export async function prepareDriveTokenClient(clientId: string): Promise<DriveTo
   }
   await loadGoogleIdentityServices();
   const oauth2 = (window as any).google.accounts.oauth2;
+  const defaultHint = getRememberedGoogleAccountEmail();
 
   const tokenClient = oauth2.initTokenClient({
     client_id: clientId,
     scope: GOOGLE_OAUTH_SCOPES,
+    hint: defaultHint,
+    prompt: '',
     callback: () => {},
     error_callback: () => {},
   });
@@ -281,7 +351,7 @@ export async function prepareDriveTokenClient(clientId: string): Promise<DriveTo
             expiresAt: Date.now() + expiresInSec * 1000,
             clientId,
           };
-          token.email = await fetchGoogleAccountEmail(token.accessToken);
+          token.email = (await fetchGoogleAccountEmail(token.accessToken)) || getRememberedGoogleAccountEmail();
           cacheDriveToken(token);
           resolve(token);
         };
@@ -295,8 +365,15 @@ export async function prepareDriveTokenClient(clientId: string): Promise<DriveTo
             reject(new GoogleDriveDirectOpenError('unknown', err?.message || 'Google sign-in failed.'));
           }
         };
-        const overrides: Record<string, string> = { prompt: options?.prompt ?? '' };
-        if (options?.loginHint) overrides.login_hint = options.loginHint;
+        const effectivePrompt = options?.prompt ?? '';
+        const overrides: Record<string, string> = { prompt: effectivePrompt };
+        const effectiveHint =
+          options?.loginHint ||
+          (effectivePrompt !== 'select_account' ? getRememberedGoogleAccountEmail() : undefined);
+        if (effectiveHint) {
+          overrides.login_hint = effectiveHint;
+          overrides.hint = effectiveHint;
+        }
         tokenClient.requestAccessToken(overrides);
       });
     },

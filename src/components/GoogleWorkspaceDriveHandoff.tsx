@@ -22,6 +22,7 @@ import {
   createGoogleWorkspaceFileFromBlob,
   getCachedDriveToken,
   getGoogleOAuthSetupOrigins,
+  getRememberedGoogleAccountEmail,
   isValidGoogleOAuthClientId,
   prepareDriveTokenClient,
   resolveGoogleOAuthClientId,
@@ -198,6 +199,10 @@ export default function GoogleWorkspaceDriveHandoff({
 
   const bootWithClientId = useCallback(async (id: string) => {
     setClientId(id);
+    const rememberedEmail = getRememberedGoogleAccountEmail();
+    if (rememberedEmail) {
+      setAccountEmail(rememberedEmail);
+    }
     try {
       tokenClientRef.current = await prepareDriveTokenClient(id);
     } catch (err) {
@@ -205,12 +210,29 @@ export default function GoogleWorkspaceDriveHandoff({
       setPhase('error');
       return;
     }
+    // PRIMARY: Active token from localStorage OR hydrated from Server Session Vault (/api/google-workspace/oauth-config)
     const cached = getCachedDriveToken(id);
     if (cached) {
       void createRef.current(cached);
-    } else {
-      setPhase('needs-signin');
+      return;
     }
+    // FALLBACK: If BeyondCorp IAP or previous session provided the user's @google.com email,
+    // attempt silent GIS token renewal (prompt: '', login_hint: rememberedEmail) automatically.
+    // If browser popup blocker intercepts mount-time renewal, fall back gracefully to 1-click button.
+    if (rememberedEmail && tokenClientRef.current) {
+      try {
+        const silentToken = await tokenClientRef.current.requestToken({
+          prompt: '',
+          loginHint: rememberedEmail,
+        });
+        void createRef.current(silentToken);
+        return;
+      } catch {
+        setPhase('needs-signin');
+        return;
+      }
+    }
+    setPhase('needs-signin');
   }, []);
 
   useEffect(() => {
@@ -232,8 +254,9 @@ export default function GoogleWorkspaceDriveHandoff({
     if (!tokenClient) return;
     setError(null);
     setPhase('signing-in');
+    const loginHint = prompt !== 'select_account' ? accountEmail || getRememberedGoogleAccountEmail() : undefined;
     tokenClient
-      .requestToken({ prompt })
+      .requestToken({ prompt, loginHint })
       .then((token) => createRef.current(token))
       .catch((err) => {
         const handoffError = toHandoffError(err);
@@ -335,8 +358,17 @@ export default function GoogleWorkspaceDriveHandoff({
               <div className="space-y-1.5">
                 <p className="text-[20px] font-medium">Open with {productLabel}</p>
                 <p className="text-[13.5px] text-[#5F6368] leading-relaxed">
-                  Sign in with your Google account to create an editable copy of <strong className="text-[#1F1F1F]">{title}</strong> in
-                  your Google Drive. It opens directly at <span className="font-mono text-[12px]">docs.google.com</span> — no file download.
+                  {accountEmail ? (
+                    <>
+                      Continue as <strong className="text-[#1F1F1F]">{accountEmail}</strong> to open an editable copy of{' '}
+                      <strong className="text-[#1F1F1F]">{title}</strong> directly at <span className="font-mono text-[12px]">docs.google.com</span>.
+                    </>
+                  ) : (
+                    <>
+                      Sign in with your Google account to create an editable copy of <strong className="text-[#1F1F1F]">{title}</strong> in
+                      your Google Drive. It opens directly at <span className="font-mono text-[12px]">docs.google.com</span> — no file download.
+                    </>
+                  )}
                 </p>
               </div>
               {error?.code === 'popup_closed' && (
@@ -349,7 +381,7 @@ export default function GoogleWorkspaceDriveHandoff({
                 className="inline-flex items-center justify-center gap-3 px-5 py-2.5 rounded-full border border-[#747775] bg-white hover:bg-[#F8FAFD] text-[14px] font-medium text-[#1F1F1F] shadow-xs transition cursor-pointer"
               >
                 <GoogleGlyph />
-                Continue with Google
+                {accountEmail ? `Continue as ${accountEmail}` : 'Continue with Google'}
               </button>
               <p className="text-[11.5px] text-[#80868B]">
                 Permission requested: <span className="font-mono">drive.file</span> — only files created by PromptCanvas.
@@ -377,12 +409,12 @@ export default function GoogleWorkspaceDriveHandoff({
               <Loader2 className="w-7 h-7 animate-spin text-[#0B57D0]" />
               <p className="text-[15px] font-medium">
                 {phase === 'compiling'
-                  ? `Compiling ${kind === 'slides' ? '3-slide widescreen presentation' : 'specification document'}…`
+                  ? `Compiling ${kind === 'slides' ? 'single editable widescreen slide' : 'specification document'}…`
                   : `Creating your ${productLabel} file in Google Drive…`}
               </p>
               <p className="text-[13px] text-[#5F6368]">
                 {phase === 'compiling'
-                  ? '1:1 master slide, editable vector shapes and the component matrix.'
+                  ? '1:1 editable vector shapes, icons, and orthogonal connectors.'
                   : `Google is converting the ${kind === 'slides' ? '.pptx' : '.docx'} into a native, fully editable ${productLabel} file.`}
               </p>
             </div>
