@@ -267,7 +267,16 @@ export async function renderInlineSvgToPngDataUrl(
   if (!svgOrDataUrl) return null;
 
   if (typeof window === 'undefined') {
-    const nodeDynamicImport = new Function('m', 'return import(m)');
+    const nodeDynamicImport = async (modName: string) => {
+      try {
+        return await new Function('m', 'return import(m)')(modName);
+      } catch {
+        const req = new Function('return typeof require !== "undefined" ? require : null')();
+        if (req) return req(modName);
+        const { createRequire } = await import(/* webpackIgnore: true */ 'module');
+        return createRequire(process.cwd() + '/package.json')(modName);
+      }
+    };
     const cleanSvg = normalizeSvgDimensions(svgOrDataUrl.trim(), widthPx, heightPx);
     try {
       const sharpMod = await nodeDynamicImport('sharp');
@@ -730,17 +739,267 @@ function getImageDimensionsFromDataUri(dataUrl: string): { width: number; height
   return null;
 }
 
+const CIRCLED_STEP_DIGITS: Record<string, string> = {
+  '1': '❶',
+  '2': '❷',
+  '3': '❸',
+  '4': '❹',
+  '5': '❺',
+  '6': '❻',
+  '7': '➐',
+  '8': '➑',
+  '9': '➒',
+  '10': '➓',
+};
+
+interface StructuredIconRow {
+  iconSvg?: string;
+  title: string;
+  subtitle?: string;
+  titleColor?: string;
+  subtitleColor?: string;
+}
+
+interface StructuredInlineSpan {
+  text: string;
+  color?: string;
+  bold?: boolean;
+  isSmall?: boolean;
+}
+
+interface StructuredNodeLayout {
+  kind: 'multi-row-icon-list' | 'table-card' | 'standard';
+  stepBadge?: { num: string; bgHex: string };
+  leftIconSvg?: string;
+  rightIconSvg?: string;
+  headerLines: string[];
+  bodyLines: { text: string; color?: string; bold?: boolean }[];
+  inlineSpans?: StructuredInlineSpan[];
+  iconRows?: StructuredIconRow[];
+  textAlign?: 'left' | 'center' | 'right';
+}
+
+function decodeHtmlEntities(html: string): string {
+  if (!html) return '';
+  return html
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+}
+
+function extractFirstCssColor(fragment: string): string | undefined {
+  const m = fragment.match(/(?:^|[;"'\s])color\s*:\s*(#[0-9a-fA-F]{3,6})/i);
+  if (!m) return undefined;
+  return normalizeHexColor(m[1], '');
+}
+
+function stripTagsToLines(fragment: string): string[] {
+  return fragment
+    .replace(/<svg[\s\S]*?<\/svg>/gi, '')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/div>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<\/li>/gi, '\n')
+    .replace(/<\/tr>/gi, '\n')
+    .replace(/<\/span>\s*<span/gi, '</span> <span')
+    .replace(/<[^>]+>/g, '')
+    .split('\n')
+    .map((l) => l.replace(/\s+/g, ' ').trim())
+    .filter(Boolean);
+}
+
+function extractStructuredNodeLayout(rawHtml: string): StructuredNodeLayout {
+  const decoded = decodeHtmlEntities(rawHtml);
+  if (!decoded.trim()) {
+    return { kind: 'standard', headerLines: [], bodyLines: [] };
+  }
+
+  // 1. Extract circular step badge (<span style="...background:#1D4ED8...border-radius:50%...">1</span>)
+  let stepBadge: { num: string; bgHex: string } | undefined;
+  const badgeTagRegex =
+    /<span([^>]*border-radius\s*:\s*(?:50%|999\d*px)[^>]*)>\s*([0-9A-Za-z]+)\s*<\/span>\s*/i;
+  const badgeMatch = decoded.match(badgeTagRegex);
+  if (badgeMatch) {
+    const attrs = badgeMatch[1] || '';
+    const num = badgeMatch[2].trim();
+    const bgMatch = attrs.match(/background(?:-color)?\s*:\s*(#[0-9a-fA-F]{3,6})/i);
+    const bgHex = normalizeHexColor(bgMatch ? bgMatch[1] : '1D4ED8', '1D4ED8');
+    stepBadge = { num, bgHex };
+  }
+
+  const withoutBadge = decoded.replace(
+    /<span[^>]*border-radius\s*:\s*(?:50%|999\d*px)[^>]*>\s*[0-9A-Za-z]+\s*<\/span>\s*/gi,
+    ''
+  );
+
+  // 2. Check for <table> layout (multi-row icon list like Observability OR single-row compactNodeHtml card)
+  const tableMatch = withoutBadge.match(/<table[\s\S]*?<\/table>/i);
+  if (tableMatch && tableMatch.index !== undefined) {
+    const preTableHtml = withoutBadge.slice(0, tableMatch.index);
+    const tableHtml = tableMatch[0];
+    const trMatches = Array.from(tableHtml.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi));
+
+    if (trMatches.length >= 2) {
+      const iconRows: StructuredIconRow[] = [];
+      for (const tr of trMatches) {
+        const trBody = tr[1];
+        const svgMatch = trBody.match(/<svg[\s\S]*?<\/svg>/i);
+        const lines = stripTagsToLines(trBody);
+        if (lines.length > 0) {
+          iconRows.push({
+            iconSvg: svgMatch ? svgMatch[0] : undefined,
+            title: lines[0],
+            subtitle: lines.slice(1).join(' '),
+          });
+        }
+      }
+      if (iconRows.some((r) => Boolean(r.iconSvg))) {
+        const headerLines = stripTagsToLines(preTableHtml);
+        return {
+          kind: 'multi-row-icon-list',
+          stepBadge,
+          headerLines,
+          bodyLines: [],
+          iconRows,
+        };
+      }
+    }
+
+    if (trMatches.length === 1) {
+      const trBody = trMatches[0][1];
+      const tdMatches = Array.from(trBody.matchAll(/<td\b([^>]*)>([\s\S]*?)<\/td>/gi));
+      if (tdMatches.length >= 1) {
+        const parsedTds = tdMatches.map((td) => {
+          const attrs = td[1] || '';
+          const content = td[2] || '';
+          const svgM = content.match(/<svg[\s\S]*?<\/svg>/i);
+          const lines = stripTagsToLines(content);
+          const divMatches = Array.from(content.matchAll(/<div\b([^>]*)>([\s\S]*?)<\/div>/gi));
+          const richLines: { text: string; color?: string; bold?: boolean }[] = [];
+          if (divMatches.length > 0) {
+            for (const dm of divMatches) {
+              const dAttrs = dm[1] || '';
+              const dText = stripTagsToLines(dm[2] || '').join(' ');
+              if (!dText) continue;
+              const dColor = extractFirstCssColor(dAttrs) || extractFirstCssColor(dm[2] || '');
+              const isBold = /font-weight\s*:\s*(?:bold|[6789]00)/i.test(dAttrs);
+              richLines.push({ text: dText, color: dColor, bold: isBold });
+            }
+          } else {
+            lines.forEach((l, idx) => richLines.push({ text: l, bold: idx === 0 }));
+          }
+          const alignMatch = attrs.match(/text-align\s*:\s*(left|center|right)/i);
+          return {
+            svg: svgM ? svgM[0] : undefined,
+            hasText: richLines.length > 0,
+            richLines,
+            align: alignMatch ? (alignMatch[1].toLowerCase() as 'left' | 'center' | 'right') : undefined,
+          };
+        });
+
+        let leftIconSvg: string | undefined;
+        let rightIconSvg: string | undefined;
+        let textTd = parsedTds.find((t) => t.hasText) || parsedTds[0];
+
+        if (parsedTds.length >= 2) {
+          if (parsedTds[0].svg && !parsedTds[0].hasText) {
+            leftIconSvg = parsedTds[0].svg;
+          }
+          const lastTd = parsedTds[parsedTds.length - 1];
+          if (lastTd !== parsedTds[0] && lastTd.svg && !lastTd.hasText) {
+            rightIconSvg = lastTd.svg;
+          }
+        }
+
+        const headerLines = textTd.richLines.length > 0 ? [textTd.richLines[0].text] : [];
+        const bodyLines = textTd.richLines;
+
+        return {
+          kind: 'table-card',
+          stepBadge,
+          leftIconSvg,
+          rightIconSvg,
+          headerLines,
+          bodyLines,
+          textAlign: textTd.align || 'center',
+        };
+      }
+    }
+  }
+
+  // 3. Non-table HTML: check for multi-span single-line headers (e.g., AI Cluster "(GE • ADK • A2A)")
+  //    or multi-line <br/> blocks with colored spans (e.g., Session State & Shared History)
+  const noSvg = withoutBadge.replace(/<svg[\s\S]*?<\/svg>/gi, '');
+  const hasExplicitLineBreaks = /<br\s*\/?>|<\/div>\s*<div|<\/p>\s*<p/i.test(noSvg);
+  const spanMatches = Array.from(noSvg.matchAll(/<span\b([^>]*)>([\s\S]*?)<\/span>/gi));
+
+  if (!hasExplicitLineBreaks && spanMatches.length >= 2) {
+    const inlineSpans: StructuredInlineSpan[] = [];
+    for (const sm of spanMatches) {
+      const sAttrs = sm[1] || '';
+      const sText = stripTagsToLines(sm[2] || '').join(' ');
+      if (!sText) continue;
+      const sColor = extractFirstCssColor(sAttrs);
+      const isBold = /font-weight\s*:\s*(?:bold|[6789]00)/i.test(sAttrs);
+      const isSmall = /font-size\s*:\s*(?:[789](?:\.\d+)?px)/i.test(sAttrs);
+      inlineSpans.push({ text: sText, color: sColor, bold: isBold, isSmall });
+    }
+    if (inlineSpans.length >= 2) {
+      return {
+        kind: 'standard',
+        stepBadge,
+        headerLines: [inlineSpans.map((s) => s.text).join(' ')],
+        bodyLines: [],
+        inlineSpans,
+      };
+    }
+  }
+
+  // Split by <br/> or block boundaries while preserving per-line color
+  const rawSegments = noSvg
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/div>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .split('\n');
+
+  const outerColor = extractFirstCssColor(noSvg);
+  const outerBold = /font-weight\s*:\s*(?:bold|[6789]00)/i.test(noSvg);
+  const bodyLines: { text: string; color?: string; bold?: boolean }[] = [];
+
+  for (const seg of rawSegments) {
+    const cleanText = stripTagsToLines(seg).join(' ');
+    if (!cleanText) continue;
+    const segColor = extractFirstCssColor(seg) || outerColor;
+    const segBold = /font-weight\s*:\s*(?:bold|[6789]00)|<b\b|<strong\b/i.test(seg) || outerBold;
+    bodyLines.push({ text: cleanText, color: segColor, bold: segBold });
+  }
+
+  return {
+    kind: 'standard',
+    stepBadge,
+    headerLines: bodyLines.length > 0 ? [bodyLines[0].text] : [],
+    bodyLines,
+  };
+}
+
 /**
- * Compiles Draw.io XML into a multi-slide PowerPoint (.pptx) deck:
- * - Slide 1: 100% 1:1 Master High-Resolution Widescreen Architecture Slide (Zero Deformity Guarantee)
- * - Slide 2: 100% Decomposed Native Editable Vector Shapes, Crisp Icons & Connectors Slide
- * - Slide 3: Architectural Component Inventory & Specification Matrix
+ * Compiles Draw.io XML into a single-slide 100% Native Editable PowerPoint (.pptx) & Google Slides deck:
+ * - Slide 1 (Only Slide): 100% Decomposed Native Editable Vector Shapes, Crisp Icons & Orthogonal Connectors
+ *   matching the reference architecture diagram 1:1 with zero static image slide and zero object-ID table slide.
  */
 export async function exportDrawioToEditablePptx(
   xmlContent: string,
   diagramName: string = 'Architecture Blueprint',
   blueprintId: string = 'VIS-MASTER',
-  options?: { returnBlob?: boolean; returnBase64?: boolean; masterImageSrc?: string }
+  options?: {
+    returnBlob?: boolean;
+    returnBase64?: boolean;
+    masterImageSrc?: string;
+    editableOverrides?: Record<string, { title?: string; subtitle?: string; label?: string; role?: string }>;
+  }
 ): Promise<Blob | string | void> {
   const pptx = new PptxGenJS();
   pptx.layout = 'LAYOUT_WIDE'; // 13.333 x 7.5 inches widescreen 16:9
@@ -750,103 +1009,24 @@ export async function exportDrawioToEditablePptx(
 
   const SLIDE_W = 13.333;
   const SLIDE_H = 7.5;
-  const HEADER_H = 0.52;
-  const MARGIN_X = 0.25;
-  const MARGIN_Y = 0.14;
+  const MARGIN_X = 0.32;
+  const MARGIN_Y = 0.2;
 
   const { cells, minX, minY, maxX, maxY, isDarkDiagram, diagramBgHex } = parseDrawioXmlForPptx(xmlContent);
   const graphW = Math.max(400, maxX - minX);
   const graphH = Math.max(300, maxY - minY);
 
   // ============================================================================
-  // SLIDE 1: 100% 1:1 HIGH-RESOLUTION MASTER ARCHITECTURE SLIDE (ZERO DEFORMITY)
-  // ============================================================================
-  try {
-    let pngDataUrl = await resolveImageSourceToDataUri(options?.masterImageSrc, blueprintId);
-    if (!pngDataUrl) {
-      pngDataUrl = await exportDiagramPng(xmlContent, { scale: 2.5, transparent: false });
-    }
-    if (pngDataUrl) {
-      const slide1Master = pptx.addSlide();
-      slide1Master.background = { color: isDarkDiagram ? '090D16' : 'F8FAFC' };
-
-      slide1Master.addShape(pptx.ShapeType.rect, {
-        x: 0,
-        y: 0,
-        w: SLIDE_W,
-        h: HEADER_H,
-        fill: { color: '0F172A' },
-      });
-
-      slide1Master.addText(
-        [
-          { text: `${diagramName.toUpperCase()} `, options: { fontSize: 12, bold: true, color: '38BDF8' } },
-          {
-            text: `|  ID: ${blueprintId}  •  1:1 Master High-Resolution Widescreen Architecture (Slide 2 contains Decomposed Vector Shapes)`,
-            options: { fontSize: 9.5, color: 'E2E8F0' },
-          },
-        ],
-        {
-          x: 0.35,
-          y: 0.08,
-          w: SLIDE_W - 0.7,
-          h: 0.36,
-          valign: 'middle',
-          fontFace: 'Arial',
-        }
-      );
-
-      const availW = SLIDE_W - 0.5;
-      const availH = SLIDE_H - HEADER_H - 0.22;
-      const dims = getImageDimensionsFromDataUri(pngDataUrl);
-      const imgAspect = dims ? dims.width / dims.height : graphW / graphH;
-      const boxAspect = availW / availH;
-
-      let finalW = availW;
-      let finalH = availH;
-      if (imgAspect > boxAspect) {
-        finalW = availW;
-        finalH = availW / imgAspect;
-      } else {
-        finalH = availH;
-        finalW = availH * imgAspect;
-      }
-      const finalX = 0.25 + (availW - finalW) / 2;
-      const finalY = HEADER_H + 0.11 + (availH - finalH) / 2;
-
-      // Crisp architectural showcase frame behind the 1:1 Master Image
-      slide1Master.addShape(pptx.ShapeType.rect, {
-        x: Number((finalX - 0.08).toFixed(3)),
-        y: Number((finalY - 0.06).toFixed(3)),
-        w: Number((finalW + 0.16).toFixed(3)),
-        h: Number((finalH + 0.12).toFixed(3)),
-        fill: { color: isDarkDiagram ? '0F172A' : 'FFFFFF' },
-        line: { color: isDarkDiagram ? '334155' : 'CBD5E1', width: 1 },
-      });
-
-      slide1Master.addImage({
-        data: pngDataUrl,
-        x: Number(finalX.toFixed(3)),
-        y: Number(finalY.toFixed(3)),
-        w: Number(finalW.toFixed(3)),
-        h: Number(finalH.toFixed(3)),
-      });
-    }
-  } catch (err) {
-    console.warn('Slide 1 master image snapshot warning:', err);
-  }
-
-  // ============================================================================
-  // SLIDE 2: 100% DECOMPOSED NATIVE EDITABLE VECTOR SHAPES, ICONS & CONNECTORS
+  // SINGLE EDITABLE SLIDE: 100% DECOMPOSED NATIVE VECTOR SHAPES, ICONS & ARROWS
   // ============================================================================
   const availW = SLIDE_W - MARGIN_X * 2;
-  const availH = SLIDE_H - HEADER_H - MARGIN_Y * 2;
+  const availH = SLIDE_H - MARGIN_Y * 2;
 
   const scaleX = availW / graphW;
   const scaleY = availH / graphH;
 
   const offsetX = MARGIN_X;
-  const offsetY = HEADER_H + MARGIN_Y;
+  const offsetY = MARGIN_Y;
 
   const toSlideX = (x: number) => Number((offsetX + (x - minX) * scaleX).toFixed(3));
   const toSlideY = (y: number) => Number((offsetY + (y - minY) * scaleY).toFixed(3));
@@ -855,33 +1035,6 @@ export async function exportDrawioToEditablePptx(
 
   const slide2 = pptx.addSlide();
   slide2.background = { color: isDarkDiagram ? diagramBgHex : 'FFFFFF' };
-
-  slide2.addShape(pptx.ShapeType.rect, {
-    x: 0,
-    y: 0,
-    w: SLIDE_W,
-    h: HEADER_H,
-    fill: { color: '0F172A' },
-    line: { color: '1E293B', width: 1 },
-  });
-
-  slide2.addText(
-    [
-      { text: `${diagramName.toUpperCase()} `, options: { fontSize: 12, bold: true, color: '38BDF8' } },
-      {
-        text: `|  ID: ${blueprintId}  •  100% Decomposed Native Editable Vector Shapes, Icons & Arrows (Click any element to move or edit)`,
-        options: { fontSize: 9.5, color: 'E2E8F0' },
-      },
-    ],
-    {
-      x: 0.3,
-      y: 0.08,
-      w: SLIDE_W - 0.6,
-      h: 0.36,
-      valign: 'middle',
-      fontFace: 'Arial',
-    }
-  );
 
   // Strict sorting: background enclaves & large containers first, child cards next, small badges & icons on top
   const vertices = cells
@@ -955,9 +1108,13 @@ export async function exportDrawioToEditablePptx(
     const strokeColor = normalizeHexColor(rawStroke, isDarkDiagram ? '3B82F6' : 'CBD5E1');
     const strokeWidth = Math.min(2.5, Math.max(0.75, parseFloat(style.strokeWidth || '1.25')));
     const isDashed = style.dashed === '1';
+    const isCylinder =
+      Boolean(style.shape && style.shape.toLowerCase().includes('cylinder')) || style.cylinder === '1';
 
     let shapeType = pptx.ShapeType.rect;
-    if (style.ellipse === '1' || style.shape === 'ellipse') {
+    if (isCylinder) {
+      shapeType = pptx.ShapeType.can;
+    } else if (style.ellipse === '1' || style.shape === 'ellipse') {
       shapeType = pptx.ShapeType.ellipse;
     } else if (style.rhombus === '1' || style.shape === 'rhombus') {
       shapeType = pptx.ShapeType.diamond;
@@ -965,7 +1122,11 @@ export async function exportDrawioToEditablePptx(
       shapeType = pptx.ShapeType.roundRect;
     }
 
-    const { title, subtitle, lines: parsedLines } = cleanHtmlToPlainText(node.value);
+    const override = options?.editableOverrides?.[node.id];
+    const { title: rawPlainTitle, subtitle: rawPlainSubtitle, lines: parsedLines } = cleanHtmlToPlainText(node.value);
+    const title = override?.title ?? override?.label ?? rawPlainTitle;
+    const subtitle = override?.subtitle ?? override?.role ?? rawPlainSubtitle;
+    const structured = extractStructuredNodeLayout(node.value);
 
     const isDarkNodeFill = hasFill ? isDarkColor(fillColor) : isDarkDiagram;
     let resolvedTitleColor = style.fontColor
@@ -986,27 +1147,240 @@ export async function exportDrawioToEditablePptx(
       ? node.htmlSubtitleColor
       : isDarkNodeFill
       ? 'CBD5E1'
-      : '475569';
+      : '334155';
     if (isDarkNodeFill && isDarkColor(resolvedSubtitleColor)) {
       resolvedSubtitleColor = 'CBD5E1';
     } else if (!isDarkNodeFill && !isDarkColor(resolvedSubtitleColor)) {
-      resolvedSubtitleColor = '475569';
+      resolvedSubtitleColor = '334155';
     }
 
-    const rawFontSize = parseFloat(style.fontSize || '10');
-    const scaledTitleSize = Math.min(10, Math.max(6, Math.round(rawFontSize * Math.sqrt(scaleY) * 0.82)));
-    const scaledSubSize = Math.max(5.5, scaledTitleSize - 1);
+    const rawFontSize = parseFloat(style.fontSize || '10.5');
+    const scaledTitleSize = Math.min(9.5, Math.max(6.5, Number((rawFontSize * Math.sqrt(scaleY) * 0.82).toFixed(1))));
+    const scaledSubSize = Math.max(6, Number((scaledTitleSize - 1.3).toFixed(1)));
 
     const isContainer = style.container === '1' || parentIds.has(node.id);
-    const isMultiRowCard = !isContainer && parsedLines.length > 4;
+    const isMultiRowIconList = structured.kind === 'multi-row-icon-list' && (structured.iconRows?.length || 0) >= 2;
+    const isTableCard = !isContainer && structured.kind === 'table-card';
+    const isMultiRowCard = !isContainer && !isMultiRowIconList && !isTableCard && parsedLines.length > 4;
 
     const iconSource = node.extractedSvgs[0] || node.imageDataUrl;
 
     const isStandaloneIconWithBottomLabel =
       (!hasFill && !hasStroke && Boolean(iconSource)) ||
       style.verticalLabelPosition === 'bottom' ||
-      (isImageShape && node.width <= 76 && node.height <= 76 && !isContainer && !isMultiRowCard);
+      (isImageShape && node.width <= 76 && node.height <= 76 && !isContainer && !isMultiRowCard && !isTableCard);
 
+    // 1. Draw the vector background shape if it has fill or border
+    if (hasFill || hasStroke) {
+      slide2.addShape(shapeType, {
+        x: bx,
+        y: by,
+        w: bw,
+        h: bh,
+        rectRadius: shapeType === pptx.ShapeType.roundRect ? (bw < 1.6 ? 0.06 : 0.08) : undefined,
+        fill: hasFill ? { color: fillColor } : undefined,
+        line: hasStroke
+          ? {
+              color: strokeColor,
+              width: strokeWidth,
+              dashType: isDashed ? 'dash' : 'solid',
+            }
+          : undefined,
+      });
+    }
+
+    // 2A. Multi-Row Icon List Card (e.g., GCP Observability, AgentOps & FinOps)
+    if (isMultiRowIconList && structured.iconRows) {
+      const headerText = structured.headerLines.join('\n') || title;
+      const headerH = Math.min(0.44, Math.max(0.3, bh * 0.17));
+      if (headerText) {
+        slide2.addText(headerText, {
+          x: Number((bx + 0.04).toFixed(3)),
+          y: Number((by + 0.05).toFixed(3)),
+          w: Number(Math.max(0.4, bw - 0.08).toFixed(3)),
+          h: Number(headerH.toFixed(3)),
+          fontSize: scaledTitleSize,
+          bold: true,
+          color: resolvedTitleColor,
+          align: 'center',
+          valign: 'middle',
+          margin: [1, 2, 1, 2],
+          fontFace: 'Arial',
+          wrap: true,
+        });
+      }
+
+      const rowsStartY = by + headerH + 0.06;
+      const availRowsH = Math.max(0.5, bh - headerH - 0.12);
+      const rowSlotH = availRowsH / structured.iconRows.length;
+      const rowIconSq = Number(Math.min(0.2, Math.max(0.14, rowSlotH * 0.62)).toFixed(3));
+
+      for (let rIdx = 0; rIdx < structured.iconRows.length; rIdx++) {
+        const row = structured.iconRows[rIdx];
+        const rowY = rowsStartY + rIdx * rowSlotH;
+        let textStartX = bx + 0.08;
+
+        if (row.iconSvg) {
+          const rowIconDataUrl = await renderInlineSvgToPngDataUrl(row.iconSvg, 128, 128);
+          if (rowIconDataUrl) {
+            const iconX = Number((bx + 0.08).toFixed(3));
+            const iconY = Number((rowY + (rowSlotH - rowIconSq) / 2).toFixed(3));
+            slide2.addImage({
+              data: rowIconDataUrl,
+              x: iconX,
+              y: iconY,
+              w: rowIconSq,
+              h: rowIconSq,
+            });
+            textStartX = iconX + rowIconSq + 0.05;
+          }
+        }
+
+        const rowRuns: PptxGenJS.TextProps[] = [
+          {
+            text: row.title,
+            options: {
+              fontSize: Math.max(6.5, Number((scaledTitleSize - 0.5).toFixed(1))),
+              bold: true,
+              color: resolvedTitleColor,
+              breakLine: Boolean(row.subtitle),
+            },
+          },
+        ];
+        if (row.subtitle) {
+          rowRuns.push({
+            text: row.subtitle,
+            options: {
+              fontSize: Math.max(5.8, Number((scaledSubSize - 0.3).toFixed(1))),
+              bold: false,
+              color: resolvedSubtitleColor,
+            },
+          });
+        }
+
+        slide2.addText(rowRuns, {
+          x: Number(textStartX.toFixed(3)),
+          y: Number(rowY.toFixed(3)),
+          w: Number(Math.max(0.3, bx + bw - textStartX - 0.04).toFixed(3)),
+          h: Number(rowSlotH.toFixed(3)),
+          align: 'left',
+          valign: 'middle',
+          margin: [0, 1, 0, 1],
+          fontFace: 'Arial',
+          wrap: true,
+        });
+      }
+      continue;
+    }
+
+    // 2B. Single-Row Table Card with Left Icon, Centered Multi-Line Text & Optional Right Icon (compactNodeHtml)
+    if (isTableCard) {
+      const bodyVerticalOffset = isCylinder ? bh * 0.08 : 0;
+      const effectiveBh = isCylinder ? bh * 0.88 : bh;
+      const effectiveBy = by + bodyVerticalOffset;
+      const iconSq = Number(
+        Math.min(0.22, Math.max(0.14, Math.min(effectiveBh * 0.42, bw * 0.16))).toFixed(3)
+      );
+
+      let padLeft = 0.04;
+      let padRight = 0.04;
+
+      if (structured.leftIconSvg) {
+        const leftDataUrl = await renderInlineSvgToPngDataUrl(structured.leftIconSvg, 128, 128);
+        if (leftDataUrl) {
+          const lx = Number((bx + 0.05).toFixed(3));
+          const ly = Number((effectiveBy + (effectiveBh - iconSq) / 2).toFixed(3));
+          slide2.addImage({
+            data: leftDataUrl,
+            x: lx,
+            y: ly,
+            w: iconSq,
+            h: iconSq,
+          });
+          padLeft = iconSq + 0.06;
+        }
+      }
+
+      if (structured.rightIconSvg) {
+        const rightDataUrl = await renderInlineSvgToPngDataUrl(structured.rightIconSvg, 128, 128);
+        if (rightDataUrl) {
+          const rx = Number((bx + bw - iconSq - 0.05).toFixed(3));
+          const ry = Number((effectiveBy + (effectiveBh - iconSq) / 2).toFixed(3));
+          slide2.addImage({
+            data: rightDataUrl,
+            x: rx,
+            y: ry,
+            w: iconSq,
+            h: iconSq,
+          });
+          padRight = iconSq + 0.06;
+        }
+      }
+
+      const cardLines =
+        override?.title || override?.subtitle
+          ? [
+              { text: title.replace(/^\d+\.\s*/, ''), color: resolvedTitleColor, bold: true },
+              ...(subtitle ? [{ text: subtitle, color: resolvedSubtitleColor, bold: false }] : []),
+            ]
+          : structured.bodyLines;
+
+      if (cardLines.length > 0) {
+        const textRuns: PptxGenJS.TextProps[] = [];
+        const hasSubLines = cardLines.length > 1;
+
+        if (structured.stepBadge) {
+          const badgeChar =
+            CIRCLED_STEP_DIGITS[structured.stepBadge.num] || `${structured.stepBadge.num}.`;
+          textRuns.push({
+            text: `${badgeChar} `,
+            options: {
+              fontSize: Number((scaledTitleSize + 0.8).toFixed(1)),
+              bold: true,
+              color: structured.stepBadge.bgHex,
+              breakLine: false,
+            },
+          });
+        }
+
+        cardLines.forEach((ln, idx) => {
+          const isFirst = idx === 0;
+          const isLast = idx === cardLines.length - 1;
+          const lineColor = isFirst
+            ? resolvedTitleColor
+            : ln.color && !isDarkNodeFill
+            ? ln.color
+            : resolvedSubtitleColor;
+          textRuns.push({
+            text: ln.text,
+            options: {
+              fontSize: isFirst ? scaledTitleSize : scaledSubSize,
+              bold: isFirst || Boolean(ln.bold),
+              color: lineColor,
+              breakLine: isFirst ? hasSubLines : !isLast,
+            },
+          });
+        });
+
+        // Keep centered text balanced; only inset where an icon is present
+        const txtX = Number((bx + padLeft).toFixed(3));
+        const txtW = Number(Math.max(0.25, bw - padLeft - padRight).toFixed(3));
+        slide2.addText(textRuns, {
+          x: txtX,
+          y: Number(effectiveBy.toFixed(3)),
+          w: txtW,
+          h: Number(effectiveBh.toFixed(3)),
+          align: structured.textAlign || 'center',
+          valign: 'middle',
+          margin: [1, 2, 1, 2],
+          fontFace: 'Arial',
+          wrap: true,
+        });
+      }
+      continue;
+    }
+
+    // 2C. Standard Icon & Text Nodes (Standalone Icons, Containers, Text Callouts)
     const isVerticalCardWithIcon =
       !isStandaloneIconWithBottomLabel &&
       !isContainer &&
@@ -1021,26 +1395,6 @@ export async function exportDrawioToEditablePptx(
       Boolean(iconSource) &&
       !isVerticalCardWithIcon;
 
-    // 1. Draw the vector background shape if it has fill or border
-    if (hasFill || hasStroke) {
-      slide2.addShape(shapeType, {
-        x: bx,
-        y: by,
-        w: bw,
-        h: bh,
-        rectRadius: shapeType === pptx.ShapeType.roundRect ? 0.04 : undefined,
-        fill: hasFill ? { color: fillColor } : undefined,
-        line: hasStroke
-          ? {
-              color: strokeColor,
-              width: strokeWidth,
-              dashType: isDashed ? 'dash' : 'solid',
-            }
-          : undefined,
-      });
-    }
-
-    // 2. Render vector icon if present (either inline SVG or style.image data URL)
     let computedIconBottomY = by;
     let computedIconRightX = bx;
 
@@ -1048,7 +1402,6 @@ export async function exportDrawioToEditablePptx(
       const iconDataUrl = await renderInlineSvgToPngDataUrl(iconSource, 128, 128);
       if (iconDataUrl) {
         if (isStandaloneIconWithBottomLabel) {
-          // XML width/height for standalone icons represent the icon box itself
           const iconSq = Number(
             Math.min(0.28, Math.max(0.14, Math.min(bw, bh))).toFixed(3)
           );
@@ -1063,7 +1416,6 @@ export async function exportDrawioToEditablePptx(
             h: iconSq,
           });
         } else if (isVerticalCardWithIcon) {
-          // Vertical Card: Place icon at TOP-CENTER inside card
           const iconSq = Number(
             Math.min(0.24, Math.max(0.14, Math.min(bw * 0.45, bh * 0.38))).toFixed(3)
           );
@@ -1078,7 +1430,6 @@ export async function exportDrawioToEditablePptx(
             h: iconSq,
           });
         } else if (isHorizontalCardWithIcon) {
-          // Horizontal Card: Place icon at LEFT-MIDDLE inside card
           const iconSq = Number(
             Math.min(0.22, Math.max(0.13, bh * 0.56)).toFixed(3)
           );
@@ -1098,46 +1449,115 @@ export async function exportDrawioToEditablePptx(
 
     // 3. Add crisp editable text overlay with accurate non-overlapping position
     if (title) {
-      let formattedSubtitle = subtitle;
-      if (isMultiRowCard) {
-        const bulletRows: string[] = [];
-        for (let i = 1; i < parsedLines.length; i++) {
-          const ln = parsedLines[i].trim();
-          if (!ln) continue;
-          if (ln.startsWith('(') && bulletRows.length > 0) {
-            bulletRows[bulletRows.length - 1] += ` ${ln}`;
-          } else {
-            bulletRows.push(`• ${ln}`);
-          }
-        }
-        formattedSubtitle = bulletRows.join('\n');
-      }
+      let textRuns: PptxGenJS.TextProps[] = [];
 
-      const textRuns: PptxGenJS.TextProps[] = [
-        {
-          text: title,
+      if (structured.inlineSpans && structured.inlineSpans.length >= 2 && !override) {
+        if (structured.stepBadge) {
+          const badgeChar =
+            CIRCLED_STEP_DIGITS[structured.stepBadge.num] || `${structured.stepBadge.num}.`;
+          textRuns.push({
+            text: `${badgeChar} `,
+            options: {
+              fontSize: Number((scaledTitleSize + 0.8).toFixed(1)),
+              bold: true,
+              color: structured.stepBadge.bgHex,
+              breakLine: false,
+            },
+          });
+        }
+        structured.inlineSpans.forEach((sp, sIdx) => {
+          textRuns.push({
+            text: sIdx === 0 ? `${sp.text} ` : sp.text,
+            options: {
+              fontSize: sp.isSmall ? scaledSubSize : scaledTitleSize,
+              bold: sp.bold ?? sIdx === 0,
+              color: sp.color || resolvedTitleColor,
+              breakLine: false,
+            },
+          });
+        });
+      } else if (structured.bodyLines.length >= 2 && !isMultiRowCard && !override) {
+        if (structured.stepBadge) {
+          const badgeChar =
+            CIRCLED_STEP_DIGITS[structured.stepBadge.num] || `${structured.stepBadge.num}.`;
+          textRuns.push({
+            text: `${badgeChar} `,
+            options: {
+              fontSize: Number((scaledTitleSize + 0.8).toFixed(1)),
+              bold: true,
+              color: structured.stepBadge.bgHex,
+              breakLine: false,
+            },
+          });
+        }
+        structured.bodyLines.forEach((ln, idx) => {
+          const isFirst = idx === 0;
+          const isLast = idx === structured.bodyLines.length - 1;
+          textRuns.push({
+            text: ln.text,
+            options: {
+              fontSize: isFirst || ln.bold ? scaledTitleSize : scaledSubSize,
+              bold: isFirst || Boolean(ln.bold),
+              color: ln.color || (isFirst ? resolvedTitleColor : resolvedSubtitleColor),
+              breakLine: !isLast,
+            },
+          });
+        });
+      } else {
+        let formattedSubtitle = subtitle;
+        if (isMultiRowCard) {
+          const bulletRows: string[] = [];
+          for (let i = 1; i < parsedLines.length; i++) {
+            const ln = parsedLines[i].trim();
+            if (!ln) continue;
+            if (ln.startsWith('(') && bulletRows.length > 0) {
+              bulletRows[bulletRows.length - 1] += ` ${ln}`;
+            } else {
+              bulletRows.push(`• ${ln}`);
+            }
+          }
+          formattedSubtitle = bulletRows.join('\n');
+        }
+
+        const cleanTitleText = structured.stepBadge ? title.replace(/^\d+\.\s*/, '') : title;
+        if (structured.stepBadge) {
+          const badgeChar =
+            CIRCLED_STEP_DIGITS[structured.stepBadge.num] || `${structured.stepBadge.num}.`;
+          textRuns.push({
+            text: `${badgeChar} `,
+            options: {
+              fontSize: Number((scaledTitleSize + 0.8).toFixed(1)),
+              bold: true,
+              color: structured.stepBadge.bgHex,
+              breakLine: false,
+            },
+          });
+        }
+
+        textRuns.push({
+          text: cleanTitleText,
           options: {
             fontSize: scaledTitleSize,
             bold: true,
             color: resolvedTitleColor,
             breakLine: Boolean(formattedSubtitle),
           },
-        },
-      ];
-
-      if (formattedSubtitle) {
-        textRuns.push({
-          text: (isMultiRowCard ? '\n' : '') + formattedSubtitle,
-          options: {
-            fontSize: scaledSubSize,
-            bold: false,
-            color: resolvedSubtitleColor,
-          },
         });
+
+        if (formattedSubtitle) {
+          textRuns.push({
+            text: (isMultiRowCard ? '\n' : '') + formattedSubtitle,
+            options: {
+              fontSize: scaledSubSize,
+              bold: false,
+              color: resolvedSubtitleColor,
+            },
+          });
+        }
       }
 
       if (isStandaloneIconWithBottomLabel) {
-        const lines = (title + (formattedSubtitle ? '\n' + formattedSubtitle : '')).split('\n');
+        const lines = (title + (subtitle ? '\n' + subtitle : '')).split('\n');
         const maxLineChars = Math.max(...lines.map((l) => l.trim().length), 4);
         const charW = scaledTitleSize * 0.0072;
         const estTextW = maxLineChars * charW + 0.12;
@@ -1157,12 +1577,12 @@ export async function exportDrawioToEditablePptx(
           wrap: true,
         });
       } else if (isContainer) {
-        // Place container header strictly in the top banner strip (never middle-centered over children)
+        // Place container header cleanly inside the top banner strip
         slide2.addText(textRuns, {
-          x: Number((bx + 0.04).toFixed(3)),
+          x: Number((bx + 0.05).toFixed(3)),
           y: Number((by + 0.02).toFixed(3)),
-          w: Number(Math.max(0.4, bw - 0.08).toFixed(3)),
-          h: 0.28,
+          w: Number(Math.max(0.4, bw - 0.1).toFixed(3)),
+          h: 0.26,
           align: style.align === 'left' ? 'left' : style.align === 'right' ? 'right' : 'center',
           valign: 'top',
           margin: [2, 4, 2, 4],
@@ -1203,7 +1623,7 @@ export async function exportDrawioToEditablePptx(
           y: by,
           w: txtW,
           h: bh,
-          align: 'left',
+          align: style.align === 'left' ? 'left' : 'center',
           valign: 'middle',
           margin: [1, 2, 1, 2],
           fontFace: 'Arial',
@@ -1239,7 +1659,7 @@ export async function exportDrawioToEditablePptx(
   }
 
   // ============================================================================
-  // RENDER ALL CONNECTOR EDGES & FREE-FLOATING ARROWS ON SLIDE 2
+  // RENDER ALL CONNECTOR EDGES & FREE-FLOATING ARROWS ON THE EDITABLE SLIDE
   // ============================================================================
   const edges = cells.filter((c) => c.edge);
   for (const edge of edges) {
@@ -1278,7 +1698,30 @@ export async function exportDrawioToEditablePptx(
 
     if (!ptStart || !ptEnd) continue;
 
-    const rawPoints = [ptStart, ...edge.waypoints, ptEnd];
+    // Snap near-collinear endpoints/waypoints (<= 8px drift) to prevent mini-staircase kinks
+    const snappedWaypoints = edge.waypoints.map((wp) => ({ ...wp }));
+    if (snappedWaypoints.length === 0) {
+      if (Math.abs(ptEnd.y - ptStart.y) <= 8 && Math.abs(ptEnd.x - ptStart.x) > 16) {
+        ptEnd = { x: ptEnd.x, y: ptStart.y };
+      } else if (Math.abs(ptEnd.x - ptStart.x) <= 8 && Math.abs(ptEnd.y - ptStart.y) > 16) {
+        ptEnd = { x: ptStart.x, y: ptEnd.y };
+      }
+    } else {
+      const firstWp = snappedWaypoints[0];
+      if (Math.abs(firstWp.y - ptStart.y) <= 8 && Math.abs(firstWp.x - ptStart.x) > 12) {
+        firstWp.y = ptStart.y;
+      } else if (Math.abs(firstWp.x - ptStart.x) <= 8 && Math.abs(firstWp.y - ptStart.y) > 12) {
+        firstWp.x = ptStart.x;
+      }
+      const lastWp = snappedWaypoints[snappedWaypoints.length - 1];
+      if (Math.abs(lastWp.y - ptEnd.y) <= 8 && Math.abs(lastWp.x - ptEnd.x) > 12) {
+        lastWp.y = ptEnd.y;
+      } else if (Math.abs(lastWp.x - ptEnd.x) <= 8 && Math.abs(lastWp.y - ptEnd.y) > 12) {
+        lastWp.x = ptEnd.x;
+      }
+    }
+
+    const rawPoints = [ptStart, ...snappedWaypoints, ptEnd];
     const allPoints: { x: number; y: number }[] = [];
     for (let i = 0; i < rawPoints.length; i++) {
       const curr = rawPoints[i];
@@ -1289,7 +1732,7 @@ export async function exportDrawioToEditablePptx(
       const prev = allPoints[allPoints.length - 1];
       const dx = Math.abs(curr.x - prev.x);
       const dy = Math.abs(curr.y - prev.y);
-      if (dx > 3 && dy > 3) {
+      if (dx > 4 && dy > 4) {
         const exitHoriz = Math.abs(exitXVal - 0.5) >= Math.abs(exitYVal - 0.5);
         const entryHoriz = Math.abs(entryXVal - 0.5) >= Math.abs(entryYVal - 0.5);
         if (i === 1 && rawPoints.length === 2) {
@@ -1315,9 +1758,9 @@ export async function exportDrawioToEditablePptx(
       allPoints.push(curr);
     }
 
-    const strokeColor = normalizeHexColor(edge.style.strokeColor, isDarkDiagram ? '60A5FA' : '2563EB');
+    const strokeColor = normalizeHexColor(edge.style.strokeColor, isDarkDiagram ? '60A5FA' : '1E293B');
     const isDashed = edge.style.dashed === '1';
-    const strokeWidth = Math.min(2.5, Math.max(1.0, parseFloat(edge.style.strokeWidth || '1.5')));
+    const strokeWidth = Math.min(2.2, Math.max(1.0, parseFloat(edge.style.strokeWidth || '1.4')));
 
     const hasStartArrow = Boolean(edge.style.startArrow) && edge.style.startArrow !== 'none';
     const hasEndArrow = !edge.style.endArrow || edge.style.endArrow !== 'none';
@@ -1333,8 +1776,9 @@ export async function exportDrawioToEditablePptx(
 
       const lineX = Math.min(x1, x2);
       const lineY = Math.min(y1, y2);
-      const lineW = Math.max(0.01, Math.abs(x2 - x1));
-      const lineH = Math.max(0.01, Math.abs(y2 - y1));
+      const lineW = Number(Math.abs(x2 - x1).toFixed(3));
+      const lineH = Number(Math.abs(y2 - y1).toFixed(3));
+      if (lineW === 0 && lineH === 0) continue;
 
       const isFirstSeg = i === 0;
       const isLastSeg = i === allPoints.length - 2;
@@ -1356,103 +1800,34 @@ export async function exportDrawioToEditablePptx(
       });
     }
 
-    const { title: edgeLabel } = cleanHtmlToPlainText(edge.value);
+    const { fullText: rawEdgeText } = cleanHtmlToPlainText(edge.value);
+    const edgeLabel = rawEdgeText.replace(/\s+/g, ' ').trim();
     if (edgeLabel) {
       const midIdx = Math.floor(allPoints.length / 2);
       const pA = allPoints[Math.max(0, midIdx - 1)];
       const pB = allPoints[midIdx];
       const midX = toSlideX((pA.x + pB.x) / 2);
       const midY = toSlideY((pA.y + pB.y) / 2);
-      const lblW = Math.max(0.75, Math.min(1.8, edgeLabel.length * 0.05 + 0.14));
-      const lblH = 0.15;
+      const lblW = Math.max(0.32, Math.min(1.65, edgeLabel.length * 0.052 + 0.08));
+      const lblH = 0.16;
 
-      slide2.addShape(pptx.ShapeType.roundRect, {
-        x: Number((midX - lblW / 2).toFixed(3)),
-        y: Number((midY - lblH / 2).toFixed(3)),
-        w: Number(lblW.toFixed(3)),
-        h: lblH,
-        rectRadius: 0.05,
-        fill: { color: isDarkDiagram ? '1E293B' : 'FFFFFF' },
-        line: { color: strokeColor, width: 0.75 },
-      });
-
+      // Borderless background knockout matching Draw.io labelBackgroundColor=#FFFFFF;labelBorderColor=none
       slide2.addText(edgeLabel, {
         x: Number((midX - lblW / 2).toFixed(3)),
         y: Number((midY - lblH / 2).toFixed(3)),
         w: Number(lblW.toFixed(3)),
         h: lblH,
+        fill: { color: isDarkDiagram ? diagramBgHex : 'FFFFFF' },
         fontSize: 6.5,
         bold: true,
         color: isDarkDiagram ? 'F8FAFC' : '0F172A',
         align: 'center',
         valign: 'middle',
+        margin: [0, 2, 0, 2],
         fontFace: 'Arial',
       });
     }
   }
-
-  // ============================================================================
-  // SLIDE 3: ARCHITECTURAL COMPONENT SPECIFICATION TABLE
-  // ============================================================================
-  const slide3 = pptx.addSlide();
-  slide3.background = { color: 'F8FAFC' };
-
-  slide3.addShape(pptx.ShapeType.rect, {
-    x: 0,
-    y: 0,
-    w: SLIDE_W,
-    h: HEADER_H,
-    fill: { color: '0F172A' },
-  });
-
-  slide3.addText(
-    [
-      { text: `${diagramName.toUpperCase()} `, options: { fontSize: 12, bold: true, color: '38BDF8' } },
-      {
-        text: `|  Editable Architecture Component & Topology Specification Table`,
-        options: { fontSize: 9.5, color: 'E2E8F0' },
-      },
-    ],
-    {
-      x: 0.35,
-      y: 0.08,
-      w: SLIDE_W - 0.7,
-      h: 0.36,
-      valign: 'middle',
-      fontFace: 'Arial',
-    }
-  );
-
-  const tableRows: any[][] = [
-    [
-      { text: 'Object ID', options: { bold: true, fill: { color: '0F172A' }, color: 'FFFFFF', fontSize: 9 } },
-      { text: 'Component Name', options: { bold: true, fill: { color: '0F172A' }, color: 'FFFFFF', fontSize: 9 } },
-      { text: 'Architectural Role / Details', options: { bold: true, fill: { color: '0F172A' }, color: 'FFFFFF', fontSize: 9 } },
-      { text: 'Type', options: { bold: true, fill: { color: '0F172A' }, color: 'FFFFFF', fontSize: 9 } },
-    ],
-  ];
-
-  const displayNodes = vertices.filter((v) => cleanHtmlToPlainText(v.value).title.length > 0).slice(0, 16);
-  displayNodes.forEach((node, idx) => {
-    const { title, subtitle } = cleanHtmlToPlainText(node.value);
-    const isContainer = node.style.container === '1' || parentIds.has(node.id) || node.width * node.height > 90000;
-    tableRows.push([
-      { text: `OBJ-${String(idx + 1).padStart(2, '0')}`, options: { fontSize: 8.5, color: '0F172A', bold: true } },
-      { text: title, options: { fontSize: 8.5, color: '0F172A', bold: true } },
-      { text: subtitle || 'Core Architecture Node', options: { fontSize: 8, color: '475569' } },
-      { text: isContainer ? 'Enclave / Tier' : 'Service Node', options: { fontSize: 8, color: '2563EB' } },
-    ]);
-  });
-
-  slide3.addTable(tableRows, {
-    x: 0.4,
-    y: HEADER_H + 0.2,
-    w: SLIDE_W - 0.8,
-    colW: [1.5, 3.5, 5.7, 1.833],
-    border: { type: 'solid', color: 'CBD5E1', pt: 0.5 },
-    fill: { color: 'FFFFFF' },
-    fontFace: 'Arial',
-  });
 
   if (options?.returnBase64) {
     const b64 = (await pptx.write({ outputType: 'base64' })) as string;
@@ -1467,3 +1842,4 @@ export async function exportDrawioToEditablePptx(
   const safeName = diagramName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
   await pptx.writeFile({ fileName: `${safeName || 'architecture'}_editable_slides.pptx` });
 }
+

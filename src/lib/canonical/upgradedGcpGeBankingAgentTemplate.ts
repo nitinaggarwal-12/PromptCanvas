@@ -516,7 +516,7 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
     compactNodeHtml({
       leftIcon: ICONS.gemini,
       rightIcon: ICONS.agentCube,
-      title: 'Gemini 3.1 Pro / 2.5 Flash',
+      title: 'Gemini 3.1 Pro / 3.8 Flash',
       line1: '(Vertex AI • Context Cache)',
     }),
     930,

@@ -506,6 +506,7 @@ export default function GoogleWorkspaceDirectOpenModal({
         ? await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
             returnBlob: true,
             masterImageSrc: exportableMasterPngUrl,
+            editableOverrides,
           })
         : await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, {
             returnBlob: true,

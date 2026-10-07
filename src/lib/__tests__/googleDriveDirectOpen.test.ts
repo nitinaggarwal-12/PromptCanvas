@@ -147,3 +147,34 @@ describe('googleDriveDirectOpen — createGoogleWorkspaceFileFromBlob', () => {
     ).rejects.toMatchObject({ code: 'insufficient_permissions' });
   });
 });
+
+describe('exportDrawioToEditablePptx — single editable vector slide 1:1 fidelity', () => {
+  it('compiles Blueprint #00 into a single editable slide without static picture or object ID slides', async () => {
+    const JSZip = (await import('jszip')).default;
+    const { exportDrawioToEditablePptx } = await import('@/lib/export/editablePptxCompiler');
+    const { generateUpgradedGcpGeBankingArchitectureXml } = await import('@/lib/canonical/upgradedGcpGeBankingAgentTemplate');
+
+    const xml = generateUpgradedGcpGeBankingArchitectureXml({ theme: 'light' });
+    const blob = (await exportDrawioToEditablePptx(
+      xml,
+      'GCP + GE + ADK + A2A Banking Multi-Agent Reference Architecture (#00)',
+      'light',
+      { returnBlob: true }
+    )) as Blob;
+    const zip = await JSZip.loadAsync(await blob.arrayBuffer());
+    const slideFiles = Object.keys(zip.files).filter((k) => /^ppt\/slides\/slide\d+\.xml$/.test(k));
+    expect(slideFiles).toEqual(['ppt/slides/slide1.xml']);
+
+    const mediaFiles = Object.keys(zip.files).filter((k) => k.startsWith('ppt/media/'));
+    expect(mediaFiles.length).toBeGreaterThanOrEqual(25);
+
+    const slide1Xml = await zip.file('ppt/slides/slide1.xml')!.async('string');
+    expect(slide1Xml).toContain('prst="can"');
+    expect(slide1Xml).toContain('Gemini 3.1 Pro / 3.8 Flash');
+    expect(slide1Xml).toContain('❶');
+    expect(slide1Xml).toContain('➐');
+    expect(slide1Xml).not.toContain('OBJ-01');
+    expect(slide1Xml).not.toContain('• (');
+  });
+});
+

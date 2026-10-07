@@ -234,24 +234,14 @@ function CloudViewerContent() {
     if (!xmlContent) {
       throw new Error('The architecture diagram is still loading. Please try again in a moment.');
     }
-    let previewImg = resolvedMasterImage;
-    if (!previewImg) {
-      try {
-        previewImg = await Promise.race([
-          exportDiagramPng(xmlContent, { scale: 2, transparent: false }),
-          new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), 1500))
-        ]);
-      } catch {}
-    }
     const blob =
       activeMode === 'docs'
         ? await exportDrawioToEditableDocx(xmlContent, resolvedTitle, resolvedId, {
             returnBlob: true,
-            masterImageSrc: previewImg
+            masterImageSrc: resolvedMasterImage
           })
         : await exportDrawioToEditablePptx(xmlContent, resolvedTitle, resolvedId, {
-            returnBlob: true,
-            masterImageSrc: previewImg
+            returnBlob: true
           });
     if (!blob || typeof blob === 'string') {
       throw new Error('Could not compile the document in memory.');

@@ -26,7 +26,7 @@ export function getVault(): Map<string, CloudBridgeEntry> {
 }
 
 const BRIDGE_TMP_DIR = path.join(os.tmpdir(), 'promptcanvas_cloud_bridge');
-export const CURRENT_BRIDGE_SCHEMA_VERSION = 'v11_gcp_gcs_v4_signed_url_zero_railway';
+export const CURRENT_BRIDGE_SCHEMA_VERSION = 'v12_single_editable_slide_1to1_vector';
 
 const GCS_BRIDGE_BUCKET = 'promptcanvas-cloud-bridge-sandbox';
 const GCS_SIGNING_SA = 'merck-sheets-sync@nitina-ggarwal-sandbox-647724.iam.gserviceaccount.com';
