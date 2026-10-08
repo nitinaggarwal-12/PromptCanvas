@@ -85,11 +85,22 @@ function decodeStyleImageToSvg(styleImage?: string): string | null {
   return null;
 }
 
+function isZeroSizeOrHiddenSvg(svgStr: string): boolean {
+  const openTag = (svgStr.match(/<svg\b[^>]*>/i) || [''])[0];
+  if (!openTag) return true;
+  const zeroW = /\swidth=["']0(px)?["']/i.test(openTag);
+  const zeroH = /\sheight=["']0(px)?["']/i.test(openTag);
+  const hidden = /display\s*:\s*none/i.test(openTag);
+  const emptyBody = /<svg\b[^>]*>\s*<\/svg>/i.test(svgStr);
+  return (zeroW && zeroH) || hidden || emptyBody;
+}
+
 function extractHtmlColorsAndSvgs(
   html: string,
   styleImage?: string
 ): {
   svgs: string[];
+  htmlImageDataUrl?: string;
   titleColor?: string;
   subtitleColor?: string;
 } {
@@ -113,10 +124,21 @@ function extractHtmlColorsAndSvgs(
   const svgRegex = /<svg[\s\S]*?<\/svg>/gi;
   let match;
   while ((match = svgRegex.exec(decoded)) !== null) {
+    // PromptCanvas Vision Decompiler emits <svg width="0" height="0" style="display:none;"></svg>
+    // guards on container headers; these are layout sentinels, not icons.
+    if (isZeroSizeOrHiddenSvg(match[0])) continue;
     svgs.push(match[0]);
   }
 
-  const withoutSvg = decoded.replace(svgRegex, '');
+  // 1b. HTML <img src="data:image/..."> icons (Vision-enriched cards embed official PNG/SVG icons this way)
+  let htmlImageDataUrl: string | undefined;
+  const imgRegex = /<img\b[^>]*\ssrc=["'](data:image\/[^"']+)["'][^>]*>/i;
+  const imgMatch = imgRegex.exec(decoded);
+  if (imgMatch && imgMatch[1]) {
+    htmlImageDataUrl = imgMatch[1];
+  }
+
+  const withoutSvg = decoded.replace(svgRegex, '').replace(/<img\b[^>]*>/gi, '');
   const colorMatches: string[] = [];
   const cssColorRegex = /(?:color\s*:\s*|color\s*=\s*["'])(#[0-9a-fA-F]{3,6})/gi;
   let cm;
@@ -132,6 +154,7 @@ function extractHtmlColorsAndSvgs(
 
   return {
     svgs,
+    htmlImageDataUrl,
     titleColor: colorMatches[0],
     subtitleColor: colorMatches[1] || colorMatches[0],
   };
@@ -236,6 +259,12 @@ export async function renderInlineSvgToPngDataUrl(
   heightPx: number = 128
 ): Promise<string | null> {
   if (!svgOrDataUrl) return null;
+
+  // Raster data URLs (PNG/JPEG) are already presentation-ready; pass through untouched.
+  const trimmedSrc = svgOrDataUrl.trim();
+  if (trimmedSrc.startsWith('data:image/png') || trimmedSrc.startsWith('data:image/jpeg') || trimmedSrc.startsWith('data:image/jpg')) {
+    return trimmedSrc;
+  }
 
   if (typeof window === 'undefined') {
     const nodeDynamicImport = new Function('m', 'return import(m)');
@@ -386,7 +415,7 @@ export function parseDrawioXmlForPptx(xmlContent: string): {
         }
       }
 
-      const { svgs, titleColor, subtitleColor } = extractHtmlColorsAndSvgs(value, style.image);
+      const { svgs, htmlImageDataUrl, titleColor, subtitleColor } = extractHtmlColorsAndSvgs(value, style.image);
 
       cellMap.set(id, {
         id,
@@ -408,7 +437,7 @@ export function parseDrawioXmlForPptx(xmlContent: string): {
         depth: 0,
         waypoints,
         extractedSvgs: svgs,
-        imageDataUrl: style.image,
+        imageDataUrl: style.image || htmlImageDataUrl,
         htmlTitleColor: titleColor,
         htmlSubtitleColor: subtitleColor,
       });
@@ -484,7 +513,7 @@ export function parseDrawioXmlForPptx(xmlContent: string): {
         }
       }
 
-      const { svgs, titleColor, subtitleColor } = extractHtmlColorsAndSvgs(value, style.image);
+      const { svgs, htmlImageDataUrl, titleColor, subtitleColor } = extractHtmlColorsAndSvgs(value, style.image);
 
       cellMap.set(id, {
         id,
@@ -506,7 +535,7 @@ export function parseDrawioXmlForPptx(xmlContent: string): {
         depth: 0,
         waypoints,
         extractedSvgs: svgs,
-        imageDataUrl: style.image,
+        imageDataUrl: style.image || htmlImageDataUrl,
         htmlTitleColor: titleColor,
         htmlSubtitleColor: subtitleColor,
       });
@@ -690,24 +719,46 @@ function getImageDimensionsFromDataUri(dataUrl: string): { width: number; height
   return null;
 }
 
+export interface EditableDrawioSlideOptions {
+  /** Pre-rendered PNG (data URI or /public path) for the 1:1 master slide; falls back to exportDiagramPng. */
+  masterImageSrc?: string;
+  /** Preserve the diagram aspect ratio (uniform scale, centered in the content rect) instead of stretching to fill. */
+  uniformScale?: boolean;
+  /** Region (inches) on the decomposed slide that the diagram must fit inside. Defaults to full slide below the header. */
+  contentRect?: { x: number; y: number; w: number; h: number };
+  /** Draw connector edges beneath vertices (Draw.io z-order) instead of on top. */
+  edgesBelowVertices?: boolean;
+  /** Include the 1:1 master raster slide (default true). */
+  includeMasterSlide?: boolean;
+  /** Include the component specification table slide (default true). */
+  includeSpecTableSlide?: boolean;
+}
+
+export interface EditableDrawioSlideResult {
+  masterSlide?: PptxGenJS.Slide;
+  editableSlide: PptxGenJS.Slide;
+  tableSlide?: PptxGenJS.Slide;
+  vertexCount: number;
+  edgeCount: number;
+  /** Final diagram bounding box (inches) on the decomposed editable slide. */
+  diagramRect: { x: number; y: number; w: number; h: number };
+}
+
 /**
- * Compiles Draw.io XML into a multi-slide PowerPoint (.pptx) deck:
- * - Slide 1: 100% 1:1 Master High-Resolution Widescreen Architecture Slide (Zero Deformity Guarantee)
- * - Slide 2: 100% Decomposed Native Editable Vector Shapes, Crisp Icons & Connectors Slide
- * - Slide 3: Architectural Component Inventory & Specification Matrix
+ * Appends the PromptCanvas Vision editable slide set for one Draw.io diagram to an existing PptxGenJS deck:
+ * - 100% 1:1 Master High-Resolution Architecture Slide (optional)
+ * - 100% Decomposed Native Editable Vector Shapes, Crisp Icons & Connectors Slide
+ * - Architectural Component Inventory & Specification Matrix (optional)
+ *
+ * This is the composable core used by exportDrawioToEditablePptx and by multi-diagram workstream decks.
  */
-export async function exportDrawioToEditablePptx(
+export async function appendEditableDrawioSlides(
+  pptx: PptxGenJS,
   xmlContent: string,
   diagramName: string = 'Architecture Blueprint',
   blueprintId: string = 'VIS-MASTER',
-  options?: { returnBlob?: boolean; returnBase64?: boolean; masterImageSrc?: string }
-): Promise<Blob | string | void> {
-  const pptx = new PptxGenJS();
-  pptx.layout = 'LAYOUT_WIDE'; // 13.333 x 7.5 inches widescreen 16:9
-  pptx.author = 'PromptCanvas Vision Decompiler';
-  pptx.company = 'PromptCanvas Enterprise';
-  pptx.title = `${diagramName} (${blueprintId})`;
-
+  options: EditableDrawioSlideOptions = {}
+): Promise<EditableDrawioSlideResult> {
   const SLIDE_W = 13.333;
   const SLIDE_H = 7.5;
   const HEADER_H = 0.52;
@@ -721,13 +772,15 @@ export async function exportDrawioToEditablePptx(
   // ============================================================================
   // SLIDE 1: 100% 1:1 HIGH-RESOLUTION MASTER ARCHITECTURE SLIDE (ZERO DEFORMITY)
   // ============================================================================
+  let slide1Master: PptxGenJS.Slide | undefined;
+  if (options.includeMasterSlide !== false) {
   try {
-    let pngDataUrl = await resolveImageSourceToDataUri(options?.masterImageSrc, blueprintId);
+    let pngDataUrl = await resolveImageSourceToDataUri(options.masterImageSrc, blueprintId);
     if (!pngDataUrl) {
       pngDataUrl = await exportDiagramPng(xmlContent, { scale: 2.5, transparent: false });
     }
     if (pngDataUrl) {
-      const slide1Master = pptx.addSlide();
+      slide1Master = pptx.addSlide();
       slide1Master.background = { color: isDarkDiagram ? '090D16' : 'F8FAFC' };
 
       slide1Master.addShape(pptx.ShapeType.rect, {
@@ -795,18 +848,35 @@ export async function exportDrawioToEditablePptx(
   } catch (err) {
     console.warn('Slide 1 master image snapshot warning:', err);
   }
+  }
 
   // ============================================================================
   // SLIDE 2: 100% DECOMPOSED NATIVE EDITABLE VECTOR SHAPES, ICONS & CONNECTORS
   // ============================================================================
-  const availW = SLIDE_W - MARGIN_X * 2;
-  const availH = SLIDE_H - HEADER_H - MARGIN_Y * 2;
+  const region = options.contentRect ?? {
+    x: MARGIN_X,
+    y: HEADER_H + MARGIN_Y,
+    w: SLIDE_W - MARGIN_X * 2,
+    h: SLIDE_H - HEADER_H - MARGIN_Y * 2,
+  };
 
-  const scaleX = availW / graphW;
-  const scaleY = availH / graphH;
-
-  const offsetX = MARGIN_X;
-  const offsetY = HEADER_H + MARGIN_Y;
+  let scaleX = region.w / graphW;
+  let scaleY = region.h / graphH;
+  let offsetX = region.x;
+  let offsetY = region.y;
+  if (options.uniformScale) {
+    const s = Math.min(scaleX, scaleY);
+    scaleX = s;
+    scaleY = s;
+    offsetX = region.x + (region.w - graphW * s) / 2;
+    offsetY = region.y + (region.h - graphH * s) / 2;
+  }
+  const diagramRect = {
+    x: Number(offsetX.toFixed(3)),
+    y: Number(offsetY.toFixed(3)),
+    w: Number((graphW * scaleX).toFixed(3)),
+    h: Number((graphH * scaleY).toFixed(3)),
+  };
 
   const toSlideX = (x: number) => Number((offsetX + (x - minX) * scaleX).toFixed(3));
   const toSlideY = (y: number) => Number((offsetY + (y - minY) * scaleY).toFixed(3));
@@ -861,6 +931,160 @@ export async function exportDrawioToEditablePptx(
       parentIds.add(c.parent);
     }
   });
+
+  const edges = cells.filter((c) => c.edge);
+  const renderEdges = () => {
+  for (const edge of edges) {
+    const src = cellMap.get(edge.source || '');
+    const tgt = cellMap.get(edge.target || '');
+
+    let ptStart: { x: number; y: number } | undefined;
+    let ptEnd: { x: number; y: number } | undefined;
+
+    let exitXVal = 0.5;
+    let exitYVal = 0.5;
+    let entryXVal = 0.5;
+    let entryYVal = 0.5;
+
+    if (src) {
+      exitXVal = parseFloat(edge.style.exitX ?? '0.5');
+      exitYVal = parseFloat(edge.style.exitY ?? '0.5');
+      ptStart = {
+        x: src.absX + src.width * exitXVal,
+        y: src.absY + src.height * exitYVal,
+      };
+    } else if (edge.sourcePoint) {
+      ptStart = edge.sourcePoint;
+    }
+
+    if (tgt) {
+      entryXVal = parseFloat(edge.style.entryX ?? '0.5');
+      entryYVal = parseFloat(edge.style.entryY ?? '0.5');
+      ptEnd = {
+        x: tgt.absX + tgt.width * entryXVal,
+        y: tgt.absY + tgt.height * entryYVal,
+      };
+    } else if (edge.targetPoint) {
+      ptEnd = edge.targetPoint;
+    }
+
+    if (!ptStart || !ptEnd) continue;
+
+    const rawPoints = [ptStart, ...edge.waypoints, ptEnd];
+    const allPoints: { x: number; y: number }[] = [];
+    for (let i = 0; i < rawPoints.length; i++) {
+      const curr = rawPoints[i];
+      if (allPoints.length === 0) {
+        allPoints.push(curr);
+        continue;
+      }
+      const prev = allPoints[allPoints.length - 1];
+      const dx = Math.abs(curr.x - prev.x);
+      const dy = Math.abs(curr.y - prev.y);
+      if (dx > 3 && dy > 3) {
+        const exitHoriz = Math.abs(exitXVal - 0.5) >= Math.abs(exitYVal - 0.5);
+        const entryHoriz = Math.abs(entryXVal - 0.5) >= Math.abs(entryYVal - 0.5);
+        if (i === 1 && rawPoints.length === 2) {
+          if (exitHoriz && !entryHoriz) {
+            allPoints.push({ x: curr.x, y: prev.y });
+          } else if (!exitHoriz && entryHoriz) {
+            allPoints.push({ x: prev.x, y: curr.y });
+          } else if (exitHoriz && entryHoriz) {
+            const midX = (prev.x + curr.x) / 2;
+            allPoints.push({ x: midX, y: prev.y });
+            allPoints.push({ x: midX, y: curr.y });
+          } else {
+            const midY = (prev.y + curr.y) / 2;
+            allPoints.push({ x: prev.x, y: midY });
+            allPoints.push({ x: curr.x, y: midY });
+          }
+        } else {
+          const midX = (prev.x + curr.x) / 2;
+          allPoints.push({ x: midX, y: prev.y });
+          allPoints.push({ x: midX, y: curr.y });
+        }
+      }
+      allPoints.push(curr);
+    }
+
+    const strokeColor = normalizeHexColor(edge.style.strokeColor, isDarkDiagram ? '60A5FA' : '2563EB');
+    const isDashed = edge.style.dashed === '1';
+    const strokeWidth = Math.min(2.5, Math.max(1.0, parseFloat(edge.style.strokeWidth || '1.5')));
+
+    const hasStartArrow = Boolean(edge.style.startArrow) && edge.style.startArrow !== 'none';
+    const hasEndArrow = !edge.style.endArrow || edge.style.endArrow !== 'none';
+
+    for (let i = 0; i < allPoints.length - 1; i++) {
+      const p1 = allPoints[i];
+      const p2 = allPoints[i + 1];
+
+      const x1 = toSlideX(p1.x);
+      const y1 = toSlideY(p1.y);
+      const x2 = toSlideX(p2.x);
+      const y2 = toSlideY(p2.y);
+
+      const lineX = Math.min(x1, x2);
+      const lineY = Math.min(y1, y2);
+      const lineW = Math.max(0.01, Math.abs(x2 - x1));
+      const lineH = Math.max(0.01, Math.abs(y2 - y1));
+
+      const isFirstSeg = i === 0;
+      const isLastSeg = i === allPoints.length - 2;
+
+      slide2.addShape(pptx.ShapeType.line, {
+        x: lineX,
+        y: lineY,
+        w: lineW,
+        h: lineH,
+        flipH: x2 < x1,
+        flipV: y2 < y1,
+        line: {
+          color: strokeColor,
+          width: strokeWidth,
+          dashType: isDashed ? 'dash' : 'solid',
+          beginArrowType: isFirstSeg && hasStartArrow ? 'arrow' : undefined,
+          endArrowType: isLastSeg && hasEndArrow ? 'arrow' : undefined,
+        },
+      });
+    }
+
+    const { title: edgeLabel } = cleanHtmlToPlainText(edge.value);
+    if (edgeLabel) {
+      const midIdx = Math.floor(allPoints.length / 2);
+      const pA = allPoints[Math.max(0, midIdx - 1)];
+      const pB = allPoints[midIdx];
+      const midX = toSlideX((pA.x + pB.x) / 2);
+      const midY = toSlideY((pA.y + pB.y) / 2);
+      const lblW = Math.max(0.75, Math.min(1.8, edgeLabel.length * 0.05 + 0.14));
+      const lblH = 0.15;
+
+      slide2.addShape(pptx.ShapeType.roundRect, {
+        x: Number((midX - lblW / 2).toFixed(3)),
+        y: Number((midY - lblH / 2).toFixed(3)),
+        w: Number(lblW.toFixed(3)),
+        h: lblH,
+        rectRadius: 0.05,
+        fill: { color: isDarkDiagram ? '1E293B' : 'FFFFFF' },
+        line: { color: strokeColor, width: 0.75 },
+      });
+
+      slide2.addText(edgeLabel, {
+        x: Number((midX - lblW / 2).toFixed(3)),
+        y: Number((midY - lblH / 2).toFixed(3)),
+        w: Number(lblW.toFixed(3)),
+        h: lblH,
+        fontSize: 6.5,
+        bold: true,
+        color: isDarkDiagram ? 'F8FAFC' : '0F172A',
+        align: 'center',
+        valign: 'middle',
+        fontFace: 'Arial',
+      });
+    }
+  }
+  };
+
+  if (options.edgesBelowVertices) renderEdges();
 
   for (const node of vertices) {
     const bx = toSlideX(node.absX);
@@ -983,6 +1207,11 @@ export async function exportDrawioToEditablePptx(
     if (iconSource) {
       const iconDataUrl = await renderInlineSvgToPngDataUrl(iconSource, 128, 128);
       if (iconDataUrl) {
+        if (!title && !hasFill && !hasStroke) {
+          // Pure image cell (e.g. a wordmark/logo): preserve the XML box 1:1, no label.
+          slide2.addImage({ data: iconDataUrl, x: bx, y: by, w: bw, h: bh });
+          continue;
+        }
         if (isStandaloneIconWithBottomLabel) {
           // XML width/height for standalone icons represent the icon box itself
           const iconSq = Number(
@@ -1150,160 +1379,14 @@ export async function exportDrawioToEditablePptx(
   // ============================================================================
   // RENDER ALL CONNECTOR EDGES & FREE-FLOATING ARROWS ON SLIDE 2
   // ============================================================================
-  const edges = cells.filter((c) => c.edge);
-  for (const edge of edges) {
-    const src = cellMap.get(edge.source || '');
-    const tgt = cellMap.get(edge.target || '');
-
-    let ptStart: { x: number; y: number } | undefined;
-    let ptEnd: { x: number; y: number } | undefined;
-
-    let exitXVal = 0.5;
-    let exitYVal = 0.5;
-    let entryXVal = 0.5;
-    let entryYVal = 0.5;
-
-    if (src) {
-      exitXVal = parseFloat(edge.style.exitX ?? '0.5');
-      exitYVal = parseFloat(edge.style.exitY ?? '0.5');
-      ptStart = {
-        x: src.absX + src.width * exitXVal,
-        y: src.absY + src.height * exitYVal,
-      };
-    } else if (edge.sourcePoint) {
-      ptStart = edge.sourcePoint;
-    }
-
-    if (tgt) {
-      entryXVal = parseFloat(edge.style.entryX ?? '0.5');
-      entryYVal = parseFloat(edge.style.entryY ?? '0.5');
-      ptEnd = {
-        x: tgt.absX + tgt.width * entryXVal,
-        y: tgt.absY + tgt.height * entryYVal,
-      };
-    } else if (edge.targetPoint) {
-      ptEnd = edge.targetPoint;
-    }
-
-    if (!ptStart || !ptEnd) continue;
-
-    const rawPoints = [ptStart, ...edge.waypoints, ptEnd];
-    const allPoints: { x: number; y: number }[] = [];
-    for (let i = 0; i < rawPoints.length; i++) {
-      const curr = rawPoints[i];
-      if (allPoints.length === 0) {
-        allPoints.push(curr);
-        continue;
-      }
-      const prev = allPoints[allPoints.length - 1];
-      const dx = Math.abs(curr.x - prev.x);
-      const dy = Math.abs(curr.y - prev.y);
-      if (dx > 3 && dy > 3) {
-        const exitHoriz = Math.abs(exitXVal - 0.5) >= Math.abs(exitYVal - 0.5);
-        const entryHoriz = Math.abs(entryXVal - 0.5) >= Math.abs(entryYVal - 0.5);
-        if (i === 1 && rawPoints.length === 2) {
-          if (exitHoriz && !entryHoriz) {
-            allPoints.push({ x: curr.x, y: prev.y });
-          } else if (!exitHoriz && entryHoriz) {
-            allPoints.push({ x: prev.x, y: curr.y });
-          } else if (exitHoriz && entryHoriz) {
-            const midX = (prev.x + curr.x) / 2;
-            allPoints.push({ x: midX, y: prev.y });
-            allPoints.push({ x: midX, y: curr.y });
-          } else {
-            const midY = (prev.y + curr.y) / 2;
-            allPoints.push({ x: prev.x, y: midY });
-            allPoints.push({ x: curr.x, y: midY });
-          }
-        } else {
-          const midX = (prev.x + curr.x) / 2;
-          allPoints.push({ x: midX, y: prev.y });
-          allPoints.push({ x: midX, y: curr.y });
-        }
-      }
-      allPoints.push(curr);
-    }
-
-    const strokeColor = normalizeHexColor(edge.style.strokeColor, isDarkDiagram ? '60A5FA' : '2563EB');
-    const isDashed = edge.style.dashed === '1';
-    const strokeWidth = Math.min(2.5, Math.max(1.0, parseFloat(edge.style.strokeWidth || '1.5')));
-
-    const hasStartArrow = Boolean(edge.style.startArrow) && edge.style.startArrow !== 'none';
-    const hasEndArrow = !edge.style.endArrow || edge.style.endArrow !== 'none';
-
-    for (let i = 0; i < allPoints.length - 1; i++) {
-      const p1 = allPoints[i];
-      const p2 = allPoints[i + 1];
-
-      const x1 = toSlideX(p1.x);
-      const y1 = toSlideY(p1.y);
-      const x2 = toSlideX(p2.x);
-      const y2 = toSlideY(p2.y);
-
-      const lineX = Math.min(x1, x2);
-      const lineY = Math.min(y1, y2);
-      const lineW = Math.max(0.01, Math.abs(x2 - x1));
-      const lineH = Math.max(0.01, Math.abs(y2 - y1));
-
-      const isFirstSeg = i === 0;
-      const isLastSeg = i === allPoints.length - 2;
-
-      slide2.addShape(pptx.ShapeType.line, {
-        x: lineX,
-        y: lineY,
-        w: lineW,
-        h: lineH,
-        flipH: x2 < x1,
-        flipV: y2 < y1,
-        line: {
-          color: strokeColor,
-          width: strokeWidth,
-          dashType: isDashed ? 'dash' : 'solid',
-          beginArrowType: isFirstSeg && hasStartArrow ? 'arrow' : undefined,
-          endArrowType: isLastSeg && hasEndArrow ? 'arrow' : undefined,
-        },
-      });
-    }
-
-    const { title: edgeLabel } = cleanHtmlToPlainText(edge.value);
-    if (edgeLabel) {
-      const midIdx = Math.floor(allPoints.length / 2);
-      const pA = allPoints[Math.max(0, midIdx - 1)];
-      const pB = allPoints[midIdx];
-      const midX = toSlideX((pA.x + pB.x) / 2);
-      const midY = toSlideY((pA.y + pB.y) / 2);
-      const lblW = Math.max(0.75, Math.min(1.8, edgeLabel.length * 0.05 + 0.14));
-      const lblH = 0.15;
-
-      slide2.addShape(pptx.ShapeType.roundRect, {
-        x: Number((midX - lblW / 2).toFixed(3)),
-        y: Number((midY - lblH / 2).toFixed(3)),
-        w: Number(lblW.toFixed(3)),
-        h: lblH,
-        rectRadius: 0.05,
-        fill: { color: isDarkDiagram ? '1E293B' : 'FFFFFF' },
-        line: { color: strokeColor, width: 0.75 },
-      });
-
-      slide2.addText(edgeLabel, {
-        x: Number((midX - lblW / 2).toFixed(3)),
-        y: Number((midY - lblH / 2).toFixed(3)),
-        w: Number(lblW.toFixed(3)),
-        h: lblH,
-        fontSize: 6.5,
-        bold: true,
-        color: isDarkDiagram ? 'F8FAFC' : '0F172A',
-        align: 'center',
-        valign: 'middle',
-        fontFace: 'Arial',
-      });
-    }
-  }
+  if (!options.edgesBelowVertices) renderEdges();
 
   // ============================================================================
   // SLIDE 3: ARCHITECTURAL COMPONENT SPECIFICATION TABLE
   // ============================================================================
-  const slide3 = pptx.addSlide();
+  let slide3: PptxGenJS.Slide | undefined;
+  if (options.includeSpecTableSlide !== false) {
+  slide3 = pptx.addSlide();
   slide3.background = { color: 'F8FAFC' };
 
   slide3.addShape(pptx.ShapeType.rect, {
@@ -1341,26 +1424,68 @@ export async function exportDrawioToEditablePptx(
     ],
   ];
 
-  const displayNodes = vertices.filter((v) => cleanHtmlToPlainText(v.value).title.length > 0).slice(0, 16);
+  // Keep the inventory within a single 16:9 slide: 14 body rows + header at ~0.4in each
+  // fits the 6.6in available height even when a long title wraps to two lines.
+  const MAX_TABLE_ROWS = 14;
+  const truncate = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1).trimEnd()}…` : s);
+  const displayNodes = vertices.filter((v) => cleanHtmlToPlainText(v.value).title.length > 0).slice(0, MAX_TABLE_ROWS);
   displayNodes.forEach((node, idx) => {
     const { title, subtitle } = cleanHtmlToPlainText(node.value);
     const isContainer = node.style.container === '1' || parentIds.has(node.id) || node.width * node.height > 90000;
     tableRows.push([
-      { text: `OBJ-${String(idx + 1).padStart(2, '0')}`, options: { fontSize: 8.5, color: '0F172A', bold: true } },
-      { text: title, options: { fontSize: 8.5, color: '0F172A', bold: true } },
-      { text: subtitle || 'Core Architecture Node', options: { fontSize: 8, color: '475569' } },
-      { text: isContainer ? 'Enclave / Tier' : 'Service Node', options: { fontSize: 8, color: '2563EB' } },
+      { text: `OBJ-${String(idx + 1).padStart(2, '0')}`, options: { fontSize: 8, color: '0F172A', bold: true } },
+      { text: truncate(title, 90), options: { fontSize: 8, color: '0F172A', bold: true } },
+      { text: truncate(subtitle || 'Core Architecture Node', 110), options: { fontSize: 7.5, color: '475569' } },
+      { text: isContainer ? 'Enclave / Tier' : 'Service Node', options: { fontSize: 7.5, color: '2563EB' } },
     ]);
   });
 
+  const tableTop = HEADER_H + 0.2;
+  const tableRowH = Math.min(0.4, (SLIDE_H - tableTop - 0.3) / tableRows.length);
   slide3.addTable(tableRows, {
     x: 0.4,
-    y: HEADER_H + 0.2,
+    y: tableTop,
     w: SLIDE_W - 0.8,
-    colW: [1.5, 3.5, 5.7, 1.833],
+    colW: [0.9, 4.0, 6.233, 1.4],
+    rowH: tableRowH,
+    margin: 0.04,
+    valign: 'middle',
     border: { type: 'solid', color: 'CBD5E1', pt: 0.5 },
     fill: { color: 'FFFFFF' },
     fontFace: 'Arial',
+  });
+  }
+
+  return {
+    masterSlide: slide1Master,
+    editableSlide: slide2,
+    tableSlide: slide3,
+    vertexCount: vertices.length,
+    edgeCount: edges.length,
+    diagramRect,
+  };
+}
+
+/**
+ * Compiles Draw.io XML into a multi-slide PowerPoint (.pptx) deck:
+ * - Slide 1: 100% 1:1 Master High-Resolution Widescreen Architecture Slide (Zero Deformity Guarantee)
+ * - Slide 2: 100% Decomposed Native Editable Vector Shapes, Crisp Icons & Connectors Slide
+ * - Slide 3: Architectural Component Inventory & Specification Matrix
+ */
+export async function exportDrawioToEditablePptx(
+  xmlContent: string,
+  diagramName: string = 'Architecture Blueprint',
+  blueprintId: string = 'VIS-MASTER',
+  options?: { returnBlob?: boolean; returnBase64?: boolean; masterImageSrc?: string }
+): Promise<Blob | string | void> {
+  const pptx = new PptxGenJS();
+  pptx.layout = 'LAYOUT_WIDE'; // 13.333 x 7.5 inches widescreen 16:9
+  pptx.author = 'PromptCanvas Vision Decompiler';
+  pptx.company = 'PromptCanvas Enterprise';
+  pptx.title = `${diagramName} (${blueprintId})`;
+
+  await appendEditableDrawioSlides(pptx, xmlContent, diagramName, blueprintId, {
+    masterImageSrc: options?.masterImageSrc,
   });
 
   if (options?.returnBase64) {
