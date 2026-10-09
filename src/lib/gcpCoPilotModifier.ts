@@ -7,6 +7,7 @@
  */
 
 import { validateAndHealDrawioXml } from './xmlHealer';
+import { generateUpgradedGcpGeBankingArchitectureXml } from './canonical/upgradedGcpGeBankingAgentTemplate';
 
 export interface GcpVersionSnapshot {
   id: string;
@@ -342,10 +343,36 @@ export function executeGcpPromptModification(
   const isNegativeRemoval = /\b(remove|delete|drop|strip|without|no\s+|omit|disable|exclude|take\s+away)\b/i.test(cleanPrompt);
   const isReplacement = /\b(replace|swap|switch\s+from|substitute)\b/i.test(cleanPrompt);
 
+  const isNasaAerospaceDomain =
+    lower.includes('nasa') ||
+    lower.includes('satellite') ||
+    lower.includes('satellight') ||
+    lower.includes('universe') ||
+    lower.includes('multiverse') ||
+    lower.includes('orbital') ||
+    lower.includes('rocket') ||
+    lower.includes('aerospace') ||
+    lower.includes('constellation');
+
+  const isDomainRebuildOnBp00 =
+    isNasaAerospaceDomain ||
+    ((/\b(build|design|create|architect)\b/i.test(cleanPrompt) || lower.includes('harness')) &&
+      (lower.includes('health') ||
+        lower.includes('clinical') ||
+        lower.includes('fhir') ||
+        lower.includes('retail') ||
+        lower.includes('commerce') ||
+        lower.includes('secops') ||
+        lower.includes('cyber') ||
+        lower.includes('lakehouse') ||
+        lower.includes('dataplex')));
+
   // 1. Detect Persona
   let detectedPersona = explicitPersona || 'User';
   if (!explicitPersona) {
-    if (lower.includes('product manager') || lower.includes('patient') || lower.includes('admission') || lower.includes('portal')) {
+    if (isNasaAerospaceDomain) {
+      detectedPersona = 'Mission Systems & Aerospace AI Lead';
+    } else if (lower.includes('product manager') || lower.includes('patient') || lower.includes('admission') || lower.includes('portal')) {
       detectedPersona = 'Product Manager';
     } else if (lower.includes('lead architect') || lower.includes('spanner') || lower.includes('multi-region') || lower.includes('dr') || lower.includes('failover')) {
       detectedPersona = 'Lead Cloud Architect';
@@ -373,6 +400,15 @@ export function executeGcpPromptModification(
   let specDiff = '';
   let injectedCellsXml = '';
   let inPlaceUpgradedXml = currentXml;
+  if (
+    isDomainRebuildOnBp00 &&
+    inPlaceUpgradedXml.includes('upgraded-gcp-ge-multi-agent-banking-2026')
+  ) {
+    inPlaceUpgradedXml = generateUpgradedGcpGeBankingArchitectureXml({
+      prompt: cleanPrompt,
+      theme: isDark ? 'dark' : 'light',
+    });
+  }
 
   const cardBg = isDark ? '#1E293B' : '#FFFFFF';
   const textDark = isDark ? '#F8FAFC' : '#0F172A';
@@ -603,6 +639,15 @@ export function executeGcpPromptModification(
         boxY = 381;
         boxW = 255;
         portSpec = 'exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;';
+      } else if (
+        resolved.targetId === 'coordinator_agent' ||
+        resolved.targetId === 'transaction_agent' ||
+        resolved.targetId === 'api_cloud_run'
+      ) {
+        boxX = 80;
+        boxY = 206;
+        boxW = 265;
+        portSpec = 'exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;';
       }
 
       // Prevent stacking collision if a previous prompt already placed a card at (boxX, boxY)
@@ -740,6 +785,33 @@ export function executeGcpPromptModification(
       titleText: escapeXmlText(vendorMatch.gcpEquivalent),
       descText: escapeXmlText(vendorMatch.gcpDescription),
       edgeLabel: 'Mapped Endpoint',
+      resolved,
+    });
+  } else if (isNasaAerospaceDomain) {
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'coordinator_agent', '#2563EB', '#EFF6FF');
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'dlp_model_armor', '#7C3AED', '#FAF5FF');
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'col_agent_bg',
+      ['llm_container', 'dlp_model_armor', 'coordinator_agent'],
+      ['llm', 'armor', 'coordinator'],
+      targetX
+    );
+    canvasDiff = `🚀 Synthesized NASA Multi-Universe Satellite Launch Agentic Harness: Mission Harness Coordinator, Orbital & Trajectory Agent, Launch & Payload Agent, Multiverse Relay Agent, Ephemeris Spanner Graph, and 6 Launch/Orbital MCP microservices.`;
+    specDiff = `Reconciled DOC-01 (Mission Vision), DOC-03 (Multi-Universe Agentic Harness Topology), DOC-07 (Physics & Telemetry Safety Guardrails), and DOC-11 (Deep-Space OTel Telemetry).`;
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: `copilot_mod_nasa_harness_box_${slotIndex}`,
+      badgeId: `copilot_mod_nasa_harness_badge_${slotIndex}`,
+      titleId: `copilot_mod_nasa_harness_title_${slotIndex}`,
+      descId: `copilot_mod_nasa_harness_desc_${slotIndex}`,
+      edgeId: `copilot_mod_nasa_harness_edge_${slotIndex}`,
+      boxFill: isDark ? '#1E293B' : '#EFF6FF',
+      strokeColor: '#2563EB',
+      badgeColor: '#1D4ED8',
+      badgeText: '🚀 CO-PILOT HARNESS: MULTIVERSE SATELLITE LAUNCH',
+      titleText: 'NASA Multi-Universe Agentic Launch Harness',
+      descText: 'Quantum telemetry relay, orbital solver &amp; ADK guardrails',
+      edgeLabel: 'Multiverse Telemetry',
       resolved,
     });
   } else if (lower.includes('cryo-em') || lower.includes('alphafold')) {

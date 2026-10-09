@@ -164,5 +164,30 @@ describe('GCP Architecture Co-Pilot Modifier & Quality Gates', () => {
     expect(res.updatedXml).not.toContain('Synthesized &amp; connected by Google Cloud Architecture Co-Pilot');
     expect(res.newVersion.author).toBe('CISO / Security Architect');
   });
+
+  it('synthesizes full NASA Multi-Universe Satellite Launch Agentic Harness topology when prompted to build NASA satellite harness', async () => {
+    const { generateUpgradedGcpGeBankingArchitectureXml } = await import('@/lib/canonical/upgradedGcpGeBankingAgentTemplate');
+    const bp00Xml = generateUpgradedGcpGeBankingArchitectureXml({ theme: 'light' });
+
+    const res = executeGcpPromptModification(
+      bp00Xml,
+      '1. Build an agentic harness for Nasa launching satellights in the different universes',
+      1,
+      'canonical_00',
+      false
+    );
+
+    expect(res.updatedXml).toContain('Mission Harness Coordinator');
+    expect(res.updatedXml).toContain('Orbital &amp; Trajectory');
+    expect(res.updatedXml).toContain('Launch &amp; Payload');
+    expect(res.updatedXml).toContain('Multiverse Relay');
+    expect(res.updatedXml).toContain('Cross-Universe');
+    expect(res.updatedXml).toContain('Quantum Relay');
+    expect(res.updatedXml).toContain('copilot_mod_nasa_harness_box_');
+    expect(res.updatedXml).not.toContain('Cheque book');
+    expect(res.updatedXml).not.toContain('eKYC update');
+    expect(res.newVersion.author).toBe('Mission Systems & Aerospace AI Lead');
+  });
 });
+
 

@@ -86,6 +86,15 @@ export interface UpgradedGcpNativeArchOptions {
 }
 
 interface DomainAgentAndCapabilityProfile {
+  uiLine1?: string;
+  aiClusterSub?: string;
+  coordinatorTitle?: string;
+  coordinatorLine1?: string;
+  coordinatorLine2?: string;
+  dlpLine1?: string;
+  db1Line1?: string;
+  db2Line1?: string;
+  db3Line1?: string;
   agent1: { title: string; line1: string; line2: string };
   agent2: { title: string; line1: string; line2: string };
   agent3: { title: string; line1: string; line2: string };
@@ -103,6 +112,40 @@ function resolveDomainProfile(
   astTitle?: string
 ): DomainAgentAndCapabilityProfile {
   const combined = `${options?.prompt || ''} ${options?.domain || ''} ${options?.projectTitle || ''} ${options?.useCaseName || ''} ${astDomain || ''} ${astTitle || ''}`.toLowerCase();
+
+  if (
+    combined.includes('nasa') ||
+    combined.includes('satellite') ||
+    combined.includes('satellight') ||
+    combined.includes('universe') ||
+    combined.includes('multiverse') ||
+    combined.includes('orbital') ||
+    combined.includes('space') ||
+    combined.includes('rocket') ||
+    combined.includes('aerospace') ||
+    combined.includes('constellation')
+  ) {
+    return {
+      uiLine1: '(NASA Mission Control / AG-UI)',
+      aiClusterSub: '(NASA Harness • ADK • A2A)',
+      coordinatorTitle: 'Mission Harness Coordinator',
+      coordinatorLine1: '(NASA Multi-Universe Agent Engine /',
+      coordinatorLine2: 'Google ADK & LangGraph)',
+      dlpLine1: '(Telemetry Guardrails & Physics Safety)',
+      db1Line1: '(Multiverse Ephemeris Graph)',
+      db2Line1: '(Orbital Telemetry Stream)',
+      db3Line1: '(Flight Manifest & Doc AI)',
+      agent1: { title: 'Orbital & Trajectory', line1: 'Agent', line2: '(Google ADK / Physics AI)' },
+      agent2: { title: 'Launch & Payload', line1: 'Agent', line2: '(ADK / LangGraph)' },
+      agent3: { title: 'Multiverse Relay', line1: 'Agent', line2: '(Google ADK / HITL)' },
+      cap1: { title: 'Launch Window &', line1: 'Orbit Solver' },
+      cap2: { title: 'Stage Separation', line1: 'Sequencer' },
+      cap3: { title: 'Max-Q Propulsion', line1: 'Telemetry' },
+      cap4: { title: 'Cross-Universe', line1: 'Quantum Relay' },
+      cap5: { title: 'Constellation', line1: 'Deployment' },
+      cap6: { title: 'Deep-Space Anomaly', line1: 'Recovery (ADK)' },
+    };
+  }
 
   if (
     combined.includes('health') ||
@@ -262,7 +305,7 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
       step: '1',
       leftIcon: ICONS.chat,
       title: 'User Interface',
-      line1: '(Chat / Gemini Live / AG-UI)',
+      line1: profile.uiLine1 || '(Chat / Gemini Live / AG-UI)',
     }),
     495,
     24,
@@ -332,7 +375,7 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
     compactNodeHtml({
       leftIcon: ICONS.sdp,
       title: 'Model Armor & SDP',
-      line1: '(DLP PII Redaction & Guardrails)',
+      line1: profile.dlpLine1 || '(DLP PII Redaction & Guardrails)',
     }),
     915,
     220,
@@ -417,7 +460,7 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
   // ============================================================================
   const aiClusterLabel = `<div style="font-family:'Inter',-apple-system,sans-serif;text-align:left;padding:6px 10px;line-height:1.2;">
     <span style="font-size:11.5px;font-weight:800;color:#0F172A;">AI Cluster</span>
-    <span style="font-size:8.5px;font-weight:700;color:#15803D;margin-left:4px;">(GE • ADK • A2A)</span>
+    <span style="font-size:8.5px;font-weight:700;color:#15803D;margin-left:4px;">${profile.aiClusterSub || '(GE • ADK • A2A)'}</span>
   </div>`;
   addVertex(
     'ai_cluster',
@@ -436,9 +479,9 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
       step: '4',
       stepBg: '#15803D',
       rightIcon: ICONS.agentCube,
-      title: 'Coordinator Agent',
-      line1: '(Gemini Enterprise / Vertex Agent Engine /',
-      line2: 'Google ADK & LangGraph)',
+      title: profile.coordinatorTitle || 'Coordinator Agent',
+      line1: profile.coordinatorLine1 || '(Gemini Enterprise / Vertex Agent Engine /',
+      line2: profile.coordinatorLine2 || 'Google ADK & LangGraph)',
     }),
     480,
     346,
@@ -582,7 +625,7 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
       step: '7',
       leftIcon: ICONS.spanner,
       title: 'Cloud Spanner',
-      line1: '(TrueTime & Graph)',
+      line1: profile.db1Line1 || '(TrueTime & Graph)',
     }),
     390,
     614,
@@ -596,7 +639,7 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
     compactNodeHtml({
       leftIcon: ICONS.bigtable,
       title: 'Bigtable',
-      line1: '(+ AlloyDB AI)',
+      line1: profile.db2Line1 || '(+ AlloyDB AI)',
       titleColor: '#7F1D1D',
     }),
     552,
@@ -611,7 +654,7 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
     compactNodeHtml({
       leftIcon: ICONS.firestore,
       title: 'Firestore',
-      line1: '(+ Document AI)',
+      line1: profile.db3Line1 || '(+ Document AI)',
     }),
     700,
     614,

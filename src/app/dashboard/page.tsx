@@ -1277,13 +1277,26 @@ function DashboardContent() {
         `3. Living Spec & Governance Sync: ${modResult.newVersion.specDiff}`
       ];
 
+      const qLower = query.toLowerCase();
+      let effectiveTitle = canvasTitle;
+      if (
+        qLower.includes('nasa') ||
+        qLower.includes('satellite') ||
+        qLower.includes('satellight') ||
+        qLower.includes('universe') ||
+        qLower.includes('multiverse')
+      ) {
+        effectiveTitle = 'NASA Multi-Universe Satellite Launch — Agentic Harness Architecture';
+        setCanvasTitle(effectiveTitle);
+      }
+
       const isFromChip = !!promptToRun;
       recordNewVersion(
         healedXml,
         query,
         isFromChip ? 'suggestion_chip' : 'ai_copilot',
         isFromChip ? 'Context Suggestion' : 'Gemini AI Synthesis',
-        canvasTitle,
+        effectiveTitle,
         modResult.newVersion.canvasDiff || `+ Integrated "${query}" into isolated session copy.`,
         {
           persona,
