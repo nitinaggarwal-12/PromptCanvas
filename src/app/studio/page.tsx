@@ -71,6 +71,10 @@ import { INFOGRAPHIC_BLUEPRINTS_LIST, generateInfographicBlueprintXmlById } from
 import { FLOW_DIAGRAM_BLUEPRINTS_67_TO_74, generateFlowDiagramBlueprintXmlById } from '@/lib/canonical/flowDiagramBlueprints67to74';
 import { synthesizePromptDrivenDiagramXml, generateLogicalFlowchartDrawioXml } from '@/lib/promptDrivenDiagramSynthesizer';
 import { getGcpArchitectureById } from '@/lib/gcpDialectA';
+import {
+  autoSaveGeneratedDiagramAsDraft,
+  computeNextMicroVersion
+} from '@/lib/draftMicroVersionStore';
 
 export interface StudioVersionSnapshot {
   id: string;
@@ -97,16 +101,9 @@ export interface StudioChatMessage {
 // Version Arithmetic Helpers
 function getNextMicroVersion(currentVersion: string): string {
   if (/^v?0\.0|\bdraft\b/i.test(currentVersion.trim())) {
-    return 'v1.0';
+    return 'v1.0.1';
   }
-  const match = currentVersion.match(/^v?(\d+)\.(\d+)/);
-  if (match) {
-    const major = parseInt(match[1], 10);
-    const minor = parseInt(match[2], 10);
-    if (major === 0) return 'v1.0';
-    return `v${major}.${minor + 1}`;
-  }
-  return 'v1.1';
+  return computeNextMicroVersion(1, 0, 0, currentVersion).versionTag;
 }
 
 function getNextMajorVersion(currentVersion: string): string {
@@ -2541,7 +2538,20 @@ function StudioMain() {
     };
     setVersions(prev => (isNewDiagramDraft ? [newSnapshot] : [...prev, newSnapshot]));
 
-    // Auto-persist newly generated/evolved prompt diagram to /api/diagrams so it is immediately visible in Architecture Library
+    // Auto-persist newly generated/evolved prompt diagram to Drafts and /api/diagrams so it is immediately visible under Library -> Drafts
+    autoSaveGeneratedDiagramAsDraft({
+      id: `draft_studio_${(updated.metadata.projectTitle || 'canvas').toLowerCase().replace(/[^a-z0-9]+/g, '_').slice(0, 32)}`,
+      title: updated.metadata.projectTitle || 'Studio Architecture',
+      domain: updated.metadata.domain || 'Enterprise Cloud',
+      xml: baseUpdatedXml,
+      prompt: promptText.trim(),
+      diffSummary: canvasDiff,
+      versionTag: newVersionTag,
+      major: 1,
+      minor: 0,
+      micro: parseInt(newVersionTag.split('.')[2] || '1', 10) || 1,
+      versions: [newSnapshot]
+    });
     const isMatrix = /^\[p[1-7]\]|guided matrix/i.test(promptText.trim()) || /^\[p[1-7]\]|guided matrix/i.test(updated.metadata.projectTitle);
     const isVision = /^\[vision\]|vision decompil/i.test(promptText.trim()) || /^\[vision\]/i.test(updated.metadata.projectTitle);
     fetch('/api/diagrams', {
@@ -2561,7 +2571,7 @@ function StudioMain() {
           : isAwsPrompt
           ? 'aws_cloud_ai_reference'
           : 'gcp_enterprise_reference',
-        createdStudio: isMatrix ? 'prompt_lab' : isVision ? 'vision' : 'studio',
+        createdStudio: isMatrix ? 'prompt_lab' : isVision ? 'vision' : 'draft',
       }),
     })
       .then(() => setIsSavedInLibrary(true))

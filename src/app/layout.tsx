@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Maestro Sketch — AI Prompt-to-Architecture Diagram Generator",
+  title: "PromptCanvas — AI Architecture Diagram & Multi-Agent Topology Studio",
   description: "Generate, render, edit, and version-control production-grade technical architecture diagrams using AI prompts. Powered by Google Gemini and Draw.io.",
 };
 

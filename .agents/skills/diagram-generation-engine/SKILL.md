@@ -286,3 +286,29 @@ gcloud run deploy promptcanvas \
   --platform managed
 ```
 
+---
+
+## 🛰️ Pillar 15: Domain-Native Semantic Shape Taxonomy, Closed-Loop Feedback Highways, 4-Stage Truthfulness Grounding & Auto-Draft Micro-Versioning (`v1.0.x`)
+
+Every Zero-Blueprint synthesis, autonomous agentic harness, digital-twin simulation, or cyber-physical architecture (`src/lib/canonical/nasaMultiverseClosedLoopHarness.ts`, `src/lib/truthfulnessGroundingEngine.ts`, and `src/lib/draftMicroVersionStore.ts`) MUST enforce these 5 architectural laws:
+
+1. **Domain-Native Semantic Shape Taxonomy (Never Force Cyber-Physical / Agentic Loops into Uniform Rectangular CRUD Stacks)**:
+   - **Commit / Safety / Policy Gate**: Render as `shape=rhombus;perimeter=rhombusPerimeter;` (Decision Diamond) with explicit binary **`[GO]`** (downward emerald `#059669`) and **`[NO-GO / ABORT]`** (leftward dashed crimson `#DC2626`) branches into an explicit **Abort / Quarantine Sink**.
+   - **Autonomous Orchestrator & Specialist Agents**: Render as `shape=hexagon;perimeter=hexagonPerimeter2;` (Google ADK / A2A Hexagon Agents) with explicit `A2A` delegation fan-out.
+   - **Parallel Counterfactual / Simulation Rollout Enclaves**: Render as **3 Stacked Parallel Swimlane Cards (`1:3 Fork`)** ($\alpha$ Nominal Baseline, $\beta$ High-Stress / Parameter Shift, $\gamma$ Adversarial / Extreme Regime) converging via **`3:1 Join`** into a **Cross-Scenario Pareto Policy Distiller**.
+   - **Stateful Persistence & Knowledge Stores**: Render as `shape=cylinder3;boundedLbl=1;` (**Cloud Spanner**, **Cloud Bigtable**, **Firestore**, **Vector Search 2.0 + GraphRAG**).
+   - **Physical / Network Air-Gap Boundary Band**: Separate the Cloud Control Plane from the Downstream / Spacecraft / Edge Execution Bus using a full-width dashed boundary band (`dashed=1;dashPattern=8 4;`).
+
+2. **Outer Closed-Loop Telemetry Return Highway**:
+   - Every mission-control, cyber-physical, or autonomous harness topology MUST include an outer right-hand **Closed-Loop Telemetry Return Highway** (`strokeColor=#0D9488;strokeWidth=2.5;`, routed cleanly along the outer right corridor `x=1460`) connecting the downstream Telemetry Encoder back to the top-level Operator / Mission Control UI.
+
+3. **Speculative-Premise Scientific Reframing & Real-World Standards Grounding**:
+   - When a prompt contains a speculative or physically impossible premise (e.g., *"launching satellites in different universes"*), Stage 1 (`gemini-3.8-flash` + Google Search / `deep-research-max-preview-04-2026`) MUST flag `REFRAMED_SPECULATIVE_PREMISE` and reframe the speculative clause into a mathematically rigorous **1:3 Counterfactual Physics Digital-Twin & Monte Carlo Simulation Sandbox**, while grounding all physical execution tiers in authoritative domain standards (e.g., **CCSDS 133.0-B/732.0-B**, **NASA DSN 810-005**, **cFS/F'**, **NPR 8715.5**, **ROS 2 DDS / ISO 26262**, or **NIST AI RMF 1.0**).
+
+4. **Cross-Model Generator-vs-Judge Separation & 4-Stage Provenance Ledger**:
+   - Enforce strict separation between **Stage 1 Grounding** (`gemini-3.8-flash` + `deep-research-max-preview-04-2026`), **Stage 2 Topology Generator** (`gemini-3.8-flash`), **Stage 3 Independent Critic/Judge** (`gemini-3.1-pro-preview` via `getDistinctJudgeModel`), and **Stage 4 Deterministic 2D AABB Geometry Gate** (`google-omni-1.1`).
+
+5. **Mandatory Auto-Draft Micro-Versioning (`v1.0.1`, `v1.0.2`) & Library `Drafts` Persistence**:
+   - Every generated or prompt-modified diagram across `/dashboard` and `/studio` must automatically increment a 3-segment micro-version (`v<major>.<minor>.<micro>`) via `computeNextMicroVersion` and immediately persist to `localStorage` (`promptcanvas_draft_blueprints`, `promptcanvas_saved_blueprints`) and `/api/diagrams` (`createdStudio: 'draft'`) so it is immediately searchable under **Library → `📝 Drafts (Micro-Versions)`** (`/library?studio=drafts`).
+
+

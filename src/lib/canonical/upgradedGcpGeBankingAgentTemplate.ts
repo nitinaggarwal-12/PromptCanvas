@@ -9,7 +9,11 @@
  * - Upgraded 2026 GCP, Gemini Enterprise (GE), Google ADK, A2A, MCP, Model Armor/SDP & Open-Source stack
  */
 
-import { buildNasaMultiverseClosedLoopHarnessXml } from './nasaMultiverseClosedLoopHarness';
+import {
+  buildNasaMultiverseClosedLoopHarnessXml,
+  buildUniversalClosedLoopDomainHarnessXml,
+  shouldUseUniversalClosedLoopHarness,
+} from './nasaMultiverseClosedLoopHarness';
 
 function escAttr(str: string): string {
   return str
@@ -295,8 +299,17 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
   const cells: string[] = [];
   const profile = resolveDomainProfile(options, ast?.metadata?.domain, ast?.metadata?.projectTitle);
 
+  const combinedSignal = `${options?.prompt || ''} ${options?.domain || ''} ${options?.projectTitle || ''} ${options?.useCaseName || ''} ${ast?.metadata?.domain || ''} ${ast?.metadata?.projectTitle || ''}`;
   if (profile.uiTitle === 'NASA Mission Control UI') {
-    return buildNasaMultiverseClosedLoopHarnessXml('light');
+    return buildNasaMultiverseClosedLoopHarnessXml(options?.theme || 'light');
+  }
+  if (shouldUseUniversalClosedLoopHarness(combinedSignal)) {
+    return buildUniversalClosedLoopDomainHarnessXml({
+      prompt: options?.prompt,
+      projectTitle: options?.projectTitle || ast?.metadata?.projectTitle,
+      domain: options?.domain || ast?.metadata?.domain,
+      theme: options?.theme || 'light',
+    });
   }
 
   const addVertex = (

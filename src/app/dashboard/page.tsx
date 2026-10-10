@@ -96,6 +96,11 @@ import {
   TruthfulnessGroundingDossier,
   runTruthfulnessAndGroundingCertification
 } from '@/lib/truthfulnessGroundingEngine';
+import {
+  computeNextMicroVersion,
+  autoSaveGeneratedDiagramAsDraft,
+  getAutoSavedDraftBlueprints
+} from '@/lib/draftMicroVersionStore';
 
 const DEFAULT_DASHBOARD_PROMPT =
   'Design a GCP native technical architecture with Gemini Enterprise, Google ADK, A2A, MCP, Model Armor, Vector Search 2.0, and Cloud Spanner';
@@ -138,6 +143,7 @@ export interface DashboardVersionEntry {
   versionTag: string;
   major: number;
   minor: number;
+  micro?: number;
   title: string;
   prompt: string;
   source: 'ai_copilot' | 'manual_drawio' | 'audit_autofix' | 'suggestion_chip' | 'initial_load' | 'perspective_switch';
@@ -349,6 +355,7 @@ function DashboardContent() {
       versionTag: 'v1.0',
       major: 1,
       minor: 0,
+      micro: 0,
       title: 'Google Cloud Enterprise Architecture',
       prompt: DEFAULT_DASHBOARD_PROMPT,
       source: 'initial_load',
@@ -378,8 +385,69 @@ function DashboardContent() {
 
       try {
         const params = new URLSearchParams(window.location.search);
+        const draftParam = params.get('draft');
         const bpParam = params.get('blueprint');
         const importParam = params.get('import');
+
+        const targetDraftId =
+          draftParam ||
+          (bpParam && (/^draft/i.test(bpParam) || bpParam.toUpperCase().includes('NASA')) ? bpParam : null);
+
+        if (targetDraftId) {
+          const allDrafts = getAutoSavedDraftBlueprints();
+          const matchedDraft = allDrafts.find(
+            (d) => d.id.toUpperCase() === targetDraftId.toUpperCase()
+          );
+          if (matchedDraft) {
+            setCanvasTitle(matchedDraft.name);
+            setIsSessionForked(true);
+            setHasUnsavedSessionChanges(true);
+            setSessionCopyId(matchedDraft.id);
+            if (Array.isArray(matchedDraft.versions) && matchedDraft.versions.length > 0) {
+              setVersionHistory(matchedDraft.versions as DashboardVersionEntry[]);
+            } else {
+              setVersionHistory([
+                {
+                  id: `ver_${matchedDraft.id}`,
+                  versionTag: matchedDraft.activeVersionTag || 'v1.0.1',
+                  major: matchedDraft.major || 1,
+                  minor: matchedDraft.minor || 0,
+                  micro: matchedDraft.micro || 1,
+                  title: matchedDraft.name,
+                  prompt: matchedDraft.prompt || matchedDraft.description,
+                  source: 'ai_copilot',
+                  sourceLabel: `Auto-Saved Draft (${matchedDraft.activeVersionTag || 'v1.0.1'})`,
+                  diffSummary: matchedDraft.description,
+                  timestamp: new Date(matchedDraft.updatedAt).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  }),
+                  xml: matchedDraft.xml,
+                  blueprintId: matchedDraft.blueprintId || '00',
+                  level: 'L3',
+                  perspective: (matchedDraft.perspective as ArchitecturePerspective) || 'Technical',
+                  status: 'draft',
+                  perspectiveXmlMap: { Technical: matchedDraft.xml },
+                },
+              ]);
+            }
+            setActiveVersionIndex(0);
+            if (/nasa|multiverse|satellite|satellight/i.test(`${matchedDraft.name} ${matchedDraft.prompt}`)) {
+              runTruthfulnessAndGroundingCertification({
+                prompt: matchedDraft.prompt || '1. Build an agentic harness for Nasa launching satellights in the different universes',
+                xmlContent: matchedDraft.xml,
+                blueprintId: matchedDraft.blueprintId || '00'
+              })
+                .then((dossier) => {
+                  setVersionHistory((prev) =>
+                    prev.map((v, idx) => (idx === 0 ? { ...v, truthfulnessDossier: dossier } : v))
+                  );
+                })
+                .catch(() => {});
+            }
+            return;
+          }
+        }
 
         if (importParam === 'vision') {
           const visionXml = localStorage.getItem('pc_vision_last_xml');
@@ -391,9 +459,10 @@ function DashboardContent() {
             setVersionHistory([
               {
                 id: `ver_vision_${Date.now()}`,
-                versionTag: 'v1.0',
+                versionTag: 'v1.0.1',
                 major: 1,
                 minor: 0,
+                micro: 1,
                 title: visionTitle,
                 prompt: 'Imported from Image to Diagram Vision Decompiler',
                 source: 'initial_load',
@@ -404,7 +473,7 @@ function DashboardContent() {
                 blueprintId: '00',
                 level: 'L3',
                 perspective: 'Technical',
-                status: 'published',
+                status: 'draft',
                 perspectiveXmlMap: { Technical: visionXml },
               },
             ]);
@@ -1045,9 +1114,17 @@ function DashboardContent() {
     }
   ) => {
     const prevVer = currentVersion;
-    const nextMajor = prevVer.major;
-    const nextMinor = prevVer.minor + 1;
-    const nextTag = `v${nextMajor}.${nextMinor}`;
+    const {
+      major: nextMajor,
+      minor: nextMinor,
+      micro: nextMicro,
+      versionTag: nextTag
+    } = computeNextMicroVersion(
+      prevVer.major ?? 1,
+      prevVer.minor ?? 0,
+      prevVer.micro ?? 0,
+      prevVer.versionTag
+    );
 
     // Compute AST Diff between previous and new XML
     const diffResult: ArchitectureDiffResult = computeArchitectureDiff(
@@ -1068,15 +1145,18 @@ function DashboardContent() {
     setHasUnsavedSessionChanges(true);
     setSessionCopyId(forkId);
 
+    const effectiveTitle = overrideTitle || canvasTitle;
+
     const newEntry: DashboardVersionEntry = {
       id: `ver_${Date.now()}_${nextTag}`,
       versionTag: nextTag,
       major: nextMajor,
       minor: nextMinor,
-      title: overrideTitle || canvasTitle,
+      micro: nextMicro,
+      title: effectiveTitle,
       prompt: promptText,
       source,
-      sourceLabel: `${sourceLabel} (${canvasPerspective} Session Copy)`,
+      sourceLabel: `${sourceLabel} (${canvasPerspective} Draft ${nextTag})`,
       diffSummary: summaryText,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       xml: newXml,
@@ -1108,12 +1188,28 @@ function DashboardContent() {
               versionHistory: nextHistory
             })
           );
+          autoSaveGeneratedDiagramAsDraft({
+            id: /nasa|satellite|satellight|multiverse|multi-universe/i.test(`${effectiveTitle} ${promptText}`)
+              ? 'DRAFT-NASA-MULTIVERSE-V1-0-1'
+              : `draft_${forkId}`,
+            title: effectiveTitle,
+            xml: newXml,
+            prompt: promptText,
+            diffSummary: summaryText,
+            blueprintId: loadedBlueprintId,
+            perspective: canvasPerspective,
+            versionTag: nextTag,
+            major: nextMajor,
+            minor: nextMinor,
+            micro: nextMicro,
+            versions: nextHistory
+          });
         } catch {}
       }
       return nextHistory;
     });
     setActiveVersionIndex(0);
-    showToast(`⚡ Forked ${canvasPerspective} Session Copy (${nextTag}): Canonical Blueprint #${loadedBlueprintId} remains untouched`);
+    showToast(`⚡ Auto-Saved Draft (${nextTag}) to Library → Drafts • Canonical Blueprint #${loadedBlueprintId} remains untouched`);
   };
 
   // =========================================================================
@@ -1796,19 +1892,20 @@ function DashboardContent() {
                   {currentVersion.versionTag} LIVE
                 </span>
                 {isSessionForked ? (
-                  <span
+                  <Link
+                    href="/library?studio=drafts"
                     id="dashboard-session-copy-badge"
                     data-session-copy-id={sessionCopyId || ''}
-                    title={`Isolated Session Copy (${sessionCopyId})`}
-                    className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 shrink-0 ${
+                    title={`Auto-Saved Micro-Version Draft (${currentVersion.versionTag}) — Click to view in Library → Drafts`}
+                    className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 shrink-0 transition hover:scale-[1.02] ${
                       isLight
-                        ? 'bg-amber-50 text-amber-800 border-amber-300'
-                        : 'bg-amber-500/20 text-amber-300 border-amber-400/40'
+                        ? 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100'
+                        : 'bg-amber-500/20 text-amber-300 border-amber-400/40 hover:bg-amber-500/30'
                     }`}
                   >
                     <GitFork className={`w-2.5 h-2.5 ${isLight ? 'text-amber-700' : 'text-amber-300'}`} />
-                    <span>Session Copy &bull; Unsaved</span>
-                  </span>
+                    <span>Draft ({currentVersion.versionTag}) &bull; Saved in Library</span>
+                  </Link>
                 ) : (
                   <span
                     id="dashboard-canonical-baseline-badge"
@@ -1825,8 +1922,8 @@ function DashboardContent() {
               </h1>
               <p className={`text-[10.5px] font-medium truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                 {isSessionForked
-                  ? `Isolated Session Copy forked from Blueprint #${loadedBlueprintId} • Dashboard Canonical Blueprint remains untouched for all users`
-                  : 'Canonical Blueprints never change globally • Any prompt edit automatically forks an isolated copy for your session'}
+                  ? `Auto-saved Micro-Version Draft (${currentVersion.versionTag}) under Library → Drafts • Blueprint #${loadedBlueprintId} remains untouched`
+                  : 'Canonical Blueprints never change globally • Any prompt edit auto-saves a micro-version draft (v1.0.1) under Library → Drafts'}
               </p>
             </div>
           </div>
@@ -1948,15 +2045,6 @@ function DashboardContent() {
                   <span>Canonical Baseline (Read-Only)</span>
                 </span>
                 <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => setIsNewDiagramModalOpen(true)}
-                    className="text-[10.5px] font-extrabold px-2.5 py-0.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white transition flex items-center gap-1 shadow-xs cursor-pointer active:scale-95"
-                    title="Open Input Selection to create a new architecture"
-                  >
-                    <Plus className="w-3 h-3 stroke-[2.5]" />
-                    <span>+ New</span>
-                  </button>
                   <span className={`text-[10px] font-mono font-bold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                     {filteredTemplates.length} Blueprints
                   </span>
@@ -2109,32 +2197,35 @@ function DashboardContent() {
               {isSessionForked && (
                 <div
                   id="left-panel-session-copy-banner"
-                  className={`p-2 rounded-xl border text-[11px] flex items-center justify-between gap-2 ${
+                  className={`px-2.5 py-1.5 rounded-xl border text-[10.5px] flex items-center justify-between gap-2 ${
                     isLight
-                      ? 'bg-amber-50 border-amber-300 text-amber-900'
+                      ? 'bg-amber-50/90 border-amber-300 text-amber-900'
                       : 'bg-amber-500/15 border-amber-500/40 text-amber-200'
                   }`}
                 >
                   <div className="flex items-center gap-1.5 min-w-0">
-                    <GitFork className={`w-3.5 h-3.5 shrink-0 ${isLight ? 'text-amber-700' : 'text-amber-400'}`} />
-                    <span className="truncate font-semibold">
-                      Working in Session Copy &bull; Blueprint #{loadedBlueprintId} unchanged
+                    <GitFork className={`w-3 h-3 shrink-0 ${isLight ? 'text-amber-700' : 'text-amber-400'}`} />
+                    <span className="font-semibold leading-tight">
+                      Draft <strong className="font-mono">{currentVersion.versionTag}</strong> Auto-Saved &bull; Baseline #{loadedBlueprintId} intact
                     </span>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => openSaveOrDiscardModal({ type: 'manual_save' })}
-                    className="px-2 py-0.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold text-[10px] shrink-0 cursor-pointer"
+                  <Link
+                    href="/library?studio=drafts"
+                    className={`px-2 py-0.5 rounded-md font-bold text-[10px] shrink-0 transition ${
+                      isLight
+                        ? 'bg-amber-100 hover:bg-amber-200 text-amber-900'
+                        : 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-200'
+                    }`}
                   >
-                    Save Project
-                  </button>
+                    Drafts &rarr;
+                  </Link>
                 </div>
               )}
             </div>
 
             {/* CENTER SECTION: SINGLE CENTRAL PROMPT COMPOSER & 3 CONTEXTUAL SUGGESTION CHIPS */}
             <div
-              className={`p-3.5 border-b space-y-2.5 ${
+              className={`p-3 border-b space-y-2 ${
                 isLight
                   ? 'bg-gradient-to-b from-white to-slate-50/80 border-slate-200'
                   : 'bg-gradient-to-b from-[#0F1626] to-slate-900/80 border-slate-800'
@@ -2156,8 +2247,8 @@ function DashboardContent() {
                   }`}
                 >
                   {isSessionForked
-                    ? `Session Copy: ${currentVersion.versionTag} → v${currentVersion.major}.${currentVersion.minor + 1}`
-                    : `Forks Session Copy: v1.0 → v1.1`}
+                    ? `Auto-Saves Draft: ${currentVersion.versionTag} → v${currentVersion.major}.${currentVersion.minor}.${(currentVersion.micro ?? 0) + 1}`
+                    : `Auto-Saves Draft: v1.0 → v1.0.1`}
                 </span>
               </div>
 
@@ -2271,18 +2362,18 @@ function DashboardContent() {
                 </div>
               )}
 
-              {/* 3 Top Next Updates Contextual Suggestions */}
-              <div className="space-y-1.5 pt-0.5">
+              {/* Compact 1-Row Quick Suggestion Chips */}
+              <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className={`text-[10px] font-black uppercase tracking-wider ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                    Recommended Next Updates
+                  <span className={`text-[9.5px] font-black uppercase tracking-wider ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                    Quick Upgrades
                   </span>
-                  <span className={`text-[9px] font-bold ${isLight ? 'text-teal-600' : 'text-teal-400'}`}>
-                    Click to apply in session copy
+                  <span className={`text-[9px] font-medium ${isLight ? 'text-teal-600' : 'text-teal-400'}`}>
+                    1-Click Apply
                   </span>
                 </div>
 
-                <div className="space-y-1">
+                <div className="grid grid-cols-3 gap-1.5">
                   {contextualSuggestions.map((suggestion, idx) => (
                     <button
                       key={idx}
@@ -2290,14 +2381,15 @@ function DashboardContent() {
                       type="button"
                       onClick={() => handleExecutePrompt(suggestion)}
                       disabled={isProcessingAi}
-                      className={`w-full text-left px-2.5 py-1.5 rounded-xl border text-[11px] font-semibold transition-all flex items-center justify-between group cursor-pointer shadow-2xs ${
+                      title={suggestion}
+                      className={`text-left px-2 py-1 rounded-lg border text-[10px] font-semibold transition-all flex items-center justify-between group cursor-pointer shadow-2xs ${
                         isLight
                           ? 'bg-teal-50/60 hover:bg-teal-100/80 text-teal-900 border-teal-200/80'
                           : 'bg-teal-500/10 hover:bg-teal-500/20 text-teal-200 border-teal-500/25'
                       }`}
                     >
-                      <span className="truncate pr-2">{suggestion}</span>
-                      <ArrowRight className={`w-3 h-3 shrink-0 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
+                      <span className="truncate pr-1">{suggestion.replace(/^\+\s*Add\s+/i, '+ ')}</span>
+                      <ArrowRight className={`w-2.5 h-2.5 shrink-0 opacity-60 group-hover:opacity-100 transition-all ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
                     </button>
                   ))}
                 </div>
@@ -2403,9 +2495,9 @@ function DashboardContent() {
                               </span>
                             )}
                           </div>
-                          <ul className={`space-y-0.5 leading-snug ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
+                          <ul className={`space-y-1 leading-snug ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                             {ver.plannedSteps.map((stepStr, sIdx) => (
-                              <li key={sIdx} className="truncate" title={stepStr}>
+                              <li key={sIdx} className="line-clamp-2" title={stepStr}>
                                 {stepStr}
                               </li>
                             ))}
@@ -2413,8 +2505,8 @@ function DashboardContent() {
                         </div>
                       )}
 
-                      <div className={`pt-1 flex items-center justify-between border-t text-[10px] ${isLight ? 'border-slate-100' : 'border-slate-800'}`}>
-                        <span className={`font-medium truncate max-w-[205px] ${isLight ? 'text-teal-700' : 'text-teal-400'}`} title={ver.diffSummary}>
+                      <div className={`pt-1.5 flex items-start justify-between gap-2 border-t text-[10px] ${isLight ? 'border-slate-100' : 'border-slate-800'}`}>
+                        <span className={`font-medium line-clamp-2 leading-snug ${isLight ? 'text-teal-700' : 'text-teal-400'}`} title={ver.diffSummary}>
                           {ver.diffSummary}
                         </span>
                         {isActive ? (

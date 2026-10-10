@@ -54,7 +54,17 @@ export function LegalProvider({ children }: { children: React.ReactNode }) {
         }
         setShowBanner(false);
       } else {
-        setShowBanner(true);
+        const path = typeof window !== 'undefined' ? window.location.pathname : '';
+        const isWorkspaceRoute =
+          path.startsWith('/dashboard') ||
+          path.startsWith('/library') ||
+          path.startsWith('/studio') ||
+          path.startsWith('/vision');
+        if (isWorkspaceRoute) {
+          setShowBanner(false);
+        } else {
+          setShowBanner(true);
+        }
       }
     } catch {
       setShowBanner(false);

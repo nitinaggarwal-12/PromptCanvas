@@ -71,6 +71,11 @@ import { AppHeader } from '@/components/AppHeader';
 import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 import { generateUpgradedGcpGeBankingArchitectureXml } from '@/lib/canonical/upgradedGcpGeBankingAgentTemplate';
 import GoogleWorkspaceDirectOpenModal from '@/components/GoogleWorkspaceDirectOpenModal';
+import {
+  getAutoSavedDraftBlueprints,
+  markDraftDeleted,
+  normalizeToMicroVersionTag
+} from '@/lib/draftMicroVersionStore';
 
 interface DiagramVersionItem {
   id: string;
@@ -95,12 +100,13 @@ interface CanvasDiagramItem {
   versions?: DiagramVersionItem[];
   version_count?: number;
   max_version?: number;
+  micro_version?: string;
   latest_prompt?: string;
   xml_content?: string;
   is_starred?: boolean;
 }
 
-type StudioTabKey = 'all' | 'studio' | 'studio1' | 'canonical' | 'vision';
+type StudioTabKey = 'all' | 'drafts' | 'studio' | 'studio1' | 'canonical' | 'vision';
 
 function ArchitectureLibraryContent() {
   const router = useRouter();
@@ -183,7 +189,16 @@ function ArchitectureLibraryContent() {
   // Initialize active studio, filter tag, search, phase, and sort from URL query (UX-09)
   useEffect(() => {
     const studioParam = searchParams.get('studio');
-    if (studioParam === 'all' || studioParam === 'studio' || studioParam === 'studio1' || studioParam === 'canonical' || studioParam === 'vision') {
+    if (studioParam === 'draft') {
+      setActiveStudioTab('drafts');
+    } else if (
+      studioParam === 'all' ||
+      studioParam === 'drafts' ||
+      studioParam === 'studio' ||
+      studioParam === 'studio1' ||
+      studioParam === 'canonical' ||
+      studioParam === 'vision'
+    ) {
       setActiveStudioTab(studioParam as StudioTabKey);
     }
     const filterParam = searchParams.get('filter');
@@ -329,6 +344,21 @@ function ArchitectureLibraryContent() {
         latest_prompt: d.latest_prompt || d.prompt || d.technical_usecase || d.business_usecase || '',
       }));
 
+      // Read auto-saved micro-version drafts (including NASA Closed-Loop Multi-Universe Harness v1.0.1 and sessionStorage drafts)
+      const autoDraftItems: CanvasDiagramItem[] = getAutoSavedDraftBlueprints().map((draft) => ({
+        id: draft.id,
+        name: draft.name,
+        architecture_type: draft.architecture_type || 'draft_canonical_00',
+        created_studio: 'draft',
+        is_private: true,
+        created_at: draft.createdAt,
+        updated_at: draft.updatedAt,
+        version_count: draft.versionCount || (Array.isArray(draft.versions) ? draft.versions.length : 2),
+        micro_version: draft.activeVersionTag || 'v1.0.1',
+        latest_prompt: draft.prompt || draft.description,
+        xml_content: draft.xml,
+      }));
+
       // Read user-saved projects from localStorage (saved from Dashboard Session Copy or Studio)
       let localSavedItems: CanvasDiagramItem[] = [];
       if (typeof window !== 'undefined') {
@@ -340,15 +370,25 @@ function ArchitectureLibraryContent() {
               try {
                 fullPayload = JSON.parse(localStorage.getItem(`promptcanvas_studio_${item.id}`) || 'null');
               } catch {}
+              const isDraftItem =
+                item.created_studio === 'draft' ||
+                item.status === 'draft' ||
+                String(item.id || '').startsWith('DRAFT-') ||
+                String(item.id || '').startsWith('draft_');
               return {
                 id: item.id,
                 name: item.name || 'Saved Project',
                 architecture_type: item.architecture_type || 'gcp_enterprise_reference',
-                created_studio: item.created_studio || 'studio',
+                created_studio: isDraftItem ? 'draft' : item.created_studio || 'studio',
                 created_at: item.createdAt || item.updatedAt || new Date().toISOString(),
                 updated_at: item.updatedAt || new Date().toISOString(),
                 version_count: fullPayload?.versions?.length || item.versionCount || 1,
-                latest_prompt: item.description || fullPayload?.description || 'Saved from User Session Copy',
+                micro_version: item.activeVersionTag
+                  ? normalizeToMicroVersionTag(item.activeVersionTag)
+                  : isDraftItem
+                  ? 'v1.0.1'
+                  : undefined,
+                latest_prompt: item.prompt || item.description || fullPayload?.description || 'Saved from User Session Copy',
                 xml_content: item.xml || fullPayload?.xml || '',
               };
             });
@@ -370,15 +410,20 @@ function ArchitectureLibraryContent() {
         xml_content: tpl.generateXml('biopharma', 'light'),
       }));
 
-      const existingIds = new Set(dbList.map(d => d.id.toUpperCase()));
-      const existingNames = new Set(dbList.map(d => (d.name || '').toLowerCase().trim()));
+      const draftIdSet = new Set(autoDraftItems.map((d) => d.id.toUpperCase()));
+      const existingIds = new Set([...dbList.map(d => d.id.toUpperCase()), ...Array.from(draftIdSet)]);
+      const existingNames = new Set([
+        ...dbList.map(d => (d.name || '').toLowerCase().trim()),
+        ...autoDraftItems.map(d => (d.name || '').toLowerCase().trim()),
+      ]);
       const uniqueLocalSaved = localSavedItems.filter(
         l => !existingIds.has(l.id.toUpperCase()) && !existingNames.has((l.name || '').toLowerCase().trim())
       );
 
       const merged = [
+        ...autoDraftItems,
         ...uniqueLocalSaved,
-        ...dbList,
+        ...dbList.filter(d => !draftIdSet.has(d.id.toUpperCase())),
         ...visionSavedItems.filter(v => !existingIds.has(v.id.toUpperCase())),
       ];
       const mergedIds = new Set(merged.map(d => d.id.toUpperCase()));
@@ -391,7 +436,22 @@ function ArchitectureLibraryContent() {
       setDiagrams(merged);
     } catch (err) {
       console.error('Error fetching library canvases:', err);
-      setDiagrams(buildVisionSavedLibraryItems());
+      setDiagrams([
+        ...getAutoSavedDraftBlueprints().map((draft) => ({
+          id: draft.id,
+          name: draft.name,
+          architecture_type: draft.architecture_type || 'draft_canonical_00',
+          created_studio: 'draft',
+          is_private: true,
+          created_at: draft.createdAt,
+          updated_at: draft.updatedAt,
+          version_count: draft.versionCount || 2,
+          micro_version: draft.activeVersionTag || 'v1.0.1',
+          latest_prompt: draft.prompt || draft.description,
+          xml_content: draft.xml,
+        })),
+        ...buildVisionSavedLibraryItems(),
+      ]);
     } finally {
       setIsLoading(false);
     }
@@ -406,6 +466,9 @@ function ArchitectureLibraryContent() {
   const handleDeleteSingle = async (diagram: CanvasDiagramItem, e?: React.MouseEvent) => {
     e?.stopPropagation();
     try {
+      if (diagram.created_studio === 'draft' || diagram.id.startsWith('DRAFT-') || diagram.id.startsWith('draft_')) {
+        markDraftDeleted(diagram.id);
+      }
       if (diagram.id.startsWith('VIS-') || diagram.id.startsWith('GCP-') || diagram.created_studio === 'vision') {
         deleteCustomVisionBlueprint(diagram.id);
       }
@@ -645,10 +708,22 @@ function ArchitectureLibraryContent() {
 
   // Categorize Diagrams by Studio
   const getStudioCategory = (d: CanvasDiagramItem): StudioTabKey => {
-    if (d.id.startsWith('bp_') || (d.architecture_type && d.architecture_type.startsWith('canonical_'))) {
+    const raw = (d.created_studio || '').toLowerCase();
+    if (
+      raw === 'draft' ||
+      raw === 'drafts' ||
+      d.id.startsWith('DRAFT-') ||
+      d.id.startsWith('draft_') ||
+      Boolean(d.micro_version)
+    ) {
+      return 'drafts';
+    }
+    if (raw === 'studio' || d.id.startsWith('proj_')) {
+      return 'studio';
+    }
+    if (d.id.startsWith('bp_') || raw === 'canonical' || (d.architecture_type && d.architecture_type.startsWith('canonical_'))) {
       return 'canonical';
     }
-    const raw = (d.created_studio || '').toLowerCase();
     if (
       raw === 'vision' ||
       d.id.startsWith('vision_') ||
@@ -678,6 +753,9 @@ function ArchitectureLibraryContent() {
     const promptStr = (d.latest_prompt || '').toLowerCase();
     const combined = `${nameStr} ${archStr} ${promptStr}`;
 
+    if (idStr.includes('NASA') || combined.includes('nasa') || combined.includes('multiverse') || combined.includes('ccsds')) {
+      return '/templates/canonical_00.png';
+    }
     if (idStr.startsWith('bp_') || idStr.startsWith('canonical_') || archStr.startsWith('canonical_')) {
       const rawNum = idStr.replace(/^(bp_|canonical_)/i, '') || archStr.replace(/^canonical_/i, '');
       const num = parseInt(rawNum, 10);
@@ -722,6 +800,7 @@ function ArchitectureLibraryContent() {
   const studioCounts = useMemo(() => {
     const counts = {
       all: diagrams.length,
+      drafts: 0,
       studio: 0,
       studio1: 0,
       canonical: 0,
@@ -752,6 +831,7 @@ function ArchitectureLibraryContent() {
         const upperId = (d.id || '').toUpperCase();
         const nameLower = (d.name || '').toLowerCase();
         const archLower = (d.architecture_type || '').toLowerCase();
+        if (rightFilterTag === 'drafts_auto') return cat === 'drafts';
         if (rightFilterTag === 'vision_saved') return cat === 'vision';
         if (rightFilterTag === 'gcp_multiagent') return upperId.includes('MULTIAGENT') || nameLower.includes('multiagent');
         if (rightFilterTag === 'gemini_enterprise') return upperId.includes('1787') || upperId.includes('3093') || nameLower.includes('gemini enterprise') || archLower.includes('gemini_enterprise');
@@ -917,12 +997,12 @@ function ArchitectureLibraryContent() {
               <Menu className="w-4 h-4" />
             </button>
 
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-              <Link href="/" className="font-extrabold flex items-center gap-1.5 text-slate-300 hover:text-white transition-colors">
+            <div className={`flex items-center gap-2 text-xs font-semibold ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
+              <Link href="/" className={`font-extrabold flex items-center gap-1.5 transition-colors ${isLight ? 'text-slate-800 hover:text-teal-700' : 'text-slate-300 hover:text-white'}`}>
                 <span>PromptCanvas</span>
               </Link>
-              <span className="text-slate-500" aria-hidden="true">/</span>
-              <span className="text-teal-400 font-bold flex items-center gap-1.5">
+              <span className={isLight ? 'text-slate-400' : 'text-slate-500'} aria-hidden="true">/</span>
+              <span className={`font-bold flex items-center gap-1.5 ${isLight ? 'text-teal-700' : 'text-teal-400'}`}>
                 <LayoutGrid className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>Architecture Library</span>
               </span>
@@ -942,6 +1022,8 @@ function ArchitectureLibraryContent() {
               className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 ${
                 isSelectMode
                   ? 'bg-teal-600 text-white border-teal-500 shadow-sm'
+                  : isLight
+                  ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700'
                   : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
               }`}
               title="Toggle multi-select mode for batch deletion"
@@ -950,27 +1032,18 @@ function ArchitectureLibraryContent() {
               <span>{isSelectMode ? 'Exit Selection' : 'Select Canvases'}</span>
             </button>
 
-            {/* Refresh */}
-            <button
-              type="button"
-              onClick={fetchAllCanvases}
-              disabled={isLoading}
-              aria-busy={isLoading}
-              aria-label="Refresh Architecture Library"
-              className="min-w-[36px] min-h-[36px] flex items-center justify-center p-2 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
-              title="Refresh Architecture Library"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-teal-400' : ''}`} />
-            </button>
-
             <ThemeToggleBtn id="library-theme-toggle-btn" />
 
             <Link
               href="/canonical"
-              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+              className={`px-3 py-1.5 border font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
+                isLight
+                  ? 'bg-sky-50 hover:bg-sky-100 text-sky-800 border-sky-200'
+                  : 'bg-slate-800 hover:bg-slate-700 text-sky-300 border-slate-700'
+              }`}
               title={`Open Full-Width ${CANONICAL_TEMPLATES.length} Blueprint Catalog View`}
             >
-              <LayoutGrid className="w-3.5 h-3.5 text-sky-400" />
+              <LayoutGrid className={`w-3.5 h-3.5 ${isLight ? 'text-sky-600' : 'text-sky-400'}`} />
               <span>Blueprint Catalog ({CANONICAL_TEMPLATES.length})</span>
             </Link>
 
@@ -1129,6 +1202,10 @@ function ArchitectureLibraryContent() {
                 <button
                   type="button"
                   onClick={() => {
+                    if (getStudioCategory(activeModalCanvas) === 'drafts') {
+                      router.push(`/dashboard?draft=${encodeURIComponent(activeModalCanvas.id)}`);
+                      return;
+                    }
                     const cleanCanonicalId = activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '');
                     router.push(`/dashboard?blueprint=${encodeURIComponent(cleanCanonicalId)}`);
                   }}
@@ -1237,7 +1314,7 @@ function ArchitectureLibraryContent() {
                     Saved Architectures &amp; <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Enterprise Library</span>
                   </h1>
                   <p className={`text-[11px] leading-tight mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                    Unified repository for My Created &amp; Saved Architectures, Adapted Blueprints, Guided Lifecycle Matrix, Vision Decompilations, and Official Canonical Blueprints ({CANONICAL_TEMPLATES.length}).
+                    Unified repository for Auto-Saved Micro-Version Drafts, My Created &amp; Saved Architectures, Vision Decompilations, and Official Canonical Blueprints ({CANONICAL_TEMPLATES.length}).
                   </p>
                 </div>
               </div>
@@ -1247,6 +1324,11 @@ function ArchitectureLibraryContent() {
                 <div className="flex items-center gap-1.5">
                   <span className="font-extrabold text-teal-600 dark:text-teal-400">{diagrams.length}</span>
                   <span className="text-[10px] text-slate-500 uppercase font-bold">Total</span>
+                </div>
+                <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
+                <div className="flex items-center gap-1.5">
+                  <span className="font-extrabold text-orange-600 dark:text-orange-400">{studioCounts.drafts}</span>
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Drafts</span>
                 </div>
                 <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
                 <div className="flex items-center gap-1.5">
@@ -1276,6 +1358,7 @@ function ArchitectureLibraryContent() {
             >
               {[
                 { id: 'all', label: '🌐 All Architectures', count: studioCounts.all, color: 'teal' },
+                { id: 'drafts', label: '📝 Drafts (Micro-Versions)', count: studioCounts.drafts, color: 'amber' },
                 { id: 'studio', label: '💎 My Created & Saved (Studio)', count: studioCounts.studio, color: 'indigo' },
                 { id: 'vision', label: '👁️ Vision Decompiled & Upgraded', count: studioCounts.vision, color: 'teal' },
                 { id: 'studio1', label: '🧭 Guided Matrix & Lab', count: studioCounts.studio1, color: 'emerald' },
@@ -1395,7 +1478,9 @@ function ArchitectureLibraryContent() {
                     onChange={(e) => {
                       const val = e.target.value;
                       setRightFilterTag(val);
-                      if (val === 'vision_saved' || val === 'gcp_multiagent' || val === 'gemini_enterprise' || val === 'vision_landing_agentic') {
+                      if (val === 'drafts_auto') {
+                        setActiveStudioTab('drafts');
+                      } else if (val === 'vision_saved' || val === 'gcp_multiagent' || val === 'gemini_enterprise' || val === 'vision_landing_agentic') {
                         setActiveStudioTab('vision');
                       }
                     }}
@@ -1406,6 +1491,7 @@ function ArchitectureLibraryContent() {
                     }`}
                   >
                     <option value="all">📖 All Saved Library &amp; Categories</option>
+                    <option value="drafts_auto">📝 Auto-Saved Drafts (Micro-Versions)</option>
                     <option value="vision_saved">👁️ Saved Library (Vision Decompiler All)</option>
                     <option value="gcp_multiagent">🤖 Google Multiagent AI System (87)</option>
                     <option value="gemini_enterprise">✨ VIS-1787 / VIS-3093 Gemini Enterprise Agent Platform</option>
@@ -1443,6 +1529,7 @@ function ArchitectureLibraryContent() {
                 </span>
                 {[
                   { label: 'All', query: '' },
+                  { label: '🚀 NASA Digital-Twin', query: 'nasa' },
                   { label: '🤖 Agentic RAG', query: 'rag' },
                   { label: '🌊 Lakehouse', query: 'lakehouse' },
                   { label: '🗄️ Dimensional ERD', query: 'erd' },
@@ -1533,6 +1620,13 @@ function ArchitectureLibraryContent() {
                     
                     const cleanCanonicalId = diagram.id.replace(/^(bp_|canonical_)/i, '');
                     const studioBadgeConfigMap: Record<string, { label: string; style: string; btnStyle: string; actionLabel: string; route: string }> = {
+                      drafts: {
+                        label: `📝 Draft • ${diagram.micro_version || 'v1.0.1'}`,
+                        style: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/40',
+                        btnStyle: 'bg-amber-600 hover:bg-amber-500 text-white',
+                        actionLabel: 'Open Draft in Dashboard',
+                        route: `/dashboard?draft=${encodeURIComponent(diagram.id)}`
+                      },
                       studio: {
                         label: 'My Custom & Forked',
                         style: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/30',
@@ -1765,22 +1859,24 @@ function ArchitectureLibraryContent() {
                           </div>
 
                           <div className="flex items-center gap-1.5">
-                            {/* Dashboard */}
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                router.push(`/dashboard?blueprint=${encodeURIComponent(cleanCanonicalId)}`);
-                              }}
-                              aria-label={`Edit ${diagram.name} in Dashboard`}
-                              className={`flex-1 py-1.5 px-2.5 rounded-lg border text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
-                                isLight ? 'bg-teal-50 hover:bg-teal-100 border-teal-200 text-teal-800' : 'bg-teal-950/50 hover:bg-teal-900 border-teal-800 text-teal-300'
-                              }`}
-                              title="Open full editable canvas in Architecture Dashboard"
-                            >
-                              <ExternalLink className="w-3 h-3" aria-hidden="true" />
-                              <span>Dashboard</span>
-                            </button>
+                            {/* Dashboard (only shown when primary CTA targets /studio or /vision rather than /dashboard) */}
+                            {!studioBadgeConfig.route.startsWith('/dashboard') && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  router.push(`/dashboard?blueprint=${encodeURIComponent(cleanCanonicalId)}`);
+                                }}
+                                aria-label={`Edit ${diagram.name} in Dashboard`}
+                                className={`flex-1 py-1.5 px-2.5 rounded-lg border text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
+                                  isLight ? 'bg-teal-50 hover:bg-teal-100 border-teal-200 text-teal-800' : 'bg-teal-950/50 hover:bg-teal-900 border-teal-800 text-teal-300'
+                                }`}
+                                title="Open full editable canvas in Architecture Dashboard"
+                              >
+                                <ExternalLink className="w-3 h-3" aria-hidden="true" />
+                                <span>Dashboard</span>
+                              </button>
+                            )}
 
                             {/* Clone (with double-submit disabled lock UX-10 / UX-28) */}
                             <button
@@ -1789,7 +1885,7 @@ function ArchitectureLibraryContent() {
                               aria-busy={isCloning}
                               aria-label={`Clone ${diagram.name}`}
                               onClick={(e) => handleCloneDiagram(diagram, e)}
-                              className={`py-1.5 px-2.5 rounded-lg border text-[11px] font-bold transition flex items-center gap-1 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                              className={`flex-1 py-1.5 px-2.5 rounded-lg border text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
                                 isLight ? 'bg-amber-50 hover:bg-amber-100 border-amber-200 text-amber-800' : 'bg-amber-950/50 hover:bg-amber-900 border-amber-800 text-amber-300'
                               }`}
                               title="Clone / Duplicate this Canvas"
