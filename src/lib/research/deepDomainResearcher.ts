@@ -63,9 +63,9 @@ export function normalizeLatestGoogleAndCloudNomenclature(text: string): string 
     .replace(/\bAnthos Service Mesh\b/gi, 'Cloud Service Mesh')
     .replace(/\bDataplex (?:Data|Universal) Catalog\b/gi, 'Dataplex Catalog')
     .replace(/\bGlobal HTTPS Load Balancer\b/gi, 'Global External Application LB')
-    .replace(/\bGemini\s+(?:1\.5|2\.0|3\.7)\s+Pro\b/gi, 'Gemini 3.1 Pro')
-    .replace(/\bGemini\s+(?:1\.5|2\.0|3\.7)\s+Flash\b/gi, 'Gemini 2.5 Flash')
-    .replace(/\bgemini-3\.7-(?:pro|flash)[a-z0-9-]*\b/gi, 'gemini-2.5-flash')
+    .replace(/\bGemini\s+(?:1\.5|2\.0|2\.5|3\.5|3\.6|3\.7)\s+Pro\b/gi, 'Gemini 3.1 Pro')
+    .replace(/\bGemini\s+(?:1\.5|2\.0|2\.5|3\.5|3\.6|3\.7)\s+Flash\b/gi, 'Gemini 3.8 Flash')
+    .replace(/\bgemini-(?:1\.5|2\.0|2\.5|3\.5|3\.6|3\.7)-flash[a-z0-9-]*\b/gi, 'gemini-3.8-flash')
     .replace(/\bVeo\s+[12](?:\.0)?\b/gi, 'DeepMind Veo 3.1')
     .replace(/\bLyria\s+[12](?:\.0)?\b/gi, 'DeepMind Lyria 3.5');
 }

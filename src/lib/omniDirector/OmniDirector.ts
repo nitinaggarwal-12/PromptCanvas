@@ -57,7 +57,7 @@ export async function orchestrateArchitecturePipeline(params: {
   const tPlannerStart = Date.now();
   steps.push({
     agent: 'TOPOLOGY_PLANNER',
-    agentModel: 'Gemini 2.5 Flash',
+    agentModel: 'Gemini 3.8 Flash (gemini-3.8-flash)',
     phase: 'OCR & Signature Matching',
     status: 'RUNNING',
     message: 'Extracting spatial zones, entity labels, and scanning PromptCanvas master blueprint catalog...'
@@ -105,7 +105,7 @@ export async function orchestrateArchitecturePipeline(params: {
   const tBuilderStart = Date.now();
   steps.push({
     agent: 'AST_BUILDER',
-    agentModel: 'GeometrySolver + Gemini Pro',
+    agentModel: 'GeometrySolver + Gemini 3.1 Pro (gemini-3.1-pro-preview)',
     phase: 'Draw.io AST Graph Synthesis',
     status: 'RUNNING',
     message: 'Synthesizing fresh Draw.io XML graph AST with deterministic geometry, typed connectors, and spatial bounds...'

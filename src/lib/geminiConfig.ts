@@ -1,21 +1,25 @@
 export const OMNI_ORCHESTRATOR_ID = process.env.OMNI_ORCHESTRATOR_ID || 'google-omni-1.1';
 export const OMNI_FLASH_MODEL_ID = process.env.OMNI_FLASH_MODEL_ID || 'gemini-omni-1.1-flash';
+export const DEEP_RESEARCH_MODEL_ID = process.env.DEEP_RESEARCH_MODEL_ID || 'deep-research-max-preview-04-2026';
+export const ANTIGRAVITY_AGENT_MODEL_ID = process.env.ANTIGRAVITY_AGENT_MODEL_ID || 'antigravity-preview-09-2026';
 export const GEMINI_PRO_MODEL_ID = process.env.GEMINI_PRO_MODEL_ID || 'gemini-3.1-pro-preview';
 export const GEMINI_FLASH_MODEL_ID = process.env.GEMINI_FLASH_MODEL_ID || 'gemini-3.8-flash';
-export const GEMINI_FLASH_LIVE_MODEL_ID = process.env.GEMINI_FLASH_LIVE_MODEL_ID || 'gemini-3.1-flash-live-preview';
-export const GEMINI_FALLBACK_PRO_MODEL_ID = process.env.GEMINI_FALLBACK_PRO_MODEL_ID || 'gemini-2.5-pro';
-export const GEMINI_FALLBACK_FLASH_MODEL_ID = process.env.GEMINI_FALLBACK_FLASH_MODEL_ID || 'gemini-2.5-flash';
-export const GEMINI_FALLBACK_FLASH_LIVE_MODEL_ID = process.env.GEMINI_FALLBACK_FLASH_LIVE_MODEL_ID || 'gemini-2.5-flash';
+export const GEMINI_FLASH_LIVE_MODEL_ID = process.env.GEMINI_FLASH_LIVE_MODEL_ID || 'gemini-3.8-live-extended-thinking';
+export const GEMINI_FALLBACK_PRO_MODEL_ID = process.env.GEMINI_FALLBACK_PRO_MODEL_ID || 'gemini-3.8-flash';
+export const GEMINI_FALLBACK_FLASH_MODEL_ID = process.env.GEMINI_FALLBACK_FLASH_MODEL_ID || 'gemini-3.7-flash';
+export const GEMINI_FALLBACK_FLASH_LIVE_MODEL_ID = process.env.GEMINI_FALLBACK_FLASH_LIVE_MODEL_ID || 'gemini-3.8-live';
 export const DEEPMIND_VEO_MODEL_ID = process.env.DEEPMIND_VEO_MODEL_ID || 'veo-3.1-generate-preview';
-export const DEEPMIND_IMAGEN_MODEL_ID = process.env.DEEPMIND_IMAGEN_MODEL_ID || 'gemini-3.1-flash-image-preview';
+export const DEEPMIND_IMAGEN_MODEL_ID = process.env.DEEPMIND_IMAGEN_MODEL_ID || 'gemini-nano-banana-2.1';
 export const DEEPMIND_LYRIA_MODEL_ID = process.env.DEEPMIND_LYRIA_MODEL_ID || 'lyria-3.5';
-export const GEMINI_TTS_MODEL_ID = process.env.GEMINI_TTS_MODEL_ID || 'gemini-3.1-flash-tts-preview';
-export const GEMINI_EMBEDDING_MODEL_ID = process.env.GEMINI_EMBEDDING_MODEL_ID || 'text-embedding-005';
+export const GEMINI_TTS_MODEL_ID = process.env.GEMINI_TTS_MODEL_ID || 'gemini-3.8-flash-tts';
+export const GEMINI_EMBEDDING_MODEL_ID = process.env.GEMINI_EMBEDDING_MODEL_ID || 'gemini-embedding-2-preview';
 export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL_ID || GEMINI_FLASH_MODEL_ID;
 
 export const GEMINI_MODELS = {
   ORCHESTRATOR_AND_AUDIT: OMNI_ORCHESTRATOR_ID,
   OMNI_FLASH: OMNI_FLASH_MODEL_ID,
+  DEEP_RESEARCH: DEEP_RESEARCH_MODEL_ID,
+  ANTIGRAVITY_AGENT: ANTIGRAVITY_AGENT_MODEL_ID,
   DEEP_REASONING_AND_VISION: GEMINI_PRO_MODEL_ID,
   FAST_SYNTHESIS_AND_COPILOT: GEMINI_FLASH_MODEL_ID,
   REALTIME_VOICE_AND_CANVAS: GEMINI_FLASH_LIVE_MODEL_ID,

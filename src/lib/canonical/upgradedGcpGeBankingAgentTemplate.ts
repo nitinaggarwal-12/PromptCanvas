@@ -9,6 +9,8 @@
  * - Upgraded 2026 GCP, Gemini Enterprise (GE), Google ADK, A2A, MCP, Model Armor/SDP & Open-Source stack
  */
 
+import { buildNasaMultiverseClosedLoopHarnessXml } from './nasaMultiverseClosedLoopHarness';
+
 function escAttr(str: string): string {
   return str
     .replace(/&/g, '&amp;')
@@ -86,12 +88,26 @@ export interface UpgradedGcpNativeArchOptions {
 }
 
 interface DomainAgentAndCapabilityProfile {
+  uiTitle?: string;
   uiLine1?: string;
+  edgeTitle?: string;
+  edgeLine1?: string;
+  edgeLine2?: string;
+  identityLine1?: string;
+  identityLine2?: string;
+  apiTitle?: string;
+  apiLine1?: string;
+  apiLine2?: string;
   aiClusterSub?: string;
   coordinatorTitle?: string;
   coordinatorLine1?: string;
   coordinatorLine2?: string;
   dlpLine1?: string;
+  openModelsTitle?: string;
+  openModelsLine1?: string;
+  openModelsLine2?: string;
+  vectorLine1?: string;
+  vectorLine2?: string;
   db1Line1?: string;
   db2Line1?: string;
   db3Line1?: string;
@@ -126,24 +142,38 @@ function resolveDomainProfile(
     combined.includes('constellation')
   ) {
     return {
-      uiLine1: '(NASA Mission Control / AG-UI)',
-      aiClusterSub: '(NASA Harness • ADK • A2A)',
-      coordinatorTitle: 'Mission Harness Coordinator',
-      coordinatorLine1: '(NASA Multi-Universe Agent Engine /',
-      coordinatorLine2: 'Google ADK & LangGraph)',
-      dlpLine1: '(Telemetry Guardrails & Physics Safety)',
-      db1Line1: '(Multiverse Ephemeris Graph)',
-      db2Line1: '(Orbital Telemetry Stream)',
-      db3Line1: '(Flight Manifest & Doc AI)',
-      agent1: { title: 'Orbital & Trajectory', line1: 'Agent', line2: '(Google ADK / Physics AI)' },
-      agent2: { title: 'Launch & Payload', line1: 'Agent', line2: '(ADK / LangGraph)' },
-      agent3: { title: 'Multiverse Relay', line1: 'Agent', line2: '(Google ADK / HITL)' },
-      cap1: { title: 'Launch Window &', line1: 'Orbit Solver' },
-      cap2: { title: 'Stage Separation', line1: 'Sequencer' },
-      cap3: { title: 'Max-Q Propulsion', line1: 'Telemetry' },
-      cap4: { title: 'Cross-Universe', line1: 'Quantum Relay' },
-      cap5: { title: 'Constellation', line1: 'Deployment' },
-      cap6: { title: 'Deep-Space Anomaly', line1: 'Recovery (ADK)' },
+      uiTitle: 'NASA Mission Control UI',
+      uiLine1: '(Goddard GMSEC / DSN Console / AG-UI)',
+      edgeTitle: 'DSN & NSN RF Edge Layer',
+      edgeLine1: '(CCSDS 732.0-B AOS, Cloud Armor, Apigee X)',
+      edgeLine2: '(S/X/Ka-Band TT&C Link, SLE Uplink & Guard)',
+      identityLine1: 'ITAR / FedRAMP High IAM',
+      identityLine2: '(NASA PIV/CAC & Zero-Trust OIDC)',
+      apiTitle: 'Launch Commit (LCC) Gate',
+      apiLine1: 'Cloud Run Gen2 / GMSEC Bus',
+      apiLine2: '(CCSDS 133.0-B Space Packet & AFTS)',
+      aiClusterSub: '(NASA Harness • ADK • A2A • CCSDS MO)',
+      coordinatorTitle: 'Flight Director Coordinator',
+      coordinatorLine1: '(Vertex AI Agent Engine / Google ADK /',
+      coordinatorLine2: 'LangGraph & CCSDS Mission Ops)',
+      dlpLine1: '(Range Safety AFTS & Physics Sanity Guard)',
+      openModelsTitle: 'Physics Digital-Twin Sims',
+      openModelsLine1: '(Counterfactual Universe Ensembles',
+      openModelsLine2: 'on GKE TPU v5e & NVIDIA H100)',
+      vectorLine1: '(Gemini Embedding 2, NASA NTRS',
+      vectorLine2: '& cFS Anomaly Corpus)',
+      db1Line1: '(J2000 Ephemeris & LCC Graph)',
+      db2Line1: '(100Hz CCSDS Telemetry)',
+      db3Line1: '(ITAR Flight Rules & FMEA)',
+      agent1: { title: 'GNC & Orbit FDS', line1: 'Agent', line2: '(J2000 Ephemeris / ADK)' },
+      agent2: { title: "cFS / F' Avionics", line1: '& LCC Agent', line2: '(Range Safety AFTS / ADK)' },
+      agent3: { title: 'Multiverse Sim', line1: 'Digital-Twin Agent', line2: '(Counterfactual Monte Carlo)' },
+      cap1: { title: 'CCSDS 133.0-B', line1: 'Packet Telemetry' },
+      cap2: { title: 'Launch Commit (LCC)', line1: '& AFTS Range Gate' },
+      cap3: { title: 'DSN S/X/Ka-Band', line1: 'Link Budget Solver' },
+      cap4: { title: "cFS / F' Onboard", line1: 'Command Uplink' },
+      cap5: { title: 'Multi-Universe Sim', line1: '(Monte Carlo Twin)' },
+      cap6: { title: 'FDIR Autonomous', line1: 'Fault Recovery' },
     };
   }
 
@@ -265,6 +295,10 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
   const cells: string[] = [];
   const profile = resolveDomainProfile(options, ast?.metadata?.domain, ast?.metadata?.projectTitle);
 
+  if (profile.uiTitle === 'NASA Mission Control UI') {
+    return buildNasaMultiverseClosedLoopHarnessXml('light');
+  }
+
   const addVertex = (
     id: string,
     html: string,
@@ -304,7 +338,7 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
     compactNodeHtml({
       step: '1',
       leftIcon: ICONS.chat,
-      title: 'User Interface',
+      title: profile.uiTitle || 'User Interface',
       line1: profile.uiLine1 || '(Chat / Gemini Live / AG-UI)',
     }),
     495,
@@ -323,9 +357,9 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
       step: '2',
       leftIcon: ICONS.shield,
       rightIcon: ICONS.apigee,
-      title: 'Edge Layer',
-      line1: '(Cloud Armor, Apigee X, Envoy AI)',
-      line2: '(WAF, DDoS, Token Rate Limits, Semantic Cache)',
+      title: profile.edgeTitle || 'Edge Layer',
+      line1: profile.edgeLine1 || '(Cloud Armor, Apigee X, Envoy AI)',
+      line2: profile.edgeLine2 || '(WAF, DDoS, Token Rate Limits, Semantic Cache)',
     }),
     455,
     110,
@@ -340,8 +374,8 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
       leftIcon: ICONS.identity,
       rightIcon: ICONS.firebase,
       title: 'Identity Platform',
-      line1: 'Firebase Auth & Passkeys',
-      line2: '(OAuth 2.1 / OIDC Authentication)',
+      line1: profile.identityLine1 || 'Firebase Auth & Passkeys',
+      line2: profile.identityLine2 || '(OAuth 2.1 / OIDC Authentication)',
     }),
     890,
     110,
@@ -359,9 +393,9 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
       step: '3',
       leftIcon: ICONS.cloudRun,
       rightIcon: ICONS.apigee,
-      title: 'API Gateway',
-      line1: 'Cloud Run Gen2',
-      line2: '(FastAPI / gRPC / SSE API)',
+      title: profile.apiTitle || 'API Gateway',
+      line1: profile.apiLine1 || 'Cloud Run Gen2',
+      line2: profile.apiLine2 || '(FastAPI / gRPC / SSE API)',
     }),
     495,
     210,
@@ -560,7 +594,7 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
       leftIcon: ICONS.gemini,
       rightIcon: ICONS.agentCube,
       title: 'Gemini 3.1 Pro / 3.8 Flash',
-      line1: '(Vertex AI • Context Cache)',
+      line1: '(Vertex AI • Deep Research Max)',
     }),
     930,
     354,
@@ -573,9 +607,9 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
     'open_models',
     compactNodeHtml({
       leftIcon: ICONS.gkeCube,
-      title: 'Self-Hosted Open Models',
-      line1: '(Gemma 3 / Llama 4 on GKE',
-      line2: 'vLLM & Vertex Model Garden)',
+      title: profile.openModelsTitle || 'Self-Hosted Open Models',
+      line1: profile.openModelsLine1 || '(Gemma 3 / Llama 4 on GKE',
+      line2: profile.openModelsLine2 || 'vLLM & Vertex Model Garden)',
     }),
     930,
     426,
@@ -593,8 +627,8 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
       step: '6',
       leftIcon: ICONS.vectorSearch,
       title: 'Vector Search 2.0',
-      line1: '(Gemini Enterprise Search,',
-      line2: 'ScaNN & Valkey Memory)',
+      line1: profile.vectorLine1 || '(Gemini Embedding 2,',
+      line2: profile.vectorLine2 || 'ScaNN & Valkey Memory)',
     }),
     925,
     572,

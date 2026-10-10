@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { analyzePromptWithGeminiArchitect } from '@/lib/geminiArchitecturalDecisionEngine';
+import { runTruthfulnessAndGroundingCertification } from '@/lib/truthfulnessGroundingEngine';
 
 export async function POST(request: Request) {
   const guard = await enforceGeminiRouteGuard(request, { endpoint: 'api/architect-decision' });
@@ -9,11 +10,23 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const prompt = typeof body.prompt === 'string' ? body.prompt.trim() : '';
+    const blueprintId = typeof body.blueprintId === 'string' ? body.blueprintId : '00';
+    const xmlContent = typeof body.xmlContent === 'string' ? body.xmlContent : '';
 
-    const decision = await analyzePromptWithGeminiArchitect(prompt);
+    const [decision, truthfulnessDossier] = await Promise.all([
+      analyzePromptWithGeminiArchitect(prompt, guard.effectiveApiKey),
+      runTruthfulnessAndGroundingCertification({
+        prompt,
+        xmlContent,
+        blueprintId,
+        explicitApiKey: guard.effectiveApiKey,
+      }),
+    ]);
+
     return NextResponse.json({
       success: true,
       decision,
+      truthfulnessDossier,
     });
   } catch (error) {
     console.error('[/api/architect-decision] Error:', error);
@@ -26,3 +39,4 @@ export async function POST(request: Request) {
     );
   }
 }
+
