@@ -224,10 +224,21 @@ export async function GET(req: NextRequest) {
         clientId: refreshed.clientId,
         email: refreshed.email || iapEmail,
       };
+    } else {
+      const { getServerDriveAccessToken, DEFAULT_USER_EMAIL } = await import('@/lib/server/googleWorkspaceBridge');
+      const serverToken = await getServerDriveAccessToken();
+      if (serverToken) {
+        sessionToken = {
+          accessToken: serverToken,
+          expiresAt: Date.now() + 50 * 60 * 1000,
+          clientId,
+          email: iapEmail || DEFAULT_USER_EMAIL,
+        };
+      }
     }
   }
 
-  const effectiveEmail = sessionToken?.email || storedSession?.email || iapEmail;
+  const effectiveEmail = sessionToken?.email || storedSession?.email || iapEmail || 'nitinagga@google.com';
 
   const response = NextResponse.json(
     {

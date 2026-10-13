@@ -108,6 +108,17 @@ All document previews and standalone viewers (`/viewer`, `/vision`, `/studio`) m
   - `getGoogleOAuthSetupOrigins()` must return strictly `['https://promptcanvas-248990048888.cr.gclb.goog']` with zero `http://localhost:3000` or `*.railway.app` references.
   - `src/middleware.ts` and `GoogleWorkspaceDriveHandoff.tsx` must immediately redirect any request arriving on `*.up.railway.app` to `https://promptcanvas-248990048888.cr.gclb.goog` preserving pathname and query parameters.
 
+### E. Server-Side Refresh-Token Google Workspace Bridge & 1:1 Inline Slides Previewer (`DiagramInlineSlidesPreviewer.tsx`)
+- **Why Browser GIS Popup Failed vs. Server-Side Refresh-Token Bridge Succeeded**:
+  - Desktop/Installed-App OAuth credentials in `.gsheet_oauth_token.json` cannot be used inside browser GIS `google.accounts.oauth2.initTokenClient` popups due to Authorized JavaScript Origin mismatches and third-party cookie restrictions.
+  - Instead, `src/lib/server/googleWorkspaceBridge.ts` exchanges `refresh_token` server-side at `https://oauth2.googleapis.com/token`, uploads `.pptx` / `.html` to `https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true` with `mimeType: "application/vnd.google-apps.presentation"` (or `.document`) and `x-goog-user-project: "nitina-ggarwal-sandbox-647724"`, and caches pre-warmed real Google Slides (`https://docs.google.com/presentation/d/<id>/edit?authuser=nitinagga%40google.com`) and Google Docs (`https://docs.google.com/document/d/<id>/edit?authuser=nitinagga%40google.com`) URLs in `src/data/cloud_viewer_manifest.json`.
+- **Universal Inline Slides Previewer Across All Diagrams (`/blogs`, `/dashboard`, `/library`, `/viewer`)**:
+  - Every diagram across `/blogs`, `/dashboard`, and `/library` embeds `DiagramInlineSlidesPreviewer.tsx`, featuring:
+    1. **`1. EDITABLE SLIDE DECK PREVIEWER (.PPTX & GOOGLE SLIDES)`** with interactive slide tabs (`Slide 1: 1:1 Master Visual Twin`, `Slide 2: Editable Vector Topology`, `Slide 3: Component Inventory & Spec Matrix`).
+    2. **Google Drive-Style Split Action Bar (`[ S | Open with Google Slides | ▼ ]`)** that opens pre-warmed `docs.google.com/presentation/d/<id>/edit` URLs in 0ms (or converts on the fly via `POST /api/google-workspace/open`).
+    3. **Same-Screen Cloud Viewer Modal (`🔍 Cloud Viewer`)** with 3 modes: `✨ Interactive Slides Studio`, `🌐 Live Google Slides Embed`, and `📄 Live Google Docs Spec`.
+
+
 ---
 
 ## 🛡️ Strict Architectural & Cloud Run Deployment Constraints (All Current & New Projects)

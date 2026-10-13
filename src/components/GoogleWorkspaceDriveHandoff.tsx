@@ -26,6 +26,7 @@ import {
   prepareDriveTokenClient,
   resolveGoogleOAuthClientId,
 } from '@/lib/googleDriveDirectOpen';
+import cloudViewerManifestJson from '@/data/cloud_viewer_manifest.json';
 
 type HandoffPhase =
   | 'booting'
@@ -194,10 +195,67 @@ export default function GoogleWorkspaceDriveHandoff({
   const bootWithClientId = useCallback(async (id: string) => {
     const effectiveId = id || DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
     setClientId(effectiveId);
-    const rememberedEmail = getRememberedGoogleAccountEmail();
-    if (rememberedEmail) {
-      setAccountEmail(rememberedEmail);
+    const rememberedEmail = getRememberedGoogleAccountEmail() || 'nitinagga@google.com';
+    setAccountEmail(rememberedEmail);
+
+    // 1. ZERO-LATENCY PRE-WARMED MANIFEST FAST PATH (Exact parity with blogs/index.html)
+    const rawBpClean = (blueprintId || '').replace(/^#/, '').trim();
+    const candidateKeys = [
+      blueprintId,
+      rawBpClean,
+      `BP-${rawBpClean.padStart(2, '0')}`,
+      `WS${rawBpClean}`,
+    ];
+    const workstreams = (cloudViewerManifestJson as any)?.workstreams || {};
+    for (const k of candidateKeys) {
+      const entry = workstreams[k];
+      if (entry) {
+        const directUrl =
+          kind === 'slides' ? entry.slides?.googleSlidesEditUrl : entry.docs?.googleDocsEditUrl;
+        if (directUrl) {
+          setResultUrl(directUrl);
+          setPhase('redirecting');
+          window.location.replace(directUrl);
+          return;
+        }
+      }
     }
+
+    // 2. SERVER-SIDE REFRESH-TOKEN CONVERSION BRIDGE (POST /api/google-workspace/open)
+    try {
+      setPhase('compiling');
+      const blob = await ensureBlob();
+      const buf = await blob.arrayBuffer();
+      const bytes = new Uint8Array(buf);
+      let binary = '';
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      const b64 = typeof window !== 'undefined' ? window.btoa(binary) : '';
+      setPhase('creating');
+      const res = await fetch('/api/google-workspace/open', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          wsKey: `BP-${rawBpClean.padStart(2, '0')}`,
+          target: kind,
+          title: `${title} (${blueprintId})`,
+          ...(kind === 'slides' ? { pptxBase64: b64 } : { docxBase64: b64 }),
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.url) {
+          setResultUrl(data.url);
+          setPhase('redirecting');
+          window.location.replace(data.url);
+          return;
+        }
+      }
+    } catch {
+      // Fall through to GIS browser token flow if server bridge is unavailable
+    }
+
     try {
       tokenClientRef.current = await prepareDriveTokenClient(effectiveId);
     } catch (err) {
@@ -211,9 +269,6 @@ export default function GoogleWorkspaceDriveHandoff({
       void createRef.current(cached);
       return;
     }
-    // FALLBACK: If BeyondCorp IAP or previous session provided the user's @google.com email,
-    // attempt silent GIS token renewal (prompt: '', login_hint: rememberedEmail) automatically.
-    // If browser popup blocker intercepts mount-time renewal, fall back gracefully to 1-click button.
     if (rememberedEmail && tokenClientRef.current) {
       try {
         const silentToken = await tokenClientRef.current.requestToken({
@@ -228,7 +283,7 @@ export default function GoogleWorkspaceDriveHandoff({
       }
     }
     setPhase('needs-signin');
-  }, []);
+  }, [blueprintId, ensureBlob, kind, title]);
 
   useEffect(() => {
     if (bootedRef.current) return;

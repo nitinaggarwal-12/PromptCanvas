@@ -60,6 +60,9 @@ import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import GoogleWorkspaceDirectOpenModal from '@/components/GoogleWorkspaceDirectOpenModal';
+import DiagramInlineSlidesPreviewer, {
+  openDiagramInGoogleWorkspace,
+} from '@/components/DiagramInlineSlidesPreviewer';
 import {
   NewDiagramInputSelectionModal,
   NewDiagramSelectionResult
@@ -2001,6 +2004,28 @@ function DashboardContent() {
               <span>Cloud Viewer</span>
             </button>
 
+            {/* 2b. Direct Open with Google Slides Button (1:1 blogs parity) */}
+            <button
+              type="button"
+              onClick={() => {
+                const rawBp = (loadedBlueprintId || '01').replace(/^#/, '').trim();
+                void openDiagramInGoogleWorkspace(
+                  `BP-${rawBp.padStart(2, '0')}`,
+                  'slides',
+                  `${canvasTitle || 'Enterprise Architecture'} (#${rawBp})`,
+                  activeCanvasXml
+                );
+              }}
+              data-testid="dashboard-open-with-google-slides-btn"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#202124] hover:bg-[#303134] text-white border border-white/15 font-extrabold text-xs transition shadow-xs cursor-pointer shrink-0"
+              title="Open directly in Google Slides (nitinagga@google.com) via Server-Side Drive Conversion Bridge"
+            >
+              <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#fbbc04] text-[#202124] font-black text-[10px]">
+                S
+              </span>
+              <span>Open with Google Slides ↗</span>
+            </button>
+
             {/* 3. New Diagram Button (Opens Input Selection Modal) */}
             <button
               type="button"
@@ -2692,20 +2717,23 @@ function DashboardContent() {
               </div>
             </div>
 
-            {/* Canvas Viewport Rendering Draw.io XML with Guaranteed Center Alignment */}
-            <div className="flex-1 min-h-0 flex items-center justify-center overflow-auto p-2">
+            {/* Canvas Viewport with Inline Editable Slide Deck Previewer & Open with Google Slides (1:1 blogs parity) */}
+            <div className="flex-1 min-h-0 overflow-y-auto p-1">
               <div
-                style={{ transform: `scale(${zoomScale})`, transformOrigin: 'center center' }}
-                className={`w-full h-full max-w-[1440px] max-h-full min-h-0 rounded-2xl border shadow-xl overflow-hidden flex items-center justify-center relative transition-transform duration-200 ${
-                  isLight ? 'bg-white border-slate-300' : 'bg-[#090D16] border-slate-800'
-                }`}
+                style={{ transform: `scale(${zoomScale})`, transformOrigin: 'top center' }}
+                className="w-full max-w-[1520px] mx-auto transition-transform duration-200"
               >
-                <DiagramViewerRenderSafe
+                <DiagramInlineSlidesPreviewer
                   key={`${loadedBlueprintId}_${canvasPerspective}_${isLight ? 'light' : 'dark'}_${currentVersion.versionTag}_${currentVersion.id}`}
+                  manifestKey={`BP-${(loadedBlueprintId || '01').replace(/^#/, '').trim().padStart(2, '0')}`}
+                  title={`${canvasTitle || 'Enterprise Architecture'} — Blueprint #${(loadedBlueprintId || '01').replace(/^#/, '')} (${canvasPerspective})`}
+                  subtitle={currentVersion.diffSummary || '100% Collision-Free Multi-Agent Reference Architecture'}
                   xml={activeCanvasXml}
-                  aspectRatioId="16:9"
-                  bgTheme={isLight ? 'light' : 'dark'}
-                  minHeight={0}
+                  domainId="enterprise"
+                  domainName="Google Cloud Enterprise"
+                  templateId={(loadedBlueprintId || '01').replace(/^#/, '').trim().padStart(2, '0')}
+                  badgeLabel={`Blueprint #${(loadedBlueprintId || '01').replace(/^#/, '')} • ${currentVersion.versionTag}`}
+                  defaultShowSlidesPane={true}
                 />
               </div>
             </div>

@@ -267,7 +267,17 @@ export async function POST(req: NextRequest) {
     let googleFileId: string | null = null;
     let googleDriveError: string | null = null;
 
-    if (googleAccessToken && googleAccessToken.trim().length > 10) {
+    let effectiveDriveToken = googleAccessToken && googleAccessToken.trim().length > 10 ? googleAccessToken.trim() : null;
+    if (!effectiveDriveToken) {
+      try {
+        const { getServerDriveAccessToken } = await import('@/lib/server/googleWorkspaceBridge');
+        effectiveDriveToken = await getServerDriveAccessToken();
+      } catch {
+        // ignore
+      }
+    }
+
+    if (effectiveDriveToken) {
       try {
         const targetMimeType =
           entry.format === 'pptx'
@@ -294,11 +304,12 @@ export async function POST(req: NextRequest) {
         ]);
 
         const gRes = await fetch(
-          'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink',
+          'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id,webViewLink',
           {
             method: 'POST',
             headers: {
-              Authorization: `Bearer ${googleAccessToken.trim()}`,
+              Authorization: `Bearer ${effectiveDriveToken}`,
+              'x-goog-user-project': 'nitina-ggarwal-sandbox-647724',
               'Content-Type': `multipart/related; boundary=${boundary}`,
             },
             body: new Uint8Array(multipartBody),
@@ -311,8 +322,8 @@ export async function POST(req: NextRequest) {
           googleWebViewLink =
             gData.webViewLink ||
             (entry.format === 'pptx'
-              ? `https://docs.google.com/presentation/d/${gData.id}/edit`
-              : `https://docs.google.com/document/d/${gData.id}/edit`);
+              ? `https://docs.google.com/presentation/d/${gData.id}/edit?authuser=nitinagga%40google.com`
+              : `https://docs.google.com/document/d/${gData.id}/edit?authuser=nitinagga%40google.com`);
         } else {
           const errText = await gRes.text();
           googleDriveError = `Google Drive API returned ${gRes.status}: ${errText}`;

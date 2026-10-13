@@ -71,6 +71,9 @@ import { AppHeader } from '@/components/AppHeader';
 import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 import { generateUpgradedGcpGeBankingArchitectureXml } from '@/lib/canonical/upgradedGcpGeBankingAgentTemplate';
 import GoogleWorkspaceDirectOpenModal from '@/components/GoogleWorkspaceDirectOpenModal';
+import DiagramInlineSlidesPreviewer, {
+  openDiagramInGoogleWorkspace,
+} from '@/components/DiagramInlineSlidesPreviewer';
 import {
   getAutoSavedDraftBlueprints,
   markDraftDeleted,
@@ -1197,6 +1200,27 @@ function ArchitectureLibraryContent() {
                       <span>📊</span>
                       <span>Cloud Viewer</span>
                     </button>
+                    <button
+                      id="library-preview-open-google-slides-btn"
+                      type="button"
+                      onClick={() => {
+                        const rawId = activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim();
+                        const manifestKey = /^\d+$/.test(rawId) ? `BP-${rawId.padStart(2, '0')}` : rawId;
+                        void openDiagramInGoogleWorkspace(
+                          manifestKey,
+                          'slides',
+                          activeModalCanvas.name,
+                          activeVersion.xml_content
+                        );
+                      }}
+                      className="px-3.5 py-2 rounded-xl bg-[#202124] hover:bg-[#303134] text-white border border-white/15 text-xs font-black transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+                      title="Open directly in Google Slides (nitinagga@google.com) via Server-Side Drive Conversion Bridge"
+                    >
+                      <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#fbbc04] text-[#202124] font-black text-[10px]">
+                        S
+                      </span>
+                      <span>Open with Google Slides ↗</span>
+                    </button>
                   </>
                 )}
                 <button
@@ -1218,7 +1242,7 @@ function ArchitectureLibraryContent() {
             </div>
 
             {/* Full-Page Body Viewport with Floating Left/Right Navigation Paddles */}
-            <div className="flex-1 overflow-hidden relative bg-white">
+            <div className="flex-1 overflow-y-auto relative bg-[#0B111E] p-4">
               {/* Floating Backward (Previous) Paddle */}
               {prevModalDiagram && (
                 <button
@@ -1253,11 +1277,20 @@ function ArchitectureLibraryContent() {
                   <span className="text-sm font-bold">Loading full-screen architecture canvas...</span>
                 </div>
               ) : activeVersion ? (
-                <div className="w-full h-full flex items-center justify-center bg-white">
-                  <DiagramViewer
+                <div className="w-full max-w-[1520px] mx-auto">
+                  <DiagramInlineSlidesPreviewer
+                    key={`${activeModalCanvas.id}_${activeVersion.version_number}`}
+                    manifestKey={
+                      /^\d+$/.test(activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim())
+                        ? `BP-${activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim().padStart(2, '0')}`
+                        : activeModalCanvas.id
+                    }
+                    title={activeModalCanvas.name}
+                    subtitle={activeVersion.comment || activeModalCanvas.latest_prompt || 'Enterprise Reference Architecture'}
                     xml={activeVersion.xml_content}
-                    aspectRatioId="16:9"
-                    bgTheme="light"
+                    templateId={activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim().padStart(2, '0')}
+                    badgeLabel={`Library • v${activeVersion.version_number}`}
+                    defaultShowSlidesPane={true}
                   />
                 </div>
               ) : (
@@ -1851,10 +1884,38 @@ function ArchitectureLibraryContent() {
                                   ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
                                   : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
                               }`}
-                              title="Open full-screen template page"
+                              title="Open full-screen template page with Inline Slides Previewer"
                             >
                               <Eye className="w-3.5 h-3.5 text-teal-500" aria-hidden="true" />
                               <span>Full Page</span>
+                            </button>
+
+                            {/* 1-Click Open with Google Slides */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const rawId = diagram.id.replace(/^(bp_|canonical_)/i, '').trim();
+                                const manifestKey = /^\d+$/.test(rawId) ? `BP-${rawId.padStart(2, '0')}` : rawId;
+                                const fallbackXml =
+                                  diagram.xml_content ||
+                                  diagram.versions?.[0]?.xml_content ||
+                                  getDefaultXmlForArchitecture(diagram.architecture_type || 'cloud_microservices');
+                                void openDiagramInGoogleWorkspace(
+                                  manifestKey,
+                                  'slides',
+                                  diagram.name,
+                                  fallbackXml || undefined
+                                );
+                              }}
+                              aria-label={`Open ${diagram.name} in Google Slides`}
+                              className="py-2 px-2.5 rounded-xl bg-[#202124] hover:bg-[#303134] text-white border border-white/15 text-xs font-extrabold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                              title="Open directly in Google Slides (nitinagga@google.com) via Server-Side Drive Conversion Bridge"
+                            >
+                              <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#fbbc04] text-[#202124] font-black text-[10px]">
+                                S
+                              </span>
+                              <span>Slides ↗</span>
                             </button>
                           </div>
 

@@ -35,6 +35,9 @@ import {
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { AppHeader, btnClass } from '@/components/AppHeader';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
+import DiagramInlineSlidesPreviewer, {
+  openDiagramInGoogleWorkspace,
+} from '@/components/DiagramInlineSlidesPreviewer';
 import {
   CANONICAL_TEMPLATES,
   injectDomainFlavorXml,
@@ -1580,44 +1583,38 @@ function TechnicalBlogStudioContent() {
                     </div>
 
                     <div className="p-4">
-                      {isOfficialArchCenterActive && archCenterRenderMode === 'svg' ? (
-                        <div
-                          data-testid="blog-diagram-canvas-box"
-                          className="w-full rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-[#f8f9fa] flex items-center justify-center p-2"
-                        >
-                          <div
-                            data-testid="official-arch-center-svg-wrapper"
-                            className="w-full max-w-[1100px] mx-auto [&>svg]:w-full [&>svg]:h-auto [&>svg]:block"
-                            dangerouslySetInnerHTML={{ __html: activeOfficialArchCenterSvg }}
-                          />
-                        </div>
-                      ) : (
-                        <div
-                          data-testid="blog-diagram-canvas-box"
-                          className="h-[640px] w-full rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#080D1A]"
-                        >
-                          <DiagramViewerRenderSafe xml={activeSelectorXml} />
-                        </div>
-                      )}
-                      <div className="mt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 px-1">
-                        <span>
-                          <strong>
-                            Figure (Blueprint #{activeTemplateMeta?.id} —{' '}
-                            {isOfficialArchCenterActive
-                              ? `${activeOfficialArchCenterBp.title} ${activeOfficialArchCenterBp.subtitle}`
-                              : activeTemplateMeta?.name}
-                            ):
-                          </strong>{' '}
-                          {activeTemplateMeta?.primaryPurpose}
-                        </span>
-                        <Link
-                          href={`/dashboard?template=${activeSelectorTemplateId}`}
-                          className="text-indigo-600 dark:text-indigo-400 hover:underline font-bold inline-flex items-center gap-1 shrink-0"
-                        >
-                          <span>Edit Blueprint #{activeTemplateMeta?.id} in Design Canvas</span>
-                          <ArrowUpRight className="w-3.5 h-3.5" />
-                        </Link>
-                      </div>
+                      <DiagramInlineSlidesPreviewer
+                        manifestKey={
+                          isOfficialArchCenterActive && archCenterVariantId !== 'auto'
+                            ? archCenterVariantId
+                            : isOfficialArchCenterActive && activeUseCase.archCenterBlueprintVariantId
+                            ? activeUseCase.archCenterBlueprintVariantId
+                            : activeUseCase.shortLabel.match(/^WS[1-5]/i)?.[0]?.toUpperCase() ||
+                              `BP-${String(activeSelectorTemplateId).padStart(2, '0')}`
+                        }
+                        title={
+                          isOfficialArchCenterActive
+                            ? `${activeOfficialArchCenterBp.title} — ${activeOfficialArchCenterBp.subtitle}`
+                            : `${activeUseCase.shortLabel} — Blueprint #${activeTemplateMeta?.id} (${activeTemplateMeta?.name})`
+                        }
+                        subtitle={activeUseCase.summaryPrompt}
+                        xml={activeSelectorXml}
+                        svgString={
+                          isOfficialArchCenterActive && archCenterRenderMode === 'svg'
+                            ? activeOfficialArchCenterSvg
+                            : undefined
+                        }
+                        domainId={activeUseCase.domainId}
+                        domainName={activeUseCase.domainName}
+                        templateId={String(activeSelectorTemplateId).padStart(2, '0')}
+                        badgeLabel={
+                          activeUseCase.shortLabel.match(/^WS[1-5]/i)?.[0]?.toUpperCase()
+                            ? `${activeUseCase.shortLabel.match(/^WS[1-5]/i)?.[0]?.toUpperCase()} • Blueprint #${activeTemplateMeta?.id}`
+                            : `Blueprint #${activeTemplateMeta?.id}`
+                        }
+                        editCanvasHref={`/dashboard?template=${activeSelectorTemplateId}`}
+                        defaultShowSlidesPane={true}
+                      />
                     </div>
                   </div>
 
@@ -1734,6 +1731,33 @@ function TechnicalBlogStudioContent() {
                             </div>
                           ) : (
                             <div>{renderFormattedMarkdownText(sec.markdown)}</div>
+                          )}
+
+                          {/* Embedded Section Figure with Inline Slides Previewer & Open with Google Slides */}
+                          {sec.embeddedDiagram && (
+                            <div className="my-5">
+                              <DiagramInlineSlidesPreviewer
+                                manifestKey={`BP-${String(sec.embeddedDiagram.templateId).padStart(2, '0')}`}
+                                title={`Figure (Blueprint #${String(sec.embeddedDiagram.templateId).padStart(2, '0')}): ${sec.embeddedDiagram.caption}`}
+                                subtitle={activeUseCase.summaryPrompt}
+                                xml={getFlavoredDiagramXml(
+                                  sec.embeddedDiagram.templateId,
+                                  sec.embeddedDiagram.caption
+                                )}
+                                svgString={
+                                  String(sec.embeddedDiagram.templateId).padStart(2, '0') === '78'
+                                    ? activeOfficialArchCenterSvg
+                                    : undefined
+                                }
+                                domainId={activeUseCase.domainId}
+                                domainName={activeUseCase.domainName}
+                                templateId={String(sec.embeddedDiagram.templateId).padStart(2, '0')}
+                                badgeLabel={`Section Figure • #${String(sec.embeddedDiagram.templateId).padStart(2, '0')}`}
+                                editCanvasHref={`/dashboard?template=${sec.embeddedDiagram.templateId}`}
+                                defaultShowSlidesPane={false}
+                                compact={true}
+                              />
+                            </div>
                           )}
 
                           {/* Runnable Code Block */}

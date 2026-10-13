@@ -42,6 +42,7 @@ import {
   resolveGoogleOAuthClientId,
   saveLocalGoogleOAuthClientIdOverride,
 } from '@/lib/googleDriveDirectOpen';
+import { openDiagramInGoogleWorkspace } from '@/components/DiagramInlineSlidesPreviewer';
 
 interface GoogleWorkspaceDirectOpenModalProps {
   isOpen: boolean;
@@ -522,56 +523,55 @@ export default function GoogleWorkspaceDirectOpenModal({
   };
 
   /**
-   * Method 1: 1-click "Open with Google Slides / Google Docs" — Google Identity Services sign-in (drive.file)
-   * + Drive API conversion into a NATIVE Google Slides / Google Docs file inside the signed-in user's own Drive.
-   * Result: a real https://docs.google.com/presentation/d/<id>/edit URL (never a download, never the read-only viewer).
+   * Method 1: 1-click "Open with Google Slides / Google Docs" — Server-Side Refresh-Token Bridge
+   * (Exact parity with /Users/nitinagga/Documents/blogs/index.html & sync_google_workspace_bridge.py)
+   * Result: a real https://docs.google.com/presentation/d/<id>/edit?authuser=nitinagga%40google.com URL.
    */
   const handleDirectGoogleDriveOpen = async () => {
     if (activeMode === 'pdf') return;
     const productLabel = activeMode === 'docs' ? 'Google Docs' : 'Google Slides';
-    const rawId = googleClientId || (await resolveGoogleOAuthClientId()) || DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
-    const clientId = isValidGoogleOAuthClientId(rawId) ? rawId : DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
+    const rawBpClean = (blueprintId || '').replace(/^#/, '').trim();
+    const manifestKey = rawBpClean ? `BP-${rawBpClean.padStart(2, '0')}` : 'WS1';
 
     setIsUploadingToGoogleDrive(true);
     try {
-      // 1. Google sign-in first (the popup must open inside the click gesture window); cached tokens skip this.
+      const openedUrl = await openDiagramInGoogleWorkspace(
+        manifestKey,
+        activeMode === 'docs' ? 'docs' : 'slides',
+        `${diagramName} (${blueprintId})`,
+        xmlContent
+      );
+      if (openedUrl) {
+        setStatusMessage({
+          type: 'success',
+          text: `🎉 Opened ${productLabel} in Google Drive (nitinagga@google.com): ${openedUrl}`,
+          url: openedUrl,
+        });
+        return;
+      }
+
+      // Fallback to GIS if server bridge returns empty
+      const rawId = googleClientId || (await resolveGoogleOAuthClientId()) || DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
+      const clientId = isValidGoogleOAuthClientId(rawId) ? rawId : DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
       let token = getCachedDriveToken(clientId);
       if (!token) {
-        setStatusMessage({
-          type: 'info',
-          text: `Opening Google sign-in to create the ${productLabel} file in your Google Drive…`,
-        });
         const tokenClient = await prepareDriveTokenClient(clientId);
         token = await tokenClient.requestToken({ prompt: '' });
       }
       if (token.email) setGoogleAccountEmail(token.email);
-
-      // 2. Compile the 1:1 master + editable shapes deck in memory.
-      setStatusMessage({
-        type: 'info',
-        text: `Compiling 100% 1:1 Master & Editable ${activeMode === 'slides' ? 'Presentation (.pptx)' : 'Specification (.docx)'} in memory…`,
-      });
       const blob = await compileActiveWorkspaceBlob();
-
-      // 3. Drive API converts it into a native Google file owned by the user.
-      setStatusMessage({ type: 'info', text: `Creating native ${productLabel} file in Google Drive…` });
       const result = await createGoogleWorkspaceFileFromBlob(token.accessToken, blob, {
         name: `${diagramName} (${blueprintId})`,
         kind: activeMode === 'docs' ? 'docs' : 'slides',
         email: token.email,
       });
-
-      // Direct external Google tab launcher — the REAL docs.google.com editor URL for the converted file.
       const externalGoogleTabUrl = result.url;
       setStatusMessage({
         type: 'success',
-        text: `🎉 Created ${productLabel} in your Google Drive${token.email ? ` (${token.email})` : ''}. Opening…`,
+        text: `🎉 Created ${productLabel} in your Google Drive. Opening…`,
         url: externalGoogleTabUrl,
       });
-      const opened = typeof window !== 'undefined' ? window.open(externalGoogleTabUrl, '_blank') : null;
-      if (!opened && isFullPage && typeof window !== 'undefined') {
-        window.location.assign(externalGoogleTabUrl);
-      }
+      if (typeof window !== 'undefined') window.open(externalGoogleTabUrl, '_blank');
     } catch (err: any) {
       const message =
         err instanceof GoogleDriveDirectOpenError
@@ -661,12 +661,38 @@ export default function GoogleWorkspaceDirectOpenModal({
   };
 
   /**
-   * Open Populated Slides, Docs, or PDF in a New Browser Tab (Zero Forced File Downloads)
+   * Open Populated Slides, Docs, or PDF Directly in Google Slides / Google Docs (Exact parity with blogs/index.html)
    */
   const handleOpenGoogleCloudViewer = async (targetMode?: 'slides' | 'docs' | 'pdf', _forceExternalLaunch = false) => {
     const modeToUse = targetMode || activeMode;
     setShowOpenWithDropdown(false);
     setActiveMode(modeToUse);
+
+    if (modeToUse === 'slides' || modeToUse === 'docs') {
+      const rawBpClean = (blueprintId || '').replace(/^#/, '').trim();
+      const manifestKey = rawBpClean ? `BP-${rawBpClean.padStart(2, '0')}` : 'WS1';
+      try {
+        const openedUrl = await openDiagramInGoogleWorkspace(
+          manifestKey,
+          modeToUse,
+          `${diagramName} (${blueprintId})`,
+          xmlContent
+        );
+        if (openedUrl) {
+          setStatusMessage({
+            type: 'success',
+            text:
+              modeToUse === 'slides'
+                ? `📊 Opened ${diagramName} in Google Slides (${openedUrl})!`
+                : `📄 Opened ${diagramName} in Google Docs (${openedUrl})!`,
+            url: openedUrl,
+          });
+          return;
+        }
+      } catch {
+        // Fall through
+      }
+    }
 
     try {
       if (typeof window !== 'undefined') {
@@ -698,12 +724,7 @@ export default function GoogleWorkspaceDirectOpenModal({
       }
       setStatusMessage({
         type: 'success',
-        text:
-          modeToUse === 'slides'
-            ? `📊 Opening ${diagramName} in Google Slides — creating an editable copy in your Google Drive in the next tab…`
-            : modeToUse === 'docs'
-            ? `📄 Opening ${diagramName} in Google Docs — creating an editable copy in your Google Drive in the next tab…`
-            : `🖨️ Opened populated PDF Document (${diagramName}) in the next tab!`,
+        text: `🖨️ Opened populated PDF Document (${diagramName}) in the next tab!`,
       });
     } catch (err: any) {
       setStatusMessage({
