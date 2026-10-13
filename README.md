@@ -43,7 +43,19 @@ GEMINI_PRO_MODEL=gemini-3.1-pro-preview
 GEMINI_FLASH_MODEL=gemini-3.8-flash
 GEMINI_LIVE_MODEL=gemini-3.1-flash-live-preview
 OMNI_MODEL_ID=google-omni-1.1
+
+# Server-Side Refresh-Token Google Workspace Bridge (src/lib/server/googleWorkspaceBridge.ts)
+GOOGLE_OAUTH_CLIENT_ID=<desktop-or-web-oauth-client-id>
+GOOGLE_OAUTH_CLIENT_SECRET=<oauth-client-secret>
+GOOGLE_OAUTH_REFRESH_TOKEN=<refresh-token-for-nitinagga@google.com>
+GOOGLE_DRIVE_QUOTA_PROJECT=nitina-ggarwal-sandbox-647724
 ```
+
+### 📊 Universal 1:1 Inline Slides Previewer & `"Open with Google Slides"` Bridge (`Rule 47`)
+Every diagram across `/blogs`, `/dashboard`, `/library`, and `/viewer` embeds [`DiagramInlineSlidesPreviewer.tsx`](src/components/DiagramInlineSlidesPreviewer.tsx) backed by [`src/lib/server/googleWorkspaceBridge.ts`](src/lib/server/googleWorkspaceBridge.ts) and [`src/data/cloud_viewer_manifest.json`](src/data/cloud_viewer_manifest.json):
+- **Zero Browser GIS OAuth Popups**: Instead of calling browser `google.accounts.oauth2.initTokenClient` (which fails with Desktop OAuth credentials due to missing Authorized JavaScript Origins), the server exchanges `grant_type=refresh_token` at `https://oauth2.googleapis.com/token` and converts `.pptx` / `.html` via Google Drive v3 (`mimeType: "application/vnd.google-apps.presentation"` / `.document`, `x-goog-user-project: "nitina-ggarwal-sandbox-647724"`).
+- **Pre-Warmed `0ms` Direct Open**: Pre-warmed Google Slides (`https://docs.google.com/presentation/d/<id>/edit?authuser=nitinagga%40google.com`) and Google Docs URLs in `src/data/cloud_viewer_manifest.json` open in `0ms`, while dynamic diagrams convert on the fly via `POST /api/google-workspace/open`.
+- **2-Pane Split View + 3-Mode Cloud Viewer Modal**: Renders `1. EDITABLE SLIDE DECK PREVIEWER (.PPTX & GOOGLE SLIDES)` side-by-side with `2. ARCHITECTURE DIAGRAM IN THIS WORKSTREAM`, plus the Same-Screen Cloud Viewer Modal (`✨ Interactive Slides Studio`, `🌐 Live Google Slides Embed`, `📄 Live Google Docs Spec`).
 
 ### Per-Request A/B Feature Flag Override
 Pass `layoutEngineV2: true` (or `false`) in the `POST /api/generate` request body, query parameter `?layoutEngineV2=true`, or HTTP header `x-layout-engine-v2: true` to switch between Pipeline V1 and V2 on the fly.

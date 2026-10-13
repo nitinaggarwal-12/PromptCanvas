@@ -93,6 +93,15 @@ Executes 4 deterministic validation gates on all generated XML:
   - Production: Managed PostgreSQL via connection pools (`pg`).
 - **Schema Lineage**: Persists diagram versions, chat conversation turns, and architectural taxonomy tags with immutable UUIDs (`/studio?id=<uuid>`).
 
+### 3.6 Server-Side Refresh-Token Google Workspace Bridge & Universal Inline Slides Previewer (`src/lib/server/googleWorkspaceBridge.ts`, `src/data/cloud_viewer_manifest.json`, `src/components/DiagramInlineSlidesPreviewer.tsx`)
+- **Why Legacy Browser GIS Popup Failed vs. Server-Side Refresh-Token Bridge Succeeded**:
+  - Desktop/Installed-App OAuth credentials in `.gsheet_oauth_token.json` (`nitinagga@google.com`) cannot be used inside browser Google Identity Services (`google.accounts.oauth2.initTokenClient`) popups due to missing browser Authorized JavaScript Origins (`origin_mismatch` / `popup_closed`).
+  - `src/lib/server/googleWorkspaceBridge.ts` exchanges `grant_type=refresh_token` **server-side** at `https://oauth2.googleapis.com/token` (using `.gsheet_oauth_token.json` locally or `GOOGLE_OAUTH_CLIENT_ID` / `GOOGLE_OAUTH_CLIENT_SECRET` / `GOOGLE_OAUTH_REFRESH_TOKEN` on Cloud Run), uploads `.pptx` / `.html` bytes via multipart `POST https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true` with `mimeType: "application/vnd.google-apps.presentation"` (or `.document`) and header `x-goog-user-project: "nitina-ggarwal-sandbox-647724"`, and caches the resulting URLs in `src/data/cloud_viewer_manifest.json`.
+- **Pre-Warmed Google Drive Manifest (`0ms` Direct Open)**:
+  - `src/data/cloud_viewer_manifest.json` (`GET /api/google-workspace/manifest` & `POST /api/google-workspace/open`) stores verified `https://docs.google.com/presentation/d/<id>/edit?authuser=nitinagga%40google.com` and `https://docs.google.com/document/d/<id>/edit?authuser=nitinagga%40google.com` links for `WS1`–`WS5`, `ALL`, `BP-00`..`BP-78`, `GCP-MULTIAGENT-01`, and all 7 Official Google Cloud Architecture Center variants.
+- **Universal 2-Pane Inline Slides Previewer (`src/components/DiagramInlineSlidesPreviewer.tsx`)**:
+  - Embedded across `/blogs` (`src/app/blogs/page.tsx`), `/dashboard` (`src/app/dashboard/page.tsx`), and `/library` (`src/app/library/page.tsx`) to provide a 2-pane split layout (`1. EDITABLE SLIDE DECK PREVIEWER (.PPTX & GOOGLE SLIDES)` + `2. ARCHITECTURE DIAGRAM IN THIS WORKSTREAM`), the Google Drive-style split button (`[ S | Open with Google Slides | ▼ ]`), and the 3-mode Same-Screen Cloud Viewer Modal (`✨ Interactive Slides Studio`, `🌐 Live Google Slides Embed`, `📄 Live Google Docs Spec`).
+
 ---
 
 ## 4. The 3-Tier Architectural Hierarchy & Conceptual 4-Flow Taxonomy
