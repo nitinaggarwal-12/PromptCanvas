@@ -5,7 +5,7 @@ import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/geminiLock';
 import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
-import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
+import { preflightVerifyAndHealXmlAcrossAll6Audits, applyOmniAndGeminiAutoFixRemediation } from '@/lib/preflightAuditEngine';
 import { GEMINI_MODEL_ID, getEffectiveGeminiApiKey } from '@/lib/geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
@@ -95,9 +95,12 @@ ${remediationInstructions}
       }
     }
 
-    // Apply Pre-Flight 6-Audit Pre-Compiler Pass to guarantee zero visual collisions & 100% posture
-    rawXml = preflightVerifyAndHealXmlAcrossAll6Audits(
-      rawXml || currentXml,
+    // Apply Pre-Flight 6-Audit Pre-Compiler + Omni/Gemini Auto-Fix Remediation Pass to guarantee zero visual collisions & 100% posture
+    rawXml = applyOmniAndGeminiAutoFixRemediation(
+      preflightVerifyAndHealXmlAcrossAll6Audits(
+        rawXml || currentXml,
+        architectureType || latestVersion.architecture_type || 'unified_system_view'
+      ),
       architectureType || latestVersion.architecture_type || 'unified_system_view'
     );
 
