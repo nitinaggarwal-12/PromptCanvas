@@ -32,6 +32,7 @@ import {
 import { exportDrawioToEditableDocx } from '@/lib/export/editableDocxCompiler';
 import { exportDiagramPng } from '@/lib/export/diagramRaster';
 import {
+  DEFAULT_GOOGLE_OAUTH_CLIENT_ID,
   GoogleDriveDirectOpenError,
   createGoogleWorkspaceFileFromBlob,
   getCachedDriveToken,
@@ -138,8 +139,8 @@ export default function GoogleWorkspaceDirectOpenModal({
   }, [diagramName, blueprintId]);
 
   // Cloud / OAuth states — Google Identity Services token flow (drive.file) via @/lib/googleDriveDirectOpen
-  const [googleClientId, setGoogleClientId] = useState<string>('');
-  const [googleClientIdSource, setGoogleClientIdSource] = useState<'none' | 'server' | 'local'>('none');
+  const [googleClientId, setGoogleClientId] = useState<string>(DEFAULT_GOOGLE_OAUTH_CLIENT_ID);
+  const [googleClientIdSource, setGoogleClientIdSource] = useState<'none' | 'server' | 'local'>('server');
   const [googleAccountEmail, setGoogleAccountEmail] = useState<string>('');
   const [showAuthConfig, setShowAuthConfig] = useState<boolean>(false);
   const [isUploadingToGoogleDrive, setIsUploadingToGoogleDrive] = useState<boolean>(false);
@@ -528,16 +529,8 @@ export default function GoogleWorkspaceDirectOpenModal({
   const handleDirectGoogleDriveOpen = async () => {
     if (activeMode === 'pdf') return;
     const productLabel = activeMode === 'docs' ? 'Google Docs' : 'Google Slides';
-    const clientId = googleClientId || (await resolveGoogleOAuthClientId());
-
-    if (!isValidGoogleOAuthClientId(clientId)) {
-      setShowAuthConfig(true);
-      setStatusMessage({
-        type: 'error',
-        text: `One-time setup needed: add the Google OAuth Web Client ID (GOOGLE_OAUTH_CLIENT_ID on Cloud Run, or paste it in the setup bar) to open ${productLabel} directly in your Google Drive.`,
-      });
-      return;
-    }
+    const rawId = googleClientId || (await resolveGoogleOAuthClientId()) || DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
+    const clientId = isValidGoogleOAuthClientId(rawId) ? rawId : DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
 
     setIsUploadingToGoogleDrive(true);
     try {
@@ -1361,40 +1354,26 @@ export default function GoogleWorkspaceDirectOpenModal({
               </div>
             </div>
 
-            {/* Google Drive sign-in settings bar (Share ▾): one-time OAuth Web Client ID + signed-in account */}
+            {/* Google Drive connection status bar (Share ▾) */}
             {showAuthConfig && (
               <div
                 data-testid="google-drive-oauth-setup-bar"
-                className="mx-3 mb-1.5 px-4 py-2 rounded-xl bg-amber-50 border border-amber-200 flex flex-wrap items-center justify-between gap-2 text-xs"
+                className="mx-3 mb-1.5 px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 flex flex-wrap items-center justify-between gap-2 text-xs"
               >
-                <div className="flex items-center gap-2 text-amber-950 font-medium">
-                  <KeyRound className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                <div className="flex items-center gap-2 text-emerald-950 font-medium">
+                  <KeyRound className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                   <span>
-                    {googleClientIdSource === 'server'
-                      ? 'Google sign-in is configured on the server (GOOGLE_OAUTH_CLIENT_ID).'
-                      : googleClientIdSource === 'local'
-                      ? 'Google sign-in uses the OAuth Client ID saved in this browser.'
-                      : 'One-time setup: paste the Google OAuth Web Client ID (or set GOOGLE_OAUTH_CLIENT_ID on Cloud Run).'}
+                    Google Drive Direct Open is configured on Cloud Run (`ramp-portal-dev`).
                     {googleAccountEmail ? ` Signed in as ${googleAccountEmail}.` : ''}
                   </span>
                 </div>
-                <div className="flex flex-wrap items-center gap-2 flex-1 max-w-2xl">
-                  <input
-                    type="text"
-                    value={googleClientId}
-                    onChange={(e) => handleSaveGoogleClientId(e.target.value)}
-                    placeholder="1234567890-abc123.apps.googleusercontent.com"
-                    data-testid="google-drive-oauth-client-id-input"
-                    className="flex-1 min-w-[220px] px-2.5 py-1 rounded border border-amber-300 bg-white text-slate-900 text-xs font-mono"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowAuthConfig(false)}
-                    className="px-2.5 py-1 rounded bg-slate-900 text-white font-semibold cursor-pointer"
-                  >
-                    Done
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowAuthConfig(false)}
+                  className="px-2.5 py-1 rounded bg-slate-900 text-white font-semibold cursor-pointer"
+                >
+                  Done
+                </button>
               </div>
             )}
 

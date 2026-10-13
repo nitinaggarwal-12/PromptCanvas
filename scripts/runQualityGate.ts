@@ -249,7 +249,8 @@ const steps: GateStep[] = [
         'src/app/api/compose/route.ts',
         'src/app/api/diagrams/customize/route.ts',
         'src/app/api/research-infographic/route.ts',
-        'src/app/api/infographic-blueprint/route.ts'
+        'src/app/api/infographic-blueprint/route.ts',
+        'src/app/api/blogs/generate/route.ts'
       ];
       for (const relRoute of conversationalGuardedRoutes) {
         const src = readFileSync(path.join(process.cwd(), relRoute), 'utf8');

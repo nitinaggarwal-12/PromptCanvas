@@ -20,6 +20,9 @@ export const GOOGLE_DRIVE_FILE_SCOPE = 'https://www.googleapis.com/auth/drive.fi
 export const GOOGLE_OAUTH_SCOPES = `${GOOGLE_DRIVE_FILE_SCOPE} openid email`;
 
 export const GOOGLE_OAUTH_CLIENT_ID_STORAGE_KEY = 'pc_google_oauth_client_id';
+export const CANONICAL_BEYONDCORP_ORIGIN = 'https://promptcanvas-248990048888.cr.gclb.goog';
+export const DEFAULT_GOOGLE_OAUTH_CLIENT_ID =
+  '248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com';
 const DRIVE_TOKEN_STORAGE_KEY = 'pc_google_drive_token_v2';
 const REMEMBERED_EMAIL_STORAGE_KEY = 'pc_google_user_email';
 const OAUTH_CONFIG_CACHE_KEY = 'pc_google_oauth_config_v1';
@@ -158,7 +161,9 @@ export async function resolveGoogleOAuthClientId(): Promise<string> {
       if (cachedRaw) {
         const cached = JSON.parse(cachedRaw) as { clientId?: string; fetchedAt?: number };
         if (cached && Date.now() - (cached.fetchedAt || 0) < OAUTH_CONFIG_CACHE_TTL_MS) {
-          return isValidGoogleOAuthClientId(cached.clientId) ? String(cached.clientId) : '';
+          return isValidGoogleOAuthClientId(cached.clientId)
+            ? String(cached.clientId)
+            : DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
         }
       }
     } catch {
@@ -168,7 +173,7 @@ export async function resolveGoogleOAuthClientId(): Promise<string> {
 
   try {
     const res = await fetch('/api/google-workspace/oauth-config', { cache: 'no-store' });
-    if (!res.ok) return override || '';
+    if (!res.ok) return override || DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
     const data = (await res.json()) as {
       clientId?: string;
       iapEmail?: string;
@@ -189,13 +194,13 @@ export async function resolveGoogleOAuthClientId(): Promise<string> {
       }
     }
     const serverClientId = isValidGoogleOAuthClientId(data?.clientId) ? String(data.clientId).trim() : '';
-    const finalClientId = override || serverClientId;
+    const finalClientId = override || serverClientId || DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
     if (finalClientId) {
       session?.setItem(OAUTH_CONFIG_CACHE_KEY, JSON.stringify({ clientId: finalClientId, fetchedAt: Date.now() }));
     }
     return finalClientId;
   } catch {
-    return override || '';
+    return override || DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
   }
 }
 
@@ -528,11 +533,8 @@ export async function createGoogleWorkspaceFileFromBlob(
   };
 }
 
-/** Human-readable guidance for the one-time OAuth client setup (shown in the handoff UI). */
+/** Canonical authorized JavaScript origin for Google Identity Services. */
 export function getGoogleOAuthSetupOrigins(): string[] {
-  const origins = new Set<string>(['https://promptcanvas-248990048888.cr.gclb.goog', 'http://localhost:3000']);
-  if (typeof window !== 'undefined' && window.location?.origin) {
-    origins.add(window.location.origin);
-  }
-  return Array.from(origins);
+  return [CANONICAL_BEYONDCORP_ORIGIN];
 }
+

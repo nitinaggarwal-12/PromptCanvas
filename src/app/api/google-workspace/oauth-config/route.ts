@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { CachedDriveToken, GOOGLE_OAUTH_SCOPES, isValidGoogleOAuthClientId } from '@/lib/googleDriveDirectOpen';
+import {
+  CachedDriveToken,
+  DEFAULT_GOOGLE_OAUTH_CLIENT_ID,
+  GOOGLE_OAUTH_SCOPES,
+  isValidGoogleOAuthClientId,
+} from '@/lib/googleDriveDirectOpen';
 
 export const dynamic = 'force-dynamic';
 
@@ -160,9 +165,9 @@ export async function GET(req: NextRequest) {
   const rawClientId = (
     process.env.GOOGLE_OAUTH_CLIENT_ID ||
     process.env.NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID ||
-    ''
+    DEFAULT_GOOGLE_OAUTH_CLIENT_ID
   ).trim();
-  const clientId = isValidGoogleOAuthClientId(rawClientId) ? rawClientId : '';
+  const clientId = isValidGoogleOAuthClientId(rawClientId) ? rawClientId : DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
   const iapEmail = extractAuthenticatedGoogleEmail(req);
 
   let sessionToken: CachedDriveToken | null = null;

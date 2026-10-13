@@ -6,14 +6,15 @@ import {
   CheckCircle2,
   ExternalLink,
   Eye,
-  KeyRound,
   LayoutTemplate,
   Loader2,
   RefreshCw,
   UserRound,
 } from 'lucide-react';
 import {
+  CANONICAL_BEYONDCORP_ORIGIN,
   CachedDriveToken,
+  DEFAULT_GOOGLE_OAUTH_CLIENT_ID,
   DriveTokenClient,
   GOOGLE_WORKSPACE_MIME,
   GoogleDriveDirectOpenError,
@@ -21,17 +22,13 @@ import {
   clearCachedDriveToken,
   createGoogleWorkspaceFileFromBlob,
   getCachedDriveToken,
-  getGoogleOAuthSetupOrigins,
   getRememberedGoogleAccountEmail,
-  isValidGoogleOAuthClientId,
   prepareDriveTokenClient,
   resolveGoogleOAuthClientId,
-  saveLocalGoogleOAuthClientIdOverride,
 } from '@/lib/googleDriveDirectOpen';
 
 type HandoffPhase =
   | 'booting'
-  | 'needs-client-id'
   | 'needs-signin'
   | 'signing-in'
   | 'compiling'
@@ -56,7 +53,6 @@ const STEP_LABELS = ['Compile deck', 'Google sign-in', 'Create in Drive', 'Open 
 function stepIndexForPhase(phase: HandoffPhase): number {
   switch (phase) {
     case 'booting':
-    case 'needs-client-id':
       return 0;
     case 'needs-signin':
     case 'signing-in':
@@ -114,9 +110,7 @@ export default function GoogleWorkspaceDriveHandoff({
   const productLabel = GOOGLE_WORKSPACE_MIME[kind].label;
   const [phase, setPhase] = useState<HandoffPhase>('booting');
   const [error, setError] = useState<GoogleDriveDirectOpenError | null>(null);
-  const [clientId, setClientId] = useState<string>('');
-  const [clientIdDraft, setClientIdDraft] = useState<string>('');
-  const [clientIdDraftError, setClientIdDraftError] = useState<string>('');
+  const [clientId, setClientId] = useState<string>(DEFAULT_GOOGLE_OAUTH_CLIENT_ID);
   const [accountEmail, setAccountEmail] = useState<string | undefined>(undefined);
   const [resultUrl, setResultUrl] = useState<string>('');
 
@@ -198,20 +192,21 @@ export default function GoogleWorkspaceDriveHandoff({
   }, [createAndRedirect]);
 
   const bootWithClientId = useCallback(async (id: string) => {
-    setClientId(id);
+    const effectiveId = id || DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
+    setClientId(effectiveId);
     const rememberedEmail = getRememberedGoogleAccountEmail();
     if (rememberedEmail) {
       setAccountEmail(rememberedEmail);
     }
     try {
-      tokenClientRef.current = await prepareDriveTokenClient(id);
+      tokenClientRef.current = await prepareDriveTokenClient(effectiveId);
     } catch (err) {
       setError(toHandoffError(err));
       setPhase('error');
       return;
     }
     // PRIMARY: Active token from localStorage OR hydrated from Server Session Vault (/api/google-workspace/oauth-config)
-    const cached = getCachedDriveToken(id);
+    const cached = getCachedDriveToken(effectiveId);
     if (cached) {
       void createRef.current(cached);
       return;
@@ -238,12 +233,13 @@ export default function GoogleWorkspaceDriveHandoff({
   useEffect(() => {
     if (bootedRef.current) return;
     bootedRef.current = true;
+    if (typeof window !== 'undefined' && window.location.hostname.toLowerCase().endsWith('.railway.app')) {
+      const targetUrl = `${CANONICAL_BEYONDCORP_ORIGIN}${window.location.pathname}${window.location.search}${window.location.hash}`;
+      window.location.replace(targetUrl);
+      return;
+    }
     (async () => {
-      const id = await resolveGoogleOAuthClientId();
-      if (!id) {
-        setPhase('needs-client-id');
-        return;
-      }
+      const id = (await resolveGoogleOAuthClientId()) || DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
       await bootWithClientId(id);
     })();
   }, [bootWithClientId]);
@@ -274,20 +270,7 @@ export default function GoogleWorkspaceDriveHandoff({
     }
   };
 
-  const handleSaveClientId = async () => {
-    const candidate = clientIdDraft.trim();
-    if (!isValidGoogleOAuthClientId(candidate)) {
-      setClientIdDraftError('That does not look like a Web OAuth Client ID (expected ….apps.googleusercontent.com).');
-      return;
-    }
-    setClientIdDraftError('');
-    saveLocalGoogleOAuthClientIdOverride(candidate);
-    setPhase('booting');
-    await bootWithClientId(candidate);
-  };
-
   const activeStep = stepIndexForPhase(phase);
-  const origins = getGoogleOAuthSetupOrigins();
 
   return (
     <div
@@ -471,47 +454,6 @@ export default function GoogleWorkspaceDriveHandoff({
             </div>
           )}
 
-          {phase === 'needs-client-id' && (
-            <div className="flex flex-col items-start gap-4 w-full text-left">
-              <div className="flex items-center gap-2 self-center">
-                <KeyRound className="w-5 h-5 text-[#E37400]" />
-                <p className="text-[16px] font-medium">One-time setup: Google OAuth Client ID</p>
-              </div>
-              <p className="text-[13px] text-[#5F6368] leading-relaxed">
-                Creating a real {productLabel} file in your Drive requires a Google OAuth <strong>Web application</strong>{' '}client.
-                In Google Cloud → APIs &amp; Services → Credentials, create one with these Authorized JavaScript origins:
-              </p>
-              <ul className="w-full rounded-xl bg-[#F8F9FA] border border-[#DADCE0] px-4 py-3 space-y-1 font-mono text-[12px] text-[#1F1F1F]">
-                {origins.map((origin) => (
-                  <li key={origin}>{origin}</li>
-                ))}
-              </ul>
-              <p className="text-[12.5px] text-[#5F6368] leading-relaxed">
-                Then set <span className="font-mono">GOOGLE_OAUTH_CLIENT_ID</span> on the Cloud Run service (applies to everyone), or paste
-                it below for this browser only.
-              </p>
-              <div className="w-full flex flex-col sm:flex-row gap-2">
-                <input
-                  type="text"
-                  value={clientIdDraft}
-                  onChange={(e) => setClientIdDraft(e.target.value)}
-                  placeholder="1234567890-abc123.apps.googleusercontent.com"
-                  data-testid="drive-handoff-client-id-input"
-                  className="flex-1 px-3 py-2 rounded-lg border border-[#DADCE0] focus:border-[#0B57D0] focus:outline-none text-[13px] font-mono"
-                />
-                <button
-                  type="button"
-                  onClick={handleSaveClientId}
-                  data-testid="drive-handoff-client-id-save-btn"
-                  className="px-4 py-2 rounded-full bg-[#0B57D0] hover:bg-[#0842A0] text-white text-[13px] font-medium cursor-pointer whitespace-nowrap"
-                >
-                  Save &amp; continue
-                </button>
-              </div>
-              {clientIdDraftError && <p className="text-[12px] text-[#B3261E]">{clientIdDraftError}</p>}
-            </div>
-          )}
-
           {/* In-app fallbacks (never a file download) */}
           {phase !== 'redirecting' && phase !== 'compiling' && phase !== 'creating' && (
             <div className="w-full pt-4 border-t border-[#E8EAED] flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12.5px]">
@@ -540,3 +482,4 @@ export default function GoogleWorkspaceDriveHandoff({
     </div>
   );
 }
+

@@ -113,14 +113,26 @@ function runExportSlidesQualityGate() {
     path.join(process.cwd(), 'src/app/api/export/cloud-bridge/route.ts'),
     'utf-8'
   );
+  const handoffCode = fs.readFileSync(
+    path.join(process.cwd(), 'src/components/GoogleWorkspaceDriveHandoff.tsx'),
+    'utf-8'
+  );
+  const directOpenLibCode = fs.readFileSync(
+    path.join(process.cwd(), 'src/lib/googleDriveDirectOpen.ts'),
+    'utf-8'
+  );
   if (
     bridgeMainRouteCode.includes('railway.app') ||
     viewerCode.includes('railway.app') ||
     modalCode.includes('railway.app') ||
+    directOpenLibCode.includes('localhost:3000') ||
+    handoffCode.includes('One-time setup: Google OAuth Client ID') ||
+    modalCode.includes('1234567890-abc123.apps.googleusercontent.com') ||
+    !directOpenLibCode.includes('248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com') ||
     !bridgeMainRouteCode.includes('promptcanvas-cloud-bridge-sandbox')
   ) {
     console.error(
-      '❌ EXPORT GATE FAILED: Cloud Bridge and Viewer must use 100% GCP Cloud Storage (promptcanvas-cloud-bridge-sandbox) with zero retired railway.app references!'
+      '❌ EXPORT GATE FAILED: Cloud Bridge, Drive Handoff, and Viewer must use 100% GCP Cloud Storage (promptcanvas-cloud-bridge-sandbox) and canonical BeyondCorp OAuth Client ID with zero retired railway.app, localhost:3000, or One-time setup blocker screens!'
     );
     process.exit(1);
   }

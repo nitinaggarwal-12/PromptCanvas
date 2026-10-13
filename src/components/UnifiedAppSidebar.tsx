@@ -26,6 +26,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   PanelLeft,
+  Newspaper,
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import { usePersistentBoolean } from '@/lib/hooks/useHydrationSafeState';
@@ -76,6 +77,7 @@ const NAV_GROUPS: NavGroup[] = [
       { id: 'dashboard', name: 'Home Dashboard', icon: Compass, href: '/dashboard', badge: 'HOME', badgeColor: 'bg-sky-500/20 text-sky-400 border-sky-500/30' },
       { id: 'vision', name: 'Image to Diagram', icon: Sparkles, href: '/vision', badge: 'AI', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
       { id: 'docgen', name: 'Document Studio', icon: FileText, href: '/docgen', badge: '17' },
+      { id: 'blogs', name: 'Technical Blog Studio', icon: Newspaper, href: '/blogs', badge: 'BLOG', badgeColor: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30' },
     ],
   },
   {
@@ -83,7 +85,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: 'Library & Blueprints',
     items: [
       { id: 'library', name: 'Saved Architectures', icon: LayoutGrid, href: '/library', badge: 'SAVED', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
-      { id: 'canonical', name: 'Blueprint Catalog', icon: Network, href: '/canonical', badge: '77' },
+      { id: 'canonical', name: 'Blueprint Catalog', icon: Network, href: '/canonical', badge: '78' },
     ],
   },
   {
@@ -121,6 +123,9 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
       return true;
     }
     if (targetPath === '/canonical' && pathname.startsWith('/canonical')) {
+      return true;
+    }
+    if (targetPath === '/blogs' && pathname.startsWith('/blogs')) {
       return true;
     }
     if (targetPath === '/audit' && (pathname === '/audit' || pathname === '/test-status')) {

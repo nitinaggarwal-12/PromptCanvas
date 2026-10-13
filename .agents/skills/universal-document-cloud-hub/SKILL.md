@@ -100,6 +100,14 @@ All document previews and standalone viewers (`/viewer`, `/vision`, `/studio`) m
 - **Mandatory Semantic Subject Parity Audit**:
   - Before presenting any prompt-generated diagram screenshot to the user, perform a **Semantic Prompt-to-Canvas Subject Parity Check**: Verify that the rendered canvas header title, tier subtitles, node labels, and footer pill explicitly contain the subject domain nouns from the user's prompt and contain **ZERO** leaked hardcoded strings from unrelated templates (`Charlie Hills`, `CLAUDE.md`, `NOVACURA`, `Drug X`).
 
+### D. Zero OAuth Setup Blocker & Canonical BeyondCorp Origin Enforcement
+- **Guaranteed Default OAuth Client ID (`DEFAULT_GOOGLE_OAUTH_CLIENT_ID`)**:
+  - `src/lib/googleDriveDirectOpen.ts` and `src/app/api/google-workspace/oauth-config/route.ts` must always fall back to `248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com` so `resolveGoogleOAuthClientId()` never returns an empty string.
+  - `GoogleWorkspaceDriveHandoff.tsx` and `GoogleWorkspaceDirectOpenModal.tsx` must **never** render a `"One-time setup: Google OAuth Client ID"` blocker screen or `1234567890-abc123.apps.googleusercontent.com` placeholder input.
+- **Canonical BeyondCorp Origin & Legacy Host Redirect**:
+  - `getGoogleOAuthSetupOrigins()` must return strictly `['https://promptcanvas-248990048888.cr.gclb.goog']` with zero `http://localhost:3000` or `*.railway.app` references.
+  - `src/middleware.ts` and `GoogleWorkspaceDriveHandoff.tsx` must immediately redirect any request arriving on `*.up.railway.app` to `https://promptcanvas-248990048888.cr.gclb.goog` preserving pathname and query parameters.
+
 ---
 
 ## 🛡️ Strict Architectural & Cloud Run Deployment Constraints (All Current & New Projects)

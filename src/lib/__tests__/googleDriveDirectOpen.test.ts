@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
+  CANONICAL_BEYONDCORP_ORIGIN,
+  DEFAULT_GOOGLE_OAUTH_CLIENT_ID,
   GoogleDriveDirectOpenError,
   buildDriveMultipartBody,
   buildGoogleEditorUrl,
@@ -7,6 +9,7 @@ import {
   createGoogleWorkspaceFileFromBlob,
   describeDriveApiError,
   getCachedDriveToken,
+  getGoogleOAuthSetupOrigins,
   getRememberedGoogleAccountEmail,
   isValidGoogleOAuthClientId,
   resolveGoogleOAuthClientId,
@@ -15,9 +18,10 @@ import {
 
 const PPTX_MIME = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
 
-describe('googleDriveDirectOpen — OAuth client id validation', () => {
-  it('accepts a real Web OAuth client id shape', () => {
+describe('googleDriveDirectOpen — OAuth client id validation & canonical defaults', () => {
+  it('accepts a real Web OAuth client id shape including DEFAULT_GOOGLE_OAUTH_CLIENT_ID', () => {
     expect(isValidGoogleOAuthClientId('248990048888-abc123def456.apps.googleusercontent.com')).toBe(true);
+    expect(isValidGoogleOAuthClientId(DEFAULT_GOOGLE_OAUTH_CLIENT_ID)).toBe(true);
   });
 
   it('rejects placeholders, tokens and empty values', () => {
@@ -25,6 +29,13 @@ describe('googleDriveDirectOpen — OAuth client id validation', () => {
     expect(isValidGoogleOAuthClientId(undefined)).toBe(false);
     expect(isValidGoogleOAuthClientId('ya29.a0AfH6SMB-access-token')).toBe(false);
     expect(isValidGoogleOAuthClientId('paste-client-id-here.apps.googleusercontent.com')).toBe(false);
+  });
+
+  it('locks getGoogleOAuthSetupOrigins strictly to the canonical BeyondCorp URL without localhost or railway.app', () => {
+    const origins = getGoogleOAuthSetupOrigins();
+    expect(origins).toEqual([CANONICAL_BEYONDCORP_ORIGIN]);
+    expect(origins.some((o) => o.includes('localhost'))).toBe(false);
+    expect(origins.some((o) => o.includes('railway'))).toBe(false);
   });
 });
 

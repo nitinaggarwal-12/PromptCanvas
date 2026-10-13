@@ -3,6 +3,7 @@ import { INFOGRAPHIC_BLUEPRINTS_LIST, generateInfographicBlueprintXmlById } from
 import { FLOW_DIAGRAM_BLUEPRINTS_67_TO_74, generateFlowDiagramBlueprintXmlById } from './flowDiagramBlueprints67to74';
 import { generateWhiteboardGcpAgentArchXml } from './templateWhiteboardGcpAgentArch';
 import { generatePaperGcpAgentArchXml } from './templatePaperGcpAgentArch';
+import { generateTemplate78OfficialGcpArchCenterHubSpokeXml } from './templateOfficialGcpArchCenterHubSpoke';
 
 export interface CanonicalTemplate {
   id: string; // e.g. "01", "02" ... "77"
@@ -837,6 +838,18 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     previewImage: '/templates/canonical_00.png',
     keyComponents: ['Presentation Layer', 'Edge Layer (API Gateway, Identity Platform, Model Armor)', 'Coordinator Agent', 'Accounts, Transactions & Service Agents', 'LLM Layer & Vector Knowledge Search', 'Governance & Operations (IAM, Observability)', 'Cloud Spanner, Bigtable, Firestore & Vector Databases'],
     generateXml: () => generatePaperGcpAgentArchXml()
+  },
+  {
+    id: '78',
+    name: 'Official Google Cloud Architecture Center — Hub-and-Spoke Multi-Tenant Agentic AI',
+    family: 'Reference Architectures',
+    level: 'L2',
+    primaryPurpose: 'Official Google Cloud Architecture Center Hub-and-Spoke topology (#1a73e8 outer frame, #aecbfa Routing Hub, #ceead6 Governance Hub, #feefc3 Shared Pool, #fad2cf Sovereign Spoke & Step ①–⑦ callouts)',
+    examples: 'Google Cloud Architecture Center, multi-tenant-agentic-ai-system.svg, Pattern A Pooled, Pattern B Sovereign Silos, Pattern C Hybrid PSC, 5-Hop Context Chain',
+    defaultDomain: 'Google Cloud Architecture Center Hub-and-Spoke',
+    previewImage: '/templates/canonical_00.png',
+    keyComponents: ['Competing B2B Tenants / Users', 'Google Cloud Outer Container (#1a73e8)', 'Routing Hub (Cloud Armor & IAP, Model Armor, OBO+DPoP, External ALB, Cloud Run)', 'Central Governance & FinOps Hub (Security Command Center, IAM & PAB, Cloud Logging & BQ)', 'Pattern A Pooled Shared Runtime (#feefc3)', 'Pattern B Sovereign Silos & Pattern C Hybrid PSC Spokes (#fad2cf)', 'Numbered Callout Steps ①–⑦'],
+    generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate78OfficialGcpArchCenterHubSpokeXml(domainFlavor, theme)
   }
 ];
 
@@ -1703,6 +1716,8 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
   const paddedId = t.id.padStart(2, '0');
   const cleanName = t.id === '00'
     ? '2026 Upgraded GCP & Gemini Enterprise Native Architecture'
+    : t.id === '78'
+    ? t.name
     : t.name
         .replace(/\bCLAUDE\.md\b/gi, 'AGENTS.md')
         .replace(/\bGPT-6\s+Astra\b/gi, 'Frontier Agent')
@@ -1710,7 +1725,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
         .replace(/\bRaw\s+Gemini\s+API\b/gi, 'Stateless Foundation API')
         .replace(/\bVertex\s+AI\s+Agent\s+Engine\b/gi, 'Governed Agent Engine')
         .replace(/^Google\s+Cloud\s+/i, 'Enterprise Cloud ');
-  const isSketchBp = t.id === '76' || t.id === '77';
+  const isSketchBp = t.id === '76' || t.id === '77' || t.id === '78';
   return {
     ...t,
     name: cleanName,

@@ -2125,6 +2125,17 @@ function DocGenContent() {
                 <span>Open in Studio</span>
               </Link>
 
+              {/* Technical Blog Studio Link */}
+              <Link
+                href={`/blogs?domain=${encodeURIComponent(selectedDomain)}`}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 border border-indigo-500/30 transition-all shadow-xs shrink-0"
+                title="Generate Technical Blogs based on Use Cases"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
+                <span className="hidden sm:inline">Use-Case Blogs</span>
+                <span className="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 font-mono font-bold text-indigo-300">3</span>
+              </Link>
+
               {/* Canonical Blueprints Link */}
               <Link
                 href="/canonical"

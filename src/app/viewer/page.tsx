@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { generateAzureLandingZoneArchitectureXml } from '@/lib/masterBuilders/build_master_azure_landing_zone';
 import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
+import { getPrecompiledBlueprint } from '@/lib/visionBlueprintStore';
 import { exportDrawioToEditablePptx } from '@/lib/export/editablePptxCompiler';
 import { exportDrawioToEditableDocx } from '@/lib/export/editableDocxCompiler';
 import { exportDiagramPng } from '@/lib/export/diagramRaster';
@@ -132,6 +133,17 @@ function CloudViewerContent() {
       setXmlContent(matchedTemplate.generateXml('enterprise', isLight ? 'light' : 'dark'));
       if (defaultCanonicalPng) {
         setResolvedMasterImage(defaultCanonicalPng);
+      }
+      return;
+    }
+
+    const precompiled = getPrecompiledBlueprint(bpId);
+    if (precompiled && precompiled.xml) {
+      setResolvedId(precompiled.id);
+      setResolvedTitle(rawTitleParam || precompiled.title);
+      setXmlContent(precompiled.xml);
+      if (precompiled.imageSrc && !precompiled.imageSrc.startsWith('data:image/svg+xml')) {
+        setResolvedMasterImage(precompiled.imageSrc);
       }
       return;
     }
