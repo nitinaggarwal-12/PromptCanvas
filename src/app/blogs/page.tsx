@@ -847,6 +847,39 @@ function TechnicalBlogStudioContent() {
                 <span>{isEnhancingAi ? 'Synthesizing...' : '✨ Enhance with Gemini'}</span>
               </button>
 
+              <DiagramInlineSlidesPreviewer
+                headerOnly={true}
+                manifestKey={
+                  isOfficialArchCenterActive && archCenterVariantId !== 'auto'
+                    ? archCenterVariantId
+                    : isOfficialArchCenterActive && activeUseCase.archCenterBlueprintVariantId
+                    ? activeUseCase.archCenterBlueprintVariantId
+                    : activeUseCase.shortLabel.match(/^WS[1-5]/i)?.[0]?.toUpperCase() ||
+                      `BP-${String(activeSelectorTemplateId).padStart(2, '0')}`
+                }
+                title={
+                  isOfficialArchCenterActive
+                    ? `${activeOfficialArchCenterBp.title} — ${activeOfficialArchCenterBp.subtitle}`
+                    : `${activeUseCase.shortLabel} — Blueprint #${activeTemplateMeta?.id} (${activeTemplateMeta?.name})`
+                }
+                subtitle={activeUseCase.summaryPrompt}
+                xml={activeSelectorXml}
+                svgString={
+                  isOfficialArchCenterActive && archCenterRenderMode === 'svg'
+                    ? activeOfficialArchCenterSvg
+                    : undefined
+                }
+                markdownContent={generatedBlog.fullMarkdown}
+                domainId={activeUseCase.domainId}
+                domainName={activeUseCase.domainName}
+                templateId={String(activeSelectorTemplateId).padStart(2, '0')}
+                badgeLabel={
+                  activeUseCase.shortLabel.match(/^WS[1-5]/i)?.[0]?.toUpperCase()
+                    ? `${activeUseCase.shortLabel.match(/^WS[1-5]/i)?.[0]?.toUpperCase()} • Blueprint #${activeTemplateMeta?.id}`
+                    : `Blueprint #${activeTemplateMeta?.id}`
+                }
+              />
+
               <button
                 onClick={() => handleCopyText(generatedBlog.fullMarkdown, 'full-md')}
                 data-testid="copy-blog-markdown-btn"
@@ -1395,7 +1428,7 @@ function TechnicalBlogStudioContent() {
                         </div>
 
                         {/* Direct 78-Blueprint Template Picker */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <label
                             htmlFor="blog-blueprint-template-select"
                             className="text-[11px] font-bold text-slate-500 dark:text-slate-400 shrink-0"
@@ -1582,39 +1615,17 @@ function TechnicalBlogStudioContent() {
                       )}
                     </div>
 
-                    <div className="p-4">
-                      <DiagramInlineSlidesPreviewer
-                        manifestKey={
-                          isOfficialArchCenterActive && archCenterVariantId !== 'auto'
-                            ? archCenterVariantId
-                            : isOfficialArchCenterActive && activeUseCase.archCenterBlueprintVariantId
-                            ? activeUseCase.archCenterBlueprintVariantId
-                            : activeUseCase.shortLabel.match(/^WS[1-5]/i)?.[0]?.toUpperCase() ||
-                              `BP-${String(activeSelectorTemplateId).padStart(2, '0')}`
-                        }
-                        title={
-                          isOfficialArchCenterActive
-                            ? `${activeOfficialArchCenterBp.title} — ${activeOfficialArchCenterBp.subtitle}`
-                            : `${activeUseCase.shortLabel} — Blueprint #${activeTemplateMeta?.id} (${activeTemplateMeta?.name})`
-                        }
-                        subtitle={activeUseCase.summaryPrompt}
-                        xml={activeSelectorXml}
-                        svgString={
-                          isOfficialArchCenterActive && archCenterRenderMode === 'svg'
-                            ? activeOfficialArchCenterSvg
-                            : undefined
-                        }
-                        domainId={activeUseCase.domainId}
-                        domainName={activeUseCase.domainName}
-                        templateId={String(activeSelectorTemplateId).padStart(2, '0')}
-                        badgeLabel={
-                          activeUseCase.shortLabel.match(/^WS[1-5]/i)?.[0]?.toUpperCase()
-                            ? `${activeUseCase.shortLabel.match(/^WS[1-5]/i)?.[0]?.toUpperCase()} • Blueprint #${activeTemplateMeta?.id}`
-                            : `Blueprint #${activeTemplateMeta?.id}`
-                        }
-                        editCanvasHref={`/dashboard?template=${activeSelectorTemplateId}`}
-                        defaultShowSlidesPane={true}
-                      />
+                    <div className="w-full bg-white overflow-hidden">
+                      {isOfficialArchCenterActive && archCenterRenderMode === 'svg' && activeOfficialArchCenterSvg ? (
+                        <div
+                          className="w-full p-3 bg-[#F8F9FA] flex items-center justify-center [&>svg]:w-full [&>svg]:h-auto [&>svg]:max-h-[620px]"
+                          dangerouslySetInnerHTML={{ __html: activeOfficialArchCenterSvg }}
+                        />
+                      ) : (
+                        <div className="h-[540px] w-full">
+                          <DiagramViewerRenderSafe xml={activeSelectorXml} />
+                        </div>
+                      )}
                     </div>
                   </div>
 

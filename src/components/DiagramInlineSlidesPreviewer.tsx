@@ -387,6 +387,7 @@ export interface DiagramInlineSlidesPreviewerProps {
   defaultViewLayout?: 'split' | 'slides-only' | 'diagram-only';
   showLayoutSwitcher?: boolean;
   onEditInlineDrawio?: () => void;
+  headerOnly?: boolean;
 }
 
 interface SlideDescriptor {
@@ -411,28 +412,19 @@ export default function DiagramInlineSlidesPreviewer({
   masterImageSrc,
   markdownContent,
   templateId,
-  defaultShowSlidesPane,
   tldrStructured,
-  figures,
-  activeFigureIdx = 0,
-  onSelectFigure,
   renderRightDiagramPane,
-  defaultViewLayout = 'split',
-  showLayoutSwitcher = false,
-  onEditInlineDrawio,
+  headerOnly = false,
 }: DiagramInlineSlidesPreviewerProps) {
   const resolvedKeyInput =
     diagramKey || manifestKey || (templateId ? `BP-${String(templateId).padStart(2, '0')}` : 'BP-78');
   const xmlContent = rawXmlContent ?? xml ?? '';
   const svgContent = rawSvgContent ?? svgString;
   const badgeText = rawBadgeText ?? badgeLabel;
-  const effectiveDefaultLayout =
-    defaultShowSlidesPane === false ? 'diagram-only' : defaultViewLayout;
 
   const normKey = useMemo(() => normalizeClientManifestKey(resolvedKeyInput), [resolvedKeyInput]);
   const [manifest, setManifest] = useState<CloudViewerManifestClient>(globalManifestCache);
   const [activeSlideIdx, setActiveSlideIdx] = useState<number>(0);
-  const [viewLayout, setViewLayout] = useState<'split' | 'slides-only' | 'diagram-only'>(effectiveDefaultLayout);
 
   // Dropdown states
   const [topDropdownOpen, setTopDropdownOpen] = useState(false);
@@ -985,463 +977,185 @@ export default function DiagramInlineSlidesPreviewer({
     );
   };
 
-  return (
-    <div className="space-y-3.5" data-testid={`inline-slides-previewer-${normKey}`}>
-      {/* ===========================================================================
-          1. TOP ACTIVE BLUEPRINT / WORKSTREAM SUMMARY BAR (EXACT MATCH TO BLOGS)
-         =========================================================================== */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-xl bg-white dark:bg-[#0D1526] border border-slate-200 dark:border-slate-800 shadow-2xs">
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold uppercase tracking-wide bg-blue-500/15 text-blue-700 dark:text-blue-300 border border-blue-500/30">
-              {badgeText || `${normKey} • ${slides.length} EDITABLE SLIDES • ${shapeCount} SHAPES • ${connectorCount} CONNECTORS`}
-            </span>
-            <strong className="text-sm md:text-[15px] font-extrabold text-slate-900 dark:text-white truncate">
-              {title}
-            </strong>
-          </div>
-          {subtitle && (
-            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">
-              {subtitle}
-            </div>
-          )}
-        </div>
+  const headerActionButtons = (
+    <div className="flex items-center gap-2 flex-wrap shrink-0">
+      {/* 👁️ Cloud Viewer Button */}
+      <button
+        type="button"
+        data-testid="inline-cloud-viewer-btn"
+        onClick={() => handleOpenCloudViewer('slides', activeSlide.num)}
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-[#FEF3C7] hover:bg-[#FDE68A] text-[#B45309] border border-[#F59E0B] dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:text-amber-300 dark:border-amber-500/50 transition cursor-pointer shadow-2xs"
+        title="Open Same-Screen PromptCanvas Cloud Viewer (Interactive Studio + Live Google Slides Embed)"
+      >
+        <span>👁️</span>
+        <span>Cloud Viewer</span>
+      </button>
 
-        {/* Right Controls: Cloud Viewer + [ S | Open with Google Slides | ▼ ] + Open in Google Docs + Download .pptx */}
-        <div className="flex items-center gap-2 flex-wrap shrink-0">
-          {showLayoutSwitcher && (
-            <div className="inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 p-0.5 mr-1">
-              <button
-                type="button"
-                data-testid="layout-mode-split-btn"
-                onClick={() => setViewLayout('split')}
-                className={`px-2.5 py-1 rounded-md text-[11px] font-bold cursor-pointer transition ${
-                  viewLayout === 'split'
-                    ? 'bg-indigo-600 text-white shadow-2xs'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
-                }`}
-              >
-                🎞️ Split: Slides + Diagram
-              </button>
-              <button
-                type="button"
-                data-testid="layout-mode-diagram-btn"
-                onClick={() => setViewLayout('diagram-only')}
-                className={`px-2.5 py-1 rounded-md text-[11px] font-bold cursor-pointer transition ${
-                  viewLayout === 'diagram-only'
-                    ? 'bg-indigo-600 text-white shadow-2xs'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
-                }`}
-              >
-                🖼️ Full Diagram
-              </button>
-              <button
-                type="button"
-                data-testid="layout-mode-slides-btn"
-                onClick={() => setViewLayout('slides-only')}
-                className={`px-2.5 py-1 rounded-md text-[11px] font-bold cursor-pointer transition ${
-                  viewLayout === 'slides-only'
-                    ? 'bg-indigo-600 text-white shadow-2xs'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
-                }`}
-              >
-                📊 Full Slides
-              </button>
-            </div>
-          )}
+      {/* [ S | Open with Google Slides ↗ | ▼ ] Split-Pill Button */}
+      <div
+        className="relative inline-flex items-stretch rounded-xl border border-white/15 bg-[#202124] text-[#E8EAED] shadow-xs"
+        ref={topDropdownRef}
+      >
+        <button
+          type="button"
+          data-testid="inline-open-with-google-slides-btn"
+          onClick={() => handleOpenWorkspace('slides')}
+          className="inline-flex items-center gap-1.5 pl-3 pr-2.5 py-1.5 rounded-l-xl hover:bg-white/10 text-xs font-extrabold text-white transition cursor-pointer whitespace-nowrap"
+          title="Open directly in Google Slides (nitinagga@google.com) via Server-Side Drive Conversion Bridge"
+        >
+          <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#FBBC04] text-[#202124] font-black text-[10px] shrink-0">
+            S
+          </span>
+          <span>Open with Google Slides ↗</span>
+        </button>
+        <button
+          type="button"
+          data-testid="inline-open-with-dropdown-caret"
+          onClick={(e) => {
+            e.stopPropagation();
+            setTopDropdownOpen((prev) => !prev);
+          }}
+          aria-label="Choose Google Workspace app"
+          className="px-2 py-1.5 rounded-r-xl border-l border-[#444746] hover:bg-white/15 text-[#E8EAED] text-[10px] transition cursor-pointer flex items-center justify-center"
+        >
+          ▼
+        </button>
 
-          {/* 👁️ Cloud Viewer Button */}
-          <button
-            type="button"
-            data-testid="inline-cloud-viewer-btn"
-            onClick={() => handleOpenCloudViewer('slides', activeSlide.num)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold bg-[#FEF3C7] hover:bg-[#FDE68A] text-[#B45309] border border-[#F59E0B] dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:text-amber-300 dark:border-amber-500/50 transition cursor-pointer shadow-2xs"
-            title="Open Same-Screen PromptCanvas Cloud Viewer (Interactive Studio + Live Google Slides Embed)"
+        {topDropdownOpen && (
+          <div
+            data-testid="inline-open-with-dropdown-menu"
+            className="absolute right-0 top-[calc(100%+6px)] w-72 bg-[#28292A] border border-[#444746] rounded-xl shadow-[0_14px_36px_rgba(0,0,0,0.65)] py-1.5 z-[120] text-left text-[#E8EAED]"
           >
-            <span>👁️</span>
-            <span>Cloud Viewer</span>
-          </button>
-
-          {/* [ S | Open with Google Slides | ▼ ] Split-Pill Button */}
-          <div className="relative inline-flex items-stretch rounded-full border-[1.5px] border-[#FBBC04]/80 bg-[#202124] text-[#E8EAED] shadow-sm" ref={topDropdownRef}>
             <button
               type="button"
-              data-testid="inline-open-with-google-slides-btn"
               onClick={() => handleOpenWorkspace('slides')}
-              className="inline-flex items-center gap-2 pl-3 pr-2.5 py-1.5 rounded-l-full hover:bg-white/10 text-xs font-semibold text-[#E8EAED] transition cursor-pointer whitespace-nowrap"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+            >
+              <span>↗</span>
+              <span>Open in new tab (Google Slides)</span>
+            </button>
+            <div className="h-px bg-[#444746] my-1" />
+            <div className="px-3.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#9AA0A6]">
+              Google apps
+            </div>
+            <button
+              type="button"
+              onClick={() => handleOpenWorkspace('slides')}
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
             >
               <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#FBBC04] text-[#202124] font-black text-[10px] shrink-0">
                 S
               </span>
-              <span>Open with Google Slides ({normKey})</span>
+              <span>Google Slides (100% Editable Deck)</span>
             </button>
             <button
               type="button"
-              data-testid="inline-open-with-dropdown-caret"
-              onClick={(e) => {
-                e.stopPropagation();
-                setTopDropdownOpen((prev) => !prev);
-              }}
-              aria-label="Choose Google Workspace app"
-              className="px-2.5 py-1.5 rounded-r-full border-l border-[#444746] hover:bg-white/15 text-[#E8EAED] text-[10px] transition cursor-pointer flex items-center justify-center"
+              onClick={() => handleOpenWorkspace('docs')}
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
             >
-              ▼
+              <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#4285F4] text-white font-black text-[10px] shrink-0">
+                D
+              </span>
+              <span>Google Docs (Editable Spec + Figures)</span>
             </button>
+            <button
+              type="button"
+              onClick={() => handleOpenWorkspace('pdf')}
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+            >
+              <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#EA4335] text-white font-black text-[8.5px] shrink-0">
+                PDF
+              </span>
+              <span>PDF Document (Vector Slide Export)</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleDownloadPptx}
+              disabled={isDownloadingPptx}
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+            >
+              <span>⬇</span>
+              <span>{isDownloadingPptx ? 'Compiling .pptx...' : `Download .pptx (${normKey})`}</span>
+            </button>
+            <div className="h-px bg-[#444746] my-1" />
+            <div className="px-3.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#9AA0A6]">
+              Same-Screen Cloud Viewer
+            </div>
+            <button
+              type="button"
+              onClick={() => handleOpenCloudViewer('slides', activeSlide.num)}
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+            >
+              <span>✨</span>
+              <span>Interactive Slide Studio (Fast Canvas)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleOpenCloudViewer('embed', activeSlide.num)}
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+            >
+              <span>🌐</span>
+              <span>Embedded Live Google Slides Viewer</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleOpenCloudViewer('docs', 1)}
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+            >
+              <span>📄</span>
+              <span>Embedded Live Google Docs Viewer</span>
+            </button>
+            <div className="h-px bg-[#444746] my-1" />
+            <button
+              type="button"
+              onClick={() => handleOpenWorkspace('slides', true)}
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+            >
+              <span>🔄</span>
+              <span>Force Re-Sync .pptx → Google Slides</span>
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 
-            {topDropdownOpen && (
+  return (
+    <div className={headerOnly ? 'inline-flex items-center' : 'space-y-2.5'} data-testid={`inline-slides-previewer-${normKey}`}>
+      {headerOnly ? (
+        headerActionButtons
+      ) : (
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D1526] overflow-hidden shadow-2xs">
+          {/* Compact Single-Line Header Showing Only Options */}
+          <div className="px-4 py-2.5 bg-slate-50 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              {badgeText && (
+                <span className="px-2 py-0.5 rounded-md text-[10.5px] font-extrabold uppercase tracking-wide bg-blue-500/15 text-blue-700 dark:text-blue-300 border border-blue-500/30 shrink-0">
+                  {badgeText}
+                </span>
+              )}
+              <strong className="text-xs md:text-sm font-extrabold text-slate-900 dark:text-white truncate">
+                {title}
+              </strong>
+            </div>
+            {headerActionButtons}
+          </div>
+
+          {/* Full-Width Diagram Canvas (Zero Inline Slide Deck Box on Page UI) */}
+          <div className="w-full bg-white overflow-hidden">
+            {renderRightDiagramPane ? (
+              renderRightDiagramPane()
+            ) : svgContent ? (
               <div
-                data-testid="inline-open-with-dropdown-menu"
-                className="absolute right-0 top-[calc(100%+6px)] w-72 bg-[#28292A] border border-[#444746] rounded-xl shadow-[0_14px_36px_rgba(0,0,0,0.65)] py-1.5 z-[120] text-left text-[#E8EAED]"
-              >
-                <button
-                  type="button"
-                  onClick={() => handleOpenWorkspace('slides')}
-                  className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
-                >
-                  <span>↗</span>
-                  <span>Open in new tab (Google Slides)</span>
-                </button>
-                <div className="h-px bg-[#444746] my-1" />
-                <div className="px-3.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#9AA0A6]">
-                  Google apps
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleOpenWorkspace('slides')}
-                  className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
-                >
-                  <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#FBBC04] text-[#202124] font-black text-[10px] shrink-0">
-                    S
-                  </span>
-                  <span>Google Slides (100% Editable Deck)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleOpenWorkspace('docs')}
-                  className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
-                >
-                  <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#4285F4] text-white font-black text-[10px] shrink-0">
-                    D
-                  </span>
-                  <span>Google Docs (Editable Spec + Figures)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleOpenWorkspace('pdf')}
-                  className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
-                >
-                  <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#EA4335] text-white font-black text-[8.5px] shrink-0">
-                    PDF
-                  </span>
-                  <span>PDF Document (Vector Slide Export)</span>
-                </button>
-                <div className="h-px bg-[#444746] my-1" />
-                <div className="px-3.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#9AA0A6]">
-                  Same-Screen Cloud Viewer
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleOpenCloudViewer('slides', activeSlide.num)}
-                  className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
-                >
-                  <span>✨</span>
-                  <span>Interactive Slide Studio (Fast Canvas)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleOpenCloudViewer('embed', activeSlide.num)}
-                  className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
-                >
-                  <span>🌐</span>
-                  <span>Embedded Live Google Slides Viewer</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleOpenCloudViewer('docs', 1)}
-                  className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
-                >
-                  <span>📄</span>
-                  <span>Embedded Live Google Docs Viewer</span>
-                </button>
-                <div className="h-px bg-[#444746] my-1" />
-                <button
-                  type="button"
-                  onClick={() => handleOpenWorkspace('slides', true)}
-                  className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
-                >
-                  <span>🔄</span>
-                  <span>Force Re-Sync .pptx → Google Slides</span>
-                </button>
+                className="w-full p-3 bg-[#F8F9FA] flex items-center justify-center [&>svg]:w-full [&>svg]:h-auto [&>svg]:max-h-[620px]"
+                dangerouslySetInnerHTML={{ __html: svgContent }}
+              />
+            ) : (
+              <div className="h-[540px] w-full">
+                <DiagramViewerRenderSafe xml={xmlContent} />
               </div>
             )}
           </div>
-
-          {/* D Open in Google Docs ↗ */}
-          <button
-            type="button"
-            data-testid="inline-open-google-docs-btn"
-            onClick={() => handleOpenWorkspace('docs')}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-bold transition cursor-pointer"
-            title="Open this diagram's specification & blog as a native editable Google Doc"
-          >
-            <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#4285F4] text-white font-black text-[10px] shrink-0">
-              D
-            </span>
-            <span>Open in Google Docs ↗</span>
-          </button>
-
-          {/* ⬇ Download .pptx */}
-          <button
-            type="button"
-            data-testid="inline-download-pptx-btn"
-            onClick={handleDownloadPptx}
-            disabled={isDownloadingPptx}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-bold transition cursor-pointer"
-          >
-            <span>⬇</span>
-            <span>{isDownloadingPptx ? 'Compiling...' : `Download .pptx (${normKey})`}</span>
-          </button>
-        </div>
-      </div>
-
-      {/* ===========================================================================
-          2. 2-PANE SPLIT: LEFT = INLINE EDITABLE SLIDE DECK PREVIEWER | RIGHT = DIAGRAM
-         =========================================================================== */}
-      {viewLayout !== 'diagram-only' && (
-        <div
-          className={`grid grid-cols-1 ${
-            viewLayout === 'split' ? 'xl:grid-cols-12' : 'grid-cols-1'
-          } gap-4 items-start`}
-        >
-          {/* LEFT PANE: 1. EDITABLE SLIDE DECK PREVIEWER (.PPTX & GOOGLE SLIDES) */}
-          <div
-            data-testid="inline-editable-slide-deck-pane"
-            className={`${
-              viewLayout === 'split' ? 'xl:col-span-6' : 'col-span-1'
-            } rounded-2xl bg-white dark:bg-[#0D1526] border border-slate-200 dark:border-slate-800 p-4 shadow-2xs flex flex-col justify-between space-y-3`}
-          >
-            {/* Header Row */}
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <span className="inline-block px-2.5 py-0.5 rounded-full text-[10.5px] font-extrabold uppercase tracking-wider bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
-                  1. EDITABLE SLIDE DECK PREVIEWER (.PPTX &amp; GOOGLE SLIDES)
-                </span>
-                <h3
-                  data-testid="inline-slide-heading"
-                  className="text-sm md:text-base font-extrabold text-slate-900 dark:text-white mt-1"
-                >
-                  Slide {activeSlide.num} of {slides.length} — {activeSlide.label.replace(/^\d+\.\s*/, '')}
-                </h3>
-              </div>
-
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <button
-                  type="button"
-                  onClick={() => handleOpenCloudViewer('slides', activeSlide.num)}
-                  className="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-[#FEF3C7] hover:bg-[#FDE68A] text-[#B45309] border border-[#F59E0B] dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/40 cursor-pointer"
-                  title="Open full-screen Cloud Viewer at this slide"
-                >
-                  👁️ Cloud Viewer
-                </button>
-                <button
-                  type="button"
-                  data-testid="inline-edit-in-slides-btn"
-                  onClick={() => handleOpenWorkspace('slides')}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 hover:bg-amber-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 border border-[#FBBC04] text-[11.5px] font-bold cursor-pointer"
-                  title="Open this deck directly in Google Slides"
-                >
-                  <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-[2px] bg-[#FBBC04] text-[#202124] font-black text-[9px]">
-                    S
-                  </span>
-                  <span>Edit in Slides ↗</span>
-                </button>
-                <button
-                  type="button"
-                  data-testid="inline-slide-prev-btn"
-                  onClick={() => setActiveSlideIdx((prev) => (prev - 1 + slides.length) % slides.length)}
-                  className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-bold cursor-pointer"
-                >
-                  ◀ Prev
-                </button>
-                <span
-                  data-testid="inline-slide-counter"
-                  className="px-2.5 py-1 rounded-full bg-blue-500/15 text-blue-700 dark:text-blue-300 border border-blue-500/30 font-extrabold text-xs"
-                >
-                  {activeSlide.num} / {slides.length}
-                </span>
-                <button
-                  type="button"
-                  data-testid="inline-slide-next-btn"
-                  onClick={() => setActiveSlideIdx((prev) => (prev + 1) % slides.length)}
-                  className="px-2.5 py-1 rounded-lg bg-[#1A73E8] hover:bg-[#174EA6] text-white text-xs font-bold cursor-pointer shadow-2xs"
-                >
-                  Next ▶
-                </button>
-              </div>
-            </div>
-
-            {/* Interactive 16:9 Slide Stage */}
-            <div
-              data-testid="inline-slide-stage"
-              onClick={() => handleOpenCloudViewer('slides', activeSlide.num)}
-              title="Click slide to launch PromptCanvas Same-Screen Cloud Viewer"
-              className={`w-full rounded-xl overflow-hidden border-2 transition cursor-zoom-in shadow-md ${
-                activeSlide.editable
-                  ? 'border-[#18C964]'
-                  : 'border-slate-300 dark:border-slate-700'
-              }`}
-            >
-              {renderSlideCanvasContent(activeSlide)}
-            </div>
-
-            {/* Green Explanation Banner */}
-            <div className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-              💡 {activeSlide.desc}
-            </div>
-
-            {/* Slide Selector Pill Strip */}
-            <div
-              data-testid="inline-slide-pill-strip"
-              className="flex items-center gap-1.5 flex-wrap pt-1"
-              aria-label="Slide Selector"
-            >
-              {slides.map((s, idx) => {
-                const isActive = idx === activeSlideIdx;
-                return (
-                  <button
-                    key={s.num}
-                    type="button"
-                    data-testid={`inline-slide-pill-${s.num}`}
-                    onClick={() => setActiveSlideIdx(idx)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer ${
-                      isActive
-                        ? s.editable
-                          ? 'bg-emerald-500 text-slate-950 border-emerald-500 shadow-2xs'
-                          : 'bg-[#1A73E8] text-white border-[#1A73E8] shadow-2xs'
-                        : s.editable
-                        ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/50 hover:bg-emerald-500/20'
-                        : 'bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:border-blue-400'
-                    }`}
-                  >
-                    {s.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* RIGHT PANE: 2. ARCHITECTURE DIAGRAMS IN THIS WORKSTREAM / BLUEPRINT */}
-          {viewLayout === 'split' && (
-            <div
-              data-testid="inline-architecture-diagram-pane"
-              className="xl:col-span-6 rounded-2xl bg-white dark:bg-[#0D1526] border border-slate-200 dark:border-slate-800 p-4 shadow-2xs flex flex-col justify-between space-y-3"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div>
-                  <span className="inline-block px-2.5 py-0.5 rounded-full text-[10.5px] font-extrabold uppercase tracking-wider bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30">
-                    2. ARCHITECTURE DIAGRAMS IN THIS WORKSTREAM
-                  </span>
-                  <h3 className="text-sm md:text-base font-extrabold text-slate-900 dark:text-white mt-1">
-                    Fig {activeFigureIdx + 1}: {title}
-                  </h3>
-                </div>
-
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  {onEditInlineDrawio && (
-                    <button
-                      type="button"
-                      onClick={onEditInlineDrawio}
-                      className="px-2.5 py-1 rounded-lg bg-teal-500/15 hover:bg-teal-500/25 text-teal-700 dark:text-teal-300 border border-teal-500/30 text-xs font-bold cursor-pointer"
-                    >
-                      ✏️ Edit Inline
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={handleDownloadDrawio}
-                    className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-bold cursor-pointer"
-                  >
-                    💾 .drawio
-                  </button>
-                  {svgContent && (
-                    <button
-                      type="button"
-                      onClick={handleDownloadSvg}
-                      className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-bold cursor-pointer"
-                    >
-                      📐 .svg
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => handleOpenWorkspace('pdf')}
-                    className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-bold cursor-pointer"
-                  >
-                    🖼️ Vector PDF
-                  </button>
-                </div>
-              </div>
-
-              {/* Figure Switcher + Jump to Editable Slide Button */}
-              <div className="flex items-center gap-1.5 flex-wrap">
-                {figures &&
-                  figures.map((fig, fIdx) => (
-                    <button
-                      key={fig.id}
-                      type="button"
-                      onClick={() => onSelectFigure?.(fIdx)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition cursor-pointer ${
-                        fIdx === activeFigureIdx
-                          ? 'bg-[#1A73E8] text-white border-[#1A73E8]'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700'
-                      }`}
-                    >
-                      {fig.label}
-                    </button>
-                  ))}
-                <button
-                  type="button"
-                  onClick={() => setActiveSlideIdx(3)}
-                  className="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/40 transition cursor-pointer"
-                >
-                  🎬 Show Editable Slide #4 for This Diagram
-                </button>
-              </div>
-
-              {/* Diagram Canvas Box */}
-              <div className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white overflow-hidden">
-                {renderRightDiagramPane ? (
-                  renderRightDiagramPane()
-                ) : svgContent ? (
-                  <div
-                    className="w-full p-2 bg-[#F8F9FA] flex items-center justify-center [&>svg]:w-full [&>svg]:h-auto [&>svg]:max-h-[420px]"
-                    dangerouslySetInnerHTML={{ __html: svgContent }}
-                  />
-                ) : (
-                  <div className="h-[420px] w-full">
-                    <DiagramViewerRenderSafe xml={xmlContent} />
-                  </div>
-                )}
-              </div>
-
-              {/* How This Diagram Exports to Editable Slides Info Card */}
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 text-xs">
-                <strong className="text-blue-600 dark:text-blue-400">
-                  How This Diagram &amp; Specification Export to Editable Slides:
-                </strong>
-                <ul className="mt-1.5 ml-4 list-disc space-y-1 text-slate-600 dark:text-slate-300">
-                  <li>
-                    <strong>Executive Narrative &amp; Specs</strong> &rarr; Executive TL;DR, Material 3 Bento Grid &amp; Key Takeaway slides.
-                  </li>
-                  <li>
-                    <strong>Embedded Diagram (<code>{normKey}.drawio</code>)</strong> &rarr; 3 consecutive slides:{' '}
-                    <em>(1) 1:1 Master Image</em>, <em>(2) 100% Decomposed Editable Shapes + Talking-Points Sidebar</em>, and{' '}
-                    <em>(3) Component Spec Table</em>.
-                  </li>
-                </ul>
-              </div>
-            </div>
-          )}
         </div>
       )}
 

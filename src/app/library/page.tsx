@@ -1190,37 +1190,19 @@ function ArchitectureLibraryContent() {
                       <Download className="w-3.5 h-3.5 text-sky-400" />
                       <span>Download .drawio</span>
                     </button>
-                    <button
-                      id="library-preview-open-cloud-viewer-btn"
-                      type="button"
-                      onClick={() => setCloudViewerTarget({ isOpen: true, targetApp: 'slides' })}
-                      className="px-3.5 py-2 rounded-xl border border-amber-500/40 bg-amber-500/15 hover:bg-amber-500 hover:text-slate-950 text-amber-300 text-xs font-black transition flex items-center gap-1.5 shadow-sm cursor-pointer"
-                      title="Open Same-Screen Cloud Viewer (Google Slides, Google Docs, PDF)"
-                    >
-                      <span>📊</span>
-                      <span>Cloud Viewer</span>
-                    </button>
-                    <button
-                      id="library-preview-open-google-slides-btn"
-                      type="button"
-                      onClick={() => {
-                        const rawId = activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim();
-                        const manifestKey = /^\d+$/.test(rawId) ? `BP-${rawId.padStart(2, '0')}` : rawId;
-                        void openDiagramInGoogleWorkspace(
-                          manifestKey,
-                          'slides',
-                          activeModalCanvas.name,
-                          activeVersion.xml_content
-                        );
-                      }}
-                      className="px-3.5 py-2 rounded-xl bg-[#202124] hover:bg-[#303134] text-white border border-white/15 text-xs font-black transition flex items-center gap-1.5 shadow-sm cursor-pointer"
-                      title="Open directly in Google Slides (nitinagga@google.com) via Server-Side Drive Conversion Bridge"
-                    >
-                      <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#fbbc04] text-[#202124] font-black text-[10px]">
-                        S
-                      </span>
-                      <span>Open with Google Slides ↗</span>
-                    </button>
+                    <DiagramInlineSlidesPreviewer
+                      headerOnly={true}
+                      manifestKey={
+                        /^\d+$/.test(activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim())
+                          ? `BP-${activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim().padStart(2, '0')}`
+                          : activeModalCanvas.id
+                      }
+                      title={activeModalCanvas.name}
+                      subtitle={activeVersion.comment || activeModalCanvas.latest_prompt || 'Enterprise Reference Architecture'}
+                      xml={activeVersion.xml_content}
+                      templateId={activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim().padStart(2, '0')}
+                      badgeLabel={`Library • v${activeVersion.version_number}`}
+                    />
                   </>
                 )}
                 <button
@@ -1277,21 +1259,8 @@ function ArchitectureLibraryContent() {
                   <span className="text-sm font-bold">Loading full-screen architecture canvas...</span>
                 </div>
               ) : activeVersion ? (
-                <div className="w-full max-w-[1520px] mx-auto">
-                  <DiagramInlineSlidesPreviewer
-                    key={`${activeModalCanvas.id}_${activeVersion.version_number}`}
-                    manifestKey={
-                      /^\d+$/.test(activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim())
-                        ? `BP-${activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim().padStart(2, '0')}`
-                        : activeModalCanvas.id
-                    }
-                    title={activeModalCanvas.name}
-                    subtitle={activeVersion.comment || activeModalCanvas.latest_prompt || 'Enterprise Reference Architecture'}
-                    xml={activeVersion.xml_content}
-                    templateId={activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim().padStart(2, '0')}
-                    badgeLabel={`Library • v${activeVersion.version_number}`}
-                    defaultShowSlidesPane={true}
-                  />
+                <div className="w-full h-full max-w-[1440px] mx-auto bg-white rounded-2xl overflow-hidden shadow-xl">
+                  <DiagramViewer xml={activeVersion.xml_content} aspectRatioId="16:9" bgTheme="light" />
                 </div>
               ) : (
                 <div className="h-full flex items-center justify-center text-slate-500 text-xs">

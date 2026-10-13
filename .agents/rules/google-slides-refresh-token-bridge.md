@@ -20,9 +20,11 @@ Whenever implementing, modifying, or debugging `"Open with Google Slides"`, `"Op
    - Pre-warmed Google Slides (`googleSlidesId`, `googleSlidesEditUrl`, `googleSlidesEmbedUrl`) and Google Docs (`googleDocsId`, `googleDocsEditUrl`, `googleDocsEmbedUrl`) entries must be stored in `cloud_viewer_manifest.json` and served via `GET /api/google-workspace/manifest`.
    - Clicking `[ S | Open with Google Slides | ▼ ]` must open pre-warmed `googleSlidesEditUrl` in a new tab in **`0ms`** without waiting for compilation, and fall back to `POST /api/google-workspace/open` server-side conversion for dynamic/custom diagrams.
 
-## 3. Universal 2-Pane Inline Slides Previewer Across All Diagrams (`DiagramInlineSlidesPreviewer.tsx`)
+## 3. Header-Only Action Controls & 100% Full-Width Diagram Canvas (`DiagramInlineSlidesPreviewer.tsx`)
 
-1. **Side-by-Side 2-Pane Layout**:
-   - Every diagram across `/blogs`, `/dashboard`, and `/library` must embed `DiagramInlineSlidesPreviewer.tsx` (`1. EDITABLE SLIDE DECK PREVIEWER (.PPTX & GOOGLE SLIDES)` on the left + `2. ARCHITECTURE DIAGRAM IN THIS WORKSTREAM` on the right).
-2. **Same-Screen Cloud Viewer Modal (`🔍 Cloud Viewer`)**:
-   - Clicking `🔍 Cloud Viewer` opens the 3-mode Same-Screen Cloud Viewer Modal (`✨ Interactive Slides Studio`, `🌐 Live Google Slides Embed`, `📄 Live Google Docs Spec`) without leaving the current page.
+1. **Zero On-Page Slide Deck Previewer Box**:
+   - Never render a 2-pane `1. EDITABLE SLIDE DECK PREVIEWER (.PPTX & GOOGLE SLIDES)` box or duplicate inner summary card on the page UI (`/dashboard`, `/blogs`, `/library`).
+   - Instead, render **ONLY the header options** (`👁️ Cloud Viewer` + `[ S | Open with Google Slides ↗ | ▼ ]` split-dropdown menu via `headerOnly={true}` on `/dashboard` `AppHeader`, `/library` preview modal header, and `/blogs` selector header), while displaying the architecture diagram itself cleanly at **100% full width**.
+2. **Same-Screen Cloud Viewer Modal (`👁️ Cloud Viewer`)**:
+   - Clicking `👁️ Cloud Viewer` in the header opens the 3-mode Same-Screen Cloud Viewer Modal (`✨ Interactive Slides Studio` 6-slide deck, `🌐 Live Google Slides Embed`, `📄 Live Google Docs Spec`) without cluttering the main canvas UI.
+

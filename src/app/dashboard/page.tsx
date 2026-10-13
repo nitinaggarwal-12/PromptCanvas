@@ -1985,46 +1985,18 @@ function DashboardContent() {
               <span>Share</span>
             </button>
 
-            {/* 2. Cloud Viewer Button (Opens Gmail Attachment Opener Cloud Preview) */}
-            <button
-              type="button"
-              onClick={() => {
-                setOpenViewerDropdown(false);
-                setCloudViewerModalMode('slides');
-              }}
-              data-testid="dashboard-cloud-viewer-btn"
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border font-extrabold text-xs transition shadow-xs cursor-pointer shrink-0 ${
-                isLight
-                  ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-300'
-                  : 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/40'
-              }`}
-              title="Open Gmail Attachment Opener Cloud Preview (Open with Google Slides, Google Docs, or PDF)"
-            >
-              <Eye className={`w-3.5 h-3.5 ${isLight ? 'text-amber-600' : 'text-amber-400'}`} />
-              <span>Cloud Viewer</span>
-            </button>
-
-            {/* 2b. Direct Open with Google Slides Button (1:1 blogs parity) */}
-            <button
-              type="button"
-              onClick={() => {
-                const rawBp = (loadedBlueprintId || '01').replace(/^#/, '').trim();
-                void openDiagramInGoogleWorkspace(
-                  `BP-${rawBp.padStart(2, '0')}`,
-                  'slides',
-                  `${canvasTitle || 'Enterprise Architecture'} (#${rawBp})`,
-                  activeCanvasXml
-                );
-              }}
-              data-testid="dashboard-open-with-google-slides-btn"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#202124] hover:bg-[#303134] text-white border border-white/15 font-extrabold text-xs transition shadow-xs cursor-pointer shrink-0"
-              title="Open directly in Google Slides (nitinagga@google.com) via Server-Side Drive Conversion Bridge"
-            >
-              <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#fbbc04] text-[#202124] font-black text-[10px]">
-                S
-              </span>
-              <span>Open with Google Slides ↗</span>
-            </button>
+            {/* 2. Header-Only Cloud Viewer + Open with Google Slides Split-Dropdown (Rule 47) */}
+            <DiagramInlineSlidesPreviewer
+              headerOnly={true}
+              manifestKey={`BP-${(loadedBlueprintId || '01').replace(/^#/, '').trim().padStart(2, '0')}`}
+              title={`${canvasTitle || 'Enterprise Architecture'} — Blueprint #${(loadedBlueprintId || '01').replace(/^#/, '')} (${canvasPerspective})`}
+              subtitle={currentVersion.diffSummary || '100% Collision-Free Multi-Agent Reference Architecture'}
+              xml={activeCanvasXml}
+              domainId="enterprise"
+              domainName="Google Cloud Enterprise"
+              templateId={(loadedBlueprintId || '01').replace(/^#/, '').trim().padStart(2, '0')}
+              badgeLabel={`Blueprint #${(loadedBlueprintId || '01').replace(/^#/, '')} • ${currentVersion.versionTag}`}
+            />
 
             {/* 3. New Diagram Button (Opens Input Selection Modal) */}
             <button
@@ -2670,24 +2642,6 @@ function DashboardContent() {
                   <span>Edit Inline</span>
                 </button>
 
-                {/* 2. Cloud Viewer (Opens Gmail Attachment Opener Cloud Preview) */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOpenViewerDropdown(false);
-                    setCloudViewerModalMode('slides');
-                  }}
-                  title="Open Gmail Attachment Opener Cloud Preview (Open with Google Slides, Google Docs, or PDF)"
-                  className={`px-2.5 py-1 rounded-xl font-bold text-[11px] flex items-center gap-1 transition cursor-pointer ${
-                    isLight
-                      ? 'bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700'
-                      : 'bg-slate-800 hover:bg-indigo-500/20 hover:text-indigo-300 text-slate-200'
-                  }`}
-                >
-                  <Eye className={`w-3.5 h-3.5 ${isLight ? 'text-indigo-600' : 'text-indigo-400'}`} />
-                  <span>Cloud Viewer</span>
-                </button>
-
                 {/* 3. Audit Button */}
                 <button
                   type="button"
@@ -2717,24 +2671,21 @@ function DashboardContent() {
               </div>
             </div>
 
-            {/* Canvas Viewport with Inline Editable Slide Deck Previewer & Open with Google Slides (1:1 blogs parity) */}
-            <div className="flex-1 min-h-0 overflow-y-auto p-1">
+            {/* Canvas Viewport (100% Full-Width Architecture Diagram, Header-Only Slides Options in AppHeader) */}
+            <div className="flex-1 min-h-0 overflow-hidden p-0">
               <div
-                style={{ transform: `scale(${zoomScale})`, transformOrigin: 'top center' }}
-                className="w-full max-w-[1520px] mx-auto transition-transform duration-200"
+                style={{ transform: `scale(${zoomScale})`, transformOrigin: 'center center' }}
+                className="w-full h-full transition-transform duration-200 flex items-center justify-center"
               >
-                <DiagramInlineSlidesPreviewer
-                  key={`${loadedBlueprintId}_${canvasPerspective}_${isLight ? 'light' : 'dark'}_${currentVersion.versionTag}_${currentVersion.id}`}
-                  manifestKey={`BP-${(loadedBlueprintId || '01').replace(/^#/, '').trim().padStart(2, '0')}`}
-                  title={`${canvasTitle || 'Enterprise Architecture'} — Blueprint #${(loadedBlueprintId || '01').replace(/^#/, '')} (${canvasPerspective})`}
-                  subtitle={currentVersion.diffSummary || '100% Collision-Free Multi-Agent Reference Architecture'}
-                  xml={activeCanvasXml}
-                  domainId="enterprise"
-                  domainName="Google Cloud Enterprise"
-                  templateId={(loadedBlueprintId || '01').replace(/^#/, '').trim().padStart(2, '0')}
-                  badgeLabel={`Blueprint #${(loadedBlueprintId || '01').replace(/^#/, '')} • ${currentVersion.versionTag}`}
-                  defaultShowSlidesPane={true}
-                />
+                <div className="w-full h-full max-w-[1440px]">
+                  <DiagramViewerRenderSafe
+                    key={`${loadedBlueprintId}_${canvasPerspective}_${isLight ? 'light' : 'dark'}_${currentVersion.versionTag}_${currentVersion.id}`}
+                    xml={activeCanvasXml}
+                    aspectRatioId="16:9"
+                    bgTheme={isLight ? 'light' : 'dark'}
+                    minHeight={0}
+                  />
+                </div>
               </div>
             </div>
 
