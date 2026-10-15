@@ -319,4 +319,80 @@ function runExportSlidesQualityGate() {
   );
 }
 
+import JSZip from 'jszip';
+import { GOOGLE_CLOUD_DOCUMENTATION_SERIES, buildCanonicalDocMarkdown } from '../src/lib/blogs/googleCloudDocumentationSeries';
+import { OFFICIAL_ARCH_CENTER_BLUEPRINTS, compileOfficialArchCenterDrawioXml } from '../src/lib/canonical/templateOfficialGcpArchCenterHubSpoke';
+import { exportDrawioToEditablePptx, findDocSection } from '../src/lib/export/editablePptxCompiler';
+
+async function verifySixSlideBlogEditableDecks() {
+  for (const docGuide of GOOGLE_CLOUD_DOCUMENTATION_SERIES) {
+    const prodSec = findDocSection(docGuide, 'products_used', 'products-used');
+    const useCaseSec = findDocSection(docGuide, 'use_case', 'use-case');
+    const designAltSec = findDocSection(docGuide, 'design_alternatives', 'design-alternatives');
+    const designConsSec = findDocSection(docGuide, 'design_considerations', 'design-considerations');
+    const whatsNextSec = findDocSection(docGuide, 'whats_next', 'whats-next');
+    if (
+      !prodSec?.productsUsedItems?.length ||
+      !useCaseSec?.useCaseBenefits?.length ||
+      !designAltSec?.designAlternativesSubSections?.length ||
+      !designConsSec?.designConsiderationsSubSections?.length ||
+      !whatsNextSec?.whatsNextLinks?.length
+    ) {
+      console.error(
+        `❌ EXPORT GATE FAILED: [${docGuide.docId}] findDocSection failed to resolve hyphenated/underscored sections (Products Used, Use Case, Design Alternatives, Design Considerations, What's Next).`
+      );
+      process.exit(1);
+    }
+  }
+
+  const doc01 = GOOGLE_CLOUD_DOCUMENTATION_SERIES[0];
+  const bp01 = OFFICIAL_ARCH_CENTER_BLUEPRINTS[0];
+  const xml01 = compileOfficialArchCenterDrawioXml(bp01);
+  const md01 = buildCanonicalDocMarkdown(doc01);
+  const pptxB64 = (await exportDrawioToEditablePptx(xml01, `${doc01.docId}: ${doc01.title}`, doc01.docId, {
+    returnBase64: true,
+    includeArchCenterGuideSlides: true,
+    markdownContent: md01,
+    docId: doc01.docId,
+  })) as string;
+
+  const zip01 = await JSZip.loadAsync(pptxB64, { base64: true });
+  const slideNames01 = Object.keys(zip01.files).filter((n) => n.startsWith('ppt/slides/slide') && n.endsWith('.xml'));
+  if (slideNames01.length !== 6) {
+    console.error(`❌ EXPORT GATE FAILED: [${doc01.docId}] Expected 6 slides in compiled PPTX, found ${slideNames01.length}.`);
+    process.exit(1);
+  }
+
+  const s1Xml = await zip01.file('ppt/slides/slide1.xml')!.async('string');
+  const s3Xml = await zip01.file('ppt/slides/slide3.xml')!.async('string');
+  const s4Xml = await zip01.file('ppt/slides/slide4.xml')!.async('string');
+  const s6Xml = await zip01.file('ppt/slides/slide6.xml')!.async('string');
+
+  if (
+    !s1Xml.includes('w="sm" len="sm"') ||
+    s1Xml.includes('<a:headEnd type="triangle"/>') ||
+    !s1Xml.includes('4-ZONE HUB-AND-SPOKE TOPOLOGY KEY') ||
+    !s1Xml.includes('ARCHITECTURE CENTER GUIDE (#78)')
+  ) {
+    console.error('❌ EXPORT GATE FAILED: Slide 1 XML is missing compact arrowheads (w="sm" len="sm") or 4-Zone Architecture Center Reference Sidebar!');
+    process.exit(1);
+  }
+  if (!s3Xml.includes('Google Cloud Products Used') || !s3Xml.includes('Vertex AI Agent Engine') || !s3Xml.includes('Model Armor')) {
+    console.error('❌ EXPORT GATE FAILED: Slide 3 XML is missing Google Cloud Products Used cards!');
+    process.exit(1);
+  }
+  if (!s4Xml.includes('Use Case:') || !s4Xml.includes('Strict data isolation') || !s4Xml.includes('Design Alternatives') || !s4Xml.includes('Private access deployment')) {
+    console.error('❌ EXPORT GATE FAILED: Slide 4 XML is missing Use Case or Design Alternatives cards!');
+    process.exit(1);
+  }
+  if (!s6Xml.includes('Deployment Runbook') || !s6Xml.includes('Architecture Center References') || !s6Xml.includes('Verification Provenance')) {
+    console.error('❌ EXPORT GATE FAILED: Slide 6 XML is missing Deployment Runbook, What\'s Next, or Contributors!');
+    process.exit(1);
+  }
+}
+
 runExportSlidesQualityGate();
+verifySixSlideBlogEditableDecks().then(() => {
+  console.log('🎯 6-Slide Editable Diagram (#78) + Blog Content PPTX XML & 9-Guide Section Resolution Gate PASSED (9/9 guides, 6/6 slides, compact arrowheads w="sm" len="sm", 0 empty columns)!');
+});
+

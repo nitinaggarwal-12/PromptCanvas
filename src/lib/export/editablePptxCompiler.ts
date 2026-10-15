@@ -1297,13 +1297,13 @@ function renderArchitectureCenterDiagramSidebar(
   const stepItems = (archSec?.agenticFlowSteps || []).slice(0, 7);
   const stepLines =
     stepItems.length > 0
-      ? stepItems.map(
-          (st, idx) =>
-            `${idx + 1}. ${truncateClean(
-              st.step.split(/(?<!\d)\.(?!\d)\s+/)[0].replace(/\.$/, ''),
-              130
-            )}.`
-        )
+      ? stepItems.map((st, idx) => {
+          const s = truncateClean(
+            st.step.split(/(?<!\d)\.(?!\d)\s+/)[0].replace(/\.$/, ''),
+            126
+          );
+          return `${idx + 1}. ${/[.…]$/.test(s) ? s : `${s}.`}`;
+        })
       : [
           '1. Request enters Global External ALB with Cloud Armor WAF.',
           '2. IAP & IAM STS mint tenant-scoped OBO + DPoP token.',
@@ -2645,7 +2645,13 @@ export async function exportDrawioToEditablePptx(
     );
 
     // Use Case Lead Summary Card
-    const useCaseLeadSummary = truncateClean((useCaseSec?.leadParagraphs || []).join(' '), 340);
+    const rawUseCaseLead = (useCaseSec?.leadParagraphs || [])
+      .join(' ')
+      .replace(/^This section describes a business use case[^.]*\.\s*(?:Second,\s*)?/i, '');
+    const useCaseLeadSummary = truncateClean(
+      rawUseCaseLead ? rawUseCaseLead.charAt(0).toUpperCase() + rawUseCaseLead.slice(1) : docGuide.subtitle,
+      340
+    );
     slideUseCase.addShape(pptx.ShapeType.roundRect, {
       x: 0.32,
       y: 1.24,

@@ -18,6 +18,10 @@ import {
 } from '../src/lib/versioning/docSectionEngine';
 import { generateSlideDeck } from '../src/lib/export/slideDeckEngine';
 import { generateTerraformBundle, simulateTerraformPlan } from '../src/lib/iac/terraformEngine';
+import JSZip from 'jszip';
+import { GOOGLE_CLOUD_DOCUMENTATION_SERIES, buildCanonicalDocMarkdown } from '../src/lib/blogs/googleCloudDocumentationSeries';
+import { OFFICIAL_ARCH_CENTER_BLUEPRINTS, compileOfficialArchCenterDrawioXml } from '../src/lib/canonical/templateOfficialGcpArchCenterHubSpoke';
+import { exportDrawioToEditablePptx, findDocSection } from '../src/lib/export/editablePptxCompiler';
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -632,6 +636,77 @@ Zero-trust VPC service perimeters protect all data at rest and in transit.`;
       `Security compliance checks passed (>20 CIS benchmarks) for [${domain}]`
     );
   }
+
+  // ============================================================================
+  // SUITE 13: GOOGLE CLOUD ARCHITECTURE CENTER (#78) 6-SLIDE EDITABLE PPTX & BLOG CONTENT
+  // ============================================================================
+  console.log('\n📌 SUITE 13: Google Cloud Architecture Center (#78) 6-Slide Editable PPTX & Blog Content');
+
+  for (const docGuide of GOOGLE_CLOUD_DOCUMENTATION_SERIES) {
+    const prodSec = findDocSection(docGuide, 'products_used', 'products-used');
+    const useCaseSec = findDocSection(docGuide, 'use_case', 'use-case');
+    const designAltSec = findDocSection(docGuide, 'design_alternatives', 'design-alternatives');
+    const designConsSec = findDocSection(docGuide, 'design_considerations', 'design-considerations');
+    const whatsNextSec = findDocSection(docGuide, 'whats_next', 'whats-next');
+    assert(
+      Boolean(prodSec?.productsUsedItems?.length) &&
+      Boolean(useCaseSec?.useCaseBenefits?.length) &&
+      Boolean(designAltSec?.designAlternativesSubSections?.length) &&
+      Boolean(designConsSec?.designConsiderationsSubSections?.length) &&
+      Boolean(whatsNextSec?.whatsNextLinks?.length),
+      `[${docGuide.docId}] findDocSection resolves hyphenated/underscored sections (Products Used, Use Case, Design Alternatives, Design Considerations, What's Next)`
+    );
+  }
+
+  const doc01 = GOOGLE_CLOUD_DOCUMENTATION_SERIES[0];
+  const bp01 = OFFICIAL_ARCH_CENTER_BLUEPRINTS[0];
+  const xml01 = compileOfficialArchCenterDrawioXml(bp01);
+  const md01 = buildCanonicalDocMarkdown(doc01);
+  const pptxB64 = (await exportDrawioToEditablePptx(xml01, `${doc01.docId}: ${doc01.title}`, doc01.docId, {
+    returnBase64: true,
+    includeArchCenterGuideSlides: true,
+    markdownContent: md01,
+    docId: doc01.docId,
+  })) as string;
+
+  const zip01 = await JSZip.loadAsync(pptxB64, { base64: true });
+  const slideNames01 = Object.keys(zip01.files).filter((n) => n.startsWith('ppt/slides/slide') && n.endsWith('.xml'));
+  assert(
+    slideNames01.length === 6,
+    `[${doc01.docId}] exportDrawioToEditablePptx compiles exactly 6 slides (Slide 1 Editable Diagram #78 + Slides 2-6 Blog Content)`
+  );
+
+  const s1Xml = await zip01.file('ppt/slides/slide1.xml')!.async('string');
+  const s3Xml = await zip01.file('ppt/slides/slide3.xml')!.async('string');
+  const s4Xml = await zip01.file('ppt/slides/slide4.xml')!.async('string');
+  const s6Xml = await zip01.file('ppt/slides/slide6.xml')!.async('string');
+
+  assert(
+    s1Xml.includes('w="sm" len="sm"') &&
+    !s1Xml.includes('<a:headEnd type="triangle"/>') &&
+    s1Xml.includes('4-ZONE HUB-AND-SPOKE TOPOLOGY KEY') &&
+    s1Xml.includes('ARCHITECTURE CENTER GUIDE (#78)'),
+    `[Slide 1] Enforces compact OpenXML arrowheads (w="sm" len="sm") and 4-Zone Architecture Center Reference Sidebar`
+  );
+  assert(
+    s3Xml.includes('Google Cloud Products Used') &&
+    s3Xml.includes('Vertex AI Agent Engine') &&
+    s3Xml.includes('Model Armor'),
+    `[Slide 3] Populates Right Column with Google Cloud Products Used cards (zero blank columns)`
+  );
+  assert(
+    s4Xml.includes('Use Case:') &&
+    s4Xml.includes('Strict data isolation') &&
+    s4Xml.includes('Design Alternatives') &&
+    s4Xml.includes('Private access deployment'),
+    `[Slide 4] Populates Use Case & 3-Card Design Alternatives columns (zero blank columns)`
+  );
+  assert(
+    s6Xml.includes('Deployment Runbook') &&
+    s6Xml.includes('Architecture Center References') &&
+    s6Xml.includes('Verification Provenance'),
+    `[Slide 6] Populates Deployment Runbook & What's Next Architecture Center References`
+  );
 
   // ============================================================================
   // SUMMARY REPORT
