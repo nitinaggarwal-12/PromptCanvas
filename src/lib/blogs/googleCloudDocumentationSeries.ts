@@ -2008,6 +2008,9 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
 
   return {
     ...raw,
+    gcpProductsUsed: raw.gcpProductsUsed
+      .map((p) => p.replace(/\s*\([^)]*\)\s*/g, '').trim())
+      .filter(Boolean),
     overviewParagraphs,
     sections,
   };

@@ -54,18 +54,18 @@ async function callGeminiMultimodalJudge(
     if (token) {
       const parts: any[] = [
         {
-          text: `You are an Adversarial Principal Google Cloud Documentation & Executive UX Design Judge evaluating the '/blogs' 9-Blog Tile Catalog Hub and PDF-Style Google Cloud Documentation Reader (/blogs/DOC-MT-01..DOC-REF-09) under Rule 25 (First-Principles Executive IA & Zero Visual Redundancy).
+          text: `You are an Adversarial Principal Google Cloud Documentation & Executive UX Design Judge evaluating the '/blogs' 9-Blog Tile Catalog Hub and PDF-Style Google Cloud Documentation Reader (/blogs/DOC-MT-01..DOC-REF-09) under Rule 25 (First-Principles Executive IA & Zero Visual Redundancy) and Rule 53 (Monochromatic Google Cloud Documentation Palette).
 Evaluate strictly across 5 dimensions:
 1. UI/UX (Clean single-row catalog header without duplicate P1..P6 reading-order strips above the 3x3 grid; single top AppHeader on /blogs/[docId] without duplicate DevSite top action bars)
-2. Design (Google Cloud Documentation Light Theme, crisp typography, single-source breadcrumb + H1 header without redundant "Interactive Architecture Assets" button strips)
+2. Design (Restrained monochromatic Google Cloud Documentation Light Theme: neutral slate metadata & service chips with single Google Blue #1a73e8 primary CTA; zero rainbow purple/amber/black tag clutter [rainbowTagCount === 0]; single-row non-wrapping card footers [maxTileFooterHeightPx <= 56])
 3. Layout (3x3 tile catalog on /blogs, 2-column PDF whitepaper + sticky TOC on /blogs/[docId], strictly 1 authoritative Official #78 diagram per guide with zero duplicate Figure 2)
 4. User Workflow (Tile selection, permalink routing, single-instance Google Slides & Draw.io controls on Figure 1 toolbar, PDF print/export and Copy Markdown in AppHeader)
-5. Content Quality (100% guide-specific Component Tables, Agentic Flows, and Products Used; zero slot-mismatch parentheticals like "Cloud Armor (Tier 1: Pooled)"; zero cross-project Merck screenshots)
+5. Content Quality (100% guide-specific Component Tables, Agentic Flows, and Products Used; zero edge-security slot-mismatch labels where Cloud Armor or IAP are mislabeled as "(Tier 1: Pooled)" or "(Tier 2: Bridge)" [note: architectural pattern titles like "Pattern A: Pooled Shared Runtime (Standard & High-Density SaaS)" or "Pattern B (Sovereign Silo)" are valid and expected]; zero cross-project Merck screenshots)
 
 Here is the live DOM & telemetry audit payload:
 ${JSON.stringify(metricsPayload, null, 2)}
 
-Inspect the screenshots and telemetry critically. Note that under Rule 47, a single DiagramInlineSlidesPreviewer instance renders both "Cloud Viewer" (in-page modal) and "Open with Google Slides ↗" (external Google Slides tab) side-by-side—do not flag that single Rule 47 component as duplicate unless slidesPreviewerCount > 1. Flag any duplicate navigation bars, slidesPreviewerCount > 1, duplicate Figure 2 diagrams, cross-project Merck screenshots, "undefined" strings, or slot-mismatch text in "llmSuggestedIssues". Return "llmSuggestedIssues": [] if all checks pass and the page is clean and executive.
+Inspect the screenshots and telemetry critically. Note that under Rule 47, a single DiagramInlineSlidesPreviewer instance renders both "Cloud Viewer" (in-page modal) and "Slides ↗" (external Google Slides tab) side-by-side—do not flag that single Rule 47 component as duplicate unless slidesPreviewerCount > 1. Flag any duplicate navigation bars, rainbowTagCount > 0, maxTileFooterHeightPx > 56, slidesPreviewerCount > 1, duplicate Figure 2 diagrams, cross-project Merck screenshots, or "undefined" strings in "llmSuggestedIssues". Return "llmSuggestedIssues": [] if all checks pass and the page is clean and executive.
 
 Return ONLY valid JSON with keys:
 {
@@ -196,6 +196,11 @@ async function main() {
     const hasReadingOrderRoadmap = Boolean(
       document.querySelector('[data-testid="catalog-reading-order-strip"]')
     );
+    const rainbowTagCount = catalogEl
+      ? catalogEl.querySelectorAll('.bg-indigo-50, .bg-\\[\\#FEF3C7\\], .bg-slate-900\\/85').length
+      : 0;
+    const tileFooters = tiles.map((t) => t.lastElementChild?.getBoundingClientRect().height || 0);
+    const maxTileFooterHeightPx = tileFooters.length ? Math.max(...tileFooters) : 0;
     const bodyBg = window.getComputedStyle(document.body).backgroundColor;
     const catalogRect = catalogEl?.getBoundingClientRect();
 
@@ -207,6 +212,8 @@ async function main() {
       svgPreviewCount: svgPreviews.length,
       hasReadingOrderRoadmap,
       hasPrintOrExportBtn,
+      rainbowTagCount,
+      maxTileFooterHeightPx: Math.round(maxTileFooterHeightPx),
       bodyBg,
       catalogWidthPx: catalogRect?.width || 0,
       viewportWidthPx: window.innerWidth,
@@ -239,14 +246,19 @@ async function main() {
     recommendation: 'Render all 9 tiles (DOC-MT-01..DOC-REF-09) with inline compiled Official (#78) SVG previews.',
   });
 
-  recordCheck(!catalogAudit.hasReadingOrderRoadmap, {
-    id: 'UX-02',
-    dimension: 'UI/UX',
-    severity: 'MEDIUM',
-    title: 'Tile Catalog header contains a redundant 6-Part Reading Order Strip duplicating the 3x3 cards directly below (Rule 25A)',
-    evidence: `hasReadingOrderRoadmap=${catalogAudit.hasReadingOrderRoadmap}`,
-    recommendation: 'Delete catalog-reading-order-strip so the 3x3 card grid starts immediately below the filter bar.',
-  });
+  recordCheck(
+    !catalogAudit.hasReadingOrderRoadmap &&
+      catalogAudit.rainbowTagCount === 0 &&
+      catalogAudit.maxTileFooterHeightPx <= 56,
+    {
+      id: 'UX-02',
+      dimension: 'Design',
+      severity: 'MEDIUM',
+      title: 'Tile Catalog contains redundant reading-order strip, rainbow indigo/amber/black tags, or wrapped multi-row card footers (Rule 25)',
+      evidence: `hasReadingOrderRoadmap=${catalogAudit.hasReadingOrderRoadmap}, rainbowTagCount=${catalogAudit.rainbowTagCount}, maxTileFooterHeightPx=${catalogAudit.maxTileFooterHeightPx}`,
+      recommendation: 'Use a unified monochromatic slate + Google Blue palette, strip overlay/purple/amber badges, and keep card footers on a single row.',
+    }
+  );
 
   // Test Series Filter Pills in Catalog
   await page.click('[data-testid="catalog-filter-mt-series"]');

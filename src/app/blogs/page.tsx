@@ -1140,21 +1140,21 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
       <div className="flex-1 flex flex-col min-w-0">
         <AppHeader
           icon={Newspaper}
-          tone="indigo"
-          title="Technical Blog Studio"
+          tone="blue"
+          title="Cloud Architecture Center"
           meta={
-            <div className="flex items-center gap-1.5 pl-2 border-l border-slate-200 dark:border-slate-800">
+            <div className="inline-flex items-center gap-0.5 p-0.5 ml-2 rounded-lg bg-slate-100 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700">
               <button
                 type="button"
                 data-testid="mode-tab-catalog"
                 onClick={handleReturnToTileCatalog}
-                className={`px-2.5 py-1 rounded-lg text-xs font-extrabold border transition-all flex items-center gap-1.5 cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
                   studioLayoutMode === 'catalog'
-                    ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-blue-400'
+                    ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-2xs'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 font-medium'
                 }`}
               >
-                <Layers className="w-3.5 h-3.5" />
+                <Layers className="w-3.5 h-3.5 text-[#1a73e8]" />
                 <span>{studioLayoutMode === 'catalog' ? '9-Guide Catalog' : '← 9-Guide Catalog'}</span>
               </button>
 
@@ -1169,13 +1169,13 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }, 80);
                   }}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-extrabold border transition-all flex items-center gap-1.5 cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-md text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
                     studioLayoutMode === 'legacy-studio'
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                      ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-2xs'
+                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 font-medium'
                   }`}
                 >
-                  <Terminal className="w-3.5 h-3.5" />
+                  <Terminal className="w-3.5 h-3.5 text-slate-500" />
                   <span>Codebase &amp; Diagram Studio</span>
                 </button>
               )}
@@ -1186,10 +1186,10 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
               <button
                 onClick={() => setShowGcpVerifyDrawer(!showGcpVerifyDrawer)}
                 data-testid="open-gcp-verify-drawer-btn"
-                className="px-2.5 py-1.5 rounded-lg text-xs font-extrabold border bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/25 transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-2.5 py-1 rounded-lg text-xs font-medium border bg-white hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-200 border-slate-200/90 dark:border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
               >
-                <Shield className="w-3.5 h-3.5 text-emerald-500" />
-                <span>☁️ GCP Verified ({gcpVerification?.passedChecks || 20}/{gcpVerification?.totalChecks || 20} PASS)</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                <span>GCP Verified ({gcpVerification?.passedChecks || 20}/{gcpVerification?.totalChecks || 20} PASS)</span>
               </button>
 
               {studioLayoutMode === 'pdf-doc-reader' ? (
@@ -1198,10 +1198,10 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                     type="button"
                     data-testid="doc-reader-print-pdf-btn"
                     onClick={() => window.print()}
-                    className="px-2.5 py-1.5 rounded-lg bg-[#1a73e8] hover:bg-[#1765cc] text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 text-xs font-medium inline-flex items-center gap-1.5 cursor-pointer shadow-2xs"
                     title="Print or Save this Cloud Architecture Center document as PDF"
                   >
-                    <Printer className="w-3.5 h-3.5" />
+                    <Printer className="w-3.5 h-3.5 text-slate-500" />
                     <span>Print / PDF</span>
                   </button>
                   <button
@@ -1210,7 +1210,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                     onClick={() =>
                       handleCopyText(buildCanonicalDocMarkdown(activeDocGuide), 'doc-guide-md')
                     }
-                    className="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs font-semibold cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 text-xs font-medium cursor-pointer shadow-2xs"
                   >
                     {copiedKey === 'doc-guide-md' ? '✓ Copied .MD' : 'Copy Markdown'}
                   </button>
@@ -1218,7 +1218,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                     type="button"
                     data-testid="toggle-doc-e2e-workbench-btn"
                     onClick={() => setShowDocWorkbench(!showDocWorkbench)}
-                    className="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-indigo-950 text-slate-700 dark:text-indigo-300 border border-slate-200 dark:border-indigo-800 text-xs font-semibold cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 text-xs font-medium cursor-pointer shadow-2xs"
                   >
                     {showDocWorkbench ? 'Hide Workbench ▲' : 'Codebase Workbench ▾'}
                   </button>
@@ -1586,22 +1586,22 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
               data-testid="blogs-tile-catalog-grid"
               className="w-full max-w-full space-y-4"
             >
-              {/* Compact Executive Catalog Toolbar + 6-Part Reading Order Strip (Rule 25D) */}
-              <div className="bg-white dark:bg-[#0D1526] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs space-y-3">
+              {/* Compact Executive Catalog Toolbar (Rule 25D) */}
+              <div className="bg-white dark:bg-[#0D1526] border border-slate-200/90 dark:border-slate-800 rounded-xl px-4 py-3 shadow-2xs">
                 <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3">
                   <div className="flex items-center gap-3 flex-wrap">
-                    <h1 className="text-lg md:text-xl font-black text-slate-900 dark:text-white tracking-tight">
+                    <h1 className="text-base md:text-lg font-semibold text-slate-900 dark:text-white tracking-tight">
                       Multi-Tenant Agentic AI &amp; Reference Documentation Series
                     </h1>
-                    <div className="flex items-center gap-1.5 flex-wrap">
+                    <div className="inline-flex items-center gap-0.5 p-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 flex-wrap">
                       <button
                         type="button"
                         data-testid="catalog-filter-all"
                         onClick={() => setCatalogSeriesFilter('all')}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-md text-xs transition-all cursor-pointer ${
                           catalogSeriesFilter === 'all'
-                            ? 'bg-blue-600 text-white shadow-xs'
-                            : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
+                            ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-2xs'
+                            : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 font-medium'
                         }`}
                       >
                         All (9)
@@ -1610,25 +1610,25 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                         type="button"
                         data-testid="catalog-filter-mt-series"
                         onClick={() => setCatalogSeriesFilter('multi-tenant-series')}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-md text-xs transition-all cursor-pointer ${
                           catalogSeriesFilter === 'multi-tenant-series'
-                            ? 'bg-blue-600 text-white shadow-xs'
-                            : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
+                            ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-2xs'
+                            : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 font-medium'
                         }`}
                       >
-                        🏛️ 6-Part Multi-Tenant Series (6)
+                        6-Part Multi-Tenant Series (6)
                       </button>
                       <button
                         type="button"
                         data-testid="catalog-filter-standalone"
                         onClick={() => setCatalogSeriesFilter('reference-architectures')}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-md text-xs transition-all cursor-pointer ${
                           catalogSeriesFilter === 'reference-architectures'
-                            ? 'bg-blue-600 text-white shadow-xs'
-                            : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
+                            ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-2xs'
+                            : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 font-medium'
                         }`}
                       >
-                        ★ 3 Reference Architectures (3)
+                        Reference Architectures (3)
                       </button>
                     </div>
                   </div>
@@ -1643,24 +1643,24 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                         value={catalogSearchQuery}
                         onChange={(e) => setCatalogSearchQuery(e.target.value)}
                         placeholder="Filter by DOC-MT-01, KMS, Spanner..."
-                        className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-normal focus:outline-none focus:ring-2 focus:ring-[#1a73e8]/30 focus:border-[#1a73e8]"
                       />
                     </div>
                     <button
                       type="button"
                       data-testid="catalog-print-export-btn"
                       onClick={() => window.print()}
-                      className="px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-950/70 hover:bg-blue-100 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-extrabold inline-flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                      className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700 text-xs font-medium inline-flex items-center justify-center gap-1.5 cursor-pointer shrink-0 shadow-2xs"
                       title="Print or Save Complete 9-Guide Catalog as PDF"
                     >
-                      <Printer className="w-3.5 h-3.5" />
-                      <span>🖨️ Print / PDF</span>
+                      <Printer className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Print / PDF</span>
                     </button>
                   </div>
                 </div>
               </div>
 
-              {/* 3x3 Responsive Blog Tile Grid (Streamlined Card Density per Rule 25) */}
+              {/* 3x3 Responsive Blog Tile Grid (Polished Google Cloud Architecture Center Card System) */}
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                 {filteredDocSeries.map((doc) => {
                   const tileUc =
@@ -1675,60 +1675,45 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                     <article
                       key={doc.docId}
                       data-testid={`blog-catalog-tile-${doc.docId}`}
-                      className="bg-white dark:bg-[#0D1526] border border-slate-200 dark:border-slate-800 hover:border-blue-500 dark:hover:border-blue-500 rounded-2xl shadow-xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group"
+                      className="bg-white dark:bg-[#0D1526] border border-slate-200/90 dark:border-slate-800 hover:border-[#1a73e8]/60 dark:hover:border-blue-500 rounded-xl shadow-2xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group"
                     >
                       <div>
-                        {/* Tile Header Bar: Unique ID + Part Badge + Read Time */}
-                        <div className="px-4 py-2.5 bg-slate-50/90 dark:bg-slate-900/80 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-2">
+                        {/* Tile Header Bar: Subtle Monochromatic Eyebrow (ID + Part Label + Read Time) */}
+                        <div className="px-4 py-2.5 bg-slate-50/70 dark:bg-slate-900/80 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2 min-w-0">
                             <span
                               data-testid={`tile-doc-id-${doc.docId}`}
-                              className="px-2 py-0.5 rounded bg-blue-600 text-white font-mono text-[11px] font-extrabold tracking-tight shrink-0"
+                              className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 font-mono text-[11px] font-semibold tracking-tight shrink-0"
                             >
                               {doc.docId}
                             </span>
-                            <span className="text-[11px] font-bold text-blue-700 dark:text-blue-300 block truncate max-w-full">
+                            <span className="text-slate-300 dark:text-slate-700">·</span>
+                            <span className="text-[11.5px] font-medium text-slate-600 dark:text-slate-300 block truncate max-w-full">
                               {doc.partBadge}
                             </span>
                           </div>
-                          <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 shrink-0">
-                            {doc.readTimeMinutes}m read
+                          <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium shrink-0">
+                            {doc.readTimeMinutes} min read
                           </span>
                         </div>
 
-                        {/* Live Official Google Cloud (#78) Architecture Diagram Preview */}
+                        {/* Unobstructed Official Google Cloud (#78) Architecture Diagram Preview */}
                         <div
                           onClick={() => handleOpenDocGuide(doc)}
-                          className="relative h-48 bg-[#F8F9FA] dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 p-2 flex items-center justify-center overflow-hidden cursor-pointer"
+                          className="relative h-48 bg-white dark:bg-slate-950 border-b border-slate-100 dark:border-slate-800 p-2.5 flex items-center justify-center overflow-hidden cursor-pointer"
                         >
                           <div
                             data-testid={`tile-svg-preview-${doc.docId}`}
-                            className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:object-contain group-hover:scale-[1.02] transition-transform duration-300"
+                            className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:object-contain group-hover:scale-[1.015] transition-transform duration-300"
                             dangerouslySetInnerHTML={{ __html: tileSvgStr }}
                           />
-                          <div className="absolute bottom-2 right-2 flex items-center gap-1 flex-wrap justify-end">
-                            <span className="px-2 py-0.5 rounded bg-slate-900/85 text-white text-[10px] font-mono font-bold">
-                              Blueprint #78 • SVG &amp; Draw.io
-                            </span>
-                          </div>
                         </div>
 
-                        {/* Tile Body: GCP Products, Title & Concise 2-Line Summary */}
-                        <div className="p-4 space-y-2">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            {doc.gcpProductsUsed.slice(0, 3).map((prod) => (
-                              <span
-                                key={prod}
-                                className="px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800 text-[10px] font-bold"
-                              >
-                                {prod.replace(/\s*\([^)]*\)\s*/g, '').trim()}
-                              </span>
-                            ))}
-                          </div>
-
+                        {/* Tile Body: Title, Concise 2-Line Summary & Restrained Neutral Service Metadata */}
+                        <div className="p-4 space-y-2.5">
                           <h2
                             onClick={() => handleOpenDocGuide(doc)}
-                            className="text-[15px] font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug cursor-pointer"
+                            className="text-[15px] font-semibold text-slate-900 dark:text-white group-hover:text-[#1a73e8] dark:group-hover:text-blue-400 transition-colors leading-snug cursor-pointer"
                           >
                             {doc.title}
                           </h2>
@@ -1736,12 +1721,23 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                           <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2">
                             {doc.subtitle}
                           </p>
+
+                          <div className="pt-1 flex items-center gap-1.5 flex-wrap">
+                            {doc.gcpProductsUsed.slice(0, 3).map((prod) => (
+                              <span
+                                key={prod}
+                                className="px-2 py-0.5 rounded-md bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200/70 dark:border-slate-700 text-[10.5px] font-medium"
+                              >
+                                {prod}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
 
-                      {/* Tile Footer: Copy Link + Google Slides (Editable Diagram + Blog) + Open Guide Button */}
-                      <div className="px-4 py-2.5 bg-slate-50/70 dark:bg-slate-900/50 border-t border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-1.5 flex-wrap">
-                        <div className="flex items-center gap-1.5 flex-wrap">
+                      {/* Single-Row Tile Footer: Copy Link + Light-Theme Slides Controls + Open Guide CTA */}
+                      <div className="px-4 py-2.5 bg-slate-50/50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-1.5 flex-nowrap">
+                        <div className="flex items-center gap-1.5 min-w-0">
                           <button
                             type="button"
                             data-testid={`copy-permalink-${doc.docId}`}
@@ -1752,19 +1748,20 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                               setCopiedKey(`permalink-${doc.docId}`);
                               setTimeout(() => setCopiedKey(null), 1500);
                             }}
-                            className="px-2 py-1 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 border border-slate-200 dark:border-slate-700 text-[11px] font-bold text-slate-600 dark:text-slate-300 cursor-pointer shrink-0"
+                            className="px-2 py-1 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-50 border border-slate-200/90 dark:border-slate-700 text-[11px] font-medium text-slate-600 dark:text-slate-300 cursor-pointer shrink-0 shadow-2xs whitespace-nowrap"
                             title={`Copy permalink: /blogs/${doc.docId}`}
                           >
-                            {copiedKey === `permalink-${doc.docId}` ? '✓ Copied Link' : '🔗 Copy Link'}
+                            {copiedKey === `permalink-${doc.docId}` ? '✓ Copied' : 'Copy link'}
                           </button>
 
                           <div
                             onClick={(e) => e.stopPropagation()}
                             data-testid={`tile-slides-export-${doc.docId}`}
-                            className="inline-flex items-center"
+                            className="inline-flex items-center shrink-0"
                           >
                             <DiagramInlineSlidesPreviewer
                               headerOnly={true}
+                              compact={true}
                               manifestKey={doc.docId}
                               title={`${doc.docId}: ${doc.title}`}
                               subtitle={doc.subtitle}
@@ -1783,9 +1780,9 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                           type="button"
                           data-testid={`open-doc-guide-btn-${doc.docId}`}
                           onClick={() => handleOpenDocGuide(doc)}
-                          className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-extrabold inline-flex items-center gap-1 shadow-xs cursor-pointer shrink-0"
+                          className="px-3 py-1 rounded-lg bg-[#1a73e8] hover:bg-[#1557b0] text-white text-[11.5px] font-semibold inline-flex items-center gap-1 shadow-2xs cursor-pointer shrink-0 whitespace-nowrap"
                         >
-                          <span>📖 Open Guide</span>
+                          <span>Open Guide</span>
                           <ChevronRight className="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -1828,7 +1825,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                         <span>›</span>
                         <span
                           data-testid="doc-reader-pdf-source-badge"
-                          className="px-2 py-0.5 rounded bg-[#e8f0fe] dark:bg-blue-950/60 text-[#1967d2] dark:text-blue-300 font-semibold text-xs"
+                          className="text-[#5f6368] dark:text-slate-300 font-medium text-[13px]"
                         >
                           {activeDocGuide.partBadge}
                         </span>
@@ -1837,13 +1834,13 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                       <div className="flex items-center gap-2 text-xs text-[#5f6368] dark:text-slate-400">
                         <span
                           data-testid="active-doc-unique-id-badge"
-                          className="px-2 py-0.5 rounded bg-[#f8f9fa] dark:bg-slate-800 text-[#3c4043] dark:text-slate-300 border border-[#dadce0] dark:border-slate-700 font-mono text-[11px] font-semibold"
+                          className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 font-mono text-[11px] font-semibold"
                         >
                           {activeDocGuide.docId}
                         </span>
-                        <span>•</span>
+                        <span>·</span>
                         <span>{activeDocGuide.readTimeMinutes} min read</span>
-                        <span>•</span>
+                        <span>·</span>
                         <span>Last reviewed 2026-10-15</span>
                       </div>
                     </div>
@@ -1931,15 +1928,12 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                               {/* Compact DevSite Figure Toolbar */}
                               <div className="px-4 py-2.5 bg-[#f8f9fa] dark:bg-slate-900 border-b border-[#dadce0] dark:border-slate-800 flex flex-col xl:flex-row xl:items-center justify-between gap-2.5">
                                 <div className="flex items-center gap-2 flex-wrap">
-                                  <span className="text-xs font-bold text-[#202124] dark:text-white">
+                                  <span className="text-xs font-semibold text-[#202124] dark:text-white">
                                     {sec.inlineDiagram.figureNumber}: {sec.inlineDiagram.title}
-                                  </span>
-                                  <span className="px-2 py-0.5 rounded bg-[#e8f0fe] text-[#1967d2] text-[11px] font-medium">
-                                    Official Google Cloud Architecture (#78)
                                   </span>
                                 </div>
 
-                                <div className="flex items-center gap-2 flex-wrap">
+                                <div className="flex items-center gap-1.5 flex-wrap">
                                   <button
                                     type="button"
                                     data-testid={`doc-fig-drawio-inline-btn-${sec.id}`}
@@ -1949,13 +1943,13 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                                         [sec.id]: figMode === 'drawio' ? 'svg' : 'drawio',
                                       }))
                                     }
-                                    className={`px-2.5 py-1 rounded text-xs font-medium border cursor-pointer ${
+                                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold border cursor-pointer shadow-2xs transition ${
                                       figMode === 'drawio'
                                         ? 'bg-[#1a73e8] text-white border-[#1a73e8]'
-                                        : 'bg-white dark:bg-slate-800 text-[#3c4043] dark:text-slate-200 border-[#dadce0] dark:border-slate-700 hover:bg-[#f8f9fa]'
+                                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200/90 dark:border-slate-700 hover:bg-slate-50'
                                     }`}
                                   >
-                                    {figMode === 'drawio' ? '← View Architecture Diagram' : '✏️ Edit in Draw.io'}
+                                    {figMode === 'drawio' ? '← View Architecture Diagram' : 'Edit in Draw.io'}
                                   </button>
 
                                   {/* Single Header-Only Google Slides & Cloud Viewer Controls (Rule 47) */}

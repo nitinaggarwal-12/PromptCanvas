@@ -469,6 +469,7 @@ export default function DiagramInlineSlidesPreviewer({
   templateId,
   tldrStructured,
   renderRightDiagramPane,
+  compact = false,
   headerOnly = false,
 }: DiagramInlineSlidesPreviewerProps) {
   const resolvedKeyInput =
@@ -1189,35 +1190,42 @@ export default function DiagramInlineSlidesPreviewer({
   };
 
   const headerActionButtons = (
-    <div className="flex items-center gap-2 flex-wrap shrink-0">
-      {/* 👁️ Cloud Viewer Button */}
+    <div className="flex items-center gap-1.5 flex-nowrap shrink-0">
+      {/* Cloud Viewer Button */}
       <button
         type="button"
         data-testid="inline-cloud-viewer-btn"
         onClick={() => handleOpenCloudViewer('slides', activeSlide.num)}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-[#FEF3C7] hover:bg-[#FDE68A] text-[#B45309] border border-[#F59E0B] dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:text-amber-300 dark:border-amber-500/50 transition cursor-pointer shadow-2xs"
+        className={`inline-flex items-center gap-1.5 rounded-lg font-semibold bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 dark:border-slate-700 transition cursor-pointer shadow-2xs whitespace-nowrap ${
+          compact ? 'px-2 py-1 text-[11px]' : 'px-2.5 py-1 text-xs'
+        }`}
         title="Open Same-Screen PromptCanvas Cloud Viewer (Interactive Studio + Live Google Slides Embed)"
       >
-        <span>👁️</span>
+        <svg className="w-3.5 h-3.5 text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
         <span>Cloud Viewer</span>
       </button>
 
-      {/* [ S | Open with Google Slides ↗ | ▼ ] Split-Pill Button */}
+      {/* [ S | Google Slides ↗ | ▼ ] Split-Pill Button */}
       <div
-        className="relative inline-flex items-stretch rounded-xl border border-white/15 bg-[#202124] text-[#E8EAED] shadow-xs"
+        className="relative inline-flex items-stretch rounded-lg border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-2xs"
         ref={topDropdownRef}
       >
         <button
           type="button"
           data-testid="inline-open-with-google-slides-btn"
           onClick={() => handleOpenWorkspace('slides')}
-          className="inline-flex items-center gap-1.5 pl-3 pr-2.5 py-1.5 rounded-l-xl hover:bg-white/10 text-xs font-extrabold text-white transition cursor-pointer whitespace-nowrap"
+          className={`inline-flex items-center gap-1.5 rounded-l-lg hover:bg-slate-50 dark:hover:bg-slate-700 font-semibold text-slate-700 dark:text-slate-200 transition cursor-pointer whitespace-nowrap ${
+            compact ? 'pl-2 pr-1.5 py-1 text-[11px]' : 'pl-2.5 pr-2 py-1 text-xs'
+          }`}
           title="Open directly in Google Slides (nitinagga@google.com) via Server-Side Drive Conversion Bridge"
         >
-          <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#FBBC04] text-[#202124] font-black text-[10px] shrink-0">
+          <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-[3px] bg-[#FBBC04] text-[#202124] font-black text-[9px] shrink-0">
             S
           </span>
-          <span>Open with Google Slides ↗</span>
+          <span>{compact ? 'Slides ↗' : 'Open with Google Slides ↗'}</span>
         </button>
         <button
           type="button"
@@ -1227,7 +1235,7 @@ export default function DiagramInlineSlidesPreviewer({
             setTopDropdownOpen((prev) => !prev);
           }}
           aria-label="Choose Google Workspace app"
-          className="px-2 py-1.5 rounded-r-xl border-l border-[#444746] hover:bg-white/15 text-[#E8EAED] text-[10px] transition cursor-pointer flex items-center justify-center"
+          className="px-1.5 py-1 rounded-r-lg border-l border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 text-[9px] transition cursor-pointer flex items-center justify-center"
         >
           ▼
         </button>
@@ -1235,24 +1243,24 @@ export default function DiagramInlineSlidesPreviewer({
         {topDropdownOpen && (
           <div
             data-testid="inline-open-with-dropdown-menu"
-            className="absolute right-0 top-[calc(100%+6px)] w-80 bg-[#28292A] border border-[#444746] rounded-xl shadow-[0_14px_36px_rgba(0,0,0,0.65)] py-1.5 z-[120] text-left text-[#E8EAED]"
+            className="absolute right-0 top-[calc(100%+6px)] w-72 bg-white dark:bg-[#28292A] border border-slate-200 dark:border-[#444746] rounded-xl shadow-xl py-1.5 z-[120] text-left text-slate-700 dark:text-[#E8EAED]"
           >
             <button
               type="button"
               onClick={() => handleOpenWorkspace('slides')}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-slate-50 dark:hover:bg-white/10 transition cursor-pointer"
             >
               <span>↗</span>
               <span>Open in new tab (Google Slides — Diagram + Blog)</span>
             </button>
-            <div className="h-px bg-[#444746] my-1" />
-            <div className="px-3.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#9AA0A6]">
+            <div className="h-px bg-slate-100 dark:bg-[#444746] my-1" />
+            <div className="px-3.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-[#9AA0A6]">
               Google Workspace &amp; Export
             </div>
             <button
               type="button"
               onClick={() => handleOpenWorkspace('slides')}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-slate-50 dark:hover:bg-white/10 transition cursor-pointer"
             >
               <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#FBBC04] text-[#202124] font-black text-[10px] shrink-0">
                 S
@@ -1262,7 +1270,7 @@ export default function DiagramInlineSlidesPreviewer({
             <button
               type="button"
               onClick={() => handleOpenWorkspace('docs')}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-slate-50 dark:hover:bg-white/10 transition cursor-pointer"
             >
               <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#4285F4] text-white font-black text-[10px] shrink-0">
                 D
@@ -1272,7 +1280,7 @@ export default function DiagramInlineSlidesPreviewer({
             <button
               type="button"
               onClick={() => handleOpenWorkspace('pdf')}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-slate-50 dark:hover:bg-white/10 transition cursor-pointer"
             >
               <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#EA4335] text-white font-black text-[8.5px] shrink-0">
                 PDF
@@ -1283,7 +1291,7 @@ export default function DiagramInlineSlidesPreviewer({
               type="button"
               onClick={handleDownloadPptx}
               disabled={isDownloadingPptx}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-slate-50 dark:hover:bg-white/10 transition cursor-pointer"
             >
               <span>⬇</span>
               <span>
@@ -1292,14 +1300,14 @@ export default function DiagramInlineSlidesPreviewer({
                   : `Download Editable Diagram + Blog (.pptx)`}
               </span>
             </button>
-            <div className="h-px bg-[#444746] my-1" />
-            <div className="px-3.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#9AA0A6]">
+            <div className="h-px bg-slate-100 dark:bg-[#444746] my-1" />
+            <div className="px-3.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-[#9AA0A6]">
               Same-Screen Cloud Viewer
             </div>
             <button
               type="button"
               onClick={() => handleOpenCloudViewer('slides', activeSlide.num)}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-slate-50 dark:hover:bg-white/10 transition cursor-pointer"
             >
               <span>✨</span>
               <span>Interactive Slide Studio (Fast Canvas)</span>
@@ -1307,7 +1315,7 @@ export default function DiagramInlineSlidesPreviewer({
             <button
               type="button"
               onClick={() => handleOpenCloudViewer('embed', activeSlide.num)}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-slate-50 dark:hover:bg-white/10 transition cursor-pointer"
             >
               <span>🌐</span>
               <span>Embedded Live Google Slides Viewer</span>
@@ -1315,16 +1323,16 @@ export default function DiagramInlineSlidesPreviewer({
             <button
               type="button"
               onClick={() => handleOpenCloudViewer('docs', 1)}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-slate-50 dark:hover:bg-white/10 transition cursor-pointer"
             >
               <span>📄</span>
               <span>Embedded Live Google Docs Viewer</span>
             </button>
-            <div className="h-px bg-[#444746] my-1" />
+            <div className="h-px bg-slate-100 dark:bg-[#444746] my-1" />
             <button
               type="button"
               onClick={() => handleOpenWorkspace('slides', true)}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-slate-50 dark:hover:bg-white/10 transition cursor-pointer"
             >
               <span>🔄</span>
               <span>Force Re-Sync Editable Diagram + Blog → Google Slides</span>
