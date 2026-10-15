@@ -1247,7 +1247,6 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                 onClick={() => setShowGcpVerifyDrawer(!showGcpVerifyDrawer)}
                 data-testid="open-gcp-verify-drawer-btn"
                 className="px-2.5 py-1.5 rounded-lg text-xs font-extrabold border bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/25 transition-all flex items-center gap-1.5 cursor-pointer"
-                title="View Live Google Cloud Console (KMS, BigQuery, GCS) & 20/20 Workstream Verification"
               >
                 <Shield className="w-3.5 h-3.5 text-emerald-500" />
                 <span>☁️ GCP Verified ({gcpVerification?.passedChecks || 20}/{gcpVerification?.totalChecks || 20} PASS)</span>
@@ -1255,11 +1254,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
 
               <DiagramInlineSlidesPreviewer
                 headerOnly={true}
-                manifestKey={
-                  studioLayoutMode === 'pdf-doc-reader'
-                    ? activeDocGuide.docId
-                    : activeOfficialArchCenterBp.id || 'BP-78'
-                }
+                manifestKey={activeDocGuide.docId}
                 title={
                   studioLayoutMode === 'pdf-doc-reader'
                     ? `${activeDocGuide.docId}: ${activeDocGuide.title}`
@@ -2358,7 +2353,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                                   </button>
                                   <DiagramInlineSlidesPreviewer
                                     headerOnly={true}
-                                    manifestKey={sec.secondaryInlineDiagram.blueprintVariantId}
+                                    manifestKey={activeDocGuide.docId}
                                     title={`${activeDocGuide.docId}: ${sec.secondaryInlineDiagram.figureNumber} — ${sec.secondaryInlineDiagram.title}`}
                                     subtitle={sec.secondaryInlineDiagram.caption}
                                     xml={effectiveSec2XmlStr}
@@ -3412,7 +3407,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                           </button>
                           <DiagramInlineSlidesPreviewer
                             headerOnly={true}
-                            manifestKey={activeOfficialArchCenterBp.id || 'BP-78'}
+                            manifestKey={activeDocGuide.docId}
                             title={`${activeOfficialArchCenterBp.title} — ${activeOfficialArchCenterBp.subtitle}`}
                             subtitle={activeUseCase.summaryPrompt}
                             xml={effectiveSelectorXml}

@@ -1445,80 +1445,89 @@ function buildComponentGroupsForBlueprint(
   const gMidTitle = [g.mid.title, g.mid.title2].filter(Boolean).join(' ');
   const gBotTitle = [g.bot.title, g.bot.title2].filter(Boolean).join(' ');
 
+  const withDistinctParen = (base: string, detail: string) => {
+    const b = base.trim();
+    const d = detail.trim();
+    if (!d || b.toLowerCase().includes(d.toLowerCase()) || d.toLowerCase().includes(b.toLowerCase())) {
+      return b;
+    }
+    return `${b} (${d})`;
+  };
+
   return [
     {
       groupTitle: 'VPC Service Controls',
-      groupLead: `Security perimeters (${bp.outerWrapperLabel}) that help prevent data exfiltration across the entire Google Cloud Organization and multi-tenant boundaries.`,
+      groupLead: `Security perimeters (${bp.outerWrapperLabel}) that prevent data exfiltration across the Google Cloud Organization and multi-tenant boundaries.`,
       items: [],
     },
     {
       groupTitle: 'Routing hub',
-      groupLead: `A centralized Google Cloud project (${bp.routingHubTitle} — ${bp.routingHubSub}) that manages the following shared ingress and routing resources:`,
+      groupLead: `Centralized Google Cloud ingress project (${bp.routingHubTitle}) managing shared edge security and tenant routing:`,
       items: [
         {
-          name: `External Application Load Balancer (${rTopRightTitle})`,
-          description: `Acts as a unified entry point for all incoming requests (${r.topRight.sub}).`,
+          name: withDistinctParen('External Application Load Balancer', rTopRightTitle),
+          description: `Acts as the unified global entry point for incoming tenant requests (${r.topRight.sub}).`,
         },
         {
-          name: `Google Cloud Armor (${r.topLeft.title}) and Model Armor (${r.botLeft.title})`,
-          description: `Provide edge security (${r.topLeft.sub}) and screen prompts (${r.botLeft.sub}) before requests reach the application.`,
+          name: `${withDistinctParen('Google Cloud Armor', r.topLeft.title)} & ${withDistinctParen('Model Armor', r.botLeft.title)}`,
+          description: `Enforce edge WAF rules (${r.topLeft.sub}) and screen incoming prompts (${r.botLeft.sub}) before reaching the application.`,
         },
         {
-          name: `Identity-Aware Proxy (IAP) (${r.midLeft.title})`,
-          description: `Authenticates and authorizes callers (${r.midLeft.sub}) before they access the frontend portal.`,
+          name: withDistinctParen('Identity-Aware Proxy (IAP)', r.midLeft.title),
+          description: `Authenticates callers and verifies tenant identity claims (${r.midLeft.sub}) before routing.`,
         },
         {
-          name: `Frontend portal (${rBotRightTitle})`,
-          description: `A Cloud Run service (${r.botRight.sub}) that receives authenticated requests and routes them to the appropriate tenant project based on cryptographic tenant identity.`,
+          name: withDistinctParen('Frontend portal & tier router', rBotRightTitle),
+          description: `Cloud Run service (${r.botRight.sub}) that exchanges OBO/DPoP tokens and routes requests to the target tenant project.`,
         },
       ],
     },
     {
       groupTitle: 'Central governance and security hub',
-      groupLead: `A dedicated project (${bp.govHubTitle} ${bp.govHubTitle2}) that provides a single pane of glass for security, compliance, and FinOps operations across all tenants, using the following components:`,
+      groupLead: `Dedicated governance project (${bp.govHubTitle} ${bp.govHubTitle2}) providing unified security, KMS, and FinOps telemetry:`,
       items: [
         {
-          name: `Security Command Center (${gTopTitle})`,
-          description: `Provides centralized threat detection, posture management, and vulnerability scanning (${g.top.sub}).`,
+          name: withDistinctParen('Security Command Center', gTopTitle),
+          description: `Provides centralized threat detection, posture management, and audit verification (${g.top.sub}).`,
         },
         {
-          name: `IAM (${gMidTitle})`,
-          description: `Manages access policies, keys, and entitlement registries across the organization (${g.mid.sub}).`,
+          name: withDistinctParen('IAM & Cloud KMS', gMidTitle),
+          description: `Manages access policies, asymmetric signing keys, and entitlement registries across the organization (${g.mid.sub}).`,
         },
         {
-          name: `Cloud Logging (${gBotTitle})`,
-          description: `Aggregates audit logs and OpenTelemetry FinOps spans from the routing hub and all tenant projects for centralized auditing and chargeback analysis (${g.bot.sub}).`,
+          name: withDistinctParen('Cloud Logging & BigQuery', gBotTitle),
+          description: `Aggregates audit logs and OpenTelemetry FinOps spans from all hubs and spokes for chargeback analysis (${g.bot.sub}).`,
         },
       ],
     },
     {
       groupTitle: 'Principal Access Boundary Policy (PAB Policy)',
-      groupLead: `An organization-level boundary (${bp.innerWrapperLabel}) that restricts the resources that principals can access, ensuring that identities from one tenant cannot access resources in another tenant's project.`,
+      groupLead: `Organization-level boundary (${bp.innerWrapperLabel}) restricting principal access so identities from one tenant never access another tenant's resources.`,
       items: [],
     },
     {
       groupTitle: 'Tenant projects',
-      groupLead: `Isolated Google Cloud environments (${bp.leftBoundaryLabel}: ${bp.leftZoneTitle} and ${bp.rightBoundaryLabel}: ${bp.rightZoneTitle}), one for each tenant or isolation tier, that contain the following dedicated agentic workloads:`,
+      groupLead: `Isolated Google Cloud spoke environments (${bp.leftZoneTitle} and ${bp.rightZoneTitle}) hosting dedicated or pooled agentic workloads:`,
       items: [
         {
-          name: `Agent Runtime on Gemini Enterprise Agent Platform (${l.runtime.title})`,
-          description: `The core execution environment (${l.runtime.sub}) that hosts and orchestrates the tenant's AI agents built with the Agent Development Kit (ADK).`,
+          name: withDistinctParen('Vertex AI Agent Engine Runtime', l.runtime.title),
+          description: `Core execution environment (${l.runtime.sub}) hosting tenant AI agents built with Google ADK.`,
         },
         {
-          name: `Model Armor (${l.modelArmor.title})`,
-          description: `Screens prompts and responses within the tenant boundary (${l.modelArmor.sub}) to enforce tenant-specific safety and data loss prevention policies.`,
+          name: withDistinctParen('Model Armor', l.modelArmor.title),
+          description: `Screens prompts and responses within the tenant boundary (${l.modelArmor.sub}) to enforce safety and DLP policies.`,
         },
         {
-          name: `Model Context Protocol (MCP) servers (${l.mcp.title})`,
-          description: `Cloud Run services (${l.mcp.sub}) that provide standardized tool interfaces for agents to interact with internal and external data sources.`,
+          name: withDistinctParen('Model Context Protocol (MCP) servers', l.mcp.title),
+          description: `Cloud Run services (${l.mcp.sub}) providing standardized, tenant-scoped tool interfaces for external data sources.`,
         },
         {
-          name: `Tenant datastore (${l.datastore.title})`,
-          description: `Isolated storage (${l.datastore.sub}) for tenant-specific structured data, embeddings, and knowledge bases.`,
+          name: withDistinctParen('Tenant datastore', l.datastore.title),
+          description: `Isolated storage (${l.datastore.sub}) enforcing Row-Level Security (RLS), vector namespaces, and CMEK encryption.`,
         },
         {
-          name: `Gemini models (${l.llm.title})`,
-          description: `Vertex AI endpoints (${l.llm.sub}) that provide the underlying large language model capabilities for agent reasoning and generation.`,
+          name: withDistinctParen('Gemini models', l.llm.title),
+          description: `Vertex AI endpoints (${l.llm.sub}) providing multimodal reasoning and 90% shared prefix context caching.`,
         },
       ],
     },
@@ -1535,34 +1544,35 @@ function buildAgenticFlowStepsForBlueprint(
 
   return [
     {
-      step: `A user (${bp.topUserTitle} — ${bp.topUserSub}) initiates a request (${bp.step1LeftLabel}) to the system. The request is received by the External Application Load Balancer (${rTopRightTitle}) in the routing hub.`,
+      step: `A caller (${bp.topUserTitle} — ${bp.topUserSub}) sends a request (${bp.step1LeftLabel}) to the External Application Load Balancer (${rTopRightTitle}) in the routing hub.`,
     },
     {
-      step: `After the request passes initial checks by Google Cloud Armor (${r.topLeft.title}), Identity-Aware Proxy (IAP) (${r.midLeft.title}), and Model Armor (${r.botLeft.title}), the load balancer forwards the request (${r.step2Left}) to the frontend portal (${rBotRightTitle}) running on Cloud Run.`,
+      step: `After passing checks by Cloud Armor (${r.topLeft.title}), IAP (${r.midLeft.title}), and Model Armor (${r.botLeft.title}), the load balancer forwards the request to the Cloud Run router (${rBotRightTitle}).`,
     },
     {
-      step: `The frontend portal inspects the user's authentication token, determines which tenant the user belongs to, and routes the request (${bp.midStep3Label.join(' ')}) to the Agent Runtime in the appropriate tenant project (${bp.leftBoundaryLabel} or ${bp.rightBoundaryLabel}).`,
+      step: `The Cloud Run router verifies the caller's OIDC tenant claim, mints a scoped OBO/DPoP token, and routes the request (${bp.midStep3Label.join(' ')}) to the target tenant project (${bp.leftZoneTitle} or ${bp.rightZoneTitle}).`,
     },
     {
-      step: `Within the tenant project (${bp.leftZoneTitle}), the agent runtime (${l.runtime.title}) orchestrates the processing of the user's request (${l.step4Label}):`,
+      step: `Within the tenant project (${bp.leftZoneTitle}), the agent runtime (${l.runtime.title}) orchestrates request processing across four sub-steps:`,
       subSteps: [
-        `The agent runtime sends the prompt to the tenant's Model Armor instance (${l.modelArmor.title} — ${l.modelArmor.sub}) for validation against tenant-specific safety and data policies.`,
-        `To gather necessary context, the agent runtime queries the tenant datastore (${l.datastore.title} — ${l.datastore.sub}) directly using Retrieval-Augmented Generation (RAG) (${l.ragLabel.join(' ')}).`,
-        `If external tools or actions are needed, the agent runtime communicates with MCP servers (${l.mcp.title} — ${l.mcp.sub}) (${l.toolLabel.join(' ')}).`,
-        `The MCP servers interact with the tenant datastore (${l.datastore.title}) to retrieve or update data as required by the tool execution.`,
+        `Prompt validation (${l.modelArmor.title}): Screens the incoming prompt against tenant safety and DLP policies (${l.modelArmor.sub}).`,
+        `Grounded RAG retrieval (${l.datastore.title}): Queries the tenant datastore (${l.datastore.sub}) via ${l.ragLabel.join(' ')}.`,
+        `Scoped MCP tool invocation (${l.mcp.title}): Executes external tool actions (${l.mcp.sub}) via ${l.toolLabel.join(' ')}.`,
+        `Transactional state update (${l.datastore.title}): Reads or commits tenant-scoped records under strict RLS and CMEK boundaries.`,
       ],
     },
     {
-      step: `The agent runtime sends the enriched, validated prompt (${l.step5Label.join(' ')}) to the Gemini models (${l.llm.title} — ${l.llm.sub}) to generate a response.`,
+      step: `The agent runtime sends the validated, context-enriched prompt (${l.step5Label.join(' ')}) to the Gemini model (${l.llm.title} — ${l.llm.sub}) to generate a grounded response.`,
     },
     {
-      step: `The agent runtime receives the generated response from the Gemini model and sends it (${l.step6Label}) to the tenant's Model Armor instance (${l.modelArmor.title}) for final output sanitization and policy enforcement.`,
+      step: `The agent runtime passes the generated response (${l.step6Label}) through the tenant's Model Armor instance (${l.modelArmor.title}) for final output sanitization and policy enforcement.`,
     },
     {
-      step: `The final response (${bp.midStep7Label.join(' ')} → ${bp.step7RightLabel}) is sent back to the user through the frontend portal and the load balancer, while centralized audit logs and FinOps telemetry (${bp.midGovLabel.join(' ')}) stream to the Central governance and security hub (${bp.govHubTitle}).`,
+      step: `The sanitized response (${bp.midStep7Label.join(' ')}) returns to the caller through the routing hub, while zero-PII OpenTelemetry FinOps and audit spans (${bp.midGovLabel.join(' ')}) stream to the governance hub (${bp.govHubTitle}).`,
     },
   ];
 }
+
 
 function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGuide {
   const bp = resolveBlueprintConfigForGuide(raw);

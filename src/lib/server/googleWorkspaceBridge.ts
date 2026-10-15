@@ -172,12 +172,23 @@ export async function getServerDriveAccessToken(): Promise<string | null> {
 }
 
 export function normalizeManifestKey(rawKey: string): string {
-  const clean = String(rawKey || 'WS1').trim();
-  if (!clean) return 'WS1';
+  const clean = String(rawKey || 'DOC-MT-01').trim();
+  if (!clean) return 'DOC-MT-01';
   const upper = clean.toUpperCase();
+  if (/^DOC-(?:MT|REF)-\d{2}$/.test(upper)) {
+    return upper;
+  }
   if (['WS1', 'WS2', 'WS3', 'WS4', 'WS5', 'ALL'].includes(upper)) {
     return upper;
   }
+  const lower = clean.toLowerCase();
+  if (lower.startsWith('ws1-') || lower === 'uc-geap-ws1') return 'DOC-MT-01';
+  if (lower === 'ws2-5-ten-point-breach-defense-matrix' || lower.includes('breach-defense')) return 'DOC-MT-05';
+  if (lower.startsWith('ws2-') || lower === 'uc-geap-ws2') return 'DOC-MT-02';
+  if (lower.startsWith('ws3-') || lower === 'uc-geap-ws3') return 'DOC-MT-03';
+  if (lower.startsWith('ws4-') || lower === 'uc-geap-ws4') return 'DOC-MT-04';
+  if (lower.startsWith('ws5-') || lower === 'uc-geap-ws5') return 'DOC-MT-06';
+
   const wsPrefixMatch = clean.match(/^(?:uc-geap-)?ws([1-5])(?:$|[-_.])/i);
   if (wsPrefixMatch) {
     return `WS${wsPrefixMatch[1]}`;
@@ -194,15 +205,21 @@ export function normalizeManifestKey(rawKey: string): string {
 }
 
 /**
- * Maps GEAP workstream use cases and diagram IDs to their pre-warmed workstream keys when applicable.
+ * Maps GEAP workstream use cases and diagram IDs to their pre-warmed DOC-MT or workstream keys when applicable.
  */
 export function resolveFallbackWorkstreamKey(key: string): string | null {
   const k = key.toLowerCase();
-  if (k.includes('ws1') || k.includes('workstream-1') || k === 'uc-geap-ws1') return 'WS1';
-  if (k.includes('ws2') || k.includes('workstream-2') || k === 'uc-geap-ws2') return 'WS2';
-  if (k.includes('ws3') || k.includes('workstream-3') || k === 'uc-geap-ws3') return 'WS3';
-  if (k.includes('ws4') || k.includes('workstream-4') || k === 'uc-geap-ws4') return 'WS4';
-  if (k.includes('ws5') || k.includes('workstream-5') || k === 'uc-geap-ws5') return 'WS5';
+  if (k.startsWith('ws1-') || k === 'uc-geap-ws1') return 'DOC-MT-01';
+  if (k.includes('breach-defense') || k === 'ws2-5-ten-point-breach-defense-matrix') return 'DOC-MT-05';
+  if (k.startsWith('ws2-') || k === 'uc-geap-ws2') return 'DOC-MT-02';
+  if (k.startsWith('ws3-') || k === 'uc-geap-ws3') return 'DOC-MT-03';
+  if (k.startsWith('ws4-') || k === 'uc-geap-ws4') return 'DOC-MT-04';
+  if (k.startsWith('ws5-') || k === 'uc-geap-ws5') return 'DOC-MT-06';
+  if (k.includes('ws1') || k.includes('workstream-1')) return 'WS1';
+  if (k.includes('ws2') || k.includes('workstream-2')) return 'WS2';
+  if (k.includes('ws3') || k.includes('workstream-3')) return 'WS3';
+  if (k.includes('ws4') || k.includes('workstream-4')) return 'WS4';
+  if (k.includes('ws5') || k.includes('workstream-5')) return 'WS5';
   if (k === 'all' || k.includes('end-to-end')) return 'ALL';
   return null;
 }
@@ -215,6 +232,11 @@ export function loadCloudViewerManifest(): CloudViewerManifest {
     slides: {},
     docs: {},
   };
+
+  if (globalThis.__pcCloudViewerManifestCache) {
+    Object.assign(base.slides, globalThis.__pcCloudViewerManifestCache.slides);
+    Object.assign(base.docs, globalThis.__pcCloudViewerManifestCache.docs);
+  }
 
   const mergeFrom = (filePath: string) => {
     try {
@@ -235,14 +257,9 @@ export function loadCloudViewerManifest(): CloudViewerManifest {
     }
   };
 
+  mergeFrom(TMP_MANIFEST_PATH);
   mergeFrom(BLOGS_MANIFEST_PATH);
   mergeFrom(REPO_MANIFEST_PATH);
-  mergeFrom(TMP_MANIFEST_PATH);
-
-  if (globalThis.__pcCloudViewerManifestCache) {
-    Object.assign(base.slides, globalThis.__pcCloudViewerManifestCache.slides);
-    Object.assign(base.docs, globalThis.__pcCloudViewerManifestCache.docs);
-  }
 
   globalThis.__pcCloudViewerManifestCache = base;
   return base;
@@ -252,18 +269,15 @@ export function saveCloudViewerManifest(manifest: CloudViewerManifest): void {
   manifest.updatedAt = new Date().toISOString();
   globalThis.__pcCloudViewerManifestCache = manifest;
   const serialized = JSON.stringify(manifest, null, 2);
-  try {
-    fs.writeFileSync(TMP_MANIFEST_PATH, serialized, 'utf-8');
-  } catch {
-    // ignore tmp write errors
-  }
-  try {
-    const dir = path.dirname(REPO_MANIFEST_PATH);
-    if (fs.existsSync(dir)) {
-      fs.writeFileSync(REPO_MANIFEST_PATH, serialized, 'utf-8');
+  for (const targetPath of [TMP_MANIFEST_PATH, REPO_MANIFEST_PATH, BLOGS_MANIFEST_PATH]) {
+    try {
+      const dir = path.dirname(targetPath);
+      if (fs.existsSync(dir)) {
+        fs.writeFileSync(targetPath, serialized, 'utf-8');
+      }
+    } catch {
+      // ignore write errors on read-only paths
     }
-  } catch {
-    // ignore read-only container filesystem on Cloud Run
   }
 }
 
@@ -274,12 +288,15 @@ export function sha256Buffer(buf: Buffer): string {
 /**
  * Uploads a compiled .pptx buffer to Google Drive with mimeType = application/vnd.google-apps.presentation,
  * converting it into a 100% native editable Google Slides presentation and caching it in cloud_viewer_manifest.json.
+ * When targetFileId is provided (or an existing googleSlidesId is present), attempts an in-place PATCH update first
+ * so existing presentation URLs update seamlessly in-place.
  */
 export async function uploadPptxBufferToGoogleSlides(params: {
   pptxBuffer: Buffer;
   title: string;
   cacheKey: string;
   force?: boolean;
+  targetFileId?: string;
   accessTokenOverride?: string | null;
 }): Promise<CloudSlidesManifestEntry> {
   const normalizedKey = normalizeManifestKey(params.cacheKey);
@@ -298,8 +315,7 @@ export async function uploadPptxBufferToGoogleSlides(params: {
 
   const token = params.accessTokenOverride || (await getServerDriveAccessToken());
   if (!token) {
-    // If no token and a fallback workstream entry exists, return the fallback entry
-    const fbKey = resolveFallbackWorkstreamKey(normalizedKey) || 'WS1';
+    const fbKey = resolveFallbackWorkstreamKey(normalizedKey) || 'DOC-MT-01';
     if (manifest.slides[fbKey]) {
       return manifest.slides[fbKey];
     }
@@ -321,26 +337,51 @@ export async function uploadPptxBufferToGoogleSlides(params: {
     Buffer.from(`\r\n--${boundary}--\r\n`, 'utf-8'),
   ]);
 
-  const res = await fetch(
-    'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink',
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'x-goog-user-project': QUOTA_PROJECT,
-        'Content-Type': `multipart/related; boundary=${boundary}`,
-      },
-      body: new Uint8Array(multipartBody),
-      signal: AbortSignal.timeout(60000),
-    }
-  );
+  const preferredId = params.targetFileId || existing?.googleSlidesId;
+  let data: { id: string; webViewLink?: string } | null = null;
 
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`Google Drive Slides conversion failed (${res.status}): ${errText}`);
+  if (preferredId) {
+    const patchRes = await fetch(
+      `https://www.googleapis.com/upload/drive/v3/files/${preferredId}?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'x-goog-user-project': QUOTA_PROJECT,
+          'Content-Type': `multipart/related; boundary=${boundary}`,
+        },
+        body: new Uint8Array(multipartBody),
+        signal: AbortSignal.timeout(60000),
+      }
+    );
+    if (patchRes.ok) {
+      data = (await patchRes.json()) as { id: string; webViewLink?: string };
+    }
   }
 
-  const data = (await res.json()) as { id: string; webViewLink?: string };
+  if (!data) {
+    const res = await fetch(
+      'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'x-goog-user-project': QUOTA_PROJECT,
+          'Content-Type': `multipart/related; boundary=${boundary}`,
+        },
+        body: new Uint8Array(multipartBody),
+        signal: AbortSignal.timeout(60000),
+      }
+    );
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Google Drive Slides conversion failed (${res.status}): ${errText}`);
+    }
+
+    data = (await res.json()) as { id: string; webViewLink?: string };
+  }
+
   const fid = data.id;
   const encodedEmail = encodeURIComponent(DEFAULT_USER_EMAIL);
 

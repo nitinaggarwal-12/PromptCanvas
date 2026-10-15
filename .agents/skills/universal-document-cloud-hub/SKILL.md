@@ -126,9 +126,10 @@ All document previews and standalone viewers (`/viewer`, `/vision`, `/studio`) m
    - `GET /api/google-workspace/manifest`: Returns all pre-warmed entries (`WS1`–`WS5`, `ALL`, `BP-00`..`BP-78`, `GCP-MULTIAGENT-01`, and all 7 Official Google Cloud Architecture Center variants) plus `serverRefreshTokenReady`.
    - `POST /api/google-workspace/open`: Checks `src/data/cloud_viewer_manifest.json` first (`0ms` fast path); if not yet in the manifest (or `forceRefresh: true`), compiles the 3-slide `.pptx` or `.html` spec and converts it server-side into `nitinagga@google.com`'s Google Drive.
    - `GET /api/google-workspace/pdf`: Streams exported PDF bytes (`application/pdf`) from Google Drive for same-origin iframe preview.
-3. **Header-Only Action Component (`src/components/DiagramInlineSlidesPreviewer.tsx`)**:
+3. **Header-Only Action Component (`src/components/DiagramInlineSlidesPreviewer.tsx`) & Cohesive 6-Slide Space Allocation (`editablePptxCompiler.ts`)**:
    - Embedded with `headerOnly={true}` in the top header of `/dashboard` (`src/app/dashboard/page.tsx`), the preview modal header of `/library` (`src/app/library/page.tsx`), and the selector header of `/blogs` (`src/app/blogs/page.tsx`), while inline blog figures use a single-line header bar above a 100% full-width diagram canvas (never rendering an on-page `1. EDITABLE SLIDE DECK PREVIEWER` box).
-   - Provides the `👁️ Cloud Viewer` button, the Google Drive-style split action button (`[ S | Open with Google Slides ↗ | ▼ ]`), and the 3-mode Same-Screen Cloud Viewer Modal (`✨ Interactive Slides Studio`, `🌐 Live Google Slides Embed`, `📄 Live Google Docs Spec`).
+   - Provides the `👁️ Cloud Viewer` button, the Google Drive-style split action button (`[ S | Open with Google Slides ↗ | ▼ ]`), and the 3-mode Same-Screen Cloud Viewer Modal (`✨ Interactive Slides Studio`, `🌐 Live Google Slides Embed`, `📄 Live Google Docs Spec`), backed by cohesive 6-slide `.pptx` compilation (`0` auto-collapsing `slide.addTable` calls, `deduplicateParentheticalEchoes`, sentence-boundary `truncateClean`, and 100% vertical alignment to `y = 7.22"` across Slides 1–6).
+
 
 ---
 

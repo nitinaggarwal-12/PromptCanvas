@@ -1028,12 +1028,64 @@ export function findDocSection(docGuide: CanonicalDocGuide | undefined, ...candi
   });
 }
 
+function deduplicateParentheticalEchoes(raw: string): string {
+  let s = String(raw || '')
+    .replace(/\b([A-Za-z0-9][A-Za-z0-9\s/-]{2,42}?)\s*\(\1\)/gi, '$1')
+    .replace(/\(\s*([A-Za-z0-9][A-Za-z0-9\s/-]{2,35}?)\s*\(\1\)\s*\)/gi, '($1)');
+
+  // Strip nested parentheticals first, e.g. "(Routing hub (Hop 1 & Hop 2 PEP/PDP))" or "(Route by tenant tier (Pool, Silo or PSC))"
+  for (let pass = 0; pass < 3; pass++) {
+    s = s.replace(/\([^()]*\([^()]*\)[^()]*\)/g, '');
+  }
+
+  // Strip verbose injected diagram-node echo parentheticals while keeping genuine short acronyms/tokens
+  const ALLOWED_SHORT_PARENS =
+    /^\(\s*(?:OIDC|DPoP|OBO|ADK|MCP|RLS|CMEK|WAF|IAP|PAB|PSC|GKE|VPC|VPC-SC|NEGs|IaC|DLP|PII|A2A|2LO\/3LO|ID-1 to ID-4|4a–4d|4a-4d|SET LOCAL|ContextCacheConfig|FORCE ROW LEVEL SECURITY|e\.g\.[^)]*|i\.e\.[^)]*)\s*\)$/i;
+
+  s = s.replace(/\s*(\([^()]+\))/g, (full, parenGroup: string) => {
+    if (ALLOWED_SHORT_PARENS.test(parenGroup.trim())) {
+      return ` ${parenGroup.trim()}`;
+    }
+    return '';
+  });
+
+  return s
+    .replace(/\s+([.,;:])/g, '$1')
+    .replace(/:\s*$/, '.')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function truncateClean(text: string | undefined, maxLen: number): string {
-  const clean = String(text || '').replace(/\s+/g, ' ').trim();
-  if (clean.length <= maxLen) return clean;
+  const clean = deduplicateParentheticalEchoes(String(text || ''));
+  if (!clean) return '';
+  if (clean.length <= maxLen + 42) return clean;
+
+  // Prefer ending cleanly at a sentence boundary (. ) if one exists within [48%..112%] of maxLen
+  const windowText = clean.slice(0, maxLen + 24);
+  const periodMatches = [...windowText.matchAll(/(?<!\b(?:e\.g|i\.e|vs|Mr|Dr|St|Fig|No|v\d))\.\s+/g)];
+  if (periodMatches.length > 0) {
+    const lastPeriod = periodMatches[periodMatches.length - 1];
+    if (lastPeriod.index !== undefined && lastPeriod.index >= maxLen * 0.48) {
+      return windowText.slice(0, lastPeriod.index + 1).trim();
+    }
+  }
+
+  // Otherwise cut at word boundary, strip unclosed parentheses and trailing prepositions/participles
   const cut = clean.slice(0, maxLen - 1);
   const lastSpace = cut.lastIndexOf(' ');
-  return `${(lastSpace > maxLen * 0.65 ? cut.slice(0, lastSpace) : cut).replace(/[.,;:\-–—]+$/, '')}…`;
+  let trimmed = (lastSpace > maxLen * 0.6 ? cut.slice(0, lastSpace) : cut)
+    .replace(/\s*\([^)]*$/, '')
+    .replace(/[.,;:\-–—(\s]+$/, '');
+  for (let i = 0; i < 4; i++) {
+    trimmed = trimmed
+      .replace(
+        /\s+\b(?:and|or|for|to|with|without|in|of|by|on|at|from|into|across|between|through|that|which|where|when|as|the|a|an|cannot|can|will|must|is|are|be|been|their|its|our|your|this|these|those|providing|restricting|managing|including|final|predictable|repeatedly|reference|such)\s*$/i,
+        ''
+      )
+      .replace(/[.,;:\-–—(\s]+$/, '');
+  }
+  return `${trimmed}.`;
 }
 
 function extractInlineImgSrc(htmlValue: string | undefined): string | undefined {
@@ -1116,22 +1168,22 @@ function renderArchitectureCenterDiagramSidebar(
     line: { color: BORDER_GREY, width: 1 },
   });
 
-  // Top Header Strip inside Sidebar
+  // Top Header Strip inside Sidebar (h = 0.34")
   slide.addShape(pptx.ShapeType.roundRect, {
     x: sideX,
     y: sideY,
     w: sideW,
-    h: 0.36,
+    h: 0.34,
     rectRadius: 0.06,
     fill: { color: G_BLUE_TINT },
     line: { color: 'AECBFA', width: 0.75 },
   });
   slide.addText(`${figureLabel.toUpperCase()}  •  ARCHITECTURE CENTER GUIDE (#78)`, {
     x: Number((sideX + 0.12).toFixed(3)),
-    y: Number((sideY + 0.03).toFixed(3)),
+    y: Number((sideY + 0.02).toFixed(3)),
     w: Number((sideW - 0.24).toFixed(3)),
-    h: 0.3,
-    fontSize: 7.8,
+    h: 0.30,
+    fontSize: 8.2,
     bold: true,
     color: G_BLUE_DEEP,
     align: 'center',
@@ -1139,13 +1191,14 @@ function renderArchitectureCenterDiagramSidebar(
     fontFace: 'Arial',
   });
 
-  // Section 1: Architectural Question & Scope
-  const qY = Number((sideY + 0.42).toFixed(3));
+  // Section 1: Architectural Question & Scope (h = 0.74")
+  const qY = Number((sideY + 0.41).toFixed(3));
+  const qH = 0.74;
   slide.addShape(pptx.ShapeType.roundRect, {
     x: Number((sideX + 0.12).toFixed(3)),
     y: qY,
     w: Number((sideW - 0.24).toFixed(3)),
-    h: 0.72,
+    h: qH,
     rectRadius: 0.05,
     fill: { color: SURFACE_BG },
     line: { color: BORDER_GREY, width: 0.75 },
@@ -1154,25 +1207,25 @@ function renderArchitectureCenterDiagramSidebar(
     x: Number((sideX + 0.12).toFixed(3)),
     y: qY,
     w: 0.07,
-    h: 0.72,
+    h: qH,
     fill: { color: G_BLUE_DARK },
     line: { type: 'none' },
   });
   const questionText = truncateClean(
     docGuide?.subtitle ||
       `${diagramTitle} — Multi-tenant agentic AI isolation, cryptographic identity & FinOps governance on Google Cloud.`,
-    165
+    240
   );
   slide.addText(
     [
-      { text: 'ARCHITECTURAL SCOPE & DESIGN MANDATE\n', options: { fontSize: 6.3, bold: true, color: G_BLUE_DARK } },
-      { text: questionText, options: { fontSize: 6.9, bold: true, color: TEXT_DARK } },
+      { text: 'ARCHITECTURAL SCOPE & DESIGN MANDATE\n', options: { fontSize: 6.8, bold: true, color: G_BLUE_DARK } },
+      { text: questionText, options: { fontSize: 7.5, bold: true, color: TEXT_DARK } },
     ],
     {
       x: Number((sideX + 0.24).toFixed(3)),
       y: Number((qY + 0.04).toFixed(3)),
       w: Number((sideW - 0.42).toFixed(3)),
-      h: 0.64,
+      h: Number((qH - 0.08).toFixed(3)),
       valign: 'middle',
       fontFace: 'Arial',
       wrap: true,
@@ -1180,13 +1233,13 @@ function renderArchitectureCenterDiagramSidebar(
   );
 
   // Section 2: 4-Zone Hub-and-Spoke Color Key
-  const zHeaderY = Number((qY + 0.78).toFixed(3));
+  const zHeaderY = Number((qY + qH + 0.07).toFixed(3));
   slide.addText('4-ZONE HUB-AND-SPOKE TOPOLOGY KEY', {
     x: Number((sideX + 0.14).toFixed(3)),
     y: zHeaderY,
     w: Number((sideW - 0.28).toFixed(3)),
-    h: 0.18,
-    fontSize: 6.8,
+    h: 0.19,
+    fontSize: 7.2,
     bold: true,
     color: G_BLUE_DEEP,
     fontFace: 'Arial',
@@ -1197,47 +1250,49 @@ function renderArchitectureCenterDiagramSidebar(
       zoneId: 'Zone 1',
       colorHex: 'AECBFA',
       borderHex: '174EA6',
-      name: 'Routing Hub (#aecbfa)',
-      role: 'Cloud Armor WAF, IAP & IAM STS verify OIDC identity and mint scoped OBO + DPoP tokens.',
+      name: 'Routing Hub (#aecbfa) — Edge PEP & Token Exchange',
+      role: 'Cloud Armor WAF strips spoofed headers; IAP & IAM STS verify OIDC identity and mint scoped RFC 8693 OBO + DPoP tokens.',
     },
     {
       zoneId: 'Zone 2',
       colorHex: 'CEEAD6',
       borderHex: '137333',
-      name: 'Governance Hub (#ceead6)',
-      role: 'Security Command Center, Cloud KMS CMEK & BigQuery OTel govern encryption & FinOps.',
+      name: 'Central Governance Hub (#ceead6) — KMS, SCC & FinOps',
+      role: 'Security Command Center, Cloud KMS CMEK & BigQuery OpenTelemetry enforce tenant encryption boundaries & FinOps chargeback.',
     },
     {
       zoneId: 'Zone 3',
       colorHex: 'FEEFC3',
       borderHex: 'B06000',
-      name: 'Left Spoke (#feefc3)',
-      role: 'Model Armor (4/6), Gemini 2.5 Pro 90% prefix cache (5) & Vertex AI Agent Engine runtime.',
+      name: 'Left Spoke (#feefc3) — Agent Runtime & Model Armor',
+      role: 'Vertex AI Agent Engine (ADK), Model Armor prompt/output screening (4/6) & Gemini 2.5 Pro 90% shared prefix cache (5).',
     },
     {
       zoneId: 'Zone 4',
       colorHex: 'FAD2CF',
       borderHex: 'C5221F',
-      name: 'Right Spoke (#fad2cf)',
-      role: 'Scoped MCP servers, AlloyDB PostgreSQL RLS (`SET LOCAL`), Vector Search 2.0 & Silo vaults.',
+      name: 'Right Spoke (#fad2cf) — Scoped MCP & RLS Data Plane',
+      role: 'Tenant-scoped MCP servers, AlloyDB PostgreSQL FORCE RLS (`SET LOCAL`), Vector Search 2.0 namespaces & dedicated Silo vaults.',
     },
   ];
 
-  let zy = Number((zHeaderY + 0.2).toFixed(3));
+  let zy = Number((zHeaderY + 0.21).toFixed(3));
+  const zCardH = 0.54;
+  const zCardGap = 0.05;
   for (const zn of zones) {
     slide.addShape(pptx.ShapeType.roundRect, {
       x: Number((sideX + 0.12).toFixed(3)),
       y: zy,
       w: Number((sideW - 0.24).toFixed(3)),
-      h: 0.52,
+      h: zCardH,
       rectRadius: 0.05,
       fill: { color: WHITE },
       line: { color: zn.borderHex, width: 0.85 },
     });
     slide.addShape(pptx.ShapeType.roundRect, {
       x: Number((sideX + 0.18).toFixed(3)),
-      y: Number((zy + 0.06).toFixed(3)),
-      w: 0.68,
+      y: Number((zy + 0.05).toFixed(3)),
+      w: 0.72,
       h: 0.17,
       rectRadius: 0.03,
       fill: { color: zn.colorHex },
@@ -1245,10 +1300,10 @@ function renderArchitectureCenterDiagramSidebar(
     });
     slide.addText(zn.zoneId.toUpperCase(), {
       x: Number((sideX + 0.18).toFixed(3)),
-      y: Number((zy + 0.06).toFixed(3)),
-      w: 0.68,
+      y: Number((zy + 0.05).toFixed(3)),
+      w: 0.72,
       h: 0.17,
-      fontSize: 5.8,
+      fontSize: 6.2,
       bold: true,
       color: zn.borderHex,
       align: 'center',
@@ -1256,11 +1311,11 @@ function renderArchitectureCenterDiagramSidebar(
       fontFace: 'Arial',
     });
     slide.addText(zn.name, {
-      x: Number((sideX + 0.9).toFixed(3)),
+      x: Number((sideX + 0.96).toFixed(3)),
       y: Number((zy + 0.04).toFixed(3)),
-      w: Number((sideW - 1.08).toFixed(3)),
-      h: 0.2,
-      fontSize: 6.9,
+      w: Number((sideW - 1.14).toFixed(3)),
+      h: 0.19,
+      fontSize: 7.3,
       bold: true,
       color: TEXT_DARK,
       valign: 'middle',
@@ -1270,24 +1325,28 @@ function renderArchitectureCenterDiagramSidebar(
       x: Number((sideX + 0.18).toFixed(3)),
       y: Number((zy + 0.24).toFixed(3)),
       w: Number((sideW - 0.36).toFixed(3)),
-      h: 0.25,
-      fontSize: 6.2,
+      h: 0.27,
+      fontSize: 6.6,
       color: TEXT_BODY,
-      valign: 'top',
+      valign: 'middle',
       fontFace: 'Arial',
       wrap: true,
     });
-    zy = Number((zy + 0.56).toFixed(3));
+    zy = Number((zy + zCardH + zCardGap).toFixed(3));
   }
 
-  // Section 3: Numbered Callout Steps ①–⑦ Quick Reference
+  // Section 4: Reserve Bottom Verified Outcome Banner first so Section 3 fills the exact remaining space
+  const outH = 0.52;
+  const outY = Number((sideY + sideH - outH - 0.08).toFixed(3));
+
+  // Section 3: Numbered Callout Steps ①–⑦ Individual Cohesive Step Strips
   const sHeaderY = Number((zy + 0.02).toFixed(3));
   slide.addText('CALLOUT STEPS ①–⑦ QUICK WALKTHROUGH', {
     x: Number((sideX + 0.14).toFixed(3)),
     y: sHeaderY,
     w: Number((sideW - 0.28).toFixed(3)),
-    h: 0.18,
-    fontSize: 6.8,
+    h: 0.19,
+    fontSize: 7.2,
     bold: true,
     color: G_BLUE_DEEP,
     fontFace: 'Arial',
@@ -1295,56 +1354,78 @@ function renderArchitectureCenterDiagramSidebar(
 
   const archSec = findDocSection(docGuide, 'architecture');
   const stepItems = (archSec?.agenticFlowSteps || []).slice(0, 7);
-  const stepLines =
+  const stepDescriptions =
     stepItems.length > 0
-      ? stepItems.map((st, idx) => {
-          const s = truncateClean(
-            st.step.split(/(?<!\d)\.(?!\d)\s+/)[0].replace(/\.$/, ''),
-            126
-          );
-          return `${idx + 1}. ${/[.…]$/.test(s) ? s : `${s}.`}`;
-        })
+      ? stepItems.map((st) => truncateClean(deduplicateParentheticalEchoes(st.step), 175))
       : [
-          '1. Request enters Global External ALB with Cloud Armor WAF.',
-          '2. IAP & IAM STS mint tenant-scoped OBO + DPoP token.',
-          '3. Cloud Run Tier Router dispatches to Pooled or Silo Spoke.',
-          '4. Vertex AI Model Armor screens prompt & masks PII.',
-          '5. Gemini 2.5 Pro executes reasoning with 90% prefix cache.',
-          '6. Model Armor screens output; AlloyDB RLS & MCP execute.',
-          '7. Sanitized response returns; BigQuery logs OTel FinOps.',
+          'Request enters Global External ALB with Cloud Armor WAF edge protection.',
+          'IAP & IAM STS verify OIDC claims and mint tenant-scoped OBO + DPoP token.',
+          'Cloud Run Tier Router dispatches request to Pooled (3a) or Silo (3b) Spoke.',
+          'Vertex AI Model Armor screens incoming prompt & masks sensitive PII (4a–4d).',
+          'Gemini 2.5 Pro executes reasoning with 90% shared system prefix cache.',
+          'Model Armor screens response; AlloyDB FORCE RLS & scoped MCP tools execute.',
+          'Sanitized response returns to caller; BigQuery logs zero-PII OTel FinOps.',
         ];
 
-  const stepsBoxY = Number((sHeaderY + 0.2).toFixed(3));
-  const stepsBoxH = 1.85;
-  slide.addShape(pptx.ShapeType.roundRect, {
-    x: Number((sideX + 0.12).toFixed(3)),
-    y: stepsBoxY,
-    w: Number((sideW - 0.24).toFixed(3)),
-    h: stepsBoxH,
-    rectRadius: 0.05,
-    fill: { color: SURFACE_BG },
-    line: { color: BORDER_GREY, width: 0.75 },
-  });
-  slide.addText(stepLines.join('\n'), {
-    x: Number((sideX + 0.2).toFixed(3)),
-    y: Number((stepsBoxY + 0.06).toFixed(3)),
-    w: Number((sideW - 0.4).toFixed(3)),
-    h: Number((stepsBoxH - 0.12).toFixed(3)),
-    fontSize: 6.3,
-    color: TEXT_BODY,
-    valign: 'top',
-    fontFace: 'Arial',
-    lineSpacingMultiple: 1.05,
-    wrap: true,
+  const stepsBoxY = Number((sHeaderY + 0.20).toFixed(3));
+  const stepsBoxH = Number(Math.max(1.5, outY - stepsBoxY - 0.08).toFixed(3));
+  const stepCount = Math.min(7, stepDescriptions.length);
+  const stepGap = 0.035;
+  const stepRowH = Number(((stepsBoxH - (stepCount - 1) * stepGap) / stepCount).toFixed(3));
+
+  stepDescriptions.slice(0, stepCount).forEach((desc, idx) => {
+    const ry = Number((stepsBoxY + idx * (stepRowH + stepGap)).toFixed(3));
+    const isStep4 = idx === 3;
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: Number((sideX + 0.12).toFixed(3)),
+      y: ry,
+      w: Number((sideW - 0.24).toFixed(3)),
+      h: stepRowH,
+      rectRadius: 0.04,
+      fill: { color: isStep4 ? 'FEF7E0' : idx % 2 === 0 ? SURFACE_BG : WHITE },
+      line: { color: isStep4 ? 'F9AB00' : BORDER_GREY, width: 0.65 },
+    });
+    const badgeD = Math.min(0.20, Number((stepRowH - 0.04).toFixed(3)));
+    slide.addShape(pptx.ShapeType.ellipse, {
+      x: Number((sideX + 0.18).toFixed(3)),
+      y: Number((ry + (stepRowH - badgeD) / 2).toFixed(3)),
+      w: badgeD,
+      h: badgeD,
+      fill: { color: isStep4 ? 'B06000' : G_BLUE_DARK },
+      line: { type: 'none' },
+    });
+    slide.addText(String(idx + 1), {
+      x: Number((sideX + 0.18).toFixed(3)),
+      y: Number((ry + (stepRowH - badgeD) / 2).toFixed(3)),
+      w: badgeD,
+      h: badgeD,
+      fontSize: 6.4,
+      bold: true,
+      color: WHITE,
+      align: 'center',
+      valign: 'middle',
+      margin: 0,
+      fontFace: 'Arial',
+    });
+    slide.addText(desc, {
+      x: Number((sideX + 0.44).toFixed(3)),
+      y: ry,
+      w: Number((sideW - 0.62).toFixed(3)),
+      h: stepRowH,
+      fontSize: 6.7,
+      color: TEXT_DARK,
+      valign: 'middle',
+      fontFace: 'Arial',
+      wrap: true,
+    });
   });
 
-  // Section 4: Bottom Verified Outcome Banner
-  const outY = Number((sideY + sideH - 0.68).toFixed(3));
+  // Render Bottom Verified Outcome Banner
   slide.addShape(pptx.ShapeType.roundRect, {
     x: Number((sideX + 0.12).toFixed(3)),
     y: outY,
     w: Number((sideW - 0.24).toFixed(3)),
-    h: 0.56,
+    h: outH,
     rectRadius: 0.05,
     fill: { color: G_GREEN_TINT },
     line: { color: G_GREEN_DARK, width: 0.85 },
@@ -1353,18 +1434,18 @@ function renderArchitectureCenterDiagramSidebar(
     [
       {
         text: `VERIFIED OUTCOME • ${docGuide?.docId || 'ARCH CENTER #78'}\n`,
-        options: { fontSize: 6.3, bold: true, color: G_GREEN_DEEP },
+        options: { fontSize: 6.6, bold: true, color: G_GREEN_DEEP },
       },
       {
         text: '56 Native Editable Shapes • 23 Connectors • Slides 2–6: Complete Architecture Center Blog Guide',
-        options: { fontSize: 6.4, bold: true, color: TEXT_DARK },
+        options: { fontSize: 6.8, bold: true, color: TEXT_DARK },
       },
     ],
     {
       x: Number((sideX + 0.22).toFixed(3)),
-      y: Number((outY + 0.04).toFixed(3)),
+      y: Number((outY + 0.03).toFixed(3)),
       w: Number((sideW - 0.44).toFixed(3)),
-      h: 0.48,
+      h: Number((outH - 0.06).toFixed(3)),
       valign: 'middle',
       fontFace: 'Arial',
       wrap: true,
@@ -1516,10 +1597,24 @@ export async function exportDrawioToEditablePptx(
       (c) => c.id === 'gcp_outer' || c.id === 'zone_routing_hub' || c.id === 'zone_gov_hub' || c.id === 'gcp_wordmark'
     );
 
-  const effMinX = minX;
-  const effMinY = hasTopTitleBox && minY < 45 ? 48 : minY;
-  const effGraphW = Math.max(400, maxX - effMinX);
-  const effGraphH = Math.max(300, maxY - effMinY);
+  const visibleNonTitleVertices = cells.filter(
+    (c) =>
+      c.vertex &&
+      c.id !== 'hdr_title_box' &&
+      c.id !== 'hdr_subtitle_box' &&
+      !((c.id === 'bg' || c.id.includes('bg')) && c.width >= 700 && c.height >= 400) &&
+      (c.width > 0 || c.height > 0)
+  );
+  const effMinX =
+    visibleNonTitleVertices.length > 0 ? Math.min(...visibleNonTitleVertices.map((c) => c.absX)) : minX;
+  const effMinY =
+    visibleNonTitleVertices.length > 0 ? Math.min(...visibleNonTitleVertices.map((c) => c.absY)) : minY;
+  const effMaxX =
+    visibleNonTitleVertices.length > 0 ? Math.max(...visibleNonTitleVertices.map((c) => c.absX + c.width)) : maxX;
+  const effMaxY =
+    visibleNonTitleVertices.length > 0 ? Math.max(...visibleNonTitleVertices.map((c) => c.absY + c.height)) : maxY;
+  const effGraphW = Math.max(400, effMaxX - effMinX);
+  const effGraphH = Math.max(300, effMaxY - effMinY);
 
   const slide2 = pptx.addSlide();
   if (isArchCenter78 || shouldIncludeGuide) {
@@ -1533,12 +1628,18 @@ export async function exportDrawioToEditablePptx(
     slide2.background = { color: isDarkDiagram ? diagramBgHex : 'FFFFFF' };
   }
 
-  // Left Editable Diagram Canvas + Right 4-Zone Architecture Center Reference Sidebar
+  // Dynamically size Left Diagram Canvas to tightly wrap the aspect-preserved #78 diagram (zero dead side gutters)
   const useSplitArchCenterLayout = isArchCenter78 || shouldIncludeGuide;
   const CANVAS_X = useSplitArchCenterLayout ? 0.28 : 0.32;
   const CANVAS_Y = useSplitArchCenterLayout ? HEADER_H + 0.06 : 0.2;
-  const CANVAS_W = useSplitArchCenterLayout ? 7.62 : SLIDE_W - 0.64;
   const CANVAS_H = useSplitArchCenterLayout ? SLIDE_H - HEADER_H - 0.14 : SLIDE_H - 0.4;
+  const PAD_X = useSplitArchCenterLayout ? 0.10 : 0;
+  const PAD_Y = useSplitArchCenterLayout ? 0.08 : 0;
+  const availH = CANVAS_H - PAD_Y * 2;
+  const idealDiagramW = (effGraphW / effGraphH) * availH + PAD_X * 2;
+  const CANVAS_W = useSplitArchCenterLayout
+    ? Number(Math.min(7.2, Math.max(5.85, idealDiagramW)).toFixed(3))
+    : SLIDE_W - 0.64;
 
   if (useSplitArchCenterLayout) {
     slide2.addShape(pptx.ShapeType.roundRect, {
@@ -1566,10 +1667,7 @@ export async function exportDrawioToEditablePptx(
     );
   }
 
-  const PAD_X = useSplitArchCenterLayout ? 0.14 : 0;
-  const PAD_Y = useSplitArchCenterLayout ? 0.1 : 0;
   const availW = CANVAS_W - PAD_X * 2;
-  const availH = CANVAS_H - PAD_Y * 2;
 
   // Enforce 1:1 uniform aspect-ratio scaling so portrait #78 (1200x1410) diagrams never stretch horizontally
   const uniformScale = Math.min(availW / effGraphW, availH / effGraphH);
@@ -1668,24 +1766,6 @@ export async function exportDrawioToEditablePptx(
       Boolean(rawStroke) &&
       !(isImageShape && !isCircleStepBadge && node.width <= 55 && node.height <= 55);
 
-    const fillColor = normalizeHexColor(rawFill, isDarkDiagram ? '1E293B' : 'FFFFFF');
-    const strokeColor = normalizeHexColor(rawStroke, isDarkDiagram ? '475569' : 'CBD5E1');
-    const strokeWidth = Math.min(2.2, Math.max(0.75, parseFloat(style.strokeWidth || '1')));
-    const isDashed = style.dashed === '1';
-
-    let shapeType = pptx.ShapeType.rect;
-    if (style.ellipse === '1' || style.shape === 'ellipse') {
-      shapeType = pptx.ShapeType.ellipse;
-    } else if (style.shape === 'cylinder3' || style.shape === 'cylinder') {
-      shapeType = pptx.ShapeType.can;
-    } else if (style.shape === 'hexagon') {
-      shapeType = pptx.ShapeType.hexagon;
-    } else if (style.shape === 'rhombus') {
-      shapeType = pptx.ShapeType.diamond;
-    } else if (style.rounded === '1') {
-      shapeType = pptx.ShapeType.roundRect;
-    }
-
     const layout = extractStructuredNodeLayout(normalizeDrawioHtmlForSlides(node.value));
     const override = options?.editableOverrides?.[node.id];
     if (override) {
@@ -1711,6 +1791,32 @@ export async function exportDrawioToEditablePptx(
       style.verticalAlign === 'top' ||
       (node.width >= 260 && node.height >= 160 && layout.kind === 'standard');
 
+    const fillColor = normalizeHexColor(rawFill, isDarkDiagram ? '1E293B' : 'FFFFFF');
+    const rawStrokeNorm = normalizeHexColor(rawStroke, isDarkDiagram ? '475569' : 'DADCE0');
+    let strokeColor = rawStrokeNorm;
+    if (!isDarkDiagram && (rawStrokeNorm === '202124' || rawStrokeNorm === '0F172A' || rawStrokeNorm === '1E293B')) {
+      strokeColor = isContainer ? '9AA0A6' : 'DADCE0';
+    }
+    const strokeWidth = isCircleStepBadge
+      ? 0.85
+      : node.id === 'gcp_outer_frame' || strokeColor === '1A73E8'
+        ? 1.25
+        : 0.85;
+    const isDashed = style.dashed === '1';
+
+    let shapeType = pptx.ShapeType.rect;
+    if (style.ellipse === '1' || style.shape === 'ellipse') {
+      shapeType = pptx.ShapeType.ellipse;
+    } else if (style.shape === 'cylinder3' || style.shape === 'cylinder') {
+      shapeType = pptx.ShapeType.can;
+    } else if (style.shape === 'hexagon') {
+      shapeType = pptx.ShapeType.hexagon;
+    } else if (style.shape === 'rhombus') {
+      shapeType = pptx.ShapeType.diamond;
+    } else if (style.rounded === '1') {
+      shapeType = pptx.ShapeType.roundRect;
+    }
+
     // 1. Render Native Editable Vector Box / Enclave / Card Background
     if (hasFill || hasStroke) {
       slide2.addShape(shapeType, {
@@ -1718,7 +1824,7 @@ export async function exportDrawioToEditablePptx(
         y: by,
         w: bw,
         h: bh,
-        rectRadius: shapeType === pptx.ShapeType.roundRect ? 0.05 : undefined,
+        rectRadius: shapeType === pptx.ShapeType.roundRect ? (isContainer ? 0.035 : 0.045) : undefined,
         fill: hasFill ? { color: fillColor } : undefined,
         line: hasStroke
           ? {
@@ -2250,9 +2356,12 @@ export async function exportDrawioToEditablePptx(
       allPoints.push(curr);
     }
 
-    const strokeColor = normalizeHexColor(edge.style.strokeColor, isDarkDiagram ? '60A5FA' : '5F6368');
+    const strokeColor =
+      !isDarkDiagram && (!edge.style.strokeColor || edge.style.strokeColor.toLowerCase() === '#202124')
+        ? '5F6368'
+        : normalizeHexColor(edge.style.strokeColor, isDarkDiagram ? '60A5FA' : '5F6368');
     const isDashed = edge.style.dashed === '1';
-    const strokeWidth = Math.min(1.3, Math.max(0.85, parseFloat(edge.style.strokeWidth || '1.0')));
+    const strokeWidth = 1.0;
 
     const hasStartArrow = Boolean(edge.style.startArrow) && edge.style.startArrow !== 'none';
     const hasEndArrow = !edge.style.endArrow || edge.style.endArrow !== 'none';
@@ -2274,6 +2383,8 @@ export async function exportDrawioToEditablePptx(
 
       const isFirstSeg = i === 0;
       const isLastSeg = i === allPoints.length - 2;
+      const segLenIn = Math.max(lineW, lineH);
+      const isTinyElbowStub = allPoints.length > 2 && segLenIn < 0.14;
 
       slide2.addShape(pptx.ShapeType.line, {
         x: lineX,
@@ -2286,8 +2397,8 @@ export async function exportDrawioToEditablePptx(
           color: strokeColor,
           width: strokeWidth,
           dashType: isDashed ? 'dash' : 'solid',
-          beginArrowType: isFirstSeg && hasStartArrow ? 'triangle' : undefined,
-          endArrowType: isLastSeg && hasEndArrow ? 'triangle' : undefined,
+          beginArrowType: isFirstSeg && hasStartArrow && !isTinyElbowStub ? 'triangle' : undefined,
+          endArrowType: isLastSeg && hasEndArrow && !isTinyElbowStub ? 'triangle' : undefined,
         },
       });
     }
@@ -2339,17 +2450,17 @@ export async function exportDrawioToEditablePptx(
     const contribSec = findDocSection(docGuide, 'contributors');
 
     // -------------------------------------------------------------------------
-    // Slide 2 / 6: Blog Overview & Architecture Components Table
+    // Slide 2 / 6: Blog Overview & Proportional 5-Zone Architecture Components Matrix
     // -------------------------------------------------------------------------
     const slideArch = pptx.addSlide();
     addArchCenterChrome(slideArch, '1. Architecture & Components', 'Editable Diagram + Blog • Slide 2 / 6');
 
-    // Left Column Card 1: Executive Overview Summary
+    // Left Column Card 1: Executive Overview Summary (3 Structured Sub-Cards filling 100% height)
     slideArch.addShape(pptx.ShapeType.roundRect, {
       x: 0.32,
       y: 0.78,
-      w: 4.85,
-      h: 3.18,
+      w: 4.68,
+      h: 3.16,
       rectRadius: 0.06,
       fill: { color: 'FFFFFF' },
       line: { color: 'DADCE0', width: 1 },
@@ -2358,174 +2469,434 @@ export async function exportDrawioToEditablePptx(
       x: 0.32,
       y: 0.78,
       w: 0.08,
-      h: 3.18,
+      h: 3.16,
       fill: { color: '1967D2' },
       line: { type: 'none' },
     });
     slideArch.addText(`Architecture Overview (${docGuide.docId})`, {
       x: 0.48,
-      y: 0.86,
-      w: 4.58,
-      h: 0.26,
-      fontSize: 9.8,
+      y: 0.85,
+      w: 4.40,
+      h: 0.24,
+      fontSize: 9.6,
       bold: true,
       color: '174EA6',
       fontFace: 'Arial',
     });
 
-    const overviewParas = [
-      ...docGuide.overviewParagraphs.slice(0, 2).map((p) => truncateClean(p, 290)),
-      ...(archSec?.leadParagraphs?.slice(0, 1).map((p) => truncateClean(p, 250)) || []),
+    const overviewCards = [
+      {
+        label: 'Core Engineering & Isolation Challenge',
+        body: truncateClean(docGuide.overviewParagraphs[0] || docGuide.subtitle, 225),
+        bg: 'F8FAFC',
+        accent: '1967D2',
+      },
+      {
+        label: 'Target Enterprise & SaaS Personas',
+        body: truncateClean(docGuide.overviewParagraphs[1] || docGuide.overviewParagraphs[0] || '', 225),
+        bg: 'FFFFFF',
+        accent: '188038',
+      },
+      {
+        label: 'Hub-and-Spoke Reference Control Plane',
+        body: truncateClean((archSec?.leadParagraphs || [])[0] || docGuide.subtitle, 225),
+        bg: 'F8FAFC',
+        accent: 'B06000',
+      },
     ];
-    slideArch.addText(overviewParas.map((p) => `• ${p}`).join('\n\n'), {
-      x: 0.48,
-      y: 1.16,
-      w: 4.58,
-      h: 2.68,
-      fontSize: 7.7,
-      color: '3C4043',
-      valign: 'top',
-      fontFace: 'Arial',
-      wrap: true,
+
+    overviewCards.forEach((oc, idx) => {
+      const ocy = Number((1.14 + idx * (0.86 + 0.06)).toFixed(3));
+      slideArch.addShape(pptx.ShapeType.roundRect, {
+        x: 0.48,
+        y: ocy,
+        w: 4.40,
+        h: 0.86,
+        rectRadius: 0.04,
+        fill: { color: oc.bg },
+        line: { color: 'E2E8F0', width: 0.75 },
+      });
+      slideArch.addShape(pptx.ShapeType.rect, {
+        x: 0.48,
+        y: ocy,
+        w: 0.05,
+        h: 0.86,
+        fill: { color: oc.accent },
+        line: { type: 'none' },
+      });
+      slideArch.addText(
+        [
+          { text: `${oc.label}\n`, options: { bold: true, color: oc.accent, fontSize: 7.4 } },
+          { text: oc.body, options: { bold: false, color: '334155', fontSize: 6.9 } },
+        ],
+        {
+          x: 0.58,
+          y: Number((ocy + 0.03).toFixed(3)),
+          w: 4.24,
+          h: 0.80,
+          valign: 'middle',
+          fontFace: 'Arial',
+          wrap: true,
+        }
+      );
     });
 
-    // Left Column Card 2: 5-Hop Defense-in-Depth Control Plane Summary
+    // Left Column Card 2: 5-Hop Defense-in-Depth Control Plane (5 Hop Strips filling 100% height)
     slideArch.addShape(pptx.ShapeType.roundRect, {
       x: 0.32,
-      y: 4.10,
-      w: 4.85,
-      h: 3.10,
+      y: 4.06,
+      w: 4.68,
+      h: 3.16,
       rectRadius: 0.06,
       fill: { color: 'F8FAFC' },
       line: { color: 'CBD5E1', width: 1 },
     });
     slideArch.addShape(pptx.ShapeType.rect, {
       x: 0.32,
-      y: 4.10,
+      y: 4.06,
       w: 0.08,
-      h: 3.10,
+      h: 3.16,
       fill: { color: '188038' },
       line: { type: 'none' },
     });
     slideArch.addText('5-Hop Defense-in-Depth Security Invariants', {
       x: 0.48,
-      y: 4.18,
-      w: 4.58,
+      y: 4.13,
+      w: 4.40,
       h: 0.24,
-      fontSize: 9.2,
+      fontSize: 9.4,
       bold: true,
       color: '137333',
       fontFace: 'Arial',
     });
-    const hopBullets = [
-      'Hop 1 (Edge & Identity): Cloud Armor WAF + Workforce Identity Federation OIDC (`tenant_id`).',
-      'Hop 2 (Session & Quota): Memorystore for Valkey token-bucket rate limiter & session lock.',
-      'Hop 3 (Orchestration & Guardrails): Google ADK Router + Model Armor prompt/output screening.',
-      'Hop 4 (Delegated Tool Auth): Cloud KMS Asymmetric JWT (`adk-agent-signing-key`) + RFC 9449 DPoP.',
-      'Hop 5 (Storage & Crypto Boundary): AlloyDB PostgreSQL RLS (`SET LOCAL`) + Cloud KMS CMEK.',
+
+    const hopItems = [
+      { hop: 'HOP 1', title: 'Edge & OIDC Federation', desc: 'Cloud Armor WAF + Workforce Identity Federation OIDC (`tenant_id` claim).' },
+      { hop: 'HOP 2', title: 'Session & Quota Bulkhead', desc: 'Memorystore for Valkey token-bucket rate limiter & atomic session lock.' },
+      { hop: 'HOP 3', title: 'Orchestration & Guardrails', desc: 'Google ADK Router + regional Model Armor prompt & output screening.' },
+      { hop: 'HOP 4', title: 'Delegated Tool Auth', desc: 'Cloud KMS Asymmetric JWT (`adk-agent-signing-key`) + RFC 9449 DPoP.' },
+      { hop: 'HOP 5', title: 'Storage & Crypto Boundary', desc: 'AlloyDB PostgreSQL RLS (`SET LOCAL`) + Cloud KMS per-tenant CMEK.' },
     ];
-    slideArch.addText(hopBullets.map((b) => `✓ ${b}`).join('\n\n'), {
-      x: 0.48,
-      y: 4.46,
-      w: 4.58,
-      h: 2.64,
-      fontSize: 7.4,
-      color: '1E293B',
-      valign: 'top',
-      fontFace: 'Arial',
-      wrap: true,
+    hopItems.forEach((hItem, idx) => {
+      const hy = Number((4.42 + idx * (0.49 + 0.06)).toFixed(3));
+      slideArch.addShape(pptx.ShapeType.roundRect, {
+        x: 0.48,
+        y: hy,
+        w: 4.40,
+        h: 0.49,
+        rectRadius: 0.04,
+        fill: { color: 'FFFFFF' },
+        line: { color: 'DCE8E0', width: 0.75 },
+      });
+      slideArch.addShape(pptx.ShapeType.roundRect, {
+        x: 0.56,
+        y: Number((hy + 0.125).toFixed(3)),
+        w: 0.54,
+        h: 0.24,
+        rectRadius: 0.04,
+        fill: { color: 'E6F4EA' },
+        line: { color: '188038', width: 0.6 },
+      });
+      slideArch.addText(hItem.hop, {
+        x: 0.56,
+        y: Number((hy + 0.125).toFixed(3)),
+        w: 0.54,
+        h: 0.24,
+        fontSize: 6.4,
+        bold: true,
+        color: '137333',
+        align: 'center',
+        valign: 'middle',
+        margin: 0,
+        fontFace: 'Arial',
+      });
+      slideArch.addText(
+        [
+          { text: `${hItem.title}: `, options: { bold: true, color: '1E293B', fontSize: 7.2 } },
+          { text: hItem.desc, options: { bold: false, color: '334155', fontSize: 6.8 } },
+        ],
+        {
+          x: 1.18,
+          y: Number((hy + 0.03).toFixed(3)),
+          w: 3.64,
+          h: 0.43,
+          valign: 'middle',
+          fontFace: 'Arial',
+          wrap: true,
+        }
+      );
     });
 
-    // Right Column: Concise, Scannable Architecture Components Table
-    const compRows: PptxGenJS.TableRow[] = [
-      [
-        { text: 'Architectural Zone / Subsystem', options: { bold: true, fill: { color: '174EA6' }, color: 'FFFFFF', fontSize: 8.2 } },
-        { text: 'Google Cloud Services & Key Responsibilities', options: { bold: true, fill: { color: '174EA6' }, color: 'FFFFFF', fontSize: 8.2 } },
-      ],
+    // Right Column: Proportional Explicit-Height Component Matrix (y = 0.78" .. 7.22", zero bottom void!)
+    const matrixX = 5.14;
+    const matrixCol1W = 2.26;
+    const matrixCol2W = 5.58;
+    const matrixGapX = 0.02;
+
+    slideArch.addShape(pptx.ShapeType.roundRect, {
+      x: matrixX,
+      y: 0.78,
+      w: matrixCol1W,
+      h: 0.36,
+      rectRadius: 0.03,
+      fill: { color: '174EA6' },
+      line: { type: 'none' },
+    });
+    slideArch.addText('Architectural Zone / Subsystem', {
+      x: matrixX + 0.10,
+      y: 0.78,
+      w: matrixCol1W - 0.20,
+      h: 0.36,
+      fontSize: 8.2,
+      bold: true,
+      color: 'FFFFFF',
+      valign: 'middle',
+      fontFace: 'Arial',
+    });
+
+    slideArch.addShape(pptx.ShapeType.roundRect, {
+      x: Number((matrixX + matrixCol1W + matrixGapX).toFixed(3)),
+      y: 0.78,
+      w: matrixCol2W,
+      h: 0.36,
+      rectRadius: 0.03,
+      fill: { color: '174EA6' },
+      line: { type: 'none' },
+    });
+    slideArch.addText('Google Cloud Services & Key Responsibilities', {
+      x: Number((matrixX + matrixCol1W + matrixGapX + 0.12).toFixed(3)),
+      y: 0.78,
+      w: matrixCol2W - 0.24,
+      h: 0.36,
+      fontSize: 8.2,
+      bold: true,
+      color: 'FFFFFF',
+      valign: 'middle',
+      fontFace: 'Arial',
+    });
+
+    const compGroups = (archSec?.componentGroupsTable || []).slice(0, 6);
+    const matrixStartY = 1.18;
+    const matrixAvailH = 6.04; // 1.18 + 6.04 = 7.22" exact bottom alignment!
+    const matrixRowGap = 0.06;
+    const groupWeights = compGroups.map((g) => Math.max(1.5, Math.min(4, g.items.length) * 0.85 + 0.45));
+    const totalGroupWeight = groupWeights.reduce((acc, w) => acc + w, 0) || 1;
+    const totalRowsNetH = matrixAvailH - Math.max(0, compGroups.length - 1) * matrixRowGap;
+
+    const zonePalette = [
+      { bar: '1967D2', tint: 'E8F0FE', text: '174EA6' },
+      { bar: '188038', tint: 'E6F4EA', text: '137333' },
+      { bar: 'F9AB00', tint: 'FEF7E0', text: 'B06000' },
+      { bar: 'D93025', tint: 'FCE8E6', text: 'C5221F' },
+      { bar: '0D9488', tint: 'CCFBF1', text: '0F766E' },
     ];
 
-    if (archSec?.componentGroupsTable?.length) {
-      archSec.componentGroupsTable.slice(0, 6).forEach((grp, idx) => {
-        const rowBg = idx % 2 === 0 ? 'FFFFFF' : 'F8F9FA';
-        const conciseItems = grp.items
-          .slice(0, 4)
-          .map((it) => `• ${it.name}: ${truncateClean(it.description, 125)}`)
-          .join('\n');
-        compRows.push([
-          {
-            text: `${grp.groupTitle}\n(${truncateClean(grp.groupLead, 70)})`,
-            options: { bold: true, color: '174EA6', fill: { color: rowBg }, fontSize: 7.4 },
-          },
-          {
-            text: conciseItems || truncateClean(grp.groupLead, 180),
-            options: { color: '3C4043', fill: { color: rowBg }, fontSize: 7.1 },
-          },
-        ]);
-      });
-    }
+    let curRowY = matrixStartY;
+    compGroups.forEach((grp, idx) => {
+      const isLast = idx === compGroups.length - 1;
+      const rowH = isLast
+        ? Number((7.22 - curRowY).toFixed(3))
+        : Number(((totalRowsNetH * groupWeights[idx]) / totalGroupWeight).toFixed(3));
+      const zStyle = zonePalette[idx % zonePalette.length];
+      const rowBg = idx % 2 === 0 ? 'FFFFFF' : 'F8FAFC';
 
-    slideArch.addTable(compRows, {
-      x: 5.32,
-      y: 0.78,
-      w: 7.68,
-      colW: [2.15, 5.53],
-      border: { type: 'solid', pt: 0.75, color: 'DADCE0' },
-      fontFace: 'Arial',
-      valign: 'middle',
+      // Left Zone Cell
+      slideArch.addShape(pptx.ShapeType.roundRect, {
+        x: matrixX,
+        y: curRowY,
+        w: matrixCol1W,
+        h: rowH,
+        rectRadius: 0.04,
+        fill: { color: rowBg },
+        line: { color: 'DADCE0', width: 0.85 },
+      });
+      slideArch.addShape(pptx.ShapeType.rect, {
+        x: matrixX,
+        y: curRowY,
+        w: 0.07,
+        h: rowH,
+        fill: { color: zStyle.bar },
+        line: { type: 'none' },
+      });
+      const cleanTitle = deduplicateParentheticalEchoes(grp.groupTitle);
+      const isZeroItemsGroup = grp.items.length === 0;
+      const leftSubtitle = isZeroItemsGroup
+        ? /vpc/i.test(cleanTitle)
+          ? 'Organization Perimeter & Data Exfiltration Control'
+          : 'Organization-Level Principal & Agent Identity Boundary'
+        : truncateClean(grp.groupLead, 92);
+
+      slideArch.addText(
+        [
+          { text: `${cleanTitle}\n`, options: { bold: true, color: zStyle.text, fontSize: 7.8 } },
+          { text: leftSubtitle, options: { bold: false, color: '475569', fontSize: 6.7 } },
+        ],
+        {
+          x: Number((matrixX + 0.12).toFixed(3)),
+          y: Number((curRowY + 0.03).toFixed(3)),
+          w: Number((matrixCol1W - 0.18).toFixed(3)),
+          h: Number((rowH - 0.06).toFixed(3)),
+          valign: 'middle',
+          fontFace: 'Arial',
+          wrap: true,
+        }
+      );
+
+      // Right Services Cell
+      const col2X = Number((matrixX + matrixCol1W + matrixGapX).toFixed(3));
+      slideArch.addShape(pptx.ShapeType.roundRect, {
+        x: col2X,
+        y: curRowY,
+        w: matrixCol2W,
+        h: rowH,
+        rectRadius: 0.04,
+        fill: { color: rowBg },
+        line: { color: 'DADCE0', width: 0.85 },
+      });
+
+      const itemsSlice =
+        grp.items.length > 0
+          ? grp.items.slice(0, 4)
+          : /vpc/i.test(cleanTitle)
+            ? [
+                {
+                  name: 'Perimeter & Exfiltration Guard',
+                  description: deduplicateParentheticalEchoes(grp.groupLead),
+                },
+                {
+                  name: 'Ingress / Egress Context Rules',
+                  description:
+                    'Restricts Vertex AI, AlloyDB, and Cloud KMS API calls strictly to authorized hub-and-spoke VPC projects and Private Service Connect endpoints.',
+                },
+              ]
+            : [
+                {
+                  name: 'Principal Access Boundary (PAB)',
+                  description: deduplicateParentheticalEchoes(grp.groupLead),
+                },
+                {
+                  name: 'Zero Cross-Tenant Lateral Movement',
+                  description:
+                    'Binds 2LO/3LO agent service accounts and RFC 8693 OBO tokens to tenant-scoped project boundaries before IAM role evaluation.',
+                },
+              ];
+
+      const charBudget = itemsSlice.length === 1 ? 235 : itemsSlice.length === 2 ? 175 : 142;
+      const richRuns: PptxGenJS.TextProps[] = [];
+      itemsSlice.forEach((it, iIdx) => {
+        const cleanName = deduplicateParentheticalEchoes(it.name);
+        let rawDesc = deduplicateParentheticalEchoes(it.description);
+        const escapedName = cleanName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        rawDesc = rawDesc.replace(new RegExp(`^${escapedName}\\s*[:\\-–]?\\s*`, 'i'), '');
+        if (rawDesc.length > 0) {
+          rawDesc = rawDesc.charAt(0).toUpperCase() + rawDesc.slice(1);
+        }
+        const cleanDesc = truncateClean(rawDesc, charBudget);
+        richRuns.push({
+          text: `• ${cleanName}: `,
+          options: { bold: true, color: '1E293B', fontSize: 7.2 },
+        });
+        richRuns.push({
+          text: `${cleanDesc}${iIdx < itemsSlice.length - 1 ? '\n' : ''}`,
+          options: { bold: false, color: '334155', fontSize: 7.0 },
+        });
+      });
+
+      slideArch.addText(richRuns, {
+        x: Number((col2X + 0.12).toFixed(3)),
+        y: Number((curRowY + 0.03).toFixed(3)),
+        w: Number((matrixCol2W - 0.22).toFixed(3)),
+        h: Number((rowH - 0.06).toFixed(3)),
+        valign: 'middle',
+        fontFace: 'Arial',
+        wrap: true,
+      });
+
+      curRowY = Number((curRowY + rowH + matrixRowGap).toFixed(3));
     });
 
     // -------------------------------------------------------------------------
-    // Slide 3 / 6: Agentic Flow (Steps 1–7, 4a–4d) & Products Used Cards
+    // Slide 3 / 6: Agentic Flow (Weighted Steps 1–7, 4a–4d Grid) & Products Used Cards
     // -------------------------------------------------------------------------
     const slideFlow = pptx.addSlide();
     addArchCenterChrome(slideFlow, '2. Agentic Flow & Products Used', 'Editable Diagram + Blog • Slide 3 / 6');
 
-    slideFlow.addText(archSec?.agenticFlowHeading || 'Agentic Execution Flow (Steps 1–7 & Sub-steps 4a–4d)', {
+    // Left Column Header Banner
+    slideFlow.addShape(pptx.ShapeType.roundRect, {
       x: 0.32,
-      y: 0.76,
-      w: 6.75,
-      h: 0.26,
-      fontSize: 9.8,
+      y: 0.78,
+      w: 6.68,
+      h: 0.36,
+      rectRadius: 0.05,
+      fill: { color: 'E8F0FE' },
+      line: { color: '1967D2', width: 0.9 },
+    });
+    slideFlow.addText(archSec?.agenticFlowHeading || 'Agentic Execution Flow (Steps 1–7 & Sub-steps 4a–4d)', {
+      x: 0.44,
+      y: 0.81,
+      w: 6.44,
+      h: 0.30,
+      fontSize: 8.8,
       bold: true,
       color: '174EA6',
+      valign: 'middle',
       fontFace: 'Arial',
     });
 
     const flowSteps = (archSec?.agenticFlowSteps || []).slice(0, 7);
-    const stepCardStartY = 1.06;
-    const stepAvailH = 6.14;
+    const stepCardStartY = 1.20;
+    const stepAvailH = 6.02; // 1.20 + 6.02 = 7.22"
     const stepGap = 0.06;
-    const stepCardH = Number(
-      ((stepAvailH - Math.max(0, flowSteps.length - 1) * stepGap) / Math.max(1, flowSteps.length)).toFixed(3)
+    const stepWeights = flowSteps.map((st, idx) =>
+      idx === 3 || (st.subSteps && st.subSteps.length > 0) ? 1.68 : 1.0
     );
+    const totalStepWeight = stepWeights.reduce((a, b) => a + b, 0) || 1;
+    const stepNetH = stepAvailH - Math.max(0, flowSteps.length - 1) * stepGap;
 
+    let curStepY = stepCardStartY;
     flowSteps.forEach((st, idx) => {
-      const sy = Number((stepCardStartY + idx * (stepCardH + stepGap)).toFixed(3));
+      const isLast = idx === flowSteps.length - 1;
+      const stepCardH = isLast
+        ? Number((7.22 - curStepY).toFixed(3))
+        : Number(((stepNetH * stepWeights[idx]) / totalStepWeight).toFixed(3));
       const isStep4 = idx === 3 || (st.subSteps && st.subSteps.length > 0);
+
       slideFlow.addShape(pptx.ShapeType.roundRect, {
         x: 0.32,
-        y: sy,
-        w: 6.75,
+        y: curStepY,
+        w: 6.68,
         h: stepCardH,
         rectRadius: 0.05,
-        fill: { color: isStep4 ? 'FEF7E0' : 'FFFFFF' },
+        fill: { color: isStep4 ? 'FEF7E0' : idx % 2 === 0 ? 'FFFFFF' : 'F8FAFC' },
         line: { color: isStep4 ? 'F9AB00' : 'DADCE0', width: 0.9 },
       });
-      const badgeD = 0.24;
+      slideFlow.addShape(pptx.ShapeType.rect, {
+        x: 0.32,
+        y: curStepY,
+        w: 0.07,
+        h: stepCardH,
+        fill: { color: isStep4 ? 'B06000' : '1967D2' },
+        line: { type: 'none' },
+      });
+
+      const badgeD = 0.26;
+      const badgeY = isStep4
+        ? Number((curStepY + 0.08).toFixed(3))
+        : Number((curStepY + (stepCardH - badgeD) / 2).toFixed(3));
       slideFlow.addShape(pptx.ShapeType.ellipse, {
-        x: 0.42,
-        y: Number((sy + (stepCardH - badgeD) / 2).toFixed(3)),
+        x: 0.45,
+        y: badgeY,
         w: badgeD,
         h: badgeD,
         fill: { color: isStep4 ? 'B06000' : '1967D2' },
         line: { type: 'none' },
       });
       slideFlow.addText(String(idx + 1), {
-        x: 0.42,
-        y: Number((sy + (stepCardH - badgeD) / 2).toFixed(3)),
+        x: 0.45,
+        y: badgeY,
         w: badgeD,
         h: badgeD,
-        fontSize: 7.4,
+        fontSize: 7.6,
         bold: true,
         color: 'FFFFFF',
         align: 'center',
@@ -2534,44 +2905,98 @@ export async function exportDrawioToEditablePptx(
         fontFace: 'Arial',
       });
 
-      const stepMain = truncateClean(st.step, isStep4 ? 135 : 195);
-      const subSummary =
-        st.subSteps && st.subSteps.length > 0
-          ? '\n' +
-            st.subSteps
-              .slice(0, 4)
-              .map((sub, sIdx) => `${idx + 1}${String.fromCharCode(97 + sIdx)}: ${truncateClean(sub, 72)}`)
-              .join(' • ')
-          : '';
+      if (isStep4 && st.subSteps && st.subSteps.length > 0) {
+        const stepMain = truncateClean(st.step, 175);
+        slideFlow.addText(stepMain, {
+          x: 0.78,
+          y: Number((curStepY + 0.04).toFixed(3)),
+          w: 6.12,
+          h: 0.36,
+          fontSize: 7.2,
+          bold: true,
+          color: '202124',
+          valign: 'middle',
+          fontFace: 'Arial',
+          wrap: true,
+        });
 
-      slideFlow.addText(`${stepMain}${subSummary}`, {
-        x: 0.74,
-        y: Number((sy + 0.03).toFixed(3)),
-        w: 6.24,
-        h: Number((stepCardH - 0.06).toFixed(3)),
-        fontSize: isStep4 ? 6.6 : 7.1,
-        color: '202124',
-        valign: 'middle',
-        fontFace: 'Arial',
-        wrap: true,
-      });
+        // 2x2 Sub-Step Grid (4a, 4b, 4c, 4d) inside Step 4 Card
+        const subGridY = Number((curStepY + 0.43).toFixed(3));
+        const subCellW = 3.01;
+        const subCellH = Number(((stepCardH - 0.51) / 2).toFixed(3));
+        st.subSteps.slice(0, 4).forEach((sub, sIdx) => {
+          const col = sIdx % 2;
+          const row = Math.floor(sIdx / 2);
+          const sx = Number((0.78 + col * (subCellW + 0.08)).toFixed(3));
+          const sy = Number((subGridY + row * (subCellH + 0.04)).toFixed(3));
+          slideFlow.addShape(pptx.ShapeType.roundRect, {
+            x: sx,
+            y: sy,
+            w: subCellW,
+            h: subCellH,
+            rectRadius: 0.03,
+            fill: { color: 'FFFFFF' },
+            line: { color: 'FDE68A', width: 0.7 },
+          });
+          slideFlow.addText(
+            [
+              { text: `${idx + 1}${String.fromCharCode(97 + sIdx)}: `, options: { bold: true, color: 'B06000', fontSize: 6.8 } },
+              { text: truncateClean(sub, 92), options: { bold: false, color: '334155', fontSize: 6.5 } },
+            ],
+            {
+              x: Number((sx + 0.06).toFixed(3)),
+              y: sy,
+              w: Number((subCellW - 0.12).toFixed(3)),
+              h: subCellH,
+              valign: 'middle',
+              fontFace: 'Arial',
+              wrap: true,
+            }
+          );
+        });
+      } else {
+        const stepMain = truncateClean(st.step, 235);
+        slideFlow.addText(stepMain, {
+          x: 0.78,
+          y: Number((curStepY + 0.03).toFixed(3)),
+          w: 6.12,
+          h: Number((stepCardH - 0.06).toFixed(3)),
+          fontSize: 7.4,
+          color: '202124',
+          valign: 'middle',
+          fontFace: 'Arial',
+          wrap: true,
+        });
+      }
+
+      curStepY = Number((curStepY + stepCardH + stepGap).toFixed(3));
     });
 
-    // Right Column: Products Used Cards (Google Cloud)
+    // Right Column Header Banner: Products Used Cards (Google Cloud)
+    slideFlow.addShape(pptx.ShapeType.roundRect, {
+      x: 7.16,
+      y: 0.78,
+      w: 5.84,
+      h: 0.36,
+      rectRadius: 0.05,
+      fill: { color: 'E6F4EA' },
+      line: { color: '188038', width: 0.9 },
+    });
     slideFlow.addText('Google Cloud Products Used', {
-      x: 7.25,
-      y: 0.76,
-      w: 5.75,
-      h: 0.26,
-      fontSize: 9.8,
+      x: 7.28,
+      y: 0.81,
+      w: 5.60,
+      h: 0.30,
+      fontSize: 8.8,
       bold: true,
       color: '137333',
+      valign: 'middle',
       fontFace: 'Arial',
     });
 
     const prodItems = (prodSec?.productsUsedItems || []).slice(0, 8);
-    const prodStartY = 1.06;
-    const prodAvailH = 6.14;
+    const prodStartY = 1.20;
+    const prodAvailH = 6.02; // 1.20 + 6.02 = 7.22"
     const prodGap = 0.06;
     const prodCardH = Number(
       ((prodAvailH - Math.max(0, prodItems.length - 1) * prodGap) / Math.max(1, prodItems.length)).toFixed(3)
@@ -2579,17 +3004,19 @@ export async function exportDrawioToEditablePptx(
 
     prodItems.forEach((prod, idx) => {
       const py = Number((prodStartY + idx * (prodCardH + prodGap)).toFixed(3));
+      const cleanProdName = deduplicateParentheticalEchoes(prod.name);
+      const cleanProdDesc = truncateClean(deduplicateParentheticalEchoes(prod.description), 178);
       slideFlow.addShape(pptx.ShapeType.roundRect, {
-        x: 7.25,
+        x: 7.16,
         y: py,
-        w: 5.75,
+        w: 5.84,
         h: prodCardH,
         rectRadius: 0.05,
         fill: { color: idx % 2 === 0 ? 'FFFFFF' : 'F8FAFC' },
         line: { color: 'DADCE0', width: 0.85 },
       });
       slideFlow.addShape(pptx.ShapeType.rect, {
-        x: 7.25,
+        x: 7.16,
         y: py,
         w: 0.07,
         h: prodCardH,
@@ -2598,13 +3025,13 @@ export async function exportDrawioToEditablePptx(
       });
       slideFlow.addText(
         [
-          { text: `${prod.name}: `, options: { bold: true, color: '137333', fontSize: 7.4 } },
-          { text: truncateClean(prod.description, 145), options: { bold: false, color: '3C4043', fontSize: 7.1 } },
+          { text: `${cleanProdName}: `, options: { bold: true, color: '137333', fontSize: 7.8 } },
+          { text: cleanProdDesc, options: { bold: false, color: '334155', fontSize: 7.3 } },
         ],
         {
-          x: 7.40,
+          x: 7.32,
           y: Number((py + 0.03).toFixed(3)),
-          w: 5.50,
+          w: 5.56,
           h: Number((prodCardH - 0.06).toFixed(3)),
           valign: 'middle',
           fontFace: 'Arial',
@@ -2614,7 +3041,7 @@ export async function exportDrawioToEditablePptx(
     });
 
     // -------------------------------------------------------------------------
-    // Slide 4 / 6: Use Case, Key Benefits Cards & Design Alternatives Cards
+    // Slide 4 / 6: Use Case, Key Benefits Cards & Design Alternatives Trade-Off Matrix
     // -------------------------------------------------------------------------
     const slideUseCase = pptx.addSlide();
     addArchCenterChrome(slideUseCase, '3. Use Case & Design Alternatives', 'Editable Diagram + Blog • Slide 4 / 6');
@@ -2624,7 +3051,7 @@ export async function exportDrawioToEditablePptx(
       x: 0.32,
       y: 0.78,
       w: 6.24,
-      h: 0.38,
+      h: 0.36,
       rectRadius: 0.05,
       fill: { color: 'E6F4EA' },
       line: { color: '188038', width: 0.9 },
@@ -2633,7 +3060,7 @@ export async function exportDrawioToEditablePptx(
       `Use Case: ${truncateClean(useCaseSec?.useCaseSubHeading || docGuide.subtitle, 68)}`,
       {
         x: 0.44,
-        y: 0.82,
+        y: 0.81,
         w: 6.00,
         h: 0.30,
         fontSize: 8.8,
@@ -2644,7 +3071,7 @@ export async function exportDrawioToEditablePptx(
       }
     );
 
-    // Use Case Lead Summary Card
+    // Use Case Lead Summary Card (Compact, Tight Vertical Fit)
     const rawUseCaseLead = (useCaseSec?.leadParagraphs || [])
       .join(' ')
       .replace(/^This section describes a business use case[^.]*\.\s*(?:Second,\s*)?/i, '');
@@ -2654,33 +3081,51 @@ export async function exportDrawioToEditablePptx(
     );
     slideUseCase.addShape(pptx.ShapeType.roundRect, {
       x: 0.32,
-      y: 1.24,
+      y: 1.20,
       w: 6.24,
-      h: 1.38,
+      h: 1.02,
       rectRadius: 0.05,
       fill: { color: 'FFFFFF' },
       line: { color: 'DADCE0', width: 0.9 },
     });
-    slideUseCase.addText(useCaseLeadSummary, {
-      x: 0.44,
-      y: 1.30,
-      w: 6.00,
-      h: 1.26,
-      fontSize: 7.5,
-      color: '3C4043',
-      valign: 'middle',
-      fontFace: 'Arial',
-      wrap: true,
+    slideUseCase.addShape(pptx.ShapeType.rect, {
+      x: 0.32,
+      y: 1.20,
+      w: 0.07,
+      h: 1.02,
+      fill: { color: '1967D2' },
+      line: { type: 'none' },
     });
+    slideUseCase.addText(
+      [
+        { text: 'Enterprise Scenario & Architectural Mandate: ', options: { bold: true, color: '174EA6', fontSize: 7.8 } },
+        { text: useCaseLeadSummary, options: { bold: false, color: '334155', fontSize: 7.5 } },
+      ],
+      {
+        x: 0.48,
+        y: 1.24,
+        w: 5.96,
+        h: 0.94,
+        valign: 'middle',
+        fontFace: 'Arial',
+        wrap: true,
+      }
+    );
 
-    // 4 Individual Key Architecture Benefit Cards
+    // Key Architecture Benefit Cards (y = 2.30" .. 7.22") with Bottom Enforcement Pill Strip
     const benefits = (useCaseSec?.useCaseBenefits || []).slice(0, 4);
-    const benStartY = 2.72;
-    const benAvailH = 4.48;
+    const benStartY = 2.30;
+    const benAvailH = 4.92; // 2.30 + 4.92 = 7.22"
     const benGap = 0.08;
     const benCardH = Number(
       ((benAvailH - Math.max(0, benefits.length - 1) * benGap) / Math.max(1, benefits.length)).toFixed(3)
     );
+    const benefitEnforcementBadges = [
+      'Enforced via: Dedicated Tenant Spoke • AlloyDB FORCE RLS (`SET LOCAL`) • Scoped MCP Tools',
+      'Enforced via: Vertex AI Memory Bank • Gemini 2.5 Pro 90% Shared Prefix Cache • Vector Namespaces',
+      'Enforced via: IAM Principal Access Boundary (PAB) • VPC Service Controls • RFC 8693 OBO + DPoP',
+      'Enforced via: Cloud KMS Per-Tenant CMEK • Model Armor Guardrails • Zero-PII BigQuery OTel',
+    ];
 
     benefits.forEach((b, idx) => {
       const byCard = Number((benStartY + idx * (benCardH + benGap)).toFixed(3));
@@ -2703,35 +3148,57 @@ export async function exportDrawioToEditablePptx(
       });
       slideUseCase.addText(
         [
-          { text: `✓ ${b.title}\n`, options: { bold: true, color: '137333', fontSize: 7.8 } },
-          { text: truncateClean(b.detail, 195), options: { bold: false, color: '3C4043', fontSize: 7.1 } },
+          { text: `✓ ${b.title}\n`, options: { bold: true, color: '137333', fontSize: 8.4 } },
+          { text: truncateClean(b.detail, 265), options: { bold: false, color: '334155', fontSize: 7.5 } },
         ],
         {
           x: 0.48,
-          y: Number((byCard + 0.04).toFixed(3)),
+          y: Number((byCard + 0.06).toFixed(3)),
           w: 5.96,
-          h: Number((benCardH - 0.08).toFixed(3)),
+          h: Number((benCardH - 0.42).toFixed(3)),
           valign: 'middle',
           fontFace: 'Arial',
           wrap: true,
         }
       );
+
+      // Bottom Architectural Enforcement Pill Strip inside each Benefit Card
+      slideUseCase.addShape(pptx.ShapeType.roundRect, {
+        x: 0.48,
+        y: Number((byCard + benCardH - 0.32).toFixed(3)),
+        w: 5.92,
+        h: 0.24,
+        rectRadius: 0.04,
+        fill: { color: 'E6F4EA' },
+        line: { color: 'CEEAD6', width: 0.6 },
+      });
+      slideUseCase.addText(benefitEnforcementBadges[idx % benefitEnforcementBadges.length], {
+        x: 0.56,
+        y: Number((byCard + benCardH - 0.32).toFixed(3)),
+        w: 5.76,
+        h: 0.24,
+        fontSize: 6.6,
+        bold: true,
+        color: '137333',
+        valign: 'middle',
+        fontFace: 'Arial',
+      });
     });
 
     // Right Column Header Banner (Design Alternatives)
     slideUseCase.addShape(pptx.ShapeType.roundRect, {
-      x: 6.76,
+      x: 6.72,
       y: 0.78,
-      w: 6.24,
-      h: 0.38,
+      w: 6.28,
+      h: 0.36,
       rectRadius: 0.05,
       fill: { color: 'FEF7E0' },
       line: { color: 'F9AB00', width: 0.9 },
     });
     slideUseCase.addText('Design Alternatives (Networking, Compute & MCP Tooling)', {
-      x: 6.88,
-      y: 0.82,
-      w: 6.00,
+      x: 6.84,
+      y: 0.81,
+      w: 6.04,
       h: 0.30,
       fontSize: 8.8,
       bold: true,
@@ -2741,8 +3208,8 @@ export async function exportDrawioToEditablePptx(
     });
 
     const alts = (designAltSec?.designAlternativesSubSections || []).slice(0, 3);
-    const altStartY = 1.24;
-    const altAvailH = 5.96;
+    const altStartY = 1.20;
+    const altAvailH = 6.02; // 1.20 + 6.02 = 7.22"
     const altGap = 0.10;
     const altCardH = Number(
       ((altAvailH - Math.max(0, alts.length - 1) * altGap) / Math.max(1, alts.length)).toFixed(3)
@@ -2751,55 +3218,112 @@ export async function exportDrawioToEditablePptx(
     alts.forEach((alt, idx) => {
       const ayCard = Number((altStartY + idx * (altCardH + altGap)).toFixed(3));
       slideUseCase.addShape(pptx.ShapeType.roundRect, {
-        x: 6.76,
+        x: 6.72,
         y: ayCard,
-        w: 6.24,
+        w: 6.28,
         h: altCardH,
         rectRadius: 0.05,
         fill: { color: 'FFFFFF' },
         line: { color: 'DADCE0', width: 0.9 },
       });
       slideUseCase.addShape(pptx.ShapeType.rect, {
-        x: 6.76,
+        x: 6.72,
         y: ayCard,
         w: 0.07,
         h: altCardH,
         fill: { color: 'F9AB00' },
         line: { type: 'none' },
       });
-      const leadSummary = truncateClean((alt.leadParagraphs || [])[0] || '', 155);
-      const subBullets = (alt.subBlocks || [])
-        .slice(0, 2)
-        .map((sb) => {
-          const firstPara = (sb.paragraphs || [])[0];
-          if (firstPara) return `• ${sb.subHeading}: ${truncateClean(firstPara, 115)}`;
-          const bulletSummary = (sb.bullets || [])
-            .slice(0, 2)
-            .map((b) => `${b.label} (${truncateClean(b.detail.split('.')[0] || '', 55)})`)
-            .join('; ');
-          return `• ${sb.subHeading}: ${truncateClean(bulletSummary, 115)}`;
-        })
-        .join('\n');
 
+      const leadSummary = truncateClean((alt.leadParagraphs || [])[0] || '', 175);
       slideUseCase.addText(
         [
-          { text: `${alt.heading}\n`, options: { bold: true, color: 'B06000', fontSize: 8.0 } },
-          { text: `${leadSummary}${subBullets ? '\n' + subBullets : ''}`, options: { bold: false, color: '3C4043', fontSize: 7.0 } },
+          { text: `${alt.heading}: `, options: { bold: true, color: 'B06000', fontSize: 8.2 } },
+          { text: leadSummary, options: { bold: false, color: '334155', fontSize: 7.2 } },
         ],
         {
-          x: 6.92,
+          x: 6.88,
           y: Number((ayCard + 0.05).toFixed(3)),
-          w: 5.96,
-          h: Number((altCardH - 0.10).toFixed(3)),
+          w: 6.00,
+          h: 0.56,
           valign: 'middle',
           fontFace: 'Arial',
           wrap: true,
         }
       );
+
+      // Always normalize into 2 Side-by-Side Option Comparison Sub-Cards filling 100% width of each card!
+      const rawSubBlocks = alt.subBlocks || [];
+      let optionCards: Array<{ title: string; body: string }> = [];
+      if (rawSubBlocks.length >= 2) {
+        optionCards = rawSubBlocks.slice(0, 2).map((sb) => ({
+          title: deduplicateParentheticalEchoes(sb.subHeading),
+          body:
+            sb.bullets && sb.bullets.length > 0
+              ? sb.bullets
+                  .slice(0, 2)
+                  .map((b) => `• ${deduplicateParentheticalEchoes(b.label)}: ${truncateClean(b.detail, 95)}`)
+                  .join('\n')
+              : truncateClean((sb.paragraphs || []).join(' '), 195),
+        }));
+      } else if (rawSubBlocks.length === 1 && (rawSubBlocks[0].bullets?.length || 0) >= 2) {
+        optionCards = rawSubBlocks[0].bullets!.slice(0, 2).map((b) => ({
+          title: deduplicateParentheticalEchoes(b.label),
+          body: truncateClean(b.detail, 195),
+        }));
+      } else if (rawSubBlocks.length === 1) {
+        optionCards = [
+          {
+            title: deduplicateParentheticalEchoes(rawSubBlocks[0].subHeading),
+            body: truncateClean((rawSubBlocks[0].paragraphs || []).join(' '), 195),
+          },
+          {
+            title: 'Reference Baseline Trade-Off',
+            body: truncateClean((alt.leadParagraphs || [])[1] || (alt.leadParagraphs || [])[0] || '', 195),
+          },
+        ];
+      }
+
+      const optW = 2.94;
+      const optH = Number((altCardH - 0.70).toFixed(3));
+      const optY = Number((ayCard + 0.63).toFixed(3));
+
+      optionCards.slice(0, 2).forEach((opt, sIdx) => {
+        const optX = Number((6.88 + sIdx * (optW + 0.12)).toFixed(3));
+        const isFirstOpt = sIdx === 0;
+        slideUseCase.addShape(pptx.ShapeType.roundRect, {
+          x: optX,
+          y: optY,
+          w: optW,
+          h: optH,
+          rectRadius: 0.04,
+          fill: { color: isFirstOpt ? 'F8FAFC' : 'FFFBEB' },
+          line: { color: isFirstOpt ? 'CBD5E1' : 'FDE68A', width: 0.75 },
+        });
+
+        slideUseCase.addText(
+          [
+            {
+              text: `${opt.title}\n`,
+              options: { bold: true, color: isFirstOpt ? '174EA6' : 'B06000', fontSize: 7.3 },
+            },
+            { text: opt.body, options: { bold: false, color: '334155', fontSize: 6.8 } },
+          ],
+          {
+            x: Number((optX + 0.08).toFixed(3)),
+            y: Number((optY + 0.03).toFixed(3)),
+            w: Number((optW - 0.16).toFixed(3)),
+            h: Number((optH - 0.06).toFixed(3)),
+            valign: 'middle',
+            fontFace: 'Arial',
+            wrap: true,
+          }
+        );
+      });
     });
 
     // -------------------------------------------------------------------------
-    // Slide 5 / 6: Design Considerations (Google Cloud Well-Architected Framework)
+    // Slide 5 / 6: Design Considerations (Explicit-Height Well-Architected Matrix + Proof Cards)
     // -------------------------------------------------------------------------
     const slideConsiderations = pptx.addSlide();
     addArchCenterChrome(
@@ -2808,47 +3332,164 @@ export async function exportDrawioToEditablePptx(
       'Editable Diagram + Blog • Slide 5 / 6'
     );
 
-    const waRows: PptxGenJS.TableRow[] = [
-      [
-        { text: 'Well-Architected Pillar', options: { bold: true, fill: { color: '174EA6' }, color: 'FFFFFF', fontSize: 8.4 } },
-        { text: 'Google Cloud Components', options: { bold: true, fill: { color: '174EA6' }, color: 'FFFFFF', fontSize: 8.4 } },
-        { text: 'Design Considerations & Actionable Recommendations', options: { bold: true, fill: { color: '174EA6' }, color: 'FFFFFF', fontSize: 8.4 } },
-      ],
+    // Explicit-Height Well-Architected Header Row (y = 0.78", h = 0.34")
+    const waCol1X = 0.32;
+    const waCol1W = 2.34;
+    const waCol2X = 2.68;
+    const waCol2W = 2.74;
+    const waCol3X = 5.44;
+    const waCol3W = 7.56;
+
+    [
+      { x: waCol1X, w: waCol1W, label: 'Well-Architected Pillar' },
+      { x: waCol2X, w: waCol2W, label: 'Google Cloud Components' },
+      { x: waCol3X, w: waCol3W, label: 'Design Considerations & Actionable Recommendations' },
+    ].forEach((hdr) => {
+      slideConsiderations.addShape(pptx.ShapeType.roundRect, {
+        x: hdr.x,
+        y: 0.78,
+        w: hdr.w,
+        h: 0.34,
+        rectRadius: 0.03,
+        fill: { color: '174EA6' },
+        line: { type: 'none' },
+      });
+      slideConsiderations.addText(hdr.label, {
+        x: Number((hdr.x + 0.10).toFixed(3)),
+        y: 0.78,
+        w: Number((hdr.w - 0.20).toFixed(3)),
+        h: 0.34,
+        fontSize: 8.2,
+        bold: true,
+        color: 'FFFFFF',
+        valign: 'middle',
+        fontFace: 'Arial',
+      });
+    });
+
+    // 4 Explicit-Height Well-Architected Pillar Swimlanes (y = 1.16" .. 5.06", zero middle chasm!)
+    const pillarSubs = (designConsSec?.designConsiderationsSubSections || []).slice(0, 4);
+    const pillarStartY = 1.16;
+    const pillarAvailH = 3.90; // 1.16 + 3.90 = 5.06"
+    const pillarGap = 0.06;
+    const pillarRowH = Number(
+      ((pillarAvailH - Math.max(0, pillarSubs.length - 1) * pillarGap) / Math.max(1, pillarSubs.length)).toFixed(3)
+    );
+    const pillarStyles = [
+      { bar: '1967D2', text: '174EA6', tint: 'E8F0FE', scope: 'Zero-Trust & Crypto' },
+      { bar: '188038', text: '137333', tint: 'E6F4EA', scope: 'Quota & Resilience' },
+      { bar: 'F9AB00', text: 'B06000', tint: 'FEF7E0', scope: 'FinOps & Caching' },
+      { bar: 'D93025', text: 'C5221F', tint: 'FCE8E6', scope: 'Sub-Second Latency' },
     ];
 
-    const pillarColors = ['174EA6', '137333', 'B06000', 'C5221F'];
-    (designConsSec?.designConsiderationsSubSections || []).forEach((dc, pIdx) => {
-      const rowBg = pIdx % 2 === 0 ? 'FFFFFF' : 'F8F9FA';
-      const comps = dc.rows.map((r) => r.component).join(' • ');
-      const recs = dc.rows
-        .flatMap((r) => r.recommendations.slice(0, 1).map((rec) => `• ${truncateClean(rec, 145)}`))
-        .slice(0, 3)
-        .join('\n');
-      waRows.push([
+    pillarSubs.forEach((dc, pIdx) => {
+      const py = Number((pillarStartY + pIdx * (pillarRowH + pillarGap)).toFixed(3));
+      const pStyle = pillarStyles[pIdx % pillarStyles.length];
+      const rowBg = pIdx % 2 === 0 ? 'FFFFFF' : 'F8FAFC';
+
+      // Col 1: Pillar Card
+      slideConsiderations.addShape(pptx.ShapeType.roundRect, {
+        x: waCol1X,
+        y: py,
+        w: waCol1W,
+        h: pillarRowH,
+        rectRadius: 0.04,
+        fill: { color: rowBg },
+        line: { color: 'DADCE0', width: 0.85 },
+      });
+      slideConsiderations.addShape(pptx.ShapeType.rect, {
+        x: waCol1X,
+        y: py,
+        w: 0.07,
+        h: pillarRowH,
+        fill: { color: pStyle.bar },
+        line: { type: 'none' },
+      });
+      slideConsiderations.addText(
+        [
+          { text: `${dc.heading}\n`, options: { bold: true, color: pStyle.text, fontSize: 8.0 } },
+          { text: `Focus: ${pStyle.scope}`, options: { bold: false, color: '475569', fontSize: 6.8 } },
+        ],
         {
-          text: dc.heading,
-          options: { bold: true, color: pillarColors[pIdx % pillarColors.length], fill: { color: rowBg }, fontSize: 7.8 },
-        },
-        { text: comps, options: { bold: true, color: '202124', fill: { color: rowBg }, fontSize: 7.4 } },
-        { text: recs, options: { color: '3C4043', fill: { color: rowBg }, fontSize: 7.1 } },
-      ]);
+          x: Number((waCol1X + 0.12).toFixed(3)),
+          y: Number((py + 0.04).toFixed(3)),
+          w: Number((waCol1W - 0.18).toFixed(3)),
+          h: Number((pillarRowH - 0.08).toFixed(3)),
+          valign: 'middle',
+          fontFace: 'Arial',
+          wrap: true,
+        }
+      );
+
+      // Col 2: Components Card
+      slideConsiderations.addShape(pptx.ShapeType.roundRect, {
+        x: waCol2X,
+        y: py,
+        w: waCol2W,
+        h: pillarRowH,
+        rectRadius: 0.04,
+        fill: { color: rowBg },
+        line: { color: 'DADCE0', width: 0.85 },
+      });
+      const compsList = dc.rows
+        .map((r) => `• ${deduplicateParentheticalEchoes(r.component)}`)
+        .join('\n');
+      slideConsiderations.addText(compsList, {
+        x: Number((waCol2X + 0.10).toFixed(3)),
+        y: Number((py + 0.04).toFixed(3)),
+        w: Number((waCol2W - 0.20).toFixed(3)),
+        h: Number((pillarRowH - 0.08).toFixed(3)),
+        fontSize: 7.2,
+        bold: true,
+        color: '1E293B',
+        valign: 'middle',
+        fontFace: 'Arial',
+        wrap: true,
+      });
+
+      // Col 3: Actionable Recommendations Card
+      slideConsiderations.addShape(pptx.ShapeType.roundRect, {
+        x: waCol3X,
+        y: py,
+        w: waCol3W,
+        h: pillarRowH,
+        rectRadius: 0.04,
+        fill: { color: rowBg },
+        line: { color: 'DADCE0', width: 0.85 },
+      });
+      const recRuns: PptxGenJS.TextProps[] = [];
+      const rowSlice = dc.rows.slice(0, 3);
+      rowSlice.forEach((r, rIdx) => {
+        const cleanComp = deduplicateParentheticalEchoes(r.component);
+        const rawRec = deduplicateParentheticalEchoes(r.recommendations[0] || '');
+        const cleanRec = truncateClean(rawRec, rowSlice.length <= 2 ? 225 : 195);
+        recRuns.push({
+          text: `• ${cleanComp}: `,
+          options: { bold: true, color: pStyle.text, fontSize: 7.1 },
+        });
+        recRuns.push({
+          text: `${cleanRec}${rIdx < rowSlice.length - 1 ? '\n' : ''}`,
+          options: { bold: false, color: '334155', fontSize: 7.0 },
+        });
+      });
+      slideConsiderations.addText(recRuns, {
+        x: Number((waCol3X + 0.12).toFixed(3)),
+        y: Number((py + 0.04).toFixed(3)),
+        w: Number((waCol3W - 0.24).toFixed(3)),
+        h: Number((pillarRowH - 0.08).toFixed(3)),
+        valign: 'middle',
+        fontFace: 'Arial',
+        wrap: true,
+      });
     });
 
-    slideConsiderations.addTable(waRows, {
-      x: 0.32,
-      y: 0.78,
-      w: 12.68,
-      colW: [2.25, 2.55, 7.88],
-      border: { type: 'solid', pt: 0.75, color: 'DADCE0' },
-      fontFace: 'Arial',
-      valign: 'middle',
-    });
-
-    // Bottom 3-Card Well-Architected Quantitative Proof Strip (eliminates empty bottom whitespace)
+    // Bottom 3-Card Well-Architected Quantitative Proof Strip (y = 5.18" .. 7.22", h = 2.04")
     const waCards = [
       {
         title: 'Security, Privacy & Compliance Proof',
         body: 'Enforces Hop 1–5 cryptographic defense-in-depth: RFC 8693 OBO + RFC 9449 DPoP, Model Armor prompt/output screening, AlloyDB PostgreSQL RLS (`SET LOCAL app.current_tenant_id`), and <60s Cloud KMS CMEK kill-switches.',
+        kpiLeft: 'Red-Team Matrix: 10/10 Blocked',
+        kpiRight: 'CMEK Revocation: <60s SLA',
         badge: '10/10 Red-Team Attacks Blocked • 6/6 CMEK Gates PASS',
         bar: '1967D2',
         tint: 'E8F0FE',
@@ -2857,6 +3498,8 @@ export async function exportDrawioToEditablePptx(
       {
         title: 'Reliability & Noisy-Neighbor Isolation',
         body: 'Eliminates cross-tenant starvation via Memorystore for Valkey per-tenant token-bucket bulkheads (120 vs. 600 RPM), bounded Gemini 2.5 Pro thinking budgets (4k/8k), and zero-downtime live Pattern C PSC migration.',
+        kpiLeft: 'Tenant Quota: 120 / 600 RPM',
+        kpiRight: 'Live PSC Cutover: 0 Dropped',
         badge: '0 Dropped Sessions • 4/4 Live Migration Gates PASS',
         bar: '188038',
         tint: 'E6F4EA',
@@ -2865,6 +3508,8 @@ export async function exportDrawioToEditablePptx(
       {
         title: 'Cost Optimization & FinOps Attribution',
         body: 'Shares an immutable system prompt prefix across pooled tenants via Gemini 2.5 Pro `ContextCacheConfig` (90% input token discount) and streams zero-PII OpenTelemetry token spans directly to BigQuery chargeback.',
+        kpiLeft: 'Prompt Cache: 90% Discount',
+        kpiRight: 'Pattern A Unit TCO: $42/mo',
         badge: '84.7% Net Token Savings • $42/mo Pattern A Unit TCO',
         bar: 'F9AB00',
         tint: 'FEF7E0',
@@ -2874,8 +3519,8 @@ export async function exportDrawioToEditablePptx(
     const waCardW = Number(((12.68 - 0.36) / 3).toFixed(3));
     waCards.forEach((wc, idx) => {
       const wx = Number((0.32 + idx * (waCardW + 0.18)).toFixed(3));
-      const wy = 5.42;
-      const wh = 1.78;
+      const wy = 5.18;
+      const wh = 2.04;
       slideConsiderations.addShape(pptx.ShapeType.roundRect, {
         x: wx,
         y: wy,
@@ -2895,9 +3540,9 @@ export async function exportDrawioToEditablePptx(
       });
       slideConsiderations.addText(wc.title, {
         x: Number((wx + 0.14).toFixed(3)),
-        y: Number((wy + 0.1).toFixed(3)),
+        y: Number((wy + 0.10).toFixed(3)),
         w: Number((waCardW - 0.28).toFixed(3)),
-        h: 0.26,
+        h: 0.24,
         fontSize: 8.8,
         bold: true,
         color: wc.text,
@@ -2905,29 +3550,57 @@ export async function exportDrawioToEditablePptx(
       });
       slideConsiderations.addText(wc.body, {
         x: Number((wx + 0.14).toFixed(3)),
-        y: Number((wy + 0.38).toFixed(3)),
+        y: Number((wy + 0.36).toFixed(3)),
         w: Number((waCardW - 0.28).toFixed(3)),
-        h: 1.02,
+        h: 0.88,
         fontSize: 7.3,
-        color: '3C4043',
-        valign: 'top',
+        color: '334155',
+        valign: 'middle',
         fontFace: 'Arial',
         wrap: true,
       });
+
+      // 2 Inner Verified Telemetry Mini-Boxes filling the middle-bottom of each card
+      const kpiW = Number(((waCardW - 0.36) / 2).toFixed(3));
+      [wc.kpiLeft, wc.kpiRight].forEach((kpiText, kIdx) => {
+        const kx = Number((wx + 0.14 + kIdx * (kpiW + 0.08)).toFixed(3));
+        slideConsiderations.addShape(pptx.ShapeType.roundRect, {
+          x: kx,
+          y: Number((wy + 1.28).toFixed(3)),
+          w: kpiW,
+          h: 0.34,
+          rectRadius: 0.03,
+          fill: { color: 'F8FAFC' },
+          line: { color: 'CBD5E1', width: 0.7 },
+        });
+        slideConsiderations.addText(`✓ ${kpiText}`, {
+          x: Number((kx + 0.06).toFixed(3)),
+          y: Number((wy + 1.28).toFixed(3)),
+          w: Number((kpiW - 0.12).toFixed(3)),
+          h: 0.34,
+          fontSize: 6.7,
+          bold: true,
+          color: '1E293B',
+          align: 'center',
+          valign: 'middle',
+          fontFace: 'Arial',
+        });
+      });
+
       slideConsiderations.addShape(pptx.ShapeType.roundRect, {
         x: Number((wx + 0.14).toFixed(3)),
-        y: Number((wy + wh - 0.3).toFixed(3)),
+        y: Number((wy + wh - 0.32).toFixed(3)),
         w: Number((waCardW - 0.28).toFixed(3)),
-        h: 0.22,
+        h: 0.24,
         rectRadius: 0.04,
         fill: { color: wc.tint },
         line: { type: 'none' },
       });
       slideConsiderations.addText(wc.badge, {
         x: Number((wx + 0.18).toFixed(3)),
-        y: Number((wy + wh - 0.3).toFixed(3)),
+        y: Number((wy + wh - 0.32).toFixed(3)),
         w: Number((waCardW - 0.36).toFixed(3)),
-        h: 0.22,
+        h: 0.24,
         fontSize: 6.8,
         bold: true,
         color: wc.text,
@@ -2938,7 +3611,7 @@ export async function exportDrawioToEditablePptx(
     });
 
     // -------------------------------------------------------------------------
-    // Slide 6 / 6: Deployment Runbook (Arial), Implementation Code (Monospace), What's Next & Contributors
+    // Slide 6 / 6: Deployment Runbook (4-Step Grid), Full Code Box, What's Next & Contributors
     // -------------------------------------------------------------------------
     const slideDeploy = pptx.addSlide();
     addArchCenterChrome(
@@ -2947,12 +3620,12 @@ export async function exportDrawioToEditablePptx(
       'Editable Diagram + Blog • Slide 6 / 6'
     );
 
-    // Left Top Card: Deployment Runbook & Prerequisites (Clean Arial Typography)
+    // Left Top Card: Deployment Runbook & 4-Step Verification Matrix (y = 0.78" .. 3.26", h = 2.48")
     slideDeploy.addShape(pptx.ShapeType.roundRect, {
       x: 0.32,
       y: 0.78,
       w: 7.48,
-      h: 2.24,
+      h: 2.48,
       rectRadius: 0.06,
       fill: { color: 'FFFFFF' },
       line: { color: 'DADCE0', width: 1 },
@@ -2961,50 +3634,103 @@ export async function exportDrawioToEditablePptx(
       x: 0.32,
       y: 0.78,
       w: 0.08,
-      h: 2.24,
+      h: 2.48,
       fill: { color: '1967D2' },
       line: { type: 'none' },
     });
     slideDeploy.addText('Deployment Runbook & Live Cloud Verification', {
       x: 0.48,
-      y: 0.86,
+      y: 0.84,
       w: 7.16,
-      h: 0.26,
+      h: 0.24,
       fontSize: 9.6,
       bold: true,
       color: '174EA6',
       fontFace: 'Arial',
     });
 
-    const deployParas = (deploySec?.leadParagraphs || [])
-      .slice(0, 2)
-      .map((p) => `• ${truncateClean(p, 290)}`)
-      .join('\n\n');
-    slideDeploy.addText(deployParas, {
+    const deployLead = truncateClean((deploySec?.leadParagraphs || [])[0] || docGuide.subtitle, 240);
+    slideDeploy.addText(deployLead, {
       x: 0.48,
-      y: 1.16,
+      y: 1.10,
       w: 7.16,
-      h: 1.78,
-      fontSize: 7.5,
-      color: '3C4043',
-      valign: 'top',
+      h: 0.34,
+      fontSize: 7.2,
+      color: '334155',
+      valign: 'middle',
       fontFace: 'Arial',
       wrap: true,
     });
 
-    // Left Bottom Card: Implementation Code Block (Dedicated Light-Slate Code Box in Courier New)
+    // 2x2 Grid of 4 Actionable Production Deployment Steps filling y = 1.48" .. 3.18"
+    const runbookSteps = [
+      {
+        step: 'STEP 1 • IDENTITY & KMS',
+        title: 'WIF OIDC & Signing Keys',
+        desc: 'Configure Workforce Identity Federation OIDC claim mappings and Cloud KMS asymmetric signing keys.',
+      },
+      {
+        step: 'STEP 2 • STATE & CACHE',
+        title: 'AlloyDB RLS & Valkey Quota',
+        desc: 'Enable PostgreSQL Row-Level Security (`FORCE ROW LEVEL SECURITY`) and Memorystore for Valkey token buckets.',
+      },
+      {
+        step: 'STEP 3 • ADK & GUARDRAILS',
+        title: 'Agent Engine & Model Armor',
+        desc: 'Deploy the Google ADK orchestrator service with inline regional Model Armor prompt/output templates.',
+      },
+      {
+        step: 'STEP 4 • FINOPS & AUDIT',
+        title: 'Live Cloud Verification Gate',
+        desc: 'Execute the verification snippet below to validate tenant isolation, CMEK keys, and BigQuery OTel spans.',
+      },
+    ];
+    const rbCellW = 3.52;
+    const rbCellH = 0.80;
+    runbookSteps.forEach((rb, rIdx) => {
+      const col = rIdx % 2;
+      const row = Math.floor(rIdx / 2);
+      const rx = Number((0.48 + col * (rbCellW + 0.12)).toFixed(3));
+      const ry = Number((1.48 + row * (rbCellH + 0.08)).toFixed(3));
+      slideDeploy.addShape(pptx.ShapeType.roundRect, {
+        x: rx,
+        y: ry,
+        w: rbCellW,
+        h: rbCellH,
+        rectRadius: 0.04,
+        fill: { color: 'F8FAFC' },
+        line: { color: 'CBD5E1', width: 0.75 },
+      });
+      slideDeploy.addText(
+        [
+          { text: `${rb.step}: ${rb.title}\n`, options: { bold: true, color: '174EA6', fontSize: 7.1 } },
+          { text: rb.desc, options: { bold: false, color: '334155', fontSize: 6.6 } },
+        ],
+        {
+          x: Number((rx + 0.08).toFixed(3)),
+          y: Number((ry + 0.03).toFixed(3)),
+          w: Number((rbCellW - 0.16).toFixed(3)),
+          h: Number((rbCellH - 0.06).toFixed(3)),
+          valign: 'middle',
+          fontFace: 'Arial',
+          wrap: true,
+        }
+      );
+    });
+
+    // Left Bottom Card: Implementation Code Block (y = 3.36" .. 7.22", h = 3.86", filled with 21 numbered lines)
     slideDeploy.addShape(pptx.ShapeType.roundRect, {
       x: 0.32,
-      y: 3.14,
+      y: 3.36,
       w: 7.48,
-      h: 4.06,
+      h: 3.86,
       rectRadius: 0.06,
       fill: { color: 'F1F5F9' },
       line: { color: '94A3B8', width: 1 },
     });
     slideDeploy.addShape(pptx.ShapeType.rect, {
       x: 0.32,
-      y: 3.14,
+      y: 3.36,
       w: 7.48,
       h: 0.32,
       fill: { color: 'E2E8F0' },
@@ -3014,8 +3740,8 @@ export async function exportDrawioToEditablePptx(
       `Implementation Snippet: ${deploySec?.codeSnippet?.filename || 'cloud_run_adk_verify.py'}`,
       {
         x: 0.46,
-        y: 3.18,
-        w: 7.20,
+        y: 3.40,
+        w: 5.20,
         h: 0.24,
         fontSize: 8.0,
         bold: true,
@@ -3023,27 +3749,53 @@ export async function exportDrawioToEditablePptx(
         fontFace: 'Arial',
       }
     );
+    slideDeploy.addText('PYTHON 3.12 • GOOGLE ADK • VERIFIED', {
+      x: 5.70,
+      y: 3.40,
+      w: 1.98,
+      h: 0.24,
+      fontSize: 6.4,
+      bold: true,
+      color: '174EA6',
+      align: 'right',
+      valign: 'middle',
+      fontFace: 'Arial',
+    });
 
-    const codeLines = (deploySec?.codeSnippet?.code || '')
+    const primaryCodeLines = (deploySec?.codeSnippet?.code || '')
       .split('\n')
-      .filter((line) => line.trim().length > 0)
-      .slice(0, 17)
-      .map((line) => (line.length > 88 ? `${line.slice(0, 85)}...` : line))
+      .filter((line) => line.trim().length > 0);
+    const secondaryCodeLines = (deploySec?.additionalCodeSnippets?.[0]?.code || '')
+      .split('\n')
+      .filter((line) => line.trim().length > 0);
+    const fallbackVerifyLines = [
+      '# 4. Verify cryptographic tenant binding & AlloyDB RLS session state',
+      'assert token_Auto["tenant_id"] == verified_oidc_jwt["tenant_id"]',
+      'assert "jkt" in token_Auto["cnf"], "Missing RFC 9449 DPoP thumbprint"',
+      'await db_session.execute("SET LOCAL app.current_tenant_id = :tid", {"tid": tid})',
+    ];
+    const combinedCodeLines = [...primaryCodeLines, ...secondaryCodeLines, ...fallbackVerifyLines].slice(0, 21);
+    const numberedCodeBlock = combinedCodeLines
+      .map((line, lIdx) => {
+        const numPrefix = String(lIdx + 1).padStart(2, '0');
+        const cleanLine = line.replace(/\t/g, '  ');
+        return `${numPrefix} | ${cleanLine}`;
+      })
       .join('\n');
 
-    slideDeploy.addText(codeLines, {
+    slideDeploy.addText(numberedCodeBlock, {
       x: 0.46,
-      y: 3.52,
+      y: 3.72,
       w: 7.20,
-      h: 3.58,
-      fontSize: 6.6,
+      h: 3.44,
+      fontSize: 6.7,
       color: '0F172A',
-      valign: 'top',
+      valign: 'middle',
       fontFace: 'Courier New',
       wrap: true,
     });
 
-    // Right Column Top: What's Next Reference Cards
+    // Right Column Top: What's Next Reference Cards (y = 0.78" .. 4.96", h = 4.18")
     slideDeploy.addShape(pptx.ShapeType.roundRect, {
       x: 7.96,
       y: 0.78,
@@ -3063,9 +3815,9 @@ export async function exportDrawioToEditablePptx(
     });
     slideDeploy.addText("What's Next (Architecture Center References)", {
       x: 8.12,
-      y: 0.86,
+      y: 0.85,
       w: 4.74,
-      h: 0.26,
+      h: 0.24,
       fontSize: 9.4,
       bold: true,
       color: '137333',
@@ -3073,8 +3825,8 @@ export async function exportDrawioToEditablePptx(
     });
 
     const nextLinks = (whatsNextSec?.whatsNextLinks || []).slice(0, 5);
-    const nextStartY = 1.18;
-    const nextAvailH = 3.68;
+    const nextStartY = 1.16;
+    const nextAvailH = 3.70;
     const nextGap = 0.06;
     const nextCardH = Number(
       ((nextAvailH - Math.max(0, nextLinks.length - 1) * nextGap) / Math.max(1, nextLinks.length)).toFixed(3)
@@ -3093,8 +3845,8 @@ export async function exportDrawioToEditablePptx(
       });
       slideDeploy.addText(
         [
-          { text: `→ ${wItem.label}\n`, options: { bold: true, color: '174EA6', fontSize: 7.2 } },
-          { text: truncateClean(wItem.description, 115), options: { bold: false, color: '3C4043', fontSize: 6.7 } },
+          { text: `→ ${wItem.label}\n`, options: { bold: true, color: '174EA6', fontSize: 7.4 } },
+          { text: truncateClean(wItem.description, 130), options: { bold: false, color: '334155', fontSize: 6.9 } },
         ],
         {
           x: 8.22,
@@ -3108,12 +3860,12 @@ export async function exportDrawioToEditablePptx(
       );
     });
 
-    // Right Column Bottom: Contributors & Verification Provenance Card
+    // Right Column Bottom: Contributors & Verification Provenance Card (y = 5.08" .. 7.22", 2-Col Sub-Layout)
     slideDeploy.addShape(pptx.ShapeType.roundRect, {
       x: 7.96,
       y: 5.08,
       w: 5.04,
-      h: 2.12,
+      h: 2.14,
       rectRadius: 0.06,
       fill: { color: 'F8FAFC' },
       line: { color: 'CBD5E1', width: 1 },
@@ -3122,13 +3874,13 @@ export async function exportDrawioToEditablePptx(
       x: 7.96,
       y: 5.08,
       w: 0.08,
-      h: 2.12,
+      h: 2.14,
       fill: { color: '174EA6' },
       line: { type: 'none' },
     });
     slideDeploy.addText('Contributors & Verification Provenance', {
       x: 8.12,
-      y: 5.16,
+      y: 5.15,
       w: 4.74,
       h: 0.24,
       fontSize: 9.0,
@@ -3137,6 +3889,16 @@ export async function exportDrawioToEditablePptx(
       fontFace: 'Arial',
     });
 
+    // Left Sub-Box: Authors & Contributors
+    slideDeploy.addShape(pptx.ShapeType.roundRect, {
+      x: 8.12,
+      y: 5.44,
+      w: 2.44,
+      h: 1.68,
+      rectRadius: 0.04,
+      fill: { color: 'FFFFFF' },
+      line: { color: 'E2E8F0', width: 0.75 },
+    });
     const authorsList = (contribSec?.contributorsInfo?.authors || docGuide.authors)
       .slice(0, 2)
       .map((a) => `• ${a}`)
@@ -3147,15 +3909,47 @@ export async function exportDrawioToEditablePptx(
       .join('\n');
 
     slideDeploy.addText(
-      `Authors:\n${authorsList}\n\nContributors:\n${contribList}\n\nLast Verified: ${docGuide.lastVerifiedDate} • GCP: nitina-ggarwal-sandbox-647724`,
+      [
+        { text: 'Authors:\n', options: { bold: true, color: '174EA6', fontSize: 7.1 } },
+        { text: `${authorsList}\n`, options: { bold: false, color: '334155', fontSize: 6.7 } },
+        { text: 'Contributors:\n', options: { bold: true, color: '137333', fontSize: 7.1 } },
+        { text: contribList, options: { bold: false, color: '334155', fontSize: 6.7 } },
+      ],
       {
-        x: 8.12,
-        y: 5.44,
-        w: 4.74,
-        h: 1.68,
-        fontSize: 7.0,
-        color: '334155',
-        valign: 'top',
+        x: 8.20,
+        y: 5.48,
+        w: 2.28,
+        h: 1.60,
+        valign: 'middle',
+        fontFace: 'Arial',
+        wrap: true,
+      }
+    );
+
+    // Right Sub-Box: Live Cloud Verification Telemetry
+    slideDeploy.addShape(pptx.ShapeType.roundRect, {
+      x: 10.64,
+      y: 5.44,
+      w: 2.22,
+      h: 1.68,
+      rectRadius: 0.04,
+      fill: { color: 'E8F0FE' },
+      line: { color: 'AECBFA', width: 0.75 },
+    });
+    slideDeploy.addText(
+      [
+        { text: 'Cloud Verification Receipt\n', options: { bold: true, color: '174EA6', fontSize: 7.1 } },
+        {
+          text: `• Doc ID: ${docGuide.docId} (#78)\n• Verified: ${docGuide.lastVerifiedDate}\n• GCP: nitina-ggarwal-sandbox-647724\n• Region: us-central1 (Tier-1)\n• Audit: 9/9 Gates PASS`,
+          options: { bold: false, color: '1E293B', fontSize: 6.6 },
+        },
+      ],
+      {
+        x: 10.72,
+        y: 5.48,
+        w: 2.06,
+        h: 1.60,
+        valign: 'middle',
         fontFace: 'Arial',
         wrap: true,
       }

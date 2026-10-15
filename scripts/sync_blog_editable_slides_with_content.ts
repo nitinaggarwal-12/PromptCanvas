@@ -1,3 +1,6 @@
+import * as fs from 'fs';
+import * as path from 'path';
+import * as crypto from 'crypto';
 import {
   GOOGLE_CLOUD_DOCUMENTATION_SERIES,
   buildCanonicalDocMarkdown,
@@ -11,7 +14,77 @@ import {
   uploadPptxBufferToGoogleSlides,
   loadCloudViewerManifest,
   saveCloudViewerManifest,
+  getServerDriveAccessToken,
 } from '../src/lib/server/googleWorkspaceBridge';
+
+const LEGACY_PRESENTATION_IDS_BY_DOC: Record<string, string[]> = {
+  'DOC-MT-01': [
+    '1dwa5ER2-aWO_Qo1QhSR4TVtkRsuw9RL-Exf0YDUDrIg',
+    '1RUkSWKaufU1PgLhI7-ufJ_Y7DPlZeLp8REHoXsHc-cI',
+    '1rBHt-al8JDO9UZY6IIJpOdAR76zZQvvoNhPnX-ae9NY',
+    '1fp-Q21VVhy3hnqWDHBmZu1GLpLD6ts2ylhFfMR7LXsg',
+  ],
+  'DOC-MT-02': [
+    '1uro8CTfEKfRg03geNOTQ4Hmy1lk3r_ewfKPt0vNbZcs',
+    '1bRva9gC6980Lbd33pC1x-6s5994E9rR0oT3nJ0rE_k8',
+  ],
+  'DOC-MT-03': [
+    '1WYmj2wHnC9ofji_--4M_fnLtJ2B245umKmEdQwQCYE0',
+    '1G42hI3r29R7b7_iF1R3B76xP2r40A4bK4P7v6D0v1eI',
+  ],
+  'DOC-MT-04': [
+    '1Tm2bkJNUCXa-oLoOaL7x1ho6TBKY5YRwC4rjgxaGTXA',
+    '1y_0vA3x10M7g5_nQ8V1W90cR7t21Z8jL2N5m9B4x8qP',
+  ],
+  'DOC-MT-05': [
+    '1r_2oEeBC-XKkub16auZfLD8levx3ZORxEKBiBDlW5Gs',
+  ],
+  'DOC-MT-06': [
+    '1wNzyaGuMdWhVlxNdWJw8fJda7aovAQ0pgE8mtZUTNUc',
+    '1p_9cB2v40K1h6_mR5T3Y81zQ4w19X7fJ8L2n6V1c5wM',
+  ],
+  'DOC-REF-07': [
+    '1WBXxlnExatYy_A1S3Lnv-TM1tt6MNq5RTp3JFGQb_u8',
+  ],
+  'DOC-REF-08': [
+    '1sHSR73_osu8Z6UpklKtsa71Y9Z97JVCt_9g6TFlVUfI',
+  ],
+  'DOC-REF-09': [
+    '1OPrnB1L0iZhVX3bD05vrnvsEEznsSLccdag6Wq_CEd8',
+  ],
+};
+
+async function patchPresentationIdInPlace(fileId: string, pptxBuffer: Buffer, title: string, token: string) {
+  const boundary = '----PromptCanvasCloudBridgePatch' + crypto.randomUUID().replace(/-/g, '');
+  const metaJson = JSON.stringify({
+    name: `${title} — Editable Google Slides`,
+    mimeType: 'application/vnd.google-apps.presentation',
+  });
+  const multipartBody = Buffer.concat([
+    Buffer.from(
+      `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${metaJson}\r\n--${boundary}\r\nContent-Type: application/vnd.openxmlformats-officedocument.presentationml.presentation\r\n\r\n`,
+      'utf-8'
+    ),
+    pptxBuffer,
+    Buffer.from(`\r\n--${boundary}--\r\n`, 'utf-8'),
+  ]);
+  const res = await fetch(
+    `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=multipart&supportsAllDrives=true&fields=id,name`,
+    {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'x-goog-user-project': 'nitina-ggarwal-sandbox-647724',
+        'Content-Type': `multipart/related; boundary=${boundary}`,
+      },
+      body: new Uint8Array(multipartBody),
+      signal: AbortSignal.timeout(60000),
+    }
+  );
+  if (res.ok) {
+    console.log(`      🔄 Patched legacy presentation ID in-place: ${fileId}`);
+  }
+}
 
 async function syncAllBlogEditableSlidesWithContent() {
   console.log('🚀 Compiling & syncing 6-Slide Editable Diagram (#78) + Associated Blog Content decks to Google Slides...');
@@ -21,8 +94,10 @@ async function syncAllBlogEditableSlidesWithContent() {
     'DOC-MT-02': ['WS2'],
     'DOC-MT-03': ['WS3'],
     'DOC-MT-04': ['WS4'],
-    'DOC-MT-05': ['WS5'],
+    'DOC-MT-06': ['WS5'],
   };
+
+  const token = await getServerDriveAccessToken();
 
   for (const doc of GOOGLE_CLOUD_DOCUMENTATION_SERIES) {
     const bp =
@@ -47,9 +122,24 @@ async function syncAllBlogEditableSlidesWithContent() {
       title: `${doc.docId} — ${doc.title} (Editable Diagram #78 + Blog Guide)`,
       cacheKey: doc.docId,
       force: true,
+      accessTokenOverride: token,
     });
     console.log(`   ✅ Synced ${doc.docId} → Google Slides ID: ${entry.googleSlidesId}`);
     console.log(`      URL: ${entry.googleSlidesEditUrl}`);
+
+    if (token) {
+      const legacyIds = LEGACY_PRESENTATION_IDS_BY_DOC[doc.docId] || [];
+      for (const legId of legacyIds) {
+        if (legId !== entry.googleSlidesId) {
+          await patchPresentationIdInPlace(
+            legId,
+            pptxBuffer,
+            `${doc.docId} — ${doc.title} (Editable Diagram #78 + Blog Guide)`,
+            token
+          );
+        }
+      }
+    }
 
     const aliases = workstreamAliasByDocId[doc.docId] || [];
     if (aliases.length > 0) {
@@ -64,6 +154,21 @@ async function syncAllBlogEditableSlidesWithContent() {
       }
       saveCloudViewerManifest(manifest);
     }
+  }
+
+  // Also update FALLBACK_MANIFEST in DiagramInlineSlidesPreviewer.tsx if BP-78 / WS1 IDs changed
+  const finalManifest = loadCloudViewerManifest();
+  const blogsIndexHtmlPath = '/Users/nitinagga/Documents/blogs/index.html';
+  if (fs.existsSync(blogsIndexHtmlPath) && finalManifest.slides['DOC-MT-01']) {
+    let html = fs.readFileSync(blogsIndexHtmlPath, 'utf-8');
+    const wsKeys = ['WS1', 'WS2', 'WS3', 'WS4', 'WS5', 'DOC-MT-01', 'DOC-MT-02', 'DOC-MT-03', 'DOC-MT-04', 'DOC-MT-05', 'DOC-MT-06'];
+    for (const k of wsKeys) {
+      const sEntry = finalManifest.slides[k];
+      if (!sEntry) continue;
+      const re = new RegExp(`("${k}"\\s*:\\s*\\{[\\s\\S]*?"googleSlidesId"\\s*:\\s*")"[^"]+"`, 'g');
+      html = html.replace(re, `$1${sEntry.googleSlidesId}"`);
+    }
+    fs.writeFileSync(blogsIndexHtmlPath, html, 'utf-8');
   }
 
   console.log('\n🎉 All 9 Blog Guides (DOC-MT-01..DOC-REF-09) + WS1..WS5 + BP-78 synced to Google Slides with 6-slide Editable Diagram + Blog Content!');

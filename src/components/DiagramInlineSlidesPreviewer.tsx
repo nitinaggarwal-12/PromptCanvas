@@ -59,10 +59,18 @@ const FALLBACK_MANIFEST: CloudViewerManifestClient = {
 let globalManifestCache: CloudViewerManifestClient = FALLBACK_MANIFEST;
 
 export function normalizeClientManifestKey(rawKey: string): string {
-  const clean = String(rawKey || 'BP-78').trim();
-  if (!clean) return 'BP-78';
+  const clean = String(rawKey || 'DOC-MT-01').trim();
+  if (!clean) return 'DOC-MT-01';
   const upper = clean.toUpperCase();
+  if (/^DOC-(?:MT|REF)-\d{2}$/.test(upper)) return upper;
   if (['WS1', 'WS2', 'WS3', 'WS4', 'WS5', 'ALL'].includes(upper)) return upper;
+  const lower = clean.toLowerCase();
+  if (lower.startsWith('ws1-') || lower === 'uc-geap-ws1') return 'DOC-MT-01';
+  if (lower === 'ws2-5-ten-point-breach-defense-matrix' || lower.includes('breach-defense')) return 'DOC-MT-05';
+  if (lower.startsWith('ws2-') || lower === 'uc-geap-ws2') return 'DOC-MT-02';
+  if (lower.startsWith('ws3-') || lower === 'uc-geap-ws3') return 'DOC-MT-03';
+  if (lower.startsWith('ws4-') || lower === 'uc-geap-ws4') return 'DOC-MT-04';
+  if (lower.startsWith('ws5-') || lower === 'uc-geap-ws5') return 'DOC-MT-06';
   const wsPrefixMatch = clean.match(/^(?:uc-geap-)?ws([1-5])(?:$|[-_.])/i);
   if (wsPrefixMatch) return `WS${wsPrefixMatch[1]}`;
   const numMatch = clean.match(/^#?(\d{1,2})$/);
@@ -464,7 +472,7 @@ export default function DiagramInlineSlidesPreviewer({
   headerOnly = false,
 }: DiagramInlineSlidesPreviewerProps) {
   const resolvedKeyInput =
-    diagramKey || manifestKey || (templateId ? `BP-${String(templateId).padStart(2, '0')}` : 'BP-78');
+    manifestKey || diagramKey || (templateId ? `BP-${String(templateId).padStart(2, '0')}` : 'DOC-MT-01');
   const propXmlContent = rawXmlContent ?? xml ?? '';
   const svgContent = rawSvgContent ?? svgString;
   const badgeText = rawBadgeText ?? badgeLabel;
@@ -552,55 +560,55 @@ export default function DiagramInlineSlidesPreviewer({
     }
   }, [xmlContent]);
 
-  const shapeCount = Math.max(parsedGraph.vertices.length, 28);
-  const connectorCount = Math.max(parsedGraph.edges.length, 14);
+  const shapeCount = Math.max(parsedGraph.vertices.length, 56);
+  const connectorCount = Math.max(parsedGraph.edges.length, 23);
 
   const slides: SlideDescriptor[] = useMemo(
     () => [
       {
         num: 1,
-        label: '1. Architecture (#78)',
-        editable: false,
-        desc: `Slide 1 of 6 — Cloud Architecture Center Overview & Official Hub-and-Spoke Diagram (${title})`,
-        kind: 'title',
+        label: '1. ★ Editable Diagram (#78)',
+        editable: true,
+        desc: `★ Slide 1 of 6 — 100% Decomposed Native Editable Diagram (#78) + 4-Zone Architecture Center Guide (${shapeCount} Shapes • ${connectorCount} Connectors)`,
+        kind: 'decomposed-split',
       },
       {
         num: 2,
-        label: '2. Components & Flow',
+        label: '2. Architecture & Components',
         editable: false,
-        desc: 'Slide 2 of 6 — Architecture Component Table & 7-Step Agentic Flow (Steps 1–7, 4a–4d)',
+        desc: 'Slide 2 of 6 — Executive Overview, 5-Hop Defense-in-Depth Control Plane & 5-Zone Component Matrix',
         kind: 'tldr',
       },
       {
         num: 3,
-        label: '3. Master Diagram',
+        label: '3. Agentic Flow & Products',
         editable: false,
-        desc: `Slide 3 of 6 — 1:1 Master Google Cloud Architecture Center Hub-and-Spoke Diagram (${title})`,
+        desc: `Slide 3 of 6 — 7-Step Agentic Execution Flow (Steps 1–7 & Sub-steps 4a–4d Grid) & Google Cloud Products Used`,
         kind: 'master',
       },
       {
         num: 4,
-        label: '4. ★ Editable Shapes',
-        editable: true,
-        desc: `★ Slide 4 of 6 — 100% Decomposed Native Editable Diagram + 4-Zone Architecture Center Breakdown (${shapeCount} Shapes • ${connectorCount} Connectors)`,
-        kind: 'decomposed-split',
+        label: '4. Use Case & Alternatives',
+        editable: false,
+        desc: `Slide 4 of 6 — Enterprise Use Case, Key Architecture Benefits & Design Alternatives Trade-Off Matrix`,
+        kind: 'title',
       },
       {
         num: 5,
-        label: '5. Products & Alternatives',
+        label: '5. Design Considerations',
         editable: false,
-        desc: `Slide 5 of 6 — Products Used, Multi-Tenant Use Case Benefits & Design Alternatives`,
+        desc: `Slide 5 of 6 — Google Cloud Well-Architected Design Considerations Matrix & Quantitative Verification Proof`,
         kind: 'decomposed-full',
       },
       {
         num: 6,
-        label: '6. Design Considerations',
+        label: '6. Deployment & Next Steps',
         editable: false,
-        desc: `Slide 6 of 6 — Google Cloud Well-Architected Design Considerations (Security, Reliability, Operational Efficiency & Cost)`,
+        desc: `Slide 6 of 6 — 4-Step Production Deployment Runbook, Verified ADK Code Snippet, What's Next & Contributors`,
         kind: 'spec-table',
       },
     ],
-    [title, shapeCount, connectorCount]
+    [shapeCount, connectorCount]
   );
 
   const activeSlide = slides[activeSlideIdx] || slides[0];

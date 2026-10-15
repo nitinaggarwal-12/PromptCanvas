@@ -138,7 +138,7 @@ You are configured to work on this repository with strict architectural and depl
 * In Node.js: `process.on('SIGTERM', ...)`
 * In Python: `signal.signal(signal.SIGTERM, ...)`
 5. **Quality and Test Gates:**
-* Run local linting, type-checking, and unit tests immediately after modifying code.
+* Run local linting, type-checking, and unit tests (`npx tsx scripts/verify_export_slides_quality_gate.ts && npx tsx scripts/verify_blogs_and_gcp_workstreams.ts`) immediately after modifying code.
 * Fix all errors before presenting the task as complete.
 6. **Deployment Target:**
 * When running deployment commands, strictly target:

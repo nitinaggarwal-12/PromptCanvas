@@ -412,6 +412,8 @@ async function main() {
   assertCondition(
     pptxCompilerCode.includes('resolveDocGuideForSlideDeck') &&
       pptxCompilerCode.includes('const uniformScale = Math.min(availW / effGraphW, availH / effGraphH)') &&
+      pptxCompilerCode.includes('visibleNonTitleVertices') &&
+      pptxCompilerCode.includes('deduplicateParentheticalEchoes') &&
       pptxCompilerCode.includes("node.id === 'hdr_title_box'") &&
       pptxCompilerCode.includes('renderArchitectureCenterDiagramSidebar') &&
       pptxCompilerCode.includes('addImagePreservingAspect') &&
@@ -419,10 +421,13 @@ async function main() {
       pptxCompilerCode.includes('postProcessPptxCompactArrowsBase64') &&
       pptxCompilerCode.includes('findDocSection') &&
       pptxCompilerCode.includes('isSpokeOuterWrapper') &&
+      !pptxCompilerCode.includes('slide2.addTable') &&
+      !pptxCompilerCode.includes('slide5.addTable') &&
       pptxCompilerCode.includes('1. Architecture & Components') &&
       pptxCompilerCode.includes('2. Agentic Flow & Products Used') &&
-      pptxCompilerCode.includes('3. Use Case & Design Alternatives'),
-    'src/lib/export/editablePptxCompiler.ts must compile calibrated 1:1 uniformScale #78 Slide 1 (with right-hand 4-zone Architecture Center sidebar, aspect-preserved wordmark/icons, and zero overlap) + associated blog content (all 8 sections) into Slides 2–6'
+      pptxCompilerCode.includes('3. Use Case & Design Alternatives') &&
+      pptxCompilerCode.includes('Red-Team Matrix: 10/10 Blocked'),
+    'src/lib/export/editablePptxCompiler.ts must compile cohesive 6-slide decks (actualNonTitleMinY Slide 1 top anchor, deduplicateParentheticalEchoes, zero auto-collapsing slide2/slide5.addTable, 5-Zone Component Matrix cards, 4 Well-Architected Pillar Swimlanes + 3 Quantitative Proof Cards, and 2x2 Deployment Runbook steps)'
   );
   const cloudManifestPath = path.join(process.cwd(), 'src/data/cloud_viewer_manifest.json');
   assertCondition(fs.existsSync(cloudManifestPath), 'src/data/cloud_viewer_manifest.json must exist');
@@ -439,7 +444,7 @@ async function main() {
       blogsPageCode.includes('markdownContent={buildCanonicalDocMarkdown(activeDocGuide)}'),
     'src/app/blogs/page.tsx must expose 1-click Google Slides (Editable Diagram + Blog Content) export controls on catalog tiles, reader top utility bar, and inline figures'
   );
-  console.log('  [PASS] Verified Zero Legacy "Zone-by-Zone Walkthrough" Across All 4 Blog Formats + Calibrated 6-Slide Editable Diagram (#78) & Associated Blog Content Google Slides Export.');
+  console.log('  [PASS] Verified Zero Legacy "Zone-by-Zone Walkthrough" Across All 4 Blog Formats + Cohesive 6-Slide Editable Diagram (#78) & Associated Blog Content Google Slides Export.');
 
   console.log('=== ALL BLOGS, WORKSTREAM TOPOLOGIES, REAL GCP CONSOLE & GEMINI ENTERPRISE UI GALLERY & VERIFICATION CHECKS PASSED ===');
 }

@@ -364,35 +364,75 @@ async function verifySixSlideBlogEditableDecks() {
   }
 
   const s1Xml = await zip01.file('ppt/slides/slide1.xml')!.async('string');
+  const s2Xml = await zip01.file('ppt/slides/slide2.xml')!.async('string');
   const s3Xml = await zip01.file('ppt/slides/slide3.xml')!.async('string');
   const s4Xml = await zip01.file('ppt/slides/slide4.xml')!.async('string');
+  const s5Xml = await zip01.file('ppt/slides/slide5.xml')!.async('string');
   const s6Xml = await zip01.file('ppt/slides/slide6.xml')!.async('string');
 
   if (
     !s1Xml.includes('w="sm" len="sm"') ||
     s1Xml.includes('<a:headEnd type="triangle"/>') ||
     !s1Xml.includes('4-ZONE HUB-AND-SPOKE TOPOLOGY KEY') ||
-    !s1Xml.includes('ARCHITECTURE CENTER GUIDE (#78)')
+    !s1Xml.includes('ARCHITECTURE CENTER GUIDE (#78)') ||
+    !s1Xml.includes('CALLOUT STEPS')
   ) {
-    console.error('❌ EXPORT GATE FAILED: Slide 1 XML is missing compact arrowheads (w="sm" len="sm") or 4-Zone Architecture Center Reference Sidebar!');
+    console.error('❌ EXPORT GATE FAILED: Slide 1 XML is missing compact arrowheads (w="sm" len="sm"), 4-Zone Architecture Center Reference Sidebar, or 7-Step Callout strips!');
     process.exit(1);
   }
-  if (!s3Xml.includes('Google Cloud Products Used') || !s3Xml.includes('Vertex AI Agent Engine') || !s3Xml.includes('Model Armor')) {
-    console.error('❌ EXPORT GATE FAILED: Slide 3 XML is missing Google Cloud Products Used cards!');
+  if (
+    s2Xml.includes('<a:tbl>') ||
+    !s2Xml.includes('HOP 1') ||
+    !s2Xml.includes('HOP 5') ||
+    !s2Xml.includes('VPC Service Controls') ||
+    !s2Xml.includes('Principal Access Boundary Policy') ||
+    s2Xml.includes('Routing hub (Hop 1')
+  ) {
+    console.error('❌ EXPORT GATE FAILED: Slide 2 XML must use proportional 5-Zone Component Matrix cards (zero auto-collapsing <a:tbl>), include HOP 1..5 strips, populate Zone 4 VPC-SC/PAB rows, and strip noisy parenthetical echoes!');
     process.exit(1);
   }
-  if (!s4Xml.includes('Use Case:') || !s4Xml.includes('Strict data isolation') || !s4Xml.includes('Design Alternatives') || !s4Xml.includes('Private access deployment')) {
-    console.error('❌ EXPORT GATE FAILED: Slide 4 XML is missing Use Case or Design Alternatives cards!');
+  if (!s3Xml.includes('Google Cloud Products Used') || !s3Xml.includes('Vertex AI Agent Engine') || !s3Xml.includes('Model Armor') || !s3Xml.includes('4a:')) {
+    console.error('❌ EXPORT GATE FAILED: Slide 3 XML is missing Google Cloud Products Used cards or 2x2 Step 4a-4d sub-step grid!');
     process.exit(1);
   }
-  if (!s6Xml.includes('Deployment Runbook') || !s6Xml.includes('Architecture Center References') || !s6Xml.includes('Verification Provenance')) {
-    console.error('❌ EXPORT GATE FAILED: Slide 6 XML is missing Deployment Runbook, What\'s Next, or Contributors!');
+  if (
+    !s4Xml.includes('Use Case:') ||
+    !s4Xml.includes('Strict data isolation') ||
+    !s4Xml.includes('Enforced via:') ||
+    !s4Xml.includes('Design Alternatives') ||
+    !s4Xml.includes('Private access deployment')
+  ) {
+    console.error('❌ EXPORT GATE FAILED: Slide 4 XML is missing Use Case Enforced via pills or Design Alternatives comparison sub-cards!');
+    process.exit(1);
+  }
+  if (
+    s5Xml.includes('<a:tbl>') ||
+    !s5Xml.includes('Security, privacy, and compliance') ||
+    !s5Xml.includes('Red-Team Matrix: 10/10 Blocked') ||
+    !s5Xml.includes('Prompt Cache: 90% Discount') ||
+    !s5Xml.includes('84.7% Net Token Savings')
+  ) {
+    console.error('❌ EXPORT GATE FAILED: Slide 5 XML must replace auto-collapsing <a:tbl> with 4 explicit-height Well-Architected Pillar Swimlane Rows + 3 Quantitative Proof Cards!');
+    process.exit(1);
+  }
+  if (
+    !s6Xml.includes('Deployment Runbook') ||
+    !s6Xml.includes('STEP 1') ||
+    !s6Xml.includes('STEP 4') ||
+    !s6Xml.includes('01 |') ||
+    !s6Xml.includes('Architecture Center References') ||
+    !s6Xml.includes('Authors:') ||
+    !s6Xml.includes('Contributors:') ||
+    !s6Xml.includes('Cloud Verification Receipt')
+  ) {
+    console.error('❌ EXPORT GATE FAILED: Slide 6 XML is missing 2x2 Deployment Runbook steps, numbered code lines, What\'s Next, or split Authors/Verification Provenance sub-cards!');
     process.exit(1);
   }
 }
 
 runExportSlidesQualityGate();
 verifySixSlideBlogEditableDecks().then(() => {
-  console.log('🎯 6-Slide Editable Diagram (#78) + Blog Content PPTX XML & 9-Guide Section Resolution Gate PASSED (9/9 guides, 6/6 slides, compact arrowheads w="sm" len="sm", 0 empty columns)!');
+  console.log('🎯 6-Slide Cohesive Editable Diagram (#78) + Blog Content PPTX XML & 9-Guide Section Resolution Gate PASSED (9/9 guides, 6/6 slides, 0 auto-collapsing tables, 0 mid-sentence truncations, compact arrowheads w="sm" len="sm")!');
 });
+
 

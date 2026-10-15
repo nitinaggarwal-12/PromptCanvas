@@ -982,9 +982,9 @@ export function compileOfficialArchCenterSvg(bp: OfficialArchCenterBlueprintConf
   ${renderStepCircleSvg(612, 180, '7')}
   <text x="640" y="185" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="14" fill="#202124">${escXml(bp.step7RightLabel)}</text>
 
-  <path d="M 452 470 L 424 470 L 424 431 L 294 431" fill="none" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
-  <path d="M 424 470 L 424 515 L 294 515" fill="none" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="424" y1="470" x2="450" y2="470" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 452 470 L 418 470 L 418 431 L 294 431" fill="none" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 418 470 L 418 515 L 294 515" fill="none" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="418" y1="470" x2="450" y2="470" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <text x="358" y="408" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(rc.edgeTopLeft[0])}</text>
   <text x="358" y="425" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(rc.edgeTopLeft[1])}</text>
   <text x="358" y="534" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(rc.edgeMidLeft[0])}</text>
@@ -1018,35 +1018,35 @@ export function compileOfficialArchCenterSvg(bp: OfficialArchCenterBlueprintConf
   <text x="104" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124">${escXml(bp.leftZoneTitle)}</text>
   <text x="104" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124">${escXml(bp.leftZoneSub)}</text>
 
-  ${renderArchCardSvg({ x: 102, y: 874, w: 202, h: 72, iconKey: lc.modelArmor.icon, title: lc.modelArmor.title, sub: lc.modelArmor.sub })}
-  ${renderArchCardSvg({ x: 102, y: 1110, w: 202, h: 72, iconKey: lc.llm.icon, title: lc.llm.title, sub: lc.llm.sub })}
-  ${renderArchCardSvg({ x: 334, y: 924, w: 220, h: 74, iconKey: lc.runtime.icon, title: lc.runtime.title, sub: lc.runtime.sub })}
-  ${renderArchCardSvg({ x: 338, y: 1068, w: 214, h: 74, iconKey: lc.mcp.icon, title: lc.mcp.title, sub: lc.mcp.sub })}
-  ${renderArchCardSvg({ x: 332, y: 1218, w: 224, h: 74, iconKey: lc.datastore.icon, title: lc.datastore.title, sub: lc.datastore.sub })}
+  ${renderArchCardSvg({ x: 96, y: 874, w: 194, h: 72, iconKey: lc.modelArmor.icon, title: lc.modelArmor.title, sub: lc.modelArmor.sub })}
+  ${renderArchCardSvg({ x: 96, y: 1110, w: 194, h: 72, iconKey: lc.llm.icon, title: lc.llm.title, sub: lc.llm.sub })}
+  ${renderArchCardSvg({ x: 342, y: 924, w: 214, h: 74, iconKey: lc.runtime.icon, title: lc.runtime.title, sub: lc.runtime.sub })}
+  ${renderArchCardSvg({ x: 342, y: 1068, w: 214, h: 74, iconKey: lc.mcp.icon, title: lc.mcp.title, sub: lc.mcp.sub })}
+  ${renderArchCardSvg({ x: 342, y: 1218, w: 214, h: 74, iconKey: lc.datastore.icon, title: lc.datastore.title, sub: lc.datastore.sub })}
 
   <!-- Causal Top-to-Bottom Step Sequence: 4 (Sanitize Request) -> 5 (LLM Generate) -> 6 (Sanitize Output) -->
-  ${renderStepCircleSvg(124, 976, '4')}
-  <text x="152" y="981" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.step4Label)}</text>
+  ${renderStepCircleSvg(120, 976, '4')}
+  <text x="148" y="981" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.step4Label)}</text>
 
-  ${renderStepCircleSvg(124, 1024, '6')}
-  <text x="152" y="1029" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.step6Label)}</text>
+  ${renderStepCircleSvg(120, 1024, '6')}
+  <text x="148" y="1029" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.step6Label)}</text>
 
-  ${renderStepCircleSvg(124, 1214, '5')}
-  <text x="152" y="1210" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.step5Label[0])}</text>
-  <text x="152" y="1227" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.step5Label[1])}</text>
+  ${renderStepCircleSvg(120, 1214, '5')}
+  <text x="148" y="1210" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.step5Label[0])}</text>
+  <text x="148" y="1227" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.step5Label[1])}</text>
 
-  <path d="M 304 910 L 319 910 L 319 946 L 332 946" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
-  <path d="M 304 1146 L 319 1146 L 319 972 L 332 972" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path d="M 290 910 L 312 910 L 312 946 L 342 946" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path d="M 290 1146 L 320 1146 L 320 972 L 342 972" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
 
-  <line x1="444" y1="1068" x2="444" y2="1054" stroke="#202124" stroke-width="2"/>
-  <line x1="444" y1="1014" x2="444" y2="1000" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="444" y="1029" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.ragLabel[0])}</text>
-  <text x="444" y="1046" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.ragLabel[1])}</text>
+  <line x1="448" y1="1068" x2="448" y2="1054" stroke="#202124" stroke-width="2"/>
+  <line x1="448" y1="1014" x2="448" y2="1000" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="448" y="1029" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.ragLabel[0])}</text>
+  <text x="448" y="1046" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.ragLabel[1])}</text>
 
-  <line x1="444" y1="1218" x2="444" y2="1204" stroke="#202124" stroke-width="2"/>
-  <line x1="444" y1="1158" x2="444" y2="1144" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="444" y="1176" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.toolLabel[0])}</text>
-  <text x="444" y="1193" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.toolLabel[1])}</text>
+  <line x1="448" y1="1218" x2="448" y2="1204" stroke="#202124" stroke-width="2"/>
+  <line x1="448" y1="1158" x2="448" y2="1144" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="448" y="1176" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.toolLabel[0])}</text>
+  <text x="448" y="1193" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.toolLabel[1])}</text>
 
   <!-- ZONE 4: RIGHT TENANT / SPOKE PROJECT (Coral #fad2cf) -->
   <rect x="614" y="772" width="516" height="560" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="1.2"/>
@@ -1056,28 +1056,28 @@ export function compileOfficialArchCenterSvg(bp: OfficialArchCenterBlueprintConf
   <text x="648" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124">${escXml(bp.rightZoneTitle)}</text>
   <text x="648" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124">${escXml(bp.rightZoneSub)}</text>
 
-  ${renderArchCardSvg({ x: 646, y: 874, w: 202, h: 72, iconKey: sc.modelArmor.icon, title: sc.modelArmor.title, sub: sc.modelArmor.sub })}
-  ${renderArchCardSvg({ x: 646, y: 976, w: 202, h: 72, iconKey: sc.llm.icon, title: sc.llm.title, sub: sc.llm.sub })}
-  ${renderArchCardSvg({ x: 878, y: 924, w: 220, h: 74, iconKey: sc.runtime.icon, title: sc.runtime.title, sub: sc.runtime.sub })}
-  ${renderArchCardSvg({ x: 882, y: 1068, w: 214, h: 74, iconKey: sc.mcp.icon, title: sc.mcp.title, sub: sc.mcp.sub })}
-  ${renderArchCardSvg({ x: 876, y: 1218, w: 224, h: 74, iconKey: sc.datastore.icon, title: sc.datastore.title, sub: sc.datastore.sub })}
+  ${renderArchCardSvg({ x: 640, y: 874, w: 194, h: 72, iconKey: sc.modelArmor.icon, title: sc.modelArmor.title, sub: sc.modelArmor.sub })}
+  ${renderArchCardSvg({ x: 640, y: 976, w: 194, h: 72, iconKey: sc.llm.icon, title: sc.llm.title, sub: sc.llm.sub })}
+  ${renderArchCardSvg({ x: 886, y: 924, w: 214, h: 74, iconKey: sc.runtime.icon, title: sc.runtime.title, sub: sc.runtime.sub })}
+  ${renderArchCardSvg({ x: 886, y: 1068, w: 214, h: 74, iconKey: sc.mcp.icon, title: sc.mcp.title, sub: sc.mcp.sub })}
+  ${renderArchCardSvg({ x: 886, y: 1218, w: 214, h: 74, iconKey: sc.datastore.icon, title: sc.datastore.title, sub: sc.datastore.sub })}
 
-  <path d="M 848 910 L 863 910 L 863 946 L 876 946" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
-  <path d="M 848 1012 L 863 1012 L 863 972 L 876 972" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path d="M 834 910 L 856 910 L 856 946 L 886 946" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path d="M 834 1012 L 864 1012 L 864 972 L 886 972" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
 
-  <line x1="988" y1="1068" x2="988" y2="1054" stroke="#202124" stroke-width="2"/>
-  <line x1="988" y1="1014" x2="988" y2="1000" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="988" y="1029" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.ragLabel[0])}</text>
-  <text x="988" y="1046" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.ragLabel[1])}</text>
+  <line x1="992" y1="1068" x2="992" y2="1054" stroke="#202124" stroke-width="2"/>
+  <line x1="992" y1="1014" x2="992" y2="1000" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="992" y="1029" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.ragLabel[0])}</text>
+  <text x="992" y="1046" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.ragLabel[1])}</text>
 
-  <line x1="988" y1="1218" x2="988" y2="1204" stroke="#202124" stroke-width="2"/>
-  <line x1="988" y1="1158" x2="988" y2="1144" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="988" y="1176" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.toolLabel[0])}</text>
-  <text x="988" y="1193" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.toolLabel[1])}</text>
+  <line x1="992" y1="1218" x2="992" y2="1204" stroke="#202124" stroke-width="2"/>
+  <line x1="992" y1="1158" x2="992" y2="1144" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="992" y="1176" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.toolLabel[0])}</text>
+  <text x="992" y="1193" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.toolLabel[1])}</text>
 
   <!-- MIDDLE ROUTING & OBSERVABILITY TRUNK -->
   <line x1="586" y1="744" x2="586" y2="648" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
-  <path d="M 444 922 L 444 744 L 988 744 L 988 922" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path d="M 448 922 L 448 744 L 992 744 L 992 922" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
 
   <path d="M 328 770 L 328 730 L 962 730 L 962 668" fill="none" stroke="#202124" stroke-width="2" stroke-dasharray="6,6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
   <path d="M 872 730 L 872 770" fill="none" stroke="#202124" stroke-width="2" stroke-dasharray="6,6" marker-end="url(#arrow)"/>
@@ -1349,19 +1349,19 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
   addArchCard('card_gc_mid', 830, 492, 264, 68, gc.mid);
   addArchCard('card_gc_bot', 828, 574, 268, 68, gc.bot);
 
-  // Left Tenant Spoke 5 Cards
-  addArchCard('card_lc_ma', 102, 874, 202, 72, lc.modelArmor);
-  addArchCard('card_lc_llm', 102, 1110, 202, 72, lc.llm);
-  addArchCard('card_lc_run', 334, 924, 220, 74, lc.runtime);
-  addArchCard('card_lc_mcp', 338, 1068, 214, 74, lc.mcp);
-  addArchCard('card_lc_db', 332, 1218, 224, 74, lc.datastore);
+  // Left Tenant Spoke 5 Cards (with 52px central connector channel: 290..342 so orthogonal arrows never crowd card borders)
+  addArchCard('card_lc_ma', 96, 874, 194, 72, lc.modelArmor);
+  addArchCard('card_lc_llm', 96, 1110, 194, 72, lc.llm);
+  addArchCard('card_lc_run', 342, 924, 214, 74, lc.runtime);
+  addArchCard('card_lc_mcp', 342, 1068, 214, 74, lc.mcp);
+  addArchCard('card_lc_db', 342, 1218, 214, 74, lc.datastore);
 
-  // Right Tenant Spoke 5 Cards
-  addArchCard('card_sc_ma', 646, 874, 202, 72, sc.modelArmor);
-  addArchCard('card_sc_llm', 646, 976, 202, 72, sc.llm);
-  addArchCard('card_sc_run', 878, 924, 220, 74, sc.runtime);
-  addArchCard('card_sc_mcp', 882, 1068, 214, 74, sc.mcp);
-  addArchCard('card_sc_db', 876, 1218, 224, 74, sc.datastore);
+  // Right Tenant Spoke 5 Cards (with 52px central connector channel: 834..886 so orthogonal arrows never crowd card borders)
+  addArchCard('card_sc_ma', 640, 874, 194, 72, sc.modelArmor);
+  addArchCard('card_sc_llm', 640, 976, 194, 72, sc.llm);
+  addArchCard('card_sc_run', 886, 924, 214, 74, sc.runtime);
+  addArchCard('card_sc_mcp', 886, 1068, 214, 74, sc.mcp);
+  addArchCard('card_sc_db', 886, 1218, 214, 74, sc.datastore);
 
   // 7. Royal-Blue Numbered Step Badges (#174ea6) & Callout Labels
   const badgeStyle =
@@ -1396,8 +1396,8 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
   addStepBadge('step_7_top', 612, 180, '7');
   addCalloutText('lbl_step7_top', 634, 166, 102, 28, [bp.step7RightLabel], 'left', '#ffffff');
 
-  addCalloutText('lbl_rc_top', 300, 386, 118, 34, rc.edgeTopLeft, 'center', '#aecbfa');
-  addCalloutText('lbl_rc_mid', 300, 524, 118, 34, rc.edgeMidLeft, 'center', '#aecbfa');
+  addCalloutText('lbl_rc_top', 300, 386, 114, 34, rc.edgeTopLeft, 'center', '#aecbfa');
+  addCalloutText('lbl_rc_mid', 300, 524, 114, 34, rc.edgeMidLeft, 'center', '#aecbfa');
   addCalloutText('lbl_rc_bot', 306, 568, 156, 34, rc.edgeBotLeft, 'center', '#aecbfa');
 
   addStepBadge('step_2_mid', 566, 543, '2');
@@ -1411,50 +1411,50 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
   addCalloutText('lbl_step7_trunk', 638, 678, 170, 36, bp.midStep7Label, 'left', '#ffffff');
   addCalloutText('lbl_gov_trunk', 974, 672, 168, 48, bp.midGovLabel, 'left', '#ffffff');
 
-  addStepBadge('step_4_left', 124, 976, '4');
-  addCalloutText('lbl_step4_left', 148, 962, 165, 28, [lc.step4Label], 'left', '#feefc3');
-  addStepBadge('step_6_left', 124, 1024, '6');
-  addCalloutText('lbl_step6_left', 148, 1010, 165, 28, [lc.step6Label], 'left', '#feefc3');
-  addStepBadge('step_5_left', 124, 1214, '5');
-  addCalloutText('lbl_step5_left', 148, 1194, 165, 40, lc.step5Label, 'left', '#feefc3');
+  addStepBadge('step_4_left', 120, 976, '4');
+  addCalloutText('lbl_step4_left', 144, 962, 158, 28, [lc.step4Label], 'left', '#feefc3');
+  addStepBadge('step_6_left', 120, 1024, '6');
+  addCalloutText('lbl_step6_left', 144, 1010, 158, 28, [lc.step6Label], 'left', '#feefc3');
+  addStepBadge('step_5_left', 120, 1214, '5');
+  addCalloutText('lbl_step5_left', 144, 1194, 158, 40, lc.step5Label, 'left', '#feefc3');
 
-  addCalloutText('lbl_left_rag', 354, 1014, 180, 38, lc.ragLabel, 'center', '#feefc3');
-  addCalloutText('lbl_left_tool', 354, 1160, 180, 38, lc.toolLabel, 'center', '#feefc3');
+  addCalloutText('lbl_left_rag', 359, 1014, 180, 38, lc.ragLabel, 'center', '#feefc3');
+  addCalloutText('lbl_left_tool', 359, 1160, 180, 38, lc.toolLabel, 'center', '#feefc3');
 
-  addCalloutText('lbl_right_rag', 898, 1014, 180, 38, sc.ragLabel, 'center', '#fad2cf');
-  addCalloutText('lbl_right_tool', 898, 1160, 180, 38, sc.toolLabel, 'center', '#fad2cf');
+  addCalloutText('lbl_right_rag', 903, 1014, 180, 38, sc.ragLabel, 'center', '#fad2cf');
+  addCalloutText('lbl_right_tool', 903, 1160, 180, 38, sc.toolLabel, 'center', '#fad2cf');
 
   // 8. Emit 23 Vertex-Bound Orthogonal Edges (placed between bgCells and fgCells so cards & badges sit on top)
   addPointEdge('e_user_to_alb', [566, 138], [566, 430], [], { endArrow: true, source: 'actor_top_user', target: 'card_rc_alb' });
   addPointEdge('e_alb_to_user', [612, 432], [612, 140], [], { endArrow: true, source: 'card_rc_alb', target: 'actor_top_user' });
 
-  addPointEdge('e_alb_to_top_left', [452, 470], [292, 431], [[424, 470], [424, 431]], { startArrow: true, endArrow: true, source: 'card_rc_alb', target: 'card_rc_topleft' });
-  addPointEdge('e_alb_to_mid_left', [452, 470], [292, 515], [[424, 470], [424, 515]], { startArrow: false, endArrow: true, source: 'card_rc_alb', target: 'card_rc_midleft' });
+  addPointEdge('e_alb_to_top_left', [452, 470], [292, 431], [[418, 470], [418, 431]], { startArrow: true, endArrow: true, source: 'card_rc_alb', target: 'card_rc_topleft' });
+  addPointEdge('e_alb_to_mid_left', [452, 470], [292, 515], [[418, 470], [418, 515]], { startArrow: false, endArrow: true, source: 'card_rc_alb', target: 'card_rc_midleft' });
 
   addPointEdge('e_iap_to_cloudrun', [292, 613], [476, 613], [], { startArrow: true, endArrow: true, source: 'card_rc_botleft', target: 'card_rc_cloudrun' });
 
   addPointEdge('e_alb_to_crun', [566, 508], [566, 580], [], { endArrow: true, source: 'card_rc_alb', target: 'card_rc_cloudrun' });
   addPointEdge('e_crun_to_alb', [612, 580], [612, 508], [], { endArrow: true, source: 'card_rc_cloudrun', target: 'card_rc_alb' });
 
-  addPointEdge('e_trunk_up_crun', [444, 924], [586, 646], [[444, 744], [586, 744]], { startArrow: false, endArrow: true, source: 'card_lc_run', target: 'card_rc_cloudrun' });
-  addPointEdge('e_trunk_spokes', [444, 924], [988, 924], [[444, 744], [988, 744]], { startArrow: true, endArrow: true, source: 'card_lc_run', target: 'card_sc_run' });
+  addPointEdge('e_trunk_up_crun', [449, 924], [586, 646], [[449, 744], [586, 744]], { startArrow: false, endArrow: true, source: 'card_lc_run', target: 'card_rc_cloudrun' });
+  addPointEdge('e_trunk_spokes', [449, 924], [993, 924], [[449, 744], [993, 744]], { startArrow: true, endArrow: true, source: 'card_lc_run', target: 'card_sc_run' });
 
   addPointEdge('e_gov_dashed_main', [328, 772], [962, 666], [[328, 730], [962, 730]], { dashed: true, startArrow: true, endArrow: true, source: 'wrapper_left_pab', target: 'zone_gov_hub' });
   addPointEdge('e_gov_dashed_right', [962, 666], [872, 772], [[962, 730], [872, 730]], { dashed: true, startArrow: false, endArrow: true, source: 'zone_gov_hub', target: 'wrapper_right_pab' });
 
-  addPointEdge('e_left_ma_run', [304, 910], [332, 946], [[319, 910], [319, 946]], { startArrow: true, endArrow: true, source: 'card_lc_ma', target: 'card_lc_run' });
-  addPointEdge('e_left_llm_run', [304, 1146], [332, 972], [[319, 1146], [319, 972]], { startArrow: true, endArrow: true, source: 'card_lc_llm', target: 'card_lc_run' });
-  addPointEdge('e_left_mcp_run_bot', [444, 1068], [444, 1054], [], { endArrow: false, source: 'card_lc_mcp', target: 'lbl_left_rag' });
-  addPointEdge('e_left_mcp_run_top', [444, 1014], [444, 1000], [], { endArrow: true, source: 'lbl_left_rag', target: 'card_lc_run' });
-  addPointEdge('e_left_db_mcp_bot', [444, 1218], [444, 1204], [], { endArrow: false, source: 'card_lc_db', target: 'lbl_left_tool' });
-  addPointEdge('e_left_db_mcp_top', [444, 1158], [444, 1144], [], { endArrow: true, source: 'lbl_left_tool', target: 'card_lc_mcp' });
+  addPointEdge('e_left_ma_run', [290, 910], [342, 944], [[312, 910], [312, 944]], { startArrow: true, endArrow: true, source: 'card_lc_ma', target: 'card_lc_run' });
+  addPointEdge('e_left_llm_run', [290, 1146], [342, 976], [[320, 1146], [320, 976]], { startArrow: true, endArrow: true, source: 'card_lc_llm', target: 'card_lc_run' });
+  addPointEdge('e_left_mcp_run_bot', [449, 1068], [449, 1054], [], { endArrow: false, source: 'card_lc_mcp', target: 'lbl_left_rag' });
+  addPointEdge('e_left_mcp_run_top', [449, 1014], [449, 1000], [], { endArrow: true, source: 'lbl_left_rag', target: 'card_lc_run' });
+  addPointEdge('e_left_db_mcp_bot', [449, 1218], [449, 1204], [], { endArrow: false, source: 'card_lc_db', target: 'lbl_left_tool' });
+  addPointEdge('e_left_db_mcp_top', [449, 1158], [449, 1144], [], { endArrow: true, source: 'lbl_left_tool', target: 'card_lc_mcp' });
 
-  addPointEdge('e_right_ma_run', [848, 910], [876, 946], [[863, 910], [863, 946]], { startArrow: true, endArrow: true, source: 'card_sc_ma', target: 'card_sc_run' });
-  addPointEdge('e_right_llm_run', [848, 1012], [876, 972], [[863, 1012], [863, 972]], { startArrow: true, endArrow: true, source: 'card_sc_llm', target: 'card_sc_run' });
-  addPointEdge('e_right_mcp_run_bot', [988, 1068], [988, 1054], [], { endArrow: false, source: 'card_sc_mcp', target: 'lbl_right_rag' });
-  addPointEdge('e_right_mcp_run_top', [988, 1014], [988, 1000], [], { endArrow: true, source: 'lbl_right_rag', target: 'card_sc_run' });
-  addPointEdge('e_right_db_mcp_bot', [988, 1218], [988, 1204], [], { endArrow: false, source: 'card_sc_db', target: 'lbl_right_tool' });
-  addPointEdge('e_right_db_mcp_top', [988, 1158], [988, 1144], [], { endArrow: true, source: 'lbl_right_tool', target: 'card_sc_mcp' });
+  addPointEdge('e_right_ma_run', [834, 910], [886, 944], [[856, 910], [856, 944]], { startArrow: true, endArrow: true, source: 'card_sc_ma', target: 'card_sc_run' });
+  addPointEdge('e_right_llm_run', [834, 1012], [886, 976], [[864, 1012], [864, 976]], { startArrow: true, endArrow: true, source: 'card_sc_llm', target: 'card_sc_run' });
+  addPointEdge('e_right_mcp_run_bot', [993, 1068], [993, 1054], [], { endArrow: false, source: 'card_sc_mcp', target: 'lbl_right_rag' });
+  addPointEdge('e_right_mcp_run_top', [993, 1014], [993, 1000], [], { endArrow: true, source: 'lbl_right_rag', target: 'card_sc_run' });
+  addPointEdge('e_right_db_mcp_bot', [993, 1218], [993, 1204], [], { endArrow: false, source: 'card_sc_db', target: 'lbl_right_tool' });
+  addPointEdge('e_right_db_mcp_top', [993, 1158], [993, 1144], [], { endArrow: true, source: 'lbl_right_tool', target: 'card_sc_mcp' });
 
   const cells = [...bgCells, ...edgeCells, ...fgCells];
 
