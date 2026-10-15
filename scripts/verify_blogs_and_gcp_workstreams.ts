@@ -431,7 +431,7 @@ async function main() {
       pptxCompilerCode.includes('visibleNonTitleVertices') &&
       pptxCompilerCode.includes('deduplicateParentheticalEchoes') &&
       pptxCompilerCode.includes("node.id === 'hdr_title_box'") &&
-      pptxCompilerCode.includes('renderArchitectureCenterDiagramSidebar') &&
+      pptxCompilerCode.includes('addDevSiteArticleSheet') &&
       pptxCompilerCode.includes('addImagePreservingAspect') &&
       pptxCompilerCode.includes('normalizeDrawioHtmlForSlides') &&
       pptxCompilerCode.includes('postProcessPptxCompactArrowsBase64') &&
@@ -439,12 +439,29 @@ async function main() {
       pptxCompilerCode.includes('isSpokeOuterWrapper') &&
       !pptxCompilerCode.includes('slide2.addTable') &&
       !pptxCompilerCode.includes('slide5.addTable') &&
-      pptxCompilerCode.includes('1. Architecture & Components') &&
-      pptxCompilerCode.includes('2. Agentic Flow & Products Used') &&
-      pptxCompilerCode.includes('3. Use Case & Design Alternatives') &&
-      pptxCompilerCode.includes('Red-Team Matrix: 10/10 Blocked'),
-    'src/lib/export/editablePptxCompiler.ts must compile cohesive 6-slide decks (actualNonTitleMinY Slide 1 top anchor, deduplicateParentheticalEchoes, zero auto-collapsing slide2/slide5.addTable, 5-Zone Component Matrix cards, 4 Well-Architected Pillar Swimlanes + 3 Quantitative Proof Cards, and 2x2 Deployment Runbook steps)'
+      pptxCompilerCode.includes('The architecture consists of the following components:') &&
+      pptxCompilerCode.includes('Products used') &&
+      pptxCompilerCode.includes('Design alternatives') &&
+      pptxCompilerCode.includes('Other contributors:') &&
+      !pptxCompilerCode.includes('Nithin Reddy Cheruku') &&
+      !pptxCompilerCode.includes('Navneet Tuteja'),
+    'src/lib/export/editablePptxCompiler.ts must compile 1:1 white DevSite <article> 6-slide decks (addDevSiteArticleSheet, Slide 1 Overview & Architecture Intro, Slide 2 Full-Width Native Editable Figure 1, Slide 3 Component | Description Table & Agentic Flow, Slide 4 Products Used & Use Case, Slide 5 Design Alternatives & Well-Architected Considerations, Slide 6 Deployment, What\'s Next & Contributors with role labels only)'
   );
+  for (const doc of GOOGLE_CLOUD_DOCUMENTATION_SERIES) {
+    const contribSec = doc.sections.find((s) => s.id === 'contributors');
+    const joinedContributors = [
+      ...doc.authors,
+      ...(contribSec?.contributorsInfo?.authors || []),
+      ...(contribSec?.contributorsInfo?.otherContributors || []),
+    ].join(' ');
+    assertCondition(
+      !joinedContributors.includes('Nithin Reddy Cheruku') &&
+        !joinedContributors.includes('Navneet Tuteja') &&
+        !joinedContributors.includes('Dhawal Patel') &&
+        !joinedContributors.includes('Nitin Aggarwal'),
+      `[${doc.docId}] Contributors (authors & otherContributors) must contain role/team labels only with zero personal names`
+    );
+  }
   const cloudManifestPath = path.join(process.cwd(), 'src/data/cloud_viewer_manifest.json');
   assertCondition(fs.existsSync(cloudManifestPath), 'src/data/cloud_viewer_manifest.json must exist');
   const cloudManifest = JSON.parse(fs.readFileSync(cloudManifestPath, 'utf8'));
@@ -456,11 +473,12 @@ async function main() {
   }
   assertCondition(
     blogsPageCode.includes('tile-slides-export-') &&
-      blogsPageCode.includes('doc-reader-top-slides-export') &&
+      blogsPageCode.includes('doc-reader-export-blog-slides-btn') &&
+      blogsPageCode.includes('Export Blog to Google Slides') &&
       blogsPageCode.includes('markdownContent={buildCanonicalDocMarkdown(activeDocGuide)}'),
-    'src/app/blogs/page.tsx must expose 1-click Google Slides (Editable Diagram + Blog Content) export controls on catalog tiles, reader top utility bar, and inline figures'
+    'src/app/blogs/page.tsx must expose 1-click "Export Blog to Google Slides ↗" (doc-reader-export-blog-slides-btn) in the document reader header plus catalog tile and inline figure Google Slides controls'
   );
-  console.log('  [PASS] Verified Zero Legacy "Zone-by-Zone Walkthrough" Across All 4 Blog Formats + Cohesive 6-Slide Editable Diagram (#78) & Associated Blog Content Google Slides Export.');
+  console.log('  [PASS] Verified Zero Legacy "Zone-by-Zone Walkthrough" Across All 4 Blog Formats + 1:1 White DevSite <article> 6-Slide Google Slides Export & Role-Label-Only Contributors.');
 
   console.log('=== ALL BLOGS, WORKSTREAM TOPOLOGIES, REAL GCP CONSOLE & GEMINI ENTERPRISE UI GALLERY & VERIFICATION CHECKS PASSED ===');
 }

@@ -1353,21 +1353,21 @@ export function generateBlogForUseCase(
     name:
       customOptions?.authorName?.trim() ||
       (formatId === 'geap-fde-deep-dive'
-        ? 'Nitin Aggarwal'
+        ? 'Principal AI Field Deployment Engineering'
         : formatId === 'cloud-arch-center'
-        ? 'Annie Wang'
+        ? 'Principal Cloud AI Architecture'
         : formatId === 'developers-blog-adk'
-        ? 'Shubham Saboo'
-        : 'Schneider Larbi'),
+        ? 'AI Developer Advocacy'
+        : 'Global Partner Technical Architecture'),
     role:
       customOptions?.authorRole?.trim() ||
       (formatId === 'geap-fde-deep-dive'
-        ? 'Principal AI Field Deployment Engineer (FDE), Google Cloud'
+        ? 'Field Deployment Engineering (FDE), Google Cloud'
         : formatId === 'cloud-arch-center'
-        ? 'Principal Cloud AI Architect'
+        ? 'Cloud Architecture Center'
         : formatId === 'developers-blog-adk'
-        ? 'Senior AI Developer Advocate'
-        : 'Sr Manager, Global Partner Technical Architecture, AI & SaaS ISVs'),
+        ? 'Agent Development Kit (ADK) Engineering'
+        : 'AI & SaaS ISV Solutions Architecture'),
   };
   const secondaryAuthor = {
     name:
@@ -1375,19 +1375,19 @@ export function generateBlogForUseCase(
       (formatId === 'geap-fde-deep-dive'
         ? 'Google Cloud Enterprise AI Architecture Team'
         : formatId === 'cloud-arch-center'
-        ? 'Samantha He'
+        ? 'Technical Documentation Engineering'
         : formatId === 'developers-blog-adk'
-        ? 'Eric Dong'
-        : 'David Peterside'),
+        ? 'Cloud Security Engineering'
+        : 'Partner Solutions Engineering'),
     role:
       customOptions?.coAuthorRole?.trim() ||
       (formatId === 'geap-fde-deep-dive'
         ? 'Cloud Architecture Center & Security Engineering'
         : formatId === 'cloud-arch-center'
-        ? 'Lead Technical Writer'
+        ? 'Architecture Center Editorial Team'
         : formatId === 'developers-blog-adk'
-        ? 'Staff Security Engineer'
-        : 'Partner Solutions Engineer'),
+        ? 'Zero-Trust Agent Runtime Security'
+        : 'Multi-Tenant ISV Architecture'),
   };
 
   const slug = useCase.id.replace(/[^a-z0-9-]/gi, '-').toLowerCase();
@@ -1615,9 +1615,9 @@ async def execute_tenant_scoped_query(pool: asyncpg.Pool, tenant_id: str, query_
 - **${secondaryAuthor.name}** | ${secondaryAuthor.role}
 
 Other contributors:
-- **Christina Lin** | Developer Relations Engineer Manager
-- **Kumar Dhanagopal** | Cross-Product Solution Developer
-- **Olivier Bourgeois** | Developer Relations Engineer`,
+- **Principal AI Architect & Field Deployment Engineering**
+- **Cross-Product Solution Architecture**
+- **Google Cloud Architecture Center Engineering Team**`,
     },
   ];
 
@@ -1691,9 +1691,9 @@ Other contributors:
     referenceInspirationUrl: formatMeta.referenceUrl,
     authors: [primaryAuthor, secondaryAuthor],
     contributors: [
-      { name: 'Christina Lin', role: 'Developer Relations Engineer Manager' },
-      { name: 'Kumar Dhanagopal', role: 'Cross-Product Solution Developer' },
-      { name: 'Olivier Bourgeois', role: 'Developer Relations Engineer' },
+      { name: 'Principal AI Architect & Field Deployment Engineering', role: 'Field Deployment Engineering' },
+      { name: 'Cross-Product Solution Architecture', role: 'Cloud Architecture Center' },
+      { name: 'Google Cloud Architecture Center Engineering Team', role: 'Developer Relations & Documentation' },
     ],
     publishedDate: 'October 2026',
     readTimeMinutes: formatMeta.readTimeMinutes,

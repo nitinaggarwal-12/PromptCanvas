@@ -25,6 +25,7 @@ const LEGACY_PRESENTATION_IDS_BY_DOC: Record<string, string[]> = {
     '1fp-Q21VVhy3hnqWDHBmZu1GLpLD6ts2ylhFfMR7LXsg',
   ],
   'DOC-MT-02': [
+    '1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc',
     '1uro8CTfEKfRg03geNOTQ4Hmy1lk3r_ewfKPt0vNbZcs',
     '1bRva9gC6980Lbd33pC1x-6s5994E9rR0oT3nJ0rE_k8',
   ],
@@ -87,10 +88,14 @@ async function patchPresentationIdInPlace(fileId: string, pptxBuffer: Buffer, ti
 }
 
 async function syncAllBlogEditableSlidesWithContent() {
-  console.log('🚀 Compiling & syncing 6-Slide Editable Diagram (#78) + Associated Blog Content decks to Google Slides...');
+  console.log('🚀 Compiling & syncing 6-Slide 1:1 White DevSite <article> UI + Editable Diagram (#78) decks to Google Slides...');
 
   const workstreamAliasByDocId: Record<string, string[]> = {
-    'DOC-MT-01': ['BP-78'],
+    'DOC-MT-01': ['WS1', 'BP-78'],
+    'DOC-MT-02': ['WS2'],
+    'DOC-MT-03': ['WS3'],
+    'DOC-MT-04': ['WS4'],
+    'DOC-MT-06': ['WS5'],
   };
 
   const token = await getServerDriveAccessToken();

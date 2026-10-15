@@ -9,6 +9,7 @@ import {
 } from '@/lib/export/editablePptxCompiler';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import cloudViewerManifestData from '@/data/cloud_viewer_manifest.json';
+import { GOOGLE_CLOUD_DOCUMENTATION_SERIES } from '@/lib/blogs/googleCloudDocumentationSeries';
 
 export interface CloudSlidesEntryClient {
   key?: string;
@@ -564,52 +565,59 @@ export default function DiagramInlineSlidesPreviewer({
   const shapeCount = Math.max(parsedGraph.vertices.length, 56);
   const connectorCount = Math.max(parsedGraph.edges.length, 23);
 
+  const activeDocGuide = useMemo(
+    () =>
+      GOOGLE_CLOUD_DOCUMENTATION_SERIES.find((d) => d.docId.toUpperCase() === normKey) ||
+      GOOGLE_CLOUD_DOCUMENTATION_SERIES[0],
+    [normKey]
+  );
+
   const slides: SlideDescriptor[] = useMemo(
     () => [
       {
         num: 1,
-        label: '1. ★ Editable Diagram (#78)',
-        editable: true,
-        desc: `★ Slide 1 of 6 — 100% Decomposed Native Editable Diagram (#78) + 4-Zone Architecture Center Guide (${shapeCount} Shapes • ${connectorCount} Connectors)`,
-        kind: 'decomposed-split',
-      },
-      {
-        num: 2,
-        label: '2. Architecture & Components',
+        label: '1. Overview & Architecture',
         editable: false,
-        desc: 'Slide 2 of 6 — Executive Overview, 5-Hop Defense-in-Depth Control Plane & 5-Zone Component Matrix',
-        kind: 'tldr',
-      },
-      {
-        num: 3,
-        label: '3. Agentic Flow & Products',
-        editable: false,
-        desc: `Slide 3 of 6 — 7-Step Agentic Execution Flow (Steps 1–7 & Sub-steps 4a–4d Grid) & Google Cloud Products Used`,
-        kind: 'master',
-      },
-      {
-        num: 4,
-        label: '4. Use Case & Alternatives',
-        editable: false,
-        desc: `Slide 4 of 6 — Enterprise Use Case, Key Architecture Benefits & Design Alternatives Trade-Off Matrix`,
+        desc: `Slide 1 of 6 — 1:1 Cloud Architecture Center Document Reader Header, Overview & Architecture Introduction (${activeDocGuide.docId})`,
         kind: 'title',
       },
       {
-        num: 5,
-        label: '5. Design Considerations',
+        num: 2,
+        label: '2. ★ Figure 1 (Editable Diagram)',
+        editable: true,
+        desc: `★ Slide 2 of 6 — Figure 1: 100% Native Editable Architecture Topology (#78) (${shapeCount} Shapes • ${connectorCount} Connectors)`,
+        kind: 'decomposed-split',
+      },
+      {
+        num: 3,
+        label: '3. Components & Agentic Flow',
         editable: false,
-        desc: `Slide 5 of 6 — Google Cloud Well-Architected Design Considerations Matrix & Quantitative Verification Proof`,
+        desc: `Slide 3 of 6 — Architecture Component Table (Component | Description) & Numbered Agentic Flow (Steps 1–7 & 4a–4d)`,
+        kind: 'tldr',
+      },
+      {
+        num: 4,
+        label: '4. Products Used & Use Case',
+        editable: false,
+        desc: `Slide 4 of 6 — Google Cloud Products Used Bulleted List & Enterprise Use Case / Key Benefits`,
+        kind: 'master',
+      },
+      {
+        num: 5,
+        label: '5. Alternatives & Considerations',
+        editable: false,
+        desc: `Slide 5 of 6 — Design Alternatives & Google Cloud Well-Architected Design Considerations Table`,
         kind: 'decomposed-full',
       },
       {
         num: 6,
-        label: '6. Deployment & Next Steps',
+        label: '6. Deployment & Contributors',
         editable: false,
-        desc: `Slide 6 of 6 — 4-Step Production Deployment Runbook, Verified ADK Code Snippet, What's Next & Contributors`,
+        desc: `Slide 6 of 6 — Deployment Runbook, What's Next & Contributors (Role/Team Labels Only)`,
         kind: 'spec-table',
       },
     ],
-    [shapeCount, connectorCount]
+    [activeDocGuide.docId, shapeCount, connectorCount]
   );
 
   const activeSlide = slides[activeSlideIdx] || slides[0];
@@ -768,116 +776,59 @@ export default function DiagramInlineSlidesPreviewer({
   };
 
   /**
-   * Renders the 16:9 Google Cloud Architecture Center Light-Theme Slide Canvas (Rule 54)
-   * matching https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system?hl=en
+   * Renders the 16:9 1:1 Single-Column White DevSite <article> UI Slide Canvas (Rule 47 & Rule 54)
+   * matching the visible center column of /blogs/[docId] (excluding left and right palettes).
    */
   const renderSlideCanvasContent = (slide: SlideDescriptor) => {
-    const topRibbon = (
-      <div className="w-full h-1.5 flex shrink-0">
-        <div className="w-1/4 h-full bg-[#4285F4]" />
-        <div className="w-1/4 h-full bg-[#EA4335]" />
-        <div className="w-1/4 h-full bg-[#FBBC04]" />
-        <div className="w-1/4 h-full bg-[#34A853]" />
-      </div>
-    );
+    const findSec = (slug: string, alt?: string) =>
+      activeDocGuide.sections.find((s) => s.id === slug || (alt && s.id === alt));
+    const archSec = findSec('architecture');
+    const prodSec = findSec('products_used', 'products-used');
+    const useCaseSec = findSec('use_case', 'use-case');
+    const designAltSec = findSec('design_alternatives', 'design-alternatives');
+    const designConsSec = findSec('design_considerations', 'design-considerations');
+    const deploySec = findSec('deployment');
+    const whatsNextSec = findSec('whats_next', 'whats-next');
+    const contribSec = findSec('contributors');
 
-    const slideHeader = (kicker: string, rightPill: string) => (
-      <div className="px-4 py-2 bg-[#F8F9FA] border-b border-[#DADCE0] flex items-center justify-between gap-2 shrink-0">
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="text-[10px] font-medium text-[#5F6368] shrink-0">
-            Home › Documentation › Cloud Architecture Center ›
-          </span>
-          <span className="px-2 py-0.5 rounded bg-[#E8F0FE] text-[#1967D2] font-bold text-[10px] shrink-0">
-            {kicker}
-          </span>
-          <span className="font-bold text-xs text-[#202124] truncate">{title}</span>
-        </div>
-        <span className="text-[10px] font-mono font-bold text-[#137333] bg-[#E6F4EA] border border-[#CEEAD6] px-2 py-0.5 rounded-full shrink-0">
-          {rightPill}
+    const articleMetadataHeader = (
+      <div className="flex items-center justify-between gap-2 pb-1">
+        <span className="text-[10px] font-medium text-[#5F6368]">
+          Cloud Architecture Center › {activeDocGuide.partBadge}
         </span>
+        <div className="flex items-center gap-2 text-[10px] text-[#5F6368]">
+          <span className="px-1.5 py-0.5 rounded bg-[#F1F5F9] border border-[#CBD5E1] font-mono font-bold text-[#334155]">
+            {activeDocGuide.docId}
+          </span>
+          <span>· {activeDocGuide.readTimeMinutes} min read · Last reviewed {activeDocGuide.lastVerifiedDate}</span>
+        </div>
       </div>
     );
 
-    // Slide 1 / 6: 100% Decomposed Native Editable Diagram (#78) on Left + Figure 1 4-Zone Architecture Center Guide on Right
+    // Slide 1 / 6: 1:1 Overview & Architecture Introduction (Matches Image 1 verbatim)
     if (slide.num === 1) {
       return (
-        <div className="w-full aspect-video bg-white text-[#202124] flex flex-col justify-between overflow-hidden select-none">
-          {topRibbon}
-          {slideHeader(
-            'Figure 1 • Editable Architecture Topology (#78)',
-            `Editable Diagram + Blog • Slide 1 / 6`
-          )}
-          <div className="flex-1 p-3 grid grid-cols-12 gap-3 items-stretch min-h-0 bg-white overflow-hidden">
-            {/* Left Column: 1:1 Aspect-Preserved Editable Diagram (#78) */}
-            <div className="col-span-6 h-full rounded-lg bg-[#F8FAFC] p-2 border border-[#DADCE0] flex items-center justify-center overflow-hidden">
-              {svgContent ? (
-                <div
-                  className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:max-h-[340px] [&>svg]:object-contain"
-                  dangerouslySetInnerHTML={{ __html: svgContent }}
-                />
-              ) : (
-                <div className="w-full h-full pointer-events-none flex items-center justify-center">
-                  <DiagramViewerRenderSafe xml={xmlContent} />
-                </div>
-              )}
+        <div className="w-full aspect-video bg-[#F8FAFC] p-2.5 text-[#202124] flex flex-col overflow-hidden select-none">
+          <div className="w-full h-full bg-white rounded-xl border border-[#DADCE0] px-6 py-4 flex flex-col justify-between overflow-hidden shadow-2xs">
+            <div>
+              {articleMetadataHeader}
+              <h1 className="text-lg font-normal text-[#202124] leading-snug mt-1">
+                {activeDocGuide.title}
+              </h1>
+              <div className="w-full h-px bg-[#DADCE0] my-2.5" />
+              <div className="space-y-2 text-[10px] text-[#3C4043] leading-relaxed">
+                {activeDocGuide.overviewParagraphs.slice(0, 3).map((p, i) => (
+                  <p key={i}>{p}</p>
+                ))}
+              </div>
             </div>
-
-            {/* Right Column: Figure 1 • Architecture Center Guide (#78) + 4-Zone Key + Steps 1-7 */}
-            <div className="col-span-6 h-full flex flex-col justify-between gap-1.5 overflow-hidden">
-              <div className="px-2.5 py-1 rounded bg-[#E8F0FE] border border-[#AECBFA] text-center font-extrabold text-[9.5px] text-[#174EA6]">
-                FIGURE 1 • ARCHITECTURE CENTER GUIDE (#78)
-              </div>
-
-              <div className="p-2 rounded border-l-4 border-l-[#1967D2] border border-[#E2E8F0] bg-[#F8FAFC]">
-                <div className="text-[8px] font-bold text-[#1967D2] uppercase">
-                  Architectural Scope &amp; Design Mandate
-                </div>
-                <div className="text-[8.5px] font-semibold text-[#202124] leading-snug mt-0.5 line-clamp-2">
-                  {subtitle ||
-                    'Hub-and-spoke multi-tenant agentic AI architecture on Google Cloud enforcing cryptographic identity, OBO+DPoP token exchange, and 4-zone isolation.'}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 gap-1">
-                <div className="px-2 py-1 rounded border border-[#174EA6] bg-white flex items-center gap-2">
-                  <span className="px-1.5 py-0.5 rounded bg-[#AECBFA] text-[#174EA6] font-extrabold text-[7.5px] shrink-0">
-                    ZONE 1
-                  </span>
-                  <span className="text-[8px] text-[#202124] truncate">
-                    <strong>Routing Hub (#aecbfa):</strong> Cloud Armor WAF, IAP, Load Balancer &amp; Cloud Run OBO+DPoP router.
-                  </span>
-                </div>
-                <div className="px-2 py-1 rounded border border-[#137333] bg-white flex items-center gap-2">
-                  <span className="px-1.5 py-0.5 rounded bg-[#CEEAD6] text-[#137333] font-extrabold text-[7.5px] shrink-0">
-                    ZONE 2
-                  </span>
-                  <span className="text-[8px] text-[#202124] truncate">
-                    <strong>Governance Hub (#ceead6):</strong> Security Command Center, IAM &amp; PAB, Cloud KMS &amp; BigQuery OTel.
-                  </span>
-                </div>
-                <div className="px-2 py-1 rounded border border-[#B06000] bg-white flex items-center gap-2">
-                  <span className="px-1.5 py-0.5 rounded bg-[#FEEFC3] text-[#B06000] font-extrabold text-[7.5px] shrink-0">
-                    ZONE 3
-                  </span>
-                  <span className="text-[8px] text-[#202124] truncate">
-                    <strong>Left Spoke (#feefc3):</strong> Vertex AI Agent Engine, Model Armor (4/6) &amp; Gemini 2.5 Pro 90% prefix cache (5).
-                  </span>
-                </div>
-                <div className="px-2 py-1 rounded border border-[#C5221F] bg-white flex items-center gap-2">
-                  <span className="px-1.5 py-0.5 rounded bg-[#FAD2CF] text-[#C5221F] font-extrabold text-[7.5px] shrink-0">
-                    ZONE 4
-                  </span>
-                  <span className="text-[8px] text-[#202124] truncate">
-                    <strong>Right Spoke (#fad2cf):</strong> Scoped MCP servers, AlloyDB FORCE RLS (`SET LOCAL`) &amp; CMEK Silo vaults.
-                  </span>
-                </div>
-              </div>
-
-              <div className="px-2.5 py-1.5 rounded bg-[#E6F4EA] border border-[#188038] flex items-center justify-between text-[8.5px]">
-                <span className="font-extrabold text-[#137333]">VERIFIED OUTCOME • {normKey}</span>
-                <span className="font-bold text-[#202124]">
-                  {shapeCount} Native Editable Shapes • {connectorCount} Connectors • Slides 2–6: Complete Blog Guide
-                </span>
+            <div>
+              <div className="w-full h-px bg-[#DADCE0] my-2.5" />
+              <h2 className="text-sm font-normal text-[#202124] mb-1.5">Architecture</h2>
+              <div className="space-y-1.5 text-[10px] text-[#3C4043] leading-relaxed">
+                {(archSec?.leadParagraphs || []).slice(0, 2).map((p, i) => (
+                  <p key={i}>{p}</p>
+                ))}
               </div>
             </div>
           </div>
@@ -885,238 +836,198 @@ export default function DiagramInlineSlidesPreviewer({
       );
     }
 
-    // Slide 2 / 6: 1. Architecture & Components
+    // Slide 2 / 6: Figure 1 (100% Native Editable #78 Diagram inside clean DevSite <figure> frame)
     if (slide.num === 2) {
       return (
-        <div className="w-full aspect-video bg-white text-[#202124] flex flex-col justify-between overflow-hidden select-none">
-          {topRibbon}
-          {slideHeader('1. Architecture & Components', 'Editable Diagram + Blog • Slide 2 / 6')}
-          <div className="flex-1 p-3.5 grid grid-cols-12 gap-3 items-stretch min-h-0 bg-white overflow-hidden">
-            <div className="col-span-5 flex flex-col justify-between gap-2 overflow-hidden">
-              <div className="p-2.5 rounded-md border border-[#DADCE0] border-l-4 border-l-[#1967D2] bg-white flex-1 flex flex-col justify-between">
-                <div className="text-[10px] font-bold text-[#174EA6]">
-                  Architecture Overview ({normKey})
-                </div>
-                <div className="space-y-1 text-[8.5px] text-[#334155] leading-snug">
-                  <p><strong className="text-[#1967D2]">Core Engineering Challenge:</strong> Serving thousands of enterprise tenants on a shared agentic control plane with cryptographic isolation.</p>
-                  <p><strong className="text-[#188038]">Target Personas:</strong> Cloud architects, security engineers, and platform teams building multi-agent systems on Google Cloud.</p>
-                  <p><strong className="text-[#B06000]">Hub-and-Spoke Control Plane:</strong> Centralizes ingress routing, OBO+DPoP token exchange, and FinOps telemetry while isolating tenant state.</p>
-                </div>
+        <div className="w-full aspect-video bg-[#F8FAFC] p-2.5 text-[#202124] flex flex-col overflow-hidden select-none">
+          <div className="w-full h-full bg-white rounded-xl border border-[#DADCE0] px-6 py-3 flex flex-col justify-between overflow-hidden shadow-2xs">
+            {articleMetadataHeader}
+            <div className="flex-1 my-1 rounded-lg border border-[#DADCE0] bg-white flex flex-col justify-between overflow-hidden">
+              <div className="px-3 py-1.5 bg-[#F8FAFC] border-b border-[#DADCE0] flex items-center justify-between text-[10px]">
+                <span className="font-semibold text-[#202124]">Figure 1: {activeDocGuide.title}</span>
+                <span className="font-mono text-[9px] text-[#5F6368]">
+                  {shapeCount} Native Editable Shapes · {connectorCount} Connectors
+                </span>
               </div>
-              <div className="p-2.5 rounded-md border border-[#CBD5E1] border-l-4 border-l-[#188038] bg-[#F8FAFC] flex-1 flex flex-col justify-between">
-                <div className="text-[10px] font-bold text-[#137333]">
-                  5-Hop Defense-in-Depth Security Invariants
-                </div>
-                <div className="space-y-0.5 text-[8px] text-[#334155]">
-                  <div><strong className="text-[#137333]">HOP 1:</strong> Cloud Armor WAF + Workforce Identity Federation OIDC (`tenant_id`).</div>
-                  <div><strong className="text-[#137333]">HOP 2:</strong> Memorystore for Valkey token-bucket rate limiter &amp; session lock.</div>
-                  <div><strong className="text-[#137333]">HOP 3:</strong> Google ADK Router + regional Model Armor prompt/output screening.</div>
-                  <div><strong className="text-[#137333]">HOP 4:</strong> Cloud KMS Asymmetric JWT (`adk-agent-signing-key`) + RFC 9449 DPoP.</div>
-                  <div><strong className="text-[#137333]">HOP 5:</strong> AlloyDB PostgreSQL RLS (`SET LOCAL`) + Cloud KMS per-tenant CMEK.</div>
-                </div>
+              <div className="flex-1 p-2 flex items-center justify-center overflow-hidden bg-white">
+                {svgContent ? (
+                  <div
+                    className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:max-h-[340px] [&>svg]:object-contain"
+                    dangerouslySetInnerHTML={{ __html: svgContent }}
+                  />
+                ) : (
+                  <div className="w-full h-full pointer-events-none flex items-center justify-center">
+                    <DiagramViewerRenderSafe xml={xmlContent} />
+                  </div>
+                )}
               </div>
-            </div>
-
-            <div className="col-span-7 border border-[#DADCE0] rounded-md overflow-hidden flex flex-col">
-              <table className="w-full border-collapse text-left text-[9px] h-full">
-                <thead>
-                  <tr className="bg-[#174EA6] text-white">
-                    <th className="py-1.5 px-2.5 font-bold w-[32%] border-r border-white/20">Architectural Zone / Subsystem</th>
-                    <th className="py-1.5 px-2.5 font-bold w-[68%]">Google Cloud Services &amp; Key Responsibilities</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#DADCE0] text-[#3C4043]">
-                  <tr>
-                    <td className="py-1.5 px-2.5 font-bold text-[#174EA6] border-r border-[#DADCE0]">VPC Service Controls</td>
-                    <td className="py-1.5 px-2.5"><strong>Perimeter &amp; Exfiltration Guard:</strong> Security perimeters preventing cross-tenant data exfiltration across Vertex AI, AlloyDB, and Cloud KMS.</td>
-                  </tr>
-                  <tr>
-                    <td className="py-1.5 px-2.5 font-bold text-[#137333] border-r border-[#DADCE0]">Routing hub</td>
-                    <td className="py-1.5 px-2.5"><strong>External Application Load Balancer</strong>, <strong>Cloud Armor &amp; Model Armor</strong>, <strong>Identity-Aware Proxy (IAP)</strong>, and <strong>Cloud Run</strong> tier router.</td>
-                  </tr>
-                  <tr>
-                    <td className="py-1.5 px-2.5 font-bold text-[#B06000] border-r border-[#DADCE0]">Central governance hub</td>
-                    <td className="py-1.5 px-2.5"><strong>Security Command Center</strong>, <strong>IAM &amp; Cloud KMS</strong> asymmetric signing keys, and <strong>Cloud Logging &amp; BigQuery</strong> FinOps chargeback.</td>
-                  </tr>
-                  <tr>
-                    <td className="py-1.5 px-2.5 font-bold text-[#C5221F] border-r border-[#DADCE0]">Principal Access Boundary</td>
-                    <td className="py-1.5 px-2.5"><strong>Principal Access Boundary (PAB):</strong> Binds 2LO/3LO agent service accounts and RFC 8693 OBO tokens to tenant-scoped boundaries.</td>
-                  </tr>
-                  <tr>
-                    <td className="py-1.5 px-2.5 font-bold text-[#0F766E] border-r border-[#DADCE0]">Tenant projects</td>
-                    <td className="py-1.5 px-2.5"><strong>Vertex AI Agent Engine Runtime</strong>, <strong>Model Armor</strong>, <strong>Model Context Protocol (MCP) servers</strong>, and <strong>Tenant datastore</strong> (AlloyDB RLS / CMEK).</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="px-3 py-1.5 bg-[#F8F9FA] border-t border-[#DADCE0] text-[9.5px] text-[#5F6368]">
+                <strong className="text-[#202124]">Figure 1.</strong>{' '}
+                {archSec?.inlineDiagram?.caption || activeDocGuide.subtitle}
+              </div>
             </div>
           </div>
         </div>
       );
     }
 
-    // Slide 3 / 6: 2. Agentic Flow & Products Used
+    // Slide 3 / 6: Architecture Components Table & Numbered Agentic Flow
     if (slide.num === 3) {
+      const compGroups = archSec?.componentGroupsTable || [];
+      const flowSteps = archSec?.agenticFlowSteps || [];
       return (
-        <div className="w-full aspect-video bg-white text-[#202124] flex flex-col justify-between overflow-hidden select-none">
-          {topRibbon}
-          {slideHeader('2. Agentic Flow & Products Used', `Editable Diagram + Blog • Slide 3 / 6`)}
-          <div className="flex-1 p-3.5 bg-white grid grid-cols-12 gap-3 items-stretch min-h-0 overflow-hidden">
-            <div className="col-span-6 border border-[#DADCE0] rounded-md p-2.5 bg-white flex flex-col justify-between overflow-hidden">
-              <div className="px-2.5 py-1 rounded bg-[#E8F0FE] border border-[#1967D2] font-bold text-[9.5px] text-[#174EA6]">
-                Agentic flow (Steps 1–7 &amp; Sub-steps 4a–4d)
+        <div className="w-full aspect-video bg-[#F8FAFC] p-2.5 text-[#202124] flex flex-col overflow-hidden select-none">
+          <div className="w-full h-full bg-white rounded-xl border border-[#DADCE0] px-6 py-3.5 flex flex-col justify-between overflow-hidden shadow-2xs">
+            <div>
+              {articleMetadataHeader}
+              <p className="text-[10px] text-[#3C4043] mb-1.5">
+                The architecture consists of the following components:
+              </p>
+              <div className="border border-[#DADCE0] rounded overflow-hidden">
+                <table className="w-full border-collapse text-left text-[8.5px]">
+                  <thead>
+                    <tr className="bg-[#F8F9FA] border-b border-[#DADCE0] text-[#202124]">
+                      <th className="py-1 px-2.5 font-semibold w-[26%] border-r border-[#DADCE0]">Component</th>
+                      <th className="py-1 px-2.5 font-semibold w-[74%]">Description</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#DADCE0] text-[#3C4043]">
+                    {compGroups.slice(0, 5).map((grp, i) => (
+                      <tr key={i}>
+                        <td className="py-1 px-2.5 font-semibold text-[#202124] border-r border-[#DADCE0] align-top">
+                          {grp.groupTitle.replace(/\s*\([^)]*\)\s*$/g, '').trim()}
+                        </td>
+                        <td className="py-1 px-2.5 align-top leading-snug">
+                          {grp.items.length > 0
+                            ? grp.items.slice(0, 2).map((it) => `${it.name}: ${it.description}`).join(' • ')
+                            : grp.groupLead}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <ol className="list-decimal pl-4 space-y-1 text-[8.5px] text-[#334155] leading-snug">
-                <li>Caller sends a request to the External Application Load Balancer in the routing hub.</li>
-                <li>After passing Cloud Armor, IAP, and Model Armor checks, the load balancer forwards the request to the Cloud Run router.</li>
-                <li>The Cloud Run router verifies the OIDC tenant claim, mints a scoped OBO/DPoP token, and routes to the target tenant project.</li>
-                <li className="p-1.5 rounded bg-[#FFFBEB] border border-[#F59E0B] text-[#92400E]">
-                  <strong>Within the tenant project, the agent runtime orchestrates four sub-steps:</strong>
-                  <div className="grid grid-cols-2 gap-1 mt-1 text-[8px] text-[#334155]">
-                    <div className="p-1 rounded bg-white border border-[#FDE68A]"><strong>4a:</strong> Prompt validation via Model Armor</div>
-                    <div className="p-1 rounded bg-white border border-[#FDE68A]"><strong>4b:</strong> Grounded RAG retrieval</div>
-                    <div className="p-1 rounded bg-white border border-[#FDE68A]"><strong>4c:</strong> Scoped MCP tool invocation</div>
-                    <div className="p-1 rounded bg-white border border-[#FDE68A]"><strong>4d:</strong> Transactional RLS state update</div>
-                  </div>
-                </li>
-                <li>The agent runtime sends the validated, context-enriched prompt to the Gemini model to generate a grounded response.</li>
-                <li>The agent runtime passes the generated response through the tenant&apos;s Model Armor instance for output sanitization.</li>
-                <li>The sanitized response returns to the caller through the routing hub while zero-PII OTel FinOps spans stream to BigQuery.</li>
+            </div>
+
+            <div>
+              <div className="w-full h-px bg-[#DADCE0] my-2" />
+              <h3 className="text-xs font-medium text-[#202124] mb-1">Agentic flow</h3>
+              <ol className="list-decimal pl-4 space-y-0.5 text-[8.5px] text-[#3C4043] leading-snug">
+                {flowSteps.slice(0, 7).map((st, idx) => (
+                  <li key={idx}>
+                    {st.step}
+                    {st.subSteps && st.subSteps.length > 0 && (
+                      <span className="text-[#5F6368]">
+                        {' '}
+                        ({st.subSteps.map((sub, sIdx) => `4${String.fromCharCode(97 + sIdx)}. ${sub}`).join('; ')})
+                      </span>
+                    )}
+                  </li>
+                ))}
               </ol>
             </div>
-
-            <div className="col-span-6 border border-[#DADCE0] rounded-md p-2.5 bg-white flex flex-col justify-between overflow-hidden">
-              <div className="px-2.5 py-1 rounded bg-[#E6F4EA] border border-[#188038] font-bold text-[9.5px] text-[#137333]">
-                Google Cloud Products Used
-              </div>
-              <div className="space-y-1 text-[8.5px] text-[#334155] leading-snug">
-                <div className="p-1.5 rounded border border-[#DADCE0] border-l-4 border-l-[#188038]"><strong className="text-[#137333]">Gemini Enterprise Agent Platform &amp; Vertex AI Agent Engine:</strong> Managed runtime environment for Sessions, Memory Bank, and Context Caching.</div>
-                <div className="p-1.5 rounded border border-[#DADCE0] border-l-4 border-l-[#188038]"><strong className="text-[#137333]">Agent Development Kit (ADK):</strong> Framework for building, orchestrating, and testing multi-agent systems with deterministic callbacks.</div>
-                <div className="p-1.5 rounded border border-[#DADCE0] border-l-4 border-l-[#188038]"><strong className="text-[#137333]">Vertex AI and Gemini models:</strong> Foundation models for reasoning, planning, and grounded content generation.</div>
-                <div className="p-1.5 rounded border border-[#DADCE0] border-l-4 border-l-[#188038]"><strong className="text-[#137333]">Model Armor:</strong> Screens prompts and responses against prompt injection, jailbreaks, and sensitive data leakage.</div>
-                <div className="p-1.5 rounded border border-[#DADCE0] border-l-4 border-l-[#188038]"><strong className="text-[#137333]">Cloud Run &amp; Identity-Aware Proxy (IAP):</strong> Zero-trust serverless routing portal and gVisor-isolated MCP servers.</div>
-                <div className="p-1.5 rounded border border-[#DADCE0] border-l-4 border-l-[#188038]"><strong className="text-[#137333]">External Application Load Balancer &amp; Google Cloud Armor:</strong> Edge DDoS protection and WAF header sanitization.</div>
-              </div>
-            </div>
           </div>
         </div>
       );
     }
 
-    // Slide 4 / 6: 3. Use Case & Design Alternatives
+    // Slide 4 / 6: Products Used & Use Case
     if (slide.num === 4) {
+      const products = prodSec?.productsUsedItems || [];
+      const benefits = useCaseSec?.useCaseBenefits || [];
       return (
-        <div className="w-full aspect-video bg-white text-[#202124] flex flex-col justify-between overflow-hidden select-none">
-          {topRibbon}
-          {slideHeader('3. Use Case & Design Alternatives', 'Editable Diagram + Blog • Slide 4 / 6')}
-          <div className="flex-1 p-3.5 bg-white grid grid-cols-12 gap-3 items-stretch min-h-0 overflow-hidden">
-            <div className="col-span-6 flex flex-col justify-between gap-1.5 overflow-hidden">
-              <div className="px-2.5 py-1 rounded bg-[#E6F4EA] border border-[#188038] font-bold text-[9.5px] text-[#137333]">
-                Use Case: Why Agentic Multi-Tenancy Breaks Conventional SaaS Boundaries
-              </div>
-              <div className="p-2 rounded border border-[#DADCE0] border-l-4 border-l-[#1967D2] bg-white text-[8.5px] text-[#334155]">
-                <strong className="text-[#174EA6]">Enterprise Scenario &amp; Mandate:</strong> Untrusted input reaches the control path; in an agentic system, user input is partly instruction, making the model an active boundary.
-              </div>
-              <div className="p-2 rounded border border-[#CBD5E1] border-l-4 border-l-[#188038] bg-[#F8FAFC] text-[8.5px] text-[#334155]">
-                <div className="font-bold text-[#137333]">✓ Strict data isolation</div>
-                <div>Each tenant operates in a dedicated Google Cloud boundary or cryptographically enforced RLS scope with its own datastore and MCP servers.</div>
-              </div>
-              <div className="p-2 rounded border border-[#CBD5E1] border-l-4 border-l-[#188038] bg-white text-[8.5px] text-[#334155]">
-                <div className="font-bold text-[#137333]">✓ Specialized agent knowledge</div>
-                <div>Agents in each tenant project are grounded in domain-specific data, memory namespaces, and prefix caches without context pollution.</div>
-              </div>
-              <div className="p-2 rounded border border-[#CBD5E1] border-l-4 border-l-[#188038] bg-[#F8FAFC] text-[8.5px] text-[#334155]">
-                <div className="font-bold text-[#137333]">✓ Reduced cross-domain risk</div>
-                <div>PAB policies, VPC Service Controls, and RFC 8693 OBO tokens ensure that a compromise in one tenant environment never affects other tenants.</div>
-              </div>
+        <div className="w-full aspect-video bg-[#F8FAFC] p-2.5 text-[#202124] flex flex-col overflow-hidden select-none">
+          <div className="w-full h-full bg-white rounded-xl border border-[#DADCE0] px-6 py-3.5 flex flex-col justify-between overflow-hidden shadow-2xs">
+            <div>
+              {articleMetadataHeader}
+              <h2 className="text-sm font-normal text-[#202124] mt-0.5 mb-1">Products used</h2>
+              <p className="text-[9.5px] text-[#3C4043] mb-1.5">
+                This example architecture uses the following Google Cloud products and services:
+              </p>
+              <ul className="list-disc pl-4 space-y-0.5 text-[8.5px] text-[#3C4043] leading-snug">
+                {products.slice(0, 6).map((prod, i) => (
+                  <li key={i}>
+                    <span className="font-medium text-[#1A73E8]">{prod.name}</span>: {prod.description}
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            <div className="col-span-6 flex flex-col justify-between gap-1.5 overflow-hidden">
-              <div className="px-2.5 py-1 rounded bg-[#FEF7E0] border border-[#F9AB00] font-bold text-[9.5px] text-[#B06000]">
-                Design Alternatives (Networking, Compute &amp; MCP Tooling)
-              </div>
-              <div className="p-2 rounded border border-[#DADCE0] border-l-4 border-l-[#F9AB00] bg-white space-y-1 text-[8px]">
-                <div className="font-bold text-[#B06000]">Private access deployment</div>
-                <div className="grid grid-cols-2 gap-1.5">
-                  <div className="p-1.5 rounded bg-[#F8FAFC] border border-[#CBD5E1]"><strong className="text-[#174EA6]">Edge security policies:</strong> Retain External ALB with Cloud Armor IP allowlists.</div>
-                  <div className="p-1.5 rounded bg-[#FFFBEB] border border-[#FDE68A]"><strong className="text-[#B06000]">Internal Load Balancer:</strong> Route traffic over Cloud VPN or Interconnect inside VPC.</div>
-                </div>
-              </div>
-              <div className="p-2 rounded border border-[#DADCE0] border-l-4 border-l-[#F9AB00] bg-white space-y-1 text-[8px]">
-                <div className="font-bold text-[#B06000]">Compute infrastructure</div>
-                <div className="grid grid-cols-2 gap-1.5">
-                  <div className="p-1.5 rounded bg-[#F8FAFC] border border-[#CBD5E1]"><strong className="text-[#174EA6]">Existing Kubernetes investments:</strong> Deploy on GKE Autopilot when standardized on K8s.</div>
-                  <div className="p-1.5 rounded bg-[#FFFBEB] border border-[#FDE68A]"><strong className="text-[#B06000]">Advanced networking:</strong> Fine-grained pod-to-pod network policies and service mesh.</div>
-                </div>
-              </div>
-              <div className="p-2 rounded border border-[#DADCE0] border-l-4 border-l-[#F9AB00] bg-white space-y-1 text-[8px]">
-                <div className="font-bold text-[#B06000]">Model Context Protocol (MCP) servers</div>
-                <div className="grid grid-cols-2 gap-1.5">
-                  <div className="p-1.5 rounded bg-[#F8FAFC] border border-[#CBD5E1]"><strong className="text-[#174EA6]">Local MCP server:</strong> Highest isolation inside each tenant project using tenant-specific SAs.</div>
-                  <div className="p-1.5 rounded bg-[#FFFBEB] border border-[#FDE68A]"><strong className="text-[#B06000]">Shared MCP server:</strong> Centralizes management and reduces running instances across VPC-SC.</div>
-                </div>
-              </div>
+            <div>
+              <div className="w-full h-px bg-[#DADCE0] my-2" />
+              <h2 className="text-sm font-normal text-[#202124] mb-0.5">Use case</h2>
+              {useCaseSec?.useCaseSubHeading && (
+                <h3 className="text-[11px] font-medium text-[#202124] mb-1">{useCaseSec.useCaseSubHeading}</h3>
+              )}
+              <p className="text-[9px] text-[#3C4043] leading-snug mb-1.5">
+                {(useCaseSec?.leadParagraphs || [])[0]}
+              </p>
+              <ul className="list-disc pl-4 space-y-0.5 text-[8.5px] text-[#3C4043] leading-snug">
+                {benefits.slice(0, 3).map((b, i) => (
+                  <li key={i}>
+                    <strong className="text-[#202124]">{b.title}:</strong> {b.detail}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
       );
     }
 
-    // Slide 5 / 6: 4. Design Considerations (Well-Architected Framework)
+    // Slide 5 / 6: Design Alternatives & Design Considerations
     if (slide.num === 5) {
+      const altSubs = designAltSec?.designAlternativesSubSections || [];
+      const consSubs = designConsSec?.designConsiderationsSubSections || [];
       return (
-        <div className="w-full aspect-video bg-white text-[#202124] flex flex-col justify-between overflow-hidden select-none">
-          {topRibbon}
-          {slideHeader('4. Design Considerations (Well-Architected Framework)', 'Editable Diagram + Blog • Slide 5 / 6')}
-          <div className="flex-1 p-3.5 bg-white flex flex-col justify-between gap-2 overflow-hidden">
-            <div className="border border-[#DADCE0] rounded-md overflow-hidden">
-              <table className="w-full border-collapse text-left text-[8.5px] bg-white">
-                <thead>
-                  <tr className="bg-[#174EA6] text-white">
-                    <th className="py-1.5 px-2.5 font-bold w-40 border-r border-white/20">Well-Architected Pillar</th>
-                    <th className="py-1.5 px-2.5 font-bold w-48 border-r border-white/20">Google Cloud Components</th>
-                    <th className="py-1.5 px-2.5 font-bold">Design Considerations &amp; Actionable Recommendations</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#DADCE0] text-[#3C4043]">
-                  <tr>
-                    <td className="py-1.5 px-2.5 font-bold text-[#174EA6] border-r border-[#DADCE0]">Security, privacy &amp; compliance</td>
-                    <td className="py-1.5 px-2.5 font-bold text-[#202124] border-r border-[#DADCE0]">VPC-SC, Cloud Armor, IAP, Model Armor, PAB</td>
-                    <td className="py-1.5 px-2.5">Configure organization VPC-SC perimeters, enforce HTTPS + IAP on backend services, and screen prompts/outputs with Model Armor.</td>
-                  </tr>
-                  <tr>
-                    <td className="py-1.5 px-2.5 font-bold text-[#137333] border-r border-[#DADCE0]">Reliability</td>
-                    <td className="py-1.5 px-2.5 font-bold text-[#202124] border-r border-[#DADCE0]">Cloud Load Balancing, Cloud Run, Agent Engine</td>
-                    <td className="py-1.5 px-2.5">Deploy multi-region serverless NEGs, isolate tenant quotas with Memorystore for Valkey token buckets, and use managed Agent Engine scaling.</td>
-                  </tr>
-                  <tr>
-                    <td className="py-1.5 px-2.5 font-bold text-[#B06000] border-r border-[#DADCE0]">Operational efficiency</td>
-                    <td className="py-1.5 px-2.5 font-bold text-[#202124] border-r border-[#DADCE0]">Terraform IaC, CI/CD, Centralized OTel</td>
-                    <td className="py-1.5 px-2.5">Provision tenant spokes via reusable Terraform &ldquo;tenant vending machine&rdquo; modules and route all OTel spans to centralized BigQuery sinks.</td>
-                  </tr>
-                  <tr>
-                    <td className="py-1.5 px-2.5 font-bold text-[#C5221F] border-r border-[#DADCE0]">Cost optimization</td>
-                    <td className="py-1.5 px-2.5 font-bold text-[#202124] border-r border-[#DADCE0]">Context Caching, Provisioned Throughput, FinOps</td>
-                    <td className="py-1.5 px-2.5">Use Vertex AI Context Caching (`ContextCacheConfig`, 90% input token discount) for shared system prompts and attribute per-tenant token spend.</td>
-                  </tr>
-                </tbody>
-              </table>
+        <div className="w-full aspect-video bg-[#F8FAFC] p-2.5 text-[#202124] flex flex-col overflow-hidden select-none">
+          <div className="w-full h-full bg-white rounded-xl border border-[#DADCE0] px-6 py-3.5 flex flex-col justify-between overflow-hidden shadow-2xs">
+            <div>
+              {articleMetadataHeader}
+              <h2 className="text-sm font-normal text-[#202124] mt-0.5 mb-1">Design alternatives</h2>
+              <div className="space-y-1 text-[8.5px] text-[#3C4043] leading-snug">
+                {altSubs.slice(0, 3).map((sub, i) => (
+                  <div key={i}>
+                    <strong className="text-[#202124]">{sub.heading}:</strong> {(sub.leadParagraphs || [])[0]}
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-2.5">
-              <div className="p-2 rounded border border-[#DADCE0] border-t-4 border-t-[#1967D2] bg-white text-[8px]">
-                <div className="font-bold text-[#174EA6]">Security, Privacy &amp; Compliance Proof</div>
-                <p className="text-[#334155] mt-0.5">RFC 8693 OBO + RFC 9449 DPoP, AlloyDB FORCE RLS, and &lt;60s Cloud KMS CMEK kill-switches.</p>
-                <div className="mt-1 px-2 py-0.5 rounded bg-[#E8F0FE] text-[#174EA6] font-bold text-center">10/10 Red-Team Attacks Blocked • 6/6 CMEK PASS</div>
-              </div>
-              <div className="p-2 rounded border border-[#DADCE0] border-t-4 border-t-[#188038] bg-white text-[8px]">
-                <div className="font-bold text-[#137333]">Reliability &amp; Noisy-Neighbor Isolation</div>
-                <p className="text-[#334155] mt-0.5">Memorystore for Valkey per-tenant token-bucket bulkheads (120 vs. 600 RPM) and live PSC migration.</p>
-                <div className="mt-1 px-2 py-0.5 rounded bg-[#E6F4EA] text-[#137333] font-bold text-center">0 Dropped Sessions • 4/4 Live Migration PASS</div>
-              </div>
-              <div className="p-2 rounded border border-[#DADCE0] border-t-4 border-t-[#F9AB00] bg-white text-[8px]">
-                <div className="font-bold text-[#B06000]">Cost Optimization &amp; FinOps Attribution</div>
-                <p className="text-[#334155] mt-0.5">Immutable shared prompt prefix (`ContextCacheConfig` 90% discount) &amp; zero-PII BigQuery OTel spans.</p>
-                <div className="mt-1 px-2 py-0.5 rounded bg-[#FEF7E0] text-[#B06000] font-bold text-center">84.7% Net Token Savings • $42/mo Pattern A TCO</div>
+            <div>
+              <div className="w-full h-px bg-[#DADCE0] my-2" />
+              <h2 className="text-sm font-normal text-[#202124] mb-1">Design considerations</h2>
+              <p className="text-[9px] text-[#3C4043] mb-1.5">
+                {(designConsSec?.leadParagraphs || [])[0]}
+              </p>
+              <div className="border border-[#DADCE0] rounded overflow-hidden">
+                <table className="w-full border-collapse text-left text-[8.5px]">
+                  <thead>
+                    <tr className="bg-[#F8F9FA] border-b border-[#DADCE0] text-[#202124]">
+                      <th className="py-1 px-2.5 font-semibold w-[24%] border-r border-[#DADCE0]">Well-Architected pillar</th>
+                      <th className="py-1 px-2.5 font-semibold w-[24%] border-r border-[#DADCE0]">Component</th>
+                      <th className="py-1 px-2.5 font-semibold w-[52%]">Design considerations and recommendations</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#DADCE0] text-[#3C4043]">
+                    {consSubs.slice(0, 4).map((sub, i) => (
+                      <tr key={i}>
+                        <td className="py-1 px-2.5 font-semibold text-[#202124] border-r border-[#DADCE0] align-top">
+                          {sub.heading}
+                        </td>
+                        <td className="py-1 px-2.5 text-[#202124] border-r border-[#DADCE0] align-top">
+                          {sub.rows.map((r) => r.component).join(', ')}
+                        </td>
+                        <td className="py-1 px-2.5 align-top leading-snug">
+                          {sub.rows
+                            .slice(0, 2)
+                            .map((r) => `${r.component}: ${r.recommendations[0] || ''}`)
+                            .join(' ')}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -1124,63 +1035,59 @@ export default function DiagramInlineSlidesPreviewer({
       );
     }
 
-    // Slide 6 / 6: 5. Deployment, What's Next & Contributors
+    // Slide 6 / 6: Deployment, What's Next & Contributors (Role/Team Labels Only)
+    const snippet = deploySec?.codeSnippet;
+    const nextLinks = whatsNextSec?.whatsNextLinks || [];
+    const otherContribs = contribSec?.contributorsInfo?.otherContributors || [
+      'Principal AI Architect & Field Deployment Engineering',
+      'Google Cloud Architecture Center Engineering Team',
+    ];
     return (
-      <div className="w-full aspect-video bg-white text-[#202124] flex flex-col justify-between overflow-hidden select-none">
-        {topRibbon}
-        {slideHeader("5. Deployment, What's Next & Contributors", 'Editable Diagram + Blog • Slide 6 / 6')}
-        <div className="flex-1 p-3.5 bg-white grid grid-cols-12 gap-3 items-stretch min-h-0 overflow-hidden">
-          <div className="col-span-7 flex flex-col justify-between gap-2 overflow-hidden">
-            <div className="p-2.5 rounded-md border border-[#DADCE0] border-l-4 border-l-[#1967D2] bg-white">
-              <div className="text-[9.5px] font-bold text-[#174EA6]">Deployment Runbook &amp; Live Cloud Verification</div>
-              <div className="grid grid-cols-2 gap-1.5 mt-1.5 text-[8px]">
-                <div className="p-1.5 rounded bg-[#F8FAFC] border border-[#CBD5E1]"><strong className="text-[#174EA6]">STEP 1 • IDENTITY &amp; KMS:</strong> WIF OIDC claim mappings &amp; Cloud KMS asymmetric signing keys.</div>
-                <div className="p-1.5 rounded bg-[#F8FAFC] border border-[#CBD5E1]"><strong className="text-[#174EA6]">STEP 2 • STATE &amp; CACHE:</strong> AlloyDB `FORCE ROW LEVEL SECURITY` &amp; Valkey token buckets.</div>
-                <div className="p-1.5 rounded bg-[#F8FAFC] border border-[#CBD5E1]"><strong className="text-[#174EA6]">STEP 3 • ADK &amp; GUARDRAILS:</strong> Deploy Google ADK orchestrator + regional Model Armor templates.</div>
-                <div className="p-1.5 rounded bg-[#F8FAFC] border border-[#CBD5E1]"><strong className="text-[#174EA6]">STEP 4 • FINOPS &amp; AUDIT:</strong> Execute verification snippet to validate CMEK &amp; BigQuery OTel spans.</div>
+      <div className="w-full aspect-video bg-[#F8FAFC] p-2.5 text-[#202124] flex flex-col overflow-hidden select-none">
+        <div className="w-full h-full bg-white rounded-xl border border-[#DADCE0] px-6 py-3.5 flex flex-col justify-between overflow-hidden shadow-2xs">
+          <div>
+            {articleMetadataHeader}
+            <h2 className="text-sm font-normal text-[#202124] mt-0.5 mb-1">Deployment</h2>
+            <p className="text-[9px] text-[#3C4043] mb-1.5">
+              {(deploySec?.leadParagraphs || [])[0]}
+            </p>
+            {snippet && (
+              <div className="rounded border border-[#DADCE0] bg-[#F8FAFC] overflow-hidden">
+                <div className="px-2.5 py-1 bg-[#F8F9FA] border-b border-[#DADCE0] flex items-center justify-between text-[8px] font-mono font-semibold text-[#334155]">
+                  <span>{snippet.filename}</span>
+                  <span>{snippet.language.toUpperCase()}</span>
+                </div>
+                <pre className="p-2 text-[7.5px] font-mono text-[#202124] leading-tight overflow-hidden">
+                  {snippet.code.split('\n').slice(0, 6).join('\n')}
+                </pre>
               </div>
-            </div>
-            <div className="flex-1 rounded-md border border-[#94A3B8] bg-[#F1F5F9] overflow-hidden flex flex-col">
-              <div className="px-2.5 py-1 bg-[#E2E8F0] border-b border-[#94A3B8] flex items-center justify-between text-[8px] font-bold text-[#0F172A]">
-                <span>Implementation Snippet: src/ingress/security_middleware.py</span>
-                <span className="text-[#174EA6]">PYTHON 3.12 • GOOGLE ADK • VERIFIED</span>
-              </div>
-              <pre className="p-2 text-[7.5px] font-mono text-[#0F172A] leading-tight overflow-hidden">
-{`01 | def bind_verified_tenant_intent_token(raw_headers: dict, verified_oidc_jwt: dict) -> dict:
-02 |   # 1. Strip any client-supplied X-Tenant-ID header to prevent header spoofing
-03 |   raw_headers.pop("X-Tenant-ID", None)
-04 |   user_sub = verified_oidc_jwt["sub"]            # e.g. "alice@tenant-a.com"
-05 |   tenant_id = verified_oidc_jwt["tenant_id"]     # e.g. "tenant_a"
-06 |   return {"iss": "https://gateway.agentengine.goog", "sub": user_sub, "tenant_id": tenant_id,
-07 |           "cnf": {"jkt": verified_oidc_jwt["dpop_jkt"]}} # RFC 9449 DPoP thumbprint`}
-              </pre>
-            </div>
+            )}
           </div>
 
-          <div className="col-span-5 flex flex-col justify-between gap-2 overflow-hidden">
-            <div className="p-2.5 rounded-md border border-[#DADCE0] border-l-4 border-l-[#188038] bg-white flex-1 flex flex-col justify-between">
-              <div className="text-[9.5px] font-bold text-[#137333]">What&apos;s Next (Architecture Center References)</div>
-              <div className="space-y-1 text-[8px] text-[#334155]">
-                <div className="p-1 rounded bg-[#F8FAFC] border border-[#E2E8F0]"><strong className="text-[#174EA6]">→ Multi-tenant agentic AI system on Google Cloud:</strong> Canonical reference architecture.</div>
-                <div className="p-1 rounded bg-white border border-[#E2E8F0]"><strong className="text-[#174EA6]">→ Agent Development Kit (ADK) Documentation:</strong> Multi-agent callbacks &amp; MCP toolsets.</div>
-                <div className="p-1 rounded bg-[#F8FAFC] border border-[#E2E8F0]"><strong className="text-[#174EA6]">→ Vertex AI Agent Engine Overview:</strong> Managed runtime, Sessions, Memory Bank &amp; Caching.</div>
-                <div className="p-1 rounded bg-white border border-[#E2E8F0]"><strong className="text-[#174EA6]">→ Google Cloud Well-Architected Framework:</strong> AI &amp; ML security, reliability &amp; cost pillars.</div>
+          <div>
+            <div className="w-full h-px bg-[#DADCE0] my-1.5" />
+            <h2 className="text-sm font-normal text-[#202124] mb-1">What&apos;s next</h2>
+            <ul className="list-disc pl-4 space-y-0.5 text-[8.5px] text-[#3C4043] leading-snug">
+              {nextLinks.slice(0, 3).map((lnk, i) => (
+                <li key={i}>
+                  <span className="font-medium text-[#1A73E8]">{lnk.label}</span> — {lnk.description}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <div className="w-full h-px bg-[#DADCE0] my-1.5" />
+            <h2 className="text-sm font-normal text-[#202124] mb-1">Contributors</h2>
+            <div className="space-y-0.5 text-[8.5px] text-[#3C4043]">
+              <div>
+                <strong className="text-[#202124]">Authors:</strong> {activeDocGuide.authors.join(' • ')}
               </div>
-            </div>
-            <div className="p-2.5 rounded-md border border-[#CBD5E1] border-l-4 border-l-[#174EA6] bg-[#F8FAFC]">
-              <div className="text-[9px] font-bold text-[#174EA6]">Contributors &amp; Verification Provenance</div>
-              <div className="grid grid-cols-2 gap-1.5 mt-1 text-[7.5px] text-[#334155]">
-                <div className="p-1.5 rounded bg-white border border-[#E2E8F0]">
-                  <strong className="text-[#174EA6]">Authors &amp; Contributors:</strong><br />
-                  • Nithin Reddy Cheruku &amp; Navneet Tuteja<br />
-                  • Nitin Aggarwal | Principal AI Architect
-                </div>
-                <div className="p-1.5 rounded bg-[#E8F0FE] border border-[#AECBFA]">
-                  <strong className="text-[#174EA6]">Cloud Verification Receipt:</strong><br />
-                  • Doc ID: {normKey} (#78)<br />
-                  • GCP: nitina-ggarwal-sandbox-647724<br />
-                  • Audit: 9/9 Gates PASS
-                </div>
+              <div>
+                <strong className="text-[#202124]">Other contributors:</strong> {otherContribs.join(' • ')}
+              </div>
+              <div className="text-[8px] italic text-[#5F6368]">
+                Last updated {contribSec?.contributorsInfo?.lastUpdatedDate || '2026-10-15 UTC'}.
               </div>
             </div>
           </div>

@@ -141,7 +141,7 @@ const RAW_GOOGLE_CLOUD_DOCUMENTATION_SERIES: CanonicalDocGuide[] = [
     title: 'Building Multi-Tenant Agents: Core Challenges, Cryptographic Identity & Token Propagation',
     subtitle:
       'Why autonomous agents break conventional SaaS perimeter isolation, the 10 stack components that force a Pool-vs-Silo decision, the four distinct identities (ID-1 to ID-4), and RFC 8693 On-Behalf-Of (OBO) + SPIFFE token propagation.',
-    authors: ['Nithin Reddy Cheruku', 'Navneet Tuteja', 'Dhawal Patel'],
+    authors: ['Principal AI Architect', 'Cloud Solutions Architecture', 'Enterprise AI Field Engineering'],
     readTimeMinutes: 12,
     lastVerifiedDate: 'October 2026',
     audience: 'SaaS Platform Architects, Principal Security Engineers & B2B ISV CTOs',
@@ -330,7 +330,7 @@ const RAW_GOOGLE_CLOUD_DOCUMENTATION_SERIES: CanonicalDocGuide[] = [
     title: 'Agent Deployment Models: Navigating the Agentic Trilemma Across Pool, Bridge & Silo',
     subtitle:
       'Balancing Tenant Isolation, Cost Efficiency, and Operational Simplicity across Build, Scale, Govern, and Optimize pillars—and comparing Pattern 1 (Pool), Pattern 2A/2B (Bridge), and Pattern 3 (Silo).',
-    authors: ['Nithin Reddy Cheruku', 'Navneet Tuteja', 'Dhawal Patel'],
+    authors: ['Principal AI Architect', 'Cloud Solutions Architecture', 'Enterprise AI Field Engineering'],
     readTimeMinutes: 11,
     lastVerifiedDate: 'October 2026',
     audience: 'Cloud Solutions Architects, SaaS Product Leaders & FinOps Engineering Teams',
@@ -478,7 +478,7 @@ const RAW_GOOGLE_CLOUD_DOCUMENTATION_SERIES: CanonicalDocGuide[] = [
     title: 'Building the High-Density Pool Tier: An End-to-End Implementation Blueprint',
     subtitle:
       'Tracing a live agentic turn (Alice from Tenant A asking "Analyze Q3 revenue") across the Control Plane, Compute Plane, Data Plane (The Generic 3-Hop Governed Access Pattern), and Cross-Plane Observability.',
-    authors: ['Nithin Reddy Cheruku', 'Navneet Tuteja', 'Dhawal Patel'],
+    authors: ['Principal AI Architect', 'Cloud Solutions Architecture', 'Enterprise AI Field Engineering'],
     readTimeMinutes: 15,
     lastVerifiedDate: 'October 2026',
     audience: 'Principal Systems Architects, Staff Backend Engineers & Database Reliability Engineers',
@@ -717,7 +717,7 @@ CREATE OR REPLACE ROW ACCESS POLICY tenant_pooled_rls_policy
     title: 'Building the Hybrid Bridge Tier: Private Service Connect (PSC) Spokes & Live Tier Graduation',
     subtitle:
       'Decoupling compute and data planes with Pattern 2A (Tier-Based Hybrid Bridge) and Pattern 2B (Layer-Decoupled Hybrid Bridge via Private Service Connect)—plus zero-downtime live tenant graduation from Pool to Silo.',
-    authors: ['Nithin Reddy Cheruku', 'Navneet Tuteja', 'Dhawal Patel'],
+    authors: ['Principal AI Architect', 'Cloud Solutions Architecture', 'Enterprise AI Field Engineering'],
     readTimeMinutes: 13,
     lastVerifiedDate: 'October 2026',
     audience: 'Cloud Network Architects, SaaS Platform Engineers & Enterprise Migration Leads',
@@ -842,7 +842,7 @@ resource "google_compute_network" "finvault_spoke_vpc" {
     title: 'Building the Sovereign Silo Tier: VPC Service Controls, Customer CMEK & Crypto-Shredding',
     subtitle:
       'Deploying dedicated per-tenant Google Cloud project perimeters (Pattern 3) for HIPAA, FedRAMP High, and PCI-DSS workloads with VPC Service Controls, Principal Access Boundaries, Customer CMEK, and Gemma 3 / Gemini endpoints.',
-    authors: ['Nithin Reddy Cheruku', 'Navneet Tuteja', 'Dhawal Patel'],
+    authors: ['Principal AI Architect', 'Cloud Solutions Architecture', 'Enterprise AI Field Engineering'],
     readTimeMinutes: 13,
     lastVerifiedDate: 'October 2026',
     audience: 'CISO Security Architects, Regulated Financial/Healthcare Engineers & DevSecOps',
@@ -966,7 +966,7 @@ def assert_tenant_cmek_active_or_halt(kms_key_name: str, tenant_id: str) -> dict
     title: 'Production Verification: 10-Point Red-Team Breach Simulation & Cloud Console Runbook',
     subtitle:
       'Proving multi-tenant isolation to CISOs and enterprise auditors before launch—running 10 automated adversarial attack simulations (SIM 1–SIM 10) and executing the 8-stage Google Cloud Console & SSH verification runbook.',
-    authors: ['Nithin Reddy Cheruku', 'Navneet Tuteja', 'Dhawal Patel'],
+    authors: ['Principal AI Architect', 'Cloud Solutions Architecture', 'Enterprise AI Field Engineering'],
     readTimeMinutes: 14,
     lastVerifiedDate: 'October 2026',
     audience: 'Security Auditors, Red-Team Engineers, SREs & Cloud Deployment Teams',
@@ -1998,7 +1998,7 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
       contributorsInfo: {
         authors: raw.authors,
         otherContributors: [
-          'Nitin Aggarwal | Principal AI Architect & Field Deployment Engineering',
+          'Principal AI Architect & Field Deployment Engineering',
           'Google Cloud Architecture Center Engineering Team',
         ],
         lastUpdatedDate: '2026-10-15 UTC',

@@ -1196,6 +1196,26 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                 <>
                   <button
                     type="button"
+                    data-testid="doc-reader-export-blog-slides-btn"
+                    onClick={() =>
+                      openDiagramInGoogleWorkspace({
+                        key: activeDocGuide.docId,
+                        title: `${activeDocGuide.docId} — ${activeDocGuide.title}`,
+                        mode: 'slides',
+                        xmlContent: compileOfficialArchCenterDrawioXml(activeOfficialArchCenterBp),
+                        markdownContent: buildCanonicalDocMarkdown(activeDocGuide),
+                      })
+                    }
+                    className="px-2.5 py-1 rounded-lg bg-[#1a73e8] hover:bg-[#1557b0] text-white border border-[#1a73e8] text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer shadow-2xs transition-colors"
+                    title="Export the full blog article and architecture diagram (1:1 UI layout excluding left/right palettes) to Google Slides"
+                  >
+                    <span className="w-3.5 h-3.5 rounded-[3px] bg-white text-[#1a73e8] font-black text-[9px] inline-flex items-center justify-center shrink-0">
+                      S
+                    </span>
+                    <span>Export Blog to Google Slides ↗</span>
+                  </button>
+                  <button
+                    type="button"
                     data-testid="doc-reader-print-pdf-btn"
                     onClick={() => window.print()}
                     className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 text-xs font-medium inline-flex items-center gap-1.5 cursor-pointer shadow-2xs"
@@ -2623,7 +2643,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                     type="text"
                     value={authorName}
                     onChange={(e) => setAuthorName(e.target.value)}
-                    placeholder={generatedBlog.authors[0]?.name || 'Nitin Aggarwal / Annie Wang'}
+                    placeholder={generatedBlog.authors[0]?.name || 'Principal AI Architect / Cloud Solutions Architecture'}
                     className="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs"
                   />
                 </div>

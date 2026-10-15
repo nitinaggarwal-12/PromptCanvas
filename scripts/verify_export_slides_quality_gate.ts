@@ -371,61 +371,70 @@ async function verifySixSlideBlogEditableDecks() {
   const s6Xml = await zip01.file('ppt/slides/slide6.xml')!.async('string');
 
   if (
-    !s1Xml.includes('w="sm" len="sm"') ||
-    s1Xml.includes('<a:headEnd type="triangle"/>') ||
-    !s1Xml.includes('4-ZONE HUB-AND-SPOKE TOPOLOGY KEY') ||
-    !s1Xml.includes('ARCHITECTURE CENTER GUIDE (#78)') ||
-    !s1Xml.includes('CALLOUT STEPS')
+    !s1Xml.includes('Cloud Architecture Center') ||
+    !s1Xml.includes('DOC-MT-01') ||
+    !s1Xml.includes('Last reviewed') ||
+    !s1Xml.includes('Architecture') ||
+    s1Xml.includes('4-ZONE HUB-AND-SPOKE TOPOLOGY KEY')
   ) {
-    console.error('❌ EXPORT GATE FAILED: Slide 1 XML is missing compact arrowheads (w="sm" len="sm"), 4-Zone Architecture Center Reference Sidebar, or 7-Step Callout strips!');
+    console.error('❌ EXPORT GATE FAILED: Slide 1 XML must render the 1:1 single-column white DevSite <article> Overview & Architecture introduction matching the visible UI (zero 4-zone bento sidebar)!')
     process.exit(1);
   }
   if (
-    s2Xml.includes('<a:tbl>') ||
-    !s2Xml.includes('HOP 1') ||
-    !s2Xml.includes('HOP 5') ||
-    !s2Xml.includes('VPC Service Controls') ||
-    !s2Xml.includes('Principal Access Boundary Policy') ||
-    s2Xml.includes('Routing hub (Hop 1')
+    !s2Xml.includes('w="sm" len="sm"') ||
+    s2Xml.includes('<a:headEnd type="triangle"/>') ||
+    !s2Xml.includes('Figure 1:') ||
+    !s2Xml.includes('Figure 1.') ||
+    s2Xml.includes('4-ZONE HUB-AND-SPOKE TOPOLOGY KEY')
   ) {
-    console.error('❌ EXPORT GATE FAILED: Slide 2 XML must use proportional 5-Zone Component Matrix cards (zero auto-collapsing <a:tbl>), include HOP 1..5 strips, populate Zone 4 VPC-SC/PAB rows, and strip noisy parenthetical echoes!');
-    process.exit(1);
-  }
-  if (!s3Xml.includes('Google Cloud Products Used') || !s3Xml.includes('Vertex AI Agent Engine') || !s3Xml.includes('Model Armor') || !s3Xml.includes('4a:')) {
-    console.error('❌ EXPORT GATE FAILED: Slide 3 XML is missing Google Cloud Products Used cards or 2x2 Step 4a-4d sub-step grid!');
+    console.error('❌ EXPORT GATE FAILED: Slide 2 XML must render Figure 1 as a full-width 100% native editable diagram with compact arrowheads (w="sm" len="sm") inside a clean DevSite <figure> frame (zero 4-zone sidebar)!')
     process.exit(1);
   }
   if (
-    !s4Xml.includes('Use Case:') ||
-    !s4Xml.includes('Strict data isolation') ||
-    !s4Xml.includes('Enforced via:') ||
-    !s4Xml.includes('Design Alternatives') ||
-    !s4Xml.includes('Private access deployment')
+    s3Xml.includes('<a:tbl>') ||
+    !s3Xml.includes('The architecture consists of the following components:') ||
+    !s3Xml.includes('Component') ||
+    !s3Xml.includes('Description') ||
+    !s3Xml.includes('Agentic flow') ||
+    !s3Xml.includes('4a.')
   ) {
-    console.error('❌ EXPORT GATE FAILED: Slide 4 XML is missing Use Case Enforced via pills or Design Alternatives comparison sub-cards!');
+    console.error('❌ EXPORT GATE FAILED: Slide 3 XML must render the clean 2-column DevSite Component | Description table (zero auto-collapsing <a:tbl>) and numbered Agentic flow (Steps 1-7 & 4a-4d)!')
+    process.exit(1);
+  }
+  if (
+    !s4Xml.includes('Products used') ||
+    !s4Xml.includes('Vertex AI Agent Engine') ||
+    !s4Xml.includes('Model Armor') ||
+    !s4Xml.includes('Use case') ||
+    !s4Xml.includes('Strict data isolation')
+  ) {
+    console.error('❌ EXPORT GATE FAILED: Slide 4 XML is missing Products used bulleted list or Use case section!')
     process.exit(1);
   }
   if (
     s5Xml.includes('<a:tbl>') ||
-    !s5Xml.includes('Security, privacy, and compliance') ||
-    !s5Xml.includes('Red-Team Matrix: 10/10 Blocked') ||
-    !s5Xml.includes('Prompt Cache: 90% Discount') ||
-    !s5Xml.includes('84.7% Net Token Savings')
+    !s5Xml.includes('Design alternatives') ||
+    !s5Xml.includes('Private access deployment') ||
+    !s5Xml.includes('Design considerations') ||
+    !s5Xml.includes('Well-Architected pillar') ||
+    !s5Xml.includes('Security, privacy, and compliance')
   ) {
-    console.error('❌ EXPORT GATE FAILED: Slide 5 XML must replace auto-collapsing <a:tbl> with 4 explicit-height Well-Architected Pillar Swimlane Rows + 3 Quantitative Proof Cards!');
+    console.error('❌ EXPORT GATE FAILED: Slide 5 XML must render Design alternatives and the explicit-height Well-Architected Design considerations table (zero <a:tbl>)!')
     process.exit(1);
   }
   if (
-    !s6Xml.includes('Deployment Runbook') ||
-    !s6Xml.includes('STEP 1') ||
-    !s6Xml.includes('STEP 4') ||
-    !s6Xml.includes('01 |') ||
-    !s6Xml.includes('Architecture Center References') ||
+    !s6Xml.includes('Deployment') ||
+    (!s6Xml.includes("What's next") && !s6Xml.includes('What&apos;s next')) ||
+    !s6Xml.includes('Contributors') ||
     !s6Xml.includes('Authors:') ||
-    !s6Xml.includes('Contributors:') ||
-    !s6Xml.includes('Cloud Verification Receipt')
+    !s6Xml.includes('Other contributors:') ||
+    !s6Xml.includes('Principal AI Architect') ||
+    s6Xml.includes('Nithin Reddy Cheruku') ||
+    s6Xml.includes('Navneet Tuteja') ||
+    s6Xml.includes('Dhawal Patel') ||
+    s6Xml.includes('Nitin Aggarwal')
   ) {
-    console.error('❌ EXPORT GATE FAILED: Slide 6 XML is missing 2x2 Deployment Runbook steps, numbered code lines, What\'s Next, or split Authors/Verification Provenance sub-cards!');
+    console.error('❌ EXPORT GATE FAILED: Slide 6 XML must render Deployment, What\'s next, and Contributors with role/team labels only (zero personal names)!')
     process.exit(1);
   }
 

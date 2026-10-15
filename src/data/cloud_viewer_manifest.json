@@ -1,72 +1,72 @@
 {
-  "updatedAt": "2026-10-15T18:06:09.989Z",
+  "updatedAt": "2026-10-15T23:20:51.887Z",
   "accountEmail": "nitinagga@google.com",
   "oauthClientId": "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com",
   "slides": {
     "WS1": {
       "key": "WS1",
       "title": "WS1 — Building Multi-Tenant Agents: Core Challenges, Cryptographic Identity & Token Propagation (Editable Diagram #78 + Blog Guide)",
-      "sha256": "babb259d99ed9763f7c294120f4f8fe2bd33377ac0844220665e54430e6a8fb4",
-      "sizeBytes": 168553,
+      "sha256": "7a57349202c21bf6e2414bdb4e1dad43819a735fb2f7f8cf85c6e305b60f4c5d",
+      "sizeBytes": 158117,
       "googleSlidesId": "1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/edit?usp=drivesdk&resourcekey=0-EfBs2SS9bacbgKH-9Nj3AQ",
-      "syncedAt": "2026-10-15T18:04:43.397Z"
+      "syncedAt": "2026-10-15T23:19:33.113Z"
     },
     "WS2": {
       "key": "WS2",
       "title": "WS2 — Agent Deployment Models: Navigating the Agentic Trilemma Across Pool, Bridge & Silo (Editable Diagram #78 + Blog Guide)",
-      "sha256": "2062fae2b19ee0e4abe3c2c9a47890e5302a04f7bc9503c81f30a2695ad5613e",
-      "sizeBytes": 159205,
+      "sha256": "e7add3752c1604612b60d098d19d9c59f05d2455707d0d51742dbee0157f8132",
+      "sizeBytes": 148377,
       "googleSlidesId": "1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc/edit?usp=drivesdk",
-      "syncedAt": "2026-10-15T18:05:05.861Z"
+      "syncedAt": "2026-10-15T23:19:53.945Z"
     },
     "WS3": {
       "key": "WS3",
       "title": "WS3 — Building the High-Density Pool Tier: An End-to-End Implementation Blueprint (Editable Diagram #78 + Blog Guide)",
-      "sha256": "b213f0e20f2a912060af5e5473657566f36567d79572dae1ab542505cba49591",
-      "sizeBytes": 172255,
+      "sha256": "2e10242063c6567a3a2c562a30aecd96106674c4218af0b3d4fe415edfd07d55",
+      "sizeBytes": 161119,
       "googleSlidesId": "1ZkfRhStnXBer8E1xT50hxclg4S3NMhGJDFd2EBlEX38",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1ZkfRhStnXBer8E1xT50hxclg4S3NMhGJDFd2EBlEX38/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1ZkfRhStnXBer8E1xT50hxclg4S3NMhGJDFd2EBlEX38/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1ZkfRhStnXBer8E1xT50hxclg4S3NMhGJDFd2EBlEX38/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1ZkfRhStnXBer8E1xT50hxclg4S3NMhGJDFd2EBlEX38/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1ZkfRhStnXBer8E1xT50hxclg4S3NMhGJDFd2EBlEX38/edit?usp=drivesdk",
-      "syncedAt": "2026-10-15T18:05:16.293Z"
+      "syncedAt": "2026-10-15T23:20:02.761Z"
     },
     "WS4": {
       "key": "WS4",
       "title": "WS4 — Building the Hybrid Bridge Tier: Private Service Connect (PSC) Spokes & Live Tier Graduation (Editable Diagram #78 + Blog Guide)",
-      "sha256": "4f695b235e28e7a8c5af33df66e5c63107000c9ae404eae179560d94aacb3386",
-      "sizeBytes": 162219,
+      "sha256": "419158ea6d4fbeb52f991fd0378ac5935b060822d92060d530f9d3aa0541f179",
+      "sizeBytes": 150963,
       "googleSlidesId": "1nxRiawJOzhfjlBTmC21SSrrh9CzSUKEj843ZsOF5s1E",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1nxRiawJOzhfjlBTmC21SSrrh9CzSUKEj843ZsOF5s1E/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1nxRiawJOzhfjlBTmC21SSrrh9CzSUKEj843ZsOF5s1E/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1nxRiawJOzhfjlBTmC21SSrrh9CzSUKEj843ZsOF5s1E/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1nxRiawJOzhfjlBTmC21SSrrh9CzSUKEj843ZsOF5s1E/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1nxRiawJOzhfjlBTmC21SSrrh9CzSUKEj843ZsOF5s1E/edit?usp=drivesdk",
-      "syncedAt": "2026-10-15T18:05:25.643Z"
+      "syncedAt": "2026-10-15T23:20:11.938Z"
     },
     "WS5": {
       "key": "WS5",
       "title": "WS5 — Production Verification: 10-Point Red-Team Breach Simulation & Cloud Console Runbook (Editable Diagram #78 + Blog Guide)",
-      "sha256": "17e18cd89a3b0c159701e498972d4f492d7a7cc521bad2b069d1396be9a0ac1d",
-      "sizeBytes": 151015,
+      "sha256": "79802bf81c51b51a4cf27c518e5552fa288cfb1e20223d36e6417c0e579108da",
+      "sizeBytes": 139981,
       "googleSlidesId": "1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc/edit?usp=drivesdk&resourcekey=0-Ks65vydDtdNG4qOrlwh-0A",
-      "syncedAt": "2026-10-15T18:05:43.245Z"
+      "syncedAt": "2026-10-15T23:20:27.732Z"
     },
     "ALL": {
       "key": "ALL",
@@ -85,132 +85,132 @@
     "BP-78": {
       "key": "BP-78",
       "title": "BP-78 — Building Multi-Tenant Agents: Core Challenges, Cryptographic Identity & Token Propagation (Editable Diagram #78 + Blog Guide)",
-      "sha256": "babb259d99ed9763f7c294120f4f8fe2bd33377ac0844220665e54430e6a8fb4",
-      "sizeBytes": 168553,
+      "sha256": "7a57349202c21bf6e2414bdb4e1dad43819a735fb2f7f8cf85c6e305b60f4c5d",
+      "sizeBytes": 158117,
       "googleSlidesId": "1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/edit?usp=drivesdk&resourcekey=0-EfBs2SS9bacbgKH-9Nj3AQ",
-      "syncedAt": "2026-10-15T18:04:43.397Z"
+      "syncedAt": "2026-10-15T23:19:33.113Z"
     },
     "DOC-MT-01": {
       "key": "DOC-MT-01",
       "title": "DOC-MT-01 — Building Multi-Tenant Agents: Core Challenges, Cryptographic Identity & Token Propagation (Editable Diagram #78 + Blog Guide)",
-      "sha256": "babb259d99ed9763f7c294120f4f8fe2bd33377ac0844220665e54430e6a8fb4",
-      "sizeBytes": 168553,
+      "sha256": "7a57349202c21bf6e2414bdb4e1dad43819a735fb2f7f8cf85c6e305b60f4c5d",
+      "sizeBytes": 158117,
       "googleSlidesId": "1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/edit?usp=drivesdk&resourcekey=0-EfBs2SS9bacbgKH-9Nj3AQ",
-      "syncedAt": "2026-10-15T18:04:43.397Z"
+      "syncedAt": "2026-10-15T23:19:33.113Z"
     },
     "DOC-MT-02": {
       "key": "DOC-MT-02",
       "title": "DOC-MT-02 — Agent Deployment Models: Navigating the Agentic Trilemma Across Pool, Bridge & Silo (Editable Diagram #78 + Blog Guide)",
-      "sha256": "2062fae2b19ee0e4abe3c2c9a47890e5302a04f7bc9503c81f30a2695ad5613e",
-      "sizeBytes": 159205,
+      "sha256": "e7add3752c1604612b60d098d19d9c59f05d2455707d0d51742dbee0157f8132",
+      "sizeBytes": 148377,
       "googleSlidesId": "1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc/edit?usp=drivesdk",
-      "syncedAt": "2026-10-15T18:05:05.861Z"
+      "syncedAt": "2026-10-15T23:19:53.945Z"
     },
     "DOC-MT-03": {
       "key": "DOC-MT-03",
       "title": "DOC-MT-03 — Building the High-Density Pool Tier: An End-to-End Implementation Blueprint (Editable Diagram #78 + Blog Guide)",
-      "sha256": "b213f0e20f2a912060af5e5473657566f36567d79572dae1ab542505cba49591",
-      "sizeBytes": 172255,
+      "sha256": "2e10242063c6567a3a2c562a30aecd96106674c4218af0b3d4fe415edfd07d55",
+      "sizeBytes": 161119,
       "googleSlidesId": "1ZkfRhStnXBer8E1xT50hxclg4S3NMhGJDFd2EBlEX38",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1ZkfRhStnXBer8E1xT50hxclg4S3NMhGJDFd2EBlEX38/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1ZkfRhStnXBer8E1xT50hxclg4S3NMhGJDFd2EBlEX38/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1ZkfRhStnXBer8E1xT50hxclg4S3NMhGJDFd2EBlEX38/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1ZkfRhStnXBer8E1xT50hxclg4S3NMhGJDFd2EBlEX38/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1ZkfRhStnXBer8E1xT50hxclg4S3NMhGJDFd2EBlEX38/edit?usp=drivesdk",
-      "syncedAt": "2026-10-15T18:05:16.293Z"
+      "syncedAt": "2026-10-15T23:20:02.761Z"
     },
     "DOC-MT-04": {
       "key": "DOC-MT-04",
       "title": "DOC-MT-04 — Building the Hybrid Bridge Tier: Private Service Connect (PSC) Spokes & Live Tier Graduation (Editable Diagram #78 + Blog Guide)",
-      "sha256": "4f695b235e28e7a8c5af33df66e5c63107000c9ae404eae179560d94aacb3386",
-      "sizeBytes": 162219,
+      "sha256": "419158ea6d4fbeb52f991fd0378ac5935b060822d92060d530f9d3aa0541f179",
+      "sizeBytes": 150963,
       "googleSlidesId": "1nxRiawJOzhfjlBTmC21SSrrh9CzSUKEj843ZsOF5s1E",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1nxRiawJOzhfjlBTmC21SSrrh9CzSUKEj843ZsOF5s1E/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1nxRiawJOzhfjlBTmC21SSrrh9CzSUKEj843ZsOF5s1E/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1nxRiawJOzhfjlBTmC21SSrrh9CzSUKEj843ZsOF5s1E/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1nxRiawJOzhfjlBTmC21SSrrh9CzSUKEj843ZsOF5s1E/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1nxRiawJOzhfjlBTmC21SSrrh9CzSUKEj843ZsOF5s1E/edit?usp=drivesdk",
-      "syncedAt": "2026-10-15T18:05:25.643Z"
+      "syncedAt": "2026-10-15T23:20:11.938Z"
     },
     "DOC-MT-05": {
       "key": "DOC-MT-05",
       "title": "DOC-MT-05 — Building the Sovereign Silo Tier: VPC Service Controls, Customer CMEK & Crypto-Shredding (Editable Diagram #78 + Blog Guide)",
-      "sha256": "f34fda016a7a774aae7a3dd68ff8637f11f8a4ef9b2e44a58a680971adac7546",
-      "sizeBytes": 167091,
+      "sha256": "4d2ba5c7aec82db638e000623c99f51ad0cefc04185acaed9aeae709848f4c6a",
+      "sizeBytes": 155564,
       "googleSlidesId": "1qm8z_QIw9wF13d6Jy-3yLK1Rynt5hqkOgsflXT9QDt4",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1qm8z_QIw9wF13d6Jy-3yLK1Rynt5hqkOgsflXT9QDt4/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1qm8z_QIw9wF13d6Jy-3yLK1Rynt5hqkOgsflXT9QDt4/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1qm8z_QIw9wF13d6Jy-3yLK1Rynt5hqkOgsflXT9QDt4/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1qm8z_QIw9wF13d6Jy-3yLK1Rynt5hqkOgsflXT9QDt4/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1qm8z_QIw9wF13d6Jy-3yLK1Rynt5hqkOgsflXT9QDt4/edit?usp=drivesdk",
-      "syncedAt": "2026-10-15T18:05:34.694Z"
+      "syncedAt": "2026-10-15T23:20:20.106Z"
     },
     "DOC-MT-06": {
       "key": "DOC-MT-06",
       "title": "DOC-MT-06 — Production Verification: 10-Point Red-Team Breach Simulation & Cloud Console Runbook (Editable Diagram #78 + Blog Guide)",
-      "sha256": "17e18cd89a3b0c159701e498972d4f492d7a7cc521bad2b069d1396be9a0ac1d",
-      "sizeBytes": 151015,
+      "sha256": "79802bf81c51b51a4cf27c518e5552fa288cfb1e20223d36e6417c0e579108da",
+      "sizeBytes": 139981,
       "googleSlidesId": "1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc/edit?usp=drivesdk&resourcekey=0-Ks65vydDtdNG4qOrlwh-0A",
-      "syncedAt": "2026-10-15T18:05:43.245Z"
+      "syncedAt": "2026-10-15T23:20:27.732Z"
     },
     "DOC-REF-07": {
       "key": "DOC-REF-07",
       "title": "DOC-REF-07 — Agentic AI Reference Architecture: Multimodal GraphRAG Resource Orchestration with Spanner Graph (Editable Diagram #78 + Blog Guide)",
-      "sha256": "c972a26ec3d3c626fb48ebe128090bc2cf52522f2d74a1d80d145f930b0f0d4f",
-      "sizeBytes": 168144,
+      "sha256": "9b4f60385030b9d16490ab56175ed3a86e77fe5d7ea51e7445b6c9589fe9ef2f",
+      "sizeBytes": 156617,
       "googleSlidesId": "1gHV5hVNCB8phgq_JYQiNfoOGYOt7VFW5MuZOzKd4jLU",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1gHV5hVNCB8phgq_JYQiNfoOGYOt7VFW5MuZOzKd4jLU/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1gHV5hVNCB8phgq_JYQiNfoOGYOt7VFW5MuZOzKd4jLU/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1gHV5hVNCB8phgq_JYQiNfoOGYOt7VFW5MuZOzKd4jLU/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1gHV5hVNCB8phgq_JYQiNfoOGYOt7VFW5MuZOzKd4jLU/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1gHV5hVNCB8phgq_JYQiNfoOGYOt7VFW5MuZOzKd4jLU/edit?usp=drivesdk",
-      "syncedAt": "2026-10-15T18:05:52.256Z"
+      "syncedAt": "2026-10-15T23:20:37.201Z"
     },
     "DOC-REF-08": {
       "key": "DOC-REF-08",
       "title": "DOC-REF-08 — Build Zero-Trust AI Agents with Google’s Agent Development Kit (ADK), Cloud KMS HSM & gVisor (Editable Diagram #78 + Blog Guide)",
-      "sha256": "e66c57e6262aa95f782c354c6b58cc5d0be1b006bfbb49196f649d869a769ee4",
-      "sizeBytes": 168608,
+      "sha256": "8b44e8d7b07a6167dda778529184ebda487a82cbccf78f7e9b1f1e9062f92368",
+      "sizeBytes": 157015,
       "googleSlidesId": "1fHwVkECJFr1HQvkYHYuMOraerpxO-0C6guF8PFHLlTw",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1fHwVkECJFr1HQvkYHYuMOraerpxO-0C6guF8PFHLlTw/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1fHwVkECJFr1HQvkYHYuMOraerpxO-0C6guF8PFHLlTw/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1fHwVkECJFr1HQvkYHYuMOraerpxO-0C6guF8PFHLlTw/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1fHwVkECJFr1HQvkYHYuMOraerpxO-0C6guF8PFHLlTw/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1fHwVkECJFr1HQvkYHYuMOraerpxO-0C6guF8PFHLlTw/edit?usp=drivesdk&resourcekey=0-UeV9EiKe8CZohiaI_3GE4A",
-      "syncedAt": "2026-10-15T18:06:01.937Z"
+      "syncedAt": "2026-10-15T23:20:44.336Z"
     },
     "DOC-REF-09": {
       "key": "DOC-REF-09",
       "title": "DOC-REF-09 — Design Patterns for Scalable Multi-Agent Ecosystems: Vertex AI Agent Engine, MCP & A2A (Editable Diagram #78 + Blog Guide)",
-      "sha256": "3e4de1fbbbbce55b11f2911470cf44f7004579e88b46bd6179dc4118e536749f",
-      "sizeBytes": 159753,
+      "sha256": "43566b266681ddd8571b52f210df622b2ced7ee00e68b7c8d06f081c3c71af88",
+      "sizeBytes": 148630,
       "googleSlidesId": "10TpWnWIho8kXmN4866HXz34CI3lKxmh-NWSAd6QYiMM",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/10TpWnWIho8kXmN4866HXz34CI3lKxmh-NWSAd6QYiMM/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/10TpWnWIho8kXmN4866HXz34CI3lKxmh-NWSAd6QYiMM/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/10TpWnWIho8kXmN4866HXz34CI3lKxmh-NWSAd6QYiMM/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/10TpWnWIho8kXmN4866HXz34CI3lKxmh-NWSAd6QYiMM/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/10TpWnWIho8kXmN4866HXz34CI3lKxmh-NWSAd6QYiMM/edit?usp=drivesdk",
-      "syncedAt": "2026-10-15T18:06:09.989Z"
+      "syncedAt": "2026-10-15T23:20:51.887Z"
     }
   },
   "docs": {

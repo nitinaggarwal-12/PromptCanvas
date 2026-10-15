@@ -4,7 +4,7 @@ import path from 'path';
 import { execSync } from 'child_process';
 import { GOOGLE_CLOUD_DOCUMENTATION_SERIES } from '../src/lib/blogs/googleCloudDocumentationSeries';
 
-const ARTIFACT_DIR = '/Users/nitinagga/.gemini/jetski/brain/717453f9-23de-4843-af0f-5a7103bd7f05';
+const ARTIFACT_DIR = '/Users/nitinagga/.gemini/jetski/brain/c47051a9-612e-49b3-8f83-2501161738ec';
 const BASE_URL = 'http://localhost:3000';
 const CHROME_PATH = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
@@ -298,6 +298,9 @@ async function main() {
       ? readerEl.querySelectorAll('[data-testid="inline-cloud-viewer-btn"]').length
       : 0;
 
+    const hasExportBlogSlidesBtn = Boolean(
+      document.querySelector('[data-testid="doc-reader-export-blog-slides-btn"]')
+    );
     const hasPrintPdfBtn = Boolean(document.querySelector('[data-testid="doc-reader-print-pdf-btn"]'));
     const hasCopyMdBtn = Boolean(document.querySelector('[data-testid="doc-reader-copy-md-btn"]'));
     const hasQuickJumpFiguresBar = Boolean(
@@ -333,6 +336,7 @@ async function main() {
       sectionShotGroupCount: sectionShotGroups.length,
       slidesPreviewerCount,
       isContextualDiagramOrderCorrect,
+      hasExportBlogSlidesBtn,
       hasPrintPdfBtn,
       hasCopyMdBtn,
       hasQuickJumpFiguresBar,
@@ -433,14 +437,17 @@ async function main() {
     }
   );
 
-  recordCheck(readerAudit.hasPrintPdfBtn && readerAudit.hasCopyMdBtn, {
-    id: 'WORKFLOW-03',
-    dimension: 'User Workflow',
-    severity: 'MEDIUM',
-    title: 'AppHeader in PDF Reader mode lacks 1-click "Print / PDF" or "Copy Markdown" controls',
-    evidence: `hasPrintPdfBtn=${readerAudit.hasPrintPdfBtn}, hasCopyMdBtn=${readerAudit.hasCopyMdBtn}`,
-    recommendation: 'Provide Print / PDF and Copy Markdown buttons in AppHeader when in pdf-doc-reader mode.',
-  });
+  recordCheck(
+    readerAudit.hasExportBlogSlidesBtn && readerAudit.hasPrintPdfBtn && readerAudit.hasCopyMdBtn,
+    {
+      id: 'WORKFLOW-03',
+      dimension: 'User Workflow',
+      severity: 'MEDIUM',
+      title: 'AppHeader in PDF Reader mode lacks 1-click "Export Blog to Google Slides ↗", "Print / PDF", or "Copy Markdown" controls',
+      evidence: `hasExportBlogSlidesBtn=${readerAudit.hasExportBlogSlidesBtn}, hasPrintPdfBtn=${readerAudit.hasPrintPdfBtn}, hasCopyMdBtn=${readerAudit.hasCopyMdBtn}`,
+      recommendation: 'Provide Export Blog to Google Slides ↗, Print / PDF, and Copy Markdown buttons in AppHeader when in pdf-doc-reader mode.',
+    }
+  );
 
   recordCheck(!readerAudit.hasQuickJumpFiguresBar, {
     id: 'DESIGN-01',
@@ -452,9 +459,53 @@ async function main() {
   });
 
   // ---------------------------------------------------------------------------
-  // 3. EVALUATE PERMALINK ROUTE /blogs/DOC-MT-03 & /blogs/DOC-MT-06
+  // 3. EVALUATE PERMALINK ROUTE /blogs/DOC-MT-02 & /blogs/DOC-MT-03
   // ---------------------------------------------------------------------------
-  console.log('3. Inspecting direct permalink route /blogs/DOC-MT-03 (Part 3: Sovereign Silos)...');
+  console.log('3. Inspecting direct permalink routes /blogs/DOC-MT-02 & /blogs/DOC-MT-03...');
+  await page.goto(`${BASE_URL}/blogs/DOC-MT-02`, { waitUntil: 'networkidle2', timeout: 60000 });
+  await sleep(900);
+  await page.screenshot({
+    path: path.join(ARTIFACT_DIR, 'after_doc_mt_02_reader_and_export_btn.png'),
+    fullPage: false,
+  });
+
+  // Scroll to #contributors on DOC-MT-02 to capture role-label-only Contributors section
+  const contribEl = await page.$('#contributors');
+  if (contribEl) {
+    await contribEl.evaluate((el) => el.scrollIntoView({ block: 'center' }));
+    await sleep(400);
+    await page.screenshot({
+      path: path.join(ARTIFACT_DIR, 'after_doc_mt_02_contributors_labels_only.png'),
+      fullPage: false,
+    });
+  }
+
+  // Open Cloud Viewer on DOC-MT-02 to capture 1:1 White DevSite <article> Slide 1 & Slide 2
+  const docMt02CloudViewerBtn = await page.$(
+    '[data-testid^="doc-inline-figure-"] [data-testid="inline-cloud-viewer-btn"]'
+  );
+  if (docMt02CloudViewerBtn) {
+    await docMt02CloudViewerBtn.evaluate((el) => el.scrollIntoView({ block: 'center' }));
+    await sleep(300);
+    await docMt02CloudViewerBtn.click();
+    await sleep(800);
+    await page.screenshot({
+      path: path.join(ARTIFACT_DIR, 'after_doc_mt_02_slides_preview_slide1_white_article.png'),
+      fullPage: false,
+    });
+    const slide2Btn = await page.$('[data-testid="cloud-viewer-slide-btn-2"]');
+    if (slide2Btn) {
+      await slide2Btn.click();
+      await sleep(500);
+      await page.screenshot({
+        path: path.join(ARTIFACT_DIR, 'after_doc_mt_02_slides_preview_slide2_diagram.png'),
+        fullPage: false,
+      });
+    }
+    await page.keyboard.press('Escape');
+    await sleep(300);
+  }
+
   await page.goto(`${BASE_URL}/blogs/DOC-MT-03`, { waitUntil: 'networkidle2', timeout: 60000 });
   await sleep(900);
 
@@ -489,16 +540,36 @@ async function main() {
   );
 
   // ---------------------------------------------------------------------------
-  // 4. STATIC CONTENT QUALITY, ZERO-JARGON & ZERO SLOT-MISMATCH AUDIT ACROSS ALL 9 GUIDES
+  // 4. STATIC CONTENT QUALITY, ZERO-JARGON, ZERO PERSONAL NAMES & ZERO SLOT-MISMATCH AUDIT ACROSS ALL 9 GUIDES
   // ---------------------------------------------------------------------------
   console.log('4. Auditing content quality across all 9 canonical guides (DOC-MT-01..DOC-REF-09)...');
   const bannedJargonRegex = /\b(GEAP|ARD|NLC)\b/;
+  const bannedPersonalNames = [
+    'Nithin Reddy Cheruku',
+    'Navneet Tuteja',
+    'Dhawal Patel',
+    'Nitin Aggarwal',
+    'Annie Wang',
+    'Shubham Saboo',
+    'Schneider Larbi',
+    'Samantha He',
+    'Eric Dong',
+    'David Peterside',
+    'Christina Lin',
+    'Kumar Dhanagopal',
+    'Olivier Bourgeois',
+  ];
   const jargonViolations: string[] = [];
   for (const guide of GOOGLE_CLOUD_DOCUMENTATION_SERIES) {
     const blob = JSON.stringify(guide);
     const m = blob.match(bannedJargonRegex);
     if (m) {
       jargonViolations.push(`${guide.docId}: found banned acronym "${m[0]}"`);
+    }
+    for (const pName of bannedPersonalNames) {
+      if (blob.includes(pName)) {
+        jargonViolations.push(`${guide.docId}: found personal contributor name "${pName}"`);
+      }
     }
     if (blob.includes('Cloud Armor (Tier 1') || blob.includes('Identity-Aware Proxy (IAP) (Tier 2')) {
       jargonViolations.push(`${guide.docId}: found slot-mismatch parenthetical label`);
@@ -512,9 +583,9 @@ async function main() {
     id: 'CONTENT-02',
     dimension: 'Content Quality',
     severity: 'HIGH',
-    title: 'Banned acronyms, slot-mismatch parentheticals, or cross-project Merck screenshots found in canonical documentation series',
+    title: 'Banned acronyms, personal contributor names, slot-mismatch parentheticals, or cross-project Merck screenshots found in canonical documentation series',
     evidence: jargonViolations.join('; '),
-    recommendation: 'Purge all unexpanded GEAP/ARD/NLC acronyms, slot-mismatch parentheticals, and Merck screenshots.',
+    recommendation: 'Purge all unexpanded GEAP/ARD/NLC acronyms, personal contributor names, slot-mismatch parentheticals, and Merck screenshots.',
   });
 
   await browser.close();
