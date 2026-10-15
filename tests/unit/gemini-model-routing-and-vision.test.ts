@@ -4,13 +4,15 @@ import {
   getGeminiFallbackModel,
   getGeminiModelWithFallbacks,
   getGenConfig,
+  getGenConfigForModel,
 } from '../../src/lib/geminiConfig';
 import { decompileArchitectureImageWithDeepMind } from '../../src/lib/deepmindVisionDecompiler';
 import { validateDrawioXml } from '../../src/lib/validate/validator';
 import { ensureTablesExist } from '../../src/lib/db';
 
 describe('Gemini Model Routing & Vision Decompilation Architecture', () => {
-  it('routes pro, critic, and vision tiers to Gemini 3.1 Pro with 2.5 Pro fallback', () => {
+  it('routes pro, critic, vision, and argon tiers with orthogonal fallback chains', () => {
+    expect(getGeminiModel('argon')).toBe('gemini-4-argon');
     expect(getGeminiModel('pro')).toBe('gemini-3.1-pro-preview');
     expect(getGeminiModel('critic')).toBe('gemini-3.1-pro-preview');
     expect(getGeminiModel('vision')).toBe('gemini-3.1-pro-preview');
@@ -21,6 +23,9 @@ describe('Gemini Model Routing & Vision Decompilation Architecture', () => {
 
     const visionChain = getGeminiModelWithFallbacks('vision');
     expect(visionChain).toEqual(['gemini-3.1-pro-preview', 'gemini-2.5-pro']);
+
+    const argonChain = getGeminiModelWithFallbacks('argon');
+    expect(argonChain).toEqual(['gemini-4-argon', 'gemini-3.1-pro-preview', 'gemini-2.5-pro']);
   });
 
   it('routes chat, lite, and medium tiers to Gemini 3.8 Flash with 2.5 Flash fallback', () => {
@@ -36,7 +41,7 @@ describe('Gemini Model Routing & Vision Decompilation Architecture', () => {
     expect(chatChain).toEqual(['gemini-3.8-flash', 'gemini-2.5-flash']);
   });
 
-  it('configures specialized thinking budgets and temperatures for vision, audit, and repair', () => {
+  it('configures specialized thinking budgets and converts gemini-4-argon to discrete thinkingLevel', () => {
     const visionConfig = getGenConfig('vision');
     expect(visionConfig.thinkingConfig?.thinkingBudget).toBe(500);
     expect(visionConfig.temperature).toBe(0.1);
@@ -48,6 +53,11 @@ describe('Gemini Model Routing & Vision Decompilation Architecture', () => {
     const repairConfig = getGenConfig('repair');
     expect(repairConfig.thinkingConfig?.thinkingBudget).toBe(100);
     expect(repairConfig.temperature).toBe(0.1);
+
+    const argonAuditConfig = getGenConfigForModel('audit', 'gemini-4-argon');
+    expect((argonAuditConfig.thinkingConfig as any)?.thinkingLevel).toBe('HIGH');
+    expect((argonAuditConfig.thinkingConfig as any)?.thinkingBudget).toBeUndefined();
+    expect(argonAuditConfig.maxOutputTokens).toBeLessThanOrEqual(32768);
   });
 
   it('decompiles architecture image via deterministic master engine when offline or no key is provided', async () => {

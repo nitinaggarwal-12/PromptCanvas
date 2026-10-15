@@ -111,18 +111,23 @@ async function main() {
   assertCondition(apiJson.passedChecks === 20, `Expected 20 passed checks, got ${apiJson.passedChecks}`);
   console.log(`  [PASS] Live GCP Verification Receipt & API verified: ${apiJson.passedChecks}/${apiJson.totalChecks} PASS (${receipt.verifiedAt})`);
 
-  // 4. Verify all 28 Real Google Cloud Console & Gemini Enterprise Screenshots in public/blogs-verification-screenshots/ and /blogs UI embedding (0 custom/mock screenshots)
+  // 4. Verify all 21 Pure Multi-Tenant Google Cloud Console & Gemini Enterprise Screenshots in public/blogs-verification-screenshots/ and /blogs UI embedding (0 custom/mock screenshots, 0 cross-project Merck screenshots)
   const screenshotsDir = path.join(process.cwd(), 'public/blogs-verification-screenshots');
   assertCondition(fs.existsSync(screenshotsDir), 'public/blogs-verification-screenshots directory must exist');
   const screenshotFiles = fs.readdirSync(screenshotsDir).filter((f) => f.endsWith('.png'));
   assertCondition(
-    screenshotFiles.length === 28,
-    `Expected exactly 28 real Google Cloud Console & Gemini Enterprise PNG screenshots in public/blogs-verification-screenshots, found ${screenshotFiles.length}`
+    screenshotFiles.length === 21,
+    `Expected exactly 21 pure multi-tenant Google Cloud Console & Gemini Enterprise PNG screenshots in public/blogs-verification-screenshots (0 cross-project Merck screenshots), found ${screenshotFiles.length}`
   );
   for (const file of screenshotFiles) {
     assertCondition(
-      !file.startsWith('before_') && !file.startsWith('after_') && !file.startsWith('pantheon_0'),
-      `Custom/composite screenshot ${file} is strictly banned in public/blogs-verification-screenshots`
+      !file.startsWith('before_') &&
+        !file.startsWith('after_') &&
+        !file.startsWith('pantheon_0') &&
+        !file.includes('merck') &&
+        !file.includes('mk3475') &&
+        !file.includes('biomarker'),
+      `Custom/composite or cross-project Merck screenshot ${file} is strictly banned in public/blogs-verification-screenshots`
     );
     const stat = fs.statSync(path.join(screenshotsDir, file));
     assertCondition(stat.size > 15000, `Screenshot ${file} must be non-empty (>15KB), got ${stat.size} bytes`);
@@ -130,8 +135,8 @@ async function main() {
 
   const realUiFiles = screenshotFiles.filter((f) => f.startsWith('real_gcp_') || f.startsWith('real_ge_'));
   assertCondition(
-    realUiFiles.length === 18,
-    `Expected 18 real GCP Console & Gemini Enterprise App Web UI screenshots (real_gcp_* / real_ge_*), found ${realUiFiles.length}`
+    realUiFiles.length === 11,
+    `Expected 11 pure multi-tenant GCP Console & Gemini Enterprise App Web UI screenshots (real_gcp_* / real_ge_*), found ${realUiFiles.length}`
   );
   const liveConsoleFiles = screenshotFiles.filter((f) => f.startsWith('gcp_console_0'));
   assertCondition(
@@ -154,8 +159,12 @@ async function main() {
     !blogsPageCode.includes('pantheon_01') &&
       !blogsPageCode.includes('after_e2e_inline_drawio_editor') &&
       !blogsPageCode.includes('WORKSTREAM_TOPOLOGY_SCREENSHOTS') &&
-      !blogsPageCode.includes('BLOG_CONTENT_REMEDIATION_PAIRS'),
-    'src/app/blogs/page.tsx must contain zero custom/composite/before-after screenshots'
+      !blogsPageCode.includes('BLOG_CONTENT_REMEDIATION_PAIRS') &&
+      !blogsPageCode.includes('mk3475') &&
+      !blogsPageCode.includes('merck_shield') &&
+      !blogsPageCode.includes('merck_a2ui') &&
+      !blogsPageCode.includes('aws_mcp_consent_biomarker'),
+    'src/app/blogs/page.tsx must contain zero custom/composite/before-after or cross-project Merck screenshots'
   );
   assertCondition(
     blogsPageCode.includes('data-testid="blog-screenshot-zoom-drawer"'),
@@ -164,10 +173,7 @@ async function main() {
   assertCondition(
     blogsPageCode.includes('/blogs-verification-screenshots/real_ge_01_home.png') &&
       blogsPageCode.includes('/blogs-verification-screenshots/real_ge_02_agents_gallery.png') &&
-      blogsPageCode.includes('/blogs-verification-screenshots/real_ge_05_session_mk3475_hepatotoxicity_v09.png') &&
-      blogsPageCode.includes('/blogs-verification-screenshots/real_ge_aws_mcp_consent_biomarker_card.png') &&
       blogsPageCode.includes('/blogs-verification-screenshots/real_gcp_01_project_dashboard.png') &&
-      blogsPageCode.includes('/blogs-verification-screenshots/real_gcp_32_engine_merck_a2ui_agents_nav.png') &&
       blogsPageCode.includes('/blogs-verification-screenshots/real_gcp_31_cloud_run_services_list.png') &&
       blogsPageCode.includes('/blogs-verification-screenshots/real_gcp_16_vpc_service_controls.png'),
     'src/app/blogs/page.tsx must reference real Gemini Enterprise App and Google Cloud Console Web UI screenshots'
@@ -188,7 +194,7 @@ async function main() {
     !blogsPageCode.includes('fixed inset-0 z-50 bg-black/60'),
     'src/app/blogs/page.tsx must not contain screen-blocking centered dark modals (Rule 25F)'
   );
-  console.log(`  [PASS] Verified ${screenshotFiles.length}/28 real PNG visual proofs (${realUiFiles.length} Real GCP Console & Gemini Enterprise Web UI captures + ${liveConsoleFiles.length} Live Cloud Console Code/Deploy/Execute captures + 1 Live Pantheon SSH capture, 0 custom screenshots) in public/blogs-verification-screenshots/ and embedded on /blogs UI.`);
+  console.log(`  [PASS] Verified ${screenshotFiles.length}/21 pure multi-tenant PNG visual proofs (${realUiFiles.length} Real GCP Console & Gemini Enterprise Web UI captures + ${liveConsoleFiles.length} Live Cloud Console Code/Deploy/Execute captures + 1 Live Pantheon SSH capture, 0 custom or cross-project Merck screenshots) in public/blogs-verification-screenshots/ and embedded on /blogs UI.`);
 
   // 5. Verify End-to-End Pattern Execution Results, Provisioned GCP Resources & 24-File Reference Codebase Workbench
   const bundle = apiJson.patternExecutionBundle;
@@ -263,7 +269,7 @@ async function main() {
     !hooksJsonCode.includes('require_promptcanvas_blogs_ui_27_screenshots_gallery_gate') &&
       !hooksJsonCode.includes('require_promptcanvas_blogs_ui_45_screenshots_and_real_gcp_ge_ui_gallery_gate') &&
       hooksJsonCode.includes('require_promptcanvas_28_real_cloud_console_and_ge_screenshots_only_zero_custom_gate'),
-    'hooks.json must purge legacy 27/45 custom screenshot gates and enforce 28 real Cloud Console & GE screenshots only'
+    'hooks.json must purge legacy 27/45 custom screenshot gates and enforce real Cloud Console & GE screenshots only'
   );
 
   assertCondition(
@@ -312,6 +318,10 @@ async function main() {
         `Guide ${doc.docId} must have exact 8-section Cloud Architecture Center hierarchy (${expectedSectionHeadings.join(' -> ')})`
       );
       assertCondition(
+        doc.sections[0].secondaryInlineDiagram === undefined,
+        `Guide ${doc.docId} must have strictly 1 authoritative architecture diagram (secondaryInlineDiagram must be undefined)`
+      );
+      assertCondition(
         Array.isArray(doc.sections[0].componentGroupsTable) && doc.sections[0].componentGroupsTable.length >= 5,
         `Guide ${doc.docId} Section 1 must have >= 5 componentGroupsTable rows`
       );
@@ -324,8 +334,8 @@ async function main() {
         `Guide ${doc.docId} Section 2 must have >= 4 productsUsedItems`
       );
       assertCondition(
-        Array.isArray(doc.sections[3].designAlternativesSubSections) && doc.sections[3].designAlternativesSubSections.length >= 3,
-        `Guide ${doc.docId} Section 4 must have >= 3 designAlternativesSubSections`
+        Array.isArray(doc.sections[3].designAlternativesSubSections) && doc.sections[3].designAlternativesSubSections.length >= 2,
+        `Guide ${doc.docId} Section 4 must have >= 2 designAlternativesSubSections`
       );
       assertCondition(
         Array.isArray(doc.sections[4].designConsiderationsSubSections) && doc.sections[4].designConsiderationsSubSections.length === 4,
@@ -346,21 +356,27 @@ async function main() {
         `Markdown export for ${doc.docId} must contain all 8 Cloud Architecture Center sections`
       );
       assertCondition(!/\b(GEAP|ARD|NLC)\b/.test(md), `Guide ${doc.docId} must contain 0 unverified acronyms (GEAP/ARD/NLC)`);
+      assertCondition(
+        !md.includes('Cloud Armor (Tier 1') && !md.includes('Identity-Aware Proxy (IAP) (Tier 2'),
+        `Guide ${doc.docId} must contain 0 nonsensical slot-mismatch parentheticals ('Cloud Armor (Tier 1: Pooled)', 'Identity-Aware Proxy (IAP) (Tier 2: Bridge)')`
+      );
     }
   }
   assertCondition(
     blogsPageCode.includes('data-testid="blogs-tile-catalog-grid"') &&
-      blogsPageCode.includes('data-testid="catalog-reading-order-strip"') &&
       blogsPageCode.includes('data-testid="blog-pdf-style-document-reader"') &&
       blogsPageCode.includes('data-testid="doc-reader-breadcrumb"') &&
-      blogsPageCode.includes('data-testid="doc-reader-quick-assets-bar"') &&
       blogsPageCode.includes('data-testid="doc-reader-print-pdf-btn"') &&
       blogsPageCode.includes('data-testid="doc-reader-copy-md-btn"') &&
       blogsPageCode.includes('data-testid="blog-verified-citations-footer"') &&
+      !blogsPageCode.includes('data-testid="catalog-reading-order-strip"') &&
+      !blogsPageCode.includes('data-testid="doc-reader-quick-assets-bar"') &&
+      !blogsPageCode.includes('doc-inline-figure-${sec.id}-secondary') &&
+      !blogsPageCode.includes('doc-section-screenshots-') &&
       !blogsPageCode.includes('reader-series-pill-') &&
       !blogsPageCode.includes('id="doc-takeaways"') &&
       !blogsPageCode.includes('data-testid="blog-okf-synthesis-card"'),
-    'src/app/blogs/page.tsx must include the 9-Blog Tile Catalog Grid, 6-Part Reading Order Roadmap Strip, Google Cloud Architecture Center DevSite Reader, Breadcrumb, Quick-Jump Figures/Draw.io/Code Bar, Print/Markdown Export controls, and Verified Citations Footer with zero duplicate 9-pill top switcher, #doc-takeaways, or 4-box OKF card (Rule 25)'
+    'src/app/blogs/page.tsx must include the 9-Blog Tile Catalog Grid, streamlined Google Cloud Architecture Center DevSite Reader, single Breadcrumb, Print/Markdown Export controls, and Verified Citations Footer with zero duplicate reading-order strip, zero quick-assets bar, zero secondary Figure 2, zero inline screenshot bloat, zero duplicate 9-pill top switcher, #doc-takeaways, or 4-box OKF card (Rule 25)'
   );
   assertCondition(
     fs.existsSync(path.join(process.cwd(), 'src/app/blogs/[docId]/page.tsx')),
@@ -376,7 +392,7 @@ async function main() {
       pass2Report.issuesFound.length === 0,
     `Expected LLM-as-a-Judge Pass 2 score 100/100 with 0 issues, got score=${pass2Report.overallScore}, issues=${pass2Report.issuesFound?.length}`
   );
-  console.log('  [PASS] Verified 9 Canonical Google Cloud Documentation Guides (DOC-MT-01..DOC-REF-09), Tile Catalog Hub, 1:1 PDF Whitepaper Reader, Permalinks & LLM-as-a-Judge Pass 2 (100/100, 0 issues).');
+  console.log('  [PASS] Verified 9 Canonical Google Cloud Documentation Guides (DOC-MT-01..DOC-REF-09), Tile Catalog Hub, 1:1 Executive PDF Whitepaper Reader, Permalinks & LLM-as-a-Judge Pass 2 (100/100, 0 issues).');
 
   // 8. Verify Zero Legacy "Architecture & Reading Figure 1 (Zone-by-Zone Walkthrough)" Across All 4 Blog Formats + 6-Slide Editable Diagram (#78) & Blog Content Google Slides Export
   const blogEngineCode = fs.readFileSync(

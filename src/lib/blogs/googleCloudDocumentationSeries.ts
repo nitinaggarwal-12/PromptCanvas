@@ -308,8 +308,8 @@ const RAW_GOOGLE_CLOUD_DOCUMENTATION_SERIES: CanonicalDocGuide[] = [
         },
         inlineScreenshotFilenames: [
           'real_gcp_14_iam_workload_identity_pools.png',
-          'real_ge_aws_mcp_consent_biomarker_card.png',
-          'real_ge_03_agent_v09_new_session.png',
+          'gcp_console_01_cloud_run_source_editor.png',
+          'gcp_console_03_bigquery_studio_pattern_a_rls.png',
         ],
       },
     ],
@@ -680,7 +680,6 @@ CREATE OR REPLACE ROW ACCESS POLICY tenant_pooled_rls_policy
         ],
         inlineScreenshotFilenames: [
           'gcp_console_03_bigquery_studio_pattern_a_rls.png',
-          'real_ge_05_session_mk3475_hepatotoxicity_v09.png',
           'real_gcp_26_data_stores.png',
           'gcp_console_02_cloud_run_revisions_deploy.png',
         ],
@@ -821,7 +820,6 @@ resource "google_compute_network" "finvault_spoke_vpc" {
         ],
         inlineScreenshotFilenames: [
           'gcp_console_06_vpc_psc_nat_subnet_live.png',
-          'real_gcp_07_run_merck_shield_networking.png',
           'real_gcp_11_run_a2a_gateway_revisions.png',
           'real_gcp_31_cloud_run_services_list.png',
         ],
@@ -948,7 +946,6 @@ def assert_tenant_cmek_active_or_halt(kms_key_name: str, tenant_id: str) -> dict
           'gcp_console_05_cloud_kms_keyring_live.png',
           'gcp_console_04_bigquery_studio_pattern_b_cmek.png',
           'real_gcp_16_vpc_service_controls.png',
-          'real_gcp_09_run_merck_shield_security.png',
         ],
       },
     ],
@@ -1064,7 +1061,6 @@ def assert_tenant_cmek_active_or_halt(kms_key_name: str, tenant_id: str) -> dict
           'gcp_console_01_cloud_run_source_editor.png',
           'pantheon_live_user_capture_ssh_verify.png',
           'gcp_console_07_logs_explorer_20_20_pass.png',
-          'real_gcp_28_logs_merck_shield_http_200.png',
         ],
       },
       {
@@ -1279,8 +1275,8 @@ def sign_approved_mutation_with_hsm(
         ],
         inlineScreenshotFilenames: [
           'gcp_console_05_cloud_kms_keyring_live.png',
-          'real_gcp_09_run_merck_shield_security.png',
-          'real_ge_aws_mcp_consent_biomarker_card.png',
+          'real_gcp_31_cloud_run_services_list.png',
+          'gcp_console_07_logs_explorer_20_20_pass.png',
         ],
       },
       {
@@ -1389,8 +1385,8 @@ order_agent = LlmAgent(
         ],
         inlineScreenshotFilenames: [
           'real_ge_02_agents_gallery.png',
-          'real_gcp_32_engine_merck_a2ui_agents_nav.png',
-          'real_gcp_23_engine_merck_a2ui_overview.png',
+          'real_gcp_11_run_a2a_gateway_revisions.png',
+          'gcp_console_09_vertex_ai_agent_builder_engines.png',
         ],
       },
       {
@@ -1415,8 +1411,8 @@ order_agent = LlmAgent(
         wellArchitectedHook:
           'Reliability — Circuit breakers and stateless MCP tool pools prevent a slow downstream partner API from cascading into Root Orchestrator thread exhaustion.',
         inlineScreenshotFilenames: [
-          'real_ge_05_session_mk3475_hepatotoxicity_v09.png',
           'real_gcp_13_run_gateway_env_vars.png',
+          'gcp_console_02_cloud_run_revisions_deploy.png',
         ],
       },
     ],
@@ -1445,89 +1441,90 @@ function buildComponentGroupsForBlueprint(
   const gMidTitle = [g.mid.title, g.mid.title2].filter(Boolean).join(' ');
   const gBotTitle = [g.bot.title, g.bot.title2].filter(Boolean).join(' ');
 
-  const withDistinctParen = (base: string, detail: string) => {
-    const b = base.trim();
-    const d = detail.trim();
-    if (!d || b.toLowerCase().includes(d.toLowerCase()) || d.toLowerCase().includes(b.toLowerCase())) {
-      return b;
-    }
-    return `${b} (${d})`;
-  };
-
   return [
     {
-      groupTitle: 'VPC Service Controls',
-      groupLead: `Security perimeters (${bp.outerWrapperLabel}) that prevent data exfiltration across the Google Cloud Organization and multi-tenant boundaries.`,
-      items: [],
-    },
-    {
-      groupTitle: 'Routing hub',
-      groupLead: `Centralized Google Cloud ingress project (${bp.routingHubTitle}) managing shared edge security and tenant routing:`,
+      groupTitle: bp.outerWrapperLabel,
+      groupLead: `Outer security and governance boundary that prevents unauthorized data exfiltration across the Google Cloud organization and spoke workloads:`,
       items: [
         {
-          name: withDistinctParen('External Application Load Balancer', rTopRightTitle),
-          description: `Acts as the unified global entry point for incoming tenant requests (${r.topRight.sub}).`,
-        },
-        {
-          name: `${withDistinctParen('Google Cloud Armor', r.topLeft.title)} & ${withDistinctParen('Model Armor', r.botLeft.title)}`,
-          description: `Enforce edge WAF rules (${r.topLeft.sub}) and screen incoming prompts (${r.botLeft.sub}) before reaching the application.`,
-        },
-        {
-          name: withDistinctParen('Identity-Aware Proxy (IAP)', r.midLeft.title),
-          description: `Authenticates callers and verifies tenant identity claims (${r.midLeft.sub}) before routing.`,
-        },
-        {
-          name: withDistinctParen('Frontend portal & tier router', rBotRightTitle),
-          description: `Cloud Run service (${r.botRight.sub}) that exchanges OBO/DPoP tokens and routes requests to the target tenant project.`,
+          name: bp.outerWrapperLabel,
+          description: `Enforces VPC Service Controls service perimeters around hub and spoke projects to block unauthorized cross-perimeter data movement.`,
         },
       ],
     },
     {
-      groupTitle: 'Central governance and security hub',
-      groupLead: `Dedicated governance project (${bp.govHubTitle} ${bp.govHubTitle2}) providing unified security, KMS, and FinOps telemetry:`,
+      groupTitle: bp.routingHubTitle,
+      groupLead: `Centralized ingress and control plane managing edge security, identity verification, and request routing:`,
       items: [
         {
-          name: withDistinctParen('Security Command Center', gTopTitle),
-          description: `Provides centralized threat detection, posture management, and audit verification (${g.top.sub}).`,
+          name: rTopRightTitle,
+          description: `Acts as the unified global entry point for incoming requests (${r.topRight.sub}).`,
         },
         {
-          name: withDistinctParen('IAM & Cloud KMS', gMidTitle),
-          description: `Manages access policies, asymmetric signing keys, and entitlement registries across the organization (${g.mid.sub}).`,
+          name: `${r.topLeft.title} & ${r.botLeft.title}`,
+          description: `Enforces edge policy rules (${r.topLeft.sub}) and screens payloads (${r.botLeft.sub}) before reaching the runtime.`,
         },
         {
-          name: withDistinctParen('Cloud Logging & BigQuery', gBotTitle),
-          description: `Aggregates audit logs and OpenTelemetry FinOps spans from all hubs and spokes for chargeback analysis (${g.bot.sub}).`,
+          name: r.midLeft.title,
+          description: `Authenticates callers and verifies identity and scope claims (${r.midLeft.sub}) before routing.`,
+        },
+        {
+          name: rBotRightTitle,
+          description: `Serverless routing service (${r.botRight.sub}) that validates caller tokens and dispatches requests to the target execution spoke.`,
         },
       ],
     },
     {
-      groupTitle: 'Principal Access Boundary Policy (PAB Policy)',
-      groupLead: `Organization-level boundary (${bp.innerWrapperLabel}) restricting principal access so identities from one tenant never access another tenant's resources.`,
-      items: [],
-    },
-    {
-      groupTitle: 'Tenant projects',
-      groupLead: `Isolated Google Cloud spoke environments (${bp.leftZoneTitle} and ${bp.rightZoneTitle}) hosting dedicated or pooled agentic workloads:`,
+      groupTitle: `${bp.govHubTitle} ${bp.govHubTitle2}`.trim(),
+      groupLead: `Dedicated governance plane providing unified security posture, cryptographic key management, and OpenTelemetry observability:`,
       items: [
         {
-          name: withDistinctParen('Vertex AI Agent Engine Runtime', l.runtime.title),
-          description: `Core execution environment (${l.runtime.sub}) hosting tenant AI agents built with Google ADK.`,
+          name: gTopTitle,
+          description: `Provides centralized threat detection, posture management, and continuous compliance verification (${g.top.sub}).`,
         },
         {
-          name: withDistinctParen('Model Armor', l.modelArmor.title),
-          description: `Screens prompts and responses within the tenant boundary (${l.modelArmor.sub}) to enforce safety and DLP policies.`,
+          name: gMidTitle,
+          description: `Manages access policies, cryptographic signing keys, and entitlement registries (${g.mid.sub}).`,
         },
         {
-          name: withDistinctParen('Model Context Protocol (MCP) servers', l.mcp.title),
-          description: `Cloud Run services (${l.mcp.sub}) providing standardized, tenant-scoped tool interfaces for external data sources.`,
+          name: gBotTitle,
+          description: `Aggregates audit logs, execution traces, and OpenTelemetry FinOps telemetry into BigQuery (${g.bot.sub}).`,
+        },
+      ],
+    },
+    {
+      groupTitle: 'Principal Access Boundary Policy',
+      groupLead: `Identity and resource isolation boundary (${bp.innerWrapperLabel}) restricting principal access so workloads in one spoke cannot access another spoke's resources:`,
+      items: [
+        {
+          name: bp.innerWrapperLabel,
+          description: `Binds IAM Principal Access Boundary (PAB) policies to spoke principals so credentials and tool calls remain strictly scoped to their authorized boundary.`,
+        },
+      ],
+    },
+    {
+      groupTitle: `${bp.leftZoneTitle} & ${bp.rightZoneTitle}`,
+      groupLead: `Isolated Google Cloud execution spokes (${bp.leftBoundaryLabel} and ${bp.rightBoundaryLabel}) hosting agent runtimes, MCP tools, and datastores:`,
+      items: [
+        {
+          name: l.runtime.title,
+          description: `Core execution environment (${l.runtime.sub}) orchestrating reasoning, memory, and tool execution.`,
         },
         {
-          name: withDistinctParen('Tenant datastore', l.datastore.title),
-          description: `Isolated storage (${l.datastore.sub}) enforcing Row-Level Security (RLS), vector namespaces, and CMEK encryption.`,
+          name: l.modelArmor.title,
+          description: `Screens prompts and model outputs within the execution boundary (${l.modelArmor.sub}) to enforce safety and DLP policies.`,
         },
         {
-          name: withDistinctParen('Gemini models', l.llm.title),
-          description: `Vertex AI endpoints (${l.llm.sub}) providing multimodal reasoning and 90% shared prefix context caching.`,
+          name: l.mcp.title,
+          description: `Serverless tool interface (${l.mcp.sub}) providing standardized, scoped access to enterprise systems.`,
+        },
+        {
+          name: l.datastore.title,
+          description: `Isolated persistence layer (${l.datastore.sub}) enforcing access boundaries, vector namespaces, and encryption at rest.`,
+        },
+        {
+          name: l.llm.title,
+          description: `Vertex AI foundation model endpoint (${l.llm.sub}) providing multimodal reasoning and context caching.`,
         },
       ],
     },
@@ -1544,35 +1541,126 @@ function buildAgenticFlowStepsForBlueprint(
 
   return [
     {
-      step: `A caller (${bp.topUserTitle} — ${bp.topUserSub}) sends a request (${bp.step1LeftLabel}) to the External Application Load Balancer (${rTopRightTitle}) in the routing hub.`,
+      step: `A caller (${bp.topUserTitle} — ${bp.topUserSub}) sends a request (${bp.step1LeftLabel}) to ${rTopRightTitle} (${r.topRight.sub}) in the ${bp.routingHubTitle}.`,
     },
     {
-      step: `After passing checks by Cloud Armor (${r.topLeft.title}), IAP (${r.midLeft.title}), and Model Armor (${r.botLeft.title}), the load balancer forwards the request to the Cloud Run router (${rBotRightTitle}).`,
+      step: `After passing policy and security checks across ${r.topLeft.title} (${r.topLeft.sub}), ${r.midLeft.title} (${r.midLeft.sub}), and ${r.botLeft.title} (${r.botLeft.sub}), the request is forwarded to ${rBotRightTitle} (${r.botRight.sub}).`,
     },
     {
-      step: `The Cloud Run router verifies the caller's OIDC tenant claim, mints a scoped OBO/DPoP token, and routes the request (${bp.midStep3Label.join(' ')}) to the target tenant project (${bp.leftZoneTitle} or ${bp.rightZoneTitle}).`,
+      step: `${rBotRightTitle} verifies the caller's identity claims, attaches scoped execution metadata (${bp.midStep3Label.join(' ')}), and routes the request to the target execution spoke (${bp.leftZoneTitle} or ${bp.rightZoneTitle}).`,
     },
     {
-      step: `Within the tenant project (${bp.leftZoneTitle}), the agent runtime (${l.runtime.title}) orchestrates request processing across four sub-steps:`,
+      step: `Within ${bp.leftZoneTitle}, the runtime (${l.runtime.title} — ${l.runtime.sub}) orchestrates execution across four deterministic sub-steps:`,
       subSteps: [
-        `Prompt validation (${l.modelArmor.title}): Screens the incoming prompt against tenant safety and DLP policies (${l.modelArmor.sub}).`,
-        `Grounded RAG retrieval (${l.datastore.title}): Queries the tenant datastore (${l.datastore.sub}) via ${l.ragLabel.join(' ')}.`,
-        `Scoped MCP tool invocation (${l.mcp.title}): Executes external tool actions (${l.mcp.sub}) via ${l.toolLabel.join(' ')}.`,
-        `Transactional state update (${l.datastore.title}): Reads or commits tenant-scoped records under strict RLS and CMEK boundaries.`,
+        `Input policy validation (${l.modelArmor.title}): Screens the incoming payload against safety and DLP policies (${l.modelArmor.sub}).`,
+        `Grounded context retrieval (${l.datastore.title}): Queries the datastore (${l.datastore.sub}) via ${l.ragLabel.join(' ')}.`,
+        `Scoped tool invocation (${l.mcp.title}): Executes external tool operations (${l.mcp.sub}) via ${l.toolLabel.join(' ')}.`,
+        `Transactional state persistence (${l.datastore.title}): Commits verified state updates under strict isolation boundaries.`,
       ],
     },
     {
-      step: `The agent runtime sends the validated, context-enriched prompt (${l.step5Label.join(' ')}) to the Gemini model (${l.llm.title} — ${l.llm.sub}) to generate a grounded response.`,
+      step: `${l.runtime.title} sends the validated, context-enriched prompt (${l.step5Label.join(' ')}) to ${l.llm.title} (${l.llm.sub}) to synthesize a grounded response.`,
     },
     {
-      step: `The agent runtime passes the generated response (${l.step6Label}) through the tenant's Model Armor instance (${l.modelArmor.title}) for final output sanitization and policy enforcement.`,
+      step: `${l.runtime.title} passes the generated output (${l.step6Label}) through ${l.modelArmor.title} (${l.modelArmor.sub}) for final output sanitization and policy enforcement.`,
     },
     {
-      step: `The sanitized response (${bp.midStep7Label.join(' ')}) returns to the caller through the routing hub, while zero-PII OpenTelemetry FinOps and audit spans (${bp.midGovLabel.join(' ')}) stream to the governance hub (${bp.govHubTitle}).`,
+      step: `The verified response (${bp.midStep7Label.join(' ')}) returns to the caller through the ${bp.routingHubTitle}, while structured OpenTelemetry audit and FinOps spans (${bp.midGovLabel.join(' ')}) stream to the ${[bp.govHubTitle, bp.govHubTitle2].filter(Boolean).join(' ')}.`,
     },
   ];
 }
 
+const PRODUCT_CATALOG_METADATA: Record<string, { url: string; description: string }> = {
+  'Vertex AI Agent Engine': {
+    url: 'https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview',
+    description: 'Managed runtime environment to host, scale, and govern AI agents with managed Sessions, Memory Bank, and Context Caching.',
+  },
+  'Google ADK': {
+    url: 'https://google.github.io/adk-docs/',
+    description: 'Open-source Agent Development Kit for building, orchestrating, and testing hierarchical multi-agent systems with deterministic callbacks.',
+  },
+  'Cloud Run': {
+    url: 'https://cloud.google.com/run',
+    description: 'Serverless container platform used to host stateless ingress routers and Model Context Protocol (MCP) tool servers inside gVisor sandboxes.',
+  },
+  'Model Armor': {
+    url: 'https://cloud.google.com/security/products/model-armor',
+    description: 'Screens incoming prompts, retrieved RAG chunks, and model responses against prompt injection, jailbreaks, and sensitive data leakage.',
+  },
+  'VPC Service Controls': {
+    url: 'https://cloud.google.com/vpc-service-controls',
+    description: 'Enforces service perimeters across Google Cloud resources to prevent unauthorized data exfiltration across organizational boundaries.',
+  },
+  'Principal Access Boundary (PAB)': {
+    url: 'https://cloud.google.com/iam/docs/principal-access-boundary-policies',
+    description: 'Organization-level IAM boundary that restricts the resources a principal can access across projects and spoke environments.',
+  },
+  'Identity-Aware Proxy (IAP)': {
+    url: 'https://cloud.google.com/iap',
+    description: 'Enforces zero-trust identity and context-aware access controls at the application edge before requests reach backend services.',
+  },
+  'Cloud Armor': {
+    url: 'https://cloud.google.com/armor',
+    description: 'Provides edge DDoS protection, WAF rules, and header sanitization on the global External Application Load Balancer.',
+  },
+  'AlloyDB for PostgreSQL': {
+    url: 'https://cloud.google.com/alloydb',
+    description: 'Enterprise PostgreSQL database enforcing Row-Level Security (RLS) and parameterized ScaNN vector search for grounded RAG retrieval.',
+  },
+  'Cloud KMS': {
+    url: 'https://cloud.google.com/kms',
+    description: 'Manages Customer-Managed Encryption Keys (CMEK) and asymmetric signing keys for cryptographic isolation and auditability.',
+  },
+  'BigQuery': {
+    url: 'https://cloud.google.com/bigquery',
+    description: 'Serverless enterprise data warehouse aggregating OpenTelemetry execution spans, audit logs, and token chargeback analytics.',
+  },
+  'Security Command Center': {
+    url: 'https://cloud.google.com/security-command-center',
+    description: 'Centralized posture management and threat detection across IAM, VPC Service Controls, and Vertex AI workloads.',
+  },
+  'Cloud Trace': {
+    url: 'https://cloud.google.com/trace',
+    description: 'Distributed tracing system capturing end-to-end latency and token usage spans across routers, agents, and MCP servers.',
+  },
+  'Cloud Logging': {
+    url: 'https://cloud.google.com/logging',
+    description: 'Centralized log management with aggregated organization sinks and zero-PII audit trails.',
+  },
+};
+
+function buildProductsUsedForGuide(raw: CanonicalDocGuide): ArchCenterProductItem[] {
+  const seen = new Set<string>();
+  const items: ArchCenterProductItem[] = [];
+
+  for (const prodName of raw.gcpProductsUsed) {
+    const cleanName = prodName.replace(/\s*\([^)]*\)\s*/g, '').trim();
+    if (!cleanName || seen.has(cleanName.toLowerCase())) continue;
+    seen.add(cleanName.toLowerCase());
+
+    const exactMeta = PRODUCT_CATALOG_METADATA[cleanName];
+    if (exactMeta) {
+      items.push({ name: cleanName, url: exactMeta.url, description: exactMeta.description });
+      continue;
+    }
+
+    const matchedKey = Object.keys(PRODUCT_CATALOG_METADATA).find(
+      (k) => cleanName.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(cleanName.toLowerCase())
+    );
+    if (matchedKey) {
+      const meta = PRODUCT_CATALOG_METADATA[matchedKey];
+      items.push({ name: cleanName, url: meta.url, description: meta.description });
+    } else {
+      items.push({
+        name: cleanName,
+        url: 'https://cloud.google.com/docs',
+        description: `Core Google Cloud service used in ${raw.docId} (${raw.title}) to enforce production security, scalability, and observability.`,
+      });
+    }
+  }
+
+  return items;
+}
 
 function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGuide {
   const bp = resolveBlueprintConfigForGuide(raw);
@@ -1586,7 +1674,6 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
     blueprintVariantId: raw.primaryBlueprintVariantId,
     workflowTab: 'high-level',
   };
-  const secondaryDiagram: DocInlineDiagram | undefined = allDiagrams[1];
 
   const allTables = raw.sections
     .map((s) => s.inlineTable)
@@ -1594,18 +1681,31 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
   const allCodeSnippets = raw.sections
     .map((s) => s.codeSnippet)
     .filter((c): c is DocCodeSnippet => Boolean(c));
-  const allScreenshots = Array.from(
-    new Set(raw.sections.flatMap((s) => s.inlineScreenshotFilenames || []))
-  );
   const allDepthItems = raw.sections.flatMap((s) => s.architecturalDepth || []);
   const allFailureModes = raw.sections.flatMap((s) => s.whatBreaksAt2Am || []);
 
-  const overviewParagraphs: string[] = [
-    raw.overviewParagraphs[0] ||
-      `This document presents a reference architecture to help you build and deploy a multi-tenant, multi-agent AI system on Google Cloud (${raw.title}). ${raw.executiveSummary}`,
-    `The intended audience for this document includes architects, developers, and administrators who build and manage enterprise-grade, multi-agent systems in the cloud (${raw.audience}). This architecture provides a blueprint for isolating tenant resources while maintaining centralized control and visibility. This document assumes a basic understanding of cloud computing, AI agent concepts, and multi-tenancy principles.`,
-    `You can deploy the agents, MCP servers, and security patterns described in this document by following the implementation patterns and live cloud verification runbook in the Deployment section.`,
-  ];
+  const overviewParagraphs: string[] =
+    raw.overviewParagraphs.length >= 2
+      ? raw.overviewParagraphs
+      : [
+          raw.overviewParagraphs[0] || raw.executiveSummary,
+          `Intended for ${raw.audience}, this guide provides a production reference architecture, failure-mode analysis, and deployment blueprint for ${raw.title} on Google Cloud.`,
+        ];
+
+  const useCaseLeadParagraphs = [
+    ...(raw.sections[0]?.leadParagraphs.slice(1) || []),
+    ...(raw.sections[1]?.leadParagraphs || []),
+  ].filter(Boolean);
+
+  const designAltLeadParagraphs = [
+    ...(raw.sections[2]?.leadParagraphs || []),
+    ...(raw.sections[3]?.leadParagraphs || []),
+  ].filter(Boolean);
+
+  const rTopRightTitle = [bp.routingCards.topRight.title, bp.routingCards.topRight.title2].filter(Boolean).join(' ');
+  const rBotRightTitle = [bp.routingCards.botRight.title, bp.routingCards.botRight.title2].filter(Boolean).join(' ');
+  const gTopTitle = [bp.govCards.top.title, bp.govCards.top.title2].filter(Boolean).join(' ');
+  const gBotTitle = [bp.govCards.bot.title, bp.govCards.bot.title2].filter(Boolean).join(' ');
 
   const sections: DocSection[] = [
     // 1. Architecture (#architecture + #agentic_flow)
@@ -1614,15 +1714,14 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
       numberLabel: '1',
       heading: 'Architecture',
       leadParagraphs: [
-        `To balance centralized governance with tenant autonomy, the architecture uses a hub-and-spoke model. The hub (${bp.routingHubTitle} and ${bp.govHubTitle}) handles shared concerns like routing, authentication, and centralized logging, while the spokes (${bp.leftBoundaryLabel} and ${bp.rightBoundaryLabel}) represent isolated tenant environments. This separation ensures that each tenant's agents, data, and execution contexts remain completely segregated, preventing cross-tenant data leakage while allowing the organization to enforce uniform security policies and monitor system-wide health from a single location.`,
         raw.sections[0]?.leadParagraphs[0] || raw.executiveSummary,
-        `The following diagram illustrates the architecture of the multi-tenant agentic AI system:`,
+        `The topology separates centralized ingress and governance (${bp.routingHubTitle} and ${[bp.govHubTitle, bp.govHubTitle2].filter(Boolean).join(' ')}) from isolated execution spokes (${bp.leftBoundaryLabel} and ${bp.rightBoundaryLabel}), ensuring deterministic policy enforcement and unified observability across the Google Cloud organization:`,
       ],
       inlineDiagram: primaryDiagram,
-      secondaryInlineDiagram: secondaryDiagram,
+      secondaryInlineDiagram: undefined,
       componentGroupsTable: buildComponentGroupsForBlueprint(bp),
       agenticFlowHeading: 'Agentic flow',
-      agenticFlowIntro: 'The example multi-tenant system in the preceding architecture has the following flow:',
+      agenticFlowIntro: 'Requests traverse the architecture through the following deterministic execution sequence:',
       agenticFlowSteps: buildAgenticFlowStepsForBlueprint(bp),
       architecturalDepth: allDepthItems.slice(0, 4),
     },
@@ -1633,70 +1732,9 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
       numberLabel: '2',
       heading: 'Products used',
       leadParagraphs: [
-        'This reference architecture uses the following Google Cloud and open-source products and tools, chosen for their serverless nature, scalability, and security features:',
+        `This reference architecture uses the following Google Cloud services and open-source frameworks to implement ${raw.title}:`,
       ],
-      productsUsedItems: [
-        {
-          name: 'Gemini Enterprise Agent Platform & Vertex AI Agent Engine',
-          url: 'https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview',
-          description: 'Provides a managed runtime environment to host, scale, and govern AI agents, including Sessions, Memory Bank, and Context Caching.',
-        },
-        {
-          name: 'Agent Development Kit (ADK)',
-          url: 'https://google.github.io/adk-docs/',
-          description: 'An open-source framework for building, orchestrating, and testing multi-agent systems with deterministic callbacks.',
-        },
-        {
-          name: 'Vertex AI and Gemini models',
-          url: 'https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models',
-          description: 'Provides access to Google’s foundation models for reasoning, planning, and content generation.',
-        },
-        {
-          name: 'Model Armor',
-          url: 'https://cloud.google.com/security/products/model-armor',
-          description: 'Screens prompts and responses to protect against prompt injection, jailbreaks, and sensitive data leakage.',
-        },
-        {
-          name: 'Cloud Run',
-          url: 'https://cloud.google.com/run',
-          description: 'A serverless compute platform used to host the frontend routing portal and the stateless MCP servers inside gVisor sandboxes.',
-        },
-        {
-          name: 'External Application Load Balancer',
-          url: 'https://cloud.google.com/load-balancing/docs/https',
-          description: 'Distributes incoming user traffic and integrates with edge security services.',
-        },
-        {
-          name: 'Identity-Aware Proxy (IAP)',
-          url: 'https://cloud.google.com/iap',
-          description: 'Enforces zero-trust access control for the frontend portal.',
-        },
-        {
-          name: 'Google Cloud Armor',
-          url: 'https://cloud.google.com/armor',
-          description: 'Provides DDoS protection and web application firewall (WAF) capabilities at the edge, stripping spoofed tenant headers.',
-        },
-        {
-          name: 'IAM and Principal Access Boundary (PAB) policies',
-          url: 'https://cloud.google.com/iam/docs/principal-access-boundary-policies',
-          description: 'Manages fine-grained permissions and enforces strict boundaries between tenant projects.',
-        },
-        {
-          name: 'VPC Service Controls',
-          url: 'https://cloud.google.com/vpc-service-controls',
-          description: 'Creates secure service perimeters to mitigate data exfiltration risks across the organization and tenant silos.',
-        },
-        {
-          name: 'Security Command Center',
-          url: 'https://cloud.google.com/security-command-center',
-          description: 'Delivers centralized security and risk management across the Google Cloud organization.',
-        },
-        {
-          name: 'Cloud Logging, BigQuery & AlloyDB / Cloud Spanner',
-          url: 'https://cloud.google.com/logging',
-          description: `Provides centralized log management, zero-PII OpenTelemetry token chargeback, and enterprise data persistence (${raw.gcpProductsUsed.join(', ')}).`,
-        },
-      ],
+      productsUsedItems: buildProductsUsedForGuide(raw),
     },
 
     // 3. Use case (#use_case)
@@ -1704,30 +1742,36 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
       id: 'use_case',
       numberLabel: '3',
       heading: 'Use case',
-      leadParagraphs: [
-        'This section describes a business use case for which this multi-tenant reference architecture is an effective choice.',
-        ...(raw.sections[0]?.leadParagraphs.slice(1) || []),
-        ...(raw.sections[1]?.leadParagraphs || []),
-      ],
-      useCaseSubHeading: raw.sections[0]?.heading || 'Enterprise multi-tenant AI platform',
+      leadParagraphs:
+        useCaseLeadParagraphs.length > 0
+          ? useCaseLeadParagraphs
+          : [raw.executiveSummary],
+      useCaseSubHeading: raw.sections[1]?.heading || raw.sections[0]?.heading || raw.title,
       inlineTable: allTables[0],
       useCaseBenefits: [
         {
           title: 'Strict data isolation',
-          detail:
-            'Each tenant operates in a dedicated Google Cloud boundary or cryptographically enforced row-level security scope with its own datastore and MCP servers, preventing accidental data leakage between tenants or business units.',
+          detail: `Enforces deterministic tenant and domain boundaries via ${bp.innerWrapperLabel} and ${bp.leftCards.datastore.title} (${bp.leftCards.datastore.sub}), preventing cross-spoke state or credential leakage.`,
         },
-        {
-          title: 'Specialized agent knowledge',
-          detail:
-            'Agents in each tenant project can be grounded in domain-specific data, memory namespaces, and prefix caches without interference or context pollution from other tenants.',
-        },
-        {
-          title: 'Reduced cross-domain risk',
-          detail:
-            "PAB policies, VPC Service Controls, and RFC 8693 On-Behalf-Of (OBO) tokens ensure that a compromise or misconfiguration in one tenant's environment does not affect other tenants.",
-        },
-        ...allDepthItems.slice(4, 7).map((d) => ({ title: d.title, detail: d.detail })),
+        ...(allDepthItems.length > 0
+          ? allDepthItems.slice(0, 3).map((d) => ({
+              title: d.title,
+              detail: d.detail,
+            }))
+          : [
+              {
+                title: `Perimeter & ingress defense (${bp.outerWrapperLabel})`,
+                detail: `Screens all incoming traffic through ${bp.routingCards.topLeft.title} (${bp.routingCards.topLeft.sub}) and ${bp.routingCards.midLeft.title} (${bp.routingCards.midLeft.sub}) before reaching ${rBotRightTitle}.`,
+              },
+              {
+                title: `Deterministic agent orchestration (${bp.leftCards.runtime.title})`,
+                detail: `Pairs ${bp.leftCards.runtime.title} (${bp.leftCards.runtime.sub}) with ${bp.leftCards.modelArmor.title} (${bp.leftCards.modelArmor.sub}) and ${bp.leftCards.mcp.title} (${bp.leftCards.mcp.sub}).`,
+              },
+              {
+                title: `Centralized governance & cost attribution (${gBotTitle})`,
+                detail: `Streams zero-PII audit logs and OpenTelemetry token spans (${bp.midGovLabel.join(' ')}) into ${gBotTitle} (${bp.govCards.bot.sub}) and ${gTopTitle}.`,
+              },
+            ]),
       ],
     },
 
@@ -1736,89 +1780,47 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
       id: 'design_alternatives',
       numberLabel: '4',
       heading: 'Design alternatives',
-      leadParagraphs: [
-        'The architecture described in this document makes specific choices for public access, serverless compute, and resource isolation. Depending on your specific security, compliance, and operational requirements, you might consider the following design alternatives.',
-        ...(raw.sections[2]?.leadParagraphs || []),
-      ],
+      leadParagraphs:
+        designAltLeadParagraphs.length > 0
+          ? designAltLeadParagraphs
+          : [
+              `Depending on your latency budget, regulatory isolation requirements, and existing platform investments, evaluate the following architectural trade-offs for ${raw.title}.`,
+            ],
       inlineTable: allTables[1],
       designAlternativesSubSections: [
         {
           id: 'private_access_deployment',
-          heading: 'Private access deployment',
+          heading: 'Private access deployment & network isolation',
           leadParagraphs: [
-            'The reference architecture uses an External Application Load Balancer to handle traffic from the public internet. If your system is intended only for internal users or must not be exposed to the public internet, you can implement a private access model.',
-            'There are two primary approaches to restrict public access:',
+            `The baseline topology routes traffic through ${rTopRightTitle} (${bp.routingCards.topRight.sub}) and ${rBotRightTitle} (${bp.routingCards.botRight.sub}) under ${bp.outerWrapperLabel}.`,
           ],
           subBlocks: [
             {
-              subHeading: 'Block traffic with edge security policies',
+              subHeading: 'External vs. internal private ingress',
               paragraphs: [
-                'You can retain the External Application Load Balancer and use Google Cloud Armor security policies to restrict access to specific IP address ranges, such as your corporate network or VPN gateways. Together with IAP, this approach ensures that only traffic originating from trusted networks and authenticated users can reach the frontend portal.',
-              ],
-            },
-            {
-              subHeading: 'Route traffic through an internal Application Load Balancer',
-              paragraphs: [
-                'For stricter network isolation, you can replace the External Application Load Balancer with an internal Application Load Balancer. In this configuration, the load balancer is assigned an internal IP address within your Virtual Private Cloud (VPC) network. Users access the frontend portal over a private connection, such as Cloud VPN or Cloud Interconnect, or from within the VPC network itself. This approach completely removes the public-facing entry point.',
+                `For internet-facing workloads, retain the global External Application Load Balancer with ${bp.routingCards.topLeft.title} and ${bp.routingCards.midLeft.title}. For strictly internal workloads over Cloud Interconnect or Shared VPC, replace the public ingress with an internal Application Load Balancer and Private Service Connect (PSC) endpoints.`,
               ],
             },
           ],
         },
         {
-          id: 'compute_infrastructure',
-          heading: 'Compute infrastructure',
+          id: 'runtime_and_tool_execution',
+          heading: `${bp.leftCards.runtime.title} & ${bp.leftCards.mcp.title} placement`,
           leadParagraphs: [
-            'The reference architecture uses Cloud Run to host the frontend portal and the MCP servers. Cloud Run is a fully managed, serverless platform that automatically scales containers up and down—even to zero—based on traffic. This model minimizes operational overhead and optimizes costs for variable or spiky workloads.',
-            'Alternatively, you can deploy these components on Google Kubernetes Engine (GKE). GKE might be a better fit in the following scenarios:',
+            `Each execution spoke (${bp.leftZoneTitle} and ${bp.rightZoneTitle}) pairs ${bp.leftCards.runtime.title} (${bp.leftCards.runtime.sub}) with ${bp.leftCards.mcp.title} (${bp.leftCards.mcp.sub}) and ${bp.leftCards.datastore.title} (${bp.leftCards.datastore.sub}).`,
           ],
           subBlocks: [
             {
-              subHeading: 'When to evaluate GKE alongside Cloud Run',
+              subHeading: 'Dedicated spoke vs. shared tool gateways',
               paragraphs: [],
               bullets: [
                 {
-                  label: 'Existing Kubernetes investments',
-                  detail: 'Your organization already has standardized deployment pipelines, monitoring tools, and operational expertise centered on Kubernetes.',
+                  label: `Spoke-local ${bp.leftCards.mcp.title}`,
+                  detail: `Maximizes blast-radius containment by keeping credentials, service accounts, and data access strictly inside ${bp.leftBoundaryLabel}.`,
                 },
                 {
-                  label: 'Advanced networking requirements',
-                  detail: 'You need fine-grained control over network policies, service meshes (like Cloud Service Mesh), or complex pod-to-pod communication patterns.',
-                },
-                {
-                  label: 'Specific hardware needs',
-                  detail: 'Your MCP servers or auxiliary services require specific machine types, GPUs, or persistent local storage that are better managed through GKE node pools.',
-                },
-                {
-                  label: 'High, predictable traffic',
-                  detail: 'At sustained high request volumes, managing dedicated GKE clusters can sometimes offer more predictable cost structures than serverless per-request billing.',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: 'model_context_protocol_mcp_servers',
-          heading: 'Model Context Protocol (MCP) servers',
-          leadParagraphs: [
-            'In the reference architecture, each tenant project hosts its own dedicated MCP servers on Cloud Run. This approach maximizes isolation, ensuring that tool execution, credentials, and data access remain strictly within the tenant boundary.',
-            'However, if multiple tenants require access to the same external, non-tenant-specific tools (for example, a public weather API, a shared corporate directory, or a common calculation service), you might consider deploying shared MCP servers in the central routing hub or a dedicated shared services project.',
-          ],
-          subBlocks: [
-            {
-              subHeading: 'Comparing local and shared MCP servers',
-              paragraphs: [
-                'When deciding between local (tenant-isolated) and shared MCP servers, consider the following trade-offs across network, management, and security:',
-              ],
-              bullets: [
-                {
-                  label: 'Local MCP server (Network, Management & Security)',
-                  detail:
-                    'Simplifies networking because communication stays within the tenant project; requires deploying and updating MCP server instances across every tenant project (mitigated with automated CI/CD pipelines); provides the highest level of security isolation, as each MCP server uses tenant-specific service accounts and credentials.',
-                },
-                {
-                  label: 'Shared MCP server (Network, Management & Security)',
-                  detail:
-                    'Requires configuring cross-project networking (such as Private Service Connect or VPC Network Peering) and adjusting VPC Service Controls perimeters; centralizes management, reducing the number of running instances and simplifying updates; increases the potential blast radius, as the shared MCP server must securely handle multi-tenant contexts and avoid caching data across requests.',
+                  label: 'Shared enterprise tool gateway',
+                  detail: `Consolidates stateless, non-tenant-specific MCP tools into a central hub project via Private Service Connect, reducing instance count while requiring strict per-request token validation.`,
                 },
               ],
             },
@@ -1833,129 +1835,56 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
       numberLabel: '5',
       heading: 'Design considerations',
       leadParagraphs: [
-        'This section provides guidance to help you use this reference architecture to develop a topology that meets your specific requirements for security, reliability, operational efficiency, and cost. This guidance is aligned with the perspectives in the Google Cloud Well-Architected Framework.',
+        'This section aligns the reference architecture with the Google Cloud Well-Architected Framework across security, reliability, operational excellence, and cost optimization, alongside production failure-mode mitigations.',
       ],
       whatBreaksAt2Am: allFailureModes,
       designConsiderationsSubSections: [
         {
           id: 'security_privacy_and_compliance',
           heading: 'Security, privacy, and compliance',
-          leadParagraph:
-            'In a multi-tenant AI system, maintaining strict boundaries between tenants and protecting against AI-specific vulnerabilities are paramount. The following table outlines security considerations for the components in this architecture. For general security principles, see the Security, privacy, and compliance perspective in the Google Cloud Well-Architected Framework.',
+          leadParagraph: `Enforce defense-in-depth across ${bp.outerWrapperLabel}, ${bp.innerWrapperLabel}, and spoke runtimes:`,
           rows: [
             {
-              component: 'VPC Service Controls',
+              component: `${bp.outerWrapperLabel} & ${bp.innerWrapperLabel}`,
               recommendations: [
-                'Configure a primary perimeter around the entire organization to prevent data exfiltration to unauthorized external resources.',
-                'Create separate, nested perimeters for each tenant project and the central hubs. Use ingress and egress rules to allow only necessary traffic—for example, allowing the routing hub to communicate with the Agent Runtime in the tenant projects, while blocking direct communication between different tenant projects.',
+                `Enforce ${bp.outerWrapperLabel} perimeters around hub and spoke projects to block unauthorized data exfiltration, and bind ${bp.innerWrapperLabel} to spoke principals to prevent cross-spoke access.`,
               ],
             },
             {
-              component: 'Cloud Load Balancing and Cloud Armor',
+              component: `${bp.routingCards.topLeft.title}, ${bp.routingCards.midLeft.title} & ${bp.leftCards.modelArmor.title}`,
               recommendations: [
-                'Enforce HTTPS-only traffic using Google-managed SSL certificates.',
-                'Configure Google Cloud Armor with preconfigured WAF rules to mitigate common web vulnerabilities (such as OWASP Top 10) and DDoS attacks.',
-                'Strip any client-supplied X-Tenant-ID or internal privilege headers at the load balancer edge.',
+                `Strip client-supplied privilege headers at the edge (${bp.routingCards.topLeft.sub}), verify caller identity claims (${bp.routingCards.midLeft.sub}), and screen both incoming prompts and outgoing completions with ${bp.leftCards.modelArmor.title} (${bp.leftCards.modelArmor.sub}).`,
               ],
             },
             {
-              component: 'IAP',
+              component: `${bp.leftCards.datastore.title} & ${bp.govCards.mid.title}`,
               recommendations: [
-                'Enable IAP on the backend service for the frontend portal to ensure that only authenticated and authorized users can access the application.',
-                'Configure context-aware access rules in IAP to enforce device posture, IP address, or geographic restrictions.',
+                `Encrypt state at rest with Customer-Managed Encryption Keys (${bp.govCards.mid.sub}) and enforce least-privilege access scopes on ${bp.leftCards.datastore.title} (${bp.leftCards.datastore.sub}).`,
               ],
-            },
-            {
-              component: 'Model Armor',
-              recommendations: [
-                'Deploy Model Armor at two levels: in the routing hub for baseline protection against malicious inputs at the edge, and within each tenant project to enforce tenant-specific content filters, safety thresholds, and sensitive data redaction.',
-                'Ensure that both incoming user prompts, retrieved RAG chunks, and outgoing model responses are screened by the tenant-level Model Armor instance.',
-              ],
-            },
-            {
-              component: 'Agent runtime',
-              recommendations: [
-                'Run the Agent Runtime using a dedicated, least-privilege IAM service account specific to that tenant project.',
-                'Avoid storing long-lived credentials or API keys in the agent code or environment variables. If agents or MCP servers need to authenticate to external services, use Secret Manager within the tenant project or Workload Identity Federation.',
-              ],
-            },
-            {
-              component: 'PAB policy',
-              recommendations: [
-                "Apply a Principal Access Boundary policy to each tenant's service accounts and user principals. Bind the policy to the specific tenant project so that even if a principal is inadvertently granted an IAM role in another project, the PAB policy blocks access.",
-              ],
-            },
-            {
-              component: 'Tenant datastore',
-              recommendations: [
-                'Ensure that all data at rest is encrypted. By default, Google Cloud encrypts data at rest, but for stricter compliance, use Customer-Managed Encryption Keys (CMEK) managed in Cloud KMS within each tenant boundary.',
-                'Restrict access to the datastore so that only the tenant-specific Agent Runtime and MCP server service accounts can read or write data, enforcing ENABLE and FORCE ROW LEVEL SECURITY on shared tables.',
-              ],
-            },
-            {
-              component: 'Security Command Center',
-              recommendations: [
-                'Enable Security Command Center at the organization level and route findings to the central governance and security hub.',
-                'Use Event Threat Detection and Security Health Analytics to continuously monitor for misconfigurations, such as overly permissive IAM roles or broken VPC Service Controls perimeters.',
-              ],
-            },
-          ],
-          extraSubHeading: 'More security recommendations',
-          extraBullets: [
-            {
-              label: 'Data residency',
-              detail:
-                'If tenants have specific geographic data storage requirements, use Organization Policy Service constraints (such as gcp.resourceLocations) on each tenant project to restrict where resources like the tenant datastore and Vertex AI endpoints can be provisioned.',
-            },
-            {
-              label: 'Sensitive data protection',
-              detail:
-                'Integrate Sensitive Data Protection (Cloud SDP) into your data ingestion pipelines or Model Armor configurations to automatically discover, classify, and de-identify personally identifiable information (PII) before it is stored in the tenant datastore or sent to the Gemini models.',
-            },
-            {
-              label: 'Least privilege',
-              detail:
-                'Grant IAM roles at the most granular level possible (for example, at the specific Cloud Run service or Secret Manager secret level rather than the project level). Regularly audit permissions using IAM Recommender.',
             },
           ],
         },
         {
           id: 'reliability',
           heading: 'Reliability',
-          leadParagraph:
-            'Ensuring high availability and fault isolation is critical so that an issue in one tenant environment does not degrade the experience for other tenants. For general reliability principles, see the Reliability perspective in the Google Cloud Well-Architected Framework.',
+          leadParagraph: `Isolate fault domains so transient failures or traffic spikes in one spoke never cascade across the platform:`,
           rows: [
             {
-              component: 'Cloud Load Balancing',
+              component: `${rTopRightTitle} & ${rBotRightTitle}`,
               recommendations: [
-                'The global External Application Load Balancer is inherently multi-regional and resilient, automatically routing traffic away from unhealthy backends.',
+                `Deploy ${rBotRightTitle} across multi-region serverless Network Endpoint Groups (NEGs) with minimum warm instances to eliminate cold-start latency spikes.`,
               ],
             },
             {
-              component: 'Frontend portal',
+              component: `${bp.leftCards.runtime.title} & ${bp.leftCards.mcp.title}`,
               recommendations: [
-                'Deploy the Cloud Run frontend portal across multiple regions and configure the load balancer with multi-region serverless network endpoint groups (NEGs) to protect against regional outages.',
-                'Configure minimum instances on Cloud Run to eliminate cold starts and ensure consistent response times.',
+                `Enforce bounded retry budgets with exponential backoff, per-tool execution timeouts, and stateless horizontal scaling on ${bp.leftCards.mcp.title} (${bp.leftCards.mcp.sub}).`,
               ],
             },
             {
-              component: 'Agent runtime',
+              component: bp.leftCards.datastore.title,
               recommendations: [
-                'The Gemini Enterprise Agent Platform manages the scaling and availability of the Agent Runtime. Implement retry logic with exponential backoff and jitter in the frontend portal when communicating with the Agent Runtime to handle transient network errors.',
-              ],
-            },
-            {
-              component: 'MCP servers',
-              recommendations: [
-                'Design MCP servers to be stateless so that Cloud Run can scale them horizontally without session affinity issues.',
-                'Set appropriate request timeouts and concurrency limits on the Cloud Run services to prevent a slow external tool or database query from exhausting available instances.',
-              ],
-            },
-            {
-              component: 'Tenant datastore',
-              recommendations: [
-                'Choose a multi-region or regional high-availability configuration for your datastore (for example, a regional Cloud SQL instance with high availability enabled, AlloyDB HA, or a multi-region Spanner / Firestore configuration).',
-                'Enable automated backups and point-in-time recovery (PITR) for each tenant datastore to protect against accidental data corruption or deletion.',
+                `Enable regional high availability and Point-in-Time Recovery (PITR) on ${bp.leftCards.datastore.title} (${bp.leftCards.datastore.sub}) with automated backup verification.`,
               ],
             },
           ],
@@ -1963,34 +1892,24 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
         {
           id: 'operational_efficiency',
           heading: 'Operational efficiency',
-          leadParagraph:
-            'Managing a hub-and-spoke architecture with potentially dozens or hundreds of tenant projects requires automation and standardized observability. For general operational principles, see the Operational excellence perspective in the Google Cloud Well-Architected Framework.',
+          leadParagraph: `Automate spoke provisioning, continuous evaluation, and centralized telemetry across ${[bp.govHubTitle, bp.govHubTitle2].filter(Boolean).join(' ')}:`,
           rows: [
             {
-              component: 'Infrastructure as Code (IaC)',
+              component: 'Infrastructure as Code (Terraform)',
               recommendations: [
-                'Do not provision tenant projects manually. Use Terraform, Config Connector, or Infrastructure Manager to define a reusable "tenant vending machine" module.',
-                'This module should automatically create the tenant project, configure VPC Service Controls, apply PAB policies, and deploy the Agent Runtime, MCP servers, and datastore consistently.',
+                `Provision ${bp.leftZoneTitle} and ${bp.rightZoneTitle} spokes through versioned Terraform modules that atomically bind perimeters, IAM roles, and runtime configurations.`,
               ],
             },
             {
-              component: 'CI/CD pipelines',
+              component: `${gTopTitle} & ${gBotTitle}`,
               recommendations: [
-                'Use Cloud Build or Cloud Deploy to automate the rollout of updates to agent code, prompts, and MCP servers across all tenant projects.',
-                'Implement progressive delivery strategies—such as canary deployments or deploying to a staging tenant project first—to validate changes and run the 10-Point Red-Team Breach Suite before rolling them out to all production tenants.',
+                `Stream structured OpenTelemetry traces and zero-PII audit logs (${bp.midGovLabel.join(' ')}) to ${gBotTitle} (${bp.govCards.bot.sub}) and monitor posture drift in ${gTopTitle}.`,
               ],
             },
             {
-              component: 'Centralized observability',
+              component: 'Automated CI/CD & Red-Team Gates',
               recommendations: [
-                'Configure log sinks (aggregated sinks) to route logs from all tenant projects and the routing hub to centralized log buckets in the central governance and security hub.',
-                'Use Cloud Trace and Cloud Monitoring to track end-to-end request latency across the frontend portal, the Agent Runtime, MCP servers, and Gemini model invocations.',
-              ],
-            },
-            {
-              component: 'Agent evaluation',
-              recommendations: [
-                'Integrate the Vertex AI Gen AI Evaluation Service into your CI/CD pipeline. Before deploying updated agent instructions or changing the underlying Gemini model version, run automated evaluations against a golden dataset to ensure response quality, groundedness, and safety remain consistent.',
+                `Gate every prompt, model, or tool change on automated Vertex AI Gen AI Evaluation Service benchmarks and security regression checks before production rollout.`,
               ],
             },
           ],
@@ -1998,53 +1917,24 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
         {
           id: 'cost_optimization',
           heading: 'Cost optimization',
-          leadParagraph:
-            'In a multi-tenant environment, understanding and optimizing costs—both for shared infrastructure and per-tenant resource consumption—is essential for maintaining healthy margins. For general cost management principles, see the Cost optimization perspective in the Google Cloud Well-Architected Framework.',
+          leadParagraph: `Control token consumption and attribute shared hub overhead accurately across workloads:`,
           rows: [
             {
-              component: 'Token consumption',
+              component: `${bp.leftCards.llm.title} Context Caching`,
               recommendations: [
-                'LLM token usage is often the largest variable cost in an agentic system. Use Vertex AI Context Caching (ContextCacheConfig) if your agents repeatedly reference large, static system instructions, compliance rubrics, or documents (~90% cached input token discount).',
-                'Design agent workflows to use smaller, more cost-effective models (like Gemini 2.5 Flash / Gemini 3.8 Flash) for routine routing, classification, or simple tool calls, and reserve larger models (like Gemini 2.5 Pro / Gemini 3.1 Pro) for complex reasoning tasks.',
+                `Enable Vertex AI Context Caching on shared system instructions, tool schemas, and reference rubrics (${bp.leftCards.llm.sub}) to reduce repeated input token costs by up to 90%.`,
               ],
             },
             {
-              component: 'Model endpoints',
+              component: `${bp.routingCards.botLeft.title} & ${bp.leftCards.mcp.title}`,
               recommendations: [
-                'For tenants with predictable, high-volume workloads, consider purchasing Provisioned Throughput for Vertex AI to secure consistent capacity at a predictable, discounted rate compared to pay-as-you-go pricing.',
+                `Reject malformed or adversarial requests at the edge (${bp.routingCards.botLeft.sub}) before invoking downstream models, and scale idle stateless tool containers down to zero.`,
               ],
             },
             {
-              component: 'Instrumentation',
+              component: `${gBotTitle} FinOps Attribution`,
               recommendations: [
-                'Take advantage of the project-per-tenant spoke structure or OpenTelemetry span attributes (tenant.id, gen_ai.usage.input_tokens) for straightforward cost attribution. Because each tenant’s Agent Runtime, MCP servers, datastore, and model invocations occur within a dedicated project or tagged telemetry stream, you can export Cloud Billing data to BigQuery in the governance hub to track exact per-tenant direct costs.',
-              ],
-            },
-            {
-              component: 'Centralized prompt filtering',
-              recommendations: [
-                'By deploying Model Armor in the routing hub to catch obvious malicious or malformed prompts at the edge, you avoid incurring compute and token costs in the downstream tenant projects for invalid requests.',
-              ],
-            },
-            {
-              component: 'Shared infrastructure',
-              recommendations: [
-                'Configure the Cloud Run services in the routing hub (frontend portal) and tenant projects (MCP servers) to scale down to zero when idle, ensuring you don’t pay for unused compute capacity during off-peak hours for less active tenants.',
-              ],
-            },
-            {
-              component: 'Platform overhead',
-              recommendations: [
-                'The costs incurred by the routing hub and the central governance and security hub represent shared platform overhead. To calculate the true cost per tenant, establish an allocation model in your BigQuery billing reports:',
-                'Even split: Divide the hub costs equally among all active tenants. This is simple to implement when tenants have similar usage profiles.',
-                'Proportional: Allocate hub costs based on a measurable metric, such as the number of requests routed to each tenant project or the proportion of total log volume generated by each tenant.',
-                'Fixed: Assign a fixed monthly platform fee to each tenant tier to cover the baseline cost of the shared hubs.',
-              ],
-            },
-            {
-              component: 'Centralized cost management',
-              recommendations: [
-                'Configure Cloud Billing budgets and alerts for both the overall organization and individual tenant projects. This helps you detect sudden spikes in usage—such as an agent stuck in a recursive loop calling Gemini models—and take corrective action quickly.',
+                `Export OpenTelemetry token usage spans and Cloud Billing records to BigQuery (${bp.govCards.bot.sub}) to enforce per-spoke quota budgets and automated spend alerts.`,
               ],
             },
           ],
@@ -2058,11 +1948,11 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
       numberLabel: '6',
       heading: 'Deployment',
       leadParagraphs: [
-        'To deploy the agents, MCP servers, and security patterns described in this document—and verify live execution across Google Cloud Console (ramp-portal-dev and nitina-ggarwal-sandbox-647724)—use the following production implementation artifacts and live verification proofs:',
+        `To deploy and verify the ${raw.title} pattern on Google Cloud, use the following production implementation reference:`,
       ],
       codeSnippet: allCodeSnippets[0],
-      additionalCodeSnippets: allCodeSnippets.slice(1),
-      inlineScreenshotFilenames: allScreenshots,
+      additionalCodeSnippets: [],
+      inlineScreenshotFilenames: [],
     },
 
     // 7. What's next (#whats_next)
@@ -2071,7 +1961,7 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
       numberLabel: '7',
       heading: "What's next",
       leadParagraphs: [
-        'To continue building and hardening your multi-tenant agentic AI architecture on Google Cloud, explore the following resources:',
+        'Explore the following official Google Cloud Architecture Center and developer resources:',
       ],
       whatsNextLinks: [
         {
@@ -2082,7 +1972,7 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
         {
           label: 'Agent Development Kit (ADK) Documentation',
           url: 'https://google.github.io/adk-docs/',
-          description: 'Learn how to build hierarchical multi-agent systems, callbacks, and MCP toolsets.',
+          description: 'Build hierarchical multi-agent systems, deterministic callbacks, and MCP toolsets.',
         },
         {
           label: 'Vertex AI Agent Engine Overview',
@@ -2093,11 +1983,6 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
           label: 'Google Cloud Well-Architected Framework: AI and ML perspective',
           url: 'https://cloud.google.com/architecture/framework',
           description: 'Review best practices for security, reliability, operational efficiency, and cost optimization.',
-        },
-        {
-          label: 'Cloud Architecture Center',
-          url: 'https://cloud.google.com/architecture',
-          description: 'For more reference architectures, diagrams, and best practices, explore the Cloud Architecture Center.',
         },
       ],
     },

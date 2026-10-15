@@ -121,14 +121,15 @@ All document previews and standalone viewers (`/viewer`, `/vision`, `/studio`) m
 #### 2. Mandatory Implementation Contract Across All Diagrams (`/blogs`, `/dashboard`, `/library`, `/viewer`)
 1. **Server-Side Bridge (`src/lib/server/googleWorkspaceBridge.ts`)**:
    - `getServerDriveAccessToken()` resolves OAuth credentials from environment variables (`GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_REFRESH_TOKEN`) or local token files (`/Users/nitinagga/Documents/gantry-pulse/.gsheet_oauth_token.json`, `/Users/nitinagga/Documents/blogs/.gsheet_oauth_token.json`).
-   - `uploadPptxBufferToGoogleSlides()` and `uploadHtmlOrDocxToGoogleDocs()` include `"x-goog-user-project": process.env.GOOGLE_DRIVE_QUOTA_PROJECT || "nitina-ggarwal-sandbox-647724"` and append `?authuser=nitinagga%40google.com` to every `googleSlidesEditUrl` and `googleDocsEditUrl`.
+   - `loadCloudViewerManifest()` spreads disk manifests over `globalThis.__pcCloudViewerManifestCache` so disk updates always win, and `normalizeManifestKey()` maps `ws1-*..ws5-*` to `DOC-MT-01..DOC-MT-06` (never to legacy 34-slide `WS1..WS5` keys).
+   - `uploadPptxBufferToGoogleSlides()` (supporting in-place `PATCH /upload/drive/v3/files/{preferredId}?uploadType=multipart`) and `uploadHtmlOrDocxToGoogleDocs()` include `"x-goog-user-project": process.env.GOOGLE_DRIVE_QUOTA_PROJECT || "nitina-ggarwal-sandbox-647724"` and append `?authuser=nitinagga%40google.com` to every `googleSlidesEditUrl` and `googleDocsEditUrl`.
 2. **Pre-Warmed Manifest (`src/data/cloud_viewer_manifest.json`) & API Routes**:
-   - `GET /api/google-workspace/manifest`: Returns all pre-warmed entries (`WS1`–`WS5`, `ALL`, `BP-00`..`BP-78`, `GCP-MULTIAGENT-01`, and all 7 Official Google Cloud Architecture Center variants) plus `serverRefreshTokenReady`.
-   - `POST /api/google-workspace/open`: Checks `src/data/cloud_viewer_manifest.json` first (`0ms` fast path); if not yet in the manifest (or `forceRefresh: true`), compiles the 3-slide `.pptx` or `.html` spec and converts it server-side into `nitinagga@google.com`'s Google Drive.
+   - `GET /api/google-workspace/manifest`: Returns all pre-warmed entries (`DOC-MT-01`..`DOC-REF-09`, `WS1`–`WS5`, `ALL`, `BP-00`..`BP-78`, `GCP-MULTIAGENT-01`, and all Official Google Cloud Architecture Center variants) plus `serverRefreshTokenReady`.
+   - `POST /api/google-workspace/open`: Checks `src/data/cloud_viewer_manifest.json` first (`0ms` fast path); if not yet in the manifest (or `forceRefresh: true`), compiles the 6-slide `.pptx` (for Architecture Center guides) or 3-slide `.pptx` / `.html` spec and converts it server-side into `nitinagga@google.com`'s Google Drive.
    - `GET /api/google-workspace/pdf`: Streams exported PDF bytes (`application/pdf`) from Google Drive for same-origin iframe preview.
-3. **Header-Only Action Component (`src/components/DiagramInlineSlidesPreviewer.tsx`) & Cohesive 6-Slide Space Allocation (`editablePptxCompiler.ts`)**:
-   - Embedded with `headerOnly={true}` in the top header of `/dashboard` (`src/app/dashboard/page.tsx`), the preview modal header of `/library` (`src/app/library/page.tsx`), and the selector header of `/blogs` (`src/app/blogs/page.tsx`), while inline blog figures use a single-line header bar above a 100% full-width diagram canvas (never rendering an on-page `1. EDITABLE SLIDE DECK PREVIEWER` box).
-   - Provides the `👁️ Cloud Viewer` button, the Google Drive-style split action button (`[ S | Open with Google Slides ↗ | ▼ ]`), and the 3-mode Same-Screen Cloud Viewer Modal (`✨ Interactive Slides Studio`, `🌐 Live Google Slides Embed`, `📄 Live Google Docs Spec`), backed by cohesive 6-slide `.pptx` compilation (`0` auto-collapsing `slide.addTable` calls, `deduplicateParentheticalEchoes`, sentence-boundary `truncateClean`, and 100% vertical alignment to `y = 7.22"` across Slides 1–6).
+3. **Header-Only Action Component (`src/components/DiagramInlineSlidesPreviewer.tsx`) & Cohesive Zero-Ellipsis 6-Slide Space Allocation (`editablePptxCompiler.ts`)**:
+   - Embedded with `headerOnly={true}` in the top header of `/dashboard` (`src/app/dashboard/page.tsx`), the preview modal header of `/library` (`src/app/library/page.tsx`), and the selector header of `/blogs` (`src/app/blogs/page.tsx`, passing `manifestKey={activeDocGuide.docId}`), while inline blog figures use a single-line header bar above a 100% full-width diagram canvas (never rendering an on-page `1. EDITABLE SLIDE DECK PREVIEWER` box).
+   - Provides the `👁️ Cloud Viewer` button, the Google Drive-style split action button (`[ S | Open with Google Slides ↗ | ▼ ]` prioritizing `manifestKey || diagramKey`), and the 3-mode Same-Screen Cloud Viewer Modal (`✨ Interactive Slides Studio` rendering all 6 slides `1:1`, `🌐 Live Google Slides Embed`, `📄 Live Google Docs Spec`), backed by cohesive 6-slide `.pptx` compilation (`52px` intra-spoke connector channel with staggered elbows, `0` auto-collapsing `slide.addTable` calls, `0` `…`/`...` text truncations across all 6 slides via `deduplicateParentheticalEchoes` and semicolon/period clause-boundary `truncateClean`, and 100% vertical alignment to `y = 7.22"` across Slides 1–6).
 
 
 ---
@@ -137,7 +138,7 @@ All document previews and standalone viewers (`/viewer`, `/vision`, `/studio`) m
 
 You are configured to work on this repository with strict architectural and deployment constraints. Follow these instructions exactly:
 
-1. **Planning First:** Before editing or generating code across multiple files, provide a concise 3 to 5 bullet execution plan. Do not touch any files until this plan is stated.
+1. **Planning & Immediate Same-Turn Execution (`Rule 28A`):** Formulate a concise 3 to 5 bullet execution plan and **immediately execute all file edits, backend syncs, and quality gates in the exact same turn**. NEVER output a plan or diagnostic gap list and stop to ask *"Shall I apply these fixes?"* or *"Would you like me to proceed?"*.
 2. **Strict File Boundaries:**
 * Only edit files directly required to complete the assigned task.
 * Do not reformat, refactor, or delete unrelated files, functions, or utilities.

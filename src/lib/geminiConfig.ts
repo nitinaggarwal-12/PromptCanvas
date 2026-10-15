@@ -2,17 +2,21 @@ export const OMNI_ORCHESTRATOR_ID = process.env.OMNI_ORCHESTRATOR_ID || 'google-
 export const OMNI_FLASH_MODEL_ID = process.env.OMNI_FLASH_MODEL_ID || 'gemini-omni-1.1-flash';
 export const DEEP_RESEARCH_MODEL_ID = process.env.DEEP_RESEARCH_MODEL_ID || 'deep-research-max-preview-04-2026';
 export const ANTIGRAVITY_AGENT_MODEL_ID = process.env.ANTIGRAVITY_AGENT_MODEL_ID || 'antigravity-preview-09-2026';
+export const GEMINI_ARGON_MODEL_ID = process.env.GEMINI_ARGON_MODEL_ID || 'gemini-4-argon';
 export const GEMINI_PRO_MODEL_ID = process.env.GEMINI_PRO_MODEL_ID || 'gemini-3.1-pro-preview';
 export const GEMINI_FLASH_MODEL_ID = process.env.GEMINI_FLASH_MODEL_ID || 'gemini-3.8-flash';
 export const GEMINI_FLASH_LIVE_MODEL_ID = process.env.GEMINI_FLASH_LIVE_MODEL_ID || 'gemini-3.8-live-extended-thinking';
-export const GEMINI_FALLBACK_PRO_MODEL_ID = process.env.GEMINI_FALLBACK_PRO_MODEL_ID || 'gemini-3.8-flash';
-export const GEMINI_FALLBACK_FLASH_MODEL_ID = process.env.GEMINI_FALLBACK_FLASH_MODEL_ID || 'gemini-3.7-flash';
+export const GEMINI_LEGACY_LIVE_PREVIEW_MODEL_ID = 'gemini-3.1-flash-live-preview';
+export const GEMINI_FALLBACK_PRO_MODEL_ID = process.env.GEMINI_FALLBACK_PRO_MODEL_ID || 'gemini-2.5-pro';
+export const GEMINI_FALLBACK_FLASH_MODEL_ID = process.env.GEMINI_FALLBACK_FLASH_MODEL_ID || 'gemini-2.5-flash';
 export const GEMINI_FALLBACK_FLASH_LIVE_MODEL_ID = process.env.GEMINI_FALLBACK_FLASH_LIVE_MODEL_ID || 'gemini-3.8-live';
 export const DEEPMIND_VEO_MODEL_ID = process.env.DEEPMIND_VEO_MODEL_ID || 'veo-3.1-generate-preview';
 export const DEEPMIND_IMAGEN_MODEL_ID = process.env.DEEPMIND_IMAGEN_MODEL_ID || 'gemini-nano-banana-2.1';
 export const DEEPMIND_LYRIA_MODEL_ID = process.env.DEEPMIND_LYRIA_MODEL_ID || 'lyria-3.5';
 export const GEMINI_TTS_MODEL_ID = process.env.GEMINI_TTS_MODEL_ID || 'gemini-3.8-flash-tts';
-export const GEMINI_EMBEDDING_MODEL_ID = process.env.GEMINI_EMBEDDING_MODEL_ID || 'gemini-embedding-2-preview';
+export const GEMINI_TTS_LITE_MODEL_ID = process.env.GEMINI_TTS_LITE_MODEL_ID || 'gemini-3.8-flash-lite-tts';
+export const GEMINI_EMBEDDING_MODEL_ID = process.env.GEMINI_EMBEDDING_MODEL_ID || 'gemini-embedding-2';
+export const GEMINI_EMBEDDING_PREVIEW_MODEL_ID = 'gemini-embedding-2-preview';
 export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL_ID || GEMINI_FLASH_MODEL_ID;
 
 export const GEMINI_MODELS = {
@@ -20,6 +24,7 @@ export const GEMINI_MODELS = {
   OMNI_FLASH: OMNI_FLASH_MODEL_ID,
   DEEP_RESEARCH: DEEP_RESEARCH_MODEL_ID,
   ANTIGRAVITY_AGENT: ANTIGRAVITY_AGENT_MODEL_ID,
+  FRONTIER_REASONING_ARGON: GEMINI_ARGON_MODEL_ID,
   DEEP_REASONING_AND_VISION: GEMINI_PRO_MODEL_ID,
   FAST_SYNTHESIS_AND_COPILOT: GEMINI_FLASH_MODEL_ID,
   REALTIME_VOICE_AND_CANVAS: GEMINI_FLASH_LIVE_MODEL_ID,
@@ -27,6 +32,7 @@ export const GEMINI_MODELS = {
   IMAGE_GENERATION: DEEPMIND_IMAGEN_MODEL_ID,
   MUSIC_AND_AUDIO: DEEPMIND_LYRIA_MODEL_ID,
   SPEECH_TTS: GEMINI_TTS_MODEL_ID,
+  SPEECH_TTS_LITE: GEMINI_TTS_LITE_MODEL_ID,
   VECTOR_EMBEDDING: GEMINI_EMBEDDING_MODEL_ID,
 } as const;
 
@@ -111,17 +117,21 @@ export function getEffectiveGeminiApiKey(explicitKey?: string | null): string {
   return process.env.GEMINI_API_KEY || '';
 }
 
-export type ModelTier = 'omni' | 'lite' | 'medium' | 'pro' | 'critic' | 'vision' | 'chat' | 'live';
+export type ModelTier = 'omni' | 'argon' | 'lite' | 'medium' | 'pro' | 'critic' | 'vision' | 'chat' | 'live';
 
 
 /**
  * 🧠 Unified 5-Tier Google Gemini & DeepMind Model Routing Engine
+ * - Tier 'argon': Gemini 4 Argon Frontier Deep Reasoning & Orthogonal Judge (`gemini-4-argon`)
  * - Tier 'omni': Gemini 3.1 Pro SME Director & Multimodal Forensic Auditor (`gemini-3.1-pro-preview`)
  * - Tier 'pro', 'critic' & 'vision': Gemini 3.1 Pro (`gemini-3.1-pro-preview`, fallback `gemini-2.5-pro`)
- * - Tier 'medium', 'lite' & 'chat': Gemini 2.5 Flash (`gemini-2.5-flash`)
- * - Tier 'live': Gemini 2.5 Flash Live (`gemini-2.5-flash`)
+ * - Tier 'medium', 'lite' & 'chat': Gemini 3.8 Flash (`gemini-3.8-flash`, fallback `gemini-2.5-flash`)
+ * - Tier 'live': Gemini 3.8 Flash Live (`gemini-3.8-live-extended-thinking`)
  */
 export function getGeminiModel(tier: ModelTier = 'pro'): string {
+  if (tier === 'argon') {
+    return process.env.GEMINI_ARGON_MODEL_ID || GEMINI_ARGON_MODEL_ID;
+  }
   if (tier === 'live') {
     return process.env.GEMINI_FLASH_LIVE_MODEL_ID || GEMINI_FLASH_LIVE_MODEL_ID;
   }
@@ -132,6 +142,9 @@ export function getGeminiModel(tier: ModelTier = 'pro'): string {
 }
 
 export function getGeminiFallbackModel(tier: ModelTier = 'pro'): string {
+  if (tier === 'argon') {
+    return GEMINI_PRO_MODEL_ID;
+  }
   if (tier === 'live') {
     return GEMINI_FALLBACK_FLASH_MODEL_ID;
   }
@@ -142,6 +155,13 @@ export function getGeminiFallbackModel(tier: ModelTier = 'pro'): string {
 }
 
 export function getGeminiModelWithFallbacks(tier: ModelTier = 'pro'): string[] {
+  if (tier === 'argon') {
+    return Array.from(new Set([
+      getGeminiModel('argon'),
+      GEMINI_PRO_MODEL_ID,
+      GEMINI_FALLBACK_PRO_MODEL_ID,
+    ]));
+  }
   if (tier === 'live') {
     return Array.from(new Set([
       getGeminiModel('live'),
@@ -163,23 +183,23 @@ export function getGeminiModelForArchitecture(archId?: string): string {
  * Guarantees that the Judge / Critic model evaluating a diagram, refactor, patch, or specification
  * report is NEVER the same model ID that generated the artifact from user inputs.
  *
- * - Generator = Flash (`gemini-2.5-flash` / `gemini-2.5-flash` / `gemini-3.1-flash-live-preview`)
- *   -> Judge = `gemini-3.1-pro-preview` (fallback `gemini-2.5-pro`)
+ * - Generator = Flash (`gemini-3.8-flash` / `gemini-2.5-flash` / `gemini-3.1-flash-live-preview`)
+ *   -> Judge = `gemini-3.1-pro-preview` (with `gemini-4-argon` & `gemini-2.5-pro` in judge chain)
  * - Generator = Pro (`gemini-3.1-pro-preview`)
- *   -> Judge = `gemini-2.5-flash` (fallback `gemini-2.5-pro`)
- * - Generator = Fallback Pro (`gemini-2.5-pro`)
- *   -> Judge = `gemini-3.1-pro-preview` (fallback `gemini-2.5-flash`)
+ *   -> Judge = `gemini-3.8-flash` (with `gemini-4-argon` & `gemini-2.5-pro` in judge chain)
+ * - Generator = Argon (`gemini-4-argon`)
+ *   -> Judge = `gemini-3.1-pro-preview` (fallback `gemini-3.8-flash`)
  */
 export function getDistinctJudgeModel(generatorModelId?: string): string {
   const normalizedGen = (generatorModelId || '').trim().toLowerCase();
   const proModel = getGeminiModel('pro'); // gemini-3.1-pro-preview
-  const flashModel = getGeminiModel('chat'); // gemini-2.5-flash
+  const flashModel = getGeminiModel('chat'); // gemini-3.8-flash
 
   if (!normalizedGen) {
     return proModel;
   }
   if (normalizedGen === proModel.toLowerCase()) {
-    // Generator used Gemini 3.1 Pro -> use Gemini 2.5 Flash as orthogonal cross-family Judge
+    // Generator used Gemini 3.1 Pro -> use Gemini 3.8 Flash as orthogonal cross-family Judge
     return flashModel;
   }
   if (normalizedGen === flashModel.toLowerCase() || normalizedGen.includes('flash')) {
@@ -193,6 +213,7 @@ export function getDistinctJudgeModelWithFallbacks(generatorModelId?: string): s
   const normalizedGen = (generatorModelId || '').trim().toLowerCase();
   const primaryJudge = getDistinctJudgeModel(generatorModelId);
   const candidates = [
+    GEMINI_ARGON_MODEL_ID,
     primaryJudge,
     GEMINI_PRO_MODEL_ID,
     GEMINI_FLASH_MODEL_ID,
@@ -205,23 +226,23 @@ export function getDistinctJudgeModelWithFallbacks(generatorModelId?: string): s
 export const LLM_JUDGE_MATRIX = {
   diagramGenerationV2: {
     generator: GEMINI_FLASH_MODEL_ID,
-    judge: GEMINI_PRO_MODEL_ID,
-    fallbackJudge: GEMINI_FALLBACK_PRO_MODEL_ID,
+    judge: GEMINI_ARGON_MODEL_ID,
+    fallbackJudge: GEMINI_PRO_MODEL_ID,
   },
   studio1TournamentAndPatch: {
     generator: GEMINI_PRO_MODEL_ID,
-    judge: GEMINI_FLASH_MODEL_ID,
-    fallbackJudge: GEMINI_FALLBACK_PRO_MODEL_ID,
+    judge: GEMINI_ARGON_MODEL_ID,
+    fallbackJudge: GEMINI_FLASH_MODEL_ID,
   },
   docgenReportSynthesis: {
     generator: GEMINI_PRO_MODEL_ID,
-    judge: GEMINI_FLASH_MODEL_ID,
-    fallbackJudge: GEMINI_FALLBACK_PRO_MODEL_ID,
+    judge: GEMINI_ARGON_MODEL_ID,
+    fallbackJudge: GEMINI_FLASH_MODEL_ID,
   },
   sixAuditPostureSuite: {
     generator: GEMINI_FLASH_MODEL_ID,
-    judge: GEMINI_PRO_MODEL_ID,
-    fallbackJudge: GEMINI_FALLBACK_PRO_MODEL_ID,
+    judge: GEMINI_ARGON_MODEL_ID,
+    fallbackJudge: GEMINI_PRO_MODEL_ID,
   },
 } as const;
 
@@ -269,4 +290,31 @@ export function getGenConfig(kind: GenConfigKind) {
         maxOutputTokens: 32768,
       };
   }
+}
+
+/**
+ * Payload-safe configuration resolver for Gemini 4 Argon (`gemini-4-argon`), which strictly
+ * rejects numeric `thinkingBudget` and `MINIMAL` with HTTP 400 and requires discrete
+ * `thinkingLevel: 'LOW' | 'MEDIUM' | 'HIGH'` and `maxOutputTokens <= 32768`.
+ */
+export function getGenConfigForModel(kind: GenConfigKind, modelId?: string) {
+  const base = getGenConfig(kind);
+  const norm = (modelId || '').toLowerCase();
+  if (norm.includes('4-argon') || norm.includes('argon')) {
+    const budget = (base as any).thinkingConfig?.thinkingBudget;
+    const thinkingLevel =
+      kind === 'audit' || kind === 'vision' || (typeof budget === 'number' && budget >= 500)
+        ? 'HIGH'
+        : kind === 'repair'
+          ? 'LOW'
+          : 'MEDIUM';
+    return {
+      ...base,
+      maxOutputTokens: Math.min(base.maxOutputTokens || 32768, 32768),
+      thinkingConfig: {
+        thinkingLevel,
+      },
+    };
+  }
+  return base;
 }

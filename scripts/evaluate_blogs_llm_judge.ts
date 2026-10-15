@@ -54,18 +54,18 @@ async function callGeminiMultimodalJudge(
     if (token) {
       const parts: any[] = [
         {
-          text: `You are a Principal Google Cloud Documentation & UX Design Judge evaluating the '/blogs' 9-Blog Tile Catalog Hub and PDF-Style Google Cloud Documentation Reader (/blogs/DOC-MT-01..DOC-REF-09).
+          text: `You are an Adversarial Principal Google Cloud Documentation & Executive UX Design Judge evaluating the '/blogs' 9-Blog Tile Catalog Hub and PDF-Style Google Cloud Documentation Reader (/blogs/DOC-MT-01..DOC-REF-09) under Rule 25 (First-Principles Executive IA & Zero Visual Redundancy).
 Evaluate strictly across 5 dimensions:
-1. UI/UX (6-Part Reading Order Roadmap strip in catalog header, clean single-row workspace mode bar, series filters)
-2. Design (Google Cloud Documentation Light Theme, typography, visual hierarchy, Quick-Jump Figures & Code bar in reader header)
-3. Layout (3x3 tile catalog on /blogs, 2-column PDF whitepaper + sticky TOC on /blogs/[docId], inline contextual diagrams)
-4. User Workflow (Tile selection, permalink routing, series navigation, inline Draw.io editing buttons both in the header and on each figure, PDF print/export and Copy Markdown affordances)
-5. Content Quality (Clarity, zero junk jargon, contextual placement of Official #78 diagrams, focused code/SQL snippets, verified GCP Console screenshots)
+1. UI/UX (Clean single-row catalog header without duplicate P1..P6 reading-order strips above the 3x3 grid; single top AppHeader on /blogs/[docId] without duplicate DevSite top action bars)
+2. Design (Google Cloud Documentation Light Theme, crisp typography, single-source breadcrumb + H1 header without redundant "Interactive Architecture Assets" button strips)
+3. Layout (3x3 tile catalog on /blogs, 2-column PDF whitepaper + sticky TOC on /blogs/[docId], strictly 1 authoritative Official #78 diagram per guide with zero duplicate Figure 2)
+4. User Workflow (Tile selection, permalink routing, single-instance Google Slides & Draw.io controls on Figure 1 toolbar, PDF print/export and Copy Markdown in AppHeader)
+5. Content Quality (100% guide-specific Component Tables, Agentic Flows, and Products Used; zero slot-mismatch parentheticals like "Cloud Armor (Tier 1: Pooled)"; zero cross-project Merck screenshots)
 
 Here is the live DOM & telemetry audit payload:
 ${JSON.stringify(metricsPayload, null, 2)}
 
-IMPORTANT: If all deterministic checks passed (deterministicIssuesCount === 0) and hasReadingOrderRoadmap=true, hasPrintOrExportBtn=true, hasPrintPdfBtn=true, hasQuickJumpFiguresBar=true, and inlineDrawioEditBtnCount >= 2 are all verified in the payload and screenshots, return an empty array "llmSuggestedIssues": [].
+Inspect the screenshots and telemetry critically. Note that under Rule 47, a single DiagramInlineSlidesPreviewer instance renders both "Cloud Viewer" (in-page modal) and "Open with Google Slides ↗" (external Google Slides tab) side-by-side—do not flag that single Rule 47 component as duplicate unless slidesPreviewerCount > 1. Flag any duplicate navigation bars, slidesPreviewerCount > 1, duplicate Figure 2 diagrams, cross-project Merck screenshots, "undefined" strings, or slot-mismatch text in "llmSuggestedIssues". Return "llmSuggestedIssues": [] if all checks pass and the page is clean and executive.
 
 Return ONLY valid JSON with keys:
 {
@@ -133,7 +133,7 @@ Return ONLY valid JSON with keys:
 
   return {
     llmCritiqueSummary:
-      'Evaluated via Deterministic Headless Chromium Visual/DOM/Content Judge across UI/UX, Design, Layout, User Workflow, and Content Quality.',
+      'Evaluated via Deterministic Headless Chromium Visual/DOM/Content Judge across UI/UX, Design, Layout, User Workflow, and Content Quality (Rule 25 Executive Deduplication verified).',
     llmSuggestedIssues: [],
   };
 }
@@ -239,14 +239,13 @@ async function main() {
     recommendation: 'Render all 9 tiles (DOC-MT-01..DOC-REF-09) with inline compiled Official (#78) SVG previews.',
   });
 
-  recordCheck(catalogAudit.hasReadingOrderRoadmap, {
+  recordCheck(!catalogAudit.hasReadingOrderRoadmap, {
     id: 'UX-02',
     dimension: 'UI/UX',
     severity: 'MEDIUM',
-    title: 'Tile Catalog header lacks a visual 6-Part Architectural Progression & Reading Order Strip',
+    title: 'Tile Catalog header contains a redundant 6-Part Reading Order Strip duplicating the 3x3 cards directly below (Rule 25A)',
     evidence: `hasReadingOrderRoadmap=${catalogAudit.hasReadingOrderRoadmap}`,
-    recommendation:
-      'Add a compact, clickable 6-Part Multi-Tenant Architecture Progression strip (Part 1 Foundations -> Part 2 Pooled -> Part 3 Siloed -> Part 4 Hybrid PSC -> Part 5 Decision Guide -> Part 6 E2E Codebase) inside the Tile Catalog header so first-time readers immediately understand how the 6-part series connects.',
+    recommendation: 'Delete catalog-reading-order-strip so the 3x3 card grid starts immediately below the filter bar.',
   });
 
   // Test Series Filter Pills in Catalog
@@ -283,12 +282,9 @@ async function main() {
     const inlineSvgs = Array.from(document.querySelectorAll('[data-testid^="doc-inline-svg-canvas-"] svg'));
     const inlineCodes = Array.from(document.querySelectorAll('[data-testid^="doc-inline-code-"]'));
     const sectionShotGroups = Array.from(document.querySelectorAll('[data-testid^="doc-section-screenshots-"]'));
-    const sectionImages = Array.from(
-      document.querySelectorAll('[data-testid^="doc-section-screenshots-"] img')
-    ) as HTMLImageElement[];
-    const brokenSectionImages = sectionImages
-      .filter((img) => !img.complete || img.naturalWidth === 0)
-      .map((img) => img.getAttribute('src'));
+    const slidesPreviewerCount = readerEl
+      ? readerEl.querySelectorAll('[data-testid="inline-cloud-viewer-btn"]').length
+      : 0;
 
     const hasPrintPdfBtn = Boolean(document.querySelector('[data-testid="doc-reader-print-pdf-btn"]'));
     const hasCopyMdBtn = Boolean(document.querySelector('[data-testid="doc-reader-copy-md-btn"]'));
@@ -299,11 +295,9 @@ async function main() {
       document.querySelector('[data-testid="doc-reader-pdf-source-badge"]')
     );
     const inlineDrawioEditBtnCount = document.querySelectorAll(
-      '[data-testid^="doc-fig-drawio-inline-btn-"], [data-testid^="header-inline-drawio-btn-"]'
+      '[data-testid^="doc-fig-drawio-inline-btn-"]'
     ).length;
 
-    // Check contextual ordering inside first section with a diagram:
-    // Lead narrative / What happens should appear ABOVE the inline figure, and Architectural depth BELOW the inline figure
     const firstSec = document.querySelector('[data-testid^="doc-section-"]');
     let isContextualDiagramOrderCorrect = false;
     if (firstSec) {
@@ -325,8 +319,7 @@ async function main() {
       inlineSvgCount: inlineSvgs.length,
       inlineCodeCount: inlineCodes.length,
       sectionShotGroupCount: sectionShotGroups.length,
-      totalSectionImages: sectionImages.length,
-      brokenSectionImages,
+      slidesPreviewerCount,
       isContextualDiagramOrderCorrect,
       hasPrintPdfBtn,
       hasCopyMdBtn,
@@ -342,6 +335,7 @@ async function main() {
   );
   await page.screenshot({ path: readerShotPath, fullPage: false });
   fs.copyFileSync(readerShotPath, path.join(ARTIFACT_DIR, 'after_arch_center_format_reader.png'));
+  fs.copyFileSync(readerShotPath, path.join(ARTIFACT_DIR, 'after_blog_doc_mt_01_executive.png'));
   screenshotsCaptured.push(readerShotPath);
 
   // Scroll to first inline figure and capture screenshot
@@ -362,10 +356,12 @@ async function main() {
   if (archFlowEl) {
     await archFlowEl.evaluate((el) => el.scrollIntoView({ block: 'center' }));
     await sleep(400);
+    const flowShotPath = path.join(ARTIFACT_DIR, 'after_arch_center_agentic_flow_and_table.png');
     await page.screenshot({
-      path: path.join(ARTIFACT_DIR, 'after_arch_center_agentic_flow_and_table.png'),
+      path: flowShotPath,
       fullPage: false,
     });
+    fs.copyFileSync(flowShotPath, path.join(ARTIFACT_DIR, 'after_blog_doc_mt_01_component_table.png'));
   }
 
   // Open Cloud Viewer modal on Figure 1 to capture Light-Theme Google Cloud Architecture Center Slide 1, then close it
@@ -400,49 +396,47 @@ async function main() {
   );
 
   recordCheck(
-    readerAudit.inlineFigureCount >= 1 &&
-      readerAudit.inlineSvgCount === readerAudit.inlineFigureCount &&
+    readerAudit.inlineFigureCount === 1 &&
+      readerAudit.inlineSvgCount === 1 &&
       readerAudit.isContextualDiagramOrderCorrect,
     {
       id: 'LAYOUT-02',
       dimension: 'Layout',
       severity: 'HIGH',
-      title: 'Inline diagrams in PDF Reader are missing or not placed contextually after the lead narrative',
+      title: 'Guide must render strictly 1 authoritative inline diagram placed contextually after the lead narrative (zero duplicate Figure 2)',
       evidence: `inlineFigures=${readerAudit.inlineFigureCount}, inlineSvgs=${readerAudit.inlineSvgCount}, contextualOrder=${readerAudit.isContextualDiagramOrderCorrect}`,
-      recommendation: 'Place each Official (#78) inline figure directly after the lead narrative / What happens block.',
+      recommendation: 'Render strictly 1 Official (#78) inline figure per guide and remove secondaryInlineDiagram.',
     }
   );
 
   recordCheck(
-    readerAudit.totalSectionImages > 0 && readerAudit.brokenSectionImages.length === 0,
+    readerAudit.sectionShotGroupCount === 0 && readerAudit.slidesPreviewerCount === 1,
     {
       id: 'CONTENT-01',
       dimension: 'Content Quality',
       severity: 'HIGH',
-      title: 'Broken or missing section verification screenshots in PDF Reader',
-      evidence: `total=${readerAudit.totalSectionImages}, broken=${JSON.stringify(readerAudit.brokenSectionImages)}`,
-      recommendation: 'Ensure every inlineScreenshotFilename resolves to an existing PNG in public/blogs-verification-screenshots/.',
+      title: 'Reader contains duplicate Google Slides toolbars or inline section screenshot bloat',
+      evidence: `sectionShotGroupCount=${readerAudit.sectionShotGroupCount}, slidesPreviewerCount=${readerAudit.slidesPreviewerCount}`,
+      recommendation: 'Keep exactly 1 DiagramInlineSlidesPreviewer inside Figure 1 toolbar and remove inline section screenshot galleries.',
     }
   );
 
-  recordCheck(readerAudit.hasPrintPdfBtn, {
+  recordCheck(readerAudit.hasPrintPdfBtn && readerAudit.hasCopyMdBtn, {
     id: 'WORKFLOW-03',
     dimension: 'User Workflow',
     severity: 'MEDIUM',
-    title: 'PDF-Style Documentation Reader lacks a 1-click "🖨️ Print / Export PDF" and "📋 Copy Markdown" action bar in the reader header',
-    evidence: `hasPrintPdfBtn=${readerAudit.hasPrintPdfBtn}`,
-    recommendation:
-      'Add a 1-click "🖨️ Print / Save as PDF" button (data-testid="doc-reader-print-pdf-btn") and "📋 Copy Guide Markdown" button in the PDF Reader top bar so architects can export any individual guide (DOC-MT-01..09) as a standalone PDF.',
+    title: 'AppHeader in PDF Reader mode lacks 1-click "Print / PDF" or "Copy Markdown" controls',
+    evidence: `hasPrintPdfBtn=${readerAudit.hasPrintPdfBtn}, hasCopyMdBtn=${readerAudit.hasCopyMdBtn}`,
+    recommendation: 'Provide Print / PDF and Copy Markdown buttons in AppHeader when in pdf-doc-reader mode.',
   });
 
-  recordCheck(readerAudit.hasQuickJumpFiguresBar, {
+  recordCheck(!readerAudit.hasQuickJumpFiguresBar, {
     id: 'DESIGN-01',
     dimension: 'Design',
     severity: 'MEDIUM',
-    title: 'PDF Reader header lacks an "Included Architecture Figures, Code Files & GCP Proofs" quick-jump summary strip',
+    title: 'PDF Reader header contains redundant "Interactive Architecture Assets" bar duplicating the right-hand TOC and Figure 1 toolbar (Rule 25)',
     evidence: `hasQuickJumpFiguresBar=${readerAudit.hasQuickJumpFiguresBar}`,
-    recommendation:
-      'Add a compact quick-jump summary strip (data-testid="doc-reader-quick-assets-bar") inside the Document Header Banner listing the exact Figures (e.g. Figure 1.1, Figure 1.2), Code Snippets (e.g. tenant_context.py), and GCP Console Proofs included in that guide with 1-click anchor links.',
+    recommendation: 'Delete doc-reader-quick-assets-bar from the article header.',
   });
 
   // ---------------------------------------------------------------------------
@@ -483,7 +477,7 @@ async function main() {
   );
 
   // ---------------------------------------------------------------------------
-  // 4. STATIC CONTENT QUALITY & ZERO-JARGON AUDIT ACROSS ALL 9 GUIDES
+  // 4. STATIC CONTENT QUALITY, ZERO-JARGON & ZERO SLOT-MISMATCH AUDIT ACROSS ALL 9 GUIDES
   // ---------------------------------------------------------------------------
   console.log('4. Auditing content quality across all 9 canonical guides (DOC-MT-01..DOC-REF-09)...');
   const bannedJargonRegex = /\b(GEAP|ARD|NLC)\b/;
@@ -494,15 +488,21 @@ async function main() {
     if (m) {
       jargonViolations.push(`${guide.docId}: found banned acronym "${m[0]}"`);
     }
+    if (blob.includes('Cloud Armor (Tier 1') || blob.includes('Identity-Aware Proxy (IAP) (Tier 2')) {
+      jargonViolations.push(`${guide.docId}: found slot-mismatch parenthetical label`);
+    }
+    if (blob.includes('mk3475') || blob.includes('merck_shield') || blob.includes('aws_mcp_consent_biomarker')) {
+      jargonViolations.push(`${guide.docId}: found cross-project Merck screenshot`);
+    }
   }
 
   recordCheck(jargonViolations.length === 0, {
     id: 'CONTENT-02',
     dimension: 'Content Quality',
     severity: 'HIGH',
-    title: 'Banned unexpanded acronyms (GEAP/ARD/NLC) found in canonical documentation series',
+    title: 'Banned acronyms, slot-mismatch parentheticals, or cross-project Merck screenshots found in canonical documentation series',
     evidence: jargonViolations.join('; '),
-    recommendation: 'Replace all unexpanded GEAP/ARD/NLC acronyms with full Google Cloud terminology.',
+    recommendation: 'Purge all unexpanded GEAP/ARD/NLC acronyms, slot-mismatch parentheticals, and Merck screenshots.',
   });
 
   await browser.close();
@@ -519,8 +519,7 @@ async function main() {
   );
 
   for (const li of llmRes.llmSuggestedIssues) {
-    // Only add if it's a real actionable issue not already covered
-    if (passNumber === 1 && !issues.some((i) => i.title === li.title)) {
+    if (!issues.some((i) => i.title === li.title)) {
       issues.push(li);
     }
   }

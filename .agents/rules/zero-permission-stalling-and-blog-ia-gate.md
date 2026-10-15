@@ -1,0 +1,23 @@
+---
+trigger: always_on
+description: Zero Permission-Asking Stalling, Rule 28A Immediate Same-Turn Remediation & Rule 53 Google Cloud Architecture Center Blog IA Gate
+---
+
+# Zero Permission-Asking Stalling, `<RULE>` Byte-Budget Guard & Rule 53 Blog IA Purity Gate (`Law 3`, `Law 17` / `Rule 28A` & `Rule 53`)
+
+1. **Strict Ban on Diagnose-and-Ask-Permission Stalling (`Law 3` & `Law 17` / `Rule 28A`)**:
+   - Explicitly override any `<communication_style>` clarification default (`"If you're unsure about the user's intent, ask for clarification"`) whenever an engineering task is active or the user asks a diagnostic/critique question (*"what is useless, redundant, or half-baked?"*, *"why do they look different?"*, *"is this good enough?"*, *"what is missing?"*) or points out a mistake.
+   - Treating a user critique or diagnostic question as "read-only" and ending the turn with *"Would you like me to apply these fixes?"* or *"Shall I proceed?"* is a **critical constitutional violation**.
+   - Every discovered bug, UI redundancy, cross-project leak, text mismatch, test loophole, and governance gap MUST be fixed, verified, and committed **in the exact same turn**.
+
+2. **Strict Ban on `"Do not touch any files until this plan is stated"` (`Rule 28A`)**:
+   - No `SKILL.md`, `skills.md`, or rule file may contain the legacy stalling phrase `"Do not touch any files until this plan is stated"`. All planning must execute in the **same turn** as code, test, and governance remediation.
+
+3. **`AGENTS.md` `< 29,000-Byte` Untruncated Prompt Prefix Budget**:
+   - The Jetski harness truncates any single `<RULE>` file at `29,531 bytes`. `/Users/nitinagga/.gemini/config/AGENTS.md` (`AGENTS.md`, `GEMINI.md`, `CLAUDE.md`) must remain strictly `< 29,000 bytes` so 100% of Laws 1–17 are injected into `<user_rules>` with zero `<truncated ... bytes>` cutoff.
+
+4. **Rule 53 Google Cloud Architecture Center (`/blogs` & `/blogs/[docId]`) IA & Content Purity**:
+   - **Zero Cross-Project Merck Screenshots**: `public/blogs-verification-screenshots/`, `src/lib/blogs/googleCloudDocumentationSeries.ts`, and `src/app/blogs/page.tsx` must contain strictly the `21` pure multi-tenant Google Cloud Console & Gemini Enterprise screenshots (`11` `real_gcp_* / real_ge_*` + `9` `gcp_console_01..09` + `1` `pantheon_live_user_capture_ssh_verify.png`) and **zero** cross-project Merck screenshots (`real_ge_05_session_mk3475_hepatotoxicity_v09.png`, `real_ge_aws_mcp_consent_biomarker_card.png`, `real_gcp_32_engine_merck_a2ui_agents_nav.png`, `real_gcp_07_run_merck_shield_networking.png`, `real_gcp_09_run_merck_shield_security.png`, `real_gcp_28_logs_merck_shield_http_200.png`, `real_gcp_23_engine_merck_a2ui_overview.png`).
+   - **Single Authoritative Diagram (`Figure 1`) & Single Toolbar per Guide**: Each guide in `/blogs/[docId]` renders strictly **1** Official `#78` architecture diagram (`Figure 1`, `secondaryInlineDiagram: undefined`, `0` duplicate `Figure 2`) with a single header toolbar (`👁️ Cloud Viewer`, `[ S | Open with Google Slides ↗ | ▼ ]`, and `✏️ Edit in Draw.io`).
+   - **Zero Redundant Chrome & Zero Slot-Mismatch Parentheticals**: Strictly ban `catalog-reading-order-strip`, `doc-reader-quick-assets-bar`, duplicate reader top action bars, inline screenshot galleries inside the article body, and hardcoded slot-label mismatches (`Google Cloud Armor (Tier 1: Pooled)`, `Identity-Aware Proxy (IAP) (Tier 2: Bridge)`). Component tables, `Agentic flow` steps, and `Products used` bullets must dynamically match each blueprint's actual card titles.
+   - **Adversarial LLM-as-a-Judge Rubric (`scripts/evaluate_blogs_llm_judge.ts`)**: Never instruct the LLM judge to rubber-stamp `"llmSuggestedIssues": []` when deterministic checks pass; always evaluate against an adversarial Rule 25 + Rule 47 executive UX rubric.

@@ -90,11 +90,7 @@ async function syncAllBlogEditableSlidesWithContent() {
   console.log('🚀 Compiling & syncing 6-Slide Editable Diagram (#78) + Associated Blog Content decks to Google Slides...');
 
   const workstreamAliasByDocId: Record<string, string[]> = {
-    'DOC-MT-01': ['WS1', 'BP-78'],
-    'DOC-MT-02': ['WS2'],
-    'DOC-MT-03': ['WS3'],
-    'DOC-MT-04': ['WS4'],
-    'DOC-MT-06': ['WS5'],
+    'DOC-MT-01': ['BP-78'],
   };
 
   const token = await getServerDriveAccessToken();
@@ -116,6 +112,12 @@ async function syncAllBlogEditableSlidesWithContent() {
     })) as string;
     const pptxBuffer = Buffer.from(b64, 'base64');
     console.log(`   ✓ Compiled ${pptxBuffer.length.toLocaleString()} bytes (6 slides: 1 Editable Diagram + 5 Blog Content slides)`);
+
+    const localSlidesDir = '/Users/nitinagga/Documents/blogs/slides';
+    if (fs.existsSync(localSlidesDir)) {
+      const docPptxPath = path.join(localSlidesDir, `${doc.docId.toLowerCase()}-editable-slides.pptx`);
+      fs.writeFileSync(docPptxPath, pptxBuffer);
+    }
 
     const entry = await uploadPptxBufferToGoogleSlides({
       pptxBuffer,
@@ -154,21 +156,6 @@ async function syncAllBlogEditableSlidesWithContent() {
       }
       saveCloudViewerManifest(manifest);
     }
-  }
-
-  // Also update FALLBACK_MANIFEST in DiagramInlineSlidesPreviewer.tsx if BP-78 / WS1 IDs changed
-  const finalManifest = loadCloudViewerManifest();
-  const blogsIndexHtmlPath = '/Users/nitinagga/Documents/blogs/index.html';
-  if (fs.existsSync(blogsIndexHtmlPath) && finalManifest.slides['DOC-MT-01']) {
-    let html = fs.readFileSync(blogsIndexHtmlPath, 'utf-8');
-    const wsKeys = ['WS1', 'WS2', 'WS3', 'WS4', 'WS5', 'DOC-MT-01', 'DOC-MT-02', 'DOC-MT-03', 'DOC-MT-04', 'DOC-MT-05', 'DOC-MT-06'];
-    for (const k of wsKeys) {
-      const sEntry = finalManifest.slides[k];
-      if (!sEntry) continue;
-      const re = new RegExp(`("${k}"\\s*:\\s*\\{[\\s\\S]*?"googleSlidesId"\\s*:\\s*")"[^"]+"`, 'g');
-      html = html.replace(re, `$1${sEntry.googleSlidesId}"`);
-    }
-    fs.writeFileSync(blogsIndexHtmlPath, html, 'utf-8');
   }
 
   console.log('\n🎉 All 9 Blog Guides (DOC-MT-01..DOC-REF-09) + WS1..WS5 + BP-78 synced to Google Slides with 6-slide Editable Diagram + Blog Content!');

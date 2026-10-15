@@ -711,29 +711,8 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
       id: 'real-ge-02-agents-gallery',
       src: '/blogs-verification-screenshots/real_ge_02_agents_gallery.png',
       badge: 'GEMINI ENTERPRISE APP • AGENT REGISTRY',
-      title: 'Gemini Enterprise App: Registered ADK + A2A Agents Gallery (v0.9 / v0.9.1 / v1.0 / v0.8)',
-      desc: 'Live browser capture of the Gemini Enterprise Agents Gallery displaying registered custom ADK + A2UI clinical/enterprise agents alongside Google-made Deep Research and Idea Generation agents.',
-    },
-    {
-      id: 'real-ge-03-new-session',
-      src: '/blogs-verification-screenshots/real_ge_03_agent_v09_new_session.png',
-      badge: 'GEMINI ENTERPRISE APP • SESSION INIT',
-      title: 'Gemini Enterprise App: Authenticated Multi-Tenant ADK Agent Session Initialization',
-      desc: 'Live browser capture showing an authenticated tenant user initializing a new ADK + A2UI v0.9 session inside Gemini Enterprise before Hop 1 OBO token exchange.',
-    },
-    {
-      id: 'real-ge-05-active-session',
-      src: '/blogs-verification-screenshots/real_ge_05_session_mk3475_hepatotoxicity_v09.png',
-      badge: 'GEMINI ENTERPRISE APP • HOP 2–5 EXECUTION',
-      title: 'Gemini Enterprise App: Live ADK + A2UI v0.9 Execution, Zero-Refactor Shield & SHA-256 Provenance',
-      desc: 'Live browser capture of an active Gemini Enterprise ADK agent execution showing Zero-Refactor Shield sanitization (_adk_session_id, _adk_trace_context, _adk_invocation_id), VegaChart rendering, and cryptographic provenance.',
-    },
-    {
-      id: 'real-ge-obo-consent-card',
-      src: '/blogs-verification-screenshots/real_ge_aws_mcp_consent_biomarker_card.png',
-      badge: 'GEMINI ENTERPRISE APP • HOP 1 OBO 3LO CONSENT',
-      title: 'Gemini Enterprise App: In-Chat OAuth 2.0 3LO On-Behalf-Of (OBO) Consent & MCP Tool Card',
-      desc: 'Live browser capture of Gemini Enterprise prompting user-scoped OAuth 2.0 3LO consent before brokering scoped credentials to downstream MCP / A2A tools (Hop 1 Identity & Tenant Resolution).',
+      title: 'Gemini Enterprise App: Registered ADK + A2A Agents Gallery',
+      desc: 'Live browser capture of the Gemini Enterprise Agents Gallery displaying registered custom ADK + A2A enterprise agents alongside Google-made Deep Research and Idea Generation agents.',
     },
     {
       id: 'real-gcp-01-dashboard',
@@ -750,20 +729,6 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
       desc: 'Live Google Cloud Console capture of AI Applications -> Apps showing deployed Gemini Enterprise engines in global location.',
     },
     {
-      id: 'real-gcp-23-engine-overview',
-      src: '/blogs-verification-screenshots/real_gcp_23_engine_merck_a2ui_overview.png',
-      badge: 'GCP CONSOLE • GEMINI ENTERPRISE ENGINE',
-      title: 'Google Cloud Console: Gemini Enterprise Engine Overview (gemini-enterprise-merck-a2ui)',
-      desc: 'Live Google Cloud Console capture of the Gemini Enterprise Engine configuration overview and control plane integration.',
-    },
-    {
-      id: 'real-gcp-32-registered-agents',
-      src: '/blogs-verification-screenshots/real_gcp_32_engine_merck_a2ui_agents_nav.png',
-      badge: 'GCP CONSOLE • HOP 3 A2A AGENT REGISTRY',
-      title: 'Google Cloud Console: AI Applications Registered A2A Agents (4/4 Enabled in Engine)',
-      desc: 'Live Google Cloud Console capture showing registered A2A agent IDs 5114899477949167772, 11721773400933767568, 1031976513825995516, and 16868022062204314262 all Enabled.',
-    },
-    {
       id: 'real-gcp-26-data-stores',
       src: '/blogs-verification-screenshots/real_gcp_26_data_stores.png',
       badge: 'GCP CONSOLE • HOP 5 RAG DATA STORES',
@@ -774,7 +739,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
       id: 'real-gcp-31-cloud-run-fleet',
       src: '/blogs-verification-screenshots/real_gcp_31_cloud_run_services_list.png',
       badge: 'GCP CONSOLE • CLOUD RUN FLEET (us-west1)',
-      title: 'Google Cloud Console: Cloud Run Services Fleet (a2a-gateway, merck-a2a-shield, promptcanvas, askaioce, gantrypulse, scorex)',
+      title: 'Google Cloud Console: Cloud Run Services Fleet (a2a-gateway, promptcanvas, askaioce, gantrypulse, scorex)',
       desc: 'Live Google Cloud Console capture of Cloud Run services in us-west1 showing Internal + Load Balancing ingress and IAM authentication.',
     },
     {
@@ -783,20 +748,6 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
       badge: 'GCP CONSOLE • CLOUD RUN REVISIONS',
       title: 'Google Cloud Console: Cloud Run Service Revisions & 100% Traffic Routing (a2a-gateway)',
       desc: 'Live Google Cloud Console capture of Cloud Run revision history and active container deployment in us-west1.',
-    },
-    {
-      id: 'real-gcp-07-networking-ingress',
-      src: '/blogs-verification-screenshots/real_gcp_07_run_merck_shield_networking.png',
-      badge: 'GCP CONSOLE • PATTERN A/C INGRESS',
-      title: 'Google Cloud Console: Cloud Run Networking & Internal + Load Balancing Ingress Control',
-      desc: 'Live Google Cloud Console capture of the Cloud Run Networking tab enforcing Internal + Google Cloud Load Balancing ingress (blocking direct unauthenticated internet bypass).',
-    },
-    {
-      id: 'real-gcp-09-security-cmek',
-      src: '/blogs-verification-screenshots/real_gcp_09_run_merck_shield_security.png',
-      badge: 'GCP CONSOLE • PATTERN B SECURITY & CMEK',
-      title: 'Google Cloud Console: Cloud Run Security, IAM Authentication, Binary Auth & Cloud KMS CMEK',
-      desc: 'Live Google Cloud Console capture of the Cloud Run Security tab verifying IAM authentication and encryption posture.',
     },
     {
       id: 'real-gcp-14-workload-identity',
@@ -818,13 +769,6 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
       badge: 'GCP CONSOLE • CLOUD STORAGE BROWSER',
       title: 'Google Cloud Console: Cloud Storage Buckets Browser (ramp-portal-dev)',
       desc: 'Live Google Cloud Console capture of Cloud Storage buckets hosting enterprise artifacts, staging bundles, and Cloud Build sources.',
-    },
-    {
-      id: 'real-gcp-28-logs-explorer',
-      src: '/blogs-verification-screenshots/real_gcp_28_logs_merck_shield_http_200.png',
-      badge: 'GCP CONSOLE • LOGS EXPLORER AUDIT',
-      title: 'Google Cloud Console: Cloud Logging (Logs Explorer) Live A2A JSON-RPC 2.0 HTTP 200 Trace',
-      desc: 'Live Google Cloud Console Logs Explorer capture verifying real-time A2A JSON-RPC 2.0 message/send execution and Zero-Refactor Shield telemetry.',
     },
   ];
 
@@ -1211,34 +1155,30 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                 }`}
               >
                 <Layers className="w-3.5 h-3.5" />
-                <span>{studioLayoutMode === 'catalog' ? '9-Blog Catalog' : '← 9-Blog Catalog'}</span>
+                <span>{studioLayoutMode === 'catalog' ? '9-Guide Catalog' : '← 9-Guide Catalog'}</span>
               </button>
 
-              {studioLayoutMode === 'pdf-doc-reader' && (
-                <span className="px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-extrabold font-mono">
-                  {activeDocGuide.docId}
-                </span>
+              {studioLayoutMode !== 'pdf-doc-reader' && (
+                <button
+                  type="button"
+                  data-testid="mode-tab-legacy-studio"
+                  onClick={() => {
+                    setStudioLayoutMode('legacy-studio');
+                    setTimeout(() => {
+                      const el = document.getElementById('blog-e2e-pattern-execution-and-codebase-workbench');
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 80);
+                  }}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-extrabold border transition-all flex items-center gap-1.5 cursor-pointer ${
+                    studioLayoutMode === 'legacy-studio'
+                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                  }`}
+                >
+                  <Terminal className="w-3.5 h-3.5" />
+                  <span>Codebase &amp; Diagram Studio</span>
+                </button>
               )}
-
-              <button
-                type="button"
-                data-testid="mode-tab-legacy-studio"
-                onClick={() => {
-                  setStudioLayoutMode('legacy-studio');
-                  setTimeout(() => {
-                    const el = document.getElementById('blog-e2e-pattern-execution-and-codebase-workbench');
-                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }, 80);
-                }}
-                className={`px-2.5 py-1 rounded-lg text-xs font-extrabold border transition-all flex items-center gap-1.5 cursor-pointer ${
-                  studioLayoutMode === 'legacy-studio'
-                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
-                }`}
-              >
-                <Terminal className="w-3.5 h-3.5" />
-                <span>🛠️ 24-File Codebase &amp; Diagram Studio</span>
-              </button>
             </div>
           }
           actions={
@@ -1252,43 +1192,64 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                 <span>☁️ GCP Verified ({gcpVerification?.passedChecks || 20}/{gcpVerification?.totalChecks || 20} PASS)</span>
               </button>
 
-              <DiagramInlineSlidesPreviewer
-                headerOnly={true}
-                manifestKey={activeDocGuide.docId}
-                title={
-                  studioLayoutMode === 'pdf-doc-reader'
-                    ? `${activeDocGuide.docId}: ${activeDocGuide.title}`
-                    : isOfficialArchCenterActive
-                    ? `${activeOfficialArchCenterBp.title} — ${activeOfficialArchCenterBp.subtitle}`
-                    : `${activeUseCase.shortLabel} — Blueprint #${activeTemplateMeta?.id} (${activeTemplateMeta?.name})`
-                }
-                subtitle={
-                  studioLayoutMode === 'pdf-doc-reader'
-                    ? activeDocGuide.subtitle
-                    : activeUseCase.summaryPrompt
-                }
-                xml={effectiveSelectorXml}
-                svgString={
-                  isOfficialArchCenterActive && archCenterRenderMode === 'svg'
-                    ? activeOfficialArchCenterSvg
-                    : undefined
-                }
-                markdownContent={
-                  studioLayoutMode === 'pdf-doc-reader'
-                    ? buildCanonicalDocMarkdown(activeDocGuide)
-                    : generatedBlog.fullMarkdown
-                }
-                domainId={activeUseCase.domainId}
-                domainName={activeUseCase.domainName}
-                templateId={String(activeSelectorTemplateId).padStart(2, '0')}
-                badgeLabel={
-                  studioLayoutMode === 'pdf-doc-reader'
-                    ? `${activeDocGuide.docId} • Blueprint #78`
-                    : activeUseCase.shortLabel.match(/^WS[1-5]/i)?.[0]?.toUpperCase()
-                    ? `${activeUseCase.shortLabel.match(/^WS[1-5]/i)?.[0]?.toUpperCase()} • Blueprint #${activeTemplateMeta?.id}`
-                    : `Blueprint #${activeTemplateMeta?.id}`
-                }
-              />
+              {studioLayoutMode === 'pdf-doc-reader' ? (
+                <>
+                  <button
+                    type="button"
+                    data-testid="doc-reader-print-pdf-btn"
+                    onClick={() => window.print()}
+                    className="px-2.5 py-1.5 rounded-lg bg-[#1a73e8] hover:bg-[#1765cc] text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer"
+                    title="Print or Save this Cloud Architecture Center document as PDF"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>Print / PDF</span>
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="doc-reader-copy-md-btn"
+                    onClick={() =>
+                      handleCopyText(buildCanonicalDocMarkdown(activeDocGuide), 'doc-guide-md')
+                    }
+                    className="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs font-semibold cursor-pointer"
+                  >
+                    {copiedKey === 'doc-guide-md' ? '✓ Copied .MD' : 'Copy Markdown'}
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="toggle-doc-e2e-workbench-btn"
+                    onClick={() => setShowDocWorkbench(!showDocWorkbench)}
+                    className="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-indigo-950 text-slate-700 dark:text-indigo-300 border border-slate-200 dark:border-indigo-800 text-xs font-semibold cursor-pointer"
+                  >
+                    {showDocWorkbench ? 'Hide Workbench ▲' : 'Codebase Workbench ▾'}
+                  </button>
+                </>
+              ) : studioLayoutMode === 'legacy-studio' ? (
+                <DiagramInlineSlidesPreviewer
+                  headerOnly={true}
+                  manifestKey={activeDocGuide.docId}
+                  title={
+                    isOfficialArchCenterActive
+                      ? `${activeOfficialArchCenterBp.title} — ${activeOfficialArchCenterBp.subtitle}`
+                      : `${activeUseCase.shortLabel} — Blueprint #${activeTemplateMeta?.id} (${activeTemplateMeta?.name})`
+                  }
+                  subtitle={activeUseCase.summaryPrompt}
+                  xml={effectiveSelectorXml}
+                  svgString={
+                    isOfficialArchCenterActive && archCenterRenderMode === 'svg'
+                      ? activeOfficialArchCenterSvg
+                      : undefined
+                  }
+                  markdownContent={generatedBlog.fullMarkdown}
+                  domainId={activeUseCase.domainId}
+                  domainName={activeUseCase.domainName}
+                  templateId={String(activeSelectorTemplateId).padStart(2, '0')}
+                  badgeLabel={
+                    activeUseCase.shortLabel.match(/^WS[1-5]/i)?.[0]?.toUpperCase()
+                      ? `${activeUseCase.shortLabel.match(/^WS[1-5]/i)?.[0]?.toUpperCase()} • Blueprint #${activeTemplateMeta?.id}`
+                      : `Blueprint #${activeTemplateMeta?.id}`
+                  }
+                />
+              ) : null}
 
               {studioLayoutMode === 'legacy-studio' && (
                 <>
@@ -1697,46 +1658,11 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                     </button>
                   </div>
                 </div>
-
-                {/* Compact 1-Line 6-Part Multi-Tenant Series Reading Order Strip */}
-                <div
-                  data-testid="catalog-reading-order-strip"
-                  className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800/80"
-                >
-                  {GOOGLE_CLOUD_DOCUMENTATION_SERIES.slice(0, 6).map((stepDoc, idx) => (
-                    <button
-                      key={stepDoc.docId}
-                      type="button"
-                      data-testid={`roadmap-step-${stepDoc.docId}`}
-                      onClick={() => handleOpenDocGuide(stepDoc)}
-                      className="px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 hover:bg-blue-50/70 dark:hover:bg-slate-800 border border-slate-200/90 dark:border-slate-800 hover:border-blue-400 text-left transition-all cursor-pointer flex items-center gap-2 min-w-0 group"
-                    >
-                      <span className="px-1.5 py-0.5 rounded bg-blue-600 text-white font-mono text-[10px] font-extrabold shrink-0">
-                        P{idx + 1}
-                      </span>
-                      <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 block truncate max-w-full">
-                        {stepDoc.partBadge.split('•')[1]?.trim() || stepDoc.title}
-                      </span>
-                    </button>
-                  ))}
-                </div>
               </div>
 
               {/* 3x3 Responsive Blog Tile Grid (Streamlined Card Density per Rule 25) */}
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                 {filteredDocSeries.map((doc) => {
-                  const diagCount = doc.sections.reduce(
-                    (acc, s) => acc + (s.inlineDiagram ? 1 : 0) + (s.secondaryInlineDiagram ? 1 : 0),
-                    0
-                  );
-                  const shotCount = doc.sections.reduce(
-                    (acc, s) => acc + (s.inlineScreenshotFilenames?.length || 0),
-                    0
-                  );
-                  const codeCount = doc.sections.reduce(
-                    (acc, s) => acc + (s.codeSnippet ? 1 : 0) + (s.additionalCodeSnippets?.length || 0),
-                    0
-                  );
                   const tileUc =
                     allUseCases.find((u) => u.id === doc.useCasePresetId) || activeUseCase;
                   const tileBpConfig =
@@ -1781,14 +1707,8 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                             dangerouslySetInnerHTML={{ __html: tileSvgStr }}
                           />
                           <div className="absolute bottom-2 right-2 flex items-center gap-1 flex-wrap justify-end">
-                            <span className="px-1.5 py-0.5 rounded bg-slate-900/85 text-white text-[10px] font-mono font-bold">
-                              {diagCount} Diagram{diagCount > 1 ? 's' : ''} (#78)
-                            </span>
-                            <span className="px-1.5 py-0.5 rounded bg-emerald-700/90 text-white text-[10px] font-mono font-bold">
-                              {shotCount} GCP Proofs
-                            </span>
-                            <span className="px-1.5 py-0.5 rounded bg-indigo-700/90 text-white text-[10px] font-mono font-bold">
-                              {codeCount} Code/SQL
+                            <span className="px-2 py-0.5 rounded bg-slate-900/85 text-white text-[10px] font-mono font-bold">
+                              Blueprint #78 • SVG &amp; Draw.io
                             </span>
                           </div>
                         </div>
@@ -1801,7 +1721,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                                 key={prod}
                                 className="px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800 text-[10px] font-bold"
                               >
-                                {prod}
+                                {prod.replace(/\s*\([^)]*\)\s*/g, '').trim()}
                               </span>
                             ))}
                           </div>
@@ -1885,169 +1805,52 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
               data-testid="blog-pdf-style-document-reader"
               className="w-full max-w-full space-y-4"
             >
-              {/* DevSite Top Breadcrumb & Utility Action Bar */}
-              <div className="bg-white dark:bg-[#0D1526] border border-[#dadce0] dark:border-slate-800 rounded-xl px-4 py-2.5 shadow-2xs flex flex-col xl:flex-row xl:items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5 flex-wrap">
-                  <button
-                    type="button"
-                    data-testid="back-to-tile-catalog-btn"
-                    onClick={handleReturnToTileCatalog}
-                    className="px-3 py-1 rounded-md bg-[#f8f9fa] dark:bg-slate-800 hover:bg-[#e8f0fe] text-[#1a73e8] dark:text-blue-300 border border-[#dadce0] dark:border-slate-700 text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <span>← All 9 Blog Tiles</span>
-                  </button>
-
-                  <div className="h-4 w-[1px] bg-[#dadce0] dark:bg-slate-700 mx-1 hidden sm:block" />
-
-                  <nav
-                    aria-label="Breadcrumb"
-                    data-testid="doc-reader-breadcrumb"
-                    className="flex items-center gap-1.5 flex-wrap text-[13px] text-[#5f6368] dark:text-slate-400"
-                  >
-                    <span className="hover:text-[#1a73e8] cursor-pointer" onClick={handleReturnToTileCatalog}>
-                      Home
-                    </span>
-                    <span>›</span>
-                    <span className="hover:text-[#1a73e8] cursor-pointer" onClick={handleReturnToTileCatalog}>
-                      Documentation
-                    </span>
-                    <span>›</span>
-                    <span className="text-[#202124] dark:text-slate-200 font-medium">
-                      Cloud Architecture Center
-                    </span>
-                    <span>›</span>
-                    <span className="px-2 py-0.5 rounded bg-[#e8f0fe] dark:bg-blue-950/60 text-[#1967d2] dark:text-blue-300 font-semibold text-xs">
-                      {activeDocGuide.partBadge}
-                    </span>
-                  </nav>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0 flex-wrap">
-                  <span
-                    data-testid="active-doc-unique-id-badge"
-                    className="px-2.5 py-1 rounded bg-[#f8f9fa] dark:bg-blue-950 text-[#3c4043] dark:text-blue-300 border border-[#dadce0] dark:border-blue-800 font-mono text-xs font-bold"
-                  >
-                    ID: {activeDocGuide.docId} (/blogs/{activeDocGuide.docId})
-                  </span>
-
-                  {/* Top-of-Guide 1-Click Export Editable Diagram (#78) + Blog Content to Google Slides */}
-                  <div data-testid="doc-reader-top-slides-export" className="inline-flex items-center">
-                    <DiagramInlineSlidesPreviewer
-                      headerOnly={true}
-                      manifestKey={activeDocGuide.docId}
-                      title={`${activeDocGuide.docId}: ${activeDocGuide.title}`}
-                      subtitle={activeDocGuide.subtitle}
-                      xml={effectiveSelectorXml}
-                      svgString={activeOfficialArchCenterSvg}
-                      markdownContent={buildCanonicalDocMarkdown(activeDocGuide)}
-                      domainId={activeUseCase.domainId}
-                      domainName={activeUseCase.domainName}
-                      templateId="78"
-                      badgeLabel={`${activeDocGuide.docId} • Blueprint #78`}
-                    />
-                  </div>
-
-                  <button
-                    type="button"
-                    data-testid="doc-reader-print-pdf-btn"
-                    onClick={() => window.print()}
-                    className="px-2.5 py-1 rounded bg-[#1a73e8] hover:bg-[#1765cc] text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer"
-                    title="Print or Save this Cloud Architecture Center document as PDF"
-                  >
-                    <Printer className="w-3.5 h-3.5" />
-                    <span>Print / Save PDF</span>
-                  </button>
-                  <button
-                    type="button"
-                    data-testid="doc-reader-copy-md-btn"
-                    onClick={() =>
-                      handleCopyText(buildCanonicalDocMarkdown(activeDocGuide), 'doc-guide-md')
-                    }
-                    className="px-2.5 py-1 rounded bg-[#f8f9fa] dark:bg-slate-800 hover:bg-[#f1f3f4] text-[#3c4043] dark:text-slate-300 border border-[#dadce0] dark:border-slate-700 text-xs font-medium cursor-pointer"
-                  >
-                    {copiedKey === 'doc-guide-md' ? '✓ Copied .MD' : 'Copy Markdown'}
-                  </button>
-                  <button
-                    type="button"
-                    data-testid="toggle-doc-e2e-workbench-btn"
-                    onClick={() => setShowDocWorkbench(!showDocWorkbench)}
-                    className="px-2.5 py-1 rounded bg-[#f8f9fa] dark:bg-indigo-950 text-[#1a73e8] dark:text-indigo-300 border border-[#dadce0] dark:border-indigo-800 text-xs font-medium cursor-pointer"
-                  >
-                    {showDocWorkbench ? 'Hide 24-File Workbench ▲' : '24-File Codebase Workbench ▾'}
-                  </button>
-                </div>
-              </div>
-
               {/* 2-Column Google Cloud Architecture Center DevSite Layout (Main devsite-article + Right Sticky "On this page" TOC) */}
               <div className="flex flex-col xl:flex-row gap-8 items-start">
                 {/* Main Google Cloud DevSite Article Column */}
                 <article className="flex-1 min-w-0 w-full bg-white dark:bg-[#0D1526] border border-[#dadce0] dark:border-slate-800 rounded-xl shadow-2xs overflow-hidden">
-                  {/* DevSite Page Title Header */}
-                  <header className="px-6 pt-8 pb-5 md:px-12 md:pt-10 md:pb-6 bg-white dark:bg-slate-900 border-b border-[#dadce0] dark:border-slate-800 space-y-4">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span
-                        data-testid="doc-reader-pdf-source-badge"
-                        className="px-2.5 py-0.5 rounded bg-[#e8f0fe] dark:bg-blue-950/60 text-[#1967d2] dark:text-blue-300 text-xs font-semibold"
+                  {/* Streamlined DevSite Page Title Header (Single-Source Breadcrumb + H1 + Metadata) */}
+                  <header className="px-6 pt-7 pb-5 md:px-12 md:pt-8 md:pb-6 bg-white dark:bg-slate-900 border-b border-[#dadce0] dark:border-slate-800 space-y-3">
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <nav
+                        aria-label="Breadcrumb"
+                        data-testid="doc-reader-breadcrumb"
+                        className="flex items-center gap-1.5 flex-wrap text-[13px] text-[#5f6368] dark:text-slate-400"
                       >
-                        Cloud Architecture Center Reference Architecture • {activeDocGuide.docId}
-                      </span>
-                      <span className="text-xs text-[#5f6368] dark:text-slate-400">
-                        Last reviewed 2026-10-15 UTC
-                      </span>
+                        <button
+                          type="button"
+                          data-testid="back-to-tile-catalog-btn"
+                          onClick={handleReturnToTileCatalog}
+                          className="hover:text-[#1a73e8] font-medium cursor-pointer"
+                        >
+                          Cloud Architecture Center
+                        </button>
+                        <span>›</span>
+                        <span
+                          data-testid="doc-reader-pdf-source-badge"
+                          className="px-2 py-0.5 rounded bg-[#e8f0fe] dark:bg-blue-950/60 text-[#1967d2] dark:text-blue-300 font-semibold text-xs"
+                        >
+                          {activeDocGuide.partBadge}
+                        </span>
+                      </nav>
+
+                      <div className="flex items-center gap-2 text-xs text-[#5f6368] dark:text-slate-400">
+                        <span
+                          data-testid="active-doc-unique-id-badge"
+                          className="px-2 py-0.5 rounded bg-[#f8f9fa] dark:bg-slate-800 text-[#3c4043] dark:text-slate-300 border border-[#dadce0] dark:border-slate-700 font-mono text-[11px] font-semibold"
+                        >
+                          {activeDocGuide.docId}
+                        </span>
+                        <span>•</span>
+                        <span>{activeDocGuide.readTimeMinutes} min read</span>
+                        <span>•</span>
+                        <span>Last reviewed 2026-10-15</span>
+                      </div>
                     </div>
 
                     <h1 className="text-[28px] md:text-[34px] font-normal text-[#202124] dark:text-white tracking-normal leading-[1.22]">
                       {activeDocGuide.title}
                     </h1>
-
-                    {/* Compact DevSite Quick Assets & Diagram Controls Bar */}
-                    <div
-                      data-testid="doc-reader-quick-assets-bar"
-                      className="p-2.5 rounded-lg bg-[#f8f9fa] dark:bg-slate-900 border border-[#dadce0] dark:border-slate-700 flex flex-wrap items-center justify-between gap-2"
-                    >
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs font-semibold text-[#5f6368] dark:text-slate-400">
-                          Interactive Architecture Assets:
-                        </span>
-                        {activeDocGuide.sections
-                          .filter((s) => Boolean(s.inlineDiagram))
-                          .map((s) => (
-                            <React.Fragment key={`qj-fig-${s.id}`}>
-                              <a
-                                href={`#${s.id}`}
-                                className="px-2.5 py-1 rounded bg-white dark:bg-slate-800 hover:bg-[#e8f0fe] text-[#1a73e8] dark:text-blue-300 border border-[#dadce0] dark:border-slate-700 text-xs font-medium inline-flex items-center gap-1"
-                              >
-                                <span>{s.inlineDiagram?.figureNumber} (Architecture #78)</span>
-                              </a>
-                              <button
-                                type="button"
-                                data-testid={`header-inline-drawio-btn-${s.id}`}
-                                onClick={() => {
-                                  setInlineFigureModeBySec((prev) => ({
-                                    ...prev,
-                                    [s.id]: 'drawio',
-                                  }));
-                                  const el = document.getElementById(s.id);
-                                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                }}
-                                className="px-2.5 py-1 rounded bg-[#1a73e8] hover:bg-[#1765cc] text-white text-xs font-medium inline-flex items-center gap-1 cursor-pointer"
-                                title="Open interactive inline Draw.io diagram editor directly inside the Architecture section"
-                              >
-                                <span>✏️ Edit {s.inlineDiagram?.figureNumber} Inline (Draw.io)</span>
-                              </button>
-                            </React.Fragment>
-                          ))}
-                        <a
-                          href="#deployment"
-                          className="px-2.5 py-1 rounded bg-white dark:bg-slate-800 hover:bg-[#e8f0fe] text-[#1a73e8] dark:text-blue-300 border border-[#dadce0] dark:border-slate-700 text-xs font-medium inline-flex items-center gap-1"
-                        >
-                          <span>Deployment &amp; Verification</span>
-                        </a>
-                      </div>
-                      <span className="text-xs text-[#5f6368] dark:text-slate-400">
-                        {activeDocGuide.readTimeMinutes} min read • Verified on Google Cloud
-                      </span>
-                    </div>
                   </header>
 
                   {/* DevSite Article Body */}
@@ -2081,8 +1884,6 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                     {/* 8 Canonical Google Cloud Architecture Center Sections */}
                     {activeDocGuide.sections.map((sec) => {
                       const figMode = inlineFigureModeBySec[sec.id] || 'svg';
-                      const sec2FigMode = inlineFigureModeBySec[`${sec.id}-secondary`] || 'svg';
-                      const sectionScreenshots = resolveDocScreenshots(sec.inlineScreenshotFilenames);
                       const bpVariantId =
                         sec.inlineDiagram?.blueprintVariantId || activeDocGuide.primaryBlueprintVariantId;
                       const secBpConfig =
@@ -2096,17 +1897,6 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                         ? compileOfficialArchCenterDrawioXml(secBpConfig)
                         : '';
                       const effectiveSecXmlStr = inlineFigureEditedXmlBySec[sec.id] || defaultSecXmlStr;
-
-                      const sec2BpVariantId = sec.secondaryInlineDiagram?.blueprintVariantId;
-                      const sec2BpConfig = sec2BpVariantId
-                        ? OFFICIAL_ARCH_CENTER_BLUEPRINTS.find((b) => b.id === sec2BpVariantId) || secBpConfig
-                        : null;
-                      const sec2SvgStr = sec2BpConfig ? compileOfficialArchCenterSvg(sec2BpConfig) : '';
-                      const defaultSec2XmlStr = sec2BpConfig
-                        ? compileOfficialArchCenterDrawioXml(sec2BpConfig)
-                        : '';
-                      const effectiveSec2XmlStr =
-                        inlineFigureEditedXmlBySec[`${sec.id}-secondary`] || defaultSec2XmlStr;
 
                       return (
                         <section
@@ -2132,7 +1922,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                             ))}
                           </div>
 
-                          {/* Primary Architecture Diagram (#78) with Inline Draw.io & Google Slides Controls */}
+                          {/* Single Authoritative Architecture Diagram (#78) with Inline Draw.io & Google Slides Controls */}
                           {sec.inlineDiagram && (
                             <figure
                               data-testid={`doc-inline-figure-${sec.id}`}
@@ -2152,20 +1942,6 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                                 <div className="flex items-center gap-2 flex-wrap">
                                   <button
                                     type="button"
-                                    data-testid={`doc-fig-svg-btn-${sec.id}`}
-                                    onClick={() =>
-                                      setInlineFigureModeBySec((prev) => ({ ...prev, [sec.id]: 'svg' }))
-                                    }
-                                    className={`px-2.5 py-1 rounded text-xs font-medium border cursor-pointer ${
-                                      figMode === 'svg'
-                                        ? 'bg-[#1a73e8] text-white border-[#1a73e8]'
-                                        : 'bg-white dark:bg-slate-800 text-[#3c4043] dark:text-slate-200 border-[#dadce0] dark:border-slate-700'
-                                    }`}
-                                  >
-                                    Architecture Diagram
-                                  </button>
-                                  <button
-                                    type="button"
                                     data-testid={`doc-fig-drawio-inline-btn-${sec.id}`}
                                     onClick={() =>
                                       setInlineFigureModeBySec((prev) => ({
@@ -2176,38 +1952,28 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                                     className={`px-2.5 py-1 rounded text-xs font-medium border cursor-pointer ${
                                       figMode === 'drawio'
                                         ? 'bg-[#1a73e8] text-white border-[#1a73e8]'
-                                        : 'bg-white dark:bg-slate-800 text-[#3c4043] dark:text-slate-200 border-[#dadce0] dark:border-slate-700'
+                                        : 'bg-white dark:bg-slate-800 text-[#3c4043] dark:text-slate-200 border-[#dadce0] dark:border-slate-700 hover:bg-[#f8f9fa]'
                                     }`}
                                   >
-                                    ✏️ Edit Inline (Draw.io)
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      openDrawioInNewTab(
-                                        effectiveSecXmlStr,
-                                        `${sec.inlineDiagram?.figureNumber}: ${sec.inlineDiagram?.title}`
-                                      )
-                                    }
-                                    className="px-2.5 py-1 rounded text-xs font-medium bg-white dark:bg-slate-800 text-[#1a73e8] dark:text-blue-300 border border-[#dadce0] dark:border-slate-700 hover:bg-[#f8f9fa] inline-flex items-center gap-1 cursor-pointer"
-                                  >
-                                    <span>Open in Draw.io ↗</span>
+                                    {figMode === 'drawio' ? '← View Architecture Diagram' : '✏️ Edit in Draw.io'}
                                   </button>
 
-                                  {/* Header-Only Google Slides & Cloud Viewer Controls (Rule 47) */}
-                                  <DiagramInlineSlidesPreviewer
-                                    headerOnly={true}
-                                    manifestKey={activeDocGuide.docId}
-                                    title={`${activeDocGuide.docId}: ${activeDocGuide.title} (${sec.inlineDiagram.figureNumber})`}
-                                    subtitle={sec.inlineDiagram.caption}
-                                    xml={effectiveSecXmlStr}
-                                    svgString={secSvgStr}
-                                    markdownContent={buildCanonicalDocMarkdown(activeDocGuide)}
-                                    domainId={activeUseCase.domainId}
-                                    domainName={activeUseCase.domainName}
-                                    templateId="78"
-                                    badgeLabel={`${activeDocGuide.docId} • ${sec.inlineDiagram.figureNumber} • Blueprint #78`}
-                                  />
+                                  {/* Single Header-Only Google Slides & Cloud Viewer Controls (Rule 47) */}
+                                  <div data-testid="doc-reader-top-slides-export" className="inline-flex items-center">
+                                    <DiagramInlineSlidesPreviewer
+                                      headerOnly={true}
+                                      manifestKey={activeDocGuide.docId}
+                                      title={`${activeDocGuide.docId}: ${activeDocGuide.title} (${sec.inlineDiagram.figureNumber})`}
+                                      subtitle={sec.inlineDiagram.caption}
+                                      xml={effectiveSecXmlStr}
+                                      svgString={secSvgStr}
+                                      markdownContent={buildCanonicalDocMarkdown(activeDocGuide)}
+                                      domainId={activeUseCase.domainId}
+                                      domainName={activeUseCase.domainName}
+                                      templateId="78"
+                                      badgeLabel={`${activeDocGuide.docId} • ${sec.inlineDiagram.figureNumber} • Blueprint #78`}
+                                    />
+                                  </div>
                                 </div>
                               </div>
 
@@ -2321,80 +2087,6 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                                 ))}
                               </ol>
                             </div>
-                          )}
-
-                          {/* Secondary Architecture Diagram (Figure 2, if present in this guide) */}
-                          {sec.secondaryInlineDiagram && sec2BpConfig && (
-                            <figure
-                              data-testid={`doc-inline-figure-${sec.id}-secondary`}
-                              className="my-6 rounded-lg border border-[#dadce0] dark:border-slate-700 bg-white dark:bg-slate-900 overflow-hidden"
-                            >
-                              <div className="px-4 py-2.5 bg-[#f8f9fa] dark:bg-slate-900 border-b border-[#dadce0] dark:border-slate-800 flex flex-col xl:flex-row xl:items-center justify-between gap-2.5">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <span className="text-xs font-bold text-[#202124] dark:text-white">
-                                    {sec.secondaryInlineDiagram.figureNumber}: {sec.secondaryInlineDiagram.title}
-                                  </span>
-                                  <span className="px-2 py-0.5 rounded bg-[#e8f0fe] text-[#1967d2] text-[11px] font-medium">
-                                    Official Google Cloud Architecture (#78)
-                                  </span>
-                                </div>
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      setInlineFigureModeBySec((prev) => ({
-                                        ...prev,
-                                        [`${sec.id}-secondary`]: sec2FigMode === 'drawio' ? 'svg' : 'drawio',
-                                      }))
-                                    }
-                                    className="px-2.5 py-1 rounded text-xs font-medium bg-white dark:bg-slate-800 text-[#3c4043] dark:text-slate-200 border border-[#dadce0] cursor-pointer"
-                                  >
-                                    ✏️ Edit Inline (Draw.io)
-                                  </button>
-                                  <DiagramInlineSlidesPreviewer
-                                    headerOnly={true}
-                                    manifestKey={activeDocGuide.docId}
-                                    title={`${activeDocGuide.docId}: ${sec.secondaryInlineDiagram.figureNumber} — ${sec.secondaryInlineDiagram.title}`}
-                                    subtitle={sec.secondaryInlineDiagram.caption}
-                                    xml={effectiveSec2XmlStr}
-                                    svgString={sec2SvgStr}
-                                    markdownContent={buildCanonicalDocMarkdown(activeDocGuide)}
-                                    domainId={activeUseCase.domainId}
-                                    domainName={activeUseCase.domainName}
-                                    templateId="78"
-                                    badgeLabel={`${activeDocGuide.docId} • ${sec.secondaryInlineDiagram.figureNumber} • Blueprint #78`}
-                                  />
-                                </div>
-                              </div>
-                              {sec2FigMode === 'drawio' ? (
-                                <div className="p-3 bg-[#f8f9fa]">
-                                  <InteractiveDrawioInlineEditor
-                                    xml={effectiveSec2XmlStr}
-                                    title={sec.secondaryInlineDiagram.title}
-                                    height={640}
-                                    onXmlChange={(xml: string) =>
-                                      setInlineFigureEditedXmlBySec((prev) => ({
-                                        ...prev,
-                                        [`${sec.id}-secondary`]: xml,
-                                      }))
-                                    }
-                                    testId={`doc-inline-drawio-editor-${sec.id}-secondary`}
-                                  />
-                                </div>
-                              ) : (
-                                <div
-                                  data-testid={`doc-inline-svg-canvas-${sec.id}-secondary`}
-                                  className="p-4 bg-white flex items-center justify-center overflow-x-auto [&>svg]:w-full [&>svg]:h-auto [&>svg]:max-h-[680px]"
-                                  dangerouslySetInnerHTML={{ __html: sec2SvgStr }}
-                                />
-                              )}
-                              <figcaption className="px-4 py-2.5 bg-[#f8f9fa] border-t border-[#dadce0] text-[13px] text-[#5f6368]">
-                                <strong className="font-semibold text-[#202124] mr-1">
-                                  {sec.secondaryInlineDiagram.figureNumber}.
-                                </strong>
-                                {sec.secondaryInlineDiagram.caption}
-                              </figcaption>
-                            </figure>
                           )}
 
                           {/* Products Used Bulleted List (#products_used) */}
@@ -2571,27 +2263,10 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                                     </tbody>
                                   </table>
                                 </div>
-                                {dc.extraSubHeading && dc.extraBullets && (
-                                  <div className="space-y-2 pt-2">
-                                    <h4 className="text-[16px] font-semibold text-[#202124] dark:text-white">
-                                      {dc.extraSubHeading}
-                                    </h4>
-                                    <ul className="list-disc pl-6 space-y-1.5 text-[16px] text-[#3c4043] dark:text-slate-200 leading-[26px]">
-                                      {dc.extraBullets.map((eb, ebIdx) => (
-                                        <li key={ebIdx}>
-                                          <strong className="font-semibold text-[#202124] dark:text-white">
-                                            {eb.label}
-                                          </strong>
-                                          : {eb.detail}
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )}
                               </div>
                             ))}
 
-                          {/* Deployment Code Snippet(s) (#deployment) */}
+                          {/* Deployment Code Snippet (#deployment) */}
                           {sec.codeSnippet && (
                             <div
                               data-testid={`doc-inline-code-${sec.id}`}
@@ -2620,70 +2295,6 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                               <pre className="p-4 text-xs font-mono leading-relaxed overflow-x-auto text-[#202124] dark:text-slate-100">
                                 <code>{sec.codeSnippet.code}</code>
                               </pre>
-                            </div>
-                          )}
-
-                          {sec.additionalCodeSnippets &&
-                            sec.additionalCodeSnippets.map((cs, csIdx) => (
-                              <div
-                                key={csIdx}
-                                className="my-5 rounded-md border border-[#dadce0] dark:border-slate-800 bg-[#f8f9fa] dark:bg-slate-950 overflow-hidden"
-                              >
-                                <div className="px-4 py-2 bg-[#f1f3f4] dark:bg-slate-900 border-b border-[#dadce0] dark:border-slate-800 flex items-center justify-between gap-2">
-                                  <span className="font-mono text-xs font-bold text-[#202124] dark:text-slate-200">
-                                    {cs.filename} — {cs.title}
-                                  </span>
-                                  <button
-                                    type="button"
-                                    onClick={() => navigator.clipboard?.writeText(cs.code)}
-                                    className="px-2.5 py-1 rounded bg-white hover:bg-[#e8f0fe] text-[#1a73e8] border border-[#dadce0] text-[11px] font-medium cursor-pointer"
-                                  >
-                                    Copy code
-                                  </button>
-                                </div>
-                                <pre className="p-4 text-xs font-mono leading-relaxed overflow-x-auto text-[#202124] dark:text-slate-100">
-                                  <code>{cs.code}</code>
-                                </pre>
-                              </div>
-                            ))}
-
-                          {/* Live Google Cloud Console & Gemini Enterprise Verification Screenshots */}
-                          {sectionScreenshots.length > 0 && (
-                            <div
-                              data-testid={`doc-section-screenshots-${sec.id}`}
-                              className="pt-3 space-y-3"
-                            >
-                              <h3 className="text-[18px] font-medium text-[#202124] dark:text-white">
-                                Verified Google Cloud Console &amp; Gemini Enterprise execution proofs ({sectionScreenshots.length})
-                              </h3>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {sectionScreenshots.map((shot) => (
-                                  <div
-                                    key={shot.id}
-                                    onClick={() => setSelectedZoomScreenshot(shot)}
-                                    className="rounded-md border border-[#dadce0] dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden cursor-pointer hover:border-[#1a73e8] transition-all group flex flex-col justify-between"
-                                  >
-                                    <div className="relative h-40 bg-slate-950 overflow-hidden border-b border-[#dadce0] dark:border-slate-800">
-                                      <img
-                                        src={shot.src}
-                                        alt={shot.title}
-                                        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
-                                      />
-                                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-slate-900/90 text-white text-[10px] font-mono font-bold">
-                                        {shot.badge}
-                                      </span>
-                                    </div>
-                                    <div className="p-3 space-y-1">
-                                      <div className="text-xs font-bold text-[#202124] dark:text-white">
-                                        {shot.title}
-                                      </div>
-                                      <p className="text-[12px] text-[#5f6368] dark:text-slate-400 line-clamp-2 leading-snug">
-                                        {shot.desc}
-                                      </p>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
                             </div>
                           )}
 

@@ -428,11 +428,40 @@ async function verifySixSlideBlogEditableDecks() {
     console.error('❌ EXPORT GATE FAILED: Slide 6 XML is missing 2x2 Deployment Runbook steps, numbered code lines, What\'s Next, or split Authors/Verification Provenance sub-cards!');
     process.exit(1);
   }
+
+  // Verify 0 ellipses ('…' or '...') across all 6 slide XMLs
+  const allSlideXmls = [s1Xml, s2Xml, s3Xml, s4Xml, s5Xml, s6Xml];
+  for (let i = 0; i < allSlideXmls.length; i++) {
+    const textMatches = [...allSlideXmls[i].matchAll(/<a:t>([\s\S]*?)<\/a:t>/g)].map((m) => m[1]).join('');
+    if (textMatches.includes('…') || textMatches.includes('...')) {
+      console.error(`❌ EXPORT GATE FAILED: Slide ${i + 1} XML contains truncated ellipsis ('…' or '...')!`);
+      process.exit(1);
+    }
+  }
+
+  // Verify 52px intra-spoke channel (x="342" width="214" and x="886" width="214" with staggered elbows 312/320 and 856/864)
+  if (
+    !xml01.includes('x="342"') ||
+    !xml01.includes('x="886"') ||
+    !xml01.includes('x="312"') ||
+    !xml01.includes('x="856"')
+  ) {
+    console.error('❌ EXPORT GATE FAILED: Draw.io XML is missing widened 52px intra-spoke connector channel (x=342 / x=886) and staggered elbows (x=312 / x=856)!');
+    process.exit(1);
+  }
+
+  // Verify no floating title tooltip on open-gcp-verify-drawer-btn in src/app/blogs/page.tsx
+  const blogsPageSrc = fs.readFileSync(path.join(process.cwd(), 'src', 'app', 'blogs', 'page.tsx'), 'utf-8');
+  const gcpBtnMatch = blogsPageSrc.match(/data-testid="open-gcp-verify-drawer-btn"[\s\S]{0,350}?>/);
+  if (!gcpBtnMatch || gcpBtnMatch[0].includes('title=')) {
+    console.error('❌ EXPORT GATE FAILED: open-gcp-verify-drawer-btn in src/app/blogs/page.tsx must not have a native title tooltip attribute!');
+    process.exit(1);
+  }
 }
 
 runExportSlidesQualityGate();
 verifySixSlideBlogEditableDecks().then(() => {
-  console.log('🎯 6-Slide Cohesive Editable Diagram (#78) + Blog Content PPTX XML & 9-Guide Section Resolution Gate PASSED (9/9 guides, 6/6 slides, 0 auto-collapsing tables, 0 mid-sentence truncations, compact arrowheads w="sm" len="sm")!');
+  console.log('🎯 6-Slide Cohesive Editable Diagram (#78) + Blog Content PPTX XML & 9-Guide Section Resolution Gate PASSED (9/9 guides, 6/6 slides, 52px intra-spoke channel, 0 ellipses, 0 auto-collapsing tables, compact arrowheads w="sm" len="sm")!');
 });
 
 

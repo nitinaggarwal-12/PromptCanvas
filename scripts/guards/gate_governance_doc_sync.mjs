@@ -56,6 +56,12 @@ export function auditPromptCanvasGovernanceSync() {
   if (hAgents && hGlobalAgents && hAgents !== hGlobalAgents) {
     mismatches.push('DRIFT: AGENTS.md and ~/.gemini/config/AGENTS.md are out of sync (must be byte-for-byte identical)');
   }
+  if (fs.existsSync(agentsPath)) {
+    const agentsBytes = fs.statSync(agentsPath).size;
+    if (agentsBytes > 29000) {
+      mismatches.push(`BYTE_BUDGET_EXCEEDED: AGENTS.md is ${agentsBytes} bytes (> 29000 byte limit), which causes Jetski <user_rules> truncation at 29,531 bytes`);
+    }
+  }
 
   // 2. Verify workspace skills.md === ~/.gemini/config/skills.md
   const rootSkillsMdPath = path.join(REPO_ROOT, 'skills.md');
@@ -123,6 +129,12 @@ export function auditPromptCanvasGovernanceSync() {
     if (!hRepo) mismatches.push(`MISSING: .agents/skills/${dir}/SKILL.md`);
     if (hRepo && hGlobal && hRepo !== hGlobal) {
       mismatches.push(`DRIFT: .agents/skills/${dir}/SKILL.md and ~/.gemini/config/skills/${dir}/SKILL.md differ`);
+    }
+    if (fs.existsSync(repoSkill)) {
+      const skillText = fs.readFileSync(repoSkill, 'utf-8');
+      if (skillText.includes('Do not touch any files until this plan is stated')) {
+        mismatches.push(`STALLING_RULE_DETECTED: .agents/skills/${dir}/SKILL.md contains banned stalling phrase "Do not touch any files until this plan is stated"`);
+      }
     }
   }
 

@@ -48,7 +48,7 @@ className="shrink-0 text-[10px] font-extrabold text-teal-300 bg-teal-500/20 px-2
 
 You are configured to work on this repository with strict architectural and deployment constraints. Follow these instructions exactly:
 
-1. **Planning First:** Before editing or generating code across multiple files, provide a concise 3 to 5 bullet execution plan. Do not touch any files until this plan is stated.
+1. **Planning & Immediate Same-Turn Execution (`Rule 28A`):** Formulate a concise 3 to 5 bullet execution plan and **immediately execute all file edits, backend syncs, and quality gates in the exact same turn**. NEVER output a plan or diagnostic gap list and stop to ask *"Shall I apply these fixes?"* or *"Would you like me to proceed?"*.
 2. **Strict File Boundaries:**
 * Only edit files directly required to complete the assigned task.
 * Do not reformat, refactor, or delete unrelated files, functions, or utilities.

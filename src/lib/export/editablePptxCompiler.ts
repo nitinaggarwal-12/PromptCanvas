@@ -1061,13 +1061,14 @@ function truncateClean(text: string | undefined, maxLen: number): string {
   if (!clean) return '';
   if (clean.length <= maxLen + 42) return clean;
 
-  // Prefer ending cleanly at a sentence boundary (. ) if one exists within [48%..112%] of maxLen
+  // Prefer ending cleanly at a sentence or semicolon clause boundary (. or ;) if one exists within [48%..112%] of maxLen
   const windowText = clean.slice(0, maxLen + 24);
-  const periodMatches = [...windowText.matchAll(/(?<!\b(?:e\.g|i\.e|vs|Mr|Dr|St|Fig|No|v\d))\.\s+/g)];
-  if (periodMatches.length > 0) {
-    const lastPeriod = periodMatches[periodMatches.length - 1];
-    if (lastPeriod.index !== undefined && lastPeriod.index >= maxLen * 0.48) {
-      return windowText.slice(0, lastPeriod.index + 1).trim();
+  const clauseMatches = [...windowText.matchAll(/(?<!\b(?:e\.g|i\.e|vs|Mr|Dr|St|Fig|No|v\d))[.;]\s+/g)];
+  if (clauseMatches.length > 0) {
+    const lastClause = clauseMatches[clauseMatches.length - 1];
+    if (lastClause.index !== undefined && lastClause.index >= maxLen * 0.48) {
+      const sliced = windowText.slice(0, lastClause.index + 1).trim().replace(/;$/, '.');
+      return sliced;
     }
   }
 
@@ -1076,11 +1077,12 @@ function truncateClean(text: string | undefined, maxLen: number): string {
   const lastSpace = cut.lastIndexOf(' ');
   let trimmed = (lastSpace > maxLen * 0.6 ? cut.slice(0, lastSpace) : cut)
     .replace(/\s*\([^)]*$/, '')
+    .replace(/;\s*[^;]{1,36}$/, '')
     .replace(/[.,;:\-–—(\s]+$/, '');
   for (let i = 0; i < 4; i++) {
     trimmed = trimmed
       .replace(
-        /\s+\b(?:and|or|for|to|with|without|in|of|by|on|at|from|into|across|between|through|that|which|where|when|as|the|a|an|cannot|can|will|must|is|are|be|been|their|its|our|your|this|these|those|providing|restricting|managing|including|final|predictable|repeatedly|reference|such)\s*$/i,
+        /\s+\b(?:and|or|for|to|with|without|in|of|by|on|at|from|into|across|between|through|that|which|where|when|as|the|a|an|cannot|can|will|must|is|are|be|been|their|its|our|your|this|these|those|providing|restricting|managing|including|final|predictable|repeatedly|reference|such|increases|provides|highest|level)\s*$/i,
         ''
       )
       .replace(/[.,;:\-–—(\s]+$/, '');
@@ -3262,24 +3264,24 @@ export async function exportDrawioToEditablePptx(
             sb.bullets && sb.bullets.length > 0
               ? sb.bullets
                   .slice(0, 2)
-                  .map((b) => `• ${deduplicateParentheticalEchoes(b.label)}: ${truncateClean(b.detail, 95)}`)
+                  .map((b) => `• ${deduplicateParentheticalEchoes(b.label)}: ${truncateClean(b.detail, 130)}`)
                   .join('\n')
-              : truncateClean((sb.paragraphs || []).join(' '), 195),
+              : truncateClean((sb.paragraphs || []).join(' '), 260),
         }));
       } else if (rawSubBlocks.length === 1 && (rawSubBlocks[0].bullets?.length || 0) >= 2) {
         optionCards = rawSubBlocks[0].bullets!.slice(0, 2).map((b) => ({
           title: deduplicateParentheticalEchoes(b.label),
-          body: truncateClean(b.detail, 195),
+          body: truncateClean(b.detail, 260),
         }));
       } else if (rawSubBlocks.length === 1) {
         optionCards = [
           {
             title: deduplicateParentheticalEchoes(rawSubBlocks[0].subHeading),
-            body: truncateClean((rawSubBlocks[0].paragraphs || []).join(' '), 195),
+            body: truncateClean((rawSubBlocks[0].paragraphs || []).join(' '), 260),
           },
           {
             title: 'Reference Baseline Trade-Off',
-            body: truncateClean((alt.leadParagraphs || [])[1] || (alt.leadParagraphs || [])[0] || '', 195),
+            body: truncateClean((alt.leadParagraphs || [])[1] || (alt.leadParagraphs || [])[0] || '', 260),
           },
         ];
       }
@@ -3788,7 +3790,8 @@ export async function exportDrawioToEditablePptx(
       y: 3.72,
       w: 7.20,
       h: 3.44,
-      fontSize: 6.7,
+      fontSize: 7.4,
+      lineSpacingMultiple: 1.15,
       color: '0F172A',
       valign: 'middle',
       fontFace: 'Courier New',

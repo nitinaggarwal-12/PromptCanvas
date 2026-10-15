@@ -64,6 +64,32 @@ export async function generateContentWithRetry(
   const startedAt = Date.now();
   let lastError: any = null;
 
+  // Breaking Change 2A Guard: gemini-4-argon strictly rejects numeric `thinkingBudget` and `MINIMAL` with HTTP 400.
+  const modelStr = String(params?.model || '').toLowerCase();
+  const safeParams =
+    (modelStr.includes('4-argon') || modelStr.includes('argon')) && params?.config?.thinkingConfig
+      ? {
+          ...params,
+          config: {
+            ...params.config,
+            maxOutputTokens: Math.min(params.config.maxOutputTokens || 32768, 32768),
+            thinkingConfig: {
+              thinkingLevel:
+                params.config.thinkingConfig.thinkingLevel &&
+                params.config.thinkingConfig.thinkingLevel !== 'MINIMAL'
+                  ? params.config.thinkingConfig.thinkingLevel
+                  : typeof params.config.thinkingConfig.thinkingBudget === 'number' &&
+                      params.config.thinkingConfig.thinkingBudget >= 500
+                    ? 'HIGH'
+                    : typeof params.config.thinkingConfig.thinkingBudget === 'number' &&
+                        params.config.thinkingConfig.thinkingBudget <= 100
+                      ? 'LOW'
+                      : 'MEDIUM',
+            },
+          },
+        }
+      : params;
+
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     const elapsed = Date.now() - startedAt;
     const remaining = totalBudgetMs - elapsed;
@@ -71,7 +97,7 @@ export async function generateContentWithRetry(
 
     try {
       return await withTimeout(
-        ai.models.generateContent(params),
+        ai.models.generateContent(safeParams),
         Math.min(perAttemptTimeoutMs, remaining),
         label
       );
