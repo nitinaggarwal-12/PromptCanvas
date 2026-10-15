@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   cleanHtmlToPlainText,
   exportDrawioToEditablePptx,
   parseDrawioXmlForPptx,
 } from '@/lib/export/editablePptxCompiler';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
+import cloudViewerManifestData from '@/data/cloud_viewer_manifest.json';
 
 export interface CloudSlidesEntryClient {
   key?: string;
@@ -37,81 +39,81 @@ const FALLBACK_MANIFEST: CloudViewerManifestClient = {
   accountEmail: 'nitinagga@google.com',
   slides: {
     WS1: {
-      googleSlidesId: '1pQ_Hwxm704_Zhay_RR113gBv1IWmYS7JPH8C6FAtk1I',
+      googleSlidesId: '1dwa5ER2-aWO_Qo1QhSR4TVtkRsuw9RL-Exf0YDUDrIg',
       googleSlidesEditUrl:
-        'https://docs.google.com/presentation/d/1pQ_Hwxm704_Zhay_RR113gBv1IWmYS7JPH8C6FAtk1I/edit?authuser=nitinagga%40google.com',
+        'https://docs.google.com/presentation/d/1dwa5ER2-aWO_Qo1QhSR4TVtkRsuw9RL-Exf0YDUDrIg/edit?authuser=nitinagga%40google.com',
       googleSlidesPreviewUrl:
-        'https://docs.google.com/presentation/d/1pQ_Hwxm704_Zhay_RR113gBv1IWmYS7JPH8C6FAtk1I/preview',
+        'https://docs.google.com/presentation/d/1dwa5ER2-aWO_Qo1QhSR4TVtkRsuw9RL-Exf0YDUDrIg/preview',
       googleSlidesEmbedUrl:
-        'https://docs.google.com/presentation/d/1pQ_Hwxm704_Zhay_RR113gBv1IWmYS7JPH8C6FAtk1I/embed?start=false&loop=false&delayms=5000',
+        'https://docs.google.com/presentation/d/1dwa5ER2-aWO_Qo1QhSR4TVtkRsuw9RL-Exf0YDUDrIg/embed?start=false&loop=false&delayms=5000',
       googleSlidesPdfUrl:
-        'https://docs.google.com/presentation/d/1pQ_Hwxm704_Zhay_RR113gBv1IWmYS7JPH8C6FAtk1I/export/pdf',
+        'https://docs.google.com/presentation/d/1dwa5ER2-aWO_Qo1QhSR4TVtkRsuw9RL-Exf0YDUDrIg/export/pdf',
     },
     WS2: {
-      googleSlidesId: '1PoDICHbjiO2MJzNY8gNgWoAmu_kciAbUPSBq2rg9s-8',
+      googleSlidesId: '1uro8CTfEKfRg03geNOTQ4Hmy1lk3r_ewfKPt0vNbZcs',
       googleSlidesEditUrl:
-        'https://docs.google.com/presentation/d/1PoDICHbjiO2MJzNY8gNgWoAmu_kciAbUPSBq2rg9s-8/edit?authuser=nitinagga%40google.com',
+        'https://docs.google.com/presentation/d/1uro8CTfEKfRg03geNOTQ4Hmy1lk3r_ewfKPt0vNbZcs/edit?authuser=nitinagga%40google.com',
       googleSlidesPreviewUrl:
-        'https://docs.google.com/presentation/d/1PoDICHbjiO2MJzNY8gNgWoAmu_kciAbUPSBq2rg9s-8/preview',
+        'https://docs.google.com/presentation/d/1uro8CTfEKfRg03geNOTQ4Hmy1lk3r_ewfKPt0vNbZcs/preview',
       googleSlidesEmbedUrl:
-        'https://docs.google.com/presentation/d/1PoDICHbjiO2MJzNY8gNgWoAmu_kciAbUPSBq2rg9s-8/embed?start=false&loop=false&delayms=5000',
+        'https://docs.google.com/presentation/d/1uro8CTfEKfRg03geNOTQ4Hmy1lk3r_ewfKPt0vNbZcs/embed?start=false&loop=false&delayms=5000',
       googleSlidesPdfUrl:
-        'https://docs.google.com/presentation/d/1PoDICHbjiO2MJzNY8gNgWoAmu_kciAbUPSBq2rg9s-8/export/pdf',
+        'https://docs.google.com/presentation/d/1uro8CTfEKfRg03geNOTQ4Hmy1lk3r_ewfKPt0vNbZcs/export/pdf',
     },
     WS3: {
-      googleSlidesId: '1ir6PAaR-WiDC5eBguNwyNHvyAjOfomFoDJSfl9kv328',
+      googleSlidesId: '1WYmj2wHnC9ofji_--4M_fnLtJ2B245umKmEdQwQCYE0',
       googleSlidesEditUrl:
-        'https://docs.google.com/presentation/d/1ir6PAaR-WiDC5eBguNwyNHvyAjOfomFoDJSfl9kv328/edit?authuser=nitinagga%40google.com',
+        'https://docs.google.com/presentation/d/1WYmj2wHnC9ofji_--4M_fnLtJ2B245umKmEdQwQCYE0/edit?authuser=nitinagga%40google.com',
       googleSlidesPreviewUrl:
-        'https://docs.google.com/presentation/d/1ir6PAaR-WiDC5eBguNwyNHvyAjOfomFoDJSfl9kv328/preview',
+        'https://docs.google.com/presentation/d/1WYmj2wHnC9ofji_--4M_fnLtJ2B245umKmEdQwQCYE0/preview',
       googleSlidesEmbedUrl:
-        'https://docs.google.com/presentation/d/1ir6PAaR-WiDC5eBguNwyNHvyAjOfomFoDJSfl9kv328/embed?start=false&loop=false&delayms=5000',
+        'https://docs.google.com/presentation/d/1WYmj2wHnC9ofji_--4M_fnLtJ2B245umKmEdQwQCYE0/embed?start=false&loop=false&delayms=5000',
       googleSlidesPdfUrl:
-        'https://docs.google.com/presentation/d/1ir6PAaR-WiDC5eBguNwyNHvyAjOfomFoDJSfl9kv328/export/pdf',
+        'https://docs.google.com/presentation/d/1WYmj2wHnC9ofji_--4M_fnLtJ2B245umKmEdQwQCYE0/export/pdf',
     },
     WS4: {
-      googleSlidesId: '1SZEbXeCpFXGhnt3t0xEihAqzVURY2ItsLk2y2mfuKpc',
+      googleSlidesId: '1Tm2bkJNUCXa-oLoOaL7x1ho6TBKY5YRwC4rjgxaGTXA',
       googleSlidesEditUrl:
-        'https://docs.google.com/presentation/d/1SZEbXeCpFXGhnt3t0xEihAqzVURY2ItsLk2y2mfuKpc/edit?authuser=nitinagga%40google.com',
+        'https://docs.google.com/presentation/d/1Tm2bkJNUCXa-oLoOaL7x1ho6TBKY5YRwC4rjgxaGTXA/edit?authuser=nitinagga%40google.com',
       googleSlidesPreviewUrl:
-        'https://docs.google.com/presentation/d/1SZEbXeCpFXGhnt3t0xEihAqzVURY2ItsLk2y2mfuKpc/preview',
+        'https://docs.google.com/presentation/d/1Tm2bkJNUCXa-oLoOaL7x1ho6TBKY5YRwC4rjgxaGTXA/preview',
       googleSlidesEmbedUrl:
-        'https://docs.google.com/presentation/d/1SZEbXeCpFXGhnt3t0xEihAqzVURY2ItsLk2y2mfuKpc/embed?start=false&loop=false&delayms=5000',
+        'https://docs.google.com/presentation/d/1Tm2bkJNUCXa-oLoOaL7x1ho6TBKY5YRwC4rjgxaGTXA/embed?start=false&loop=false&delayms=5000',
       googleSlidesPdfUrl:
-        'https://docs.google.com/presentation/d/1SZEbXeCpFXGhnt3t0xEihAqzVURY2ItsLk2y2mfuKpc/export/pdf',
+        'https://docs.google.com/presentation/d/1Tm2bkJNUCXa-oLoOaL7x1ho6TBKY5YRwC4rjgxaGTXA/export/pdf',
     },
     WS5: {
-      googleSlidesId: '1g61mXsIOrNITdCzXpaq6wKZ5sUayHcaQN-JHA1vBLzA',
+      googleSlidesId: '1r_2oEeBC-XKkub16auZfLD8levx3ZORxEKBiBDlW5Gs',
       googleSlidesEditUrl:
-        'https://docs.google.com/presentation/d/1g61mXsIOrNITdCzXpaq6wKZ5sUayHcaQN-JHA1vBLzA/edit?authuser=nitinagga%40google.com',
+        'https://docs.google.com/presentation/d/1r_2oEeBC-XKkub16auZfLD8levx3ZORxEKBiBDlW5Gs/edit?authuser=nitinagga%40google.com',
       googleSlidesPreviewUrl:
-        'https://docs.google.com/presentation/d/1g61mXsIOrNITdCzXpaq6wKZ5sUayHcaQN-JHA1vBLzA/preview',
+        'https://docs.google.com/presentation/d/1r_2oEeBC-XKkub16auZfLD8levx3ZORxEKBiBDlW5Gs/preview',
       googleSlidesEmbedUrl:
-        'https://docs.google.com/presentation/d/1g61mXsIOrNITdCzXpaq6wKZ5sUayHcaQN-JHA1vBLzA/embed?start=false&loop=false&delayms=5000',
+        'https://docs.google.com/presentation/d/1r_2oEeBC-XKkub16auZfLD8levx3ZORxEKBiBDlW5Gs/embed?start=false&loop=false&delayms=5000',
       googleSlidesPdfUrl:
-        'https://docs.google.com/presentation/d/1g61mXsIOrNITdCzXpaq6wKZ5sUayHcaQN-JHA1vBLzA/export/pdf',
+        'https://docs.google.com/presentation/d/1r_2oEeBC-XKkub16auZfLD8levx3ZORxEKBiBDlW5Gs/export/pdf',
     },
     ALL: {
-      googleSlidesId: '1zOhsBbJoSMqd4weCr8QRXhZbmbSmykjgGEe_Spqq_qs',
+      googleSlidesId: '1z0q4MjdRyS1hbi4GAjjMEL_i4KOuVd9yFyR6uzb-r2I',
       googleSlidesEditUrl:
-        'https://docs.google.com/presentation/d/1zOhsBbJoSMqd4weCr8QRXhZbmbSmykjgGEe_Spqq_qs/edit?authuser=nitinagga%40google.com',
+        'https://docs.google.com/presentation/d/1z0q4MjdRyS1hbi4GAjjMEL_i4KOuVd9yFyR6uzb-r2I/edit?authuser=nitinagga%40google.com',
       googleSlidesPreviewUrl:
-        'https://docs.google.com/presentation/d/1zOhsBbJoSMqd4weCr8QRXhZbmbSmykjgGEe_Spqq_qs/preview',
+        'https://docs.google.com/presentation/d/1z0q4MjdRyS1hbi4GAjjMEL_i4KOuVd9yFyR6uzb-r2I/preview',
       googleSlidesEmbedUrl:
-        'https://docs.google.com/presentation/d/1zOhsBbJoSMqd4weCr8QRXhZbmbSmykjgGEe_Spqq_qs/embed?start=false&loop=false&delayms=5000',
+        'https://docs.google.com/presentation/d/1z0q4MjdRyS1hbi4GAjjMEL_i4KOuVd9yFyR6uzb-r2I/embed?start=false&loop=false&delayms=5000',
       googleSlidesPdfUrl:
-        'https://docs.google.com/presentation/d/1zOhsBbJoSMqd4weCr8QRXhZbmbSmykjgGEe_Spqq_qs/export/pdf',
+        'https://docs.google.com/presentation/d/1z0q4MjdRyS1hbi4GAjjMEL_i4KOuVd9yFyR6uzb-r2I/export/pdf',
     },
     'BP-78': {
-      googleSlidesId: '1HHtPqFX33O7VvEj5N63MPoFQsdkxFgEed9U_-0LB_eg',
+      googleSlidesId: '1dwa5ER2-aWO_Qo1QhSR4TVtkRsuw9RL-Exf0YDUDrIg',
       googleSlidesEditUrl:
-        'https://docs.google.com/presentation/d/1HHtPqFX33O7VvEj5N63MPoFQsdkxFgEed9U_-0LB_eg/edit?authuser=nitinagga%40google.com',
+        'https://docs.google.com/presentation/d/1dwa5ER2-aWO_Qo1QhSR4TVtkRsuw9RL-Exf0YDUDrIg/edit?authuser=nitinagga%40google.com',
       googleSlidesPreviewUrl:
-        'https://docs.google.com/presentation/d/1HHtPqFX33O7VvEj5N63MPoFQsdkxFgEed9U_-0LB_eg/preview',
+        'https://docs.google.com/presentation/d/1dwa5ER2-aWO_Qo1QhSR4TVtkRsuw9RL-Exf0YDUDrIg/preview',
       googleSlidesEmbedUrl:
-        'https://docs.google.com/presentation/d/1HHtPqFX33O7VvEj5N63MPoFQsdkxFgEed9U_-0LB_eg/embed?start=false&loop=false&delayms=5000',
+        'https://docs.google.com/presentation/d/1dwa5ER2-aWO_Qo1QhSR4TVtkRsuw9RL-Exf0YDUDrIg/embed?start=false&loop=false&delayms=5000',
       googleSlidesPdfUrl:
-        'https://docs.google.com/presentation/d/1HHtPqFX33O7VvEj5N63MPoFQsdkxFgEed9U_-0LB_eg/export/pdf',
+        'https://docs.google.com/presentation/d/1dwa5ER2-aWO_Qo1QhSR4TVtkRsuw9RL-Exf0YDUDrIg/export/pdf',
     },
     'GCP-MULTIAGENT-01': {
       googleSlidesId: '1rBHt-al8JDO9UZY6IIJpOdAR76zZQvvoNhPnX-ae9NY',
@@ -124,8 +126,10 @@ const FALLBACK_MANIFEST: CloudViewerManifestClient = {
       googleSlidesPdfUrl:
         'https://docs.google.com/presentation/d/1rBHt-al8JDO9UZY6IIJpOdAR76zZQvvoNhPnX-ae9NY/export/pdf',
     },
+    ...(cloudViewerManifestData.slides as Record<string, CloudSlidesEntryClient>),
   },
   docs: {
+    ...(cloudViewerManifestData.docs as Record<string, CloudDocsEntryClient>),
     WS1: {
       googleDocsId: '1dX-aziY0-uceuh14g4Q_2XkJhVMrOXDbZFesY9N5aAM',
       googleDocsEditUrl:
@@ -190,16 +194,188 @@ export function normalizeClientManifestKey(rawKey: string): string {
   if (!clean) return 'BP-78';
   const upper = clean.toUpperCase();
   if (['WS1', 'WS2', 'WS3', 'WS4', 'WS5', 'ALL'].includes(upper)) return upper;
-  if (clean.toLowerCase() === 'uc-geap-ws1') return 'WS1';
-  if (clean.toLowerCase() === 'uc-geap-ws2') return 'WS2';
-  if (clean.toLowerCase() === 'uc-geap-ws3') return 'WS3';
-  if (clean.toLowerCase() === 'uc-geap-ws4') return 'WS4';
-  if (clean.toLowerCase() === 'uc-geap-ws5') return 'WS5';
+  const wsPrefixMatch = clean.match(/^(?:uc-geap-)?ws([1-5])(?:$|[-_.])/i);
+  if (wsPrefixMatch) return `WS${wsPrefixMatch[1]}`;
   const numMatch = clean.match(/^#?(\d{1,2})$/);
   if (numMatch) return `BP-${numMatch[1].padStart(2, '0')}`;
   const bpMatch = clean.match(/^BP[-_]?(\d{1,2})$/i);
   if (bpMatch) return `BP-${bpMatch[1].padStart(2, '0')}`;
   return clean.replace(/[^A-Za-z0-9_-]/g, '_');
+}
+
+function sanitizeDrawioXmlAttributeValues(raw: string): string {
+  return String(raw || '').replace(/value="([^"]*)"/g, (_m, val: string) => {
+    if (!val.includes('<') && !val.includes('>')) return _m;
+    return `value="${val.replace(/</g, '&lt;').replace(/>/g, '&gt;')}"`;
+  });
+}
+
+/**
+ * Opens a full-screen interactive Draw.io (/drawio-editor -> embed.diagrams.net) editor in a new browser tab
+ * preloaded with the given Draw.io XML and bidirectional BroadcastChannel sync.
+ */
+export function openDrawioInNewTab(xml: string, title: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(
+      'promptcanvas_drawio_active_session',
+      JSON.stringify({
+        xml: sanitizeDrawioXmlAttributeValues(xml),
+        projectTitle: title || 'Google Cloud Hub-and-Spoke (#78)',
+        versionTag: 'v2.0 (#78)',
+      })
+    );
+  } catch (e) {
+    console.error('Failed to store active Draw.io session:', e);
+  }
+  window.open('/drawio-editor', '_blank');
+}
+
+export interface InteractiveDrawioInlineEditorProps {
+  xml: string;
+  title?: string;
+  height?: number;
+  onXmlChange?: (updatedXml: string) => void;
+  testId?: string;
+}
+
+/**
+ * Mounts a true interactive Draw.io (embed.diagrams.net) iframe editor inline on the page.
+ * Supports full drag-and-drop vertex editing, connector rerouting, text editing, and live autosave.
+ */
+export function InteractiveDrawioInlineEditor({
+  xml,
+  title = 'Architecture Diagram',
+  height = 680,
+  onXmlChange,
+  testId = 'interactive-drawio-inline-editor',
+}: InteractiveDrawioInlineEditorProps) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [isEditorReady, setIsEditorReady] = useState(false);
+  const [lastSavedNotice, setLastSavedNotice] = useState<string | null>(null);
+  const xmlRef = useRef(xml);
+  const lastLoadedXmlPropRef = useRef(xml);
+
+  useEffect(() => {
+    xmlRef.current = xml;
+    if (isEditorReady && xml !== lastLoadedXmlPropRef.current && iframeRef.current?.contentWindow) {
+      lastLoadedXmlPropRef.current = xml;
+      iframeRef.current.contentWindow.postMessage(
+        JSON.stringify({
+          action: 'load',
+          xml: sanitizeDrawioXmlAttributeValues(xml),
+          autosave: 1,
+        }),
+        '*'
+      );
+    }
+  }, [xml, isEditorReady]);
+
+  useEffect(() => {
+    const handleMessage = (ev: MessageEvent) => {
+      if (!ev.data || typeof ev.data !== 'string') return;
+      try {
+        const msg = JSON.parse(ev.data);
+        if (msg.event === 'init') {
+          setIsEditorReady(true);
+          lastLoadedXmlPropRef.current = xmlRef.current;
+          iframeRef.current?.contentWindow?.postMessage(
+            JSON.stringify({
+              action: 'load',
+              xml: sanitizeDrawioXmlAttributeValues(xmlRef.current),
+              autosave: 1,
+            }),
+            '*'
+          );
+        } else if (msg.event === 'autosave' && typeof msg.xml === 'string') {
+          lastLoadedXmlPropRef.current = msg.xml;
+          xmlRef.current = msg.xml;
+          onXmlChange?.(msg.xml);
+          setLastSavedNotice('Live Inline Edits Synced');
+        } else if (msg.event === 'save' && typeof msg.xml === 'string') {
+          lastLoadedXmlPropRef.current = msg.xml;
+          xmlRef.current = msg.xml;
+          onXmlChange?.(msg.xml);
+          setLastSavedNotice('Saved Inline ✓');
+          iframeRef.current?.contentWindow?.postMessage(
+            JSON.stringify({
+              action: 'status',
+              message: 'All changes saved inline',
+              modified: false,
+            }),
+            '*'
+          );
+        }
+      } catch {
+        // Ignore non-JSON messages
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    let bc: BroadcastChannel | null = null;
+    if (typeof BroadcastChannel !== 'undefined') {
+      bc = new BroadcastChannel('promptcanvas_drawio_sync');
+      bc.onmessage = (ev) => {
+        if (ev.data && typeof ev.data.xml === 'string') {
+          lastLoadedXmlPropRef.current = ev.data.xml;
+          xmlRef.current = ev.data.xml;
+          onXmlChange?.(ev.data.xml);
+          setLastSavedNotice('Synced from Draw.io Tab ✓');
+          iframeRef.current?.contentWindow?.postMessage(
+            JSON.stringify({
+              action: 'load',
+              xml: sanitizeDrawioXmlAttributeValues(ev.data.xml),
+              autosave: 1,
+            }),
+            '*'
+          );
+        }
+      };
+    }
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+      bc?.close();
+    };
+  }, [onXmlChange]);
+
+  return (
+    <div className="w-full flex flex-col bg-white" data-testid={testId}>
+      <div className="px-3.5 py-1.5 bg-blue-50/90 dark:bg-slate-900 border-b border-blue-200 dark:border-slate-700 flex items-center justify-between gap-2 text-[11px]">
+        <div className="flex items-center gap-2 text-blue-900 dark:text-blue-200 font-semibold">
+          <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" />
+          <span>
+            Interactive Draw.io Studio Inline Editor — Double-click any card or zone to edit text, drag nodes, or reroute connectors
+          </span>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          {lastSavedNotice && (
+            <span className="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-bold text-[10px]">
+              {lastSavedNotice}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={() => openDrawioInNewTab(xmlRef.current, title)}
+            className="px-2 py-0.5 rounded bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10.5px] cursor-pointer transition"
+          >
+            Full-Screen Draw.io Tab ↗
+          </button>
+        </div>
+      </div>
+      <div className="w-full relative" style={{ height: `${height}px` }}>
+        <iframe
+          ref={iframeRef}
+          title={`Interactive Draw.io Editor — ${title}`}
+          data-testid={`${testId}-iframe`}
+          src="https://embed.diagrams.net/?embed=1&ui=kennedy&spin=1&proto=json&saveAndExit=0&noSaveBtn=0&noExitBtn=1"
+          referrerPolicy="no-referrer"
+          className="w-full h-full border-0"
+          allow="clipboard-read; clipboard-write"
+        />
+      </div>
+    </div>
+  );
 }
 
 export async function fetchCloudViewerManifest(): Promise<CloudViewerManifestClient> {
@@ -307,6 +483,8 @@ export async function openDiagramInGoogleWorkspace(
         base64Pptx = (await exportDrawioToEditablePptx(params.xmlContent, params.title, normKey, {
           returnBase64: true,
           masterImageSrc: params.masterImageSrc,
+          includeArchCenterGuideSlides: true,
+          markdownContent: params.markdownContent,
         })) as string;
       } catch {
         // Server will compile from xmlContent fallback
@@ -418,9 +596,18 @@ export default function DiagramInlineSlidesPreviewer({
 }: DiagramInlineSlidesPreviewerProps) {
   const resolvedKeyInput =
     diagramKey || manifestKey || (templateId ? `BP-${String(templateId).padStart(2, '0')}` : 'BP-78');
-  const xmlContent = rawXmlContent ?? xml ?? '';
+  const propXmlContent = rawXmlContent ?? xml ?? '';
   const svgContent = rawSvgContent ?? svgString;
   const badgeText = rawBadgeText ?? badgeLabel;
+
+  const [liveXmlContent, setLiveXmlContent] = useState<string>(propXmlContent);
+  const [inlineRenderMode, setInlineRenderMode] = useState<'svg' | 'drawio'>('svg');
+
+  useEffect(() => {
+    setLiveXmlContent(propXmlContent);
+  }, [propXmlContent]);
+
+  const xmlContent = liveXmlContent || propXmlContent;
 
   const normKey = useMemo(() => normalizeClientManifestKey(resolvedKeyInput), [resolvedKeyInput]);
   const [manifest, setManifest] = useState<CloudViewerManifestClient>(globalManifestCache);
@@ -503,48 +690,48 @@ export default function DiagramInlineSlidesPreviewer({
     () => [
       {
         num: 1,
-        label: '1. Title',
+        label: '1. Architecture (#78)',
         editable: false,
-        desc: `Slide 1 of 6 — Executive Keynote Title & Architecture KPI Summary (${title})`,
+        desc: `Slide 1 of 6 — Cloud Architecture Center Overview & Official Hub-and-Spoke Diagram (${title})`,
         kind: 'title',
       },
       {
         num: 2,
-        label: '2. Executive TL;DR',
+        label: '2. Components & Flow',
         editable: false,
-        desc: 'Slide 2 of 6 — Google Material 3 Bento Card Grid: Production Problem, Architecture Solution & Verified Outcomes',
+        desc: 'Slide 2 of 6 — Architecture Component Table & 7-Step Agentic Flow (Steps 1–7, 4a–4d)',
         kind: 'tldr',
       },
       {
         num: 3,
-        label: '3. Fig 1: Master',
+        label: '3. Master Diagram',
         editable: false,
-        desc: `Slide 3 of 6 — 1:1 Master High-Resolution Architecture Blueprint (${title})`,
+        desc: `Slide 3 of 6 — 1:1 Master Google Cloud Architecture Center Hub-and-Spoke Diagram (${title})`,
         kind: 'master',
       },
       {
         num: 4,
-        label: '4. ★ Fig 1 Editable',
+        label: '4. ★ Editable Shapes',
         editable: true,
-        desc: `★ Slide 4 of 6 — 100% Decomposed Native Editable Diagram + Talking-Points Sidebar (${shapeCount} Editable Shapes • ${connectorCount} Connectors)`,
+        desc: `★ Slide 4 of 6 — 100% Decomposed Native Editable Diagram + 4-Zone Architecture Center Breakdown (${shapeCount} Shapes • ${connectorCount} Connectors)`,
         kind: 'decomposed-split',
       },
       {
         num: 5,
-        label: '5. ★ Full Editable Vector',
-        editable: true,
-        desc: `★ Slide 5 of 6 — Full-Bleed 100% Decomposed Native Editable Vector Canvas (${shapeCount} Shapes • ${connectorCount} Orthogonal Connectors)`,
+        label: '5. Products & Alternatives',
+        editable: false,
+        desc: `Slide 5 of 6 — Products Used, Multi-Tenant Use Case Benefits & Design Alternatives`,
         kind: 'decomposed-full',
       },
       {
         num: 6,
-        label: '6. Component Spec Table',
+        label: '6. Design Considerations',
         editable: false,
-        desc: `Slide 6 of 6 — Google Cloud Component Inventory & Technical Role Specification Matrix (${parsedGraph.namedVertices.length} Objects)`,
+        desc: `Slide 6 of 6 — Google Cloud Well-Architected Design Considerations (Security, Reliability, Operational Efficiency & Cost)`,
         kind: 'spec-table',
       },
     ],
-    [title, shapeCount, connectorCount, parsedGraph.namedVertices.length]
+    [title, shapeCount, connectorCount]
   );
 
   const activeSlide = slides[activeSlideIdx] || slides[0];
@@ -563,6 +750,8 @@ export default function DiagramInlineSlidesPreviewer({
             base64Pptx = (await exportDrawioToEditablePptx(xmlContent, title, normKey, {
               returnBase64: true,
               masterImageSrc,
+              includeArchCenterGuideSlides: true,
+              markdownContent,
             })) as string;
           }
           await fetch('/api/google-workspace/open', {
@@ -574,6 +763,7 @@ export default function DiagramInlineSlidesPreviewer({
               mode: 'slides',
               base64Pptx,
               xmlContent,
+              markdownContent,
               masterImageSrc,
             }),
           });
@@ -660,6 +850,8 @@ export default function DiagramInlineSlidesPreviewer({
     try {
       await exportDrawioToEditablePptx(xmlContent, title, normKey, {
         masterImageSrc,
+        includeArchCenterGuideSlides: true,
+        markdownContent,
       });
     } finally {
       setIsDownloadingPptx(false);
@@ -698,7 +890,8 @@ export default function DiagramInlineSlidesPreviewer({
   };
 
   /**
-   * Renders the 16:9 Google Cloud Next '26 Slide Canvas for any slide (1..6)
+   * Renders the 16:9 Google Cloud Architecture Center Light-Theme Slide Canvas (Rule 54)
+   * matching https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system?hl=en
    */
   const renderSlideCanvasContent = (slide: SlideDescriptor) => {
     const topRibbon = (
@@ -711,59 +904,76 @@ export default function DiagramInlineSlidesPreviewer({
     );
 
     const slideHeader = (kicker: string, rightPill: string) => (
-      <div className="px-4 py-2 bg-[#F8FAFC] border-b border-[#DADCE0] flex items-center justify-between gap-2 shrink-0">
+      <div className="px-4 py-2 bg-[#F8F9FA] border-b border-[#DADCE0] flex items-center justify-between gap-2 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="px-2 py-0.5 rounded bg-[#E8F0FE] text-[#174EA6] font-extrabold text-[10px] uppercase tracking-wider shrink-0">
+          <span className="text-[10px] font-medium text-[#5F6368] shrink-0">
+            Home › Documentation › Cloud Architecture Center ›
+          </span>
+          <span className="px-2 py-0.5 rounded bg-[#E8F0FE] text-[#1967D2] font-bold text-[10px] shrink-0">
             {kicker}
           </span>
-          <span className="font-extrabold text-xs text-[#202124] truncate">{title}</span>
+          <span className="font-bold text-xs text-[#202124] truncate">{title}</span>
         </div>
-        <span className="text-[10px] font-mono font-bold text-[#1E8E3E] bg-[#E6F4EA] border border-[#CEEAD6] px-2 py-0.5 rounded-full shrink-0">
+        <span className="text-[10px] font-mono font-bold text-[#137333] bg-[#E6F4EA] border border-[#CEEAD6] px-2 py-0.5 rounded-full shrink-0">
           {rightPill}
         </span>
       </div>
     );
 
+    // Slide 1: Cloud Architecture Center Overview + Official #78 Hub-and-Spoke Diagram (100% Crisp Light Theme)
     if (slide.kind === 'title') {
       return (
-        <div className="w-full aspect-video bg-[#0B1426] text-white flex flex-col justify-between overflow-hidden select-none">
+        <div className="w-full aspect-video bg-white text-[#202124] flex flex-col justify-between overflow-hidden select-none">
           {topRibbon}
-          <div className="flex-1 p-5 md:p-6 grid grid-cols-12 gap-4 items-center min-h-0">
-            <div className="col-span-7 flex flex-col justify-between h-full space-y-3">
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-blue-500/20 border border-blue-400/40 text-[10px] font-extrabold uppercase tracking-wider text-blue-300">
-                  <span>GOOGLE CLOUD ARCHITECTURE DECK • {normKey}</span>
+          {slideHeader('Architecture Overview', 'Slide 1 / 6 • Last reviewed 2026-10-15 UTC')}
+          <div className="flex-1 p-4 md:p-5 grid grid-cols-12 gap-4 items-center min-h-0 bg-white">
+            <div className="col-span-5 flex flex-col justify-between h-full space-y-2.5">
+              <div className="space-y-1.5">
+                <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#E8F0FE] text-[#1967D2] text-[10px] font-semibold">
+                  <span>Cloud Architecture Center • {normKey}</span>
                 </div>
-                <h4 className="text-lg md:text-xl font-black text-white leading-tight line-clamp-2">
+                <h4 className="text-base md:text-lg font-normal text-[#202124] leading-snug line-clamp-2">
                   {title}
                 </h4>
-                <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
+                <p className="text-[11px] text-[#3C4043] line-clamp-3 leading-relaxed">
                   {subtitle ||
-                    '100% Native Editable Google Slides & PowerPoint Architecture Deck with Decomposed Vector Shapes, Connectors & Component Spec Matrix'}
+                    'Hub-and-spoke multi-tenant agentic AI architecture on Google Cloud using Vertex AI Agent Engine, Gemini models, Model Armor, Apigee, and VPC Service Controls.'}
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 pt-1">
-                <div className="p-2.5 rounded-xl bg-[#132238] border border-[#233858]">
-                  <div className="text-[10px] font-bold uppercase text-amber-400">Decomposed Vector Shapes</div>
-                  <div className="text-sm font-black text-white mt-0.5">
-                    {shapeCount} Editable Boxes &amp; Icons
+              <div className="grid grid-cols-2 gap-1.5 pt-1">
+                <div className="p-2 rounded border border-[#174EA6] bg-[#AECBFA]/35">
+                  <div className="text-[9.5px] font-bold text-[#174EA6]">Routing hub (#aecbfa)</div>
+                  <div className="text-[9px] text-[#202124] mt-0.5">
+                    Cloud Load Balancing • Cloud Run UI • Orchestrator Agent
                   </div>
                 </div>
-                <div className="p-2.5 rounded-xl bg-[#132238] border border-[#233858]">
-                  <div className="text-[10px] font-bold uppercase text-emerald-400">Orthogonal Connectors</div>
-                  <div className="text-sm font-black text-white mt-0.5">
-                    {connectorCount} Native Arrows
+                <div className="p-2 rounded border border-[#137333] bg-[#CEEAD6]/40">
+                  <div className="text-[9.5px] font-bold text-[#137333]">Governance hub (#ceead6)</div>
+                  <div className="text-[9px] text-[#202124] mt-0.5">
+                    Security Command Center • Cloud Logging • Apigee
+                  </div>
+                </div>
+                <div className="p-2 rounded border border-[#B06000] bg-[#FEEFC3]/45">
+                  <div className="text-[9.5px] font-bold text-[#B06000]">Left tenant spoke (#feefc3)</div>
+                  <div className="text-[9px] text-[#202124] mt-0.5">
+                    Domain Agent • Model Armor (4a/4c) • Gemini (4b) • MCP (4d)
+                  </div>
+                </div>
+                <div className="p-2 rounded border border-[#C5221F] bg-[#FAD2CF]/45">
+                  <div className="text-[9.5px] font-bold text-[#C5221F]">Right tenant spoke (#fad2cf)</div>
+                  <div className="text-[9px] text-[#202124] mt-0.5">
+                    Isolated VPC-SC • PAB Policy • Dedicated Data Sources
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="col-span-5 h-full flex flex-col justify-center">
-              <div className="w-full h-full max-h-[210px] rounded-xl bg-white p-2 border-2 border-blue-400/50 shadow-lg overflow-hidden flex items-center justify-center">
+            <div className="col-span-7 h-full flex flex-col justify-center">
+              <div className="w-full h-full max-h-[250px] rounded-lg bg-white p-2 border border-[#DADCE0] shadow-2xs overflow-hidden flex items-center justify-center">
                 {svgContent ? (
                   <div
-                    className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:max-h-[190px] [&>svg]:object-contain"
+                    className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:max-h-[234px] [&>svg]:object-contain"
                     dangerouslySetInnerHTML={{ __html: svgContent }}
                   />
                 ) : (
@@ -774,63 +984,98 @@ export default function DiagramInlineSlidesPreviewer({
               </div>
             </div>
           </div>
-          <div className="px-5 py-2 bg-[#080F1E] border-t border-[#233858] flex items-center justify-between text-[10px] text-slate-400">
-            <span>PromptCanvas Enterprise • Google Cloud Next &apos;26 Branded Slide Deck</span>
-            <span className="text-emerald-400 font-bold">Slide 1 / 6 • Click &ldquo;Edit in Slides&rdquo; to open in Google Slides</span>
+          <div className="px-4 py-1.5 bg-[#F8F9FA] border-t border-[#DADCE0] flex items-center justify-between text-[10px] text-[#5F6368]">
+            <span>Google Cloud Architecture Center • Official Hub-and-Spoke Template (#78)</span>
+            <span className="text-[#1967D2] font-semibold">
+              {shapeCount} Editable Vector Shapes • {connectorCount} Connectors • Click &ldquo;Edit in Slides&rdquo;
+            </span>
           </div>
         </div>
       );
     }
 
+    // Slide 2: Architecture Component Table & Agentic Flow (Steps 1–7, 4a–4d)
     if (slide.kind === 'tldr') {
-      const prob =
-        tldrStructured?.problem ||
-        `Traditional static cloud architectures for ${title} suffer from noisy-neighbor contention, unverified IAM boundaries, and brittle handoffs across distributed services.`;
-      const sol =
-        tldrStructured?.solution ||
-        `Implements a zoned Google Cloud reference architecture (${normKey}) with ${shapeCount} decomposed components, cryptographic identity propagation, and automated telemetry guardrails.`;
-      const out =
-        tldrStructured?.outcome ||
-        `Delivers deterministic security isolation, sub-second P95 orchestration latency, and 100% native editability across Google Slides, Google Docs, and Draw.io.`;
-
       return (
         <div className="w-full aspect-video bg-white text-[#202124] flex flex-col justify-between overflow-hidden select-none">
           {topRibbon}
-          {slideHeader('EXECUTIVE TL;DR & BENTO GRID', 'Slide 2 / 6 • Material 3 Bento')}
-          <div className="flex-1 p-4 grid grid-cols-3 gap-3 items-stretch min-h-0 bg-[#F8FAFC]">
-            <div className="rounded-xl bg-white border border-[#FAD2CF] border-t-4 border-t-[#D93025] p-3 flex flex-col justify-between shadow-2xs">
-              <div>
-                <span className="px-2 py-0.5 rounded bg-[#FCE8E6] text-[#C5221F] font-extrabold text-[10px] uppercase">
-                  1. Production Problem
-                </span>
-                <p className="text-[11px] text-[#3C4043] mt-2 leading-relaxed line-clamp-5">{prob}</p>
-              </div>
-              <div className="text-[10px] font-bold text-[#D93025] pt-2 border-t border-slate-100">
-                Zero-Trust Boundary Required
-              </div>
+          {slideHeader('Architecture Components & Agentic Flow', 'Slide 2 / 6 • Steps 1–7 (a–d)')}
+          <div className="flex-1 p-3.5 grid grid-cols-12 gap-3 items-stretch min-h-0 bg-white overflow-hidden">
+            <div className="col-span-7 border border-[#DADCE0] rounded-md overflow-hidden flex flex-col">
+              <table className="w-full border-collapse text-left text-[9.5px]">
+                <thead>
+                  <tr className="bg-[#F8F9FA] border-b border-[#DADCE0] text-[#202124]">
+                    <th className="py-1.5 px-2.5 font-semibold w-[30%] border-r border-[#DADCE0]">Component</th>
+                    <th className="py-1.5 px-2.5 font-semibold w-[70%]">Description</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#DADCE0] text-[#3C4043]">
+                  <tr>
+                    <td className="py-1.5 px-2.5 font-bold text-[#202124] border-r border-[#DADCE0] align-top">
+                      VPC Service Controls
+                    </td>
+                    <td className="py-1.5 px-2.5 align-top">
+                      Establishes a security perimeter around Google Cloud resources to mitigate data exfiltration risks.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-1.5 px-2.5 font-bold text-[#174EA6] border-r border-[#DADCE0] align-top">
+                      Routing hub
+                    </td>
+                    <td className="py-1.5 px-2.5 align-top">
+                      <strong>Cloud Load Balancing</strong> (entry point), <strong>Cloud Run</strong> (UI), and <strong>Orchestrator agent</strong> (Vertex AI Agent Engine).
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-1.5 px-2.5 font-bold text-[#137333] border-r border-[#DADCE0] align-top">
+                      Central governance &amp; security hub
+                    </td>
+                    <td className="py-1.5 px-2.5 align-top">
+                      <strong>Security Command Center</strong>, <strong>Cloud Logging &amp; Monitoring</strong>, and <strong>Apigee</strong> API management for shared MCP tools.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-1.5 px-2.5 font-bold text-[#202124] border-r border-[#DADCE0] align-top">
+                      Principal Access Boundary (PAB)
+                    </td>
+                    <td className="py-1.5 px-2.5 align-top">
+                      Enforces identity-centric boundary policies verifying principals only access authorized tenant spokes.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-1.5 px-2.5 font-bold text-[#B06000] border-r border-[#DADCE0] align-top">
+                      Tenant projects
+                    </td>
+                    <td className="py-1.5 px-2.5 align-top">
+                      <strong>Domain agent</strong>, <strong>Model Armor</strong>, <strong>Gemini models</strong>, <strong>MCP servers</strong> (Cloud Run), and isolated <strong>Data sources</strong>.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
-            <div className="rounded-xl bg-white border border-[#AECBFA] border-t-4 border-t-[#1A73E8] p-3 flex flex-col justify-between shadow-2xs">
+            <div className="col-span-5 border border-[#DADCE0] rounded-md p-2.5 bg-white flex flex-col justify-between overflow-hidden">
               <div>
-                <span className="px-2 py-0.5 rounded bg-[#E8F0FE] text-[#174EA6] font-extrabold text-[10px] uppercase">
-                  2. Architectural Solution
-                </span>
-                <p className="text-[11px] text-[#3C4043] mt-2 leading-relaxed line-clamp-5">{sol}</p>
-              </div>
-              <div className="text-[10px] font-bold text-[#1A73E8] pt-2 border-t border-slate-100">
-                {shapeCount} Nodes • {connectorCount} Connectors
-              </div>
-            </div>
-
-            <div className="rounded-xl bg-white border border-[#CEEAD6] border-t-4 border-t-[#1E8E3E] p-3 flex flex-col justify-between shadow-2xs">
-              <div>
-                <span className="px-2 py-0.5 rounded bg-[#E6F4EA] text-[#0D652D] font-extrabold text-[10px] uppercase">
-                  3. Verified Outcome
-                </span>
-                <p className="text-[11px] text-[#3C4043] mt-2 leading-relaxed line-clamp-5">{out}</p>
-              </div>
-              <div className="text-[10px] font-bold text-[#1E8E3E] pt-2 border-t border-slate-100">
-                100% Google Slides &amp; Docs Synced ✓
+                <div className="text-[11px] font-semibold text-[#202124] pb-1 border-b border-[#DADCE0]">
+                  Agentic flow (Steps 1–7)
+                </div>
+                <ol className="list-decimal pl-4 mt-1.5 space-y-1 text-[9px] text-[#3C4043] leading-snug">
+                  <li>User sends request to Cloud Run UI via Cloud Load Balancing.</li>
+                  <li>Cloud Run forwards request to Orchestrator agent on Agent Engine.</li>
+                  <li>Orchestrator evaluates identity and routes task to tenant Domain agent.</li>
+                  <li>
+                    Domain agent executes iterative reasoning loop:
+                    <ol type="a" className="list-[lower-alpha] pl-4 mt-0.5 space-y-0.5 text-[8.5px]">
+                      <li><strong>Prompt screening:</strong> Model Armor inspects prompt.</li>
+                      <li><strong>Reasoning:</strong> Invokes Gemini model in Vertex AI.</li>
+                      <li><strong>Response screening:</strong> Model Armor validates output.</li>
+                      <li><strong>Tool execution:</strong> Calls local MCP servers or Apigee.</li>
+                    </ol>
+                  </li>
+                  <li>Domain agent returns validated response to Orchestrator agent.</li>
+                  <li>Orchestrator formats and forwards response to Cloud Run UI.</li>
+                  <li>Cloud Run returns final response through Cloud Load Balancing.</li>
+                </ol>
               </div>
             </div>
           </div>
@@ -838,12 +1083,13 @@ export default function DiagramInlineSlidesPreviewer({
       );
     }
 
+    // Slide 3: 1:1 Master Architecture Blueprint (#78)
     if (slide.kind === 'master') {
       return (
         <div className="w-full aspect-video bg-white text-[#202124] flex flex-col justify-between overflow-hidden select-none">
           {topRibbon}
-          {slideHeader('1:1 MASTER ARCHITECTURE BLUEPRINT', `Slide 3 / 6 • High-Res Vector`)}
-          <div className="flex-1 p-2.5 bg-[#F8FAFC] flex items-center justify-center min-h-0 overflow-hidden">
+          {slideHeader('Architecture Diagram (#78)', `Slide 3 / 6 • High-Res Vector`)}
+          <div className="flex-1 p-2.5 bg-white flex items-center justify-center min-h-0 overflow-hidden">
             {svgContent ? (
               <div
                 className="w-full h-full flex items-center justify-center bg-white rounded-lg border border-[#DADCE0] p-2 [&>svg]:w-full [&>svg]:h-full [&>svg]:max-h-[260px] [&>svg]:object-contain"
@@ -859,24 +1105,18 @@ export default function DiagramInlineSlidesPreviewer({
       );
     }
 
-    if (slide.kind === 'decomposed-split' || slide.kind === 'decomposed-full') {
+    // Slide 4: Decomposed Native Editable Shapes
+    if (slide.kind === 'decomposed-split') {
       const sampleNodes = parsedGraph.namedVertices.slice(0, 12);
-      const isSplit = slide.kind === 'decomposed-split';
       return (
         <div className="w-full aspect-video bg-white text-[#202124] flex flex-col justify-between overflow-hidden select-none">
           {topRibbon}
           {slideHeader(
-            isSplit
-              ? '★ 100% DECOMPOSED NATIVE EDITABLE VECTOR CANVAS + INSIGHTS'
-              : '★ FULL-BLEED 100% DECOMPOSED NATIVE EDITABLE VECTOR SHAPES',
-            `★ ${shapeCount} Editable Shapes • ${connectorCount} Connectors`
+            '★ Decomposed Editable Vector Shapes',
+            `Slide 4 / 6 • ★ ${shapeCount} Shapes • ${connectorCount} Connectors`
           )}
-          <div className="flex-1 p-3 bg-[#F8FAFC] grid grid-cols-12 gap-3 min-h-0 overflow-hidden">
-            <div
-              className={`${
-                isSplit ? 'col-span-8' : 'col-span-12'
-              } bg-white rounded-xl border-2 border-dashed border-[#1E8E3E] p-2.5 flex flex-col justify-between overflow-hidden relative`}
-            >
+          <div className="flex-1 p-3 bg-white grid grid-cols-12 gap-3 min-h-0 overflow-hidden">
+            <div className="col-span-8 bg-white rounded-lg border-2 border-dashed border-[#1E8E3E] p-2.5 flex flex-col justify-between overflow-hidden relative">
               <div className="flex items-center justify-between gap-2 mb-1.5">
                 <span className="px-2 py-0.5 rounded bg-[#E6F4EA] text-[#0D652D] font-extrabold text-[9.5px]">
                   NATIVE POWERPOINT / GOOGLE SLIDES VECTOR SHAPES (EVERY BOX &amp; CONNECTOR CLICKABLE)
@@ -890,13 +1130,13 @@ export default function DiagramInlineSlidesPreviewer({
                 {sampleNodes.map((item, idx) => (
                   <div
                     key={item.cell.id || idx}
-                    className="p-1.5 rounded-lg border border-[#AECBFA] bg-[#F8FAFC] hover:border-[#1A73E8] transition flex flex-col justify-between h-full max-h-[68px] overflow-hidden"
+                    className="p-1.5 rounded border border-[#DADCE0] bg-[#F8F9FA] hover:border-[#1A73E8] transition flex flex-col justify-between h-full max-h-[68px] overflow-hidden"
                   >
                     <div className="flex items-center gap-1">
-                      <span className="w-3.5 h-3.5 rounded-full bg-[#1A73E8] text-white font-bold text-[8px] flex items-center justify-center shrink-0">
+                      <span className="w-3.5 h-3.5 rounded-full bg-[#174EA6] text-white font-bold text-[8px] flex items-center justify-center shrink-0">
                         {idx + 1}
                       </span>
-                      <span className="font-extrabold text-[9.5px] text-[#202124] truncate">
+                      <span className="font-bold text-[9.5px] text-[#202124] truncate">
                         {item.text.title}
                       </span>
                     </div>
@@ -908,70 +1148,150 @@ export default function DiagramInlineSlidesPreviewer({
               </div>
             </div>
 
-            {isSplit && (
-              <div className="col-span-4 flex flex-col justify-between gap-2 overflow-hidden">
-                <div className="p-2.5 rounded-xl bg-[#E8F0FE] border border-[#AECBFA] flex-1 flex flex-col justify-center">
-                  <div className="text-[10px] font-extrabold uppercase text-[#174EA6]">
-                    1. Native Shape Decomposition
-                  </div>
-                  <p className="text-[10px] text-[#202124] mt-1 leading-snug">
-                    Every Draw.io <code>&lt;mxCell&gt;</code> container, service card, badge, and arrow compiles into native Google Slides vector geometry.
-                  </p>
+            <div className="col-span-4 flex flex-col justify-between gap-2 overflow-hidden">
+              <div className="p-2.5 rounded-lg bg-[#E8F0FE] border border-[#AECBFA] flex-1 flex flex-col justify-center">
+                <div className="text-[10px] font-bold text-[#174EA6]">
+                  1. Official Hub-and-Spoke Zones
                 </div>
-                <div className="p-2.5 rounded-xl bg-[#E6F4EA] border border-[#CEEAD6] flex-1 flex flex-col justify-center">
-                  <div className="text-[10px] font-extrabold uppercase text-[#0D652D]">
-                    2. Orthogonal Connector Routing
-                  </div>
-                  <p className="text-[10px] text-[#202124] mt-1 leading-snug">
-                    All {connectorCount} connectors preserve 90-degree orthogonal waypoints and directional arrowheads.
-                  </p>
-                </div>
-                <div className="p-2.5 rounded-xl bg-[#FEF7E0] border border-[#FDE293] flex-1 flex flex-col justify-center">
-                  <div className="text-[10px] font-extrabold uppercase text-[#B06000]">
-                    3. 1-Click Google Slides Sync
-                  </div>
-                  <p className="text-[10px] text-[#202124] mt-1 leading-snug">
-                    Click <strong>Edit in Slides ↗</strong> to open this deck directly in Google Slides.
-                  </p>
-                </div>
+                <p className="text-[9.5px] text-[#202124] mt-1 leading-snug">
+                  Preserves <code>#1a73e8</code> Google Cloud frame, <code>#aecbfa</code> Routing hub, <code>#ceead6</code> Governance hub, and <code>#feefc3</code>/<code>#fad2cf</code> Tenant projects.
+                </p>
               </div>
-            )}
+              <div className="p-2.5 rounded-lg bg-[#E6F4EA] border border-[#CEEAD6] flex-1 flex flex-col justify-center">
+                <div className="text-[10px] font-bold text-[#0D652D]">
+                  2. Vertex-Bound Orthogonal Routing
+                </div>
+                <p className="text-[9.5px] text-[#202124] mt-1 leading-snug">
+                  All {connectorCount} connectors and circular badges <code>1</code>–<code>7</code> compile into native editable vector shapes.
+                </p>
+              </div>
+              <div className="p-2.5 rounded-lg bg-[#FEF7E0] border border-[#FDE293] flex-1 flex flex-col justify-center">
+                <div className="text-[10px] font-bold text-[#B06000]">
+                  3. 1-Click Google Slides Export
+                </div>
+                <p className="text-[9.5px] text-[#202124] mt-1 leading-snug">
+                  Click <strong>Edit in Slides ↗</strong> to open this 4-slide Cloud Architecture Center deck in Google Slides.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       );
     }
 
-    // Slide 6: Spec Table
-    const tableRows = parsedGraph.namedVertices.slice(0, 6);
+    // Slide 5: Products Used, Use Case & Design Alternatives
+    if (slide.kind === 'decomposed-full') {
+      return (
+        <div className="w-full aspect-video bg-white text-[#202124] flex flex-col justify-between overflow-hidden select-none">
+          {topRibbon}
+          {slideHeader('Products Used, Use Case & Design Alternatives', 'Slide 5 / 6 • Cloud Architecture Center')}
+          <div className="flex-1 p-3.5 bg-white grid grid-cols-3 gap-3 items-stretch min-h-0 overflow-hidden">
+            <div className="rounded-md border border-[#DADCE0] bg-white flex flex-col overflow-hidden">
+              <div className="px-3 py-1.5 bg-[#F8F9FA] border-b border-[#DADCE0] font-semibold text-[10.5px] text-[#202124]">
+                Products used
+              </div>
+              <ul className="p-2.5 pl-6 list-disc space-y-1 text-[9px] text-[#3C4043] leading-snug">
+                <li><strong className="text-[#1A73E8]">Vertex AI Agent Engine:</strong> Managed runtime for orchestrator &amp; domain agents.</li>
+                <li><strong className="text-[#1A73E8]">Vertex AI &amp; Gemini models:</strong> Multimodal reasoning &amp; tool calling.</li>
+                <li><strong className="text-[#1A73E8]">Model Armor:</strong> Prompt injection &amp; sensitive data screening.</li>
+                <li><strong className="text-[#1A73E8]">Cloud Run:</strong> Serverless UI &amp; tenant-local MCP servers.</li>
+                <li><strong className="text-[#1A73E8]">Apigee:</strong> Centralized API management for shared MCP tools.</li>
+                <li><strong className="text-[#1A73E8]">VPC Service Controls &amp; Cloud KMS:</strong> Perimeter &amp; CMEK isolation.</li>
+              </ul>
+            </div>
+
+            <div className="rounded-md border border-[#DADCE0] bg-white flex flex-col overflow-hidden">
+              <div className="px-3 py-1.5 bg-[#F8F9FA] border-b border-[#DADCE0] font-semibold text-[10.5px] text-[#202124]">
+                Use case &amp; benefits
+              </div>
+              <div className="p-2.5 space-y-1.5 text-[9px] text-[#3C4043] leading-snug">
+                <p>Multi-tenant enterprise agentic AI routing requests across isolated departments or SaaS tenants:</p>
+                <ul className="pl-4 list-disc space-y-1">
+                  <li><strong>Strict data isolation:</strong> Independent VPC-SC perimeters, IAM PAB policies, and CMEK keys per tenant.</li>
+                  <li><strong>Specialized agent knowledge:</strong> Domain agents connect only to authorized tenant MCP tools and data stores.</li>
+                  <li><strong>Reduced cross-domain risk:</strong> Prevents cross-tenant prompt leakage or lateral movement.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="rounded-md border border-[#DADCE0] bg-white flex flex-col overflow-hidden">
+              <div className="px-3 py-1.5 bg-[#F8F9FA] border-b border-[#DADCE0] font-semibold text-[10.5px] text-[#202124]">
+                Design alternatives
+              </div>
+              <ul className="p-2.5 pl-6 list-disc space-y-1.5 text-[9px] text-[#3C4043] leading-snug">
+                <li><strong>Private access deployment:</strong> Internal Application Load Balancer over Cloud VPN or Cloud Interconnect.</li>
+                <li><strong>Compute infrastructure:</strong> Vertex AI Agent Engine (managed sessions) vs. Cloud Run (stateless scale-to-zero) vs. GKE.</li>
+                <li><strong>Model Context Protocol (MCP) servers:</strong> Tenant-isolated Cloud Run services vs. shared Apigee API proxy.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Slide 6: Design Considerations (Google Cloud Well-Architected Framework)
     return (
       <div className="w-full aspect-video bg-white text-[#202124] flex flex-col justify-between overflow-hidden select-none">
         {topRibbon}
-        {slideHeader('COMPONENT & ROLE SPECIFICATION MATRIX', `Slide 6 / 6 • ${parsedGraph.namedVertices.length} Components`)}
-        <div className="flex-1 p-3 bg-[#F8FAFC] overflow-hidden">
-          <table className="w-full border-collapse text-left text-[10px] bg-white rounded-lg overflow-hidden border border-[#DADCE0]">
-            <thead>
-              <tr className="bg-[#174EA6] text-white">
-                <th className="py-1.5 px-2.5 font-bold w-16">ID</th>
-                <th className="py-1.5 px-2.5 font-bold w-48">Component Name</th>
-                <th className="py-1.5 px-2.5 font-bold">Architectural Role &amp; Technical Specification</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableRows.map((item, idx) => (
-                <tr key={item.cell.id || idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-[#F8FAFC]'}>
-                  <td className="py-1.5 px-2.5 border-t border-[#DADCE0] font-mono font-bold text-[#174EA6]">
-                    OBJ-{String(idx + 1).padStart(2, '0')}
+        {slideHeader('Design Considerations (Well-Architected Framework)', 'Slide 6 / 6 • Security, Reliability, Ops & Cost')}
+        <div className="flex-1 p-3.5 bg-white overflow-hidden">
+          <div className="border border-[#DADCE0] rounded-md overflow-hidden">
+            <table className="w-full border-collapse text-left text-[9.5px] bg-white">
+              <thead>
+                <tr className="bg-[#F8F9FA] border-b border-[#DADCE0] text-[#202124]">
+                  <th className="py-2 px-3 font-semibold w-44 border-r border-[#DADCE0]">Well-Architected Pillar</th>
+                  <th className="py-2 px-3 font-semibold w-48 border-r border-[#DADCE0]">Component</th>
+                  <th className="py-2 px-3 font-semibold">Design considerations and recommendations</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#DADCE0] text-[#3C4043]">
+                <tr>
+                  <td className="py-2 px-3 font-bold text-[#174EA6] border-r border-[#DADCE0] align-top">
+                    Security, privacy, and compliance
                   </td>
-                  <td className="py-1.5 px-2.5 border-t border-[#DADCE0] font-bold text-[#202124] truncate max-w-[180px]">
-                    {item.text.title}
+                  <td className="py-2 px-3 font-bold text-[#202124] border-r border-[#DADCE0] align-top">
+                    Agent Engine, Model Armor &amp; MCP servers
                   </td>
-                  <td className="py-1.5 px-2.5 border-t border-[#DADCE0] text-[#3C4043] truncate max-w-[360px]">
-                    {item.text.subtitle || 'Core Enterprise Google Cloud Architecture Node'}
+                  <td className="py-2 px-3 align-top">
+                    Enforce least-privilege IAM service accounts, Principal Access Boundary (PAB) policies, VPC Service Controls perimeters, and inline Model Armor prompt/response screening.
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+                <tr>
+                  <td className="py-2 px-3 font-bold text-[#137333] border-r border-[#DADCE0] align-top">
+                    Reliability
+                  </td>
+                  <td className="py-2 px-3 font-bold text-[#202124] border-r border-[#DADCE0] align-top">
+                    Vertex AI, Gemini &amp; Orchestrator agent
+                  </td>
+                  <td className="py-2 px-3 align-top">
+                    Use Provisioned Throughput for deterministic P95 latency, exponential backoff with jitter on tool calls, and graceful degradation when downstream MCP servers time out.
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 px-3 font-bold text-[#B06000] border-r border-[#DADCE0] align-top">
+                    Operational efficiency
+                  </td>
+                  <td className="py-2 px-3 font-bold text-[#202124] border-r border-[#DADCE0] align-top">
+                    Observability, IaC &amp; CI/CD pipelines
+                  </td>
+                  <td className="py-2 px-3 align-top">
+                    Propagate OpenTelemetry <code>tenant_id</code> attributes across all hops to Cloud Logging and BigQuery; provision tenant spokes declaratively using Terraform.
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 px-3 font-bold text-[#C5221F] border-r border-[#DADCE0] align-top">
+                    Cost optimization
+                  </td>
+                  <td className="py-2 px-3 font-bold text-[#202124] border-r border-[#DADCE0] align-top">
+                    Gemini models, Context caching &amp; Cloud Run
+                  </td>
+                  <td className="py-2 px-3 align-top">
+                    Route routine classification to Gemini 2.5 Flash and complex reasoning to Gemini 2.5 Pro; enable Vertex AI context caching and scale-to-zero Cloud Run MCP containers.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     );
@@ -1024,7 +1344,7 @@ export default function DiagramInlineSlidesPreviewer({
         {topDropdownOpen && (
           <div
             data-testid="inline-open-with-dropdown-menu"
-            className="absolute right-0 top-[calc(100%+6px)] w-72 bg-[#28292A] border border-[#444746] rounded-xl shadow-[0_14px_36px_rgba(0,0,0,0.65)] py-1.5 z-[120] text-left text-[#E8EAED]"
+            className="absolute right-0 top-[calc(100%+6px)] w-80 bg-[#28292A] border border-[#444746] rounded-xl shadow-[0_14px_36px_rgba(0,0,0,0.65)] py-1.5 z-[120] text-left text-[#E8EAED]"
           >
             <button
               type="button"
@@ -1032,11 +1352,11 @@ export default function DiagramInlineSlidesPreviewer({
               className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
             >
               <span>↗</span>
-              <span>Open in new tab (Google Slides)</span>
+              <span>Open in new tab (Google Slides — Diagram + Blog)</span>
             </button>
             <div className="h-px bg-[#444746] my-1" />
             <div className="px-3.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#9AA0A6]">
-              Google apps
+              Google Workspace &amp; Export
             </div>
             <button
               type="button"
@@ -1046,7 +1366,7 @@ export default function DiagramInlineSlidesPreviewer({
               <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#FBBC04] text-[#202124] font-black text-[10px] shrink-0">
                 S
               </span>
-              <span>Google Slides (100% Editable Deck)</span>
+              <span>Google Slides (Editable Diagram + Blog Content)</span>
             </button>
             <button
               type="button"
@@ -1056,7 +1376,7 @@ export default function DiagramInlineSlidesPreviewer({
               <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#4285F4] text-white font-black text-[10px] shrink-0">
                 D
               </span>
-              <span>Google Docs (Editable Spec + Figures)</span>
+              <span>Google Docs (Editable Blog Spec + Figures)</span>
             </button>
             <button
               type="button"
@@ -1066,7 +1386,7 @@ export default function DiagramInlineSlidesPreviewer({
               <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#EA4335] text-white font-black text-[8.5px] shrink-0">
                 PDF
               </span>
-              <span>PDF Document (Vector Slide Export)</span>
+              <span>PDF Document (Vector Slide + Blog Export)</span>
             </button>
             <button
               type="button"
@@ -1075,7 +1395,11 @@ export default function DiagramInlineSlidesPreviewer({
               className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
             >
               <span>⬇</span>
-              <span>{isDownloadingPptx ? 'Compiling .pptx...' : `Download .pptx (${normKey})`}</span>
+              <span>
+                {isDownloadingPptx
+                  ? 'Compiling Editable Diagram + Blog .pptx...'
+                  : `Download Editable Diagram + Blog (.pptx)`}
+              </span>
             </button>
             <div className="h-px bg-[#444746] my-1" />
             <div className="px-3.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#9AA0A6]">
@@ -1112,7 +1436,7 @@ export default function DiagramInlineSlidesPreviewer({
               className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium hover:bg-white/10 transition cursor-pointer"
             >
               <span>🔄</span>
-              <span>Force Re-Sync .pptx → Google Slides</span>
+              <span>Force Re-Sync Editable Diagram + Blog → Google Slides</span>
             </button>
           </div>
         )}
@@ -1138,12 +1462,61 @@ export default function DiagramInlineSlidesPreviewer({
                 {title}
               </strong>
             </div>
-            {headerActionButtons}
+            <div className="flex items-center gap-2 flex-wrap shrink-0">
+              {xmlContent && (
+                <>
+                  <div className="inline-flex rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-0.5">
+                    <button
+                      type="button"
+                      data-testid={`inline-figure-mode-svg-${normKey}`}
+                      onClick={() => setInlineRenderMode('svg')}
+                      className={`px-2 py-1 rounded-md text-[11px] font-bold cursor-pointer ${
+                        inlineRenderMode === 'svg'
+                          ? 'bg-[#1a73e8] text-white'
+                          : 'text-slate-600 dark:text-slate-300'
+                      }`}
+                    >
+                      🖼️ 1:1 Official SVG
+                    </button>
+                    <button
+                      type="button"
+                      data-testid={`inline-figure-mode-drawio-${normKey}`}
+                      onClick={() => setInlineRenderMode('drawio')}
+                      className={`px-2 py-1 rounded-md text-[11px] font-bold cursor-pointer ${
+                        inlineRenderMode === 'drawio'
+                          ? 'bg-[#1a73e8] text-white'
+                          : 'text-slate-600 dark:text-slate-300'
+                      }`}
+                    >
+                      ✏️ Edit Inline (Draw.io)
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    data-testid={`inline-figure-open-drawio-tab-${normKey}`}
+                    onClick={() => openDrawioInNewTab(xmlContent, title)}
+                    className="px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/50 border border-blue-300 dark:border-blue-700 text-[11px] font-bold text-blue-700 dark:text-blue-300 hover:border-blue-500 inline-flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>↗</span>
+                    <span>Open in Draw.io Tab ↗</span>
+                  </button>
+                </>
+              )}
+              {headerActionButtons}
+            </div>
           </div>
 
           {/* Full-Width Diagram Canvas (Zero Inline Slide Deck Box on Page UI) */}
           <div className="w-full bg-white overflow-hidden">
-            {renderRightDiagramPane ? (
+            {inlineRenderMode === 'drawio' && xmlContent ? (
+              <InteractiveDrawioInlineEditor
+                xml={xmlContent}
+                title={title}
+                height={600}
+                onXmlChange={setLiveXmlContent}
+                testId={`inline-figure-drawio-editor-${normKey}`}
+              />
+            ) : renderRightDiagramPane ? (
               renderRightDiagramPane()
             ) : svgContent ? (
               <div
@@ -1162,15 +1535,17 @@ export default function DiagramInlineSlidesPreviewer({
       {/* ===========================================================================
           3. SAME-SCREEN GMAIL ATTACHMENT OPENER CLOUD VIEWER MODAL (BLOGS 1:1 MATCH)
          =========================================================================== */}
-      {isCloudViewerOpen && (
-        <div
-          id="pc-cloud-viewer-modal"
-          data-testid="same-screen-cloud-viewer-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-label="PromptCanvas Cloud Viewer"
-          className="fixed inset-0 z-[200] bg-[#070A12]/95 backdrop-blur-md flex flex-col text-[#E8EAED]"
-        >
+      {isCloudViewerOpen &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            id="pc-cloud-viewer-modal"
+            data-testid="same-screen-cloud-viewer-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="PromptCanvas Cloud Viewer"
+            className="fixed inset-0 z-[200] bg-[#070A12]/95 backdrop-blur-md flex flex-col text-[#E8EAED]"
+          >
           {/* Top Gmail Attachment Opener Header Bar (#131314) */}
           <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-[#131314] border-b border-[#2D2E30] flex-wrap shrink-0">
             <div className="flex items-center gap-3 flex-wrap">
@@ -1573,8 +1948,9 @@ export default function DiagramInlineSlidesPreviewer({
               ))}
             </div>
           )}
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

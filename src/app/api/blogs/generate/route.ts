@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       useCaseTitle,
       useCasePrompt,
       domainId = 'enterprise',
-      templateId = '51',
+      templateId = '78',
       formatId = 'cloud-arch-center',
       authorName,
       authorRole,

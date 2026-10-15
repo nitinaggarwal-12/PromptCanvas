@@ -178,6 +178,10 @@ export function normalizeManifestKey(rawKey: string): string {
   if (['WS1', 'WS2', 'WS3', 'WS4', 'WS5', 'ALL'].includes(upper)) {
     return upper;
   }
+  const wsPrefixMatch = clean.match(/^(?:uc-geap-)?ws([1-5])(?:$|[-_.])/i);
+  if (wsPrefixMatch) {
+    return `WS${wsPrefixMatch[1]}`;
+  }
   const numMatch = clean.match(/^#?(\d{1,2})$/);
   if (numMatch) {
     return `BP-${numMatch[1].padStart(2, '0')}`;

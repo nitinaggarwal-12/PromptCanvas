@@ -139,6 +139,7 @@ export default function FullscreenDrawioEditorPage() {
           ref={iframeRef}
           title="Full-Screen Draw.io Bidirectional Editor"
           src="https://embed.diagrams.net/?embed=1&proto=json&spin=1&ui=kennedy&saveAndExit=1&noExitBtn=0"
+          referrerPolicy="no-referrer"
           className="w-full h-full border-0"
         />
       </div>

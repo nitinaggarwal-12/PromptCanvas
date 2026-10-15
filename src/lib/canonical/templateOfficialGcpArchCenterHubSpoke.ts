@@ -15,6 +15,7 @@
  */
 
 import officialAssetsRaw from './officialArchCenterAssets.json';
+import { resolveArchIconUri } from './workstreamTopologyRenderers';
 
 const OFFICIAL_ASSETS = officialAssetsRaw as Record<string, string>;
 
@@ -107,7 +108,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
   {
     id: 'ws1-multi-tenant-taxonomy-overview',
     badge: 'WORKSTREAM 1.1 BLUEPRINT',
-    title: 'GEAP Multi-Tenant Agentic AI Taxonomy: Pooled (Pattern A), Sovereign Silos (Pattern B) & Hybrid (Pattern C)',
+    title: 'Multi-Tenant Agentic AI Taxonomy: Pooled (Pattern A), Sovereign Silos (Pattern B) & Hybrid (Pattern C)',
     subtitle: 'B2B ISV SaaS Reference Architecture Expanding Google Cloud Architecture Center (Cymbal SaaS Serving FinVault & RetailStream)',
     topUserTitle: 'Competing B2B Tenants',
     topUserSub: 'FinVault (OIDC) & RetailStream (Entra)',
@@ -116,13 +117,13 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     outerWrapperLabel: 'Shared Control Plane & Multi-Tenant Governance Perimeter (80% Reusable Core + 20% Topology Delta)',
     innerWrapperLabel: 'VPC & 5-Hop Cryptographic Context Chain',
     routingHubTitle: 'Routing hub (Hop 1 & Hop 2 PEP/PDP)',
-    routingHubSub: 'Central ingress, OBO+DPoP & ARD catalog filter',
+    routingHubSub: 'Central ingress, OBO+DPoP & Discovery Engine Agent Catalog filter',
     routingCards: {
       topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor & IAP', sub: 'Strip Forged X-Tenant-ID' },
       midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Ingress Prompt Screen' },
       botLeft: { icon: 'iap_iam_shield', title: 'RFC 8693 OBO + DPoP', sub: 'Sender-Constrained JWT' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Load Balancing' },
-      botRight: { icon: 'cloud_run', title: 'Cloud Run', sub: 'Topology Router & ARD PDP' },
+      botRight: { icon: 'cloud_run', title: 'Cloud Run', sub: 'Topology Router & Agent Catalog PDP' },
       edgeTopLeft: ['Header & WAF', 'policies'],
       edgeMidLeft: ['Sanitize', 'prompt'],
       edgeBotLeft: ['OBO + DPoP', 'verification'],
@@ -134,7 +135,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     govCards: {
       top: { icon: 'security_command_center', title: 'Security Command', title2: 'Center', sub: 'Cross-Pattern Breach Alerts' },
       mid: { icon: 'iap_iam_shield', title: 'Central IAM & PAB', sub: 'Agent Identity (2LO/3LO)' },
-      bot: { icon: 'cloud_logging', title: 'Cloud Logging & BQ', sub: 'Zero-PII OTel & Chargeback' },
+      bot: { icon: 'bigquery_analytics', title: 'Cloud Logging & BQ', sub: 'Zero-PII OTel & Chargeback' },
     },
     midStep3Label: ['Route by tenant tier', '(Pool, Silo or PSC)'],
     midStep7Label: ['Sanitized response', 'with SDP redaction'],
@@ -143,11 +144,11 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     leftZoneTitle: 'Tenant Pool (Shared Runtime)',
     leftZoneSub: 'FinVault (8k Cap) & RetailStream (4k Cap)',
     leftCards: {
-      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Tenant NLCs & SDP PII' },
+      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Tenant Rai Filters & SDP PII' },
       llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: '90% Prefix Cache Savings' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Agent Runtime', sub: 'gVisor + temp:tenant_id' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'gVisor + temp:tenant_id' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: '2LO + 3LO OIDC/Entra' },
-      datastore: { icon: 'datastore_alloydb_bq', title: 'Shared AlloyDB', sub: 'Row-Level Security (RLS)' },
+      datastore: { icon: 'datastore_alloydb_bq', title: 'Shared AlloyDB', sub: 'FORCE Row-Level Security' },
       step4Label: 'Sanitize request',
       step6Label: 'Sanitize response',
       step5Label: ['Generates', 'response'],
@@ -158,11 +159,11 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     rightZoneTitle: 'Dedicated Sovereign Tenant Project',
     rightZoneSub: 'VPC-SC + IAM PAB + CMEK Kill-Switch + PSC',
     rightCards: {
-      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Sovereign Silo Guardrails' },
+      modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & Model Armor', sub: 'Sovereign Silo Guardrails' },
       llm: { icon: 'gemini_agent_platform', title: 'Gemini / Gemma 3', sub: 'Claude 3.7 or Private GKE' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Agent Runtime', sub: 'Dedicated Silo + Agent Alpha' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Dedicated Silo + Agent Alpha' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: 'Local Silo 3LO Connectors' },
-      datastore: { icon: 'datastore_alloydb_bq', title: 'CMEK Datastore', sub: 'AlloyDB, BQ & KMS 423 Lock' },
+      datastore: { icon: 'cloud_kms', title: 'CMEK Datastore', sub: 'AlloyDB, BQ & KMS 423 Lock' },
       ragLabel: ['Air-Gapped', 'Silo RAG'],
       toolLabel: ['CMEK-Encrypted', 'State & Tools'],
     },
@@ -201,7 +202,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     govCards: {
       top: { icon: 'security_command_center', title: 'Security Command', title2: 'Center', sub: 'Continuous Threat Detection' },
       mid: { icon: 'iap_iam_shield', title: 'Central IAM', sub: 'Auth Manager (2LO / 3LO)' },
-      bot: { icon: 'cloud_logging', title: 'Cloud Logging', sub: 'BigQuery OTel Audit Sink' },
+      bot: { icon: 'bigquery_analytics', title: 'Cloud Logging & BQ', sub: 'BigQuery OTel Audit Sink' },
     },
     midStep3Label: ['Route request', 'to tenant'],
     midStep7Label: ['Sanitized response', 'from tenant'],
@@ -210,9 +211,9 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     leftZoneTitle: 'Tenant A (FinVault Bank)',
     leftZoneSub: 'Tenant project • Enterprise Tier (Google OIDC)',
     leftCards: {
-      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Hop 4: Bank SDP & OCC NLC' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini & Claude', sub: 'Agent Platform (8k Budget)' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Agent Runtime', sub: 'Hop 3: Shared + Agent Alpha' },
+      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Hop 4: Bank SDP & FINRA Filter' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini & Claude', sub: 'Agent Engine (8k Budget)' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Hop 3: Shared + Agent Alpha' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: 'Hop 5: Workspace & Jira 3LO' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Datastore', sub: 'BigQuery, AlloyDB RLS, CMEK' },
       step4Label: 'Sanitize request',
@@ -225,11 +226,11 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     rightZoneTitle: 'Tenant B (RetailStream Corp)',
     rightZoneSub: 'Tenant project • Standard Tier (Entra ID)',
     rightCards: {
-      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Hop 4: PCI PAN SDP & NLC' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini', sub: 'Agent Platform (4k Cap)' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Agent Runtime', sub: 'Hop 3: Shared Diagnostic' },
+      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Hop 4: PCI PAN SDP & Filter' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini', sub: 'Agent Engine (4k Cap)' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Hop 3: Shared Diagnostic' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: 'Hop 5: SharePoint & SNOW' },
-      datastore: { icon: 'datastore_alloydb_bq', title: 'Datastore', sub: 'BigQuery, AlloyDB RLS, Redis' },
+      datastore: { icon: 'datastore_alloydb_bq', title: 'Datastore', sub: 'BigQuery, AlloyDB RLS, Valkey' },
       ragLabel: ['Secure', 'RAG'],
       toolLabel: ['Agent-tool', 'interaction'],
     },
@@ -249,16 +250,16 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     step7RightLabel: 'Response',
     outerWrapperLabel: 'Shared GCP Project: cymbal-pooled-saas-prod (Maximum Density Pooled SaaS)',
     innerWrapperLabel: 'Shared VPC • 5-Hop Cryptographic Context Chain',
-    routingHubTitle: 'Hop 1 & Hop 2: Edge PEP & GEAP Registry PDP',
-    routingHubSub: 'Header stripping, OBO+DPoP & ARD catalog pruning',
+    routingHubTitle: 'Hop 1 & Hop 2: Edge PEP & Agent Catalog PDP',
+    routingHubSub: 'Header stripping, OBO+DPoP & Discovery Engine Agent Catalog pruning',
     routingCards: {
       topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor WAF', sub: 'Strips Forged X-Tenant-ID' },
-      midLeft: { icon: 'model_armor', title: 'GEAP Registry PDP', sub: 'ARD Catalog Filter (403 Alpha)' },
+      midLeft: { icon: 'discovery_engine', title: 'Discovery Engine PDP', sub: 'Catalog Filter (403 Alpha)' },
       botLeft: { icon: 'iap_iam_shield', title: 'IAP + OBO Broker', sub: 'RFC 8693 OBO + DPoP (jkt)' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Load Balancing' },
       botRight: { icon: 'cloud_run', title: 'ADK Callback Gate', sub: 'before_agent_callback Prune' },
       edgeTopLeft: ['Strip header', 'X-Tenant-ID'],
-      edgeMidLeft: ['Filter ARD', 'catalog'],
+      edgeMidLeft: ['Filter Agent', 'Catalog'],
       edgeBotLeft: ['Mint OBO +', 'DPoP token'],
       step2Left: 'Request',
       step7Mid: 'Response',
@@ -267,8 +268,8 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     govHubTitle2: 'Cache & OTel Hub',
     govCards: {
       top: { icon: 'gemini_agent_platform', title: 'ContextCacheConfig', title2: '(90% COGS Save)', sub: '32k Shared Operator Prefix' },
-      mid: { icon: 'iap_iam_shield', title: 'Redis Rate Bulkhead', sub: '4k Standard vs 8k Enterprise' },
-      bot: { icon: 'cloud_logging', title: 'BigQuery OTel Sink', sub: 'Zero-PII Token Chargeback' },
+      mid: { icon: 'valkey_cache', title: 'Memorystore Valkey', sub: '4k Standard vs 8k Enterprise' },
+      bot: { icon: 'bigquery_analytics', title: 'BigQuery OTel Sink', sub: 'Zero-PII Token Chargeback' },
     },
     midStep3Label: ['Bind immutable', 'temp:tenant_id'],
     midStep7Label: ['SDP-redacted', 'tenant response'],
@@ -277,7 +278,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     leftZoneTitle: 'FinVault Logical Partition',
     leftZoneSub: 'Namespace: finvault:user:session (Envelope CMEK)',
     leftCards: {
-      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Masks IBAN/SWIFT + OCC NLC' },
+      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Masks IBAN/SWIFT + FINRA Policy' },
       llm: { icon: 'gemini_agent_platform', title: 'Gemini & Claude 3.7', sub: '8,000 Thinking-Token Budget' },
       runtime: { icon: 'gemini_agent_platform', title: 'Pooled gVisor Pod', sub: 'Shared + Private Agent Alpha' },
       mcp: { icon: 'mcp_servers', title: '3LO Workspace/Jira', sub: 'Drive, Calendar, Gmail, Jira' },
@@ -292,7 +293,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     rightZoneTitle: 'RetailStream Logical Partition',
     rightZoneSub: 'Namespace: retailstream:user:session (120 RPM Cap)',
     rightCards: {
-      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Masks Card PAN + PCI NLC' },
+      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Masks Card PAN + PCI Policy' },
       llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: 'Clamped to 4,000 Tokens' },
       runtime: { icon: 'gemini_agent_platform', title: 'Pooled gVisor Pod', sub: 'Shared Agent Only (403 Alpha)' },
       mcp: { icon: 'mcp_servers', title: '3LO Entra & SNOW', sub: 'Inline OAuth Consent Gate' },
@@ -320,10 +321,10 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     routingHubSub: 'Neutralizes header spoofing, Agent Alpha & MCP leaks',
     routingCards: {
       topLeft: { icon: 'load_balancer_cloud_armor', title: 'Vector 1: Header Strip', sub: 'Drops Forged X-Tenant-ID' },
-      midLeft: { icon: 'model_armor', title: 'Vector 2: Agent 403', sub: 'Blocks Retail -> Agent Alpha' },
+      midLeft: { icon: 'discovery_engine', title: 'Vector 2: Agent 403', sub: 'Blocks Retail -> Agent Alpha' },
       botLeft: { icon: 'iap_iam_shield', title: 'Vector 3: Tool Prune', sub: 'Prunes FinVault Jira MCP' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Armor Edge PEP' },
-      botRight: { icon: 'cloud_run', title: 'Hop 2 Registry PDP', sub: 'ARD Catalog + ADK Callback' },
+      botRight: { icon: 'cloud_run', title: 'Hop 2 Catalog PDP', sub: 'Discovery Catalog + ADK Callback' },
       edgeTopLeft: ['Strip spoofed', 'header'],
       edgeMidLeft: ['Return HTTP', '403 Forbidden'],
       edgeBotLeft: ['Prune 3LO', 'MCP tools'],
@@ -333,25 +334,25 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     govHubTitle: 'Hop 3 & 5 FinOps &',
     govHubTitle2: 'Audit Gates (Vectors 6 & 9)',
     govCards: {
-      top: { icon: 'security_command_center', title: 'Vector 6: Redis 429', title2: '& 4k Token Clamp', sub: 'Blocks 250 RPM Flood & 16k' },
+      top: { icon: 'valkey_cache', title: 'Vector 6: Valkey 429', title2: '& 4k Token Clamp', sub: 'Blocks 250 RPM Flood & 16k' },
       mid: { icon: 'iap_iam_shield', title: 'Vector 10: Inline 3LO', sub: 'HTTP 401 Entra OAuth Challenge' },
-      bot: { icon: 'cloud_logging', title: 'BigQuery OTel Audit', sub: 'Logs Every Blocked Vector' },
+      bot: { icon: 'bigquery_analytics', title: 'BigQuery OTel Audit', sub: 'Logs Every Blocked Vector' },
     },
     midStep3Label: ['Verified context', 'enters Hop 3–5'],
     midStep7Label: ['Zero cross-tenant', 'data/cache bleed'],
     midGovLabel: ['Real-time security', 'violation spans'],
-    leftBoundaryLabel: 'Hop 4 Guardrail Gates (Vectors 4, 5 & 8) • Prompt, NLC & SDP DLP',
-    leftZoneTitle: 'Model Armor & Semantic NLCs',
+    leftBoundaryLabel: 'Hop 4 Guardrail Gates (Vectors 4, 5 & 8) • Prompt, Safety Filter & SDP DLP',
+    leftZoneTitle: 'Model Armor & Safety Filters',
     leftZoneSub: 'Ingress Injection Screen & Egress SDP Redaction',
     leftCards: {
       modelArmor: { icon: 'model_armor', title: 'Vector 4: HTTP 400', sub: 'Blocks SQLi & Cache Dump' },
-      llm: { icon: 'gemini_agent_platform', title: 'Vector 5: HTTP 422', sub: 'Blocks OCC Escalation Suppress' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Agent Runtime', sub: 'Executes Only Clean Turns' },
-      mcp: { icon: 'mcp_servers', title: 'Vector 8: SDP Mask', sub: 'Redacts IBAN, SWIFT & PAN' },
+      llm: { icon: 'model_armor', title: 'Vector 5: HTTP 422', sub: 'Blocks FINRA Escalation Bypass' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Executes Only Clean Turns' },
+      mcp: { icon: 'iap_iam_shield', title: 'Vector 8: SDP Mask', sub: 'Redacts IBAN, SWIFT & PAN' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Zero Raw PII Egress', sub: '[REDACTED-FINVAULT-*]' },
       step4Label: 'Screen prompt',
       step6Label: 'Redact PII',
-      step5Label: ['Evaluate', 'NLC rules'],
+      step5Label: ['Evaluate', 'Safety rules'],
       ragLabel: ['DLP Egress', 'Filter'],
       toolLabel: ['Zero PII in', 'Completion'],
     },
@@ -359,10 +360,10 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     rightZoneTitle: 'Memory Bank, Skills & AlloyDB RLS',
     rightZoneSub: 'Cryptographic Namespace & Storage-Engine Isolation',
     rightCards: {
-      modelArmor: { icon: 'model_armor', title: 'Vector 7A: L4 Memory', sub: 'PermissionError on Cross-Read' },
-      llm: { icon: 'gemini_agent_platform', title: 'Vector 7B: GCS Skills', sub: 'Blocks gs://cymbal-skills-fv' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Vector 9: Prefix Cache', sub: 'READ_ONLY_IMMUTABLE_PREFIX' },
-      mcp: { icon: 'mcp_servers', title: 'Auth Manager Vault', sub: 'Tenant-Scoped OAuth Tokens' },
+      modelArmor: { icon: 'gemini_agent_platform', title: 'Vector 7A: L4 Memory', sub: 'PermissionError on Cross-Read' },
+      llm: { icon: 'cloud_logging', title: 'Vector 7B: GCS Skills', sub: 'Blocks gs://cymbal-skills-fv' },
+      runtime: { icon: 'valkey_cache', title: 'Vector 9: Prefix Cache', sub: 'READ_ONLY_IMMUTABLE_PREFIX' },
+      mcp: { icon: 'iap_iam_shield', title: 'Auth Manager Vault', sub: 'Tenant-Scoped OAuth Tokens' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Vector 7C: AlloyDB RLS', sub: '0 Cross-Tenant Rows Returned' },
       ragLabel: ['Isolated', 'Prefix Cache'],
       toolLabel: ['SET LOCAL', 'current_tenant'],
@@ -401,8 +402,8 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     govHubTitle2: 'Sovereign Security Hub',
     govCards: {
       top: { icon: 'security_command_center', title: 'Security Command', title2: 'Center', sub: 'VPC-SC & PAB Violation Feed' },
-      mid: { icon: 'iap_iam_shield', title: 'Cloud KMS / EKM Key', sub: 'Customer Kill-Switch (HTTP 423)' },
-      bot: { icon: 'cloud_logging', title: 'Silo Security Suite', sub: '6/6 Sovereign Tests PASS' },
+      mid: { icon: 'cloud_kms', title: 'Cloud KMS / EKM Key', sub: 'Customer Kill-Switch (HTTP 423)' },
+      bot: { icon: 'bigquery_analytics', title: 'Silo Security Suite', sub: '6/6 Sovereign Tests PASS' },
     },
     midStep3Label: ['Route to isolated', 'VPC-SC tenant project'],
     midStep7Label: ['Sovereign response', '(or HTTP 423 Locked)'],
@@ -411,11 +412,11 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     leftZoneTitle: 'Tenant A Silo (FinVault Bank)',
     leftZoneSub: 'Dedicated Project • CMEK: finvault-kr/agent-memory',
     leftCards: {
-      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Dedicated FinVault Template' },
+      modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & Model Armor', sub: 'Dedicated FinVault Perimeter' },
       llm: { icon: 'gemini_agent_platform', title: 'Gemma 3 (27B) GKE', sub: 'Air-Gapped vLLM + Claude 3.7' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Agent Runtime', sub: 'Dedicated Silo + Agent Alpha' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Dedicated Silo + Agent Alpha' },
       mcp: { icon: 'mcp_servers', title: 'Local Silo MCP', sub: 'Workspace & Jira (0 Egress)' },
-      datastore: { icon: 'datastore_alloydb_bq', title: 'CMEK Datastore', sub: 'Dedicated AlloyDB & Memory' },
+      datastore: { icon: 'cloud_kms', title: 'CMEK Datastore', sub: 'Dedicated AlloyDB & Memory' },
       step4Label: 'Sanitize request',
       step6Label: 'Sanitize response',
       step5Label: ['Air-gapped', 'inference'],
@@ -426,11 +427,11 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     rightZoneTitle: 'Tenant B Silo (RetailStream)',
     rightZoneSub: 'Dedicated Project • CMEK: retailstream-kr/memory',
     rightCards: {
-      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Dedicated Retail PCI Template' },
+      modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & Model Armor', sub: 'Dedicated Retail PCI Perimeter' },
       llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro PT', sub: 'Dedicated Provisioned Quota' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Agent Runtime', sub: 'Dedicated RetailStream Silo' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Dedicated RetailStream Silo' },
       mcp: { icon: 'mcp_servers', title: 'Local Silo MCP', sub: 'Entra SharePoint & SNOW' },
-      datastore: { icon: 'datastore_alloydb_bq', title: 'CMEK Datastore', sub: 'Dedicated AlloyDB & Memory' },
+      datastore: { icon: 'cloud_kms', title: 'CMEK Datastore', sub: 'Dedicated AlloyDB & Memory' },
       ragLabel: ['VPC-SC Bound', 'Secure RAG'],
       toolLabel: ['CMEK Kill-Switch', 'HTTP 423 Ready'],
     },
@@ -451,11 +452,11 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     outerWrapperLabel: 'Unified Hybrid Control Hub (cymbal-hybrid-hub-prod) + PSC Bridge to Sovereign Spokes',
     innerWrapperLabel: 'Hub VPC • Tenant-Aware Router & 3-Phase Live Tier Migrator',
     routingHubTitle: 'Unified Control Plane & Intelligent Router Hub',
-    routingHubSub: 'Firestore live routing table + Cross-Project GEAP Registry',
+    routingHubSub: 'Firestore live routing table + Cross-Project Agent Catalog',
     routingCards: {
       topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor & IAP', sub: 'Single SaaS URL + OBO/DPoP' },
-      midLeft: { icon: 'model_armor', title: 'Cross-Project ARD', sub: 'Federated GEAP Registry' },
-      botLeft: { icon: 'iap_iam_shield', title: 'Firestore Route Table', sub: 'Maps Tenant -> Pool or PSC' },
+      midLeft: { icon: 'discovery_engine', title: 'Cross-Project Catalog', sub: 'Federated Agent Catalog' },
+      botLeft: { icon: 'firestore_db', title: 'Firestore Route Table', sub: 'Maps Tenant -> Pool or PSC' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Load Balancing' },
       botRight: { icon: 'cloud_run', title: 'Cloud Run Router', sub: 'Tier Router & Live Migrator' },
       edgeTopLeft: ['Security', 'policies'],
@@ -467,9 +468,9 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     govHubTitle: '3-Phase Zero-Downtime',
     govHubTitle2: 'Tier Migration Engine',
     govCards: {
-      top: { icon: 'cloud_run', title: '1. SHADOW_SYNC', title2: '(0ms Lag Copy)', sub: 'Streams RLS & L4 Memory' },
-      mid: { icon: 'iap_iam_shield', title: '2. ATOMIC_CUTOVER', sub: 'Flips Firestore Route to PSC' },
-      bot: { icon: 'cloud_logging', title: '3. DRAIN_AND_VERIFY', sub: '0 Dropped Turns (4/4 PASS)' },
+      top: { icon: 'dms_migration', title: '1. SHADOW_SYNC', title2: '(0ms Lag DMS CDC)', sub: 'Streams RLS & L4 Memory' },
+      mid: { icon: 'firestore_db', title: '2. ATOMIC_CUTOVER', sub: 'Flips Firestore Route to PSC' },
+      bot: { icon: 'psc_bridge', title: '3. DRAIN_AND_VERIFY', sub: '0 Dropped Turns (4/4 PASS)' },
     },
     midStep3Label: ['Route Standard to Pool', 'or Enterprise via PSC'],
     midStep7Label: ['Seamless response', '(0 dropped sessions)'],
@@ -480,7 +481,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     leftCards: {
       modelArmor: { icon: 'model_armor', title: 'Shared Model Armor', sub: 'Multi-Tenant Prompt & SDP' },
       llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: '4,000 Thinking Cap + Cache' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Pooled Runtime', sub: 'Serves Standard SaaS Tier' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Serves Standard SaaS Tier' },
       mcp: { icon: 'mcp_servers', title: 'Pooled MCP Hub', sub: '2LO + Delegated 3LO Tools' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Shared AlloyDB RLS', sub: 'Source for Phase 1 Shadow Sync' },
       step4Label: 'Sanitize request',
@@ -493,11 +494,11 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     rightZoneTitle: 'Dedicated Enterprise PSC Spokes',
     rightZoneSub: 'psc://10.10.0.50 (FinVault) & psc://10.10.0.51 (Retail)',
     rightCards: {
-      modelArmor: { icon: 'model_armor', title: 'Spoke Model Armor', sub: 'Dedicated Spoke DLP & NLC' },
+      modelArmor: { icon: 'psc_bridge', title: 'PSC ServiceAttachment', sub: 'Unidirectional Spoke Ingress' },
       llm: { icon: 'gemini_agent_platform', title: 'Gemini & Claude 3.7', sub: 'Upgraded 8,000 Thinking Cap' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Spoke Runtime', sub: 'PSC ServiceAttachment Target' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Spoke Agent Engine', sub: 'PSC ServiceAttachment Target' },
       mcp: { icon: 'mcp_servers', title: 'Dedicated Spoke MCP', sub: 'Isolated Inside VPC-SC Spoke' },
-      datastore: { icon: 'datastore_alloydb_bq', title: 'CMEK Spoke AlloyDB', sub: 'Replicated State + CMEK Lock' },
+      datastore: { icon: 'cloud_kms', title: 'CMEK Spoke AlloyDB', sub: 'Replicated State + CMEK Lock' },
       ragLabel: ['Unidirectional', 'PSC Bridge'],
       toolLabel: ['CMEK-Encrypted', 'Spoke Storage'],
     },
@@ -516,18 +517,18 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     step1LeftLabel: 'Request',
     step7RightLabel: 'Response',
     outerWrapperLabel: 'The Multi-Tenant Agentic Triad: Security (Hops 1–5) • FinOps COGS (-84.7%) • Zero-PII Observability',
-    innerWrapperLabel: 'Unified GEAP & ADK 2.0 Reference Architecture (12/12 Forensic Audit • 20/20 Simulations PASS)',
+    innerWrapperLabel: 'Unified Vertex AI Agent Engine & Google ADK Reference Architecture (20/20 Simulations PASS)',
     routingHubTitle: 'Triad Pillar 1: Zero-Trust Cryptographic Security',
-    routingHubSub: '5-Hop Context Chain across Ingress, Registry & Runtime',
+    routingHubSub: '5-Hop Context Chain across Ingress, Catalog & Runtime',
     routingCards: {
       topLeft: { icon: 'load_balancer_cloud_armor', title: 'Hop 1: Edge PEP', sub: 'Header Strip + OBO + DPoP' },
-      midLeft: { icon: 'model_armor', title: 'Hop 4: Model Armor', sub: 'Injection 400 + NLC 422 + SDP' },
-      botLeft: { icon: 'iap_iam_shield', title: 'Hop 2: Registry PDP', sub: 'ARD Filter + ADK Tool Prune' },
+      midLeft: { icon: 'model_armor', title: 'Hop 4: Model Armor', sub: 'Injection 400 + Policy 422 + SDP' },
+      botLeft: { icon: 'discovery_engine', title: 'Hop 2: Catalog PDP', sub: 'Discovery Catalog + Tool Prune' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Global Anycast Ingress' },
       botRight: { icon: 'cloud_run', title: 'Architecture Selector', sub: 'Routes Pattern A, B or C' },
       edgeTopLeft: ['Verify OBO', '& DPoP'],
       edgeMidLeft: ['Screen &', 'redact PII'],
-      edgeBotLeft: ['Prune ARD', '& MCP tools'],
+      edgeBotLeft: ['Prune Catalog', '& MCP tools'],
       step2Left: 'Request',
       step7Mid: 'Response',
     },
@@ -535,8 +536,8 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     govHubTitle2: 'Preserving OTel & Chargeback',
     govCards: {
       top: { icon: 'security_command_center', title: 'Security Command', title2: 'Center', sub: 'Unified SIEM & Audit Lineage' },
-      mid: { icon: 'iap_iam_shield', title: '3 Chargeback Models', sub: 'Even, Proportional & Tiered' },
-      bot: { icon: 'cloud_logging', title: 'BigQuery OTel Sink', sub: 'Zero-PII Cryptographic Spans' },
+      mid: { icon: 'bigquery_analytics', title: '3 Chargeback Models', sub: 'Even, Proportional & Tiered' },
+      bot: { icon: 'bigquery_analytics', title: 'BigQuery OTel Sink', sub: 'Zero-PII Cryptographic Spans' },
     },
     midStep3Label: ['Dispatch to optimal', 'cost/security tier'],
     midStep7Label: ['Verified zero-bleed', 'agent completion'],
@@ -545,10 +546,10 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     leftZoneTitle: 'Pattern A: Pooled Unit Economics',
     leftZoneSub: 'Lowest COGS ($) • 84.7% Net Input Token Savings',
     leftCards: {
-      modelArmor: { icon: 'model_armor', title: 'Redis Rate Bulkhead', sub: '120 RPM Std / 600 RPM Ent' },
+      modelArmor: { icon: 'valkey_cache', title: 'Valkey Rate Bulkhead', sub: '120 RPM Std / 600 RPM Ent' },
       llm: { icon: 'gemini_agent_platform', title: 'ContextCacheConfig', sub: '90% Discount on 32k Prefix' },
       runtime: { icon: 'gemini_agent_platform', title: 'Thinking Budget Cap', sub: 'Clamps 4k Std vs 8k Ent' },
-      mcp: { icon: 'mcp_servers', title: '2LO & 3LO Auth Mgr', sub: 'Scoped Per-Tenant Vault' },
+      mcp: { icon: 'iap_iam_shield', title: '2LO & 3LO Auth Mgr', sub: 'Scoped Per-Tenant Vault' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'AlloyDB RLS & L1–L5', sub: 'Shared Storage Density' },
       step4Label: 'Check quota',
       step6Label: 'Log COGS',
@@ -560,11 +561,11 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     rightZoneTitle: 'Pattern B Silos & Pattern C PSC Spokes',
     rightZoneSub: 'Zero Blast Radius + Zero-Downtime Tier Promotion',
     rightCards: {
-      modelArmor: { icon: 'model_armor', title: 'VPC-SC & IAM PAB', sub: 'Hard Perimeter Isolation' },
+      modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & IAM PAB', sub: 'Hard Perimeter Isolation' },
       llm: { icon: 'gemini_agent_platform', title: 'Gemma 3 & Claude 3.7', sub: 'Air-Gapped GKE & Dedicated PT' },
-      runtime: { icon: 'gemini_agent_platform', title: 'PSC Spoke Runtime', sub: '3-Phase Live Tier Upgrade' },
+      runtime: { icon: 'psc_bridge', title: 'PSC Spoke Runtime', sub: '3-Phase Live Tier Upgrade' },
       mcp: { icon: 'mcp_servers', title: 'Dedicated Silo MCP', sub: 'Zero Cross-Project Egress' },
-      datastore: { icon: 'datastore_alloydb_bq', title: 'Cloud KMS CMEK Lock', sub: 'Instant HTTP 423 Kill-Switch' },
+      datastore: { icon: 'cloud_kms', title: 'Cloud KMS CMEK Lock', sub: 'Instant HTTP 423 Kill-Switch' },
       ragLabel: ['Private PSC', 'NAT Bridge'],
       toolLabel: ['Customer-Revocable', 'CMEK Keys'],
     },
@@ -590,9 +591,39 @@ export function buildOfficialArchCenterConfigForUseCase(
   workflowVariant: 'high-level' | 'ingestion' | 'search' = 'high-level'
 ): OfficialArchCenterBlueprintConfig {
   if (!useCase || useCase.id === 'uc-multi-tenant-agentic-saas') {
-    if (workflowVariant === 'ingestion') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[2]; // WS2.1 Pattern A
-    if (workflowVariant === 'search') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[4]; // WS3.1 Pattern B
+    if (workflowVariant === 'ingestion') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[1]; // WS1.3 5-Hop Context Chain
+    if (workflowVariant === 'search') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[2]; // WS2.1 Pattern A Pooled
     return OFFICIAL_ARCH_CENTER_BLUEPRINTS[0]; // WS1.1 Overview
+  }
+
+  if (useCase.id === 'uc-ws2-pattern-a-pooled') {
+    if (workflowVariant === 'ingestion') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[1]; // WS1.3 5-Hop Context Chain
+    if (workflowVariant === 'search') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[3]; // WS2.5 10-Point Breach Defense
+    return OFFICIAL_ARCH_CENTER_BLUEPRINTS[2]; // WS2.1 Pattern A Pooled
+  }
+
+  if (useCase.id === 'uc-ws2-breach-simulation') {
+    if (workflowVariant === 'ingestion') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[1]; // WS1.3 5-Hop Context Chain
+    if (workflowVariant === 'search') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[2]; // WS2.1 Pattern A Pooled
+    return OFFICIAL_ARCH_CENTER_BLUEPRINTS[3]; // WS2.5 10-Point Breach Defense
+  }
+
+  if (useCase.id === 'uc-ws3-pattern-b-sovereign-silos') {
+    if (workflowVariant === 'ingestion') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[1]; // WS1.3 5-Hop Context Chain
+    if (workflowVariant === 'search') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[3]; // WS2.5 10-Point Breach Defense
+    return OFFICIAL_ARCH_CENTER_BLUEPRINTS[4]; // WS3.1 Pattern B Sovereign Silos
+  }
+
+  if (useCase.id === 'uc-ws4-pattern-c-hybrid-psc') {
+    if (workflowVariant === 'ingestion') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[2]; // WS2.1 Pattern A Pooled
+    if (workflowVariant === 'search') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[4]; // WS3.1 Pattern B Sovereign Silos
+    return OFFICIAL_ARCH_CENTER_BLUEPRINTS[5]; // WS4.1 Pattern C Hybrid PSC
+  }
+
+  if (useCase.id === 'uc-ws5-decision-guide-triad') {
+    if (workflowVariant === 'ingestion') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[2]; // WS2.1 Pattern A Pooled
+    if (workflowVariant === 'search') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[5]; // WS4.1 Pattern C Hybrid PSC
+    return OFFICIAL_ARCH_CENTER_BLUEPRINTS[6]; // WS5 Capstone Decision Guide & Triad
   }
 
   if (useCase.id === 'uc-scalable-agent-engine') {
@@ -670,15 +701,21 @@ export function buildOfficialArchCenterConfigForUseCase(
   }
 
   if (useCase.id === 'uc-multimodal-graphrag') {
+    const wfTitleSuffix =
+      workflowVariant === 'ingestion'
+        ? ' — Sequential Multi-Agent Data Ingestion & Entity Extraction Flow'
+        : workflowVariant === 'search'
+        ? ' — Hybrid Spanner GraphRAG (ISO GQL + Vector RRF) & Action Flow'
+        : '';
     return {
       id: `arch-center-multimodal-graphrag-${workflowVariant}`,
-      badge: 'CLOUD ARCHITECTURE CENTER • REFERENCE GUIDE BLUEPRINT',
-      title: 'Agentic AI Multimodal GraphRAG & Resource Orchestration on Google Cloud',
+      badge: `CLOUD ARCHITECTURE CENTER • ${workflowVariant.toUpperCase()} BLUEPRINT (#78)`,
+      title: `Agentic AI Multimodal GraphRAG & Resource Orchestration on Google Cloud${wfTitleSuffix}`,
       subtitle: 'Unifying Vertex AI Gemini 2.5 Pro, Cloud Spanner Graph (ISO GQL), Vector Search 2.0, and ADK Multi-Agent Orchestration',
       topUserTitle: 'SRE & Operations Lead',
       topUserSub: 'Multimodal Incident Console',
-      step1LeftLabel: 'Incident Query',
-      step7RightLabel: 'Action Plan',
+      step1LeftLabel: workflowVariant === 'ingestion' ? 'Ingest Payload' : 'Incident Query',
+      step7RightLabel: workflowVariant === 'ingestion' ? 'Graph Upsert Receipt' : 'Action Plan',
       outerWrapperLabel: 'Google Cloud Production Perimeter (VPC Service Controls + Cloud KMS CMEK)',
       innerWrapperLabel: 'Shared VPC • Multimodal Ingestion, Hybrid GraphRAG & Remediation Mesh',
       routingHubTitle: 'Ingress, Guardrails & ADK Coordinator Hub',
@@ -741,16 +778,22 @@ export function buildOfficialArchCenterConfigForUseCase(
   const sub3 = useCase.subAgents?.[2] || { name: 'ActionExecutorAgent', role: 'Governed Tool Execution', tools: ['execute_workflow'] };
   const store1 = useCase.primaryDataStores?.[0] || 'Cloud Spanner Graph';
   const store2 = useCase.primaryDataStores?.[1] || 'BigQuery & AlloyDB';
+  const wfLabel =
+    workflowVariant === 'ingestion'
+      ? ' — Sequential Data Ingestion & MCP Pipeline'
+      : workflowVariant === 'search'
+      ? ' — Hybrid GraphRAG Search & Governed Action Flow'
+      : '';
 
   return {
     id: `arch-center-${useCase.id || 'custom'}-${workflowVariant}`,
-    badge: `GOOGLE CLOUD ARCHITECTURE CENTER • ${(useCase.domainName || 'ENTERPRISE').toUpperCase()}`,
-    title: useCase.title || 'Enterprise Multi-Agent Architecture on Google Cloud',
+    badge: `GOOGLE CLOUD ARCHITECTURE CENTER • ${(useCase.domainName || 'ENTERPRISE').toUpperCase()} (${workflowVariant.toUpperCase()} #78)`,
+    title: `${useCase.title || 'Enterprise Multi-Agent Architecture on Google Cloud'}${wfLabel}`,
     subtitle: useCase.subtitle || 'Production Reference Architecture with Vertex AI Agent Engine, Model Armor & MCP',
     topUserTitle: `${useCase.shortLabel || 'Enterprise'} Users`,
     topUserSub: 'OIDC / BeyondCorp Access',
-    step1LeftLabel: 'Request',
-    step7RightLabel: 'Response',
+    step1LeftLabel: workflowVariant === 'ingestion' ? 'Ingest Stream' : 'Request',
+    step7RightLabel: workflowVariant === 'ingestion' ? 'Upsert Receipt' : 'Response',
     outerWrapperLabel: `${useCase.domainName || 'Enterprise'} Governance Perimeter (VPC Service Controls + Cloud KMS CMEK)`,
     innerWrapperLabel: `VPC • ${useCase.rootAgentName || 'ADK Root Coordinator'} & 5-Hop Context Chain`,
     routingHubTitle: 'Routing & Policy Enforcement Hub (PEP/PDP)',
@@ -826,7 +869,7 @@ function renderArchCardSvg(params: {
   sub: string;
 }): string {
   const { x, y, w, h, iconKey, title, title2, sub } = params;
-  const iconDataUri = OFFICIAL_ASSETS[iconKey] || OFFICIAL_ASSETS.gemini_agent_platform;
+  const iconDataUri = resolveArchIconUri(iconKey, title, sub);
   const iconSize = 32;
   const iconX = x + 10;
   const iconY = y + Math.round((h - iconSize) / 2);
@@ -875,7 +918,8 @@ function renderStepCircleSvg(cx: number, cy: number, num: string): string {
 }
 
 /**
- * Compiles the standalone 1:1 SVG matching https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system
+ * Compiles the standalone 1:1 SVG matching workstream-specific Google Cloud topologies
+ * or the causal Hub-and-Spoke reference architecture.
  */
 export function compileOfficialArchCenterSvg(bp: OfficialArchCenterBlueprintConfig): string {
   const W = 1200;
@@ -980,6 +1024,7 @@ export function compileOfficialArchCenterSvg(bp: OfficialArchCenterBlueprintConf
   ${renderArchCardSvg({ x: 338, y: 1068, w: 214, h: 74, iconKey: lc.mcp.icon, title: lc.mcp.title, sub: lc.mcp.sub })}
   ${renderArchCardSvg({ x: 332, y: 1218, w: 224, h: 74, iconKey: lc.datastore.icon, title: lc.datastore.title, sub: lc.datastore.sub })}
 
+  <!-- Causal Top-to-Bottom Step Sequence: 4 (Sanitize Request) -> 5 (LLM Generate) -> 6 (Sanitize Output) -->
   ${renderStepCircleSvg(124, 976, '4')}
   <text x="152" y="981" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.step4Label)}</text>
 
@@ -987,8 +1032,8 @@ export function compileOfficialArchCenterSvg(bp: OfficialArchCenterBlueprintConf
   <text x="152" y="1029" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.step6Label)}</text>
 
   ${renderStepCircleSvg(124, 1214, '5')}
-  <text x="152" y="1208" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.step5Label[0])}</text>
-  <text x="152" y="1226" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.step5Label[1])}</text>
+  <text x="152" y="1210" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.step5Label[0])}</text>
+  <text x="152" y="1227" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.step5Label[1])}</text>
 
   <path d="M 304 910 L 319 910 L 319 946 L 332 946" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
   <path d="M 304 1146 L 319 1146 L 319 972 L 332 972" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
@@ -1054,7 +1099,7 @@ export function compileOfficialArchCenterSvg(bp: OfficialArchCenterBlueprintConf
 /**
  * Compiles 1:1 editable Draw.io XML (.drawio & .drawio.xml) matching the exact
  * Google Cloud Architecture Center Hub-and-Spoke layout with embedded base64 icons,
- * official Google Cloud wordmark, step badges, and deterministic waypoint edges.
+ * official Google Cloud wordmark, step badges, and pure coordinate-bound edges.
  */
 export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBlueprintConfig): string {
   const rc = bp.routingCards;
@@ -1062,8 +1107,11 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
   const lc = bp.leftCards;
   const sc = bp.rightCards;
 
-  const cells: string[] = [];
   const SVG_GUARD = '<svg width="0" height="0" style="display:none;"></svg>';
+  const bgCells: string[] = [];
+  const edgeCells: string[] = [];
+  const fgCells: string[] = [];
+  const vertexBounds = new Map<string, { x: number; y: number; w: number; h: number }>();
 
   const addVertex = (
     id: string,
@@ -1072,11 +1120,16 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     w: number,
     h: number,
     rawHtmlValue: string,
-    style: string
+    style: string,
+    isBackground = false
   ) => {
-    cells.push(
-      `        <mxCell id="${id}" value="${escXml(rawHtmlValue)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
-    );
+    vertexBounds.set(id, { x, y, w, h });
+    const cellXml = `        <mxCell id="${id}" value="${escXml(rawHtmlValue)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`;
+    if (isBackground) {
+      bgCells.push(cellXml);
+    } else {
+      fgCells.push(cellXml);
+    }
     return id;
   };
 
@@ -1085,9 +1138,9 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     srcPt: [number, number],
     tgtPt: [number, number],
     waypoints: Array<[number, number]> = [],
-    opts: { dashed?: boolean; startArrow?: boolean; endArrow?: boolean } = {}
+    opts: { dashed?: boolean; startArrow?: boolean; endArrow?: boolean; source?: string; target?: string } = {}
   ) => {
-    const { dashed = false, startArrow = false, endArrow = true } = opts;
+    const { dashed = false, startArrow = false, endArrow = true, source, target } = opts;
     const styleParts = [
       'edgeStyle=none',
       'rounded=0',
@@ -1098,12 +1151,26 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
       endArrow ? 'endArrow=open;endFill=0;endSize=7' : 'endArrow=none',
     ];
     if (dashed) styleParts.push('dashed=1;dashPattern=3 3');
+    const sBox = source ? vertexBounds.get(source) : undefined;
+    const tBox = target ? vertexBounds.get(target) : undefined;
+    if (sBox) {
+      const exitX = Number(((srcPt[0] - sBox.x) / sBox.w).toFixed(4));
+      const exitY = Number(((srcPt[1] - sBox.y) / sBox.h).toFixed(4));
+      styleParts.push(`exitX=${exitX}`, `exitY=${exitY}`, 'exitDx=0', 'exitDy=0', 'exitPerimeter=0');
+    }
+    if (tBox) {
+      const entryX = Number(((tgtPt[0] - tBox.x) / tBox.w).toFixed(4));
+      const entryY = Number(((tgtPt[1] - tBox.y) / tBox.h).toFixed(4));
+      styleParts.push(`entryX=${entryX}`, `entryY=${entryY}`, 'entryDx=0', 'entryDy=0', 'entryPerimeter=0');
+    }
     const ptsXml =
       waypoints.length > 0
         ? `<Array as="points">${waypoints.map((p) => `<mxPoint x="${p[0]}" y="${p[1]}"/>`).join('')}</Array>`
         : '';
-    cells.push(
-      `        <mxCell id="${id}" value="" style="${styleParts.join(';')};" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="${srcPt[0]}" y="${srcPt[1]}" as="sourcePoint"/><mxPoint x="${tgtPt[0]}" y="${tgtPt[1]}" as="targetPoint"/>${ptsXml}</mxGeometry></mxCell>`
+    const srcAttr = source ? ` source="${source}"` : '';
+    const tgtAttr = target ? ` target="${target}"` : '';
+    edgeCells.push(
+      `        <mxCell id="${id}" value="" style="${styleParts.join(';')};" edge="1" parent="1"${srcAttr}${tgtAttr}><mxGeometry relative="1" as="geometry"><mxPoint x="${srcPt[0]}" y="${srcPt[1]}" as="sourcePoint"/><mxPoint x="${tgtPt[0]}" y="${tgtPt[1]}" as="targetPoint"/>${ptsXml}</mxGeometry></mxCell>`
     );
   };
 
@@ -1115,7 +1182,8 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     1160,
     40,
     `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.35;"><b style="font-size:12.5px;color:#174ea6;">[${bp.badge}] ${bp.title}</b><br/><span style="font-size:11px;color:#5f6368;">${bp.subtitle}</span></div>`,
-    'text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=0;spacingTop=0;'
+    'text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=0;spacingTop=0;',
+    true
   );
 
   // 2. Top External User / Tenant Box (with User Silhouette Icon)
@@ -1125,8 +1193,9 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     52,
     250,
     86,
-    `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-family:'Google Sans',Roboto,Arial,sans-serif;text-align:center;"><img src="${USER_SILHOUETTE_DATA_URI}" width="36" height="28"/><b style="font-size:13px;color:#202124;">${bp.topUserTitle}</b><span style="font-size:10.5px;color:#3c4043;">${bp.topUserSub}</span></div>`,
-    'rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=2;align=center;verticalAlign=middle;'
+    `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-family:'Google Sans',Roboto,Arial,sans-serif;text-align:center;"><img src="${USER_SILHOUETTE_DATA_URI}" width="36" height="28"/><b style="font-size:13px;color:#202124;">${bp.topUserTitle}</b><br/><span style="font-size:10.5px;color:#3c4043;">${bp.topUserSub}</span></div>`,
+    'rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=2;align=center;verticalAlign=middle;',
+    true
   );
 
   // 3. Outer Google Cloud Frame (#1a73e8) + Official White Wordmark
@@ -1137,7 +1206,8 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     1160,
     1172,
     '',
-    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#1a73e8;strokeColor=#202124;strokeWidth=1.2;'
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#1a73e8;strokeColor=#202124;strokeWidth=1.2;',
+    true
   );
   addVertex(
     'gcp_wordmark',
@@ -1146,7 +1216,8 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     150,
     30,
     `<img src="${OFFICIAL_ASSETS.gcp_wordmark_white}" width="138" height="25"/>`,
-    'text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;'
+    'text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;',
+    true
   );
 
   const fitHtmlLabel = (text: string, maxW: number, fontSizePx = 12.5) => {
@@ -1167,7 +1238,8 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     1128,
     1104,
     fitHtmlLabel(bp.outerWrapperLabel, 495, 12.5),
-    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;'
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;',
+    true
   );
   addVertex(
     'wrapper_vpc',
@@ -1176,7 +1248,8 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     1096,
     1050,
     fitHtmlLabel(bp.innerWrapperLabel, 480, 12.5),
-    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;'
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;',
+    true
   );
 
   // 5. Four Semantic Hub & Spoke Zones (#aecbfa, #ceead6, #feefc3, #fad2cf)
@@ -1187,7 +1260,8 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     664,
     330,
     `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;">${bp.routingHubTitle}</b><br/><span style="font-size:12.5px;color:#202124;">${bp.routingHubSub}</span></div>`,
-    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#aecbfa;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;'
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#aecbfa;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;',
+    true
   );
   addVertex(
     'zone_gov_hub',
@@ -1196,7 +1270,8 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     328,
     320,
     `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;">${bp.govHubTitle}<br/>${bp.govHubTitle2}</b></div>`,
-    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ceead6;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;'
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ceead6;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;',
+    true
   );
 
   addVertex(
@@ -1206,7 +1281,8 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     516,
     560,
     fitHtmlLabel(bp.leftBoundaryLabel, 344, 12),
-    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;'
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;',
+    true
   );
   addVertex(
     'zone_left_tenant',
@@ -1215,7 +1291,8 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     484,
     508,
     `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;">${bp.leftZoneTitle}</b><br/><span style="font-size:12.5px;color:#202124;">${bp.leftZoneSub}</span></div>`,
-    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#feefc3;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;'
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#feefc3;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;',
+    true
   );
 
   addVertex(
@@ -1225,7 +1302,8 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     516,
     560,
     fitHtmlLabel(bp.rightBoundaryLabel, 344, 12),
-    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;'
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;',
+    true
   );
   addVertex(
     'zone_right_tenant',
@@ -1234,44 +1312,13 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     484,
     508,
     `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;">${bp.rightZoneTitle}</b><br/><span style="font-size:12.5px;color:#202124;">${bp.rightZoneSub}</span></div>`,
-    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#fad2cf;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;'
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#fad2cf;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;',
+    true
   );
 
-  // 6. Emit Deterministic Orthogonal Edges BEFORE Cards & Step Badges
-  addPointEdge('e_user_to_alb', [566, 138], [566, 430], [], { endArrow: true });
-  addPointEdge('e_alb_to_user', [612, 432], [612, 140], [], { endArrow: true });
-
-  addPointEdge('e_alb_to_top_left', [450, 470], [294, 431], [[424, 470], [424, 431]], { startArrow: true, endArrow: true });
-  addPointEdge('e_alb_to_mid_left', [424, 470], [294, 515], [[424, 515]], { startArrow: false, endArrow: true });
-
-  addPointEdge('e_iap_to_cloudrun', [294, 613], [474, 613], [], { startArrow: true, endArrow: true });
-
-  addPointEdge('e_alb_to_crun', [566, 508], [566, 578], [], { endArrow: true });
-  addPointEdge('e_crun_to_alb', [612, 580], [612, 510], [], { endArrow: true });
-
-  addPointEdge('e_trunk_up_crun', [586, 744], [586, 648], [], { endArrow: true });
-  addPointEdge('e_trunk_spokes', [444, 922], [988, 922], [[444, 744], [988, 744]], { startArrow: true, endArrow: true });
-
-  addPointEdge('e_gov_dashed_main', [328, 770], [962, 668], [[328, 730], [962, 730]], { dashed: true, startArrow: true, endArrow: true });
-  addPointEdge('e_gov_dashed_right', [872, 730], [872, 770], [], { dashed: true, startArrow: false, endArrow: true });
-
-  addPointEdge('e_left_ma_run', [304, 910], [332, 946], [[319, 910], [319, 946]], { startArrow: true, endArrow: true });
-  addPointEdge('e_left_llm_run', [304, 1146], [332, 972], [[319, 1146], [319, 972]], { startArrow: true, endArrow: true });
-  addPointEdge('e_left_mcp_run_bot', [444, 1068], [444, 1054], [], { endArrow: false });
-  addPointEdge('e_left_mcp_run_top', [444, 1014], [444, 1000], [], { endArrow: true });
-  addPointEdge('e_left_db_mcp_bot', [444, 1218], [444, 1204], [], { endArrow: false });
-  addPointEdge('e_left_db_mcp_top', [444, 1158], [444, 1144], [], { endArrow: true });
-
-  addPointEdge('e_right_ma_run', [848, 910], [876, 946], [[863, 910], [863, 946]], { startArrow: true, endArrow: true });
-  addPointEdge('e_right_llm_run', [848, 1012], [876, 972], [[863, 1012], [863, 972]], { startArrow: true, endArrow: true });
-  addPointEdge('e_right_mcp_run_bot', [988, 1068], [988, 1054], [], { endArrow: false });
-  addPointEdge('e_right_mcp_run_top', [988, 1014], [988, 1000], [], { endArrow: true });
-  addPointEdge('e_right_db_mcp_bot', [988, 1218], [988, 1204], [], { endArrow: false });
-  addPointEdge('e_right_db_mcp_top', [988, 1158], [988, 1144], [], { endArrow: true });
-
-  // 7. Helper to add Official Architecture Center Card with Embedded Base64 Icon
+  // 6. Helper to add Official Architecture Center Card with Resolved Distinct Service Icon
   const addArchCard = (id: string, x: number, y: number, w: number, h: number, cardObj: OfficialArchCardItem) => {
-    const iconUri = OFFICIAL_ASSETS[cardObj.icon] || OFFICIAL_ASSETS.gemini_agent_platform;
+    const iconUri = resolveArchIconUri(cardObj.icon, cardObj.title, cardObj.sub);
     const titleHtml = cardObj.title2
       ? `<b style="font-size:12.5px;color:#202124;">${cardObj.title}<br/>${cardObj.title2}</b>`
       : `<b style="font-size:12.5px;color:#202124;">${cardObj.title}</b>`;
@@ -1316,13 +1363,22 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
   addArchCard('card_sc_mcp', 882, 1068, 214, 74, sc.mcp);
   addArchCard('card_sc_db', 876, 1218, 224, 74, sc.datastore);
 
-  // 8. Royal-Blue Numbered Step Badges (#174ea6) & Callout Labels
+  // 7. Royal-Blue Numbered Step Badges (#174ea6) & Callout Labels
   const badgeStyle =
-    'ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#174ea6;strokeColor=#174ea6;fontColor=#ffffff;fontStyle=1;fontSize=15;align=center;verticalAlign=middle;';
+    'ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#174ea6;strokeColor=#174ea6;fontColor=#ffffff;fontStyle=1;fontSize=14;align=center;verticalAlign=middle;';
   const addStepBadge = (id: string, cx: number, cy: number, num: string) =>
-    addVertex(id, cx - 20, cy - 20, 40, 40, `${SVG_GUARD}<b>${num}</b>`, badgeStyle);
+    addVertex(id, cx - 17, cy - 17, 34, 34, `${SVG_GUARD}<b>${num}</b>`, badgeStyle);
 
-  const addCalloutText = (id: string, x: number, y: number, w: number, h: number, lines: string[], align = 'left') => {
+  const addCalloutText = (
+    id: string,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    lines: string[],
+    align = 'left',
+    fillColor = 'none'
+  ) => {
     const html = `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;font-size:12.5px;color:#202124;line-height:1.25;">${lines.join('<br/>')}</div>`;
     return addVertex(
       id,
@@ -1331,42 +1387,76 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
       w,
       h,
       html,
-      `text;html=1;strokeColor=none;fillColor=none;align=${align};verticalAlign=middle;`
+      `text;html=1;strokeColor=none;fillColor=${fillColor};align=${align};verticalAlign=middle;`
     );
   };
 
   addStepBadge('step_1_top', 566, 180, '1');
-  addCalloutText('lbl_step1_top', 450, 166, 90, 28, [bp.step1LeftLabel], 'right');
+  addCalloutText('lbl_step1_top', 450, 166, 92, 28, [bp.step1LeftLabel], 'right', '#ffffff');
   addStepBadge('step_7_top', 612, 180, '7');
-  addCalloutText('lbl_step7_top', 636, 166, 100, 28, [bp.step7RightLabel], 'left');
+  addCalloutText('lbl_step7_top', 634, 166, 102, 28, [bp.step7RightLabel], 'left', '#ffffff');
 
-  addCalloutText('lbl_rc_top', 300, 392, 118, 36, rc.edgeTopLeft, 'center');
-  addCalloutText('lbl_rc_mid', 300, 520, 118, 36, rc.edgeMidLeft, 'center');
-  addCalloutText('lbl_rc_bot', 306, 574, 156, 36, rc.edgeBotLeft, 'center');
+  addCalloutText('lbl_rc_top', 300, 386, 118, 34, rc.edgeTopLeft, 'center', '#aecbfa');
+  addCalloutText('lbl_rc_mid', 300, 524, 118, 34, rc.edgeMidLeft, 'center', '#aecbfa');
+  addCalloutText('lbl_rc_bot', 306, 568, 156, 34, rc.edgeBotLeft, 'center', '#aecbfa');
 
   addStepBadge('step_2_mid', 566, 543, '2');
-  addCalloutText('lbl_step2_mid', 450, 529, 90, 28, [rc.step2Left], 'right');
+  addCalloutText('lbl_step2_mid', 450, 529, 92, 28, [rc.step2Left], 'right', '#aecbfa');
   addStepBadge('step_7_mid', 612, 543, '7');
-  addCalloutText('lbl_step7_mid', 636, 529, 100, 28, [rc.step7Mid], 'left');
+  addCalloutText('lbl_step7_mid', 634, 529, 102, 28, [rc.step7Mid], 'left', '#aecbfa');
 
-  addStepBadge('step_3_trunk', 404, 700, '3');
-  addCalloutText('lbl_step3_trunk', 428, 680, 152, 40, bp.midStep3Label, 'left');
-  addStepBadge('step_7_trunk', 616, 700, '7');
-  addCalloutText('lbl_step7_trunk', 640, 680, 168, 40, bp.midStep7Label, 'left');
-  addCalloutText('lbl_gov_trunk', 968, 672, 175, 54, bp.midGovLabel, 'left');
+  addStepBadge('step_3_trunk', 404, 698, '3');
+  addCalloutText('lbl_step3_trunk', 426, 678, 154, 36, bp.midStep3Label, 'left', '#ffffff');
+  addStepBadge('step_7_trunk', 616, 698, '7');
+  addCalloutText('lbl_step7_trunk', 638, 678, 170, 36, bp.midStep7Label, 'left', '#ffffff');
+  addCalloutText('lbl_gov_trunk', 974, 672, 168, 48, bp.midGovLabel, 'left', '#ffffff');
 
   addStepBadge('step_4_left', 124, 976, '4');
-  addCalloutText('lbl_step4_left', 148, 962, 165, 28, [lc.step4Label], 'left');
+  addCalloutText('lbl_step4_left', 148, 962, 165, 28, [lc.step4Label], 'left', '#feefc3');
   addStepBadge('step_6_left', 124, 1024, '6');
-  addCalloutText('lbl_step6_left', 148, 1010, 165, 28, [lc.step6Label], 'left');
+  addCalloutText('lbl_step6_left', 148, 1010, 165, 28, [lc.step6Label], 'left', '#feefc3');
   addStepBadge('step_5_left', 124, 1214, '5');
-  addCalloutText('lbl_step5_left', 148, 1194, 165, 40, lc.step5Label, 'left');
+  addCalloutText('lbl_step5_left', 148, 1194, 165, 40, lc.step5Label, 'left', '#feefc3');
 
-  addCalloutText('lbl_left_rag', 354, 1014, 180, 38, lc.ragLabel, 'center');
-  addCalloutText('lbl_left_tool', 354, 1160, 180, 38, lc.toolLabel, 'center');
+  addCalloutText('lbl_left_rag', 354, 1014, 180, 38, lc.ragLabel, 'center', '#feefc3');
+  addCalloutText('lbl_left_tool', 354, 1160, 180, 38, lc.toolLabel, 'center', '#feefc3');
 
-  addCalloutText('lbl_right_rag', 898, 1014, 180, 38, sc.ragLabel, 'center');
-  addCalloutText('lbl_right_tool', 898, 1160, 180, 38, sc.toolLabel, 'center');
+  addCalloutText('lbl_right_rag', 898, 1014, 180, 38, sc.ragLabel, 'center', '#fad2cf');
+  addCalloutText('lbl_right_tool', 898, 1160, 180, 38, sc.toolLabel, 'center', '#fad2cf');
+
+  // 8. Emit 23 Vertex-Bound Orthogonal Edges (placed between bgCells and fgCells so cards & badges sit on top)
+  addPointEdge('e_user_to_alb', [566, 138], [566, 430], [], { endArrow: true, source: 'actor_top_user', target: 'card_rc_alb' });
+  addPointEdge('e_alb_to_user', [612, 432], [612, 140], [], { endArrow: true, source: 'card_rc_alb', target: 'actor_top_user' });
+
+  addPointEdge('e_alb_to_top_left', [452, 470], [292, 431], [[424, 470], [424, 431]], { startArrow: true, endArrow: true, source: 'card_rc_alb', target: 'card_rc_topleft' });
+  addPointEdge('e_alb_to_mid_left', [452, 470], [292, 515], [[424, 470], [424, 515]], { startArrow: false, endArrow: true, source: 'card_rc_alb', target: 'card_rc_midleft' });
+
+  addPointEdge('e_iap_to_cloudrun', [292, 613], [476, 613], [], { startArrow: true, endArrow: true, source: 'card_rc_botleft', target: 'card_rc_cloudrun' });
+
+  addPointEdge('e_alb_to_crun', [566, 508], [566, 580], [], { endArrow: true, source: 'card_rc_alb', target: 'card_rc_cloudrun' });
+  addPointEdge('e_crun_to_alb', [612, 580], [612, 508], [], { endArrow: true, source: 'card_rc_cloudrun', target: 'card_rc_alb' });
+
+  addPointEdge('e_trunk_up_crun', [444, 924], [586, 646], [[444, 744], [586, 744]], { startArrow: false, endArrow: true, source: 'card_lc_run', target: 'card_rc_cloudrun' });
+  addPointEdge('e_trunk_spokes', [444, 924], [988, 924], [[444, 744], [988, 744]], { startArrow: true, endArrow: true, source: 'card_lc_run', target: 'card_sc_run' });
+
+  addPointEdge('e_gov_dashed_main', [328, 772], [962, 666], [[328, 730], [962, 730]], { dashed: true, startArrow: true, endArrow: true, source: 'wrapper_left_pab', target: 'zone_gov_hub' });
+  addPointEdge('e_gov_dashed_right', [962, 666], [872, 772], [[962, 730], [872, 730]], { dashed: true, startArrow: false, endArrow: true, source: 'zone_gov_hub', target: 'wrapper_right_pab' });
+
+  addPointEdge('e_left_ma_run', [304, 910], [332, 946], [[319, 910], [319, 946]], { startArrow: true, endArrow: true, source: 'card_lc_ma', target: 'card_lc_run' });
+  addPointEdge('e_left_llm_run', [304, 1146], [332, 972], [[319, 1146], [319, 972]], { startArrow: true, endArrow: true, source: 'card_lc_llm', target: 'card_lc_run' });
+  addPointEdge('e_left_mcp_run_bot', [444, 1068], [444, 1054], [], { endArrow: false, source: 'card_lc_mcp', target: 'lbl_left_rag' });
+  addPointEdge('e_left_mcp_run_top', [444, 1014], [444, 1000], [], { endArrow: true, source: 'lbl_left_rag', target: 'card_lc_run' });
+  addPointEdge('e_left_db_mcp_bot', [444, 1218], [444, 1204], [], { endArrow: false, source: 'card_lc_db', target: 'lbl_left_tool' });
+  addPointEdge('e_left_db_mcp_top', [444, 1158], [444, 1144], [], { endArrow: true, source: 'lbl_left_tool', target: 'card_lc_mcp' });
+
+  addPointEdge('e_right_ma_run', [848, 910], [876, 946], [[863, 910], [863, 946]], { startArrow: true, endArrow: true, source: 'card_sc_ma', target: 'card_sc_run' });
+  addPointEdge('e_right_llm_run', [848, 1012], [876, 972], [[863, 1012], [863, 972]], { startArrow: true, endArrow: true, source: 'card_sc_llm', target: 'card_sc_run' });
+  addPointEdge('e_right_mcp_run_bot', [988, 1068], [988, 1054], [], { endArrow: false, source: 'card_sc_mcp', target: 'lbl_right_rag' });
+  addPointEdge('e_right_mcp_run_top', [988, 1014], [988, 1000], [], { endArrow: true, source: 'lbl_right_rag', target: 'card_sc_run' });
+  addPointEdge('e_right_db_mcp_bot', [988, 1218], [988, 1204], [], { endArrow: false, source: 'card_sc_db', target: 'lbl_right_tool' });
+  addPointEdge('e_right_db_mcp_top', [988, 1158], [988, 1144], [], { endArrow: true, source: 'lbl_right_tool', target: 'card_sc_mcp' });
+
+  const cells = [...bgCells, ...edgeCells, ...fgCells];
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="embed.diagrams.net" modified="2026-10-13T00:00:00.000Z" agent="PromptCanvas-Vision-Decompiler-v4.0" version="24.7.5" type="device">

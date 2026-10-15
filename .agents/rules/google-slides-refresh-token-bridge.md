@@ -28,3 +28,12 @@ Whenever implementing, modifying, or debugging `"Open with Google Slides"`, `"Op
 2. **Same-Screen Cloud Viewer Modal (`👁️ Cloud Viewer`)**:
    - Clicking `👁️ Cloud Viewer` in the header opens the 3-mode Same-Screen Cloud Viewer Modal (`✨ Interactive Slides Studio` 6-slide deck, `🌐 Live Google Slides Embed`, `📄 Live Google Docs Spec`) without cluttering the main canvas UI.
 
+## 4. Calibrated Google Cloud Architecture Center (`#78`) Editable Slides & Zero-Overlap Geometry (`editablePptxCompiler.ts`)
+
+1. **Uniform Aspect-Preserving Scaling + Right 4-Zone Architecture Center Sidebar (`renderArchitectureCenterDiagramSidebar`)**:
+   - Never stretch `1200x1400` vertical `#78` diagrams across `13.33"x7.5"` widescreen slides with non-uniform `scaleX !== scaleY`.
+   - Enforce `uniformScale = Math.min(availW / effGraphW, availH / effGraphH)`, skip `hdr_title_box` inside the diagram canvas (`isArchCenter78`), render the decomposed `56` editable shapes + `23` connectors in the left `7.62"` canvas, and populate the right `5.03"` widescreen column with `renderArchitectureCenterDiagramSidebar`.
+2. **Bounded Container Headers, Aspect-Preserved Icons & Compact OpenXML Arrowheads**:
+   - Cap top/spoke container headers (`isTopFullWidthContainer` `Math.min(bw * 0.44, 2.45)` & `isSpokeOuterWrapper` `Math.min(bw * 0.65, 1.92)` at `3.85pt`), preserve service icon aspect ratios (`addImagePreservingAspect`), preserve multi-line card breaks (`normalizeDrawioHtmlForSlides`), use `5.0–5.8pt` `fit: 'shrink'` card typography, and post-process OpenXML arrowheads to `<a:tailEnd type="triangle" w="sm" len="sm"/>` (`postProcessPptxCompactArrowsBase64`).
+
+

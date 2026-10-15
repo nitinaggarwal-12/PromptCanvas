@@ -218,6 +218,9 @@ export async function POST(req: NextRequest) {
       const b64 = (await exportDrawioToEditablePptx(xmlToUse, titleToUse, normalizedKey, {
         returnBase64: true,
         masterImageSrc: body.masterImageSrc,
+        includeArchCenterGuideSlides: true,
+        markdownContent: body.markdownContent,
+        docId: body.docId || rawKey,
       })) as string;
       pptxBuffer = Buffer.from(b64, 'base64');
     }

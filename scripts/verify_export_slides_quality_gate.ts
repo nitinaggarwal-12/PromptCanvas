@@ -278,8 +278,44 @@ function runExportSlidesQualityGate() {
     process.exit(1);
   }
 
+  // 8. Google Cloud Architecture Center (#78) Calibrated Editable Slides & Zero-Overlap Geometry Gate
+  const pptxCompilerPath = path.join(process.cwd(), 'src/lib/export/editablePptxCompiler.ts');
+  const pptxCode = fs.readFileSync(pptxCompilerPath, 'utf-8');
+  if (
+    !pptxCode.includes('const uniformScale = Math.min(availW / effGraphW, availH / effGraphH)') ||
+    !pptxCode.includes("node.id === 'hdr_title_box'") ||
+    !pptxCode.includes('renderArchitectureCenterDiagramSidebar') ||
+    !pptxCode.includes('addImagePreservingAspect') ||
+    !pptxCode.includes('normalizeDrawioHtmlForSlides') ||
+    !pptxCode.includes('postProcessPptxCompactArrowsBase64') ||
+    !pptxCode.includes('findDocSection') ||
+    !pptxCode.includes('isSpokeOuterWrapper')
+  ) {
+    console.error(
+      '❌ EXPORT GATE FAILED: editablePptxCompiler.ts is missing calibrated #78 uniformScale, hdr_title_box exclusion, renderArchitectureCenterDiagramSidebar, addImagePreservingAspect, normalizeDrawioHtmlForSlides, postProcessPptxCompactArrowsBase64, findDocSection, or isSpokeOuterWrapper width cap!'
+    );
+    process.exit(1);
+  }
+
+  const archCenterTemplatePath = path.join(
+    process.cwd(),
+    'src/lib/canonical/templateOfficialGcpArchCenterHubSpoke.ts'
+  );
+  const archCenterCode = fs.readFileSync(archCenterTemplatePath, 'utf-8');
+  if (
+    !archCenterCode.includes("fillColor = 'none'") ||
+    !archCenterCode.includes("'#aecbfa'") ||
+    !archCenterCode.includes("'#feefc3'") ||
+    !archCenterCode.includes("'#fad2cf'")
+  ) {
+    console.error(
+      '❌ EXPORT GATE FAILED: templateOfficialGcpArchCenterHubSpoke.ts must stamp zone-matched fillColor knockouts (#aecbfa, #feefc3, #fad2cf, #ffffff) on floating callout labels!'
+    );
+    process.exit(1);
+  }
+
   console.log(
-    `✅ Export & Slides/Docs Studio Quality Gate PASSED! (${verticesWithIcons.length} Azure vector icons verified, Blueprint #00 Zero-Corruption certified, Docs Editable Diagram Parity, Native Word 4-Layer DrawingML verified, /viewer Google Workspace buttons & Cloud Bridge certified, Anti-Static-Spoofing Rule 41 & Universal Dynamic Tiered Infographic Engine certified)`
+    `✅ Export & Slides/Docs Studio Quality Gate PASSED! (${verticesWithIcons.length} Azure vector icons verified, Blueprint #00 & #78 Calibrated Editable Slides Zero-Overlap certified, Docs Editable Diagram Parity, Native Word 4-Layer DrawingML verified, /viewer Google Workspace buttons & Cloud Bridge certified, Anti-Static-Spoofing Rule 41 & Universal Dynamic Tiered Infographic Engine certified)`
   );
 }
 
