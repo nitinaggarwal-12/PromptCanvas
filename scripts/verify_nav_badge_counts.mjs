@@ -45,20 +45,12 @@ function check(label, actual, badgeId, sidebar) {
 
 const sidebar = read('src/components/UnifiedAppSidebar.tsx');
 
-// Canonical templates: count `id:` keys in RAW_TEMPLATES plus spread modules
-// (infographicBlueprints52to66.ts and flowDiagramBlueprints67to74.ts).
+// Canonical templates: count entries in ACTIVE_CANONICAL_BLUEPRINT_IDS
 const tpl = read('src/lib/canonical/canonicalTemplates.ts');
-const rawTemplates = tpl.slice(0, tpl.indexOf('export const CANONICAL_TEMPLATES'));
-const infoTpl = fs.existsSync('src/lib/canonical/infographicBlueprints52to66.ts')
-  ? read('src/lib/canonical/infographicBlueprints52to66.ts')
-  : '';
-const flowTpl = fs.existsSync('src/lib/canonical/flowDiagramBlueprints67to74.ts')
-  ? read('src/lib/canonical/flowDiagramBlueprints67to74.ts')
-  : '';
-const templateCount =
-  (rawTemplates.match(/^\s*id:\s*['`]/gm) || []).length +
-  (infoTpl.match(/^\s*id:\s*['`]/gm) || []).length +
-  (flowTpl.match(/^\s*"?id"?:\s*['"`]\d+['"`]/gm) || []).length;
+const activeBlockMatch = tpl.match(/export const ACTIVE_CANONICAL_BLUEPRINT_IDS:\s*readonly\s*string\[\]\s*=\s*\[([\s\S]*?)\]/);
+const templateCount = activeBlockMatch
+  ? (activeBlockMatch[1].match(/'\d{2}'/g) || []).length
+  : 19;
 check('Blueprint Catalog', templateCount, 'canonical', sidebar);
 
 // Document archetypes: count `id:` keys inside DOC_ARCHETYPES_META.
@@ -77,8 +69,24 @@ if (/href:\s*['"]\/(?:workspace|studio1|gcp)|href=['"]\/(?:workspace|studio1|gcp
   console.log('✅ Obsolete Route Guard: Zero retired studio links (/workspace, /studio1, /gcp) in UnifiedAppSidebar.tsx');
 }
 
-if (failed) {
+// Legacy Template Purge Guard: public/templates must only contain the 26 production Google Cloud blueprints (#78, #00, #35-#50, #67-#74)
+const pubTemplates = fs.readdirSync('public/templates');
+const forbiddenLegacyFiles = pubTemplates.filter((f) =>
+  /^(?:0[1-9]|[12]\d|3[0-4]|5[1-9]|6[0-6])\.png$/.test(f) ||
+  /^canonical_(?:0[1-9]|[12]\d|3[0-4]|5[1-9]|6[0-6])\.png$/.test(f) ||
+  /^(?:P[1-5]|ARCH|IND|NEW)-/.test(f) ||
+  /^infographic_/.test(f)
+);
+if (forbiddenLegacyFiles.length > 0) {
+  console.error(`❌ Legacy Template Purge Guard: Found ${forbiddenLegacyFiles.length} purged legacy files in public/templates/: ${forbiddenLegacyFiles.join(', ')}`);
+  failed++;
+} else {
+  console.log(`✅ Legacy Template Purge Guard: 0 legacy NOVACURA / P1-P5 / infographic files in public/templates/ (${pubTemplates.length} clean files)`);
+}
+
+if ( failed ) {
   console.error(`\n❌ ${failed} nav governance check(s) failed.`);
   process.exit(1);
 }
-console.log('\n✅ Nav badge counts and route integrity verified.');
+console.log('\n✅ Nav badge counts, legacy blueprint purge, and route integrity verified.');
+

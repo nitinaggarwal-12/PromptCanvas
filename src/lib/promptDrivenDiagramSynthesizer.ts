@@ -218,48 +218,55 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
         [/Spanner/gi, escHtml(truncateAtWord(t40.primaryDatabase || 'Spanner TrueTime', 20))],
       ];
     }
+    const isTimeMachinePrompt = lower.includes('time machine') || lower.includes('time travel') || lower.includes('chronos') || lower.includes('temporal capsule');
+    if (isTimeMachinePrompt) {
+      return [
+        [/Business Users/gi, 'Chrononauts'],
+        [/Analysts/gi, 'Physicists'],
+        [/Developers/gi, 'Chronos Eng'],
+        [/Operations/gi, 'Flight Ops'],
+        [/External Partners/gi, 'Epoch Beacons'],
+        [/Web App/gi, 'Capsule HUD'],
+        [/Mobile App/gi, 'Chronos Suit'],
+        [/Chat \/ Messaging/gi, 'Quantum Comms'],
+        [/API \/ SDK/gi, 'TrueTime SDK'],
+        [/Contact Center/gi, 'Mission Control'],
+        [/Enterprise Copilots \/&lt;br\/&gt;Chat UI \/ Portal/gi, 'Gemini Enterprise \/&lt;br\/&gt;Chronos Capsule Copilot'],
+        [/Hello! How can I help you\?/gi, 'Target Epoch: 2150 CE Locked'],
+        [/Supervisor \/ Orchestrator Agent/gi, 'Gemini Enterprise Chronos Supervisor &amp; Temporal Trajectory Orchestrator'],
+        [/Agent Router \/ Planner \/ Task Decomposer/gi, 'Vertex AI Agent Builder • Closed-Timelike-Curve (CTC) Planner &amp; Epoch Decomposer'],
+        [/Research Agent/gi, 'Epoch Intel Agent'],
+        [/Web research, market intel, competitors/gi, 'Historical era, cultural &amp; linguistic grounding'],
+        [/Analytics Agent/gi, 'Relativity Agent'],
+        [/Data analysis, BI, insight generation/gi, 'Spacetime ephemeris, gravity well &amp; drift calc'],
+        [/Workflow Agent/gi, 'Jump Seq Agent'],
+        [/Process automation, orchestration/gi, 'Flux coil charge sequence &amp; jump orchestration'],
+        [/Support Agent/gi, 'Bio-Stasis Agent'],
+        [/Customer support, Q&amp;amp;A, case mgmt/gi, 'Chrononaut vitals, radiation &amp; stasis telemetry'],
+        [/Retrieval Agent/gi, 'Temporal RAG Agent'],
+        [/Semantic search, RAG, context retrieval/gi, 'Multi-millennia ScaNN vector &amp; era retrieval'],
+        [/Code Agent/gi, 'CTC Solver Agent'],
+        [/Code gen, review, refactor, debug/gi, 'Closed-timelike-curve tensor &amp; jump solver'],
+        [/Compliance Agent/gi, 'Paradox Guard'],
+        [/Policy check, PII, regulatory compliance/gi, 'Grandfather-paradox &amp; causality invariant check'],
+        [/1\.5 Pro \/ 1\.5 Flash/gi, 'Enterprise 3.1 Pro'],
+        [/1\.5 Pro \(Vision\)/gi, 'Spacetime Vision'],
+        [/Gemma/gi, 'TPU v5p Sim'],
+        [/\(7B \/ 28B\)/gi, '(Quantum Flux)'],
+        [/Customer CRM/gi, 'Capsule Sensors'],
+        [/Core ERP/gi, 'Flux Reactor PLC'],
+        [/ITSM Platform/gi, 'Beacon Network'],
+        [/HCM \/ HRIS/gi, 'Bio-Stasis Pod'],
+        [/Spanner/gi, 'Spanner TrueTime'],
+      ];
+    }
     return [
-      [/Business Users/gi, 'Chrononauts'],
-      [/Analysts/gi, 'Physicists'],
-      [/Developers/gi, 'Chronos Eng'],
-      [/Operations/gi, 'Flight Ops'],
-      [/External Partners/gi, 'Epoch Beacons'],
-      [/Web App/gi, 'Capsule HUD'],
-      [/Mobile App/gi, 'Chronos Suit'],
-      [/Chat \/ Messaging/gi, 'Quantum Comms'],
-      [/API \/ SDK/gi, 'TrueTime SDK'],
-      [/Contact Center/gi, 'Mission Control'],
-      [/Enterprise Copilots \/&lt;br\/&gt;Chat UI \/ Portal/gi, 'Gemini Enterprise \/&lt;br\/&gt;Chronos Capsule Copilot'],
-      [/Hello! How can I help you\?/gi, 'Target Epoch: 2150 CE Locked'],
-      [/Supervisor \/ Orchestrator Agent/gi, 'Gemini Enterprise Chronos Supervisor &amp; Temporal Trajectory Orchestrator'],
-      [/Agent Router \/ Planner \/ Task Decomposer/gi, 'Vertex AI Agent Builder • Closed-Timelike-Curve (CTC) Planner &amp; Epoch Decomposer'],
-      [/Research Agent/gi, 'Epoch Intel Agent'],
-      [/Web research, market intel, competitors/gi, 'Historical era, cultural &amp; linguistic grounding'],
-      [/Analytics Agent/gi, 'Relativity Agent'],
-      [/Data analysis, BI, insight generation/gi, 'Spacetime ephemeris, gravity well &amp; drift calc'],
-      [/Workflow Agent/gi, 'Jump Seq Agent'],
-      [/Process automation, orchestration/gi, 'Flux coil charge sequence &amp; jump orchestration'],
-      [/Support Agent/gi, 'Bio-Stasis Agent'],
-      [/Customer support, Q&amp;amp;A, case mgmt/gi, 'Chrononaut vitals, radiation &amp; stasis telemetry'],
-      [/Retrieval Agent/gi, 'Temporal RAG Agent'],
-      [/Semantic search, RAG, context retrieval/gi, 'Multi-millennia ScaNN vector &amp; era retrieval'],
-      [/Code Agent/gi, 'CTC Solver Agent'],
-      [/Code gen, review, refactor, debug/gi, 'Closed-timelike-curve tensor &amp; jump solver'],
-      [/Compliance Agent/gi, 'Paradox Guard'],
-      [/Policy check, PII, regulatory compliance/gi, 'Grandfather-paradox &amp; causality invariant check'],
-      [/1\.5 Pro \/ 1\.5 Flash/gi, 'Enterprise 3.1 Pro'],
-      [/1\.5 Pro \(Vision\)/gi, 'Spacetime Vision'],
-      [/Gemma/gi, 'TPU v5p Sim'],
-      [/\(7B \/ 28B\)/gi, '(Quantum Flux)'],
-      [/Customer CRM/gi, 'Capsule Sensors'],
-      [/Core ERP/gi, 'Flux Reactor PLC'],
-      [/ITSM Platform/gi, 'Beacon Network'],
-      [/HCM \/ HRIS/gi, 'Bio-Stasis Pod'],
-      [/Spanner/gi, 'Spanner TrueTime'],
+      [/1\.5 Pro \/ 1\.5 Flash/gi, 'Gemini 3.1 Pro'],
+      [/1\.5 Pro \(Vision\)/gi, 'Gemini 3.8 Flash'],
     ];
   };
 
-  // 1. If an explicit Canonical Blueprint ID ("00".."75") was selected by Gemini API or User Dropdown:
+  // 1. If an explicit Canonical Blueprint ID ("00".."78") was selected by Gemini API or User Dropdown:
   if (explicitBpId && explicitBpId !== 'custom' && explicitBpId !== 'process_flow') {
     const paddedId = explicitBpId.padStart(2, '0');
     if (paddedId === '00') {
@@ -307,21 +314,21 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
         const t40 = options?.geminiDecision?.tailoredSpec?.template40Adaptation;
         domainMutations = [
           [new RegExp(matchedTpl.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), escHtml(truncateAtWord(safeTitle, 44))],
-          [/Research Scientists/gi, escHtml(truncateAtWord(t40?.personas?.[0] || 'Chrononauts & Pilots', 22))],
-          [/Clinical Operations/gi, escHtml(truncateAtWord(t40?.personas?.[1] || 'Quantum Physicists', 22))],
-          [/Regulatory Affairs Team/gi, escHtml(truncateAtWord(t40?.personas?.[2] || 'Temporal Engineers', 22))],
-          [/Safety \/ PV Specialists/gi, escHtml(truncateAtWord(t40?.personas?.[3] || 'Paradox Safety Ops', 22))],
-          [/R&amp;D &amp; Clinical/gi, escHtml(truncateAtWord(subs[0] || 'Capsule Cockpit HUD', 24))],
+          [/Research Scientists/gi, escHtml(truncateAtWord(t40?.personas?.[0] || 'Enterprise Users', 22))],
+          [/Clinical Operations/gi, escHtml(truncateAtWord(t40?.personas?.[1] || 'Domain Analysts', 22))],
+          [/Regulatory Affairs Team/gi, escHtml(truncateAtWord(t40?.personas?.[2] || 'Platform Engineers', 22))],
+          [/Safety \/ PV Specialists/gi, escHtml(truncateAtWord(t40?.personas?.[3] || 'Security & SRE Ops', 22))],
+          [/R&amp;D &amp; Clinical/gi, escHtml(truncateAtWord(subs[0] || 'Client Experience Portal', 24))],
           [/Regulatory Affairs/gi, escHtml(truncateAtWord(subs[1] || 'Apigee X & Cloud Armor', 24))],
-          [/Pharmacovigilance/gi, escHtml(truncateAtWord(subs[2] || 'Quantum KMS & Guard', 24))],
+          [/Pharmacovigilance/gi, escHtml(truncateAtWord(subs[2] || 'Cloud KMS & Model Armor', 24))],
           [/Quality &amp; Manufacturing/gi, escHtml(truncateAtWord(subs[3] || 'Gemini 3.1 Pro Core', 24))],
-          [/Medical Information/gi, escHtml(truncateAtWord(subs[4] || 'Vertex AI TPU v5p', 24))],
+          [/Medical Information/gi, escHtml(truncateAtWord(subs[4] || 'Vertex AI Agent Engine', 24))],
           [/Commercial Insights/gi, escHtml(truncateAtWord(subs[5] || 'Spanner Graph RAG', 24))],
-          [/Document &amp; Knowledge Hub/gi, escHtml(truncateAtWord(subs[7] || 'Pub/Sub Flux Bus', 24))],
-          [/AI Copilot &amp; Orchestration/gi, escHtml(truncateAtWord(subs[6] || 'Causality Gate', 24))],
-          [/Customer CRM/gi, escHtml(truncateAtWord(subs[0] || 'Edge Telemetry HUD', 22))],
+          [/Document &amp; Knowledge Hub/gi, escHtml(truncateAtWord(subs[7] || 'Pub/Sub Event Bus', 24))],
+          [/AI Copilot &amp; Orchestration/gi, escHtml(truncateAtWord(subs[6] || 'Policy Decision Gate', 24))],
+          [/Customer CRM/gi, escHtml(truncateAtWord(subs[0] || 'Enterprise CRM', 22))],
           [/Core ERP/gi, escHtml(truncateAtWord(subs[4] || 'Core Orchestrator', 22))],
-          [/Cloud Spanner/gi, escHtml(truncateAtWord(subs[9] || 'Spanner TrueTime DB', 22))],
+          [/Cloud Spanner/gi, escHtml(truncateAtWord(subs[9] || 'Cloud Spanner Ledger', 22))],
         ];
       }
     }
@@ -335,9 +342,58 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
       (lower.includes('bedrock') && !lower.includes('foundation bedrock') && !lower.includes('infrastructure bedrock')) ||
       (lower.includes('aws') && !lower.includes('to gcp') && !lower.includes('alloydb') && !lower.includes('decompile')));
 
+  const matchesSpecializedTemplateBranch =
+    lower.includes('sap') ||
+    lower.includes('s/4hana') ||
+    lower.includes('opc-ua') ||
+    lower.includes('manufacturing') ||
+    lower.includes('supply chain') ||
+    lower.includes('route53') ||
+    lower.includes('eks') ||
+    lower.includes('aurora') ||
+    lower.includes('alloydb') ||
+    lower.includes('decompile') ||
+    lower.includes('active-active') ||
+    lower.includes('disaster recovery') ||
+    lower.includes('multi-region dr') ||
+    lower.includes('chaos') ||
+    lower.includes('europe-west1') ||
+    lower.includes('finops') ||
+    lower.includes('carbon') ||
+    lower.includes('kueue') ||
+    lower.includes('spot vm') ||
+    lower.includes('gpu scheduler') ||
+    lower.includes('streaming') ||
+    lower.includes('dead-letter') ||
+    lower.includes('dlq') ||
+    lower.includes('confluent') ||
+    lower.includes('iceberg') ||
+    lower.includes('landing zone') ||
+    lower.includes('interconnect') ||
+    lower.includes('shared vpc') ||
+    lower.includes('bfd') ||
+    lower.includes('secops') ||
+    lower.includes('chronicle') ||
+    lower.includes('soar') ||
+    lower.includes('siem') ||
+    lower.includes('beyondcorp') ||
+    lower.includes('hl7') ||
+    lower.includes('fhir') ||
+    lower.includes('dicom') ||
+    lower.includes('omop') ||
+    lower.includes('healthcare') ||
+    lower.includes('clinical') ||
+    (lower.includes('iso-20022') && (lower.includes('payment') || lower.includes('fraud'))) ||
+    lower.includes('time machine') ||
+    lower.includes('time travel') ||
+    lower.includes('temporal capsule') ||
+    lower.includes('chronos') ||
+    (lower.includes('rag') && (lower.includes('scann') || lower.includes('vector mesh') || lower.includes('knowledge intelligence')));
+
   const isGcpNativeTechnicalPrompt =
     !baseXml &&
     !isAwsBedrockPrompt &&
+    !matchesSpecializedTemplateBranch &&
     (lower.includes('gcp native') ||
       lower.includes('native technical') ||
       lower.includes('gemini enterprise') ||
@@ -348,12 +404,7 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
       lower.includes('a2a') ||
       lower.includes('banking') ||
       lower.includes('coordinator agent') ||
-      lower.includes('model armor') ||
-      (!lower.includes('time machine') &&
-        !lower.includes('chronos') &&
-        !lower.includes('sap') &&
-        !lower.includes('s/4hana') &&
-        !lower.includes('route53')));
+      lower.includes('model armor'));
 
   if (baseXml) {
     // Already resolved via explicit blueprint selection or Gemini decision above

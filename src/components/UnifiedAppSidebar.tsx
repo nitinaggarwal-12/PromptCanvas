@@ -85,7 +85,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: 'Library & Blueprints',
     items: [
       { id: 'library', name: 'Saved Architectures', icon: LayoutGrid, href: '/library', badge: 'SAVED', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
-      { id: 'canonical', name: 'Blueprint Catalog', icon: Network, href: '/canonical', badge: '78' },
+      { id: 'canonical', name: 'Blueprint Catalog', icon: Network, href: '/canonical', badge: '26' },
     ],
   },
   {

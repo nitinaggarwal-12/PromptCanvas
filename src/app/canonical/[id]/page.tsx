@@ -8,6 +8,7 @@ import {
   DOMAIN_PRESETS,
   CanonicalTemplate,
   injectDomainFlavorXml,
+  getCanonicalTemplateById,
 } from '@/lib/canonical/canonicalTemplates';
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
@@ -45,7 +46,7 @@ export default function CanonicalTemplateDetailPage() {
   const promptParam = searchParams.get('prompt');
 
   const rawId = Array.isArray(params?.id) ? params.id[0] : params?.id;
-  const templateId = String(rawId || '01').padStart(2, '0');
+  const templateId = String(rawId || '78').padStart(2, '0');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const themeMode: 'light' | 'dark' = theme;
@@ -56,7 +57,7 @@ export default function CanonicalTemplateDetailPage() {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const [isComposeOpen, setIsComposeOpen] = useState<boolean>(false);
   const [isSideBySide, setIsSideBySide] = useState<boolean>(
-    searchParams.get('sbs') === '1' || (Number(templateId) >= 52 && Number(templateId) <= 66)
+    searchParams.get('sbs') === '1'
   );
 
   useEffect(() => {
@@ -65,9 +66,9 @@ export default function CanonicalTemplateDetailPage() {
     }
   }, [domainParam]);
 
-  // Find template by ID
+  // Find template by ID (or redirect legacy IDs cleanly to modern Google Cloud Reference Blueprints)
   const activeTemplate = useMemo(() => {
-    return CANONICAL_TEMPLATES.find((t) => t.id === templateId) || CANONICAL_TEMPLATES[0];
+    return getCanonicalTemplateById(templateId);
   }, [templateId]);
 
   // Find currentIndex, prev and next templates

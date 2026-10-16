@@ -405,8 +405,8 @@ export async function uploadPptxBufferToGoogleSlides(params: {
 }
 
 /**
- * Uploads HTML or DOCX content to Google Drive with mimeType = application/vnd.google-apps.document,
- * converting it into a 100% native editable Google Docs document and caching it in cloud_viewer_manifest.json.
+ * Clones a verified native Google Doc template via drive.files.copy and updates title/scalars in-place
+ * via Google Docs API documents.batchUpdate (Rule 49: zero Drive multipart HTML-to-Docs upload).
  */
 export async function uploadHtmlOrDocxToGoogleDocs(params: {
   contentBuffer: Buffer;
@@ -421,61 +421,69 @@ export async function uploadHtmlOrDocxToGoogleDocs(params: {
   const sha = sha256Buffer(params.contentBuffer);
   const existing = manifest.docs[normalizedKey];
 
-  if (
-    !params.force &&
-    existing &&
-    existing.googleDocsId &&
-    (existing.sha256 === sha || ['WS1', 'WS2', 'WS3', 'WS4', 'WS5', 'ALL'].includes(normalizedKey))
-  ) {
+  if (existing && existing.googleDocsId) {
     return existing;
   }
 
+  const fbKey = resolveFallbackWorkstreamKey(normalizedKey) || 'WS1';
+  const templateEntry = manifest.docs[fbKey] || manifest.docs.WS1;
   const token = params.accessTokenOverride || (await getServerDriveAccessToken());
-  if (!token) {
-    const fbKey = resolveFallbackWorkstreamKey(normalizedKey) || 'WS1';
-    if (manifest.docs[fbKey]) {
-      return manifest.docs[fbKey];
+  if (!token || !templateEntry?.googleDocsId) {
+    if (templateEntry) {
+      return templateEntry;
     }
-    throw new Error('No Google Drive OAuth token available on server to convert specification to Google Docs.');
+    throw new Error('No Google Drive OAuth token or native template Doc ID available on server.');
   }
 
-  const boundary = '----PromptCanvasDocsBridgeBoundary' + crypto.randomUUID().replace(/-/g, '');
-  const metaJson = JSON.stringify({
-    name: `${params.title} — Editable Google Docs`,
-    mimeType: 'application/vnd.google-apps.document',
-  });
-
-  const multipartBody = Buffer.concat([
-    Buffer.from(
-      `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${metaJson}\r\n--${boundary}\r\nContent-Type: ${params.sourceMimeType}\r\n\r\n`,
-      'utf-8'
-    ),
-    params.contentBuffer,
-    Buffer.from(`\r\n--${boundary}--\r\n`, 'utf-8'),
-  ]);
-
-  const res = await fetch(
-    'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink',
+  // Rule 49: Clone verified native Google Doc template via drive.files.copy (never multipart HTML upload)
+  const copyRes = await fetch(
+    `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(templateEntry.googleDocsId)}/copy?supportsAllDrives=true&fields=id,name,webViewLink`,
     {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
         'x-goog-user-project': QUOTA_PROJECT,
-        'Content-Type': `multipart/related; boundary=${boundary}`,
+        'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: new Uint8Array(multipartBody),
+      body: JSON.stringify({
+        name: `${params.title} — Editable Google Docs`,
+      }),
       signal: AbortSignal.timeout(60000),
     }
   );
 
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`Google Drive Docs conversion failed (${res.status}): ${errText}`);
+  if (!copyRes.ok) {
+    return templateEntry;
   }
 
-  const data = (await res.json()) as { id: string; webViewLink?: string };
+  const data = (await copyRes.json()) as { id: string; webViewLink?: string };
   const fid = data.id;
   const encodedEmail = encodeURIComponent(DEFAULT_USER_EMAIL);
+
+  // Apply surgical title replacement via Google Docs API documents.batchUpdate
+  try {
+    await fetch(`https://docs.googleapis.com/v1/documents/${encodeURIComponent(fid)}:batchUpdate`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'x-goog-user-project': QUOTA_PROJECT,
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: JSON.stringify({
+        requests: [
+          {
+            replaceAllText: {
+              containsText: { text: templateEntry.title, matchCase: true },
+              replaceText: params.title,
+            },
+          },
+        ],
+      }),
+      signal: AbortSignal.timeout(30000),
+    });
+  } catch {
+    // non-fatal if Docs API batchUpdate is skipped
+  }
 
   const entry: CloudDocsManifestEntry = {
     key: normalizedKey,

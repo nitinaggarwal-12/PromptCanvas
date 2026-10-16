@@ -8,6 +8,7 @@ import {
   CANONICAL_FAMILIES,
   DOMAIN_PRESETS,
   CanonicalTemplate,
+  getCanonicalTemplateById,
 } from '@/lib/canonical/canonicalTemplates';
 import { executeGcpPromptModification } from '@/lib/gcpCoPilotModifier';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
@@ -65,7 +66,7 @@ function CanonicalContent() {
   const [selectedFamily, setSelectedFamily] = useState<string>('All');
   const [selectedLevel, setSelectedLevel] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedDomain, setSelectedDomain] = useState<string>('biopharma');
+  const [selectedDomain, setSelectedDomain] = useState<string>('enterprise');
   const [customPrompt, setCustomPrompt] = useState<string>('');
 
   // Full-page viewer / hover state
@@ -120,8 +121,7 @@ function CanonicalContent() {
   useEffect(() => {
     const idParam = searchParams.get('id') || searchParams.get('template');
     if (idParam) {
-      const formattedId = idParam.padStart(2, '0');
-      const matched = CANONICAL_TEMPLATES.find((t) => t.id === formattedId || t.id === idParam);
+      const matched = getCanonicalTemplateById(idParam);
       if (matched) {
         handleOpenCanvas(matched, false);
       }
@@ -137,8 +137,7 @@ function CanonicalContent() {
       const urlParams = new URLSearchParams(window.location.search);
       const idParam = urlParams.get('id') || urlParams.get('template');
       if (idParam) {
-        const formattedId = idParam.padStart(2, '0');
-        const matched = CANONICAL_TEMPLATES.find((t) => t.id === formattedId || t.id === idParam);
+        const matched = getCanonicalTemplateById(idParam);
         if (matched) {
           handleOpenCanvas(matched, false);
           return;

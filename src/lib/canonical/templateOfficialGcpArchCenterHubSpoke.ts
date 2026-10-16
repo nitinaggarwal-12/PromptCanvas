@@ -119,7 +119,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     routingHubTitle: 'Routing hub (Hop 1 & Hop 2 PEP/PDP)',
     routingHubSub: 'Central ingress, OBO+DPoP & Discovery Engine Agent Catalog filter',
     routingCards: {
-      topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor & IAP', sub: 'Strip Forged X-Tenant-ID' },
+      topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & IAP Header Strip' },
       midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Ingress Prompt Screen' },
       botLeft: { icon: 'iap_iam_shield', title: 'RFC 8693 OBO + DPoP', sub: 'Sender-Constrained JWT' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Load Balancing' },
@@ -160,7 +160,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     rightZoneSub: 'VPC-SC + IAM PAB + CMEK Kill-Switch + PSC',
     rightCards: {
       modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & Model Armor', sub: 'Sovereign Silo Guardrails' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini / Gemma 3', sub: 'Claude 3.7 or Private GKE' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini / Gemma 3', sub: 'Private GKE or PT Endpoint' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Dedicated Silo + Agent Alpha' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: 'Local Silo 3LO Connectors' },
       datastore: { icon: 'cloud_kms', title: 'CMEK Datastore', sub: 'AlloyDB, BQ & KMS 423 Lock' },
@@ -186,7 +186,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     routingHubTitle: 'Routing hub (Hop 1 & Hop 2)',
     routingHubSub: 'Central ingress & cryptographic token exchange',
     routingCards: {
-      topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor', sub: 'Strips Forged X-Tenant-ID' },
+      topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & Header Strip (X-Tenant-ID)' },
       midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Edge Prompt Injection Gate' },
       botLeft: { icon: 'iap_iam_shield', title: 'IAP', sub: 'RFC 8693 OBO + DPoP' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Load Balancing' },
@@ -212,7 +212,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     leftZoneSub: 'Tenant project • Enterprise Tier (Google OIDC)',
     leftCards: {
       modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Hop 4: Bank SDP & FINRA Filter' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini & Claude', sub: 'Agent Engine (8k Budget)' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro & Flash', sub: 'Agent Engine (8k Budget)' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Hop 3: Shared + Agent Alpha' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: 'Hop 5: Workspace & Jira 3LO' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Datastore', sub: 'BigQuery, AlloyDB RLS, CMEK' },
@@ -253,7 +253,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     routingHubTitle: 'Hop 1 & Hop 2: Edge PEP & Agent Catalog PDP',
     routingHubSub: 'Header stripping, OBO+DPoP & Discovery Engine Agent Catalog pruning',
     routingCards: {
-      topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor WAF', sub: 'Strips Forged X-Tenant-ID' },
+      topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & DDoS (Strips X-Tenant-ID)' },
       midLeft: { icon: 'discovery_engine', title: 'Discovery Engine PDP', sub: 'Catalog Filter (403 Alpha)' },
       botLeft: { icon: 'iap_iam_shield', title: 'IAP + OBO Broker', sub: 'RFC 8693 OBO + DPoP (jkt)' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Load Balancing' },
@@ -279,7 +279,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     leftZoneSub: 'Namespace: finvault:user:session (Envelope CMEK)',
     leftCards: {
       modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Masks IBAN/SWIFT + FINRA Policy' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini & Claude 3.7', sub: '8,000 Thinking-Token Budget' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro & Flash', sub: '8,000 Thinking-Token Budget' },
       runtime: { icon: 'gemini_agent_platform', title: 'Pooled gVisor Pod', sub: 'Shared + Private Agent Alpha' },
       mcp: { icon: 'mcp_servers', title: '3LO Workspace/Jira', sub: 'Drive, Calendar, Gmail, Jira' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Shared AlloyDB RLS', sub: "app.current_tenant='finvault'" },
@@ -320,7 +320,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     routingHubTitle: 'Hop 1 & Hop 2 Gates (Vectors 1, 2, 3 & 10)',
     routingHubSub: 'Neutralizes header spoofing, Agent Alpha & MCP leaks',
     routingCards: {
-      topLeft: { icon: 'load_balancer_cloud_armor', title: 'Vector 1: Header Strip', sub: 'Drops Forged X-Tenant-ID' },
+      topLeft: { icon: 'cloud_armor', title: 'Vector 1: Cloud Armor', sub: 'WAF Drops Forged X-Tenant-ID' },
       midLeft: { icon: 'discovery_engine', title: 'Vector 2: Agent 403', sub: 'Blocks Retail -> Agent Alpha' },
       botLeft: { icon: 'iap_iam_shield', title: 'Vector 3: Tool Prune', sub: 'Prunes FinVault Jira MCP' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Armor Edge PEP' },
@@ -348,7 +348,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
       modelArmor: { icon: 'model_armor', title: 'Vector 4: HTTP 400', sub: 'Blocks SQLi & Cache Dump' },
       llm: { icon: 'model_armor', title: 'Vector 5: HTTP 422', sub: 'Blocks FINRA Escalation Bypass' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Executes Only Clean Turns' },
-      mcp: { icon: 'iap_iam_shield', title: 'Vector 8: SDP Mask', sub: 'Redacts IBAN, SWIFT & PAN' },
+      mcp: { icon: 'cloud_sdp_dlp', title: 'Vector 8: SDP Mask', sub: 'Redacts IBAN, SWIFT & PAN' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Zero Raw PII Egress', sub: '[REDACTED-FINVAULT-*]' },
       step4Label: 'Screen prompt',
       step6Label: 'Redact PII',
@@ -361,7 +361,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     rightZoneSub: 'Cryptographic Namespace & Storage-Engine Isolation',
     rightCards: {
       modelArmor: { icon: 'gemini_agent_platform', title: 'Vector 7A: L4 Memory', sub: 'PermissionError on Cross-Read' },
-      llm: { icon: 'cloud_logging', title: 'Vector 7B: GCS Skills', sub: 'Blocks gs://cymbal-skills-fv' },
+      llm: { icon: 'cloud_storage', title: 'Vector 7B: GCS Skills', sub: 'Blocks gs://cymbal-skills-fv' },
       runtime: { icon: 'valkey_cache', title: 'Vector 9: Prefix Cache', sub: 'READ_ONLY_IMMUTABLE_PREFIX' },
       mcp: { icon: 'iap_iam_shield', title: 'Auth Manager Vault', sub: 'Tenant-Scoped OAuth Tokens' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Vector 7C: AlloyDB RLS', sub: '0 Cross-Tenant Rows Returned' },
@@ -387,7 +387,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     routingHubTitle: 'Central mTLS & SPIFFE Routing Hub',
     routingHubSub: 'Client certificate pinning (HTTP 401 on SAN mismatch)',
     routingCards: {
-      topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor & mTLS', sub: 'X.509 SPIFFE Cert Pinning' },
+      topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & mTLS SPIFFE Pinning' },
       midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Edge Prompt & DDoS Filter' },
       botLeft: { icon: 'iap_iam_shield', title: 'IAM PAB Verifier', sub: 'HTTP 403 Cross-Project Block' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'SNI Silo Routing' },
@@ -413,7 +413,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     leftZoneSub: 'Dedicated Project • CMEK: finvault-kr/agent-memory',
     leftCards: {
       modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & Model Armor', sub: 'Dedicated FinVault Perimeter' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemma 3 (27B) GKE', sub: 'Air-Gapped vLLM + Claude 3.7' },
+      llm: { icon: 'gke', title: 'Gemma 3 (27B) GKE', sub: 'Air-Gapped vLLM & Gemini PT' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Dedicated Silo + Agent Alpha' },
       mcp: { icon: 'mcp_servers', title: 'Local Silo MCP', sub: 'Workspace & Jira (0 Egress)' },
       datastore: { icon: 'cloud_kms', title: 'CMEK Datastore', sub: 'Dedicated AlloyDB & Memory' },
@@ -454,7 +454,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     routingHubTitle: 'Unified Control Plane & Intelligent Router Hub',
     routingHubSub: 'Firestore live routing table + Cross-Project Agent Catalog',
     routingCards: {
-      topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor & IAP', sub: 'Single SaaS URL + OBO/DPoP' },
+      topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & IAP (Single SaaS URL)' },
       midLeft: { icon: 'discovery_engine', title: 'Cross-Project Catalog', sub: 'Federated Agent Catalog' },
       botLeft: { icon: 'firestore_db', title: 'Firestore Route Table', sub: 'Maps Tenant -> Pool or PSC' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Load Balancing' },
@@ -495,7 +495,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     rightZoneSub: 'psc://10.10.0.50 (FinVault) & psc://10.10.0.51 (Retail)',
     rightCards: {
       modelArmor: { icon: 'psc_bridge', title: 'PSC ServiceAttachment', sub: 'Unidirectional Spoke Ingress' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini & Claude 3.7', sub: 'Upgraded 8,000 Thinking Cap' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro & Flash', sub: 'Upgraded 8,000 Thinking Cap' },
       runtime: { icon: 'gemini_agent_platform', title: 'Spoke Agent Engine', sub: 'PSC ServiceAttachment Target' },
       mcp: { icon: 'mcp_servers', title: 'Dedicated Spoke MCP', sub: 'Isolated Inside VPC-SC Spoke' },
       datastore: { icon: 'cloud_kms', title: 'CMEK Spoke AlloyDB', sub: 'Replicated State + CMEK Lock' },
@@ -521,7 +521,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     routingHubTitle: 'Triad Pillar 1: Zero-Trust Cryptographic Security',
     routingHubSub: '5-Hop Context Chain across Ingress, Catalog & Runtime',
     routingCards: {
-      topLeft: { icon: 'load_balancer_cloud_armor', title: 'Hop 1: Edge PEP', sub: 'Header Strip + OBO + DPoP' },
+      topLeft: { icon: 'cloud_armor', title: 'Hop 1: Cloud Armor', sub: 'WAF Header Strip + OBO + DPoP' },
       midLeft: { icon: 'model_armor', title: 'Hop 4: Model Armor', sub: 'Injection 400 + Policy 422 + SDP' },
       botLeft: { icon: 'discovery_engine', title: 'Hop 2: Catalog PDP', sub: 'Discovery Catalog + Tool Prune' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Global Anycast Ingress' },
@@ -562,12 +562,146 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     rightZoneSub: 'Zero Blast Radius + Zero-Downtime Tier Promotion',
     rightCards: {
       modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & IAM PAB', sub: 'Hard Perimeter Isolation' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemma 3 & Claude 3.7', sub: 'Air-Gapped GKE & Dedicated PT' },
+      llm: { icon: 'gke', title: 'Gemma 3 & Gemini 2.5 Pro', sub: 'Air-Gapped GKE & Dedicated PT' },
       runtime: { icon: 'psc_bridge', title: 'PSC Spoke Runtime', sub: '3-Phase Live Tier Upgrade' },
       mcp: { icon: 'mcp_servers', title: 'Dedicated Silo MCP', sub: 'Zero Cross-Project Egress' },
       datastore: { icon: 'cloud_kms', title: 'Cloud KMS CMEK Lock', sub: 'Instant HTTP 423 Kill-Switch' },
       ragLabel: ['Private PSC', 'NAT Bridge'],
       toolLabel: ['Customer-Revocable', 'CMEK Keys'],
+    },
+  },
+
+  // =========================================================================
+  // 8. DOC-REF-07: Multimodal GraphRAG Resource Orchestration with Spanner Graph
+  // =========================================================================
+  {
+    id: 'ref07-multimodal-graphrag-spanner',
+    badge: 'REFERENCE GUIDE • MULTIMODAL GRAPHRAG',
+    title: 'Multimodal GraphRAG Resource Orchestration with Cloud Spanner Graph',
+    subtitle: 'Consolidating PDFs, Audio & Market Charts into Cloud Spanner Graph (ISO GQL + 768-d Vector RRF) via Cloud Run & Agent Engine',
+    topUserTitle: 'Financial Analyst',
+    topUserSub: 'Multimodal Query & Upload UI',
+    step1LeftLabel: 'Request',
+    step7RightLabel: 'Response',
+    outerWrapperLabel: 'VPC Service Controls Multimodal GraphRAG Perimeter',
+    innerWrapperLabel: 'Shared VPC • Sequential Ingestion & Hybrid RRF Query Planes',
+    routingHubTitle: 'Coordinator & Multimodal Ingress Hub',
+    routingHubSub: 'Ingress security, session state & Coordinator Agent routing',
+    routingCards: {
+      topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & Upload Rate Limiting' },
+      midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Multimodal Prompt Guardrails' },
+      botLeft: { icon: 'iap_iam_shield', title: 'IAP & Enterprise OIDC', sub: 'Analyst Tenant Auth' },
+      topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Global HTTPS Ingress' },
+      botRight: { icon: 'cloud_run', title: 'Cloud Run Coordinator', sub: 'Routes Ingestion vs RRF Search' },
+      edgeTopLeft: ['WAF & upload', 'policies'],
+      edgeMidLeft: ['Sanitize', 'prompt'],
+      edgeBotLeft: ['Verify analyst', 'tenant scope'],
+      step2Left: 'Request',
+      step7Mid: 'Response',
+    },
+    govHubTitle: 'Central governance and',
+    govHubTitle2: 'graph lineage hub',
+    govCards: {
+      top: { icon: 'security_command_center', title: 'Security Command', title2: 'Center', sub: 'Data Exfiltration & DLP Posture' },
+      mid: { icon: 'iap_iam_shield', title: 'Central IAM & PAB', sub: 'Interleaved Tenant Graph ACLs' },
+      bot: { icon: 'bigquery_analytics', title: 'Cloud Logging & BQ', sub: 'GQL Hop Depth & RRF Telemetry' },
+    },
+    midStep3Label: ['Dispatch to Ingestion', 'or Hybrid RRF Spoke'],
+    midStep7Label: ['Synthesized RRF', 'citation response'],
+    midGovLabel: ['Graph audit &', 'RRF latency spans'],
+    leftBoundaryLabel: 'Spoke 1: Sequential Multimodal Ingestion Pipeline (Upload → Extract → Graph Upsert)',
+    leftZoneTitle: 'Multimodal Ingestion Spoke',
+    leftZoneSub: 'PDF, audio & chart entity extraction with deterministic entity linking',
+    leftCards: {
+      modelArmor: { icon: 'model_armor', title: 'Model Armor & DLP', sub: 'Redacts PII Before Graph Upsert' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro & Emb', sub: 'Entity Extraction & 768-d Vectors' },
+      runtime: { icon: 'cloud_run', title: 'Extraction & Upsert Agents', sub: 'Sequential Cloud Run Pipeline' },
+      mcp: { icon: 'mcp_servers', title: 'Entity Resolution MCP', sub: 'Canonical Company ID Linker' },
+      datastore: { icon: 'cloud_storage', title: 'Cloud Storage & Spanner', sub: 'Raw Assets & Interleaved Graph' },
+      step4Label: 'Screen asset',
+      step6Label: 'Verify entity triples',
+      step5Label: ['Extract nodes', '& 768-d vectors'],
+      ragLabel: ['Canonical', 'Entity Match'],
+      toolLabel: ['Upsert Nodes', '& GQL Edges'],
+    },
+    rightBoundaryLabel: 'Spoke 2: Hybrid Spanner Graph ISO GQL + ANN Vector RRF Retrieval',
+    rightZoneTitle: 'Hybrid GraphRAG Search Spoke',
+    rightZoneSub: 'Multi-hop ISO GQL traversal fused with ANN cosine similarity via RRF',
+    rightCards: {
+      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Citation & Hallucination Guard' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: 'Multi-Hop Synthesis Engine' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'GraphRAG Search Agent + Memory' },
+      mcp: { icon: 'mcp_servers', title: 'Spanner Graph MCP', sub: 'Bounded ISO GQL + Vector Tool' },
+      datastore: { icon: 'datastore_alloydb_bq', title: 'Cloud Spanner Graph', sub: 'ISO GQL + 768-d RRF Scoring' },
+      ragLabel: ['Reciprocal Rank', 'Fusion (RRF)'],
+      toolLabel: ['3-Hop Bounded', 'ISO GQL Query'],
+    },
+  },
+
+  // =========================================================================
+  // 9. DOC-REF-09: Scalable Multi-Agent Ecosystems with Agent Engine, MCP & A2A
+  // =========================================================================
+  {
+    id: 'ref09-scalable-mcp-a2a-ecosystem',
+    badge: 'REFERENCE GUIDE • AGENT ENGINE, MCP & A2A',
+    title: 'Scalable Multi-Agent Ecosystems: Vertex AI Agent Engine, Stateless MCP & A2A Protocol',
+    subtitle: 'Decoupling Intra-Domain Tool Access (Cloud Run Stateless MCP) from Inter-Agent Delegation (A2A Agent Cards)',
+    topUserTitle: 'Enterprise Caller',
+    topUserSub: 'Root Orchestrator Client',
+    step1LeftLabel: 'Request',
+    step7RightLabel: 'Response',
+    outerWrapperLabel: 'VPC Service Controls Multi-Agent Ecosystem Perimeter',
+    innerWrapperLabel: 'A2A JSON-RPC Mesh & OBO+DPoP Scope Narrowing',
+    routingHubTitle: 'A2A Discovery & Federation Hub',
+    routingHubSub: 'Agent Card registry (/.well-known/agent.json) & OBO token narrowing',
+    routingCards: {
+      topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'Ingress WAF & Rate Control' },
+      midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Cross-Agent Payload Screen' },
+      botLeft: { icon: 'iap_iam_shield', title: 'OBO + DPoP Broker', sub: 'Per-Hop Scope Narrowing' },
+      topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Global A2A Gateway Ingress' },
+      botRight: { icon: 'discovery_engine', title: 'Gemini Enterprise Catalog', sub: 'A2A Agent Card Discovery' },
+      edgeTopLeft: ['WAF & ingress', 'policies'],
+      edgeMidLeft: ['Sanitize A2A', 'task payload'],
+      edgeBotLeft: ['Narrow OBO', 'token scope'],
+      step2Left: 'Request',
+      step7Mid: 'Response',
+    },
+    govHubTitle: 'Central governance and',
+    govHubTitle2: 'circuit-breaker telemetry',
+    govCards: {
+      top: { icon: 'security_command_center', title: 'Security Command', title2: 'Center', sub: 'A2A & MCP Posture Monitoring' },
+      mid: { icon: 'iap_iam_shield', title: 'Central IAM & PAB', sub: 'Workload Identity Federation' },
+      bot: { icon: 'bigquery_analytics', title: 'Cloud Trace & BigQuery', sub: '8s Deadline & 4k Token Budgets' },
+    },
+    midStep3Label: ['Delegate A2A task', 'via Agent Card'],
+    midStep7Label: ['Aggregated multi-agent', 'JSON-RPC result'],
+    midGovLabel: ['Distributed A2A &', 'MCP trace spans'],
+    leftBoundaryLabel: 'Domain Spoke A: Order & Warehouse Inventory Agent (ADK + Stateless MCP)',
+    leftZoneTitle: 'Order & Inventory Domain Agent',
+    leftZoneSub: 'Independent ADK deployment with Stateless Cloud Run MCP Server',
+    leftCards: {
+      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Domain Input/Output Guard' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: '4,000-Token Circuit Breaker' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Order Agent (ADK)', sub: 'Vertex AI Agent Engine' },
+      mcp: { icon: 'mcp_servers', title: 'Inventory MCP Server', sub: 'Stateless Cloud Run SSE Pool' },
+      datastore: { icon: 'bigquery_analytics', title: 'BigQuery & AlloyDB', sub: 'Regional Warehouse Stock Ledger' },
+      step4Label: 'Screen A2A task',
+      step6Label: 'Screen A2A output',
+      step5Label: ['Plan tool', 'invocations'],
+      ragLabel: ['Stateless MCP', 'SSE Call'],
+      toolLabel: ['Parameterized', 'Stock Query'],
+    },
+    rightBoundaryLabel: 'Domain Spoke B: Distributor & Logistics Tracking Agent (A2A Peer)',
+    rightZoneTitle: 'Distributor & Tracking Domain Agent',
+    rightZoneSub: 'Federated A2A peer with partner API circuit breakers',
+    rightCards: {
+      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Partner Payload Sanitization' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Flash', sub: '8-Second SLA Deadline' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Tracking Agent (A2A)', sub: 'Vertex AI Agent Engine' },
+      mcp: { icon: 'mcp_servers', title: 'Logistics MCP Server', sub: 'Stateless Cloud Run Partner API' },
+      datastore: { icon: 'bigquery_analytics', title: 'BigQuery & Spanner', sub: 'Carrier Telemetry & Fallback Cache' },
+      ragLabel: ['Stateless MCP', 'Tool Call'],
+      toolLabel: ['Partner API &', 'Cache Fallback'],
     },
   },
 ];
@@ -647,9 +781,9 @@ export function buildOfficialArchCenterConfigForUseCase(
       outerWrapperLabel: 'Zero-Trust Defense-in-Depth Perimeter (VPC Service Controls + BeyondCorp Enterprise)',
       innerWrapperLabel: 'VPC • 5-Hop Cryptographic Attestation & Semantic Firewall Chain',
       routingHubTitle: 'Hop 1 & Hop 2: Zero-Trust Ingress & Identity Gate',
-      routingHubSub: 'Cloud Armor WAF, Model Armor Screen & Ed25519 Signature Gate',
+      routingHubSub: 'Google Cloud Armor WAF, Model Armor Screen & Ed25519 Signature Gate',
       routingCards: {
-        topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor & IAP', sub: 'mTLS & Context-Aware Access' },
+        topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF, mTLS & Context-Aware IAP' },
         midLeft: { icon: 'model_armor', title: 'Model Armor Shield', sub: 'Prompt Injection & Jailbreak Gate' },
         botLeft: { icon: 'iap_iam_shield', title: 'Cloud KMS HSM', sub: 'Ed25519 Payload Verification' },
         topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Global Anycast TLS 1.3' },
@@ -719,9 +853,9 @@ export function buildOfficialArchCenterConfigForUseCase(
       outerWrapperLabel: 'Google Cloud Production Perimeter (VPC Service Controls + Cloud KMS CMEK)',
       innerWrapperLabel: 'Shared VPC • Multimodal Ingestion, Hybrid GraphRAG & Remediation Mesh',
       routingHubTitle: 'Ingress, Guardrails & ADK Coordinator Hub',
-      routingHubSub: 'Cloud Armor Edge PEP, Model Armor & IncidentCoordinatorAgent',
+      routingHubSub: 'Google Cloud Armor Edge PEP, Model Armor & IncidentCoordinatorAgent',
       routingCards: {
-        topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor & IAP', sub: 'Identity-Aware Edge Access' },
+        topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & Identity-Aware IAP' },
         midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Multimodal Prompt & PII Screen' },
         botLeft: { icon: 'iap_iam_shield', title: 'Apigee X & IAM', sub: 'OAuth 2.0 & Tool Token Broker' },
         topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Global HTTPS Ingress' },
@@ -799,7 +933,7 @@ export function buildOfficialArchCenterConfigForUseCase(
     routingHubTitle: 'Routing & Policy Enforcement Hub (PEP/PDP)',
     routingHubSub: 'Central ingress, Model Armor screening & ADK orchestration',
     routingCards: {
-      topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor & IAP', sub: 'Zero-Trust Edge Access' },
+      topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & Zero-Trust IAP Access' },
       midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Prompt Injection & DLP Filter' },
       botLeft: { icon: 'iap_iam_shield', title: 'Apigee X & IAM', sub: 'OAuth 2.0 & Token Exchange' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Load Balancing' },
@@ -1038,12 +1172,12 @@ export function compileOfficialArchCenterSvg(bp: OfficialArchCenterBlueprintConf
   <path d="M 290 910 L 312 910 L 312 946 L 342 946" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
   <path d="M 290 1146 L 320 1146 L 320 972 L 342 972" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
 
-  <line x1="448" y1="1068" x2="448" y2="1054" stroke="#202124" stroke-width="2"/>
+  <line x1="448" y1="1068" x2="448" y2="1054" stroke="#202124" stroke-width="2" marker-start="url(#arrow)"/>
   <line x1="448" y1="1014" x2="448" y2="1000" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <text x="448" y="1029" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.ragLabel[0])}</text>
   <text x="448" y="1046" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.ragLabel[1])}</text>
 
-  <line x1="448" y1="1218" x2="448" y2="1204" stroke="#202124" stroke-width="2"/>
+  <line x1="448" y1="1218" x2="448" y2="1204" stroke="#202124" stroke-width="2" marker-start="url(#arrow)"/>
   <line x1="448" y1="1158" x2="448" y2="1144" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <text x="448" y="1176" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.toolLabel[0])}</text>
   <text x="448" y="1193" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.toolLabel[1])}</text>
@@ -1065,12 +1199,12 @@ export function compileOfficialArchCenterSvg(bp: OfficialArchCenterBlueprintConf
   <path d="M 834 910 L 856 910 L 856 946 L 886 946" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
   <path d="M 834 1012 L 864 1012 L 864 972 L 886 972" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
 
-  <line x1="992" y1="1068" x2="992" y2="1054" stroke="#202124" stroke-width="2"/>
+  <line x1="992" y1="1068" x2="992" y2="1054" stroke="#202124" stroke-width="2" marker-start="url(#arrow)"/>
   <line x1="992" y1="1014" x2="992" y2="1000" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <text x="992" y="1029" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.ragLabel[0])}</text>
   <text x="992" y="1046" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.ragLabel[1])}</text>
 
-  <line x1="992" y1="1218" x2="992" y2="1204" stroke="#202124" stroke-width="2"/>
+  <line x1="992" y1="1218" x2="992" y2="1204" stroke="#202124" stroke-width="2" marker-start="url(#arrow)"/>
   <line x1="992" y1="1158" x2="992" y2="1144" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <text x="992" y="1176" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.toolLabel[0])}</text>
   <text x="992" y="1193" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.toolLabel[1])}</text>
@@ -1444,16 +1578,16 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
 
   addPointEdge('e_left_ma_run', [290, 910], [342, 944], [[312, 910], [312, 944]], { startArrow: true, endArrow: true, source: 'card_lc_ma', target: 'card_lc_run' });
   addPointEdge('e_left_llm_run', [290, 1146], [342, 976], [[320, 1146], [320, 976]], { startArrow: true, endArrow: true, source: 'card_lc_llm', target: 'card_lc_run' });
-  addPointEdge('e_left_mcp_run_bot', [449, 1068], [449, 1054], [], { endArrow: false, source: 'card_lc_mcp', target: 'lbl_left_rag' });
+  addPointEdge('e_left_mcp_run_bot', [449, 1068], [449, 1054], [], { startArrow: true, endArrow: false, source: 'card_lc_mcp', target: 'lbl_left_rag' });
   addPointEdge('e_left_mcp_run_top', [449, 1014], [449, 1000], [], { endArrow: true, source: 'lbl_left_rag', target: 'card_lc_run' });
-  addPointEdge('e_left_db_mcp_bot', [449, 1218], [449, 1204], [], { endArrow: false, source: 'card_lc_db', target: 'lbl_left_tool' });
+  addPointEdge('e_left_db_mcp_bot', [449, 1218], [449, 1204], [], { startArrow: true, endArrow: false, source: 'card_lc_db', target: 'lbl_left_tool' });
   addPointEdge('e_left_db_mcp_top', [449, 1158], [449, 1144], [], { endArrow: true, source: 'lbl_left_tool', target: 'card_lc_mcp' });
 
   addPointEdge('e_right_ma_run', [834, 910], [886, 944], [[856, 910], [856, 944]], { startArrow: true, endArrow: true, source: 'card_sc_ma', target: 'card_sc_run' });
   addPointEdge('e_right_llm_run', [834, 1012], [886, 976], [[864, 1012], [864, 976]], { startArrow: true, endArrow: true, source: 'card_sc_llm', target: 'card_sc_run' });
-  addPointEdge('e_right_mcp_run_bot', [993, 1068], [993, 1054], [], { endArrow: false, source: 'card_sc_mcp', target: 'lbl_right_rag' });
+  addPointEdge('e_right_mcp_run_bot', [993, 1068], [993, 1054], [], { startArrow: true, endArrow: false, source: 'card_sc_mcp', target: 'lbl_right_rag' });
   addPointEdge('e_right_mcp_run_top', [993, 1014], [993, 1000], [], { endArrow: true, source: 'lbl_right_rag', target: 'card_sc_run' });
-  addPointEdge('e_right_db_mcp_bot', [993, 1218], [993, 1204], [], { endArrow: false, source: 'card_sc_db', target: 'lbl_right_tool' });
+  addPointEdge('e_right_db_mcp_bot', [993, 1218], [993, 1204], [], { startArrow: true, endArrow: false, source: 'card_sc_db', target: 'lbl_right_tool' });
   addPointEdge('e_right_db_mcp_top', [993, 1158], [993, 1144], [], { endArrow: true, source: 'lbl_right_tool', target: 'card_sc_mcp' });
 
   const cells = [...bgCells, ...edgeCells, ...fgCells];

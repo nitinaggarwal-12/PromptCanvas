@@ -698,7 +698,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Looker Performance Analytics, Cloud Run & Firebase Cloud Messaging automated alerts"
     ],
     keyTech: ["Gemini Pro Vision", "Gemini Ultra/High-Capability", "Vertex AI", "Dialogflow CX", "BigQuery", "Looker", "Firebase Auth", "Cloud Run"],
-    thumbnail: "/templates/IND-FINTECH-01_IND-FINTECH-03_automated_personalized_financial_advising.png",
+    thumbnail: "/templates/canonical_35.png",
     promptSummary: "Fintech Advising Platform: User Inputs -> Enterprise App on App Engine -> Ingestion (GCS/BigQuery/PubSub) -> Vertex AI & Gemini Platform -> Analytics & Actions (BigQuery/GCS/Looker/FCM)."
   },
   {
@@ -959,7 +959,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Executive scorecard with Rolled First Pass Yield (%C/A) analytics"
     ],
     keyTech: ["Gemini 2.5 Flash", "Dataflow Streaming VSM", "BigQuery Analytics", "Looker VSM Cockpit", "Jira/ServiceNow API"],
-    thumbnail: "/templates/P1-GOV-C-03_value_stream_map_vsm.png",
+    thumbnail: "/templates/canonical_50.png",
     promptSummary: "Enterprise Value Stream Map: Customer Ingress -> Order & Requirements -> Automated AI Build/Test -> Deployment Pipeline -> Customer Delivery & Lead Time Timeline."
   },
   {
@@ -978,12 +978,12 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Executive transformation ROI metrics: 92% cycle time reduction, 100% compliance"
     ],
     keyTech: ["Gemini 2.5 Flash", "Cloud Run", "Vertex AI", "BigQuery", "Eventarc", "Looker Studio"],
-    thumbnail: "/templates/P1-GOV-C-04_as_is_vs_to_be_process_flow.png",
+    thumbnail: "/templates/canonical_67.png",
     promptSummary: "As-Is vs To-Be Modernization Flow: Top As-Is Legacy Lane (Manual Silos) vs Bottom To-Be Modern Lane (Serverless GCP + Gemini AI) with KPI Delta Callouts."
   },
   {
     id: "legacy_data_dependency_map",
-    name: "Google Cloud Discovery & Assessment: Legacy Silos to Modern Migration Waves (P1-APP-L-01)",
+    name: "Google Cloud Discovery & Assessment: Legacy Silos to Modern Migration Waves",
     categoryId: "cloud_infra",
     categoryName: "Cloud & Zero-Trust Infrastructure",
     badge: "Discovery",
@@ -1002,7 +1002,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "gcp_landing_zone_vpc",
-    name: "Google Cloud Infrastructure: Landing Zone & Shared VPC Topology (P4-SEC-P-02)",
+    name: "Google Cloud Infrastructure: Landing Zone & Shared VPC Topology",
     categoryId: "cloud_infra",
     categoryName: "Cloud & Zero-Trust Infrastructure",
     badge: "Networking",
@@ -1016,12 +1016,12 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Zero-Trust Perimeter with VPC-SC, Cloud KMS HSM Dual Rings, SCC, and Org Policies"
     ],
     keyTech: ["Shared VPC Host Project", "100G Dedicated Interconnect", "Cloud Router BGP", "Private Service Connect (PSC)", "Cloud Armor WAF", "GKE Autopilot", "VPC-SC Perimeter", "Cloud KMS HSM", "Security Command Center", "Gemini 2.5 Flash"],
-    thumbnail: "/templates/P4-SEC-P-02_gcp_landing_zone_vpc_map.png",
+    thumbnail: "/templates/canonical_38.png",
     promptSummary: "GCP Landing Zone & Shared VPC: On-Prem & Transit 100G -> Shared VPC Host Project Hub -> Workload Spoke Projects -> Zero-Trust Perimeter (VPC-SC) -> Observability & Management."
   },
   {
     id: "enterprise_agent_runtime",
-    name: "Enterprise Agent Runtime Platform (P4-AI-P-03)",
+    name: "Enterprise Agent Runtime Platform",
     categoryId: "ai_agentic",
     categoryName: "AI & Agentic Systems Architecture",
     badge: "Agent Runtime",
@@ -1040,7 +1040,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "ai_agent_approval_workflow",
-    name: "AI Agent Approval Workflow & Human-in-the-Loop Governance (P4-GOV-L-05)",
+    name: "AI Agent Approval Workflow & Human-in-the-Loop Governance",
     categoryId: "devsecops",
     categoryName: "DevSecOps & Platform Engineering",
     badge: "AI Governance",
@@ -1059,7 +1059,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "incident_triage_swimlane",
-    name: "Incident Triage & Escalation Swimlane (P5-GOV-L-04)",
+    name: "Incident Triage & Escalation Swimlane",
     categoryId: "devsecops",
     categoryName: "DevSecOps & Platform Engineering",
     badge: "SRE Incident Ops",
@@ -1078,7 +1078,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "ecommerce_retail",
-    name: "OmniChannel Intelligent E-Commerce Platform (IND-RETAIL-04)",
+    name: "OmniChannel Intelligent E-Commerce Platform",
     categoryId: "industry_solutions",
     categoryName: "Industry Specialized Solutions",
     badge: "Retail AI",
@@ -1097,7 +1097,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "hr_talent_ai",
-    name: "WorkforceAI HR Talent & People Intelligence (IND-HR-06)",
+    name: "WorkforceAI HR Talent & People Intelligence",
     categoryId: "industry_solutions",
     categoryName: "Industry Specialized Solutions",
     badge: "HR Talent AI",
@@ -1116,7 +1116,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "smart_factory_iot",
-    name: "Smart Factory Industry 4.0 IoT & Predictive Maintenance (IND-MFG-05)",
+    name: "Smart Factory Industry 4.0 IoT & Predictive Maintenance",
     categoryId: "industry_solutions",
     categoryName: "Industry Specialized Solutions",
     badge: "Industry 4.0",
@@ -1135,7 +1135,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   },
   {
     id: "c4_component_lld",
-    name: "C4 Level 3 Component Diagram & Microservice LLD (ARCH-C4-03)",
+    name: "C4 Level 3 Component Diagram & Microservice LLD",
     categoryId: "microservices_flow",
     categoryName: "Microservices & Application Flow",
     badge: "C4 L3 LLD",
@@ -1149,12 +1149,12 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "PostgreSQL repository pattern, Redis caching, and AlloyDB / PubSub integration"
     ],
     keyTech: ["Cloud Run Microservices", "JWT Auth Interceptor", "SAGA Domain Service", "Outbox Pattern", "AlloyDB PostgreSQL", "Gemini 2.5 Flash"],
-    thumbnail: "/templates/ARCH-C4-02_ARCH-C4-03_c4_component_lld.png",
+    thumbnail: "/templates/canonical_46.png",
     promptSummary: "C4 Level 3 Component LLD: Ingress Controllers -> Auth Interceptors -> SAGA Domain Services -> Repositories & Outbox -> AlloyDB & Pub/Sub."
   },
   {
     id: "bpmn_process_workflow",
-    name: "BPMN 2.0 Business Process & Autonomous Workflow (ARCH-BPMN-01)",
+    name: "BPMN 2.0 Business Process & Autonomous Workflow",
     categoryId: "business_strategy",
     categoryName: "Business Strategy & Alignment",
     badge: "BPMN 2.0",
@@ -1168,12 +1168,12 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Gemini 2.5 Flash automated fraud scoring & SAP ERP financial posting"
     ],
     keyTech: ["BPMN 2.0 Engine", "User Persona Lane", "Gemini 2.5 Flash Service Task", "XOR Branching Gateways", "SAP ERP Posting"],
-    thumbnail: "/templates/ARCH-BPMN-03_ARCH-BPMN-01_bpmn_process_workflow.png",
+    thumbnail: "/templates/canonical_67.png",
     promptSummary: "BPMN 2.0 Process Workflow: User Submit -> Document AI OCR -> Gemini Fraud Scorer -> XOR Risk Gateway -> Auto-Approve -> SAP ERP Post -> End Event."
   },
   {
     id: "threat_modeling_stride",
-    name: "STRIDE Zero-Trust Threat Model & Boundary Map (ARCH-SEC-01)",
+    name: "STRIDE Zero-Trust Threat Model & Boundary Map",
     categoryId: "devsecops",
     categoryName: "DevSecOps & Platform Engineering",
     badge: "STRIDE Threat Model",
@@ -1187,12 +1187,12 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Trust boundary: GKE gVisor enclaves, Workload Identity, VPC-SC, and Cloud KMS HSM"
     ],
     keyTech: ["Cloud Armor WAF", "Model Armor", "Identity-Aware Proxy", "GKE gVisor", "Workload Identity", "VPC-SC Perimeter", "Cloud KMS HSM"],
-    thumbnail: "/templates/ARCH-SEC-04_ARCH-SEC-01_threat_modeling_stride.png",
+    thumbnail: "/templates/canonical_44.png",
     promptSummary: "STRIDE Threat Model: Untrusted Attack Vectors -> DMZ & Model Armor -> Sandboxed GKE Compute -> Secure Data Enclave & VPC-SC Perimeter."
   },
   {
     id: "data_lineage_provenance",
-    name: "Column-Level Data Lineage & Provenance Graph (ARCH-DAT-01)",
+    name: "Column-Level Data Lineage & Provenance Graph",
     categoryId: "data_pipelines",
     categoryName: "Modern Data & Analytics Pipelines",
     badge: "Data Governance",
@@ -1206,12 +1206,12 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Upstream schema change impact analysis and BCBS 239 / GDPR audit compliance export"
     ],
     keyTech: ["BigQuery", "Dataform / dbt", "Dataplex Lineage Auto-Discovery", "Sensitive Data Protection DLP", "BI Engine", "Looker Studio"],
-    thumbnail: "/templates/ARCH-DAT-05_ARCH-DAT-01_data_lineage_provenance.png",
+    thumbnail: "/templates/canonical_42.png",
     promptSummary: "Column-Level Data Lineage: Raw Bronze Tables -> Dataform Silver Models -> Curated Gold Marts -> Looker BI Metrics & Gemini 2.5 Flash RAG."
   },
   {
     id: "healthcare_fhir_hl7",
-    name: "Google Cloud Healthcare & Life Sciences FHIR / HL7 Pipeline (IND-HEALTH-01)",
+    name: "Google Cloud Healthcare & Life Sciences FHIR / HL7 Pipeline",
     categoryId: "industry_solutions",
     categoryName: "Industry Specialized Solutions",
     badge: "Healthcare & Life Sciences",
@@ -1225,7 +1225,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Gemini 2.5 Flash clinical reasoner, drug interaction safety, and OMOP BigQuery lakehouse"
     ],
     keyTech: ["Cloud Healthcare API", "HL7v2 & FHIR R4", "DLP PHI Redaction", "Cloud KMS HSM CMEK", "Gemini 2.5 Flash Clinical Reasoner", "OMOP CDM BigQuery"],
-    thumbnail: "/templates/IND-HEALTH-07_IND-HEALTH-01_healthcare_fhir_hl7.png",
+    thumbnail: "/templates/canonical_49.png",
     promptSummary: "Healthcare FHIR / HL7 Pipeline: Hospital EHR Ingress -> Cloud Healthcare API -> DLP PHI De-Identification -> Gemini Clinical AI -> OMOP BigQuery Lakehouse & Physician Cockpit."
   }
 ];

@@ -29,7 +29,7 @@ import {
   getArchitectureHierarchy,
   ArchitectureHierarchyPhase,
   ArchitectureHierarchyDomain
-} from '@/lib/architectureHierarchy';
+} from '@/lib/architectureHierarchyCatalog';
 import { BlueprintKnowledgeItem } from '@/lib/blueprintKnowledgeMatrix';
 import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 import { useTheme } from '@/lib/themeContext';
@@ -61,6 +61,7 @@ export const TopDownTemplatesExplorer: React.FC<TopDownTemplatesExplorerProps> =
   );
 
   const hierarchy = getArchitectureHierarchy();
+  const totalHierarchyBlueprintsCount = hierarchy.reduce((sum, p) => sum + p.totalBlueprintsCount, 0);
 
   const toggleTreeNode = (nodeId: string) => {
     setExpandedTreeNodes((prev) => {
@@ -170,7 +171,7 @@ export const TopDownTemplatesExplorer: React.FC<TopDownTemplatesExplorerProps> =
             <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
               selectedPhaseFilter === 'ALL' ? 'bg-black/20 text-bg-dark' : isLight ? 'bg-slate-200 text-slate-700' : 'bg-slate-800 text-slate-400'
             }`}>
-              50
+              {totalHierarchyBlueprintsCount}
             </span>
           </button>
 
@@ -305,7 +306,7 @@ export const TopDownTemplatesExplorer: React.FC<TopDownTemplatesExplorerProps> =
               No blueprints match your filter criteria
             </p>
             <p className="text-xs text-slate-400">
-              Try resetting the Phase or Domain filters to view all 50 enterprise blueprints.
+              Try resetting the Phase or Domain filters to view all {totalHierarchyBlueprintsCount} enterprise blueprints.
             </p>
           </div>
           <button

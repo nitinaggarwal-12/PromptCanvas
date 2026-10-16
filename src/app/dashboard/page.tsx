@@ -121,19 +121,15 @@ export interface CategoryGroup {
 }
 
 const CATEGORY_GROUPS: CategoryGroup[] = [
-  { id: 'all', name: 'All 77 Blueprints', icon: '🌐', count: 77, familyFilter: null },
-  { id: 'reference', name: 'Reference Architectures', icon: '🏛️', count: 17, familyFilter: 'Reference Architectures' },
-  { id: 'flow', name: 'Operational Flowcharts & AI', icon: '⚡', count: 13, familyFilter: 'Flow' },
-  { id: 'infographic', name: 'Executive Infographics', icon: '📊', count: 15, familyFilter: 'Infographic' },
-  { id: 'understand', name: 'Understand & Context', icon: '🧭', count: 5, familyFilter: 'Understand' },
-  { id: 'process', name: 'Process & Workflows', icon: '🔄', count: 4, familyFilter: 'Process' },
-  { id: 'whiteboard', name: 'Whiteboard (Dry-Erase Sketch)', icon: '🖍️', count: 77, familyFilter: null },
-  { id: 'structure', name: 'Structure & C4 Model', icon: '🏗️', count: 4, familyFilter: 'Structure' },
-  { id: 'infrastructure', name: 'Infrastructure & Network', icon: '🌐', count: 4, familyFilter: 'Infrastructure' },
-  { id: 'security', name: 'Security & Governance', icon: '🛡️', count: 4, familyFilter: 'Security & Governance' },
-  { id: 'operations', name: 'Delivery & Operations', icon: '🚀', count: 6, familyFilter: 'Delivery & Operations' },
-  { id: 'analysis', name: 'Analysis & Planning', icon: '📈', count: 3, familyFilter: 'Analysis & Planning' }
+  { id: 'all', name: `All ${CANONICAL_TEMPLATES.length} Blueprints`, icon: '🌐', count: CANONICAL_TEMPLATES.length, familyFilter: null },
+  { id: 'reference', name: 'Reference Architectures', icon: '🏛️', count: CANONICAL_TEMPLATES.filter((t) => t.family === 'Reference Architectures').length, familyFilter: 'Reference Architectures' },
+  { id: 'structure', name: 'Structure & GenAI Core', icon: '🏗️', count: CANONICAL_TEMPLATES.filter((t) => t.family === 'Structure').length, familyFilter: 'Structure' },
+  { id: 'flow', name: 'Operational Flowcharts & Streaming', icon: '⚡', count: CANONICAL_TEMPLATES.filter((t) => t.family === 'Flow').length, familyFilter: 'Flow' },
+  { id: 'infrastructure', name: 'Infrastructure & Network', icon: '🌐', count: CANONICAL_TEMPLATES.filter((t) => t.family === 'Infrastructure').length, familyFilter: 'Infrastructure' },
+  { id: 'security', name: 'Security & Governance', icon: '🛡️', count: CANONICAL_TEMPLATES.filter((t) => t.family === 'Security & Governance').length, familyFilter: 'Security & Governance' },
+  { id: 'operations', name: 'Delivery & Operations', icon: '🚀', count: CANONICAL_TEMPLATES.filter((t) => t.family === 'Delivery & Operations').length, familyFilter: 'Delivery & Operations' }
 ];
+
 
 // Detail Level Definitions
 const DETAIL_LEVELS: { id: AbstractionDetailLevel; name: string; title: string; desc: string }[] = [

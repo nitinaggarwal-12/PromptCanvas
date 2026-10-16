@@ -356,7 +356,7 @@ export const BlueprintCatalogModal: React.FC<BlueprintCatalogModalProps> = ({
                 <th className="p-4 font-extrabold w-48">Where to Use</th>
                 <th className="p-4 font-extrabold w-56">Personas</th>
                 <th className="p-4 font-extrabold">🚀 Big Tech (Google / Stripe)</th>
-                <th className="p-4 font-extrabold">💼 Management Consulting (McKinsey)</th>
+                <th className="p-4 font-extrabold">💼 Executive Value &amp; Strategy Readout</th>
               </tr>
             </thead>
             <tbody className={`divide-y text-xs ${

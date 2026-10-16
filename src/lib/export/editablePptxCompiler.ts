@@ -1753,11 +1753,13 @@ export async function exportDrawioToEditablePptx(
 
   const slide2 = pptx.addSlide();
   const archSecForFig = findDocSection(docGuide, 'architecture') || docGuide?.sections[0];
-  const figTitleText = archSecForFig?.inlineDiagram?.title || diagramName;
-  const figCaptionText =
+  const rawFigTitleText = archSecForFig?.inlineDiagram?.title || diagramName;
+  const figTitleText = rawFigTitleText.replace(/^Figure\s*\d+\s*[:.]\s*/i, '').trim();
+  const rawFigCaptionText =
     archSecForFig?.inlineDiagram?.caption ||
     docGuide?.subtitle ||
     `${diagramName} — Official Google Cloud Architecture Center Hub-and-Spoke (#78).`;
+  const figCaptionText = rawFigCaptionText.replace(/^Figure\s*\d+\s*[:.]\s*/i, '').trim();
 
   if (docGuide || isArchCenter78 || shouldIncludeGuide) {
     addDevSiteArticleSheet(slide2, 'Architecture  ›  Figure 1', 'Page 2 of 6');
@@ -1880,6 +1882,19 @@ export async function exportDrawioToEditablePptx(
     }
   }
 
+  const occupiedSlide2Boxes: { x: number; y: number; w: number; h: number }[] = [];
+  const boxesOverlapSlide2 = (
+    a: { x: number; y: number; w: number; h: number },
+    b: { x: number; y: number; w: number; h: number },
+    pad = 0.01
+  ) =>
+    !(
+      a.x + a.w + pad <= b.x ||
+      b.x + b.w + pad <= a.x ||
+      a.y + a.h + pad <= b.y ||
+      b.y + b.h + pad <= a.y
+    );
+
   const renderVertexNode = async (node: ParsedMxCell) => {
     // Skip hdr_title_box inside the diagram canvas because the title is already in the top header bar
     if (node.id === 'hdr_title_box') {
@@ -1946,6 +1961,10 @@ export async function exportDrawioToEditablePptx(
       parentIds.has(node.id) ||
       style.verticalAlign === 'top' ||
       (node.width >= 260 && node.height >= 160 && layout.kind === 'standard');
+
+    if (!isContainer && !isTextCallout) {
+      occupiedSlide2Boxes.push({ x: bx, y: by, w: bw, h: bh });
+    }
 
     const fillColor = normalizeHexColor(rawFill, isDarkDiagram ? '1E293B' : 'FFFFFF');
     const rawStrokeNorm = normalizeHexColor(rawStroke, isDarkDiagram ? '475569' : 'DADCE0');
@@ -2149,9 +2168,12 @@ export async function exportDrawioToEditablePptx(
 
     // 4B. Render Single-Row Table Card (e.g., Official #78 Service Card with Left Icon + Title/Subtitle)
     if (layout.kind === 'table-card') {
-      let leftPad = layout.stepBadge ? 0.22 : 0.04;
-      let rightPad = 0.04;
-      const cardIconSize = Math.min(0.22, bh * 0.64, bw * 0.24);
+      const isCompactCard = bh <= 0.40 || bw <= 1.30;
+      let leftPad = layout.stepBadge ? (isCompactCard ? 0.18 : 0.22) : isCompactCard ? 0.025 : 0.04;
+      let rightPad = isCompactCard ? 0.015 : 0.04;
+      const cardIconSize = isCompactCard
+        ? Math.min(0.165, bh * 0.50, bw * 0.18)
+        : Math.min(0.22, bh * 0.64, bw * 0.24);
 
       if (layout.leftIconSvg) {
         const lPng = await renderInlineSvgToPngDataUrl(layout.leftIconSvg, 128, 128);
@@ -2166,7 +2188,7 @@ export async function exportDrawioToEditablePptx(
             Number(cardIconSize.toFixed(3)),
             Number(cardIconSize.toFixed(3))
           );
-          leftPad += cardIconSize + 0.04;
+          leftPad += cardIconSize + (isCompactCard ? 0.025 : 0.04);
         }
       }
 
@@ -2183,7 +2205,7 @@ export async function exportDrawioToEditablePptx(
             Number(cardIconSize.toFixed(3)),
             Number(cardIconSize.toFixed(3))
           );
-          rightPad += cardIconSize + 0.04;
+          rightPad += cardIconSize + (isCompactCard ? 0.025 : 0.04);
         }
       }
 
@@ -2209,9 +2231,8 @@ export async function exportDrawioToEditablePptx(
               ]
             : layout.bodyLines;
 
-        const isCompactCard = bh <= 0.38 || bw <= 1.25;
-        const cardTitlePt = isCompactCard ? 5.0 : 5.8;
-        const cardSubPt = isCompactCard ? 4.3 : 4.9;
+        const cardTitlePt = isCompactCard ? 4.35 : 5.8;
+        const cardSubPt = isCompactCard ? 3.75 : 4.9;
 
         const textRuns: PptxGenJS.TextProps[] = effectiveBodyLines.map((line, idx) => ({
           text: line.text,
@@ -2225,14 +2246,14 @@ export async function exportDrawioToEditablePptx(
 
         slide2.addText(textRuns, {
           x: Number((bx + leftPad).toFixed(3)),
-          y: Number((by + 0.01).toFixed(3)),
+          y: Number((by + 0.006).toFixed(3)),
           w: Number(Math.max(0.18, bw - leftPad - rightPad).toFixed(3)),
-          h: Number(Math.max(0.14, bh - 0.02).toFixed(3)),
+          h: Number(Math.max(0.14, bh - 0.012).toFixed(3)),
           align: layout.textAlign || 'left',
           valign: 'middle',
           margin: 0,
           fit: 'shrink',
-          lineSpacingMultiple: 0.86,
+          lineSpacingMultiple: 0.88,
           fontFace: 'Arial',
         });
       }
@@ -2313,7 +2334,11 @@ export async function exportDrawioToEditablePptx(
     const leftTextPad = layout.stepBadge ? 0.22 : hasStandaloneIcon && !isContainer ? 0.24 : 0.05;
 
     const isTopFullWidthContainer =
-      node.id === 'enclave_top_shared' || node.id === 'enclave_mid_vpc' || (isContainer && node.width >= 950);
+      node.id === 'enclave_top_shared' ||
+      node.id === 'enclave_mid_vpc' ||
+      node.id === 'wrapper_shared_hubs' ||
+      node.id === 'wrapper_vpc' ||
+      (isContainer && node.width >= 950);
     const isSpokeOuterWrapper =
       node.id === 'wrapper_left_pab' ||
       node.id === 'wrapper_right_pab' ||
@@ -2324,14 +2349,21 @@ export async function exportDrawioToEditablePptx(
 
     let effectiveContainerLines = layout.bodyLines;
     if (isTopFullWidthContainer || isSpokeOuterWrapper) {
-      effectiveContainerLines = [layout.bodyLines[0]];
+      let cleanHeaderTitle = layout.bodyLines[0].text;
+      if (cleanHeaderTitle.length > 44) {
+        cleanHeaderTitle = cleanHeaderTitle
+          .replace(/\s*\([^)]*\)\s*$/g, '')
+          .replace(/\s*•\s*[^•]+$/g, '')
+          .trim();
+      }
+      effectiveContainerLines = [{ ...layout.bodyLines[0], text: cleanHeaderTitle }];
     }
 
     let containerTitlePt = 5.4;
     let containerSubPt = 4.5;
     if (isTopFullWidthContainer) {
-      containerTitlePt = 4.6;
-      containerSubPt = 4.1;
+      containerTitlePt = 4.2;
+      containerSubPt = 3.9;
     } else if (isSpokeOuterWrapper) {
       containerTitlePt = 3.85;
       containerSubPt = 3.6;
@@ -2358,15 +2390,17 @@ export async function exportDrawioToEditablePptx(
 
     // Cap top full-width container header width and spoke outer wrapper header width so they never cross vertical trunk arrows
     const headerMaxW = isTopFullWidthContainer
-      ? Math.min(bw * 0.44, 2.45)
+      ? Math.min(bw * 0.42, 2.32)
       : isSpokeOuterWrapper
         ? Math.min(bw * 0.65, 1.92)
         : Math.max(0.18, bw - leftTextPad - 0.04);
 
     const headerBoxH = isContainer
-      ? effectiveContainerLines.length === 1
-        ? 0.16
-        : Math.min(0.28, bh * 0.24)
+      ? isTopFullWidthContainer || isSpokeOuterWrapper
+        ? 0.115
+        : effectiveContainerLines.length === 1
+          ? 0.15
+          : Math.min(0.28, bh * 0.24)
       : Math.max(0.12, bh - 0.02);
 
     const textAlign: 'left' | 'center' | 'right' =
@@ -2374,24 +2408,40 @@ export async function exportDrawioToEditablePptx(
         ? 'left'
         : (style.align as 'left' | 'center' | 'right') || (isContainer ? 'left' : 'center');
 
+    const hdrY = Number(
+      (by + (isTopFullWidthContainer || isSpokeOuterWrapper ? 0.008 : isContainer ? 0.02 : 0.01)).toFixed(3)
+    );
+    if (isContainer) {
+      occupiedSlide2Boxes.push({
+        x: Number((bx + leftTextPad).toFixed(3)),
+        y: hdrY,
+        w: Number(headerMaxW.toFixed(3)),
+        h: Number(headerBoxH.toFixed(3)),
+      });
+    }
+
     slide2.addText(runs, {
       x: Number((bx + leftTextPad).toFixed(3)),
-      y: Number((by + (isContainer ? 0.02 : 0.01)).toFixed(3)),
+      y: hdrY,
       w: Number(headerMaxW.toFixed(3)),
       h: Number(headerBoxH.toFixed(3)),
       align: textAlign,
       valign: isContainer ? 'top' : 'middle',
       margin: 0,
       fit: 'shrink',
+      wrap: !(isTopFullWidthContainer || isSpokeOuterWrapper),
       lineSpacingMultiple: 0.88,
       fontFace: 'Arial',
     });
   };
 
-  // Separate background/zone containers from foreground cards & callout badges so connector lines NEVER cross over cards or labels
+  // Separate background/zone containers, standalone text callout labels, and foreground cards
   const backgroundVertices: ParsedMxCell[] = [];
+  const textCalloutVertices: ParsedMxCell[] = [];
   const foregroundVertices: ParsedMxCell[] = [];
   for (const node of vertices) {
+    if (node.id === 'hdr_title_box') continue;
+    if ((node.id === 'bg' || node.id.includes('bg')) && node.width >= 700 && node.height >= 400) continue;
     const isBgOrZone =
       parentIds.has(node.id) ||
       node.id.startsWith('gcp_') ||
@@ -2400,8 +2450,14 @@ export async function exportDrawioToEditablePptx(
       node.id.startsWith('wrapper_') ||
       node.id.startsWith('spoke_') ||
       (node.width >= 260 && node.height >= 160);
+    const isStandaloneLabel =
+      !isBgOrZone &&
+      node.id !== 'actor_top_user' &&
+      (node.id.startsWith('lbl_') || (node.style.text === '1' && node.extractedSvgs.length === 0 && !extractInlineImgSrc(node.value)));
     if (isBgOrZone) {
       backgroundVertices.push(node);
+    } else if (isStandaloneLabel) {
+      textCalloutVertices.push(node);
     } else {
       foregroundVertices.push(node);
     }
@@ -2415,6 +2471,22 @@ export async function exportDrawioToEditablePptx(
   // ============================================================================
   // PASS 2: RENDER ALL CONNECTOR EDGES & FREE-FLOATING ARROWS (BEHIND FOREGROUND CARDS & STEP CIRCLES)
   // ============================================================================
+  const pendingEdgeLabels: { lbl: string; midX: number; midY: number }[] = [];
+  const seenEdgeLabelPositions = new Set<string>();
+
+  for (const tv of textCalloutVertices) {
+    const { fullText } = cleanHtmlToPlainText(tv.value);
+    const lbl = fullText.replace(/\s+/g, ' ').trim();
+    if (!lbl) continue;
+    const midX = toSlideX(tv.absX + tv.width / 2);
+    const midY = toSlideY(tv.absY + tv.height / 2);
+    const key = `${lbl.toLowerCase()}@${midX.toFixed(1)},${midY.toFixed(1)}`;
+    if (!seenEdgeLabelPositions.has(key)) {
+      seenEdgeLabelPositions.add(key);
+      pendingEdgeLabels.push({ lbl, midX, midY });
+    }
+  }
+
   const edges = cells.filter((c) => c.edge);
   for (const edge of edges) {
     const src = cellMap.get(edge.source || '');
@@ -2567,29 +2639,72 @@ export async function exportDrawioToEditablePptx(
       const pB = allPoints[midIdx];
       const midX = toSlideX((pA.x + pB.x) / 2);
       const midY = toSlideY((pA.y + pB.y) / 2);
-      const lblW = Math.max(0.32, Math.min(1.45, edgeLabel.length * 0.046 + 0.08));
-      const lblH = 0.14;
-
-      slide2.addText(edgeLabel, {
-        x: Number((midX - lblW / 2).toFixed(3)),
-        y: Number((midY - lblH / 2).toFixed(3)),
-        w: Number(lblW.toFixed(3)),
-        h: lblH,
-        fill: { color: isDarkDiagram ? diagramBgHex : 'FFFFFF' },
-        fontSize: 5.4,
-        bold: true,
-        color: isDarkDiagram ? 'F8FAFC' : '202124',
-        align: 'center',
-        valign: 'middle',
-        margin: [0, 2, 0, 2],
-        fontFace: 'Arial',
-      });
+      const key = `${edgeLabel.toLowerCase()}@${midX.toFixed(1)},${midY.toFixed(1)}`;
+      if (!seenEdgeLabelPositions.has(key)) {
+        seenEdgeLabelPositions.add(key);
+        pendingEdgeLabels.push({ lbl: edgeLabel, midX, midY });
+      }
     }
   }
 
-  // PASS 3: Render Foreground Service Cards, Actor Cards, Blue Step Circles (1..7) & Floating Labels ON TOP OF Connectors
+  // PASS 3: Render Foreground Service Cards, Actor Cards, and Blue Step Circles (1..7) ON TOP OF Connectors
   for (const node of foregroundVertices) {
     await renderVertexNode(node);
+  }
+
+  // PASS 4: Render Opaque White Pill Callout & Edge Labels with 7-Way AABB De-Collision ON TOP OF Lines & Cards
+  for (const item of pendingEdgeLabels) {
+    const pillW = Number(Math.min(0.86, Math.max(0.38, item.lbl.length * 0.027 + 0.08)).toFixed(3));
+    const pillH = 0.125;
+    const candidateOffsets = [
+      { dx: 0, dy: 0 },
+      { dx: 0, dy: -0.14 },
+      { dx: 0, dy: 0.14 },
+      { dx: -0.18, dy: 0 },
+      { dx: 0.18, dy: 0 },
+      { dx: 0, dy: -0.26 },
+      { dx: 0, dy: 0.26 },
+    ];
+    let placedBox: { x: number; y: number; w: number; h: number } | null = null;
+    for (const off of candidateOffsets) {
+      const cand = {
+        x: Number((item.midX - pillW / 2 + off.dx).toFixed(3)),
+        y: Number((item.midY - pillH / 2 + off.dy).toFixed(3)),
+        w: pillW,
+        h: pillH,
+      };
+      const collides = occupiedSlide2Boxes.some((ob) => boxesOverlapSlide2(cand, ob, 0.008));
+      if (!collides) {
+        placedBox = cand;
+        break;
+      }
+    }
+    if (!placedBox) {
+      placedBox = {
+        x: Number((item.midX - pillW / 2).toFixed(3)),
+        y: Number((item.midY - pillH / 2).toFixed(3)),
+        w: pillW,
+        h: pillH,
+      };
+    }
+    occupiedSlide2Boxes.push(placedBox);
+    slide2.addText(item.lbl, {
+      shape: pptx.ShapeType.roundRect,
+      x: placedBox.x,
+      y: placedBox.y,
+      w: placedBox.w,
+      h: placedBox.h,
+      rectRadius: 0.03,
+      fill: { color: isDarkDiagram ? diagramBgHex : 'FFFFFF' },
+      line: { color: 'DADCE0', width: 0.4 },
+      fontSize: 4.2,
+      bold: true,
+      color: isDarkDiagram ? 'F8FAFC' : '202124',
+      align: 'center',
+      valign: 'middle',
+      margin: 0,
+      fontFace: 'Arial',
+    });
   }
 
   // ============================================================================
@@ -2614,10 +2729,10 @@ export async function exportDrawioToEditablePptx(
 
     slideArch.addText('The architecture consists of the following components:', {
       x: 0.82,
-      y: 0.68,
+      y: 0.66,
       w: 11.68,
-      h: 0.24,
-      fontSize: 9.4,
+      h: 0.22,
+      fontSize: 9.2,
       color: '3C4043',
       valign: 'middle',
       fontFace: 'Arial',
@@ -2627,8 +2742,8 @@ export async function exportDrawioToEditablePptx(
     const tblX = 0.82;
     const col1W = 3.16;
     const col2W = 8.52;
-    const tblHdrY = 0.96;
-    const tblHdrH = 0.30;
+    const tblHdrY = 0.92;
+    const tblHdrH = 0.28;
 
     slideArch.addShape(pptx.ShapeType.rect, {
       x: tblX,
@@ -2672,8 +2787,11 @@ export async function exportDrawioToEditablePptx(
 
     const compGroups = (archSec?.componentGroupsTable || []).slice(0, 6);
     const tblBodyStartY = Number((tblHdrY + tblHdrH).toFixed(3));
-    const tblBodyAvailH = 3.04; // 1.26 .. 4.30"
-    const groupWeights = compGroups.map((g) => Math.max(1.3, Math.min(4, g.items.length) * 0.75 + 0.45));
+    const tblBodyAvailH = 3.44; // 1.20 .. 4.64"
+    const groupWeights = compGroups.map((g) => {
+      const cnt = Math.max(1, Math.min(4, g.items.length));
+      return cnt === 1 ? 1.05 : cnt === 2 ? 1.75 : 2.55;
+    });
     const totalGroupWeight = groupWeights.reduce((acc, w) => acc + w, 0) || 1;
 
     let curRowY = tblBodyStartY;
@@ -2689,7 +2807,7 @@ export async function exportDrawioToEditablePptx(
         ? /vpc/i.test(cleanTitle)
           ? 'Organization perimeter & Private Service Connect ingress/egress control'
           : 'Organization-level principal & agent identity boundary'
-        : truncateClean(grp.groupLead, 88);
+        : truncateClean(grp.groupLead, 84);
 
       // Left Component Cell (#FFFFFF with #DADCE0 border)
       slideArch.addShape(pptx.ShapeType.rect, {
@@ -2702,8 +2820,8 @@ export async function exportDrawioToEditablePptx(
       });
       slideArch.addText(
         [
-          { text: `${cleanTitle}\n`, options: { bold: true, color: '202124', fontSize: 7.8 } },
-          { text: leftSubtitle, options: { bold: false, color: '5F6368', fontSize: 6.7 } },
+          { text: `${cleanTitle}\n`, options: { bold: true, color: '202124', fontSize: 7.5 } },
+          { text: leftSubtitle, options: { bold: false, color: '5F6368', fontSize: 6.5 } },
         ],
         {
           x: Number((tblX + 0.10).toFixed(3)),
@@ -2712,6 +2830,7 @@ export async function exportDrawioToEditablePptx(
           h: Number((rowH - 0.04).toFixed(3)),
           valign: 'middle',
           fontFace: 'Arial',
+          fit: 'shrink',
           wrap: true,
         }
       );
@@ -2744,7 +2863,7 @@ export async function exportDrawioToEditablePptx(
                 },
               ];
 
-      const charBudget = itemsSlice.length === 1 ? 245 : itemsSlice.length === 2 ? 185 : 145;
+      const charBudget = itemsSlice.length === 1 ? 210 : itemsSlice.length === 2 ? 150 : 112;
       const richRuns: PptxGenJS.TextProps[] = [];
       itemsSlice.forEach((it, iIdx) => {
         const cleanName = deduplicateParentheticalEchoes(it.name);
@@ -2757,11 +2876,11 @@ export async function exportDrawioToEditablePptx(
         const cleanDesc = truncateClean(rawDesc, charBudget);
         richRuns.push({
           text: `• ${cleanName}: `,
-          options: { bold: true, color: '202124', fontSize: 7.2 },
+          options: { bold: true, color: '202124', fontSize: 6.9 },
         });
         richRuns.push({
           text: `${cleanDesc}${iIdx < itemsSlice.length - 1 ? '\n' : ''}`,
-          options: { bold: false, color: '3C4043', fontSize: 7.0 },
+          options: { bold: false, color: '3C4043', fontSize: 6.7 },
         });
       });
 
@@ -2771,7 +2890,9 @@ export async function exportDrawioToEditablePptx(
         w: Number((col2W - 0.24).toFixed(3)),
         h: Number((rowH - 0.04).toFixed(3)),
         valign: 'middle',
+        lineSpacingMultiple: 1.02,
         fontFace: 'Arial',
+        fit: 'shrink',
         wrap: true,
       });
 
@@ -2781,17 +2902,17 @@ export async function exportDrawioToEditablePptx(
     // H3 Agentic flow (Single-Column Numbered List 1..7 & Sub-steps 4a..4d)
     slideArch.addShape(pptx.ShapeType.line, {
       x: 0.82,
-      y: 4.42,
+      y: 4.72,
       w: 11.68,
       h: 0,
       line: { color: 'DADCE0', width: 0.75 },
     });
     slideArch.addText(archSec?.agenticFlowHeading || 'Agentic flow', {
       x: 0.82,
-      y: 4.50,
+      y: 4.78,
       w: 11.68,
-      h: 0.28,
-      fontSize: 13.0,
+      h: 0.26,
+      fontSize: 12.5,
       bold: false,
       color: '202124',
       valign: 'middle',
@@ -2801,25 +2922,25 @@ export async function exportDrawioToEditablePptx(
     const flowSteps = (archSec?.agenticFlowSteps || []).slice(0, 7);
     const flowRuns: PptxGenJS.TextProps[] = [];
     flowSteps.forEach((st, idx) => {
-      const cleanStep = truncateClean(deduplicateParentheticalEchoes(st.step), 210);
+      const cleanStep = truncateClean(deduplicateParentheticalEchoes(st.step), 205);
       flowRuns.push({
         text: `${idx + 1}. `,
-        options: { bold: true, color: '202124', fontSize: 7.4 },
+        options: { bold: true, color: '202124', fontSize: 7.3 },
       });
       flowRuns.push({
         text: `${cleanStep}\n`,
-        options: { bold: false, color: '3C4043', fontSize: 7.3 },
+        options: { bold: false, color: '3C4043', fontSize: 7.2 },
       });
       if (st.subSteps && st.subSteps.length > 0) {
         st.subSteps.slice(0, 4).forEach((sub, sIdx) => {
           const letter = String.fromCharCode(97 + sIdx);
           flowRuns.push({
             text: `     ${idx + 1}${letter}. `,
-            options: { bold: true, color: '202124', fontSize: 7.0 },
+            options: { bold: true, color: '202124', fontSize: 6.9 },
           });
           flowRuns.push({
-            text: `${truncateClean(deduplicateParentheticalEchoes(sub), 145)}\n`,
-            options: { bold: false, color: '3C4043', fontSize: 6.9 },
+            text: `${truncateClean(deduplicateParentheticalEchoes(sub), 140)}\n`,
+            options: { bold: false, color: '3C4043', fontSize: 6.8 },
           });
         });
       }
@@ -2827,12 +2948,13 @@ export async function exportDrawioToEditablePptx(
 
     slideArch.addText(flowRuns, {
       x: 0.82,
-      y: 4.82,
+      y: 5.06,
       w: 11.68,
-      h: 2.34,
-      lineSpacingMultiple: 1.08,
+      h: 2.08,
+      lineSpacingMultiple: 1.06,
       valign: 'top',
       fontFace: 'Arial',
+      fit: 'shrink',
       wrap: true,
     });
 
@@ -2845,29 +2967,33 @@ export async function exportDrawioToEditablePptx(
     // H2: Products used
     slideProdUseCase.addText(prodSec?.heading || 'Products used', {
       x: 0.82,
-      y: 0.72,
+      y: 0.68,
       w: 11.68,
-      h: 0.34,
-      fontSize: 15.5,
+      h: 0.30,
+      fontSize: 15.0,
       bold: false,
       color: '202124',
       valign: 'middle',
       fontFace: 'Arial',
     });
     slideProdUseCase.addText(
-      deduplicateParentheticalEchoes(
-        (prodSec?.leadParagraphs || [])[0] ||
-          'This reference architecture uses the following Google Cloud products and services:'
+      truncateClean(
+        deduplicateParentheticalEchoes(
+          (prodSec?.leadParagraphs || [])[0] ||
+            'This reference architecture uses the following Google Cloud products and services:'
+        ),
+        195
       ),
       {
         x: 0.82,
-        y: 1.10,
+        y: 1.00,
         w: 11.68,
-        h: 0.24,
-        fontSize: 9.2,
+        h: 0.36,
+        fontSize: 8.6,
         color: '3C4043',
-        valign: 'middle',
+        valign: 'top',
         fontFace: 'Arial',
+        wrap: true,
       }
     );
 
@@ -2875,31 +3001,32 @@ export async function exportDrawioToEditablePptx(
     const prodRuns: PptxGenJS.TextProps[] = [];
     prodItems.forEach((prod, idx) => {
       const cleanProdName = deduplicateParentheticalEchoes(prod.name);
-      const cleanProdDesc = truncateClean(deduplicateParentheticalEchoes(prod.description), 195);
+      const cleanProdDesc = truncateClean(deduplicateParentheticalEchoes(prod.description), 190);
       prodRuns.push({
         text: `•  ${cleanProdName}: `,
-        options: { bold: true, color: '1A73E8', fontSize: 8.4 },
+        options: { bold: true, color: '1A73E8', fontSize: 8.1 },
       });
       prodRuns.push({
         text: `${cleanProdDesc}${idx < prodItems.length - 1 ? '\n' : ''}`,
-        options: { bold: false, color: '3C4043', fontSize: 8.2 },
+        options: { bold: false, color: '3C4043', fontSize: 7.9 },
       });
     });
     slideProdUseCase.addText(prodRuns, {
       x: 0.96,
-      y: 1.40,
+      y: 1.38,
       w: 11.54,
-      h: 2.18,
-      lineSpacingMultiple: 1.24,
+      h: 2.20,
+      lineSpacingMultiple: 1.18,
       valign: 'top',
       fontFace: 'Arial',
+      fit: 'shrink',
       wrap: true,
     });
 
     // Horizontal divider between Products used and Use case
     slideProdUseCase.addShape(pptx.ShapeType.line, {
       x: 0.82,
-      y: 3.70,
+      y: 3.66,
       w: 11.68,
       h: 0,
       line: { color: 'DADCE0', width: 0.75 },
@@ -2908,10 +3035,10 @@ export async function exportDrawioToEditablePptx(
     // H2: Use case
     slideProdUseCase.addText(useCaseSec?.heading || 'Use case', {
       x: 0.82,
-      y: 3.84,
+      y: 3.74,
       w: 11.68,
-      h: 0.34,
-      fontSize: 15.5,
+      h: 0.30,
+      fontSize: 15.0,
       bold: false,
       color: '202124',
       valign: 'middle',
@@ -2925,10 +3052,10 @@ export async function exportDrawioToEditablePptx(
       ),
       {
         x: 0.82,
-        y: 4.22,
+        y: 4.06,
         w: 11.68,
-        h: 0.28,
-        fontSize: 11.5,
+        h: 0.26,
+        fontSize: 11.0,
         bold: true,
         color: '202124',
         valign: 'middle',
@@ -2936,28 +3063,32 @@ export async function exportDrawioToEditablePptx(
       }
     );
 
-    const useCaseLeadText = (useCaseSec?.leadParagraphs || [])
-      .map((p) => truncateClean(deduplicateParentheticalEchoes(p), 280))
-      .join(' ');
+    const useCaseLeadText = truncateClean(
+      (useCaseSec?.leadParagraphs || [])
+        .map((p) => deduplicateParentheticalEchoes(p))
+        .join(' '),
+      360
+    );
     slideProdUseCase.addText(useCaseLeadText, {
       x: 0.82,
-      y: 4.54,
+      y: 4.36,
       w: 11.68,
-      h: 0.72,
-      fontSize: 8.8,
+      h: 0.82,
+      fontSize: 8.4,
       color: '3C4043',
-      lineSpacingMultiple: 1.18,
+      lineSpacingMultiple: 1.14,
       valign: 'top',
       fontFace: 'Arial',
+      fit: 'shrink',
       wrap: true,
     });
 
     slideProdUseCase.addText('For this use case, the architecture provides the following benefits:', {
       x: 0.82,
-      y: 5.30,
+      y: 5.22,
       w: 11.68,
       h: 0.22,
-      fontSize: 8.8,
+      fontSize: 8.6,
       color: '3C4043',
       valign: 'middle',
       fontFace: 'Arial',
@@ -2968,21 +3099,22 @@ export async function exportDrawioToEditablePptx(
     benefits.forEach((b, idx) => {
       benRuns.push({
         text: `•  ${deduplicateParentheticalEchoes(b.title)}: `,
-        options: { bold: true, color: '202124', fontSize: 8.2 },
+        options: { bold: true, color: '202124', fontSize: 8.0 },
       });
       benRuns.push({
-        text: `${truncateClean(deduplicateParentheticalEchoes(b.detail), 215)}${idx < benefits.length - 1 ? '\n' : ''}`,
-        options: { bold: false, color: '3C4043', fontSize: 8.0 },
+        text: `${truncateClean(deduplicateParentheticalEchoes(b.detail), 210)}${idx < benefits.length - 1 ? '\n' : ''}`,
+        options: { bold: false, color: '3C4043', fontSize: 7.8 },
       });
     });
     slideProdUseCase.addText(benRuns, {
       x: 0.96,
-      y: 5.56,
+      y: 5.48,
       w: 11.54,
-      h: 1.56,
-      lineSpacingMultiple: 1.20,
+      h: 1.62,
+      lineSpacingMultiple: 1.16,
       valign: 'top',
       fontFace: 'Arial',
+      fit: 'shrink',
       wrap: true,
     });
 
@@ -3011,11 +3143,11 @@ export async function exportDrawioToEditablePptx(
 
     const alts = (designAltSec?.designAlternativesSubSections || []).slice(0, 3);
     const altRuns: PptxGenJS.TextProps[] = [];
-    alts.forEach((alt, idx) => {
+    alts.forEach((alt) => {
       const leadSummary = truncateClean(deduplicateParentheticalEchoes((alt.leadParagraphs || [])[0] || ''), 190);
       altRuns.push({
         text: `${deduplicateParentheticalEchoes(alt.heading)} — `,
-        options: { bold: true, color: '202124', fontSize: 8.2 },
+        options: { bold: true, color: '202124', fontSize: 8.1 },
       });
       altRuns.push({
         text: `${leadSummary}\n`,
@@ -3040,9 +3172,6 @@ export async function exportDrawioToEditablePptx(
           options: { bold: false, color: '3C4043', fontSize: 7.4 },
         });
       });
-      if (idx < alts.length - 1) {
-        altRuns.push({ text: '', options: { fontSize: 4 } });
-      }
     });
 
     slideDesign.addText(altRuns, {
@@ -3053,6 +3182,7 @@ export async function exportDrawioToEditablePptx(
       lineSpacingMultiple: 1.12,
       valign: 'top',
       fontFace: 'Arial',
+      fit: 'shrink',
       wrap: true,
     });
 
@@ -3181,11 +3311,12 @@ export async function exportDrawioToEditablePptx(
         y: Number((py + 0.03).toFixed(3)),
         w: Number((waCol2W - 0.20).toFixed(3)),
         h: Number((pillarRowH - 0.06).toFixed(3)),
-        fontSize: 7.2,
+        fontSize: 7.1,
         bold: true,
         color: '202124',
         valign: 'middle',
         fontFace: 'Arial',
+        fit: 'shrink',
         wrap: true,
       });
 
@@ -3207,11 +3338,11 @@ export async function exportDrawioToEditablePptx(
         const cleanRec = truncateClean(rawRec, rowSlice.length <= 2 ? 215 : 185);
         recRuns.push({
           text: `• ${cleanComp}: `,
-          options: { bold: true, color: '202124', fontSize: 7.1 },
+          options: { bold: true, color: '202124', fontSize: 7.0 },
         });
         recRuns.push({
           text: `${cleanRec}${rIdx < rowSlice.length - 1 ? '\n' : ''}`,
-          options: { bold: false, color: '3C4043', fontSize: 7.0 },
+          options: { bold: false, color: '3C4043', fontSize: 6.9 },
         });
       });
       slideDesign.addText(recRuns, {
@@ -3221,6 +3352,7 @@ export async function exportDrawioToEditablePptx(
         h: Number((pillarRowH - 0.06).toFixed(3)),
         valign: 'middle',
         fontFace: 'Arial',
+        fit: 'shrink',
         wrap: true,
       });
     });
@@ -3305,22 +3437,35 @@ export async function exportDrawioToEditablePptx(
       line: { color: 'DADCE0', width: 0.75 },
     });
 
-    const primaryCodeLines = (deploySec?.codeSnippet?.code || '')
+    const allCodeLines = (deploySec?.codeSnippet?.code || '')
       .split('\n')
-      .filter((line) => line.trim().length > 0)
-      .slice(0, 14);
+      .filter((line) => line.trim().length > 0);
+    const primaryCodeLines = allCodeLines.slice(0, 16);
+    if (allCodeLines.length > 16) {
+      const lastLine = primaryCodeLines[primaryCodeLines.length - 1].trim();
+      if (lastLine.endsWith(',')) {
+        primaryCodeLines[primaryCodeLines.length - 1] = primaryCodeLines[primaryCodeLines.length - 1].replace(/,\s*$/, '');
+      }
+      const joinedSlice = primaryCodeLines.join('\n');
+      const openCurly = (joinedSlice.match(/\{/g) || []).length - (joinedSlice.match(/\}/g) || []).length;
+      const openParen = (joinedSlice.match(/\(/g) || []).length - (joinedSlice.match(/\)/g) || []).length;
+      if (openCurly > 0 || openParen > 0) {
+        primaryCodeLines.push(`    ${'}'.repeat(Math.max(0, openCurly))}${')'.repeat(Math.max(0, openParen))}`);
+      }
+    }
     const codeBlockText = primaryCodeLines.map((line) => line.replace(/\t/g, '  ')).join('\n');
 
     slideDeploy.addText(codeBlockText, {
       x: 0.96,
-      y: 1.70,
+      y: 1.68,
       w: 11.40,
-      h: 2.10,
-      fontSize: 7.4,
-      lineSpacingMultiple: 1.12,
+      h: 2.14,
+      fontSize: 6.9,
+      lineSpacingMultiple: 1.06,
       color: '202124',
       valign: 'top',
       fontFace: 'Courier New',
+      fit: 'shrink',
       wrap: true,
     });
 

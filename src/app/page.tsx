@@ -150,10 +150,16 @@ export default function LandingPage() {
               <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-300 font-mono font-black">HOME</span>
             </Link>
 
-            <Link href="/canonical" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="77 High-Contrast Architecture Blueprints">
+            <Link href="/canonical" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="19 Official Google Cloud Reference Blueprints">
               <Sparkles className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
               <span>Canonical Hub</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-300 font-mono font-bold">77</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-300 font-mono font-bold">19</span>
+            </Link>
+
+            <Link href="/blogs" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-blue-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="9-Guide Google Cloud Architecture Center Series">
+              <Layers className="w-3.5 h-3.5 text-blue-400" aria-hidden="true" />
+              <span>Arch Center</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-blue-500/20 text-blue-300 font-mono font-bold">9</span>
             </Link>
 
             <Link href="/docgen" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="17 Enterprise Specification Blueprints (BRD, PRD, SDD, TDD)">
@@ -271,7 +277,15 @@ export default function LandingPage() {
                 className="p-2 rounded-lg hover:bg-slate-800 text-sky-400 font-bold flex items-center justify-between"
               >
                 <span>Blueprint Catalog</span>
-                <span className="px-2 py-0.5 rounded-full text-xs bg-sky-500/20 text-sky-300">77 Blueprints</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-sky-500/20 text-sky-300">26 Blueprints</span>
+              </Link>
+              <Link 
+                href="/blogs" 
+                onClick={() => setIsMobileNavOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-800 text-blue-400 font-bold flex items-center justify-between"
+              >
+                <span>Architecture Center Guides</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-blue-500/20 text-blue-300">9 Guides</span>
               </Link>
               <Link 
                 href="/docgen" 
@@ -537,7 +551,7 @@ export default function LandingPage() {
             </div>
             <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Ready-To-Go Templates</h4>
             <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-              Launch with 77 production-grade blueprints (Data Lakehouse, AWS EKS Microservices, RAG/Gemini AI pipelines, VPC networks) to instantly experiment and validate stacks.
+              Launch with 19 curated Google Cloud reference blueprints (Official Architecture Center Hub &amp; Spoke #78, Gemini Enterprise ADK/A2A #00, Multi-Agent #40, RAG #41, Lakehouse #42) to instantly validate stacks.
             </p>
           </div>
 
@@ -604,20 +618,20 @@ export default function LandingPage() {
             Bootstrap with Production-Grade Blueprints
           </h3>
           <p className={`text-lg mt-4 max-w-2xl mx-auto ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-            Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>77 complete multi-cloud reference blueprints</strong> directly in the interactive studio.
+            Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>19 curated Google Cloud reference blueprints</strong> directly in the interactive studio.
           </p>
           <div className="mt-4">
             <Link
               href="/canonical"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>View All 77 Production Blueprints in Templates Gallery →</span>
+              <span>View All 19 Production Blueprints in Templates Gallery →</span>
             </Link>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Template 1: AI RAG Pipeline */}
+          {/* Template 1: Official #78 Google Cloud Architecture Center Hub & Spoke */}
           <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
             isLight ? 'bg-white border-slate-200 hover:border-teal-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-teal-500/45 text-slate-100'
           }`}>
@@ -626,24 +640,24 @@ export default function LandingPage() {
                 <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-accent group-hover:scale-110 transition-transform">
                   <Sparkles className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">GCP Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">Official GCP #78</span>
               </div>
-              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Vertex AI Retrieval-Augmented Generation (RAG)</h4>
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Official Google Cloud Architecture Center Hub &amp; Spoke (#78)</h4>
               <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                Multi-tier pipeline featuring Cloud Run API service, pgvector-enabled Cloud SQL database, Vertex AI Search indexing, and Gemini reasoning engine.
+                Multi-tenant SaaS hub-and-spoke reference topology with Routing Hub, Governance Hub, Pooled vs Siloed Tenant Spokes, 23 vertex-bound orthogonal edges, and 1:1 Google Slides export.
               </p>
             </div>
             <Link
-              href="/dashboard?blueprint=24"
-              aria-label="Launch Vertex AI RAG blueprint in Dashboard"
+              href="/dashboard?blueprint=78"
+              aria-label="Launch Official GCP Hub and Spoke blueprint #78 in Dashboard"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch Vertex AI RAG blueprint</span>
+              <span>Launch Official Hub &amp; Spoke (#78)</span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
 
-          {/* Template 2: Microservices Cluster */}
+          {/* Template 2: Flagship #00 GCP + GE + ADK + A2A + MCP Reference Architecture */}
           <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
             isLight ? 'bg-white border-slate-200 hover:border-indigo-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-indigo-500/45 text-slate-100'
           }`}>
@@ -652,24 +666,24 @@ export default function LandingPage() {
                 <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
                   <Network className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-300 border border-orange-500/20">AWS Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">Flagship #00</span>
               </div>
-              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Kubernetes Microservices Cluster (EKS)</h4>
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>GCP + Gemini Enterprise + ADK + A2A + MCP Mesh (#00)</h4>
               <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                Elastic Kubernetes Service setup with ALB ingress controller, Amazon API Gateway, EKS worker nodes, DynamoDB state session, and Redis caching.
+                End-to-end multi-agent reference architecture featuring Cloud Armor, Apigee X, Model Armor, Vertex AI Agent Engine (ADK), A2A Coordinator, MCP Tool Bus, and Cloud Spanner.
               </p>
             </div>
             <Link
-              href="/dashboard?blueprint=16"
-              aria-label="Launch Kubernetes EKS Microservices blueprint in Dashboard"
+              href="/dashboard?blueprint=00"
+              aria-label="Launch Flagship GCP + GE + ADK + A2A blueprint #00 in Dashboard"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-300 hover:text-indigo-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch Kubernetes EKS blueprint</span>
+              <span>Launch Flagship Multi-Agent (#00)</span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
 
-          {/* Template 3: Serverless App */}
+          {/* Template 3: Enterprise GenAI & Multi-Agent Platform (#40) */}
           <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
             isLight ? 'bg-white border-slate-200 hover:border-purple-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-purple-500/45 text-slate-100'
           }`}>
@@ -678,24 +692,24 @@ export default function LandingPage() {
                 <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
                   <Zap className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">GCP Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">Blueprint #40</span>
               </div>
-              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Serverless Web Application</h4>
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Enterprise GenAI &amp; Multi-Agent Platform (#40)</h4>
               <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                Global HTTPS Load Balancer with Cloud CDN, Cloud Run compute for microservices, Cloud SQL (PostgreSQL), and Cloud Storage for assets.
+                8-layer Gemini Enterprise multi-agent supervisor, 7 specialist domain agents, Model Armor safety guardrails, Vertex AI Vector Search 2.0, and enterprise connectors.
               </p>
             </div>
             <Link
-              href="/dashboard?blueprint=15"
-              aria-label="Launch Serverless Web Application blueprint in Dashboard"
+              href="/dashboard?blueprint=40"
+              aria-label="Launch Enterprise GenAI and Multi-Agent blueprint #40 in Dashboard"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-300 hover:text-purple-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch Serverless Web App blueprint</span>
+              <span>Launch Multi-Agent Platform (#40)</span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
 
-          {/* Template 4: Data Lakehouse */}
+          {/* Template 4: Enterprise RAG & Knowledge Intelligence Platform (#41) */}
           <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
             isLight ? 'bg-white border-slate-200 hover:border-teal-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-teal-500/45 text-slate-100'
           }`}>
@@ -704,24 +718,24 @@ export default function LandingPage() {
                 <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-accent group-hover:scale-110 transition-transform">
                   <FileText className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-300 border border-orange-500/20">AWS Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">Blueprint #41</span>
               </div>
-              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Modern AWS Data Lakehouse</h4>
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Enterprise RAG &amp; Knowledge Intelligence (#41)</h4>
               <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                Amazon S3 raw/processed tiers, AWS Glue Catalog schema database, Athena ad-hoc serverless querying, Redshift warehouse, and QuickSight BI.
+                Hybrid semantic + lexical retrieval, Document AI Layout Parser, Vertex AI Vector Search 2.0, Spanner GraphRAG, and grounded citation synthesis.
               </p>
             </div>
             <Link
-              href="/dashboard?blueprint=09"
-              aria-label="Launch Modern AWS Data Lakehouse blueprint in Dashboard"
+              href="/dashboard?blueprint=41"
+              aria-label="Launch Enterprise RAG blueprint #41 in Dashboard"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch AWS Data Lakehouse blueprint</span>
+              <span>Launch Enterprise RAG (#41)</span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
 
-          {/* Template 5: Streaming Analytics */}
+          {/* Template 5: Modern Data Lakehouse & Data Mesh (#42) */}
           <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
             isLight ? 'bg-white border-slate-200 hover:border-indigo-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-indigo-500/45 text-slate-100'
           }`}>
@@ -730,24 +744,24 @@ export default function LandingPage() {
                 <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
                   <History className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">GCP Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">Blueprint #42</span>
               </div>
-              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Real-time Streaming Analytics</h4>
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Modern Data Lakehouse &amp; Data Mesh (#42)</h4>
               <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                Streaming ingestion via Cloud Pub/Sub, serverless stream/batch ETL processing with Cloud Dataflow, BigQuery storage, and Looker visualization dashboards.
+                BigLake Apache Iceberg Bronze/Silver/Gold zones, Dataplex Universal Governance Catalog, Dataflow CDC pipelines, BigQuery analytics, and Looker BI.
               </p>
             </div>
             <Link
-              href="/dashboard?blueprint=29"
-              aria-label="Launch Real-time Streaming Analytics blueprint in Dashboard"
+              href="/dashboard?blueprint=42"
+              aria-label="Launch Modern Data Lakehouse blueprint #42 in Dashboard"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-300 hover:text-indigo-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch Streaming Analytics blueprint</span>
+              <span>Launch Lakehouse &amp; Data Mesh (#42)</span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
 
-          {/* Template 6: Event-Driven Microservices */}
+          {/* Template 6: Enterprise API, Integration & MCP Gateway (#45) */}
           <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
             isLight ? 'bg-white border-slate-200 hover:border-purple-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-purple-500/45 text-slate-100'
           }`}>
@@ -756,19 +770,19 @@ export default function LandingPage() {
                 <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
                   <Shield className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-300 border border-orange-500/20">AWS Cloud</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">Blueprint #45</span>
               </div>
-              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Event-Driven Microservices</h4>
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Enterprise API, Integration &amp; MCP Gateway (#45)</h4>
               <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                Amazon EventBridge bus, decoupling with SQS queues and SNS topics, serverless event handlers via AWS Lambda, and DynamoDB for storage.
+                Apigee X API Management, Application Integration connectors, Model Context Protocol (MCP) JSON-RPC 2.0 tool servers, and Eventarc pub/sub routing.
               </p>
             </div>
             <Link
-              href="/dashboard?blueprint=06"
-              aria-label="Launch Event-Driven Microservices blueprint in Dashboard"
+              href="/dashboard?blueprint=45"
+              aria-label="Launch Enterprise API and MCP Gateway blueprint #45 in Dashboard"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-300 hover:text-purple-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch Event-Driven Microservices blueprint</span>
+              <span>Launch API &amp; MCP Gateway (#45)</span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
@@ -875,7 +889,7 @@ export default function LandingPage() {
           <div className="flex flex-wrap gap-6 text-sm text-slate-300">
             <Link href="/test-status" className="hover:text-emerald-400 hover:underline underline-offset-4 transition-colors flex items-center gap-1.5 font-bold text-emerald-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
-              <span>Test Status (285 Passed)</span>
+              <span>Test Status (302 Passed)</span>
             </Link>
             <Link href="/privacy" className="hover:text-teal-400 hover:underline underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-teal-400 hover:underline underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded">Terms of Service</Link>

@@ -92,11 +92,83 @@ export const EXTRA_GCP_ICONS: Record<string, string> = {
       <path d="M21 20 H32 M28 16 L32 20 L28 24" fill="none" stroke="#1a73e8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   `),
+  cloud_armor: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+      <path d="M20 6 L32 11 V20 C32 27.8 26.8 32.8 20 35 C13.2 32.8 8 27.8 8 20 V11 Z" fill="#4285f4"/>
+      <path d="M20 6 V35 C26.8 32.8 32 27.8 32 20 V11 Z" fill="#1967d2"/>
+      <path d="M20 11 L27 14 V19.5 C27 24.5 23.8 28 20 29.8 C16.2 28 13 24.5 13 19.5 V14 Z" fill="#ffffff"/>
+      <path d="M20 14 L24 16 V19.5 C24 22.8 22.1 25.2 20 26.4 C17.9 25.2 16 22.8 16 19.5 V16 Z" fill="#1a73e8"/>
+    </svg>
+  `),
+  gke: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+      <polygon points="20,6 32,13 32,27 20,34 8,27 8,13" fill="#4285f4" stroke="#174ea6" stroke-width="1.8"/>
+      <circle cx="20" cy="20" r="6.5" fill="none" stroke="#ffffff" stroke-width="2.2"/>
+      <circle cx="20" cy="20" r="2.2" fill="#ffffff"/>
+      <line x1="20" y1="10" x2="20" y2="13.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+      <line x1="20" y1="26.5" x2="20" y2="30" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+      <line x1="11.3" y1="15" x2="14.4" y2="16.8" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+      <line x1="25.6" y1="23.2" x2="28.7" y2="25" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+      <line x1="28.7" y1="15" x2="25.6" y2="16.8" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+      <line x1="14.4" y1="23.2" x2="11.3" y2="25" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  `),
+  vpc_network: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e6f4ea" stroke="#137333" stroke-width="2"/>
+      <line x1="12" y1="12" x2="28" y2="12" stroke="#137333" stroke-width="2.4"/>
+      <line x1="12" y1="12" x2="12" y2="28" stroke="#137333" stroke-width="2.4"/>
+      <line x1="28" y1="12" x2="28" y2="28" stroke="#137333" stroke-width="2.4"/>
+      <line x1="12" y1="28" x2="28" y2="28" stroke="#137333" stroke-width="2.4"/>
+      <rect x="8" y="8" width="8" height="8" rx="2" fill="#34a853" stroke="#137333" stroke-width="1.5"/>
+      <rect x="24" y="8" width="8" height="8" rx="2" fill="#1a73e8" stroke="#174ea6" stroke-width="1.5"/>
+      <rect x="8" y="24" width="8" height="8" rx="2" fill="#1a73e8" stroke="#174ea6" stroke-width="1.5"/>
+      <rect x="24" y="24" width="8" height="8" rx="2" fill="#34a853" stroke="#137333" stroke-width="1.5"/>
+    </svg>
+  `),
+  cloud_storage: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+      <polygon points="8,11 32,11 29,31 11,31" fill="#4285f4" stroke="#174ea6" stroke-width="1.8" stroke-linejoin="round"/>
+      <rect x="7" y="9" width="26" height="4" rx="1.5" fill="#174ea6"/>
+      <line x1="14" y1="17" x2="26" y2="17" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="15" y1="23" x2="25" y2="23" stroke="#aecbfa" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+  `),
+  cloud_sdp_dlp: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+      <path d="M20 6 L31 10.5 V19.5 C31 26.8 26.2 31.8 20 34 C13.8 31.8 9 26.8 9 19.5 V10.5 Z" fill="#1a73e8" opacity="0.16" stroke="#174ea6" stroke-width="2"/>
+      <circle cx="19" cy="19" r="5.5" fill="none" stroke="#174ea6" stroke-width="2.4"/>
+      <circle cx="19" cy="19" r="2" fill="#ea4335"/>
+      <line x1="23" y1="23" x2="28" y2="28" stroke="#174ea6" stroke-width="2.6" stroke-linecap="round"/>
+    </svg>
+  `),
+  terraform_iac: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#f3e8fd" stroke="#7c3aed" stroke-width="2"/>
+      <polygon points="8,8 18,13.5 18,24.5 8,19" fill="#7c3aed"/>
+      <polygon points="20,14.5 30,20 30,31 20,25.5" fill="#6d28d9"/>
+      <polygon points="31.5,14.5 35,12.5 35,23.5 31.5,25.5" fill="#a78bfa"/>
+      <polygon points="8,21.5 18,27 18,35 8,29.5" fill="#5b21b6"/>
+    </svg>
+  `),
 };
 
 export function resolveArchIconUri(iconKey: string, title = '', _sub = ''): string {
   if (EXTRA_GCP_ICONS[iconKey]) return EXTRA_GCP_ICONS[iconKey];
   const titleLower = String(title || '').toLowerCase();
+  if (
+    titleLower.includes('cloud armor') ||
+    (titleLower.includes('armor') && !titleLower.includes('model armor'))
+  ) {
+    return EXTRA_GCP_ICONS.cloud_armor;
+  }
+  if (titleLower.includes('gke') || titleLower.includes('kubernetes')) {
+    return EXTRA_GCP_ICONS.gke;
+  }
   if (
     titleLower.includes('kms') ||
     titleLower.includes('cmek') ||
@@ -121,6 +193,37 @@ export function resolveArchIconUri(iconKey: string, title = '', _sub = ''): stri
     titleLower.includes('forwarding_rule')
   ) {
     return EXTRA_GCP_ICONS.psc_bridge;
+  }
+  if (
+    titleLower.includes('_vpc') ||
+    titleLower.includes('_subnet') ||
+    titleLower.includes('compute_network') ||
+    titleLower.includes('compute_subnetwork') ||
+    titleLower.includes('vpc & subnet')
+  ) {
+    return EXTRA_GCP_ICONS.vpc_network;
+  }
+  if (
+    titleLower.includes('gcs') ||
+    titleLower.includes('cloud storage') ||
+    titleLower.includes('storage & container')
+  ) {
+    return EXTRA_GCP_ICONS.cloud_storage;
+  }
+  if (
+    titleLower.includes('sdp') ||
+    titleLower.includes('dlp') ||
+    titleLower.includes('sensitive data protection')
+  ) {
+    return EXTRA_GCP_ICONS.cloud_sdp_dlp;
+  }
+  if (
+    titleLower.includes('terraform') ||
+    titleLower.includes('provider ') ||
+    titleLower.includes('variables.tf') ||
+    titleLower.includes('var.tenant_id')
+  ) {
+    return EXTRA_GCP_ICONS.terraform_iac;
   }
   if (
     titleLower.includes('redis') ||
@@ -161,3 +264,4 @@ export function resolveArchIconUri(iconKey: string, title = '', _sub = ''): stri
   }
   return OFFICIAL_ASSETS[iconKey] || OFFICIAL_ASSETS.gemini_agent_platform;
 }
+

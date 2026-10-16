@@ -10,6 +10,7 @@ export interface CanonicalTemplate {
   name: string;
   family: 'Infographic' | 'Understand' | 'Process' | 'Whiteboard' | 'Paper' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: 'L1' | 'L2' | 'L3';
+  theme?: 'light' | 'dark';
   primaryPurpose: string;
   examples: string;
   defaultDomain: string;
@@ -25,18 +26,12 @@ export interface CanonicalTemplate {
 
 export const CANONICAL_FAMILIES = [
   'All',
-  'Infographic',
-  'Understand',
-  'Process',
-  'Whiteboard',
-  'Paper',
+  'Reference Architectures',
   'Structure',
   'Flow',
   'Infrastructure',
   'Security & Governance',
   'Delivery & Operations',
-  'Analysis & Planning',
-  'Reference Architectures',
 ] as const;
 
 export const DOMAIN_PRESETS = [
@@ -187,7 +182,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'System boundary + external users + external enterprise systems',
     examples: 'Enterprise App, SaaS Platform, AI Copilot, Life Sciences, Payments',
     defaultDomain: 'Bio-Pharma Precision Oncology & Regulatory AI',
-    previewImage: '/templates/tech_c4_system_context.png',
+    previewImage: '/templates/canonical_01.png',
     keyComponents: ['Platform Boundary', 'Internal Actors', 'External Partners', 'Connected Systems', 'Governance'],
     generateXml: generateTemplate01ExactV3Xml
   },
@@ -199,7 +194,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Business, technical, and operational capability taxonomy',
     examples: 'Enterprise capabilities, AI capabilities, platform capabilities',
     defaultDomain: 'Enterprise AI & Platform Engineering',
-    previewImage: '/templates/total_unified_system_view.png',
+    previewImage: '/templates/canonical_02.png',
     keyComponents: ['Business Capabilities', 'AI Foundation', 'Shared Core Services', 'Governance Matrix'],
     generateXml: generateTemplate02CapabilityMapXml
   },
@@ -211,7 +206,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Roles, activities, decisions, and handoffs across operational departments',
     examples: 'Claims triage, onboarding, approval gates, DevOps release',
     defaultDomain: 'Clinical Trials & Regulatory Operations',
-    previewImage: '/templates/incident_triage_swimlane.png',
+    previewImage: '/templates/canonical_03.png',
     keyComponents: ['Department Swimlanes', 'Hand-off Triggers', 'Approval Decision Gates', 'Audit Milestones'],
     generateXml: generateTemplate03SwimlaneXml
   },
@@ -223,7 +218,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'End-to-end value delivery stages, process times, and lead times',
     examples: 'Migration VSM, software delivery, patient journey',
     defaultDomain: 'Research-to-Commercial Patient Journey',
-    previewImage: '/templates/value_stream_map_vsm.png',
+    previewImage: '/templates/canonical_04.png',
     keyComponents: ['Value Stages', 'Key Activities', 'Process & Lead Time Metrics', 'Delivered Outcomes'],
     generateXml: generateTemplate04ValueStreamXml
   },
@@ -235,7 +230,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'High-contrast architectural transformation comparison (Current vs Target)',
     examples: 'Cloud migration, modernization, AI transformation',
     defaultDomain: 'Enterprise Cloud Transformation',
-    previewImage: '/templates/as_is_vs_to_be_process_flow.png',
+    previewImage: '/templates/canonical_05.png',
     keyComponents: ['As-Is Legacy Silos', 'Transformation Drivers', 'To-Be Cloud Target', 'Business ROI'],
     generateXml: generateTemplate05AsIsToBeXml
   },
@@ -247,7 +242,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'C4 model Level-1 zoom: software system in scope surrounded by people and systems',
     examples: 'Enterprise application ecosystem, SaaS boundary',
     defaultDomain: 'Enterprise Product Architecture',
-    previewImage: '/templates/tech_c4_system_context.png',
+    previewImage: '/templates/canonical_06.png',
     keyComponents: ['System in Scope', 'User Personas', 'External Software Systems', 'Data Contracts'],
     generateXml: generateTemplate06C4ContextXml
   },
@@ -259,7 +254,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'C4 model Level-2 zoom: applications, services, databases, and file stores',
     examples: 'Microservices, web applications, serverless clusters',
     defaultDomain: 'Cloud Native Microservices Platform',
-    previewImage: '/templates/saas_multi_tenant.png',
+    previewImage: '/templates/canonical_07.png',
     keyComponents: ['Web/Mobile Apps', 'API Gateway', 'Microservices Pods', 'Databases & Caches'],
     generateXml: generateTemplate07C4ContainerXml
   },
@@ -271,7 +266,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'C4 model Level-3 zoom: internal structural components, controllers, and services',
     examples: 'Services, modules, internal pipelines, class libraries',
     defaultDomain: 'Microservice Internal Component Structure',
-    previewImage: '/templates/micro_frontend_architecture.png',
+    previewImage: '/templates/canonical_08.png',
     keyComponents: ['Controllers', 'Service Adapters', 'Repository Layer', 'Domain Logic Entities'],
     generateXml: generateTemplate08ComponentArchXml
   },
@@ -283,7 +278,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Movement, processing, transformation, and storage of data',
     examples: 'ETL/ELT, streaming lakehouse, payments pipeline',
     defaultDomain: 'Medallion Data Lakehouse & Stream Processing',
-    previewImage: '/templates/etl_elt_cdc_pipeline.png',
+    previewImage: '/templates/canonical_09.png',
     keyComponents: ['Raw Bronze Storage', 'Dataflow Cleaning', 'Silver/Gold Marts', 'Serving APIs'],
     generateXml: generateTemplate09DataFlowXml
   },
@@ -295,7 +290,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'System-to-system connectivity, middleware, event brokers, and API gateways',
     examples: 'APIs, Pub/Sub, SaaS connectors, B2B integration',
     defaultDomain: 'Enterprise API Management & Integration Hub',
-    previewImage: '/templates/enterprise_api_management.png',
+    previewImage: '/templates/canonical_10.png',
     keyComponents: ['Apigee Gateway', 'Event Backbone', 'Data Integration Connectors', 'External Sinks'],
     generateXml: generateTemplate10IntegrationArchXml
   },
@@ -307,7 +302,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Time-ordered chronological message exchanges between objects or services',
     examples: 'API call sequences, agent task workflow, login SSO, payments',
     defaultDomain: 'Bio-Pharma Enterprise AI Platform (Scientist Copilot Q&A)',
-    previewImage: '/templates/multi_agent_sequence_flow.png',
+    previewImage: '/templates/canonical_11.png',
     keyComponents: ['12 Lifelines', '20 Sequence Steps (❶..⑳)', 'Alternative Flows (ALT)', 'Summary Cards'],
     generateXml: generateTemplate11SequenceDiagramXml
   },
@@ -319,7 +314,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Discrete entity lifecycle states, trigger events, and transition conditions',
     examples: 'Order states, AI agent execution lifecycle, approval workflows',
     defaultDomain: 'Clinical Study Protocol Intelligence State Machine',
-    previewImage: '/templates/governance_state_machine.png',
+    previewImage: '/templates/canonical_12.png',
     keyComponents: ['S0..S9 States', 'E1..E8 Triggers', 'Guardrail Failure Branches', '4 Analytical Cards'],
     generateXml: generateTemplate12StateMachineXml
   },
@@ -331,7 +326,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Business rules, conditional logic branching, and AI policy gates',
     examples: 'Clinical trial eligibility, fraud detection rules, automated approval routing',
     defaultDomain: 'Autonomous Clinical Trial Eligibility & Safety Policy Gate',
-    previewImage: '/templates/governance_state_machine.png',
+    previewImage: '/templates/canonical_13.png',
     keyComponents: ['Multi-Stage Decision Gates', 'Genomic & DDI Filters', 'AI Confidence Routing', '21 CFR Part 11 Audit Trail'],
     generateXml: generateTemplate13DecisionFlowXml
   },
@@ -343,7 +338,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Database entities, tables, attributes, primary/foreign keys, and cardinalities',
     examples: 'Relational data model, lakehouse star schema, biopharma enterprise semantic ontology',
     defaultDomain: 'Bio-Pharma Enterprise Entity Model & Relational Schema',
-    previewImage: '/templates/erd.png',
+    previewImage: '/templates/canonical_14.png',
     keyComponents: ['24 Entities / Tables', '7 Core Domains', 'Crow’s Foot Cardinality', '4 Analytical Panels'],
     generateXml: generateTemplate14DataModelErdXml
   },
@@ -355,7 +350,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Network boundaries, VPCs, subnets, routers, firewalls, and gateways',
     examples: 'VPC hub-and-spoke, hybrid cloud, zero-trust perimeter, Private Service Connect',
     defaultDomain: 'GCP Enterprise Landing Zone & Shared VPC',
-    previewImage: '/templates/gcp_landing_zone_vpc_map.png',
+    previewImage: '/templates/canonical_15.png',
     keyComponents: ['Public Subnet DMZ', '3 Multi-AZ Subnets', 'Data Subnet Tier', 'Managed Services Bus'],
     generateXml: generateTemplate15NetworkTopologyXml
   },
@@ -367,7 +362,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Physical/logical mapping of application workloads onto cloud infrastructure',
     examples: 'GKE multi-zone, Cloud Run Jobs, regional data tier, warm DR standby in us-east1',
     defaultDomain: 'Multi-Zone Application & Background Worker Mesh',
-    previewImage: '/templates/ha_multi_region_application.png',
+    previewImage: '/templates/canonical_16.png',
     keyComponents: ['Zone A/B/C GKE Autopilot', 'Cloud Run Background Jobs', 'Regional Data Tier', 'Environment Strategy'],
     generateXml: generateTemplate16DeploymentMeshXml
   },
@@ -379,7 +374,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Authentication, authorization, token exchange, SSO federation, and IAM',
     examples: 'Google Cloud Identity, IAM least privilege pyramid, Cloud Audit Logs, Access Transparency',
     defaultDomain: 'Zero-Trust Enterprise IAM & Token Exchange',
-    previewImage: '/templates/federated_iam_sso.png',
+    previewImage: '/templates/canonical_17.png',
     keyComponents: ['Identity Providers (IdP)', 'IAM Least Privilege Pyramid', 'Resource Access Tier', 'Audit & Retention'],
     generateXml: generateTemplate17IdentityAccessFlowXml
   },
@@ -391,7 +386,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Security zones, encryption perimeters, trust levels, and defense controls',
     examples: 'Zero Trust perimeter, Data Classification pillar (Restricted, Confidential, Internal, Public)',
     defaultDomain: 'Sovereign Zero-Trust Data Protection Enclave',
-    previewImage: '/templates/zero_trust_mesh.png',
+    previewImage: '/templates/canonical_18.png',
     keyComponents: ['Edge / Perimeter Zone', 'Application & Data Zones', 'Data Classification Pillar', 'Cross-Cutting Security Controls'],
     generateXml: generateTemplate18SecurityTrustBoundaryXml
   },
@@ -403,7 +398,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Resilience engineering, multi-region replication, and failover routing',
     examples: 'Multi-region async replication, RTO <= 1 hr, RPO <= 15 min, Cloud DNS health checks',
     defaultDomain: 'Active-Active Multi-Region Resiliency (Cloud Spanner TrueTime)',
-    previewImage: '/templates/tech_multi_region_dr.png',
+    previewImage: '/templates/canonical_19.png',
     keyComponents: ['Active Primary Region', 'Standby DR Region', 'Cross-Region Data Replication', '6-Step Failover Sequence'],
     generateXml: generateTemplate19HaDrArchitectureXml
   },
@@ -415,7 +410,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Automated software delivery lifecycle, GitOps synchronization, and rollout',
     examples: 'Cloud Build CI, Artifact Registry security scan, Cloud Deploy, Canary / Blue-Green rollout',
     defaultDomain: 'SLSA Level 3 GitOps Continuous Delivery Pipeline',
-    previewImage: '/templates/secure_deployment_topology_map.png',
+    previewImage: '/templates/canonical_20.png',
     keyComponents: ['9-Stage GitOps Delivery', '4 Quality Gates', '3 Deployment Patterns', 'Automated Rollback Strategy'],
     generateXml: generateTemplate20CiCdPipelineXml
   },
@@ -427,7 +422,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Telemetry collection, distributed tracing, metric aggregation, and SLO alerts',
     examples: 'Logs, metrics, traces, SLO error budget burn rates',
     defaultDomain: 'Full-Stack Enterprise Observability',
-    previewImage: '/templates/enterprise_sre_observability.png',
+    previewImage: '/templates/canonical_21.png',
     keyComponents: ['Telemetry Sources', 'Observability Pillars', 'Google Cloud Pipeline', 'Foundation & Outcomes'],
     generateXml: generateTemplate21ObservabilityArchitectureXml
   },
@@ -439,7 +434,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Step-by-step movement of legacy workloads to cloud target state',
     examples: 'Datacenter to GCP, database CDC migration, Strangler Fig pattern',
     defaultDomain: 'Enterprise Platform Modernization & Migration',
-    previewImage: '/templates/six_rs_migration_matrix.png',
+    previewImage: '/templates/canonical_22.png',
     keyComponents: ['Current State', '5 Migration Phases', 'Target State', '6-Rs Patterns & Deliverables'],
     generateXml: generateTemplate22MigrationTransitionXml
   },
@@ -451,7 +446,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Multi-agent collaboration, supervisor delegation, and task synthesis',
     examples: 'Supervisor-subagents, swarm mesh, planner/executor',
     defaultDomain: 'Multi-Agent Collaboration for Regulatory Intelligence',
-    previewImage: '/templates/tech_agentic_mesh.png',
+    previewImage: '/templates/canonical_23.png',
     keyComponents: ['7-Step Flow', 'Agent Ecosystem (Core/Specialized)', '6 Collaboration Patterns', 'Shared Memory'],
     generateXml: generateTemplate23AgentInteractionXml
   },
@@ -463,7 +458,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Document chunking, vector embeddings, hybrid graph retrieval, and grounding',
     examples: 'Vector RAG, GraphRAG, multimodal clinical RAG',
     defaultDomain: 'Regulatory Q&A with Internal & External Knowledge',
-    previewImage: '/templates/graphrag_knowledge_graph.png',
+    previewImage: '/templates/canonical_24.png',
     keyComponents: ['Knowledge Sources', '8-Step RAG Pipeline', 'Knowledge Stores', '6 RAG Flow Patterns'],
     generateXml: generateTemplate24RagKnowledgeFlowXml
   },
@@ -475,7 +470,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Standardized communication between AI models and tools via MCP, A2A, JSON-RPC',
     examples: 'Model Context Protocol (MCP), Agent-to-Agent (A2A), OpenAPI tool bridges',
     defaultDomain: 'Agentic Platform Integrations & Protocol Interactions',
-    previewImage: '/templates/mcp_context_gateway.png',
+    previewImage: '/templates/canonical_25.png',
     keyComponents: ['Tool Categories', '5 Protocol Layers', 'Interaction Flow', 'Protocol Mappings'],
     generateXml: generateTemplate25ToolProtocolInteractionXml
   },
@@ -487,7 +482,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Human-in-the-Loop approval gates, confidence thresholds, and risk review',
     examples: 'AI approval gates, escalation workflows, risk triage',
     defaultDomain: 'Responsible AI with Human-in-the-Loop & Governance',
-    previewImage: '/templates/tech_eval_safety.png',
+    previewImage: '/templates/canonical_26.png',
     keyComponents: ['Inputs & Triggers', '6-Step Workflow', 'RACI Matrix', 'HITL Checkpoints & Audit'],
     generateXml: generateTemplate26HitlGovernanceFlowXml
   },
@@ -499,7 +494,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'STRIDE threat modeling, attack surfaces, malicious vectors, and mitigations',
     examples: 'STRIDE model, prompt injection defense, API attack vectors',
     defaultDomain: 'AI-Powered Regulatory Intelligence Platform',
-    previewImage: '/templates/zero_trust_mesh.png',
+    previewImage: '/templates/canonical_27.png',
     keyComponents: ['Trust Zones', 'Shared Security Services', 'Attack Surface Map', 'STRIDE Catalog & Scenarios'],
     generateXml: generateTemplate27ThreatModelXml
   },
@@ -511,7 +506,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Failure modes, retry policies, exponential backoff, DLQs, and circuit breakers',
     examples: 'DLQ, retries, circuit breakers, agent timeouts',
     defaultDomain: 'AI-Powered Regulatory Intelligence Platform',
-    previewImage: '/templates/serverless_eda_architecture.png',
+    previewImage: '/templates/canonical_28.png',
     keyComponents: ['Failure Sources', '6-Step End-to-End Flow', '6 Failure Scenarios', 'Severity & Escalation'],
     generateXml: generateTemplate28FailureExceptionFlowXml
   },
@@ -523,7 +518,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Step-by-step production cutover checklist, maintenance window, and rollback',
     examples: 'Production launch, DR exercise, cloud cutover runbook',
     defaultDomain: 'Production Go-Live & Environment Cutover',
-    previewImage: '/templates/golive_warroom_runbook.png',
+    previewImage: '/templates/canonical_29.png',
     keyComponents: ['Cutover Lifecycle', '8 Detailed Steps', 'Rollback Plan', 'RACI & Timeline Window'],
     generateXml: generateTemplate29CutoverRunbookXml
   },
@@ -535,7 +530,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Cloud spend ingestion, shared resource allocation, and cost optimization',
     examples: 'Cloud spend, AI token cost attribution, tenant unit economics',
     defaultDomain: 'AI-Powered Regulatory Intelligence Platform',
-    previewImage: '/templates/cloud_finops_chargeback_model.png',
+    previewImage: '/templates/canonical_30.png',
     keyComponents: ['6-Step Cost Flow', 'Data & Tooling Layer', 'Allocation Models', 'FinOps Governance'],
     generateXml: generateTemplate30FinopsCostFlowXml
   },
@@ -547,7 +542,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Arbitrary many-to-many dependencies across systems, services, and datasets',
     examples: 'Microservice dependency graph, blast-radius impact analysis',
     defaultDomain: 'AI-Powered Regulatory Intelligence Platform',
-    previewImage: '/templates/legacy_data_dependency_map.png',
+    previewImage: '/templates/canonical_31.png',
     keyComponents: ['Users', 'Applications', 'Data Layer', 'Integrations', 'Platform & Teams'],
     generateXml: generateTemplate31DependencyMapXml
   },
@@ -559,7 +554,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Multi-year architecture roadmap, maturity milestones, and migration waves',
     examples: 'Target state evolution, 3-year AI transformation roadmap',
     defaultDomain: 'AI-Powered Regulatory Intelligence Platform',
-    previewImage: '/templates/tech_ai_coe.png',
+    previewImage: '/templates/canonical_32.png',
     keyComponents: ['Phase 0 Foundation', 'Phase 1 Scale', 'Phase 2 Intelligent', 'Phase 3 Autonomous'],
     generateXml: generateTemplate32RoadmapEvolutionXml
   },
@@ -571,7 +566,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: '2-dimensional evaluation matrix: capabilities vs systems, controls vs workloads',
     examples: 'Vendor evaluation matrix, security control compliance heatmap',
     defaultDomain: 'AI-Powered Regulatory Intelligence Platform',
-    previewImage: '/templates/tech_ai_trism_guardrails.png',
+    previewImage: '/templates/canonical_33.png',
     keyComponents: ['9 Evaluation Criteria', '5 Options (A-E)', 'Weighted Scores & Ranks', 'Strategic Recommendation'],
     generateXml: generateTemplate33MatrixHeatmapXml
   },
@@ -583,7 +578,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Geographic layout, sovereign cloud boundaries, and multi-region replication',
     examples: 'Global user base, multi-region sovereign cloud, edge CDN',
     defaultDomain: 'AI-Powered Regulatory Intelligence Platform',
-    previewImage: '/templates/tech_data_residency.png',
+    previewImage: '/templates/canonical_34.png',
     keyComponents: ['Global User Base', 'Regional Overview', '6 Regional Enclave Pods', 'Global Multi-Region Services'],
     generateXml: generateTemplate34GeographicArchitectureXml
   },
@@ -614,43 +609,43 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
   {
     id: '37',
     name: 'Dedicated Network & Infrastructure Blueprint',
-    family: 'Reference Architectures',
+    family: 'Infrastructure',
     level: 'L3',
     primaryPurpose: 'Private ingress/egress, PSC connectivity, and secure hybrid cloud networking',
     examples: 'Shared VPC hub-and-spoke, Cloud Interconnect, Private Service Connect, Secure Web Proxy',
     defaultDomain: 'Enterprise Multi-Region Hybrid Cloud Infrastructure',
-    previewImage: '/templates/tech_multi_region_dr.png',
+    previewImage: '/templates/canonical_37.png',
     keyComponents: ['Users & External Sources', 'Hybrid Connectivity Edge', 'Private Ingress Layer', 'Shared VPC Hub-and-Spoke', 'Private Workloads Layer', 'Private Service Connect', 'Private Egress Controls', 'Data & Platform Shared Controls', 'Security & Reliability'],
     generateXml: generateTemplate37DedicatedNetworkInfraXml
   },
   {
     id: '38',
     name: 'Cloud Landing Zone & Enterprise Shared Services',
-    family: 'Reference Architectures',
+    family: 'Infrastructure',
     level: 'L3',
     primaryPurpose: 'Organization hierarchy, shared services platform, governance, and FinOps guardrails',
     examples: 'Multi-tenant landing zone, organizational units, Golden IaC templates, central logging',
     defaultDomain: 'Enterprise SaaS Multi-Tenant Cloud Platform',
-    previewImage: '/templates/secure_deployment_map.png',
+    previewImage: '/templates/canonical_38.png',
     keyComponents: ['Enterprise & Business Units', 'Organization Structure & Hierarchy', 'Identity & Access Admin', 'Core Network Foundation', 'Enterprise Shared Services', 'Security & Compliance', 'Data & AI Shared Services', 'Reliability & SRE', 'FinOps & Billing'],
     generateXml: generateTemplate38CloudLandingZoneXml
   },
   {
     id: '39',
     name: 'Sovereign Cloud & Data Privacy Blueprint',
-    family: 'Reference Architectures',
+    family: 'Security & Governance',
     level: 'L2',
     primaryPurpose: 'National/regional data residency, privacy by design, and sovereign cloud operations',
     examples: 'EU GDPR compliance, sovereign cloud enclaves, automated data classification, local KMS/HSM',
     defaultDomain: 'Sovereign Healthcare & Public Sector Cloud Platform',
-    previewImage: '/templates/data_residency_sovereign_map.png',
+    previewImage: '/templates/canonical_39.png',
     keyComponents: ['Governance & Sovereign Oversight', 'Stakeholders & Access Gate', 'Sovereign Cloud Environment', 'Data Classification & Residency', 'Privacy & Security Controls', 'Infrastructure Sovereignty', 'Data Exchange & Controls', 'Monitoring & Audit', 'Compliance Frameworks'],
     generateXml: generateTemplate39SovereignCloudPrivacyXml
   },
   {
     id: '40',
     name: 'Enterprise GenAI & Multi-Agent Platform',
-    family: 'Reference Architectures',
+    family: 'Structure',
     level: 'L2',
     primaryPurpose: 'End-to-end, secure, governed, and observable multi-agent AI platform on Google Cloud',
     examples: 'Multi-agent system, LLM gateway, enterprise RAG pipeline, MCP tool integration, AI governance & HITL',
@@ -662,7 +657,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
   {
     id: '41',
     name: 'Enterprise RAG & Knowledge Intelligence Platform',
-    family: 'Reference Architectures',
+    family: 'Structure',
     level: 'L2',
     primaryPurpose: 'Trusted enterprise knowledge retrieval, grounding, citations, governance, and observability',
     examples: 'Enterprise RAG, semantic vector search, knowledge graph, document parsing, grounding & citations, AI safety & compliance',
@@ -674,7 +669,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
   {
     id: '42',
     name: 'Modern Data Lakehouse & Data Mesh',
-    family: 'Reference Architectures',
+    family: 'Structure',
     level: 'L2',
     primaryPurpose: 'Unified, governed, scalable, secure, and AI-ready modern data lakehouse and decentralized data mesh architecture',
     examples: 'Enterprise data lakehouse, BigLake, Dataplex mesh governance, domain data products, real-time ingestion, BigQuery analytics',
@@ -686,7 +681,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
   {
     id: '43',
     name: 'Real-Time Streaming & Event-Driven Enterprise',
-    family: 'Reference Architectures',
+    family: 'Flow',
     level: 'L2',
     primaryPurpose: 'Scalable, event-driven, low-latency, resilient, and governed enterprise real-time streaming platform',
     examples: 'Real-time streaming, Pub/Sub, Dataflow Beam, Eventarc, Kafka/Confluent compatibility, event mesh, Spanner/Bigtable stores',
@@ -698,7 +693,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
   {
     id: '44',
     name: 'Zero-Trust Cybersecurity & SOC Platform',
-    family: 'Reference Architectures',
+    family: 'Security & Governance',
     level: 'L3',
     primaryPurpose: 'Comprehensive enterprise zero-trust cybersecurity and SecOps platform across continuous identity verification, threat detection, security controls, and 24x7 SOC operations',
     examples: 'Zero-trust architecture, BeyondCorp, Cloud Identity, IAM PDP, Chronicle SIEM, SOAR automation, Cloud Armor, SCC, Mandiant threat intelligence',
@@ -710,7 +705,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
   {
     id: '45',
     name: 'Enterprise API, Integration & MCP Gateway',
-    family: 'Reference Architectures',
+    family: 'Structure',
     level: 'L2',
     primaryPurpose: 'Unified enterprise API management, event integration, SaaS connectivity, Model Context Protocol (MCP) tool exposure, and end-to-end policy enforcement',
     examples: 'API Gateway, Ingress/Mesh, ESB/iPaaS, MCP Gateway & Tool Discovery, Kafka/PubSub event backbone, SaaS connectors, Zero Trust & PEP, Observability',
@@ -722,7 +717,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
   {
     id: '46',
     name: 'Enterprise Kubernetes & Platform Engineering',
-    family: 'Reference Architectures',
+    family: 'Infrastructure',
     level: 'L3',
     primaryPurpose: 'Standardized enterprise Kubernetes platform engineering, multi-cluster management, Golden Paths, GKE runtime, infrastructure, governance, and platform operations',
     examples: 'GKE Fleet, Backstage IDP, Port, ArgoCD GitOps, Kyverno/OPA, Helm/KubeVela, Kubeflow/KServe, Istio Mesh, VPC-native GKE, Cloud Armor, Prometheus/Grafana',
@@ -734,7 +729,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
   {
     id: '47',
     name: 'MLOps & AI Model Lifecycle Platform',
-    family: 'Reference Architectures',
+    family: 'Delivery & Operations',
     level: 'L2',
     primaryPurpose: 'Governed, scalable, reproducible, secure, and responsible MLOps & AI model lifecycle platform on Google Cloud',
     examples: 'Model serving & inference, training & tuning, feature store, Vertex AI pipelines, model registry & cards, AI governance & compliance, model observability & drift',
@@ -746,7 +741,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
   {
     id: '48',
     name: 'BCDR, Cyber Recovery & Operational Resilience',
-    family: 'Reference Architectures',
+    family: 'Delivery & Operations',
     level: 'L3',
     primaryPurpose: 'Resilient by design, recover with confidence, and continuity assured enterprise disaster recovery and cyber resilience architecture on Google Cloud',
     examples: 'BCDR orchestration & runbooks, recovery workflows & automated failover, BIA, data protection & immutable storage, multi-region infrastructure, cyber incident recovery',
@@ -770,7 +765,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
   {
     id: '50',
     name: 'Sustainability & ESG Intelligence Platform',
-    family: 'Reference Architectures',
+    family: 'Security & Governance',
     level: 'L1',
     primaryPurpose: 'Measure, report, reduce, comply, and innovate enterprise sustainability and ESG intelligence platform on Google Cloud',
     examples: 'Stakeholder ESG portals, carbon intelligence & emissions analytics, GHG Scope 1/2/3 calculations, ESG data models (GRI, SASB, TCFD, CDP, ISSB, EU Taxonomy), double materiality, net zero planning',
@@ -808,6 +803,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     name: fb.name,
     family: 'Flow' as const,
     level: fb.level,
+    theme: fb.theme,
     primaryPurpose: fb.primaryPurpose,
     examples: `${fb.shortType}, 7-Layer Google Cloud Operational Flowchart, Agentic AI Execution Flow`,
     defaultDomain: 'Google Cloud Enterprise Agentic AI & Operational Flow',
@@ -847,7 +843,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Official Google Cloud Architecture Center Hub-and-Spoke topology (#1a73e8 outer frame, #aecbfa Routing Hub, #ceead6 Governance Hub, #feefc3 Shared Pool, #fad2cf Sovereign Spoke & Step ①–⑦ callouts)',
     examples: 'Google Cloud Architecture Center, multi-tenant-agentic-ai-system.svg, Pattern A Pooled, Pattern B Sovereign Silos, Pattern C Hybrid PSC, 5-Hop Context Chain',
     defaultDomain: 'Google Cloud Architecture Center Hub-and-Spoke',
-    previewImage: '/templates/canonical_00.png',
+    previewImage: '/templates/canonical_78.png',
     keyComponents: ['Competing B2B Tenants / Users', 'Google Cloud Outer Container (#1a73e8)', 'Routing Hub (Cloud Armor & IAP, Model Armor, OBO+DPoP, External ALB, Cloud Run)', 'Central Governance & FinOps Hub (Security Command Center, IAM & PAB, Cloud Logging & BQ)', 'Pattern A Pooled Shared Runtime (#feefc3)', 'Pattern B Sovereign Silos & Pattern C Hybrid PSC Spokes (#fad2cf)', 'Numbered Callout Steps ①–⑦'],
     generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate78OfficialGcpArchCenterHubSpokeXml(domainFlavor, theme)
   }
@@ -1708,15 +1704,104 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/GxP/gi, 'SMPTE');
   }
 
+  if (out.includes('id="flow_blueprint_') || out.includes('official_gcp_arch_center')) {
+    return out;
+  }
   return sanitizeAndHealCanonicalBlueprintXml(out);
 }
 
-export const CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
+export const ACTIVE_CANONICAL_BLUEPRINT_IDS: readonly string[] = [
+  '78',
+  '00',
+  '35',
+  '36',
+  '37',
+  '38',
+  '39',
+  '40',
+  '41',
+  '42',
+  '43',
+  '44',
+  '45',
+  '46',
+  '47',
+  '48',
+  '49',
+  '50',
+  '67',
+  '68',
+  '69',
+  '70',
+  '71',
+  '72',
+  '73',
+  '74',
+] as const;
+
+export const LEGACY_TO_MODERN_BLUEPRINT_MAP: Record<string, string> = {
+  '01': '78',
+  '02': '78',
+  '03': '67',
+  '04': '50',
+  '05': '47',
+  '06': '42',
+  '07': '42',
+  '08': '42',
+  '09': '42',
+  '10': '45',
+  '11': '67',
+  '12': '67',
+  '13': '67',
+  '14': '43',
+  '15': '46',
+  '16': '38',
+  '17': '38',
+  '18': '44',
+  '19': '44',
+  '20': '46',
+  '21': '46',
+  '22': '43',
+  '23': '40',
+  '24': '00',
+  '25': '41',
+  '26': '40',
+  '27': '44',
+  '28': '46',
+  '29': '67',
+  '30': '44',
+  '31': '47',
+  '32': '46',
+  '33': '46',
+  '34': '48',
+  '51': '00',
+  '52': '00',
+  '53': '40',
+  '54': '78',
+  '55': '40',
+  '56': '40',
+  '57': '45',
+  '58': '00',
+  '59': '78',
+  '60': '41',
+  '61': '41',
+  '62': '45',
+  '63': '40',
+  '64': '46',
+  '65': '42',
+  '66': '44',
+  '75': '00',
+  '76': '00',
+  '77': '00',
+};
+
+export const ALL_RAW_CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
   const contract = CANONICAL_CONTRACTS[t.id];
   const paddedId = t.id.padStart(2, '0');
+  const isFlowBp = Number(t.id) >= 67 && Number(t.id) <= 74;
   const cleanName = t.id === '00'
     ? '2026 Upgraded GCP & Gemini Enterprise Native Architecture'
-    : t.id === '78'
+    : t.id === '78' || isFlowBp
     ? t.name
     : t.name
         .replace(/\bCLAUDE\.md\b/gi, 'AGENTS.md')
@@ -1725,7 +1810,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
         .replace(/\bRaw\s+Gemini\s+API\b/gi, 'Stateless Foundation API')
         .replace(/\bVertex\s+AI\s+Agent\s+Engine\b/gi, 'Governed Agent Engine')
         .replace(/^Google\s+Cloud\s+/i, 'Enterprise Cloud ');
-  const isSketchBp = t.id === '76' || t.id === '77' || t.id === '78';
+  const isSketchBp = t.id === '76' || t.id === '77' || t.id === '78' || isFlowBp;
   return {
     ...t,
     name: cleanName,
@@ -1744,3 +1829,16 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
     }
   };
 });
+
+export const CANONICAL_TEMPLATES: CanonicalTemplate[] = ACTIVE_CANONICAL_BLUEPRINT_IDS
+  .map((id) => ALL_RAW_CANONICAL_TEMPLATES.find((t) => t.id === id))
+  .filter((t): t is CanonicalTemplate => Boolean(t));
+
+export function getCanonicalTemplateById(rawId?: string | null): CanonicalTemplate {
+  const padded = String(rawId || '78').replace(/^(bp_|canonical_)/i, '').padStart(2, '0');
+  const direct = CANONICAL_TEMPLATES.find((t) => t.id === padded || t.id === rawId);
+  if (direct) return direct;
+  const mappedId = LEGACY_TO_MODERN_BLUEPRINT_MAP[padded] || '78';
+  return CANONICAL_TEMPLATES.find((t) => t.id === mappedId) || CANONICAL_TEMPLATES[0];
+}
+

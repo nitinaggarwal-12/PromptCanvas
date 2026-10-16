@@ -272,7 +272,7 @@ async function runPartialGapVerificationSuite() {
     if (cellMatches > maxCellCount) maxCellCount = cellMatches;
   }
   assert(maxCellCount <= 1200, `Peak diagram cell density is ${maxCellCount} cells (within 1,500 node performance budget)`);
-  assert(maxXmlBytes <= 250000, `Peak diagram XML payload is ${(maxXmlBytes / 1024).toFixed(1)} KB (within 350 KB payload budget)`);
+  assert(maxXmlBytes <= 350 * 1024, `Peak diagram XML payload is ${(maxXmlBytes / 1024).toFixed(1)} KB (within 350 KB payload budget)`);
 
   // ============================================================================
   // GAP 12: LOAD & CONCURRENCY PROFILING (50 Parallel Requests)

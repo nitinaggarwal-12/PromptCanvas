@@ -85,7 +85,7 @@ export function getTemplatePerspective(tpl: CanonicalTemplate): ArchitecturePers
   if (
     tpl.family === 'Process' ||
     tpl.family === 'Flow' ||
-    ['03', '04', '11', '12', '13', '26', '28', '29'].includes(tpl.id) ||
+    ['67', '03', '04', '11', '12', '13', '26', '28', '29'].includes(tpl.id) ||
     (idNum >= 67 && idNum <= 74)
   ) {
     return 'Process';
@@ -94,7 +94,7 @@ export function getTemplatePerspective(tpl: CanonicalTemplate): ArchitecturePers
     tpl.family === 'Understand' ||
     tpl.family === 'Infographic' ||
     tpl.family === 'Analysis & Planning' ||
-    ['01', '02', '05', '06', '31', '32', '33'].includes(tpl.id) ||
+    ['78', '50', '01', '02', '05', '06', '31', '32', '33'].includes(tpl.id) ||
     (idNum >= 52 && idNum <= 66)
   ) {
     return 'Conceptual';
@@ -103,7 +103,7 @@ export function getTemplatePerspective(tpl: CanonicalTemplate): ArchitecturePers
     tpl.family === 'Infrastructure' ||
     tpl.family === 'Security & Governance' ||
     tpl.family === 'Delivery & Operations' ||
-    ['15', '16', '17', '18', '19', '20', '21', '22', '27', '30', '34', '42', '43', '44', '46', '48', '50', '51'].includes(tpl.id)
+    ['00', '38', '42', '43', '44', '46', '48', '15', '16', '17', '18', '19', '20', '21', '22', '27', '30', '34', '51'].includes(tpl.id)
   ) {
     return 'Technical';
   }
@@ -114,15 +114,24 @@ export function getTemplatePerspective(tpl: CanonicalTemplate): ArchitecturePers
  * Maps a CanonicalTemplate to L1, L2, L3, or L4 detail levels.
  */
 export function getTemplateDetailLevels(tpl: CanonicalTemplate): AbstractionDetailLevel[] {
-  const levels: AbstractionDetailLevel[] = [tpl.level];
+  const levels = new Set<AbstractionDetailLevel>([tpl.level]);
   const perspective = getTemplatePerspective(tpl);
+  if (tpl.id === '78' || tpl.id === '50' || perspective === 'Conceptual') {
+    levels.add('L1');
+    levels.add('L2');
+  }
+  if (tpl.id === '67' || perspective === 'Process') {
+    levels.add('L2');
+    levels.add('L3');
+  }
   if (tpl.level === 'L3' && (perspective === 'Technical' || tpl.family === 'Delivery & Operations' || tpl.family === 'Security & Governance')) {
-    levels.push('L4');
+    levels.add('L4');
   }
-  if (tpl.level === 'L2' && perspective === 'Logical') {
-    levels.push('L3');
+  if (tpl.level === 'L2' || perspective === 'Logical') {
+    levels.add('L2');
+    levels.add('L3');
   }
-  return levels;
+  return Array.from(levels);
 }
 
 /**
@@ -504,13 +513,13 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
         ],
       },
       {
-        id: '16',
-        name: 'Cloud Deployment Architecture',
+        id: '38',
+        name: 'Enterprise Cloud Landing Zone & Multi-Region Foundation',
         perspective: 'Technical',
         level: 'L3',
-        family: 'Infrastructure',
+        family: 'Reference Architectures',
         score: 92,
-        whyChosen: 'Best Technical/L3 match for physical GCP regional zones, GKE/TPU clusters, Cloud Armor WAF, and Spanner HA replication.',
+        whyChosen: 'Best Technical/L3 match for physical GCP regional zones, Shared VPC, GKE/TPU clusters, Cloud Armor WAF, and Spanner HA replication.',
         plannedModifications: [
           'Map ingress tier to Global Cloud Load Balancing, Apigee X, and Cloud Armor WAF',
           'Configure GKE Autopilot & Vertex AI TPU/GPU compute pools inside private VPC subnets',
@@ -518,16 +527,16 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
         ],
       },
       {
-        id: '01',
-        name: 'System Context Architecture',
+        id: '78',
+        name: 'Official Google Cloud Architecture Center — Hub-and-Spoke Multi-Tenant Agentic AI',
         perspective: 'Conceptual',
         level: 'L1',
-        family: 'Understand',
-        score: 88,
-        whyChosen: 'Best Conceptual/L1 match for an executive boundary view showing external actors, core platform boundary, and external dependencies.',
+        family: 'Reference Architectures',
+        score: 90,
+        whyChosen: 'Best Conceptual/Hub-and-Spoke match for an executive boundary view showing Routing Hub, Governance Hub, and Tenant Spokes.',
         plannedModifications: [
-          'Center the core GCP & Gemini Enterprise platform boundary box',
-          'Map upstream operators/clients on the left and external telemetry/partner systems on the right',
+          'Center the core GCP Routing & Governance Hub boundary boxes',
+          'Map Pooled vs Siloed Tenant Spokes on the left and right',
           'Highlight high-level value exchange and governance oversight',
         ],
       },
@@ -535,8 +544,8 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
     perspectiveMatches: {
       Conceptual: {
         perspective: 'Conceptual',
-        blueprintId: '01',
-        blueprintName: 'System Context Architecture',
+        blueprintId: '78',
+        blueprintName: 'Official Google Cloud Architecture Center — Hub-and-Spoke Multi-Tenant Agentic AI',
         recommendedLevel: 'L1',
         tailoredTitle: `L1 Conceptual System Context: ${cleanTitle}`,
         whyChosen: 'Shows the executive L1 system boundary, key actors, channels, and external ecosystem integrations without low-level infrastructure clutter.',
@@ -571,8 +580,8 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
       },
       Process: {
         perspective: 'Process',
-        blueprintId: '13',
-        blueprintName: 'Decision Flow / Tree Architecture',
+        blueprintId: '67',
+        blueprintName: 'Enterprise Cloud 7-Layer End-to-End Operational Flowchart',
         recommendedLevel: 'L2',
         tailoredTitle: `L2 Process & Decision Flow: ${cleanTitle}`,
         whyChosen: 'Illustrates the end-to-end step-by-step execution flow (Steps ❶–❻), diamond validation gates (✓ YES / ✕ NO), and closed-loop exception retry paths.',

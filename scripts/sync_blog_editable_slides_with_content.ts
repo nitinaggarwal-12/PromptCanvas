@@ -91,11 +91,7 @@ async function syncAllBlogEditableSlidesWithContent() {
   console.log('🚀 Compiling & syncing 6-Slide 1:1 White DevSite <article> UI + Editable Diagram (#78) decks to Google Slides...');
 
   const workstreamAliasByDocId: Record<string, string[]> = {
-    'DOC-MT-01': ['WS1', 'BP-78'],
-    'DOC-MT-02': ['WS2'],
-    'DOC-MT-03': ['WS3'],
-    'DOC-MT-04': ['WS4'],
-    'DOC-MT-06': ['WS5'],
+    'DOC-MT-01': ['BP-78'],
   };
 
   const token = await getServerDriveAccessToken();

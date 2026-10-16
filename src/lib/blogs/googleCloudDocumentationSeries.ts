@@ -1104,7 +1104,7 @@ ORDER BY sim_id ASC;`,
     seriesTitle: 'Google Cloud Agent Reference Architectures',
     partBadge: 'Reference Guide • Multimodal GraphRAG',
     useCasePresetId: 'uc-multimodal-graphrag',
-    primaryBlueprintVariantId: 'ws1-multi-tenant-taxonomy-overview',
+    primaryBlueprintVariantId: 'ref07-multimodal-graphrag-spanner',
     title: 'Agentic AI Reference Architecture: Multimodal GraphRAG Resource Orchestration with Spanner Graph',
     subtitle:
       'Consolidating earnings PDFs, audio recordings, and market charts into a unified Cloud Spanner Graph orchestrated by sequential and coordinator AI agents on Cloud Run and Vertex AI Agent Engine.',
@@ -1138,7 +1138,7 @@ ORDER BY sim_id ASC;`,
           title: 'Multimodal GraphRAG Resource Orchestration on Google Cloud',
           caption:
             'Figure 1: Hub-and-Spoke topology orchestrating Multimodal Upload, Extraction, and Spanner Graph Hybrid RRF Search Agents.',
-          blueprintVariantId: 'ws1-multi-tenant-taxonomy-overview',
+          blueprintVariantId: 'ref07-multimodal-graphrag-spanner',
           workflowTab: 'search',
         },
         codeSnippet: {
@@ -1319,7 +1319,7 @@ def sign_approved_mutation_with_hsm(
     seriesTitle: 'Google Cloud Agent Reference Architectures',
     partBadge: 'Reference Guide • Agent Engine, MCP & A2A',
     useCasePresetId: 'uc-scalable-agent-engine',
-    primaryBlueprintVariantId: 'ws5-decision-tree-and-agentic-triad',
+    primaryBlueprintVariantId: 'ref09-scalable-mcp-a2a-ecosystem',
     title: 'Design Patterns for Scalable Multi-Agent Ecosystems: Vertex AI Agent Engine, MCP & A2A',
     subtitle:
       'Coordinating Root, Order, Distributor, and Tracking agents across enterprise boundaries using Google ADK, Stateless Model Context Protocol (MCP) servers on Cloud Run, and Agent-to-Agent (A2A) Agent Cards.',
@@ -1353,7 +1353,7 @@ def sign_approved_mutation_with_hsm(
           title: 'Scalable Multi-Agent Ecosystem with Vertex AI Agent Engine, MCP & A2A',
           caption:
             'Figure 1: Coordinating Root, Order, Distributor, and Tracking agents via A2A Agent Cards and Cloud Run Stateless MCP Servers.',
-          blueprintVariantId: 'ws5-decision-tree-and-agentic-triad',
+          blueprintVariantId: 'ref09-scalable-mcp-a2a-ecosystem',
           workflowTab: 'ingestion',
         },
         codeSnippet: {
@@ -1435,11 +1435,50 @@ function buildComponentGroupsForBlueprint(
   const r = bp.routingCards;
   const g = bp.govCards;
   const l = bp.leftCards;
+  const s = bp.rightCards;
   const rTopRightTitle = [r.topRight.title, r.topRight.title2].filter(Boolean).join(' ');
   const rBotRightTitle = [r.botRight.title, r.botRight.title2].filter(Boolean).join(' ');
   const gTopTitle = [g.top.title, g.top.title2].filter(Boolean).join(' ');
   const gMidTitle = [g.mid.title, g.mid.title2].filter(Boolean).join(' ');
   const gBotTitle = [g.bot.title, g.bot.title2].filter(Boolean).join(' ');
+
+  const spokeItems: Array<{ name: string; description: string }> = [
+    {
+      name:
+        l.runtime.title === s.runtime.title
+          ? l.runtime.title
+          : `${l.runtime.title} / ${s.runtime.title}`,
+      description: `Core execution environments (${l.runtime.sub}; ${s.runtime.sub}) orchestrating reasoning, memory, and tool execution across left and right spokes.`,
+    },
+    {
+      name:
+        l.modelArmor.title === s.modelArmor.title
+          ? l.modelArmor.title
+          : `${l.modelArmor.title} / ${s.modelArmor.title}`,
+      description: `Screens prompts and model outputs within each spoke boundary (${l.modelArmor.sub}; ${s.modelArmor.sub}) to enforce safety and DLP policies.`,
+    },
+    {
+      name:
+        l.mcp.title === s.mcp.title
+          ? l.mcp.title
+          : `${l.mcp.title} / ${s.mcp.title}`,
+      description: `Serverless tool interfaces (${l.mcp.sub}; ${s.mcp.sub}) providing standardized, scoped access to enterprise systems.`,
+    },
+    {
+      name:
+        l.datastore.title === s.datastore.title
+          ? l.datastore.title
+          : `${l.datastore.title} / ${s.datastore.title}`,
+      description: `Isolated persistence layers (${l.datastore.sub}; ${s.datastore.sub}) enforcing access boundaries, vector namespaces, and encryption at rest.`,
+    },
+    {
+      name:
+        l.llm.title === s.llm.title
+          ? l.llm.title
+          : `${l.llm.title} / ${s.llm.title}`,
+      description: `Vertex AI foundation model endpoints (${l.llm.sub}; ${s.llm.sub}) providing multimodal reasoning and context caching.`,
+    },
+  ];
 
   return [
     {
@@ -1461,12 +1500,16 @@ function buildComponentGroupsForBlueprint(
           description: `Acts as the unified global entry point for incoming requests (${r.topRight.sub}).`,
         },
         {
-          name: `${r.topLeft.title} & ${r.botLeft.title}`,
-          description: `Enforces edge policy rules (${r.topLeft.sub}) and screens payloads (${r.botLeft.sub}) before reaching the runtime.`,
+          name: r.topLeft.title,
+          description: `Enforces edge policy rules (${r.topLeft.sub}) before reaching the runtime.`,
         },
         {
           name: r.midLeft.title,
-          description: `Authenticates callers and verifies identity and scope claims (${r.midLeft.sub}) before routing.`,
+          description: `Screens incoming prompts and verifies policy constraints (${r.midLeft.sub}) at the routing hub.`,
+        },
+        {
+          name: r.botLeft.title,
+          description: `Authenticates callers and binds cryptographic identity and scope claims (${r.botLeft.sub}) before routing.`,
         },
         {
           name: rBotRightTitle,
@@ -1505,28 +1548,7 @@ function buildComponentGroupsForBlueprint(
     {
       groupTitle: `${bp.leftZoneTitle} & ${bp.rightZoneTitle}`,
       groupLead: `Isolated Google Cloud execution spokes (${bp.leftBoundaryLabel} and ${bp.rightBoundaryLabel}) hosting agent runtimes, MCP tools, and datastores:`,
-      items: [
-        {
-          name: l.runtime.title,
-          description: `Core execution environment (${l.runtime.sub}) orchestrating reasoning, memory, and tool execution.`,
-        },
-        {
-          name: l.modelArmor.title,
-          description: `Screens prompts and model outputs within the execution boundary (${l.modelArmor.sub}) to enforce safety and DLP policies.`,
-        },
-        {
-          name: l.mcp.title,
-          description: `Serverless tool interface (${l.mcp.sub}) providing standardized, scoped access to enterprise systems.`,
-        },
-        {
-          name: l.datastore.title,
-          description: `Isolated persistence layer (${l.datastore.sub}) enforcing access boundaries, vector namespaces, and encryption at rest.`,
-        },
-        {
-          name: l.llm.title,
-          description: `Vertex AI foundation model endpoint (${l.llm.sub}) providing multimodal reasoning and context caching.`,
-        },
-      ],
+      items: spokeItems,
     },
   ];
 }
@@ -1845,15 +1867,21 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
           leadParagraph: `Enforce defense-in-depth across ${bp.outerWrapperLabel}, ${bp.innerWrapperLabel}, and spoke runtimes:`,
           rows: [
             {
-              component: `${bp.outerWrapperLabel} & ${bp.innerWrapperLabel}`,
+              component: 'VPC Service Controls & Access Boundaries',
               recommendations: [
-                `Enforce ${bp.outerWrapperLabel} perimeters around hub and spoke projects to block unauthorized data exfiltration, and bind ${bp.innerWrapperLabel} to spoke principals to prevent cross-spoke access.`,
+                `Enforce VPC Service Controls perimeters around hub and spoke projects to block unauthorized data exfiltration, and bind Principal Access Boundary (PAB) policies to spoke principals.`,
               ],
             },
             {
-              component: `${bp.routingCards.topLeft.title}, ${bp.routingCards.midLeft.title} & ${bp.leftCards.modelArmor.title}`,
+              component: Array.from(
+                new Set([
+                  bp.routingCards.topLeft.title,
+                  bp.routingCards.midLeft.title,
+                  bp.leftCards.modelArmor.title,
+                ])
+              ).join(' & '),
               recommendations: [
-                `Strip client-supplied privilege headers at the edge (${bp.routingCards.topLeft.sub}), verify caller identity claims (${bp.routingCards.midLeft.sub}), and screen both incoming prompts and outgoing completions with ${bp.leftCards.modelArmor.title} (${bp.leftCards.modelArmor.sub}).`,
+                `Strip client-supplied privilege headers at the edge (${bp.routingCards.topLeft.sub}), verify caller identity claims (${bp.routingCards.midLeft.sub}), and screen prompts and completions with ${bp.leftCards.modelArmor.title}.`,
               ],
             },
             {

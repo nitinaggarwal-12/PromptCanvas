@@ -177,13 +177,12 @@ describe('GCP Architecture Co-Pilot Modifier & Quality Gates', () => {
       false
     );
 
-    expect(res.updatedXml).toContain('Mission Harness Coordinator');
-    expect(res.updatedXml).toContain('Orbital &amp; Trajectory');
-    expect(res.updatedXml).toContain('Launch &amp; Payload');
-    expect(res.updatedXml).toContain('Multiverse Relay');
-    expect(res.updatedXml).toContain('Cross-Universe');
-    expect(res.updatedXml).toContain('Quantum Relay');
-    expect(res.updatedXml).toContain('copilot_mod_nasa_harness_box_');
+    expect(res.updatedXml).toContain('Flight Director Coordinator');
+    expect(res.updatedXml).toContain('GNC &amp; Orbit FDS');
+    expect(res.updatedXml).toContain('Avionics');
+    expect(res.updatedXml).toContain('Parallel Multi-Universe Digital-Twin Sandbox');
+    expect(res.updatedXml).toContain('Cross-Universe Pareto Policy Distiller');
+    expect(res.updatedXml).toContain('CLOSED-LOOP 100Hz CCSDS 732.0-B AOS TELEMETRY RETURN HIGHWAY');
     expect(res.updatedXml).not.toContain('Cheque book');
     expect(res.updatedXml).not.toContain('eKYC update');
     expect(res.newVersion.author).toBe('Mission Systems & Aerospace AI Lead');

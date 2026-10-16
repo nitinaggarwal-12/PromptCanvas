@@ -164,8 +164,8 @@ describe('googleDriveDirectOpen — createGoogleWorkspaceFileFromBlob', () => {
   });
 });
 
-describe('exportDrawioToEditablePptx — single editable vector slide 1:1 fidelity', () => {
-  it('compiles Blueprint #00 into a single editable slide without static picture or object ID slides', async () => {
+describe('exportDrawioToEditablePptx — 6-slide DevSite article deck + decomposed Draw.io vector slide 1:1 fidelity', () => {
+  it('compiles Blueprint #00 into a 6-slide DevSite deck with decomposed editable vector shapes on Slide 2', async () => {
     const JSZip = (await import('jszip')).default;
     const { exportDrawioToEditablePptx } = await import('@/lib/export/editablePptxCompiler');
     const { generateUpgradedGcpGeBankingArchitectureXml } = await import('@/lib/canonical/upgradedGcpGeBankingAgentTemplate');
@@ -178,19 +178,28 @@ describe('exportDrawioToEditablePptx — single editable vector slide 1:1 fideli
       { returnBlob: true }
     )) as Blob;
     const zip = await JSZip.loadAsync(await blob.arrayBuffer());
-    const slideFiles = Object.keys(zip.files).filter((k) => /^ppt\/slides\/slide\d+\.xml$/.test(k));
-    expect(slideFiles).toEqual(['ppt/slides/slide1.xml']);
+    const slideFiles = Object.keys(zip.files)
+      .filter((k) => /^ppt\/slides\/slide\d+\.xml$/.test(k))
+      .sort();
+    expect(slideFiles).toEqual([
+      'ppt/slides/slide1.xml',
+      'ppt/slides/slide2.xml',
+      'ppt/slides/slide3.xml',
+      'ppt/slides/slide4.xml',
+      'ppt/slides/slide5.xml',
+      'ppt/slides/slide6.xml',
+    ]);
 
     const mediaFiles = Object.keys(zip.files).filter((k) => k.startsWith('ppt/media/'));
     expect(mediaFiles.length).toBeGreaterThanOrEqual(25);
 
-    const slide1Xml = await zip.file('ppt/slides/slide1.xml')!.async('string');
-    expect(slide1Xml).toContain('prst="can"');
-    expect(slide1Xml).toContain('Gemini 3.1 Pro / 3.8 Flash');
-    expect(slide1Xml).toContain('❶');
-    expect(slide1Xml).toContain('➐');
-    expect(slide1Xml).not.toContain('OBJ-01');
-    expect(slide1Xml).not.toContain('• (');
+    const slide2Xml = await zip.file('ppt/slides/slide2.xml')!.async('string');
+    expect(slide2Xml).toContain('prst="can"');
+    expect(slide2Xml).toContain('prst="ellipse"');
+    expect(slide2Xml).toContain('Gemini 3.1 Pro / 3.8 Flash');
+    expect(slide2Xml).toContain('<a:t>1</a:t>');
+    expect(slide2Xml).toContain('<a:t>7</a:t>');
+    expect(slide2Xml).not.toContain('OBJ-01');
   });
 });
 
