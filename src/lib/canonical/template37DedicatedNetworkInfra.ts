@@ -167,8 +167,8 @@ export function generateTemplate37DedicatedNetworkInfraXml(
     );
   });
 
-  // Box 3: DIAGRAM INFORMATION (x=1280, y=700, w=244, h=276)
-  cell("sb_info_box", "", 1280, 700, 244, 276, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
+  // Box 3: DIAGRAM INFORMATION (x=1280, y=700, w=244, h=210)
+  cell("sb_info_box", "", 1280, 700, 244, 210, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
   cell("sb_info_title", "DIAGRAM INFORMATION", 1280, 700, 244, 26, "shape=rectangle;rounded=1;arcSize=4;fillColor=#1E40AF;fontColor=#FFFFFF;fontSize=10.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const infoRows = [

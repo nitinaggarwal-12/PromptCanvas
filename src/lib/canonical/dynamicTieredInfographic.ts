@@ -294,7 +294,7 @@ export function buildDynamicInfographicTiers(prompt: string): {
               title: 'Frontier Teacher Ensemble',
               badge: 'TEACHER LLM',
               bullets: [
-                'Gemini 2.5 Pro / Claude 3.7 Sonnet high-reasoning',
+                'Gemini 2.5 Pro / Gemini 2.5 Flash high-reasoning',
                 'Generates explicit Chain-of-Thought (CoT) traces',
                 'Synthesizes multi-step MCP tool invocation DAGs'
               ]

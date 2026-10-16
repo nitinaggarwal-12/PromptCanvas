@@ -2250,11 +2250,11 @@ function StudioMain() {
         {
           id: 'comp_aws_bedrock',
           name: 'Amazon Bedrock & SageMaker AI Hub',
-          service: 'Amazon Bedrock (Claude 3.7 Sonnet) & SageMaker',
+          service: 'Amazon Bedrock (Gemini 2.5 Pro (Dedicated PT)) & SageMaker',
           tier: 'compute',
           region: 'us-east-1',
           role: 'Foundation Model Inference, Guardrails & Fine-Tuning',
-          description: 'Managed Claude 3.7 Sonnet, Titan Embeddings v2, Bedrock Guardrails PII redaction, and SageMaker custom endpoints.',
+          description: 'Managed Gemini 2.5 Pro (Dedicated PT), Titan Embeddings v2, Bedrock Guardrails PII redaction, and SageMaker custom endpoints.',
           sla: '99.99%',
           protocols: ['Bedrock Runtime API', 'HTTPS TLS 1.3']
         },

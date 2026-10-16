@@ -293,8 +293,8 @@ export function generateTemplate45EnterpriseApiIntegrationMcpGatewayXml(
 
   const t6Messaging = [
     { t: "Event Bus /<br/>Pub/Sub", icon: "zap" },
-    { t: "Streaming<br/>(Kafka / Pulsar)", icon: "activity" },
-    { t: "Queues<br/>(SQS / MQ)", icon: "layers" },
+    { t: "Streaming<br/>(Managed Kafka)", icon: "activity" },
+    { t: "Task Queues<br/>(Cloud Tasks)", icon: "layers" },
     { t: "CDC<br/>Ingestion", icon: "database" },
     { t: "Webhooks<br/>Gateway", icon: "repeat" },
     { t: "Async<br/>Messaging", icon: "network" },
@@ -320,7 +320,7 @@ export function generateTemplate45EnterpriseApiIntegrationMcpGatewayXml(
     { t: "ERP<br/>(SAP / Oracle)", icon: "database" },
     { t: "HR<br/>(Workday)", icon: "users" },
     { t: "ITSM<br/>(ServiceNow)", icon: "settings" },
-    { t: "Data Warehouse<br/>(Snowflake)", icon: "database" },
+    { t: "Data Warehouse<br/>(BigQuery)", icon: "database" },
     { t: "Databases<br/>(OLTP / OLAP)", icon: "server" },
     { t: "Legacy<br/>Applications", icon: "layers" },
     { t: "Partner<br/>Systems", icon: "users" },

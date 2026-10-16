@@ -78,7 +78,7 @@ describe('Flow Blueprints #67..#74 Official Google Cloud Brand Light Theme & 9-G
   });
 
   it('maps all 9 blog guides (DOC-MT-01..DOC-REF-09) 1:1 to 9 distinct Official #78 blueprints with 18/18 component coverage', () => {
-    expect(OFFICIAL_ARCH_CENTER_BLUEPRINTS.length).toBe(9);
+    expect(OFFICIAL_ARCH_CENTER_BLUEPRINTS.length).toBe(10);
     expect(GOOGLE_CLOUD_DOCUMENTATION_SERIES.length).toBe(9);
 
     const seenVariantIds = new Set<string>();
@@ -100,11 +100,16 @@ describe('Flow Blueprints #67..#74 Official Google Cloud Brand Light Theme & 9-G
       expect(xml).not.toMatch(/Claude/i);
       expect(svg).not.toMatch(/Claude/i);
 
-      // Bidirectional arrows on RAG and Tool edges
+      // Bidirectional arrows on RAG, Tool, and e_alb_to_mid_left edges
       expect(xml).toContain('id="e_left_mcp_run_bot"');
       expect(xml).toContain('id="e_left_db_mcp_bot"');
       expect(xml).toContain('id="e_right_mcp_run_bot"');
       expect(xml).toContain('id="e_right_db_mcp_bot"');
+      expect(xml).toMatch(/id="e_alb_to_mid_left"[^>]*startArrow=open;startFill=0;startSize=7;endArrow=open;endFill=0;endSize=7/);
+
+      // Icon diversity >= 10 distinct service icons per diagram
+      const iconUris = new Set((xml.match(/data:image\/svg\+xml;base64,[A-Za-z0-9+/=]+/g) || []));
+      expect(iconUris.size, `Guide ${guide.docId} (${bp!.id}) has only ${iconUris.size} distinct icons`).toBeGreaterThanOrEqual(12);
 
       // All 18 cards + 2 boundary wrappers documented across 5 component groups (1 + 5 + 3 + 1 + 5 = 15 rows)
       const compSec = guide.sections.find((s) => s.componentGroupsTable && s.componentGroupsTable.length > 0);

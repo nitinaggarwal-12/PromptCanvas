@@ -106,7 +106,7 @@ export function generateTemplate42ModernDataLakehouseDataMeshXml(
 
   const t7Cards = [
     { t: "BI &amp; Reporting", sub: "Looker • Looker Studio", icon: "chart" },
-    { t: "Dashboards", sub: "Google Sheets • Data Studio", icon: "chart" },
+    { t: "Dashboards", sub: "Connected Sheets • Looker Studio Pro", icon: "chart" },
     { t: "Self-Service Analytics", sub: "Vertex AI Notebooks • BigQuery Studio", icon: "search" },
     { t: "AI / ML Applications", sub: "Vertex AI Apps", icon: "sparkles" },
     { t: "Operational Applications", sub: "Business Applications • Data Apps", icon: "layers" },

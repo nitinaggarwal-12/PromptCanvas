@@ -691,6 +691,7 @@ export const BLOG_USE_CASE_PRESETS: UseCaseBlogPreset[] = [
     category: 'Featured Google Reference',
     icon: '🕸️',
     isFeaturedReference: true,
+    archCenterBlueprintVariantId: 'ref07-multimodal-graphrag-spanner',
     defaultFormatId: 'cloud-arch-center',
     summaryPrompt:
       'Consolidate fragmented multimodal records (earnings PDFs, shareholder audio recordings, market performance charts, and operational telemetry) into a unified Cloud Spanner Graph knowledge graph orchestrated by sequential and coordinator AI agents on Cloud Run and Gemini Enterprise Agent Platform.',
@@ -767,6 +768,7 @@ export const BLOG_USE_CASE_PRESETS: UseCaseBlogPreset[] = [
     category: 'Featured Google Reference',
     icon: '🛡️',
     isFeaturedReference: true,
+    archCenterBlueprintVariantId: 'arch-center-zero-trust-adk',
     defaultFormatId: 'developers-blog-adk',
     summaryPrompt:
       'Protect production state in autonomous Google ADK multi-tool workflows using hardware-backed Cloud KMS HSM cryptographic write signatures, gVisor (runsc) kernel-level code sandboxing with zero network egress, and deterministic semantic gateways verified in CI/CD.',
@@ -843,6 +845,7 @@ export const BLOG_USE_CASE_PRESETS: UseCaseBlogPreset[] = [
     category: 'Featured Google Reference',
     icon: '🚀',
     isFeaturedReference: true,
+    archCenterBlueprintVariantId: 'ref09-scalable-mcp-a2a-ecosystem',
     defaultFormatId: 'cloud-blog-partner-patterns',
     summaryPrompt:
       'Architect enterprise-scale multi-agent systems using Google Cloud Agent Development Kit (ADK), Vertex AI Agent Engine, Model Context Protocol (MCP) servers on Cloud Run, and Agent-to-Agent (A2A) protocol cards coordinating Root, Order, Distributor, and Tracking agents.',
@@ -1212,7 +1215,7 @@ function buildMultiTenantCaseStudyMarkdown(
 | :--- | :--- | :--- | :--- |
 | **Role & Industry Profile** | Platform Control Plane & SRE/SecOps Hub | Regulated Institutional / Sovereign Workload (${useCase.domainName}) | High-Velocity Commercial / Mid-Market Workload |
 | **Execution Topology** | Shared Blue Routing Hub (\`#aecbfa\`) + Green Governance Hub (\`#ceead6\`) | **${bp.rightBoundaryLabel}** (\`${bp.rightZoneTitle}\`) or Dedicated Silo | **${bp.leftBoundaryLabel}** (\`${bp.leftZoneTitle}\`) |
-| **External Identity Provider (IdP)** | Google Cloud Workforce Identity Federation | **Okta Enterprise OIDC** (\`iss: login.finvault.com\`, Hardware MFA) | **Microsoft Entra ID** (\`iss: sts.windows.net/retail-tid/\`, SAML/OIDC) |
+| **External Identity Provider (IdP)** | Google Cloud Workforce Identity Federation | **Google Workspace OIDC** (\`iss: accounts.google.com / finvault.com\`, Hardware MFA) | **Microsoft Entra ID** (\`iss: sts.windows.net/retail-tid/\`, SAML/OIDC) |
 | **Entitled ADK Agents (Entitlement Catalog)** | Full Admin & Diagnostic Catalog | \`${useCase.rootAgentName}\`, \`${sub1.name}\`, \`${sub2.name}\`, \`${sub3.name}\` | \`${useCase.rootAgentName}\`, \`${sub1.name}\`, \`${sub2.name}\` *(No privileged write/attestation agent)* |
 | **Foundation Model & Thinking Budget** | \`gemini-3.1-pro-preview\` + \`gemini-3.8-flash\` | **\`gemini-3.1-pro-preview\`** (\`thinking_budget: 8,192 tokens\`, 90% Prefix Cache) | **\`gemini-3.8-flash\`** (\`thinking_budget: 4,096 tokens\`, Valkey TPM Quota Cap) |
 | **Primary Data Plane & RAG Scope** | BigQuery OTel Chargeback + SCC Findings | **${useCase.primaryDataStore}** (\`tenant_id = 'finvault'\` / Dedicated CMEK) | **${useCase.primaryDataStore}** (\`tenant_id = 'retailstream'\` / Shared RLS Pool) |

@@ -155,10 +155,34 @@ export const EXTRA_GCP_ICONS: Record<string, string> = {
       <polygon points="8,21.5 18,27 18,35 8,29.5" fill="#5b21b6"/>
     </svg>
   `),
+  alloydb: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+      <ellipse cx="20" cy="12" rx="10" ry="4" fill="#4285f4" stroke="#174ea6" stroke-width="1.8"/>
+      <path d="M10 12 V20 C10 22.2 14.5 24 20 24 C25.5 24 30 22.2 30 20 V12" fill="none" stroke="#174ea6" stroke-width="2"/>
+      <path d="M10 20 V28 C10 30.2 14.5 32 20 32 C25.5 32 30 30.2 30 28 V20" fill="none" stroke="#137333" stroke-width="2"/>
+      <circle cx="20" cy="20" r="2.5" fill="#34a853"/>
+    </svg>
+  `),
+  cloud_trace: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#fef7e0" stroke="#ea8600" stroke-width="2"/>
+      <rect x="8" y="10" width="14" height="4" rx="2" fill="#1a73e8"/>
+      <rect x="13" y="18" width="16" height="4" rx="2" fill="#f29900"/>
+      <rect x="18" y="26" width="14" height="4" rx="2" fill="#34a853"/>
+    </svg>
+  `),
+  apigee_gateway: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e6f4ea" stroke="#137333" stroke-width="2"/>
+      <circle cx="20" cy="20" r="8" fill="none" stroke="#137333" stroke-width="2.4"/>
+      <path d="M8 20 H12 M28 20 H32 M20 8 V12 M20 28 V32" stroke="#1a73e8" stroke-width="2.4" stroke-linecap="round"/>
+      <circle cx="20" cy="20" r="3" fill="#34a853"/>
+    </svg>
+  `),
 };
 
 export function resolveArchIconUri(iconKey: string, title = '', _sub = ''): string {
-  if (EXTRA_GCP_ICONS[iconKey]) return EXTRA_GCP_ICONS[iconKey];
   const titleLower = String(title || '').toLowerCase();
   if (
     titleLower.includes('cloud armor') ||
@@ -166,7 +190,7 @@ export function resolveArchIconUri(iconKey: string, title = '', _sub = ''): stri
   ) {
     return EXTRA_GCP_ICONS.cloud_armor;
   }
-  if (titleLower.includes('gke') || titleLower.includes('kubernetes')) {
+  if (titleLower.includes('gke') || titleLower.includes('kubernetes') || titleLower.includes('gvisor')) {
     return EXTRA_GCP_ICONS.gke;
   }
   if (
@@ -236,12 +260,21 @@ export function resolveArchIconUri(iconKey: string, title = '', _sub = ''): stri
   if (titleLower.includes('firestore') || titleLower.includes('route table')) {
     return EXTRA_GCP_ICONS.firestore_db;
   }
+  if (titleLower.includes('alloydb')) {
+    return EXTRA_GCP_ICONS.alloydb;
+  }
   if (
     titleLower.includes('spanner') ||
     titleLower.includes('graphrag') ||
     titleLower.includes('gql')
   ) {
     return EXTRA_GCP_ICONS.spanner_graph;
+  }
+  if (titleLower.includes('trace') || titleLower.includes('monitoring')) {
+    return EXTRA_GCP_ICONS.cloud_trace;
+  }
+  if (titleLower.includes('apigee') || titleLower.includes('obo') || titleLower.includes('dpop')) {
+    return EXTRA_GCP_ICONS.apigee_gateway;
   }
   if (
     titleLower.includes('bigquery') ||
@@ -262,6 +295,8 @@ export function resolveArchIconUri(iconKey: string, title = '', _sub = ''): stri
   if (titleLower.includes('shadow_sync') || titleLower.includes('dms')) {
     return EXTRA_GCP_ICONS.dms_migration;
   }
+  if (EXTRA_GCP_ICONS[iconKey]) return EXTRA_GCP_ICONS[iconKey];
   return OFFICIAL_ASSETS[iconKey] || OFFICIAL_ASSETS.gemini_agent_platform;
 }
+
 

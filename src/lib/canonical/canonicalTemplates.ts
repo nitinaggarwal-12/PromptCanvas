@@ -86,7 +86,7 @@ export interface BiopharmaReferenceTier {
 }
 
 export const BIOPHARMA_REFERENCE_TIERS: BiopharmaReferenceTier[] = [
-  { tierNumber: 1, tierName: 'Tier 1: Clinical Ingress & Sequencer Edge', subsystem: 'Next-Gen Sequencing (NGS) Edge Gateways & Hospital EHRs', gcpTechStack: 'Google Cloud Life Sciences API, FastQ / BAM Ingestion, Apigee X FHIR Gateway', visualGrammars: ['01 Context', '10 Integration', '15 Network'], complianceControls: 'HIPAA Encryption in-transit, TLS 1.3, Mutual mTLS, 21 CFR Part 11 Audit' },
+  { tierNumber: 1, tierName: 'Tier 1: Clinical Ingress & Sequencer Edge', subsystem: 'Next-Gen Sequencing (NGS) Edge Gateways & Hospital EHRs', gcpTechStack: 'Google Cloud Batch & Cloud Healthcare API, FastQ / BAM Ingestion, Apigee X FHIR Gateway', visualGrammars: ['01 Context', '10 Integration', '15 Network'], complianceControls: 'HIPAA Encryption in-transit, TLS 1.3, Mutual mTLS, 21 CFR Part 11 Audit' },
   { tierNumber: 2, tierName: 'Tier 2: Ingestion, Streaming & Raw Lake', subsystem: 'Bronze Raw Genomic Data Lake & Real-Time Sample Streams', gcpTechStack: 'Cloud Storage Immutable Buckets (CMEK), Cloud Pub/Sub, Datastream CDC', visualGrammars: ['09 Data Flow', '16 Deployment', '18 Trust Boundary'], complianceControls: 'Customer-Managed KMS Keys (HSM), Write-Once-Read-Many (WORM) Object Retention' },
   { tierNumber: 3, tierName: 'Tier 3: Distributed Genomic Processing & Variant Calling', subsystem: 'Silver Conformed Genomic Variants & Bioinformatic Pipelines', gcpTechStack: 'Cloud Dataflow (Apache Beam), Dataproc Serverless (Spark/GATK), BigQuery Silver Variant Store', visualGrammars: ['08 Component', '09 Data Flow', '20 CI/CD Pipeline'], complianceControls: 'Reproducible Pipeline Execution, Automated Quality Gate SLAs, Lineage Tracking' },
   { tierNumber: 4, tierName: 'Tier 4: Biomedical Knowledge Graph & Hybrid RAG', subsystem: 'Multi-Hop Precision Oncology Knowledge Graph & Vector Search', gcpTechStack: 'Cloud Spanner Graph (ISO GQL Multi-Hop), Vertex AI Vector Search (ScaNN 768-dim), Document AI Clinical Parser', visualGrammars: ['14 Data Model / ERD', '24 RAG / Knowledge Flow', '31 Dependency Map'], complianceControls: 'RAG Triad Verification (Faithfulness > 0.98), Model Armor Clinical Prompt Shield' },
@@ -976,36 +976,6 @@ const COMPANY_AND_VENDOR_REPLACEMENTS: [RegExp, string][] = [
   [/\bXero\b/gi, 'Ledger'],
   [/\bFigma\b/gi, 'Design Canvas'],
   [/\bCanva\b/gi, 'Visual Studio'],
-  [/Approved\s+LLM\s+Service(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)*\((?:Google|GCP)\s+Vertex\s+AI\)/gi, 'Enterprise LLM &amp; Agent Runtime'],
-  [/Google(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Vertex\s+AI/gi, 'Governed LLM Runtime'],
-  [/\bGoogle\s+Cloud\s+Platform\s*\(GCP\)/gi, 'Enterprise Cloud Infrastructure'],
-  [/\bGoogle\s+Kubernetes\s+Engine\s*\(GKE\)/gi, 'Managed Kubernetes (K8s)'],
-  [/Private(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Google(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Access/gi, 'Private Service Access'],
-  [/\bGoogle\s+Groups\b/gi, 'Directory Groups'],
-  [/\bGoogle\s+AT\s+Logs\b/gi, 'Access Transparency Logs'],
-  [/\bGoogle\s+Identity\s+Platform\b/gi, 'Enterprise Identity Platform'],
-  [/\bGoogle\s+Search\s+API\b/gi, 'Web Search Grounding API'],
-  [/\bGoogle\s+Search\b/gi, 'Web Search Grounding'],
-  [/\bGOOGLE\s+NATIVE\b/gi, 'CLOUD NATIVE'],
-  [/\bGoogle\s+(Blue|Red|Yellow|Green)\b/gi, 'Tier $1'],
-  [/\bGoogle\s+Gemini\b/gi, 'Frontier Multimodal'],
-  [/\bRaw\s+Gemini\s+API\b/gi, 'Stateless Foundation Model API'],
-  [/\bGemini\s+Apps\b/gi, 'Enterprise Copilot Apps'],
-  [/\bGemini\s+3(?:\.\d+)?\b/gi, 'Frontier LLM'],
-  [/\bGem\s*ini\b/gi, 'Frontier LLM'],
-  [/Vertex(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Matching(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Engine/gi, 'Vector Similarity Index'],
-  [/\bVertex\s+Embeddings\b/gi, 'Dense Vector Embeddings'],
-  [/\bVertex\s+Vector\s+Search\b/gi, 'Vector Similarity Search'],
-  [/\bVertex\s+Agent\s+Builder\b/gi, 'Visual Agent Studio'],
-  [/\bGoogle\s+Cloud\b/gi, 'Enterprise Cloud'],
-  [/\bVertex\s+AI\b/gi, 'Governed AI Runtime'],
-  [/\bVertex\b(?!=|\s*\(Node\)|&lt;\/strong&gt;\s*\(Node\)|<\/strong>\s*\(Node\))/g, 'AI Runtime'],
-  [/\bBigQuery\b/gi, 'Cloud Data Warehouse'],
-  [/\bAlloyDB\b/gi, 'Transactional PostgreSQL'],
-  [/\bCloud\s+SQL\b/gi, 'Managed PostgreSQL HA'],
-  [/\bCloud\s+Run\b/gi, 'Serverless Container Runtime'],
-  [/\bGoogle\b/gi, 'Enterprise'],
-  [/\bGCP\b/g, 'Cloud'],
 
   // Redundant Header / Container Platform Brand Phrases
   [/\s*\|\s*(?:Enterprise\s+Bio-Pharma\s+Platform|Enterprise\s+Architecture\s+Platform|Core\s+Platform\s+Boundary)/gi, ''],
@@ -1110,7 +1080,7 @@ function getContextualTechnicalSubcaption(plainText: string): string {
   if (/dashboard|bi|analytics|reporting/.test(t)) return 'Semantic Marts • Real-Time KPIs • Row-Level ACL';
   if (/notebook|science/.test(t)) return 'Managed Jupyter • Feature Store • GPU Runtime';
   if (/partner|external|supplier|logistics/.test(t)) return 'mTLS API Gateway • AS2 / SFTP • OAuth 2.0';
-  if (/ingestion|stream|event|pubsub/.test(t)) return 'CDC / Kafka / PubSub • Schema Registry • DLQ';
+  if (/ingestion|stream|event|pubsub/.test(t)) return 'CDC / Managed Kafka / Pub/Sub • Schema Registry • DLQ';
   if (/workflow|orchestration|automation/.test(t)) return 'Stateful DAGs • Retry Backoff • HITL Gates';
   if (/search|discovery|vector/.test(t)) return 'Hybrid BM25 + HNSW • Cosine Top-K • &lt;25ms';
   if (/plc|scada|cnc|robot|sensor|camera|hmi|line/.test(t)) return 'OPC-UA / Modbus TCP • 10ms Poll • Edge Buffer';
@@ -1316,9 +1286,11 @@ export function sanitizeAndHealCanonicalBlueprintXml(xml: string, templateId?: s
           )
           .replace(/●\s*/g, `${inlineSvg} `);
 
-        // Auto-enrich sparse functional cards (w>=115, h>=58, area>=9000, <32 chars of plain text)
+        // Auto-enrich sparse functional cards (w>=115, h>=58, area>=9000, <32 chars of plain text) on legacy templates only
         const geom = vertexGeomMap.get(id);
+        const isModernRefArch = Number(templateId || '0') >= 35;
         const isBorderedCard =
+          !isModernRefArch &&
           geom &&
           geom.w >= 115 &&
           geom.h >= 58 &&

@@ -270,7 +270,7 @@ export function generateTemplate43RealTimeStreamingEventEnterpriseXml(
 
   const t2Ingestion = [
     { t: "Pub/Sub<br/>(Managed)", icon: "network" },
-    { t: "Kafka / Confluent<br/>Compatibility", icon: "layers" },
+    { t: "Managed Service for<br/>Apache Kafka", icon: "layers" },
     { t: "Eventarc<br/>(CloudEvents)", icon: "zap" },
     { t: "Datastream<br/>CDC", icon: "repeat" },
     { t: "API Gateway /<br/>Apigee", icon: "network" },

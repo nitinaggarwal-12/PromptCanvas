@@ -220,7 +220,7 @@ const RAW_GOOGLE_CLOUD_DOCUMENTATION_SERIES: CanonicalDocGuide[] = [
           {
             title: 'User Identity (ID-1 | Who is asking)',
             detail:
-              'The authenticated human principal initiating the session, verified and issued by the enterprise IdP (Cloud Identity, Microsoft Entra ID, Okta, or Ping).',
+              'The authenticated human principal initiating the session, verified and issued by the enterprise IdP (Cloud Identity, Google Workspace OIDC, or Microsoft Entra ID).',
           },
           {
             title: 'Agent Identity (ID-2 | What is running)',
@@ -505,7 +505,7 @@ const RAW_GOOGLE_CLOUD_DOCUMENTATION_SERIES: CanonicalDocGuide[] = [
           'The Control Plane lives in proj-control-plane-prod. It is strictly out-of-band—Alice’s live inference turns never traverse it directly, eliminating latency bottlenecks and single points of failure.',
         ],
         whatHappens:
-          'When Tenant A onboarded, the Control Plane provisioned their entry in the tenant catalog (Cloud Spanner), enrolled their approved agent assemblies in the Agent Registry, and bound their corporate OIDC identity provider (Okta/Entra/Google Identity) to Workforce Identity Federation and IAP. The Registry stores A2A-compatible Agent Cards with tier-scoped tool allowlists and version pins. When Alice logs in, the Control Plane has already decided what she is allowed to run.',
+          'When Tenant A onboarded, the Control Plane provisioned their entry in the tenant catalog (Cloud Spanner), enrolled their approved agent assemblies in the Agent Registry, and bound their corporate OIDC identity provider (Cloud Identity, Google Workspace OIDC, or Microsoft Entra ID) to Workforce Identity Federation and IAP. The Registry stores A2A-compatible Agent Cards with tier-scoped tool allowlists and version pins. When Alice logs in, the Control Plane has already decided what she is allowed to run.',
         architecturalDepth: [
           {
             title: 'Policy & Tokenomics Schema',
@@ -690,7 +690,7 @@ CREATE OR REPLACE ROW ACCESS POLICY tenant_pooled_rls_policy
         heading: 'Section 4: Cross-Plane Observability & The Operational Contract',
         leadParagraphs: [
           'Observability is not a fourth isolated plane—it is the stitching between planes. Every OpenTelemetry span carries tenant_id, agent_id, tool_name, and model_id from Ingress (Compute) through Runtime (Compute) to AlloyDB (Data), with token cost attribution aggregated in BigQuery (Control). When a CISO asks, "Did Tenant A’s agent ever access Tenant B’s data?", you query a single distributed trace rather than reconciling three disparate dashboards.',
-          'The operational contract of the Pool tier is global velocity: the SRE team operates one fleet and one runbook for 1,000 tenants rather than maintaining 1,000 snowflakes. When a new Gemini model version releases, the Control Plane updates the model allowlist and the warm-start fleet picks it up simultaneously with zero per-tenant change windows.',
+          'The operational contract of the Pool tier is global velocity: the SRE team operates one fleet and one runbook for 1,000 tenants rather than maintaining 1,000 bespoke per-tenant stacks. When a new Gemini model version releases, the Control Plane updates the model allowlist and the warm-start fleet picks it up simultaneously with zero per-tenant change windows.',
         ],
         wellArchitectedHook:
           'Operational Excellence — Single-fleet upgrade velocity with tenant-scoped distributed tracing and automated PII redaction at the gateway.',
@@ -872,7 +872,7 @@ resource "google_compute_network" "finvault_spoke_vpc" {
           {
             title: '1. Inbound Identity & Principal Access Boundaries (PAB)',
             detail:
-              'Direct SAML 2.0 / OIDC integration with the customer’s Okta or Entra ID, mutual TLS (mTLS) client certificate validation, and IAM Principal Access Boundaries restricting role assumption strictly to the sovereign project perimeter.',
+              'Direct SAML 2.0 / OIDC integration with the customer’s Cloud Identity or Microsoft Entra ID, mutual TLS (mTLS) client certificate validation, and IAM Principal Access Boundaries restricting role assumption strictly to the sovereign project perimeter.',
           },
           {
             title: '2. Dedicated In-Perimeter Ingress Agent Gateway (PEP)',
@@ -1207,7 +1207,7 @@ RETURN a.company_name AS origin_entity,
     seriesTitle: 'Google Cloud Agent Reference Architectures',
     partBadge: 'Reference Guide • Zero-Trust ADK Security',
     useCasePresetId: 'uc-zero-trust-adk',
-    primaryBlueprintVariantId: 'ws1-cloud-arch-center-5hop-baseline',
+    primaryBlueprintVariantId: 'arch-center-zero-trust-adk',
     title: 'Build Zero-Trust AI Agents with Google’s Agent Development Kit (ADK), Cloud KMS HSM & gVisor',
     subtitle:
       'Protecting production state when autonomous agents execute dynamic code and mutate databases—using Cloud KMS HSM asymmetric signatures, gVisor kernel sandboxing, and deterministic semantic firewalls.',
@@ -1241,7 +1241,7 @@ RETURN a.company_name AS origin_entity,
           title: 'Zero-Trust ADK Agent Architecture with Cloud KMS HSM & gVisor Sandboxing',
           caption:
             'Figure 1: Enforcing Model Armor prompt screening, gVisor user-space kernel isolation, and Cloud KMS HSM ECDSA P-256 ledger signatures.',
-          blueprintVariantId: 'ws1-cloud-arch-center-5hop-baseline',
+          blueprintVariantId: 'arch-center-zero-trust-adk',
           workflowTab: 'high-level',
         },
         codeSnippet: {
@@ -1873,13 +1873,25 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
               ],
             },
             {
-              component: Array.from(
-                new Set([
-                  bp.routingCards.topLeft.title,
-                  bp.routingCards.midLeft.title,
-                  bp.leftCards.modelArmor.title,
-                ])
-              ).join(' & '),
+              component: [
+                bp.routingCards.topLeft.title,
+                bp.routingCards.midLeft.title,
+                bp.leftCards.modelArmor.title,
+              ]
+                .filter(Boolean)
+                .reduce<string[]>((acc, item) => {
+                  const lower = item.toLowerCase();
+                  const existingIdx = acc.findIndex(
+                    (x) => x.toLowerCase().includes(lower) || lower.includes(x.toLowerCase())
+                  );
+                  if (existingIdx === -1) {
+                    acc.push(item);
+                  } else if (item.length > acc[existingIdx].length) {
+                    acc[existingIdx] = item;
+                  }
+                  return acc;
+                }, [])
+                .join(' & '),
               recommendations: [
                 `Strip client-supplied privilege headers at the edge (${bp.routingCards.topLeft.sub}), verify caller identity claims (${bp.routingCards.midLeft.sub}), and screen prompts and completions with ${bp.leftCards.modelArmor.title}.`,
               ],

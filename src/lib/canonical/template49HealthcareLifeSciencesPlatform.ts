@@ -533,7 +533,7 @@ export function generateTemplate49HealthcareLifeSciencesPlatformXml(
   edge("e_hcls_6_out", "t6_frame", "outcomes_frame", "strokeColor=#059669;strokeWidth=2;endArrow=classic;endSize=5;");
 
   // Architecture Legend Bar
-  cell("hcls_legend_bar", `<div style="display:flex;align-items:center;justify-content:space-between;font-size:8px;color:#475569;padding:0 8px;"><div><b>ARCHITECTURAL KEY &amp; LEGEND:</b> &nbsp; HL7/FHIR Ingestion &nbsp;|&nbsp; 🟢 Lakehouse Harmonization &nbsp;|&nbsp; 🟣 Med-PaLM &amp; Vertex AI &nbsp;|&nbsp; HIPAA Security &amp; Zero Trust</div><div>Status: Production Certified &nbsp;|&nbsp; Interoperability Standards: FHIR R4 / DICOM / OMOP &nbsp;|&nbsp; Compliance: HIPAA / GxP / FDA 21 CFR Part 11</div></div>`, 16, 894, 1504, 22, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;");
+  cell("hcls_legend_bar", `<div style="display:flex;align-items:center;justify-content:space-between;font-size:8px;color:#475569;padding:0 8px;"><div><b>ARCHITECTURAL KEY &amp; LEGEND:</b> &nbsp; HL7/FHIR Ingestion &nbsp;|&nbsp; Lakehouse Harmonization &nbsp;|&nbsp; MedLM &amp; Vertex AI Gemini 2.5 &nbsp;|&nbsp; HIPAA Security &amp; Zero Trust</div><div>Status: Production Certified &nbsp;|&nbsp; Interoperability Standards: FHIR R4 / DICOM / OMOP &nbsp;|&nbsp; Compliance: HIPAA / GxP / FDA 21 CFR Part 11</div></div>`, 16, 894, 1504, 22, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;");
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_49" name="Healthcare &amp; Life Sciences Digital Platform">

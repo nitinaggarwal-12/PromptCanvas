@@ -174,8 +174,8 @@ export function generateTemplate38CloudLandingZoneXml(
     );
   });
 
-  // Box 3: DIAGRAM INFORMATION (x=1280, y=700, w=244, h=276)
-  cell("sb_info_box", "", 1280, 700, 244, 276, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
+  // Box 3: DIAGRAM INFORMATION (x=1280, y=700, w=244, h=218)
+  cell("sb_info_box", "", 1280, 700, 244, 218, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
   cell("sb_info_title", `<div style="display:flex;align-items:center;justify-content:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2.2">${SVG.alert}</svg><span style="font-size:10px;font-weight:900;color:#1E40AF;">DIAGRAM INFORMATION</span></div>`, 1280, 704, 244, 20, "html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   const infoRows = [

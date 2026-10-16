@@ -425,7 +425,7 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
       [/Cloud Armor/gi, 'AWS WAF Shield'],
       [/Query Rewriting \/&lt;br\/&gt;Decomposition/gi, 'Bedrock Agents /&lt;br/&gt;Orchestrator'],
       [/Model Gateway \/&lt;br\/&gt;LLM Router/gi, 'Amazon Bedrock&lt;br/&gt;FM Gateway'],
-      [/Gemini 1\.5&lt;br\/&gt;Pro/gi, 'Claude 3.7&lt;br/&gt;Sonnet'],
+      [/Gemini 1\.5&lt;br\/&gt;Pro/gi, 'Gemini 2.5 Pro&lt;br/&gt;Sonnet'],
       [/Gemini 1\.5&lt;br\/&gt;Flash/gi, 'SageMaker&lt;br/&gt;Endpoints'],
       [/Embedding&lt;br\/&gt;Models/gi, 'Bedrock Titan&lt;br/&gt;Embeddings'],
       [/Re-ranker \/&lt;br\/&gt;Relevance Layer/gi, 'SageMaker&lt;br/&gt;Reranker'],

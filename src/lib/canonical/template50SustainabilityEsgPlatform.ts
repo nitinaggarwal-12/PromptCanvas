@@ -290,7 +290,7 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
   const t1Categories = [
     { title: "Compute", desc: "GKE • Cloud Run • Compute Engine • Functions", icon: "cpu" },
     { title: "Storage", desc: "Cloud Storage • BigQuery • Cloud SQL • AlloyDB", icon: "database" },
-    { title: "Analytics Engine", desc: "BigQuery • Databricks (GCP) • Vertex AI • Data Studio", icon: "chart" },
+    { title: "Analytics Engine", desc: "BigQuery • Dataproc Serverless • Vertex AI • Looker Studio", icon: "chart" },
     { title: "Networking", desc: "VPC • Cloud NAT • Cloud VPN • Interconnect", icon: "network" },
     { title: "Security", desc: "IAM • KMS • Secret Manager • Cloud Armor", icon: "shieldCheck" }
   ];

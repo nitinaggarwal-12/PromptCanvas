@@ -82,11 +82,15 @@ export function runCanonicalCertificationAudit(): { summary: { total: number; ce
     }
 
     // 4. Check Source Image Binding
-    const srcImgPath = path.resolve(process.cwd(), `images/${id}.png`);
-    if (fs.existsSync(srcImgPath)) {
+    const srcImgCandidates = [
+      path.resolve(process.cwd(), `images/${id}.png`),
+      path.resolve(process.cwd(), `public/templates/canonical_${id.padStart(2, '0')}.png`),
+      tmpl.previewImage ? path.resolve(process.cwd(), `public${tmpl.previewImage}`) : '',
+    ].filter(Boolean);
+    if (srcImgCandidates.some(p => fs.existsSync(p))) {
       checks.sourceImageBound = true;
     } else {
-      errors.push(`Ground-truth master image missing: images/${id}.png`);
+      errors.push(`Ground-truth master image missing: images/${id}.png or public/templates/canonical_${id}.png`);
     }
 
     // 5. Check Typography Scale & Density

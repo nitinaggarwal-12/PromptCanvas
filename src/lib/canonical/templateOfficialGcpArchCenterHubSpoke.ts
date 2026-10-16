@@ -286,7 +286,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
       step4Label: 'Sanitize request',
       step6Label: 'Sanitize response',
       step5Label: ['Generates', 'response'],
-      ragLabel: ['gs://cymbal-', 'skills-finvault'],
+      ragLabel: ['GCS Skills:', 'cymbal-skills-fv'],
       toolLabel: ['RLS Filtered', 'FinVault Rows'],
     },
     rightBoundaryLabel: 'Logical & Cryptographic Slice B • RetailStream Corp (Standard Tier)',
@@ -298,7 +298,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
       runtime: { icon: 'gemini_agent_platform', title: 'Pooled gVisor Pod', sub: 'Shared Agent Only (403 Alpha)' },
       mcp: { icon: 'mcp_servers', title: '3LO Entra & SNOW', sub: 'Inline OAuth Consent Gate' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Shared AlloyDB RLS', sub: "current_tenant='retailstream'" },
-      ragLabel: ['gs://cymbal-', 'skills-retail'],
+      ragLabel: ['GCS Skills:', 'cymbal-skills-rs'],
       toolLabel: ['RLS Filtered', 'Retail Rows'],
     },
   },
@@ -532,8 +532,8 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
       step2Left: 'Request',
       step7Mid: 'Response',
     },
-    govHubTitle: 'Triad Pillar 3: Privacy-',
-    govHubTitle2: 'Preserving OTel & Chargeback',
+    govHubTitle: 'Triad Pillar 3: Zero-PII',
+    govHubTitle2: 'OTel & FinOps Chargeback',
     govCards: {
       top: { icon: 'security_command_center', title: 'Security Command', title2: 'Center', sub: 'Unified SIEM & Audit Lineage' },
       mid: { icon: 'bigquery_analytics', title: '3 Chargeback Models', sub: 'Even, Proportional & Tiered' },
@@ -680,11 +680,11 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     leftZoneTitle: 'Order & Inventory Domain Agent',
     leftZoneSub: 'Independent ADK deployment with Stateless Cloud Run MCP Server',
     leftCards: {
-      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Domain Input/Output Guard' },
+      modelArmor: { icon: 'model_armor', title: 'Model Armor Spoke Guard', sub: 'Domain Input/Output Guard' },
       llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: '4,000-Token Circuit Breaker' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Order Agent (ADK)', sub: 'Vertex AI Agent Engine' },
+      runtime: { icon: 'vertex_agent_engine', title: 'Order Agent (ADK)', sub: 'Vertex AI Agent Engine' },
       mcp: { icon: 'mcp_servers', title: 'Inventory MCP Server', sub: 'Stateless Cloud Run SSE Pool' },
-      datastore: { icon: 'bigquery_analytics', title: 'BigQuery & AlloyDB', sub: 'Regional Warehouse Stock Ledger' },
+      datastore: { icon: 'alloydb', title: 'BigQuery & AlloyDB', sub: 'Regional Warehouse Stock Ledger' },
       step4Label: 'Screen A2A task',
       step6Label: 'Screen A2A output',
       step5Label: ['Plan tool', 'invocations'],
@@ -695,13 +695,80 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     rightZoneTitle: 'Distributor & Tracking Domain Agent',
     rightZoneSub: 'Federated A2A peer with partner API circuit breakers',
     rightCards: {
-      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Partner Payload Sanitization' },
+      modelArmor: { icon: 'cloud_sdp_dlp', title: 'Cloud DLP & Model Armor', sub: 'Partner Payload Sanitization' },
       llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Flash', sub: '8-Second SLA Deadline' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Tracking Agent (A2A)', sub: 'Vertex AI Agent Engine' },
-      mcp: { icon: 'mcp_servers', title: 'Logistics MCP Server', sub: 'Stateless Cloud Run Partner API' },
-      datastore: { icon: 'bigquery_analytics', title: 'BigQuery & Spanner', sub: 'Carrier Telemetry & Fallback Cache' },
+      runtime: { icon: 'cloud_run', title: 'Tracking Agent (A2A)', sub: 'Cloud Run + Agent Engine' },
+      mcp: { icon: 'apigee_gateway', title: 'Logistics MCP Server', sub: 'Stateless Cloud Run Partner API' },
+      datastore: { icon: 'cloud_spanner', title: 'BigQuery & Spanner', sub: 'Carrier Telemetry & Fallback Cache' },
       ragLabel: ['Stateless MCP', 'Tool Call'],
       toolLabel: ['Partner API &', 'Cache Fallback'],
+    },
+  },
+
+  // =========================================================================
+  // 10. DOC-REF-08: Zero-Trust AI Agents with Google ADK, Cloud KMS HSM & gVisor
+  // =========================================================================
+  {
+    id: 'arch-center-zero-trust-adk',
+    badge: 'GOOGLE DEVELOPERS BLOG • ZERO-TRUST ADK BLUEPRINT',
+    title: 'Zero-Trust AI Agents with Google Agent Development Kit (ADK), Cloud KMS HSM & gVisor',
+    subtitle: 'Cryptographic Ed25519 Agent Attestation, Semantic Firewalls, and Hardware-Isolated Sandboxes on Google Cloud',
+    topUserTitle: 'Enterprise Operator',
+    topUserSub: 'OIDC + Passkey MFA',
+    step1LeftLabel: 'Signed Intent',
+    step7RightLabel: 'Verified Output',
+    outerWrapperLabel: 'Zero-Trust Defense-in-Depth Perimeter (VPC Service Controls + BeyondCorp Enterprise)',
+    innerWrapperLabel: 'VPC • 5-Hop Cryptographic Attestation & Semantic Firewall Chain',
+    routingHubTitle: 'Hop 1 & Hop 2: Zero-Trust Ingress & Identity Gate',
+    routingHubSub: 'Google Cloud Armor WAF, Model Armor Screen & Ed25519 Signature Gate',
+    routingCards: {
+      topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF, mTLS & Context-Aware IAP' },
+      midLeft: { icon: 'model_armor', title: 'Model Armor Shield', sub: 'Prompt Injection & Jailbreak Gate' },
+      botLeft: { icon: 'cloud_kms', title: 'Cloud KMS HSM', sub: 'Ed25519 Payload Verification' },
+      topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Global Anycast TLS 1.3' },
+      botRight: { icon: 'cloud_run', title: 'ADK Security Gate', sub: 'Zero-Trust Policy Coordinator' },
+      edgeTopLeft: ['mTLS + WAF', 'inspection'],
+      edgeMidLeft: ['Sanitize', 'prompt'],
+      edgeBotLeft: ['Verify HSM', 'signature'],
+      step2Left: 'Attested',
+      step7Mid: 'Redacted',
+    },
+    govHubTitle: 'Continuous SIEM, IAM',
+    govHubTitle2: '& Key Governance Hub',
+    govCards: {
+      top: { icon: 'security_command_center', title: 'Security Command', title2: 'Center & Chronicle', sub: 'Real-Time Anomaly Detection' },
+      mid: { icon: 'iap_iam_shield', title: 'Workload Identity', sub: 'Short-Lived SPIFFE X.509 SVID' },
+      bot: { icon: 'cloud_logging', title: 'Cloud Audit Logs', sub: 'Immutable KMS & Tool Ledger' },
+    },
+    midStep3Label: ['Dispatch to isolated', 'ADK execution zone'],
+    midStep7Label: ['DLP-scrubbed & signed', 'agent completion'],
+    midGovLabel: ['Cryptographic audit', '& SIEM telemetry'],
+    leftBoundaryLabel: 'Zone A: Deterministic Semantic Firewall & Policy Reasoning Plane',
+    leftZoneTitle: 'ADK Coordinator & Semantic Firewall',
+    leftZoneSub: 'In-Line Parameter AST Validation & Least-Privilege Scoping',
+    leftCards: {
+      modelArmor: { icon: 'apigee_gateway', title: 'Semantic Firewall', sub: 'Blocks Destructive SQL/Shell' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: 'Constrained JSON Schema Gen' },
+      runtime: { icon: 'vertex_agent_engine', title: 'PolicyEnforcerAgent', sub: 'ADK LlmAgent + Callbacks' },
+      mcp: { icon: 'mcp_servers', title: 'MCP Schema Validator', sub: 'Strict Allowlist & Arg Bounds' },
+      datastore: { icon: 'alloydb', title: 'AlloyDB Policy Store', sub: 'Row-Level Security (RLS)' },
+      step4Label: 'Validate AST',
+      step6Label: 'DLP Scrub',
+      step5Label: ['Signed', 'reasoning'],
+      ragLabel: ['Scoped MCP', 'Allowlist'],
+      toolLabel: ['Read-Only', 'RLS Query'],
+    },
+    rightBoundaryLabel: 'Zone B: Ephemeral gVisor Sandbox & Human-in-the-Loop (HITL) Vault',
+    rightZoneTitle: 'Hardware-Isolated Tool Execution Enclave',
+    rightZoneSub: 'Cloud Run gVisor (runsc --network=none) + KMS Approval Gate',
+    rightCards: {
+      modelArmor: { icon: 'cloud_sdp_dlp', title: 'Egress DLP Guard', sub: 'Redacts Secrets, Keys & PII' },
+      llm: { icon: 'cloud_trace', title: 'SandboxAuditorAgent', sub: 'Monitors Syscall & Memory' },
+      runtime: { icon: 'gke', title: 'gVisor Sandbox Pod', sub: 'runsc --network=none Enclave' },
+      mcp: { icon: 'discovery_engine', title: 'HITL Approval Gate', sub: 'Requires Signed Operator JWT' },
+      datastore: { icon: 'secret_manager', title: 'CMEK Secret Vault', sub: 'Hardware HSM Key Rotation' },
+      ragLabel: ['Zero-Egress', 'IPC Socket'],
+      toolLabel: ['HSM-Signed', 'Mutations'],
     },
   },
 ];
@@ -763,75 +830,13 @@ export function buildOfficialArchCenterConfigForUseCase(
   if (useCase.id === 'uc-scalable-agent-engine') {
     if (workflowVariant === 'ingestion') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[2]; // WS2.1 Pattern A
     if (workflowVariant === 'search') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[5]; // WS4.1 Pattern C
-    return OFFICIAL_ARCH_CENTER_BLUEPRINTS[0]; // WS1.1 Overview
+    return OFFICIAL_ARCH_CENTER_BLUEPRINTS.find((b) => b.id === 'ref09-scalable-mcp-a2a-ecosystem') || OFFICIAL_ARCH_CENTER_BLUEPRINTS[8];
   }
 
   if (useCase.id === 'uc-zero-trust-adk') {
     if (workflowVariant === 'ingestion') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[3]; // WS2.5 Breach Defense
     if (workflowVariant === 'search') return OFFICIAL_ARCH_CENTER_BLUEPRINTS[4]; // WS3.1 Sovereign Silos
-    return {
-      id: 'arch-center-zero-trust-adk',
-      badge: 'GOOGLE DEVELOPERS BLOG • ZERO-TRUST ADK BLUEPRINT',
-      title: 'Zero-Trust AI Agents with Google Agent Development Kit (ADK), Cloud KMS HSM & gVisor',
-      subtitle: 'Cryptographic Ed25519 Agent Attestation, Semantic Firewalls, and Hardware-Isolated Sandboxes on Google Cloud',
-      topUserTitle: 'Enterprise Operator',
-      topUserSub: 'OIDC + Passkey MFA',
-      step1LeftLabel: 'Signed Intent',
-      step7RightLabel: 'Verified Output',
-      outerWrapperLabel: 'Zero-Trust Defense-in-Depth Perimeter (VPC Service Controls + BeyondCorp Enterprise)',
-      innerWrapperLabel: 'VPC • 5-Hop Cryptographic Attestation & Semantic Firewall Chain',
-      routingHubTitle: 'Hop 1 & Hop 2: Zero-Trust Ingress & Identity Gate',
-      routingHubSub: 'Google Cloud Armor WAF, Model Armor Screen & Ed25519 Signature Gate',
-      routingCards: {
-        topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF, mTLS & Context-Aware IAP' },
-        midLeft: { icon: 'model_armor', title: 'Model Armor Shield', sub: 'Prompt Injection & Jailbreak Gate' },
-        botLeft: { icon: 'iap_iam_shield', title: 'Cloud KMS HSM', sub: 'Ed25519 Payload Verification' },
-        topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Global Anycast TLS 1.3' },
-        botRight: { icon: 'cloud_run', title: 'ADK Security Gate', sub: 'Zero-Trust Policy Coordinator' },
-        edgeTopLeft: ['mTLS + WAF', 'inspection'],
-        edgeMidLeft: ['Sanitize', 'prompt'],
-        edgeBotLeft: ['Verify HSM', 'signature'],
-        step2Left: 'Attested',
-        step7Mid: 'Redacted',
-      },
-      govHubTitle: 'Continuous SIEM, IAM',
-      govHubTitle2: '& Key Governance Hub',
-      govCards: {
-        top: { icon: 'security_command_center', title: 'Security Command', title2: 'Center & Chronicle', sub: 'Real-Time Anomaly Detection' },
-        mid: { icon: 'iap_iam_shield', title: 'Workload Identity', sub: 'Short-Lived SPIFFE X.509 SVID' },
-        bot: { icon: 'cloud_logging', title: 'Cloud Audit Logs', sub: 'Immutable KMS & Tool Ledger' },
-      },
-      midStep3Label: ['Dispatch to isolated', 'ADK execution zone'],
-      midStep7Label: ['DLP-scrubbed & signed', 'agent completion'],
-      midGovLabel: ['Cryptographic audit', '& SIEM telemetry'],
-      leftBoundaryLabel: 'Zone A: Deterministic Semantic Firewall & Policy Reasoning Plane',
-      leftZoneTitle: 'ADK Coordinator & Semantic Firewall',
-      leftZoneSub: 'In-Line Parameter AST Validation & Least-Privilege Scoping',
-      leftCards: {
-        modelArmor: { icon: 'model_armor', title: 'Semantic Firewall', sub: 'Blocks Destructive SQL/Shell' },
-        llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: 'Constrained JSON Schema Gen' },
-        runtime: { icon: 'gemini_agent_platform', title: 'PolicyEnforcerAgent', sub: 'ADK LlmAgent + Callbacks' },
-        mcp: { icon: 'mcp_servers', title: 'MCP Schema Validator', sub: 'Strict Allowlist & Arg Bounds' },
-        datastore: { icon: 'datastore_alloydb_bq', title: 'AlloyDB Policy Store', sub: 'Row-Level Security (RLS)' },
-        step4Label: 'Validate AST',
-        step6Label: 'DLP Scrub',
-        step5Label: ['Signed', 'reasoning'],
-        ragLabel: ['Scoped MCP', 'Allowlist'],
-        toolLabel: ['Read-Only', 'RLS Query'],
-      },
-      rightBoundaryLabel: 'Zone B: Ephemeral gVisor Sandbox & Human-in-the-Loop (HITL) Vault',
-      rightZoneTitle: 'Hardware-Isolated Tool Execution Enclave',
-      rightZoneSub: 'Cloud Run gVisor (runsc --network=none) + KMS Approval Gate',
-      rightCards: {
-        modelArmor: { icon: 'model_armor', title: 'Egress DLP Guard', sub: 'Redacts Secrets, Keys & PII' },
-        llm: { icon: 'gemini_agent_platform', title: 'SandboxAuditorAgent', sub: 'Monitors Syscall & Memory' },
-        runtime: { icon: 'gemini_agent_platform', title: 'gVisor Sandbox Pod', sub: 'runsc --network=none Enclave' },
-        mcp: { icon: 'mcp_servers', title: 'HITL Approval Gate', sub: 'Requires Signed Operator JWT' },
-        datastore: { icon: 'datastore_alloydb_bq', title: 'CMEK Secret Vault', sub: 'Hardware HSM Key Rotation' },
-        ragLabel: ['Zero-Egress', 'IPC Socket'],
-        toolLabel: ['HSM-Signed', 'Mutations'],
-      },
-    };
+    return OFFICIAL_ARCH_CENTER_BLUEPRINTS.find((b) => b.id === 'arch-center-zero-trust-adk') || OFFICIAL_ARCH_CENTER_BLUEPRINTS[9];
   }
 
   if (useCase.id === 'uc-multimodal-graphrag') {
@@ -1563,7 +1568,7 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
   addPointEdge('e_alb_to_user', [612, 432], [612, 140], [], { endArrow: true, source: 'card_rc_alb', target: 'actor_top_user' });
 
   addPointEdge('e_alb_to_top_left', [452, 470], [292, 431], [[418, 470], [418, 431]], { startArrow: true, endArrow: true, source: 'card_rc_alb', target: 'card_rc_topleft' });
-  addPointEdge('e_alb_to_mid_left', [452, 470], [292, 515], [[418, 470], [418, 515]], { startArrow: false, endArrow: true, source: 'card_rc_alb', target: 'card_rc_midleft' });
+  addPointEdge('e_alb_to_mid_left', [452, 470], [292, 515], [[418, 470], [418, 515]], { startArrow: true, endArrow: true, source: 'card_rc_alb', target: 'card_rc_midleft' });
 
   addPointEdge('e_iap_to_cloudrun', [292, 613], [476, 613], [], { startArrow: true, endArrow: true, source: 'card_rc_botleft', target: 'card_rc_cloudrun' });
 
