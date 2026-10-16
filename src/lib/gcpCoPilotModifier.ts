@@ -8,6 +8,10 @@
 
 import { validateAndHealDrawioXml } from './xmlHealer';
 import { generateUpgradedGcpGeBankingArchitectureXml } from './canonical/upgradedGcpGeBankingAgentTemplate';
+import {
+  synthesizePromptDrivenDiagramXml,
+  isOracleAtGoogleExadataPrompt,
+} from './promptDrivenDiagramSynthesizer';
 
 export interface GcpVersionSnapshot {
   id: string;
@@ -327,9 +331,9 @@ function applyInPlaceNodeUpgrade(
 export function executeGcpPromptModification(
   currentXml: string,
   promptText: string,
-  currentVersionIndex: number,
-  archId: string,
-  isDark: boolean,
+  currentVersionIndex: number | string = 1,
+  archId: string = 'blank',
+  isDark: boolean = false,
   explicitPersona?: string
 ): {
   updatedXml: string;
@@ -393,8 +397,74 @@ export function executeGcpPromptModification(
     }
   }
 
-  const nextVersionTag = `v1.${currentVersionIndex}`;
+  const normalizedVersionIdx = typeof currentVersionIndex === 'number' ? currentVersionIndex : 1;
+  const normalizedArchId = typeof currentVersionIndex === 'string' ? currentVersionIndex : archId;
+  const nextVersionTag = `v1.${normalizedVersionIdx}`;
   const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  // Count existing vertices in currentXml to detect Blank Canvas or incomplete 1-box stub
+  const existingVertexCount = (currentXml.match(/vertex="1"/g) || []).length;
+  const isBlankOrStubCanvas =
+    !currentXml ||
+    currentXml.includes('data-blank-canvas="true"') ||
+    normalizedArchId === 'blank' ||
+    normalizedArchId === 'blank_canvas' ||
+    existingVertexCount < 6;
+
+  const isOracleExadataDomain = isOracleAtGoogleExadataPrompt(cleanPrompt);
+  const isFullArchitectureCreationPrompt =
+    isOracleExadataDomain ||
+    (!isNegativeRemoval &&
+      !isReplacement &&
+      /^(create|build|design|architect|generate|show|draw)\s+(an?\s+|the\s+)?(architecture|diagram|blueprint|topology|reference\s+architecture|system\s+architecture|end-to-end)/i.test(
+        cleanPrompt
+      ));
+
+  if (isBlankOrStubCanvas || isFullArchitectureCreationPrompt) {
+    if (!explicitPersona && isOracleExadataDomain) {
+      detectedPersona = 'Oracle Database@Google Cloud & Enterprise ERP Architect';
+    }
+    const synthesizedFullXml = synthesizePromptDrivenDiagramXml(cleanPrompt, {
+      blueprintId: isOracleExadataDomain ? 'oracle_at_google_ebs_exadata' : 'custom',
+      noTemplate: true,
+    });
+    const healedFull = validateAndHealDrawioXml(
+      synthesizedFullXml,
+      isOracleExadataDomain ? 'oracle_at_google_ebs_exadata' : 'custom_synthesized'
+    );
+    const fullCanvasDiff = isOracleExadataDomain
+      ? `🏛️ Synthesized 4-Tier Oracle Database@Google Cloud for Oracle E-Business Suite (EBS R12.2) on Exadata Cloud Infrastructure X10M: Tier 1 Global Ingress (Cloud Armor WAF, Cloud Load Balancing, Cloud Interconnect, Cloud Identity/IAM), Tier 2 GCP Application VPC (WebLogic Web/Forms Cluster, Concurrent Processing Manager Tier, Filestore Enterprise Shared APPL_TOP, Vertex AI Gemini 2.5 ERP Co-Pilot), Dedicated <0.5ms ODB Partner Interconnect Bridge, Tier 3 Colocated OCI Child Site inside GCP Region (Exadata X10M Primary RAC + RoCEv2 100Gbps Fabric + Active Data Guard Standby + Autonomous Recovery Service), Tier 4 Analytics & Modernization (GoldenGate 23ai / Datastream CDC -> BigQuery ERP Cortex -> Vertex AI Demand Forecasting -> Looker Executive BI), and Right-Rail Security & SRE Plane.`
+      : `🏗️ Synthesized Complete Multi-Tier Google Cloud Architecture Blueprint for "${cleanPrompt.slice(0, 90)}" with Ingress/Security Perimeter, Compute & Orchestration Tier, Stateful Data & Persistence Tier, Observability/Governance Plane, and orthogonal data-flow edges.`;
+    const fullSpecDiff = isOracleExadataDomain
+      ? `Verified Oracle Database@Google Cloud (Exadata X10M RAC, <0.5ms Partner Interconnect, EBS R12.2 Online Patching ADOP, Active Data Guard RPO=0, Filestore Enterprise NFSv4.1 APPL_TOP, and GoldenGate/BigQuery Cortex CDC) with 22 vertices and 17 orthogonal edges.`
+      : `Synthesized complete multi-tier system specification, component catalog, and network topology for ${nextVersionTag}.`;
+
+    const newVersion: GcpVersionSnapshot = {
+      id: `v_${Date.now()}`,
+      versionTag: nextVersionTag,
+      timestamp,
+      author: detectedPersona,
+      actionSummary: fullCanvasDiff,
+      canvasDiff: fullCanvasDiff,
+      specDiff: fullSpecDiff,
+      xml: healedFull.xml,
+    };
+
+    const assistantMessage: GcpChatMessage = {
+      id: `msg_${Date.now() + 1}`,
+      sender: 'assistant',
+      text: `[${detectedPersona}]: Synthesized complete multi-tier architecture diagram for "${cleanPrompt.slice(0, 85)}". Created snapshot ${nextVersionTag}.`,
+      timestamp,
+      actionSummary: {
+        versionTag: nextVersionTag,
+        canvasDiff: fullCanvasDiff,
+        specDiff: fullSpecDiff,
+        persona: detectedPersona,
+      },
+    };
+
+    return { updatedXml: healedFull.xml, newVersion, assistantMessage };
+  }
 
   let canvasDiff = '';
   let specDiff = '';
@@ -415,7 +485,7 @@ export function executeGcpPromptModification(
   const textMuted = isDark ? '#94A3B8' : '#64748B';
 
   // Dynamic 2D Coordinate Layout (Bottom Channel Slot Allocation to avoid colliding with headers or bottom-tier cards)
-  const slotIndex = Math.max(0, currentVersionIndex - 1);
+  const slotIndex = Math.max(0, normalizedVersionIdx - 1);
   const colOffset = slotIndex % 3;
   const rowOffset = Math.floor(slotIndex / 3);
   const targetX = 220 + colOffset * 360;

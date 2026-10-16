@@ -78,7 +78,24 @@ export default function DiagramViewerRenderSafe({
     };
   }, []);
 
+  const isIntentionalBlankCanvas = React.useMemo(() => {
+    const rawStr = typeof xml === 'string' ? xml : String(xml || '');
+    return (
+      !rawStr.includes('vertex="1"') &&
+      (rawStr.includes('data-blank-canvas="true"') ||
+        diagramType === 'blank' ||
+        diagramType === 'blank_canvas' ||
+        diagramType === 'arch_blank_canvas' ||
+        diagramType === 'canonical_blank')
+    );
+  }, [xml, diagramType]);
+
   const sanitizedXml = React.useMemo(() => {
+    if (isIntentionalBlankCanvas) {
+      return typeof xml === 'string' && xml.trim().length > 0
+        ? xml
+        : `<mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0" data-blank-canvas="true"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel>`;
+    }
     if (!xml) return getDefaultXmlForArchitecture(diagramType || 'unified_system_view') || '';
     const rawStr = typeof xml === 'string' ? xml : String(xml);
     try {
@@ -91,7 +108,7 @@ export default function DiagramViewerRenderSafe({
       console.error('[DiagramViewerRenderSafe] XML healing failed, using catalog fallback:', err);
       return getDefaultXmlForArchitecture(diagramType || 'unified_system_view') || '';
     }
-  }, [xml, diagramType]);
+  }, [xml, diagramType, isIntentionalBlankCanvas]);
 
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const scriptUrl = `${origin}/viewer-static.min.js`;
@@ -464,6 +481,39 @@ ${origin ? `<base href="${origin}/">` : ''}
         <div className="flex items-center gap-2 text-xs text-slate-400">
           <div className="w-4 h-4 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
           <span>Rendering Architecture Blueprint...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (isIntentionalBlankCanvas) {
+    return (
+      <div
+        data-testid="blank-canvas-empty-state"
+        style={{
+          ...responsiveFrameStyle,
+          backgroundImage:
+            bgTheme === 'light'
+              ? 'radial-gradient(#CBD5E1 1.25px, transparent 1.25px)'
+              : 'radial-gradient(#334155 1.25px, transparent 1.25px)',
+          backgroundSize: '20px 20px',
+        }}
+        className={`${containerDimensions} relative rounded-xl overflow-hidden ${containerBgClass} transition-all duration-300 mx-auto flex flex-col items-center justify-center flex-1 p-8 text-center`}
+      >
+        <div className="max-w-lg rounded-2xl border border-dashed border-slate-300 bg-white/90 px-6 py-5 shadow-sm">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-2">
+            <span>Blank Architecture Canvas &bull; 0 Components</span>
+          </div>
+          <h3 className="text-sm font-extrabold text-slate-900">
+            Ready to Synthesize or Draw From Scratch
+          </h3>
+          <p className="mt-1.5 text-xs text-slate-600 leading-relaxed">
+            Enter an architecture prompt in the composer below (for example:{' '}
+            <span className="font-mono font-semibold text-blue-700">
+              &ldquo;Create an architecture diagram showing Oracle@Google for E-Business Suite running on Exadata&rdquo;
+            </span>
+            ) to generate a complete multi-tier diagram, or click <strong>Edit in Draw.io</strong> in the toolbar to draw manually.
+          </p>
         </div>
       </div>
     );

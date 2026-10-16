@@ -32,6 +32,21 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     healingLog.push('Normalized base64 data URIs missing ;base64, marker.');
   }
 
+  const isIntentionalBlankCanvas =
+    archType === 'blank' ||
+    archType === 'blank_canvas' ||
+    archType === 'arch_blank_canvas' ||
+    archType === 'canonical_blank' ||
+    workingXml.includes('data-blank-canvas="true"');
+
+  if (isIntentionalBlankCanvas && !workingXml.includes('vertex="1"')) {
+    const cleanBlankXml = workingXml.includes('data-blank-canvas="true"')
+      ? workingXml
+      : `<mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0" data-blank-canvas="true"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel>`;
+    healingLog.push('Intentional Blank Canvas preserved (0 vertices).');
+    return { isValid: true, isHealed: false, xml: cleanBlankXml, healingLog };
+  }
+
   const isCompletelyEmpty = !workingXml || 
     typeof workingXml !== 'string' || 
     workingXml.includes('<root><mxCell id="0"/><mxCell id="1" parent="0"/></root>') ||

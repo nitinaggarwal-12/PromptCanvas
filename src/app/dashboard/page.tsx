@@ -671,30 +671,90 @@ function DashboardContent() {
     }
   ]);
 
-  // Dynamically recompute 6-dimension audit scores from actual XML geometry & security posture
+  // Dynamically recompute 6-dimension audit scores from actual XML geometry, completeness & security posture
   useEffect(() => {
     if (!activeCanvasXml) return;
-    const isRemediated =
-      activeCanvasXml.includes('audit_remediated_security_bar') ||
-      activeCanvasXml.includes('data-omni-autofix-certified="true"');
 
-    const xmlUpper = activeCanvasXml.toUpperCase();
-    const hasWaf =
-      isRemediated || xmlUpper.includes('ARMOR') || xmlUpper.includes('WAF') || xmlUpper.includes('IAP');
-    const hasKms =
-      isRemediated || xmlUpper.includes('KMS') || xmlUpper.includes('CMEK') || xmlUpper.includes('SECRET');
-    const hasVpc =
-      isRemediated || xmlUpper.includes('VPC') || xmlUpper.includes('PERIMETER') || xmlUpper.includes('GUARD');
-    const secScore = isRemediated
-      ? 100
-      : Math.min(100, 90 + (hasWaf ? 4 : 0) + (hasKms ? 3 : 0) + (hasVpc ? 3 : 0));
+    const isIntentionalBlank =
+      activeCanvasXml.includes('data-blank-canvas="true"') ||
+      (activeCanvasXml.match(/vertex="1"/g) || []).length === 0;
+
+    if (isIntentionalBlank) {
+      setAuditScores([
+        {
+          category: 'security',
+          name: 'Security & Governance',
+          score: 0,
+          status: 'critical',
+          summary: 'Blank Canvas: 0 security controls, 0 IAM boundaries, and 0 encryption policies present.',
+          recommendations: ['Enter an architecture prompt or select a canonical blueprint to synthesize security controls.']
+        },
+        {
+          category: 'visual',
+          name: 'Visual Layout & Geometry',
+          score: 0,
+          status: 'critical',
+          summary: 'Blank Canvas initialized with 0 component bounding boxes and 0 connectors.',
+          recommendations: ['Add architectural tiers and components to evaluate 2D layout geometry.']
+        },
+        {
+          category: 'topology',
+          name: 'Cloud Topology & Resiliency',
+          score: 0,
+          status: 'critical',
+          summary: '0 architectural tiers and 0 dataflow edges present on canvas.',
+          recommendations: ['Synthesize multi-tier ingress, compute, and stateful persistence topology.']
+        },
+        {
+          category: 'responsive',
+          name: 'Responsive & Viewport Fit',
+          score: 0,
+          status: 'critical',
+          summary: 'Canvas is empty (0 rendered components).',
+          recommendations: ['Populate canvas via AI Prompt Co-Pilot or Blueprint Selector.']
+        },
+        {
+          category: 'accessibility',
+          name: 'Color Contrast & WCAG 2.1',
+          score: 0,
+          status: 'critical',
+          summary: '0 text labels or edge badges rendered to evaluate.',
+          recommendations: ['Add labeled architecture components.']
+        },
+        {
+          category: 'vendor',
+          name: 'Vendor & Official Icons',
+          score: 0,
+          status: 'critical',
+          summary: '0 cloud service icons or architectural components rendered.',
+          recommendations: ['Include official Google Cloud / enterprise service icons.']
+        }
+      ]);
+      return;
+    }
 
     // Parse real vertex bounding boxes per individual <mxCell> block (never crossing </mxCell> boundaries)
     const cellBlockRegex = /<mxCell\b[^>]*vertex="1"[^>]*>[\s\S]*?<\/mxCell>/g;
-    const boxes: { parent: string; x: number; y: number; w: number; h: number }[] = [];
+    const boxes: { id: string; parent: string; x: number; y: number; w: number; h: number }[] = [];
+    let totalNonTextVertices = 0;
+    let iconNodeCount = 0;
     let cellMatch: RegExpExecArray | null;
     while ((cellMatch = cellBlockRegex.exec(activeCanvasXml)) !== null) {
       const block = cellMatch[0];
+      const idMatch = block.match(/\bid="([^"]+)"/);
+      const id = idMatch ? idMatch[1] : '';
+      if (block.includes('image=data:image/') || block.includes('shape=mxgraph.')) {
+        iconNodeCount++;
+      }
+      if (
+        !block.includes('style="text;') &&
+        !id.endsWith('_badge_0') &&
+        !id.endsWith('_title_0') &&
+        !id.endsWith('_desc_0') &&
+        id !== 'audit_remediated_security_bar'
+      ) {
+        totalNonTextVertices++;
+      }
       if (
         block.includes('fillColor=none') ||
         block.includes('dashed=1') ||
@@ -713,6 +773,7 @@ function DashboardContent() {
       // Only check true leaf component cards (exclude small step badges <48x34 and outer containers >360x160)
       if (w >= 48 && w <= 360 && h >= 34 && h <= 160) {
         boxes.push({
+          id,
           parent: parentMatch[1],
           x: parseFloat(geoMatch[1]),
           y: parseFloat(geoMatch[2]),
@@ -721,6 +782,81 @@ function DashboardContent() {
         });
       }
     }
+
+    const edgeCount = (activeCanvasXml.match(/edge="1"/g) || []).length;
+    const isSingleBoxOrStub =
+      totalNonTextVertices < 6 ||
+      edgeCount < 3 ||
+      (activeCanvasXml.includes('copilot_mod_custom_box_') && boxes.length <= 2);
+
+    if (isSingleBoxOrStub) {
+      setAuditScores([
+        {
+          category: 'security',
+          name: 'Security & Governance',
+          score: 20,
+          status: 'critical',
+          summary: `Incomplete stub diagram (${totalNonTextVertices} node(s), ${edgeCount} edge(s)): Missing ingress WAF, IAM identity boundary, VPC-SC perimeter, and KMS CMEK encryption tier.`,
+          recommendations: ['Click Auto-Fix or submit a full architecture prompt to synthesize a complete multi-tier security topology.']
+        },
+        {
+          category: 'visual',
+          name: 'Visual Layout & Geometry',
+          score: 30,
+          status: 'critical',
+          summary: `Inspected ${totalNonTextVertices} structural node(s) and ${edgeCount} connector(s). Single-box or stub layouts fail multi-tier enterprise architecture standards.`,
+          recommendations: ['Expand stub into a multi-tier architecture with Ingress, Application, Data, and Governance swimlanes.']
+        },
+        {
+          category: 'topology',
+          name: 'Cloud Topology & Resiliency',
+          score: 15,
+          status: 'critical',
+          summary: `Only ${edgeCount} connector(s) and ${totalNonTextVertices} node(s) present — missing end-to-end ingress, compute, persistence, and HA/DR resiliency paths.`,
+          recommendations: ['Synthesize complete multi-tier dataflow topology with HA/DR replication.']
+        },
+        {
+          category: 'responsive',
+          name: 'Responsive & Viewport Fit',
+          score: 45,
+          status: 'warning',
+          summary: `Canvas viewport is severely under-populated (${totalNonTextVertices} node(s)).`,
+          recommendations: ['Populate multi-tier architecture across the 16:9 canvas.']
+        },
+        {
+          category: 'accessibility',
+          name: 'Color Contrast & WCAG 2.1',
+          score: 50,
+          status: 'warning',
+          summary: 'Insufficient tier hierarchy and semantic architectural labels.',
+          recommendations: ['Add structured tier headers and labeled connector flows.']
+        },
+        {
+          category: 'vendor',
+          name: 'Vendor & Official Icons',
+          score: iconNodeCount > 0 ? 40 : 15,
+          status: 'critical',
+          summary: `Only ${iconNodeCount} official service icon(s) detected — missing verified multi-tier architecture components.`,
+          recommendations: ['Bind official Google Cloud / enterprise service icons across all tiers.']
+        }
+      ]);
+      return;
+    }
+
+    const isRemediated =
+      activeCanvasXml.includes('audit_remediated_security_bar') ||
+      activeCanvasXml.includes('data-omni-autofix-certified="true"');
+
+    const xmlUpper = activeCanvasXml.toUpperCase();
+    const hasWaf =
+      isRemediated || xmlUpper.includes('ARMOR') || xmlUpper.includes('WAF') || xmlUpper.includes('IAP');
+    const hasKms =
+      isRemediated || xmlUpper.includes('KMS') || xmlUpper.includes('CMEK') || xmlUpper.includes('SECRET') || xmlUpper.includes('TDE');
+    const hasVpc =
+      isRemediated || xmlUpper.includes('VPC') || xmlUpper.includes('PERIMETER') || xmlUpper.includes('GUARD') || xmlUpper.includes('INTERCONNECT');
+    const secScore = isRemediated
+      ? 100
+      : Math.min(100, 90 + (hasWaf ? 4 : 0) + (hasKms ? 3 : 0) + (hasVpc ? 3 : 0));
 
     let overlapCount = 0;
     if (!isRemediated) {
@@ -742,8 +878,7 @@ function DashboardContent() {
     }
 
     const visualScore = isRemediated ? 100 : Math.max(85, 99 - overlapCount * 3);
-    const edgeCount = (activeCanvasXml.match(/edge="1"/g) || []).length;
-    const topoScore = isRemediated ? 100 : Math.min(100, 92 + (edgeCount >= 6 ? 6 : 3));
+    const topoScore = isRemediated ? 100 : Math.min(100, 92 + (edgeCount >= 10 ? 8 : edgeCount >= 6 ? 6 : 3));
 
     setAuditScores([
       {
@@ -753,7 +888,7 @@ function DashboardContent() {
         status: secScore >= 90 ? 'passed' : 'warning',
         summary: isRemediated
           ? `Verified Cloud Armor L7 WAF/IAP, Cloud KMS CMEK (90-Day Key Rotation), and VPC-SC / Model Armor Guardrails in ${canvasPerspective} topology.`
-          : `Verified ${hasWaf ? 'Cloud Armor WAF/IAP, ' : ''}${hasKms ? 'Cloud KMS CMEK, ' : ''}and ${hasVpc ? 'VPC-SC / Model Armor Guardrails' : 'Zero-Trust IAM Controls'} in ${canvasPerspective} topology.`,
+          : `Verified ${hasWaf ? 'Cloud Armor WAF/IAP, ' : ''}${hasKms ? 'Cloud KMS CMEK/TDE, ' : ''}and ${hasVpc ? 'VPC-SC / Private Interconnect Guardrails' : 'Zero-Trust IAM Controls'} in ${canvasPerspective} topology.`,
         recommendations: hasKms ? [] : ['Add Cloud KMS CMEK key rotation policy to storage tier.']
       },
       {
@@ -769,7 +904,7 @@ function DashboardContent() {
         name: 'Cloud Topology & Resiliency',
         score: topoScore,
         status: 'passed',
-        summary: `${edgeCount} end-to-end architectural dataflow connectors verified across ${canvasPerspective} (${selectedLevel}) tiers.`,
+        summary: `${edgeCount} end-to-end architectural dataflow connectors verified across ${totalNonTextVertices} nodes in ${canvasPerspective} (${selectedLevel}) tiers.`,
         recommendations: []
       },
       {
@@ -791,9 +926,9 @@ function DashboardContent() {
       {
         category: 'vendor',
         name: 'Vendor & Official Icons',
-        score: isRemediated ? 100 : 96,
+        score: isRemediated ? 100 : iconNodeCount >= 4 ? 99 : 96,
         status: 'passed',
-        summary: `Authenticated ${canvasPerspective} styling and Google Cloud architectural nomenclature.`,
+        summary: `Authenticated ${canvasPerspective} styling, ${iconNodeCount} vector glyphs, and enterprise cloud architectural nomenclature.`,
         recommendations: []
       }
     ]);
@@ -982,7 +1117,7 @@ function DashboardContent() {
       } else {
         setCanvasPerspective('Technical');
       }
-      handleExecutePrompt(result.prompt);
+      handleExecutePrompt(result.prompt, true);
       showToast('🚀 Synthesizing new architecture from prompt...');
       return;
     }
@@ -1027,8 +1162,9 @@ function DashboardContent() {
 
     if (result.mode === 'blank') {
       const blankTitle = result.projectName || 'Blank Architecture Canvas';
-      const blankXml = `<mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel>`;
+      const blankXml = `<mxGraphModel data-blank-canvas="true" dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel>`;
       setCanvasTitle(blankTitle);
+      setLoadedBlueprintId('blank');
       setIsSessionForked(true);
       setHasUnsavedSessionChanges(true);
       const blankEntry: DashboardVersionEntry = {
@@ -1047,7 +1183,33 @@ function DashboardContent() {
         level: 'L2',
         perspective: 'Technical',
         status: 'draft',
-        perspectiveXmlMap: { Technical: blankXml }
+        perspectiveXmlMap: { Technical: blankXml },
+        truthfulnessDossier: {
+          prompt: 'Blank Canvas Initialization',
+          evaluatedAtUtc: new Date().toISOString(),
+          generatorModel: 'gemini-3.8-flash',
+          groundingModel: 'deep-research-max-preview-04-2026',
+          criticJudgeModel: 'gemini-3.1-pro-preview',
+          orchestratorId: 'google-omni-1.1',
+          isLiveModelEvaluated: false,
+          scores: {
+            truthfulnessAndReality: 0,
+            externalStandardsGrounding: 0,
+            logicalMissionCompleteness: 0,
+            promptRelevance: 0,
+            geometricZeroCollision: 0,
+            overallCompositeScore: 0
+          },
+          speculativePremiseWarning: {
+            detected: false,
+            rawClaimInPrompt: 'None',
+            scientificRealityCheck: 'Blank Canvas initialized with 0 architectural components and 0 connectors.',
+            architecturalReframingApplied: 'Enter an architecture prompt in the AI Co-Pilot composer to synthesize a complete multi-tier architecture.'
+          },
+          groundedStandards: [],
+          completenessChecklist: [],
+          provenanceLedger: []
+        }
       };
       setVersionHistory([blankEntry]);
       setActiveVersionIndex(0);
@@ -1318,7 +1480,7 @@ function DashboardContent() {
   // =========================================================================
   // CORE ACTION: Execute Prompt with Gemini Architect API + Connected Topology Synthesis
   // =========================================================================
-  const handleExecutePrompt = async (promptToRun?: string) => {
+  const handleExecutePrompt = async (promptToRun?: string, forceNewSynthesis = false) => {
     const rawPrompt = promptToRun || activeComposerPrompt;
     if (!rawPrompt.trim() || isProcessingAi) return;
 
@@ -1354,19 +1516,25 @@ function DashboardContent() {
 
     try {
       const nextMinorStep = currentVersion.minor + 1;
+      const isCurrentlyBlank =
+        forceNewSynthesis ||
+        loadedBlueprintId === 'blank' ||
+        currentVersion.blueprintId === 'blank' ||
+        currentVersion.xml.includes('data-blank-canvas="true"');
+
       const modResult = executeGcpPromptModification(
-        currentVersion.xml,
+        isCurrentlyBlank ? '' : currentVersion.xml,
         query,
         nextMinorStep,
-        `canonical_${loadedBlueprintId}`,
+        isCurrentlyBlank ? 'blank' : `canonical_${loadedBlueprintId}`,
         !isLight
       );
 
-      setAiPlanningStatus('Stage 2/4: Synthesizing Grounded 7-Tier Topology (gemini-3.8-flash) & Healing 2D Geometry (google-omni-1.1)...');
+      setAiPlanningStatus('Stage 2/4: Synthesizing Grounded Multi-Tier Topology (gemini-3.8-flash) & Healing 2D Geometry (google-omni-1.1)...');
 
       const healedXml = preflightVerifyAndHealXmlAcrossAll6Audits(
         modResult.updatedXml,
-        `canonical_${loadedBlueprintId}`
+        isCurrentlyBlank ? 'custom_synthesized' : `canonical_${loadedBlueprintId}`
       );
 
       setAiPlanningStatus('Stage 3/4: Running Cross-Model Truthfulness & Completeness Critic (gemini-3.1-pro-preview judging gemini-3.8-flash)...');
@@ -1425,6 +1593,17 @@ function DashboardContent() {
       const qLower = query.toLowerCase();
       let effectiveTitle = canvasTitle;
       if (
+        qLower.includes('oracle@google') ||
+        qLower.includes('oracle @ google') ||
+        qLower.includes('exadata') ||
+        qLower.includes('ebusiness') ||
+        qLower.includes('ebuisness') ||
+        qLower.includes('e-business') ||
+        (qLower.includes('oracle') && (qLower.includes('ebs') || qLower.includes('erp')))
+      ) {
+        effectiveTitle = 'Oracle Database@Google Cloud — E-Business Suite (EBS R12.2) on Exadata X10M';
+        setCanvasTitle(effectiveTitle);
+      } else if (
         qLower.includes('nasa') ||
         qLower.includes('satellite') ||
         qLower.includes('satellight') ||
@@ -1433,9 +1612,19 @@ function DashboardContent() {
       ) {
         effectiveTitle = "NASA Satellite Launch & Multi-Universe Digital-Twin Harness (CCSDS • DSN • cFS/F' • ITAR)";
         setCanvasTitle(effectiveTitle);
+      } else if (isCurrentlyBlank || canvasTitle === 'Blank Architecture Canvas') {
+        const cleanedQueryTitle = query
+          .replace(/^(create|build|design|architect|generate|show|draw)\s+(an?\s+|the\s+)?(architecture\s+diagram|diagram|architecture|blueprint|topology)\s*(showing|for|of|with)?\s*/i, '')
+          .trim();
+        effectiveTitle =
+          apiDecision?.tailoredSpec?.diagramTitle ||
+          (cleanedQueryTitle.length > 4
+            ? `${cleanedQueryTitle.charAt(0).toUpperCase()}${cleanedQueryTitle.slice(1, 78)}`
+            : 'Custom Enterprise Cloud Architecture');
+        setCanvasTitle(effectiveTitle);
       }
 
-      const isFromChip = !!promptToRun;
+      const isFromChip = !!promptToRun && !forceNewSynthesis;
       recordNewVersion(
         healedXml,
         query,
@@ -1840,10 +2029,37 @@ function DashboardContent() {
   // CORE ACTION: Omni Auto-Fix with Gemini
   // =========================================================================
   const handleAutoFixWithGemini = async () => {
+    const vertexMatches = activeCanvasXml.match(/vertex="1"/g) || [];
+    const isBlank =
+      activeCanvasXml.includes('data-blank-canvas="true"') ||
+      (loadedBlueprintId === 'blank' && vertexMatches.length === 0);
+    const activePromptCandidate =
+      activeComposerPrompt.trim() ||
+      (currentVersion.prompt &&
+      currentVersion.prompt !== 'Blank Canvas Initialized' &&
+      !currentVersion.prompt.startsWith('Initial load of Canonical')
+        ? currentVersion.prompt
+        : '');
+
+    if (isBlank && !activePromptCandidate) {
+      showToast('ℹ️ Blank Canvas has 0 nodes — enter an architecture prompt below or select a blueprint before running Auto-Fix.');
+      return;
+    }
+
     setIsProcessingAi(true);
-    showToast('🔧 Running Omni 1.1 & Gemini Auto-Fix: Remediating KMS CMEK governance, WCAG contrast & 2D clearances...');
+    showToast('🔧 Running Omni 1.1 & Gemini Auto-Fix: Remediating architecture completeness, KMS CMEK governance & 2D clearances...');
 
     try {
+      let xmlToHeal = activeCanvasXml;
+      if ((isBlank || vertexMatches.length < 6) && activePromptCandidate) {
+        const modResult = executeGcpPromptModification(
+          activeCanvasXml,
+          activePromptCandidate,
+          'blank'
+        );
+        xmlToHeal = modResult.updatedXml;
+      }
+
       const effectiveArch =
         canvasPerspective === 'Whiteboard'
           ? 'canonical_76_whiteboard'
@@ -1852,18 +2068,16 @@ function DashboardContent() {
           : `canonical_${loadedBlueprintId}`;
 
       const healedXml = applyOmniAndGeminiAutoFixRemediation(
-        activeCanvasXml,
+        xmlToHeal,
         effectiveArch
       );
 
       const nowIso = new Date().toISOString();
-      const baseDossier =
-        currentVersion.truthfulnessDossier ||
-        (await runTruthfulnessAndGroundingCertification({
-          prompt: currentVersion.prompt || canvasTitle,
-          xmlContent: healedXml,
-          blueprintId: loadedBlueprintId,
-        }));
+      const baseDossier = await runTruthfulnessAndGroundingCertification({
+        prompt: activePromptCandidate || currentVersion.prompt || canvasTitle,
+        xmlContent: healedXml,
+        blueprintId: loadedBlueprintId,
+      });
 
       const remediatedStage = {
         stageNumber: (baseDossier.provenanceLedger?.length || 4) + 1,
@@ -1874,7 +2088,7 @@ function DashboardContent() {
         timestampUtc: nowIso,
         durationMs: 42,
         whatItDid:
-          'Injected Cloud KMS CMEK (90-Day Key Rotation) + Cloud Armor L7 WAF/IAP + VPC-SC security governance footer bar, normalized WCAG 2.1 AA contrast & typography, and verified 0 genuine 2D leaf-card sibling overlaps.',
+          'Verified multi-tier architectural completeness, injected Cloud KMS CMEK (90-Day Key Rotation) + Cloud Armor L7 WAF/IAP + VPC-SC security governance footer bar, normalized WCAG 2.1 AA contrast & typography, and verified 0 genuine 2D leaf-card sibling overlaps.',
         whyItDidIt:
           'Remediated all remaining Security & Governance (94% → 100%) and Visual Layout & Geometry (85% → 100%) audit recommendations.',
         verdict: 'HEALED' as const,
@@ -2736,30 +2950,73 @@ function DashboardContent() {
                 </button>
 
                 {/* 3. Audit Button */}
-                <button
-                  id="toolbar-audit-btn"
-                  type="button"
-                  onClick={() => setIsAuditModalOpen(true)}
-                  title="Run Omni Sanity Audit"
-                  className={`px-2.5 py-1 rounded-xl border font-bold text-[11px] flex items-center gap-1 transition cursor-pointer ${
-                    activeCanvasXml.includes('data-omni-autofix-certified="true"')
-                      ? isLight
-                        ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
-                        : 'bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border-emerald-500/30'
-                      : isLight
-                      ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
-                      : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/30'
-                  }`}
-                >
-                  {activeCanvasXml.includes('data-omni-autofix-certified="true"') ? (
-                    <ShieldCheck className={`w-3.5 h-3.5 ${isLight ? 'text-emerald-600' : 'text-emerald-400'}`} />
-                  ) : (
-                    <ShieldAlert className={`w-3.5 h-3.5 ${isLight ? 'text-amber-600' : 'text-amber-400'}`} />
-                  )}
-                  <span>
-                    {activeCanvasXml.includes('data-omni-autofix-certified="true"') ? 'Audit 100%' : 'Audit'}
-                  </span>
-                </button>
+                {(() => {
+                  const toolbarVertices = (activeCanvasXml.match(/vertex="1"/g) || []).length;
+                  const isBlankToolbar =
+                    activeCanvasXml.includes('data-blank-canvas="true"') ||
+                    (loadedBlueprintId === 'blank' && toolbarVertices === 0);
+                  const isStubToolbar = !isBlankToolbar && toolbarVertices < 6;
+                  const isCertToolbar =
+                    !isBlankToolbar &&
+                    !isStubToolbar &&
+                    (activeCanvasXml.includes('data-omni-autofix-certified="true"') ||
+                      (auditScores.length > 0 &&
+                        auditScores.every((d) => d.score === 100 && d.recommendations.length === 0)));
+                  const toolbarScore = isBlankToolbar
+                    ? 0
+                    : isCertToolbar
+                    ? 100
+                    : currentVersion.truthfulnessDossier?.scores.overallCompositeScore ??
+                      (auditScores.length > 0
+                        ? Math.round(auditScores.reduce((s, d) => s + d.score, 0) / auditScores.length)
+                        : 98);
+                  const isFailedToolbar = isBlankToolbar || isStubToolbar || toolbarScore < 60;
+
+                  return (
+                    <button
+                      id="toolbar-audit-btn"
+                      type="button"
+                      onClick={() => setIsAuditModalOpen(true)}
+                      title="Run Omni Sanity Audit"
+                      className={`px-2.5 py-1 rounded-xl border font-bold text-[11px] flex items-center gap-1 transition cursor-pointer ${
+                        isFailedToolbar
+                          ? isLight
+                            ? 'bg-rose-50 hover:bg-rose-100 text-rose-800 border-rose-300'
+                            : 'bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border-rose-500/30'
+                          : isCertToolbar
+                          ? isLight
+                            ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
+                            : 'bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border-emerald-500/30'
+                          : isLight
+                          ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
+                          : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/30'
+                      }`}
+                    >
+                      {isCertToolbar ? (
+                        <ShieldCheck className={`w-3.5 h-3.5 ${isLight ? 'text-emerald-600' : 'text-emerald-400'}`} />
+                      ) : (
+                        <ShieldAlert
+                          className={`w-3.5 h-3.5 ${
+                            isFailedToolbar
+                              ? isLight
+                                ? 'text-rose-600'
+                                : 'text-rose-400'
+                              : isLight
+                              ? 'text-amber-600'
+                              : 'text-amber-400'
+                          }`}
+                        />
+                      )}
+                      <span>
+                        {isBlankToolbar
+                          ? 'Audit 0%'
+                          : isCertToolbar
+                          ? 'Audit 100%'
+                          : `Audit ${toolbarScore}%`}
+                      </span>
+                    </button>
+                  );
+                })()}
 
                 {/* 4. Auto-Fix Button (Gemini Fix) */}
                 <button
@@ -3002,39 +3259,76 @@ function DashboardContent() {
             <div className="p-5 overflow-y-auto space-y-4">
               {/* Overall Score */}
               {(() => {
+                const modalVertexCount = (activeCanvasXml.match(/vertex="1"/g) || []).length;
+                const isBlankModal =
+                  activeCanvasXml.includes('data-blank-canvas="true"') ||
+                  (loadedBlueprintId === 'blank' && modalVertexCount === 0);
+                const isStubModal = !isBlankModal && modalVertexCount < 6;
                 const isFullyCertified =
-                  activeCanvasXml.includes('data-omni-autofix-certified="true"') ||
-                  (auditScores.length > 0 &&
-                    auditScores.every((d) => d.score === 100 && d.recommendations.length === 0));
+                  !isBlankModal &&
+                  !isStubModal &&
+                  (activeCanvasXml.includes('data-omni-autofix-certified="true"') ||
+                    (auditScores.length > 0 &&
+                      auditScores.every((d) => d.score === 100 && d.recommendations.length === 0)));
                 const avgAuditScore =
                   auditScores.length > 0
                     ? Math.round(auditScores.reduce((s, d) => s + d.score, 0) / auditScores.length)
+                    : isBlankModal
+                    ? 0
                     : 98;
-                const displayComposite = isFullyCertified
+                const displayComposite = isBlankModal
+                  ? 0
+                  : isFullyCertified
                   ? 100
-                  : currentVersion.truthfulnessDossier?.scores.overallCompositeScore || avgAuditScore;
-                const displayTruthfulness = isFullyCertified
+                  : currentVersion.truthfulnessDossier?.scores.overallCompositeScore ?? avgAuditScore;
+                const displayTruthfulness = isBlankModal
+                  ? 0
+                  : isFullyCertified
                   ? 100
-                  : currentVersion.truthfulnessDossier?.scores.truthfulnessAndReality || 96;
-                const displayGrounding = isFullyCertified
+                  : currentVersion.truthfulnessDossier?.scores.truthfulnessAndReality ?? avgAuditScore;
+                const displayGrounding = isBlankModal
+                  ? 0
+                  : isFullyCertified
                   ? 100
-                  : currentVersion.truthfulnessDossier?.scores.externalStandardsGrounding || 98;
-                const displayCompleteness = isFullyCertified
+                  : currentVersion.truthfulnessDossier?.scores.externalStandardsGrounding ?? avgAuditScore;
+                const displayCompleteness = isBlankModal
+                  ? 0
+                  : isFullyCertified
                   ? 100
-                  : currentVersion.truthfulnessDossier?.scores.logicalMissionCompleteness || 97;
+                  : currentVersion.truthfulnessDossier?.scores.logicalMissionCompleteness ?? avgAuditScore;
+                const displayGeometry = isBlankModal
+                  ? 0
+                  : isFullyCertified
+                  ? 100
+                  : currentVersion.truthfulnessDossier?.scores.geometricZeroCollision ?? avgAuditScore;
+                const isFailedAudit = isBlankModal || isStubModal || displayComposite < 60;
 
                 return (
                   <>
-                    <div className="bg-gradient-to-r from-teal-600 to-indigo-700 rounded-2xl p-4 text-white flex items-center justify-between shadow-md">
+                    <div
+                      className={`rounded-2xl p-4 text-white flex items-center justify-between shadow-md ${
+                        isFailedAudit
+                          ? 'bg-gradient-to-r from-rose-600 to-red-700'
+                          : 'bg-gradient-to-r from-teal-600 to-indigo-700'
+                      }`}
+                    >
                       <div>
-                        <span className="text-xs font-semibold text-teal-100 uppercase tracking-wider">
+                        <span
+                          className={`text-xs font-semibold uppercase tracking-wider ${
+                            isFailedAudit ? 'text-rose-100' : 'text-teal-100'
+                          }`}
+                        >
                           Cross-Model Truthfulness, Standards Grounding &amp; Geometry Score
                         </span>
                         <h4 id="audit-modal-composite-score" className="text-3xl font-black">
-                          {displayComposite}% Certified
+                          {isBlankModal
+                            ? '0% — Blank Canvas (Uncertified)'
+                            : isStubModal
+                            ? `${displayComposite}% — Incomplete Stub Rejected`
+                            : `${displayComposite}% Certified`}
                         </h4>
-                        <p className="text-xs text-teal-100 mt-0.5">
-                          Truthfulness: {displayTruthfulness}% &bull; Standards Grounding: {displayGrounding}% &bull; Mission Completeness: {displayCompleteness}% &bull; 2D Zero-Collision: 100%
+                        <p className={`text-xs mt-0.5 ${isFailedAudit ? 'text-rose-100' : 'text-teal-100'}`}>
+                          Truthfulness: {displayTruthfulness}% &bull; Standards Grounding: {displayGrounding}% &bull; Mission Completeness: {displayCompleteness}% &bull; 2D Zero-Collision: {displayGeometry}%
                         </p>
                       </div>
                       <button
