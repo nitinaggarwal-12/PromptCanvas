@@ -4,15 +4,15 @@
   "runtimeProjectNumber": "248990048888",
   "region": "us-west1",
   "buildProject": "nitina-ggarwal-sandbox-647724",
-  "image": "us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/promptcanvas:v20261016-1550",
+  "image": "us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/promptcanvas:v20261016-1640",
   "beyondCorpUrl": "https://promptcanvas-248990048888.cr.gclb.goog",
   "runAppUrl": "https://promptcanvas-mi7l4h536a-uw.a.run.app",
-  "gitCommit": "b6bda27",
-  "latestCreatedRevisionName": "promptcanvas-00043-pb6",
-  "latestReadyRevisionName": "promptcanvas-00043-pb6",
+  "gitCommit": "578ff36",
+  "latestCreatedRevisionName": "promptcanvas-00044-2qs",
+  "latestReadyRevisionName": "promptcanvas-00044-2qs",
   "readyConditionStatus": "True",
   "trafficPercent": 100,
   "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"promptcanvas-1\" on port 8080.",
-  "startupProbeTimestamp": "2026-10-16T19:53:26.696303Z",
-  "verifiedAt": "2026-10-16T19:53:49Z"
+  "startupProbeTimestamp": "2026-10-16T20:46:11.858981Z",
+  "verifiedAt": "2026-10-16T20:46:15Z"
 }
