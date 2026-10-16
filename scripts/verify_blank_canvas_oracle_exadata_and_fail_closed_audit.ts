@@ -3,6 +3,10 @@ import { preflightVerifyAndHealXmlAcrossAll6Audits } from '../src/lib/preflightA
 import { executeGcpPromptModification } from '../src/lib/gcpCoPilotModifier';
 import { synthesizePromptDrivenDiagramXml } from '../src/lib/promptDrivenDiagramSynthesizer';
 import { runTruthfulnessAndGroundingCertification } from '../src/lib/truthfulnessGroundingEngine';
+import {
+  getAutoSavedDraftBlueprints,
+  healStubOrOracleDiagramXml,
+} from '../src/lib/draftMicroVersionStore';
 
 function assert(condition: boolean, message: string): void {
   if (!condition) {
@@ -158,8 +162,35 @@ async function main() {
     'General freeform prompt on Blank Canvas does not fall back to 1-box copilot_mod_custom_box_0 stub'
   );
 
+  // 6. Saved Architectures Library (/library) Seed & Stale 1-Box Self-Healing
+  const seededDrafts = getAutoSavedDraftBlueprints();
+  const oracleSeed = seededDrafts.find((d) => d.id === 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1');
+  const oracleSeedXml = oracleSeed?.latest_xml || '';
+  assert(
+    Boolean(oracleSeed) &&
+      (oracleSeedXml.match(/vertex="1"/g) || []).length === 23 &&
+      (oracleSeedXml.match(/edge="1"/g) || []).length === 17,
+    'getAutoSavedDraftBlueprints() seeds DRAFT-ORACLE-EXADATA-EBS-V1-0-1 with 23 vertices and 17 edges'
+  );
+  assert(
+    Array.isArray(oracleSeed?.versions) && (oracleSeed?.versions.length || 0) === 2,
+    'DRAFT-ORACLE-EXADATA-EBS-V1-0-1 includes 2 versions (v1.0.1 full 23-vertex architecture + v1.0.0 blank canvas baseline)'
+  );
+
+  const healedFromStaleStub = healStubOrOracleDiagramXml(
+    oneBoxStubXml,
+    oraclePrompt,
+    'Oracle@googl...'
+  ).xml;
+  assert(
+    healedFromStaleStub.includes('id="oracle-at-google-ebs-exadata-2026"') &&
+      (healedFromStaleStub.match(/vertex="1"/g) || []).length === 23 &&
+      !healedFromStaleStub.includes('copilot_mod_custom_box_0'),
+    'healStubOrOracleDiagramXml() upgrades stale 1-box localStorage/DB stub into full 23-vertex Oracle Exadata architecture'
+  );
+
   console.log('================================================================================');
-  console.log('🎉 ALL 18/18 BLANK CANVAS, ORACLE@GOOGLE EXADATA & FAIL-CLOSED AUDIT CHECKS PASSED!');
+  console.log('🎉 ALL 21/21 BLANK CANVAS, ORACLE@GOOGLE EXADATA, LIBRARY SEED & AUDIT CHECKS PASSED!');
   console.log('================================================================================');
 }
 

@@ -7,6 +7,7 @@ import { getArchitectureMeta } from '@/lib/architectureMetadata';
 import { SupportedLanguage, translateDiagramXmlToLanguage } from '@/lib/i18n';
 import { localizeDrawioXmlDeep } from '@/lib/diagramLanguageLocalizer';
 import { sanitizeDrawioXmlAttributes } from '@/lib/diagramCleaner';
+import { healStubOrOracleDiagramXml } from '@/lib/draftMicroVersionStore';
 import { DiagramErrorBoundary } from './DiagramErrorBoundary';
 
 interface DiagramViewerProps {
@@ -80,6 +81,10 @@ export default function DiagramViewer({
     } else {
       rawStr = String(xml);
     }
+    if (!rawStr.includes('vertex="1"') && rawStr.includes('data-blank-canvas="true"')) {
+      return rawStr;
+    }
+    rawStr = healStubOrOracleDiagramXml(rawStr, description, useCaseName).xml;
     try {
       const healed = validateAndHealDrawioXml(rawStr, diagramType);
       if (!healed.xml || healed.xml.length < 100) {
@@ -90,7 +95,7 @@ export default function DiagramViewer({
       console.error('[DiagramViewer] Failed to heal XML, using fallback:', err);
       return getDefaultXmlForArchitecture(diagramType || 'unified_system_view') || '';
     }
-  }, [xml, diagramType]);
+  }, [xml, diagramType, description, useCaseName]);
 
   const templateName = React.useMemo(() => {
     return getTemplateTitle(diagramType || diagramId);

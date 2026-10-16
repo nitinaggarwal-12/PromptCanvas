@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { listDiagrams, createDiagram, clearAllDiagrams, batchDeleteDiagrams } from '@/lib/db';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
+import { healStubOrOracleDiagramXml } from '@/lib/draftMicroVersionStore';
 
 // GET /api/diagrams - List diagrams (user-scoped or public seed, optionally filtered by ?studio=)
 export async function GET(request: Request) {
@@ -10,6 +11,15 @@ export async function GET(request: Request) {
     const studioParam = searchParams.get('studio');
     const user = await getAuthenticatedUser();
     let diagrams = await listDiagrams(user?.id);
+
+    diagrams = diagrams.map((d: any) => {
+      const healed = healStubOrOracleDiagramXml(String(d.latest_xml || ''), d.latest_prompt, d.name);
+      return {
+        ...d,
+        name: healed.canonicalTitle || d.name,
+        latest_xml: d.latest_xml ? healed.xml : d.latest_xml,
+      };
+    });
 
     if (studioParam) {
       const targetStudio = studioParam.toLowerCase();
@@ -59,7 +69,8 @@ export async function POST(request: Request) {
     }
 
     const effectiveArchType = architectureType || 'unified_system_view';
-    const effectiveXml = xml !== undefined ? xml : (getDefaultXmlForArchitecture(effectiveArchType, businessUsecase || prompt || name, prompt || name) || undefined);
+    const rawEffectiveXml = xml !== undefined ? xml : (getDefaultXmlForArchitecture(effectiveArchType, businessUsecase || prompt || name, prompt || name) || undefined);
+    const effectiveXml = rawEffectiveXml ? healStubOrOracleDiagramXml(String(rawEffectiveXml), prompt || businessUsecase, name).xml : rawEffectiveXml;
 
     let user = await getAuthenticatedUser();
     if (!user || !user.id) {

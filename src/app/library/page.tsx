@@ -76,6 +76,7 @@ import DiagramInlineSlidesPreviewer, {
 } from '@/components/DiagramInlineSlidesPreviewer';
 import {
   getAutoSavedDraftBlueprints,
+  healStubOrOracleDiagramXml,
   markDraftDeleted,
   normalizeToMicroVersionTag
 } from '@/lib/draftMicroVersionStore';
@@ -342,12 +343,18 @@ function ArchitectureLibraryContent() {
         headers: { 'Cache-Control': 'no-cache' }
       });
       const apiData: CanvasDiagramItem[] = res.ok ? await res.json() : [];
-      const dbList: CanvasDiagramItem[] = (Array.isArray(apiData) ? apiData : []).map((d: any) => ({
-        ...d,
-        latest_prompt: d.latest_prompt || d.prompt || d.technical_usecase || d.business_usecase || '',
-      }));
+      const dbList: CanvasDiagramItem[] = (Array.isArray(apiData) ? apiData : []).map((d: any) => {
+        const promptText = d.latest_prompt || d.prompt || d.technical_usecase || d.business_usecase || '';
+        const healed = healStubOrOracleDiagramXml(d.xml_content, promptText, d.name);
+        return {
+          ...d,
+          name: healed.canonicalTitle || d.name,
+          latest_prompt: promptText,
+          xml_content: healed.xml || d.xml_content,
+        };
+      });
 
-      // Read auto-saved micro-version drafts (including NASA Closed-Loop Multi-Universe Harness v1.0.1 and sessionStorage drafts)
+      // Read auto-saved micro-version drafts (including Oracle@Google Exadata EBS v1.0.1, NASA Closed-Loop Multi-Universe Harness v1.0.1, and sessionStorage drafts)
       const autoDraftItems: CanvasDiagramItem[] = getAutoSavedDraftBlueprints().map((draft) => ({
         id: draft.id,
         name: draft.name,
@@ -360,41 +367,86 @@ function ArchitectureLibraryContent() {
         micro_version: draft.activeVersionTag || 'v1.0.1',
         latest_prompt: draft.prompt || draft.description,
         xml_content: draft.xml,
+        versions: draft.versions as any,
       }));
 
-      // Read user-saved projects from localStorage (saved from Dashboard Session Copy or Studio)
+      // Read user-saved projects from localStorage (saved from Dashboard Session Copy or Studio) and self-heal any 1-box stubs
       let localSavedItems: CanvasDiagramItem[] = [];
       if (typeof window !== 'undefined') {
         try {
           const rawSaved = JSON.parse(localStorage.getItem('promptcanvas_saved_blueprints') || '[]');
+          let savedMutated = false;
+          const healedSavedList: any[] = [];
           if (Array.isArray(rawSaved)) {
-            localSavedItems = rawSaved.map((item: any) => {
-              let fullPayload: any = null;
+            localSavedItems = rawSaved
+              .map((item: any) => {
+                let fullPayload: any = null;
+                try {
+                  fullPayload = JSON.parse(localStorage.getItem(`promptcanvas_studio_${item.id}`) || 'null');
+                } catch {}
+                const isDraftItem =
+                  item.created_studio === 'draft' ||
+                  item.status === 'draft' ||
+                  String(item.id || '').startsWith('DRAFT-') ||
+                  String(item.id || '').startsWith('draft_');
+                const promptText =
+                  item.prompt || item.description || fullPayload?.description || 'Saved from User Session Copy';
+                const rawXml = item.xml || fullPayload?.xml || '';
+                const healed = healStubOrOracleDiagramXml(rawXml, promptText, item.name);
+                const isOracleDuplicate =
+                  /oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|\bebs\s+r12|\boracle\s+ebs\b/i.test(
+                    `${item.name || ''} ${promptText}`
+                  );
+
+                if (healed.healed) {
+                  savedMutated = true;
+                  if (fullPayload && Array.isArray(fullPayload.versions)) {
+                    fullPayload.versions = fullPayload.versions.map((v: any, idx: number) => {
+                      const hv = healStubOrOracleDiagramXml(v?.xml, v?.prompt || promptText, v?.title || item.name);
+                      return idx === 0 || hv.healed
+                        ? { ...v, xml: idx === 0 ? healed.xml : hv.xml, title: healed.canonicalTitle || v?.title }
+                        : v;
+                    });
+                    fullPayload.xml = healed.xml;
+                    try {
+                      localStorage.setItem(`promptcanvas_studio_${item.id}`, JSON.stringify(fullPayload));
+                    } catch {}
+                  }
+                }
+
+                if (!isOracleDuplicate) {
+                  healedSavedList.push({
+                    ...item,
+                    name: healed.canonicalTitle || item.name,
+                    xml: healed.xml || rawXml,
+                  });
+                } else {
+                  savedMutated = true;
+                }
+
+                return {
+                  id: isOracleDuplicate ? 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1' : item.id,
+                  name: healed.canonicalTitle || item.name || 'Saved Project',
+                  architecture_type: item.architecture_type || 'gcp_enterprise_reference',
+                  created_studio: isDraftItem || isOracleDuplicate ? 'draft' : item.created_studio || 'studio',
+                  created_at: item.createdAt || item.updatedAt || new Date().toISOString(),
+                  updated_at: item.updatedAt || new Date().toISOString(),
+                  version_count: fullPayload?.versions?.length || item.versionCount || 1,
+                  micro_version: item.activeVersionTag
+                    ? normalizeToMicroVersionTag(item.activeVersionTag)
+                    : isDraftItem || isOracleDuplicate
+                    ? 'v1.0.1'
+                    : undefined,
+                  latest_prompt: promptText,
+                  xml_content: healed.xml || rawXml,
+                };
+              })
+              .filter((x) => x.id !== 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1');
+            if (savedMutated) {
               try {
-                fullPayload = JSON.parse(localStorage.getItem(`promptcanvas_studio_${item.id}`) || 'null');
+                localStorage.setItem('promptcanvas_saved_blueprints', JSON.stringify(healedSavedList));
               } catch {}
-              const isDraftItem =
-                item.created_studio === 'draft' ||
-                item.status === 'draft' ||
-                String(item.id || '').startsWith('DRAFT-') ||
-                String(item.id || '').startsWith('draft_');
-              return {
-                id: item.id,
-                name: item.name || 'Saved Project',
-                architecture_type: item.architecture_type || 'gcp_enterprise_reference',
-                created_studio: isDraftItem ? 'draft' : item.created_studio || 'studio',
-                created_at: item.createdAt || item.updatedAt || new Date().toISOString(),
-                updated_at: item.updatedAt || new Date().toISOString(),
-                version_count: fullPayload?.versions?.length || item.versionCount || 1,
-                micro_version: item.activeVersionTag
-                  ? normalizeToMicroVersionTag(item.activeVersionTag)
-                  : isDraftItem
-                  ? 'v1.0.1'
-                  : undefined,
-                latest_prompt: item.prompt || item.description || fullPayload?.description || 'Saved from User Session Copy',
-                xml_content: item.xml || fullPayload?.xml || '',
-              };
-            });
+            }
           }
         } catch {}
       }
@@ -414,9 +466,17 @@ function ArchitectureLibraryContent() {
       }));
 
       const draftIdSet = new Set(autoDraftItems.map((d) => d.id.toUpperCase()));
-      const existingIds = new Set([...dbList.map(d => d.id.toUpperCase()), ...Array.from(draftIdSet)]);
+      const filteredDbList = dbList.filter((d) => {
+        if (draftIdSet.has(d.id.toUpperCase())) return false;
+        const isDuplicateOracle =
+          /oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|\bebs\s+r12|\boracle\s+ebs\b/i.test(
+            `${d.name || ''} ${d.latest_prompt || ''}`
+          ) && draftIdSet.has('DRAFT-ORACLE-EXADATA-EBS-V1-0-1');
+        return !isDuplicateOracle;
+      });
+      const existingIds = new Set([...filteredDbList.map(d => d.id.toUpperCase()), ...Array.from(draftIdSet)]);
       const existingNames = new Set([
-        ...dbList.map(d => (d.name || '').toLowerCase().trim()),
+        ...filteredDbList.map(d => (d.name || '').toLowerCase().trim()),
         ...autoDraftItems.map(d => (d.name || '').toLowerCase().trim()),
       ]);
       const uniqueLocalSaved = localSavedItems.filter(
@@ -426,7 +486,7 @@ function ArchitectureLibraryContent() {
       const merged = [
         ...autoDraftItems,
         ...uniqueLocalSaved,
-        ...dbList.filter(d => !draftIdSet.has(d.id.toUpperCase())),
+        ...filteredDbList,
         ...visionSavedItems.filter(v => !existingIds.has(v.id.toUpperCase())),
       ];
       const mergedIds = new Set(merged.map(d => d.id.toUpperCase()));
@@ -617,29 +677,77 @@ function ArchitectureLibraryContent() {
     }
   };
 
-  // Open Preview Modal
+  // Open Preview Modal (with automatic self-healing of any cached 1-box stubs)
   const handleOpenPreviewModal = async (diagram: CanvasDiagramItem) => {
-    setActiveModalCanvas(diagram);
+    const healedDiagramMain = healStubOrOracleDiagramXml(
+      diagram.xml_content,
+      diagram.latest_prompt,
+      diagram.name
+    );
+    const resolvedDiagram: CanvasDiagramItem = {
+      ...diagram,
+      name: healedDiagramMain.canonicalTitle || diagram.name,
+      xml_content: healedDiagramMain.xml || diagram.xml_content,
+    };
+    setActiveModalCanvas(resolvedDiagram);
     setIsLoadingVersions(true);
     try {
-      // 1. Check localStorage studio/dashboard project payload first for rich multi-version history
+      // 0. Check auto-saved drafts store first (includes DRAFT-ORACLE-EXADATA-EBS-V1-0-1 & DRAFT-NASA-MULTIVERSE-V1-0-1)
+      const matchedAutoDraft = getAutoSavedDraftBlueprints().find(
+        (d) =>
+          d.id.toUpperCase() === resolvedDiagram.id.toUpperCase() ||
+          (/oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|\bebs\s+r12|\boracle\s+ebs\b/i.test(
+            `${resolvedDiagram.name || ''} ${resolvedDiagram.latest_prompt || ''}`
+          ) &&
+            d.id === 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1')
+      );
+      if (matchedAutoDraft && Array.isArray(matchedAutoDraft.versions) && matchedAutoDraft.versions.length > 0) {
+        const total = matchedAutoDraft.versions.length;
+        const mappedDraftVersions: DiagramVersionItem[] = matchedAutoDraft.versions.map((v: any, idx: number) => {
+          const hv = healStubOrOracleDiagramXml(v.xml, v.prompt || matchedAutoDraft.prompt, v.title || matchedAutoDraft.name);
+          return {
+            id: v.id || `ver_${matchedAutoDraft.id}_${total - idx}`,
+            diagram_id: resolvedDiagram.id,
+            version_number: total - idx,
+            xml_content: idx === 0 ? matchedAutoDraft.xml : hv.xml || v.xml || matchedAutoDraft.xml,
+            comment: `${v.versionTag || `v1.${total - idx - 1}`} — ${v.diffSummary || v.actionSummary || v.prompt || 'Session Snapshot'}`,
+            created_by: v.persona || v.author || v.sourceLabel || 'Auto-Saved Draft',
+            created_at: matchedAutoDraft.updatedAt || resolvedDiagram.created_at,
+            prompt: v.prompt || matchedAutoDraft.prompt,
+            architecture_type: resolvedDiagram.architecture_type,
+          };
+        });
+        setModalVersions(mappedDraftVersions);
+        setSelectedVersionIndex(0);
+        return;
+      }
+
+      // 1. Check localStorage studio/dashboard project payload for rich multi-version history
       if (typeof window !== 'undefined') {
         try {
-          const localRaw = localStorage.getItem(`promptcanvas_studio_${diagram.id}`);
+          const localRaw = localStorage.getItem(`promptcanvas_studio_${resolvedDiagram.id}`);
           if (localRaw) {
             const parsedLocal = JSON.parse(localRaw);
             if (Array.isArray(parsedLocal?.versions) && parsedLocal.versions.length > 0) {
               const total = parsedLocal.versions.length;
-              const mappedLocalVersions: DiagramVersionItem[] = parsedLocal.versions.map((v: any, idx: number) => ({
-                id: v.id || `ver_${diagram.id}_${total - idx}`,
-                diagram_id: diagram.id,
-                version_number: total - idx,
-                xml_content: v.xml || diagram.xml_content || '',
-                comment: `${v.versionTag || `v1.${total - idx - 1}`} — ${v.diffSummary || v.actionSummary || v.prompt || 'Session Snapshot'}`,
-                created_by: v.persona || v.author || v.sourceLabel || 'Session Copy',
-                created_at: parsedLocal.updatedAt || diagram.created_at,
-                architecture_type: diagram.architecture_type
-              }));
+              const mappedLocalVersions: DiagramVersionItem[] = parsedLocal.versions.map((v: any, idx: number) => {
+                const hv = healStubOrOracleDiagramXml(
+                  v.xml || resolvedDiagram.xml_content,
+                  v.prompt || resolvedDiagram.latest_prompt,
+                  v.title || resolvedDiagram.name
+                );
+                return {
+                  id: v.id || `ver_${resolvedDiagram.id}_${total - idx}`,
+                  diagram_id: resolvedDiagram.id,
+                  version_number: total - idx,
+                  xml_content: hv.xml || v.xml || resolvedDiagram.xml_content || '',
+                  comment: `${v.versionTag || `v1.${total - idx - 1}`} — ${v.diffSummary || v.actionSummary || v.prompt || 'Session Snapshot'}`,
+                  created_by: v.persona || v.author || v.sourceLabel || 'Session Copy',
+                  created_at: parsedLocal.updatedAt || resolvedDiagram.created_at,
+                  prompt: v.prompt || resolvedDiagram.latest_prompt,
+                  architecture_type: resolvedDiagram.architecture_type,
+                };
+              });
               setModalVersions(mappedLocalVersions);
               setSelectedVersionIndex(0);
               return;
@@ -648,40 +756,60 @@ function ArchitectureLibraryContent() {
         } catch {}
       }
 
-      const res = await fetch(`/api/diagrams/${diagram.id}`);
+      const res = await fetch(`/api/diagrams/${resolvedDiagram.id}`);
       if (res.ok) {
         const fullData = await res.json();
         const vers: DiagramVersionItem[] = fullData.versions || [];
         if (vers.length > 0) {
-          const sorted = [...vers].sort((a, b) => b.version_number - a.version_number);
+          const sorted = [...vers]
+            .sort((a, b) => b.version_number - a.version_number)
+            .map((v) => {
+              const hv = healStubOrOracleDiagramXml(
+                v.xml_content,
+                v.prompt || v.comment || resolvedDiagram.latest_prompt,
+                resolvedDiagram.name
+              );
+              return {
+                ...v,
+                xml_content: hv.xml || v.xml_content,
+              };
+            });
           setModalVersions(sorted);
           setSelectedVersionIndex(0);
           return;
         }
       }
       const fallbackVer: DiagramVersionItem = {
-        id: `ver_${diagram.id}_1`,
-        diagram_id: diagram.id,
+        id: `ver_${resolvedDiagram.id}_1`,
+        diagram_id: resolvedDiagram.id,
         version_number: 1,
-        xml_content: diagram.xml_content || getDefaultXmlForArchitecture(diagram.architecture_type || 'conceptual_diagram') || '',
+        xml_content:
+          resolvedDiagram.xml_content ||
+          getDefaultXmlForArchitecture(resolvedDiagram.architecture_type || 'conceptual_diagram') ||
+          '',
         comment: 'Initial Master Reference Blueprint',
         created_by: 'system',
-        created_at: diagram.created_at,
-        architecture_type: diagram.architecture_type
+        created_at: resolvedDiagram.created_at,
+        prompt: resolvedDiagram.latest_prompt,
+        architecture_type: resolvedDiagram.architecture_type
       };
       setModalVersions([fallbackVer]);
       setSelectedVersionIndex(0);
     } catch (err) {
       console.error('Failed to load version details:', err);
       const fallbackVer: DiagramVersionItem = {
-        id: `ver_${diagram.id}_1`,
-        diagram_id: diagram.id,
+        id: `ver_${resolvedDiagram.id}_1`,
+        diagram_id: resolvedDiagram.id,
         version_number: 1,
-        xml_content: diagram.xml_content || getDefaultXmlForArchitecture(diagram.architecture_type || 'conceptual_diagram') || '',
+        xml_content:
+          resolvedDiagram.xml_content ||
+          getDefaultXmlForArchitecture(resolvedDiagram.architecture_type || 'conceptual_diagram') ||
+          '',
         comment: 'Initial Master Reference Blueprint',
         created_by: 'system',
-        created_at: diagram.created_at,
-        architecture_type: diagram.architecture_type
+        created_at: resolvedDiagram.created_at,
+        prompt: resolvedDiagram.latest_prompt,
+        architecture_type: resolvedDiagram.architecture_type
       };
       setModalVersions([fallbackVer]);
       setSelectedVersionIndex(0);
@@ -756,13 +884,22 @@ function ArchitectureLibraryContent() {
     const promptStr = (d.latest_prompt || '').toLowerCase();
     const combined = `${nameStr} ${archStr} ${promptStr}`;
 
+    if (
+      idStr.includes('ORACLE') ||
+      combined.includes('oracle') ||
+      combined.includes('exadata') ||
+      combined.includes('ebuisness') ||
+      combined.includes('e-business')
+    ) {
+      return '/templates/canonical_35.png';
+    }
     if (idStr.includes('NASA') || combined.includes('nasa') || combined.includes('multiverse') || combined.includes('ccsds')) {
       return '/templates/canonical_00.png';
     }
     if (idStr.startsWith('bp_') || idStr.startsWith('canonical_') || archStr.startsWith('canonical_')) {
       const rawNum = idStr.replace(/^(bp_|canonical_)/i, '') || archStr.replace(/^canonical_/i, '');
       const num = parseInt(rawNum, 10);
-      if (!isNaN(num) && num >= 0 && num <= 74) {
+      if (!isNaN(num) && (num === 0 || (num >= 35 && num <= 50) || (num >= 67 && num <= 74) || num === 78)) {
         return `/templates/canonical_${String(num).padStart(2, '0')}.png`;
       }
     }
@@ -770,33 +907,34 @@ function ArchitectureLibraryContent() {
       return '/templates/canonical_00.png';
     }
     if (combined.includes('clinical') || combined.includes('fhir') || combined.includes('healthcare')) {
-      return d.created_studio === 'canonical' ? '/templates/canonical_01.png' : '/templates/canonical_68.png';
+      return '/templates/canonical_68.png';
     }
     if (idStr.includes('1787') || idStr.includes('3093') || combined.includes('gemini enterprise')) {
-      return '/templates/canonical_53.png';
+      return '/templates/canonical_78.png';
     }
     if (idStr.includes('9745') || combined.includes('landing zone')) {
-      return '/templates/canonical_15.png';
+      return '/templates/canonical_35.png';
     }
     if (idStr.includes('AGENTIC') || combined.includes('agentic')) {
       return '/templates/canonical_39.png';
     }
     if (combined.includes('rag')) return '/templates/canonical_38.png';
-    if (combined.includes('lakehouse') || combined.includes('medallion')) return '/templates/canonical_22.png';
-    if (combined.includes('erd') || combined.includes('schema')) return '/templates/canonical_14.png';
-    if (combined.includes('sequence')) return '/templates/canonical_11.png';
-    if (combined.includes('swimlane')) return '/templates/canonical_03.png';
-    if (combined.includes('security') || combined.includes('threat') || combined.includes('zero-trust')) return '/templates/canonical_28.png';
+    if (combined.includes('lakehouse') || combined.includes('medallion')) return '/templates/canonical_41.png';
+    if (combined.includes('erd') || combined.includes('schema')) return '/templates/canonical_42.png';
+    if (combined.includes('sequence')) return '/templates/canonical_71.png';
+    if (combined.includes('swimlane')) return '/templates/canonical_70.png';
+    if (combined.includes('security') || combined.includes('threat') || combined.includes('zero-trust')) return '/templates/canonical_45.png';
     if (combined.includes('finops')) return '/templates/canonical_48.png';
 
-    // Deterministic hash fallback across all 75 real canonical thumbnails so every custom tile gets a rich diagram preview
+    // Deterministic hash fallback across active canonical thumbnails so every custom tile gets a rich diagram preview
+    const activeNums = ['00', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '67', '68', '69', '70', '71', '72', '73', '74', '78'];
     let hash = 0;
     const seed = `${idStr}:${nameStr}`;
     for (let i = 0; i < seed.length; i++) {
       hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
     }
-    const idx = hash % 75;
-    return `/templates/canonical_${String(idx).padStart(2, '0')}.png`;
+    const chosen = activeNums[hash % activeNums.length] || '00';
+    return `/templates/canonical_${chosen}.png`;
   };
 
   // Studio Counts
@@ -1082,7 +1220,9 @@ function ArchitectureLibraryContent() {
             }`}
           >
             {/* Full-Page Top Action Header */}
-            <div className="px-6 py-3.5 border-b border-slate-800 bg-[#0B111E] text-white flex flex-wrap items-center justify-between gap-4 shrink-0">
+            <div className={`px-6 py-3.5 border-b flex flex-wrap items-center justify-between gap-4 shrink-0 ${
+              isLight ? 'bg-white border-slate-200 text-slate-900 shadow-2xs' : 'bg-[#0B111E] border-slate-800 text-white'
+            }`}>
               <div className="flex items-center gap-3 min-w-0 flex-1">
                 <button
                   id="library-preview-close-btn"
@@ -1090,32 +1230,44 @@ function ArchitectureLibraryContent() {
                   onClick={() => setActiveModalCanvas(null)}
                   aria-label="Back to Library (Escape)"
                   title="Return to Architecture Library Grid (Esc)"
-                  className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 text-xs font-black flex items-center gap-1.5 transition cursor-pointer shrink-0 shadow-sm"
+                  className={`px-3.5 py-2 rounded-xl border text-xs font-black flex items-center gap-1.5 transition cursor-pointer shrink-0 shadow-sm ${
+                    isLight
+                      ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
+                      : 'bg-slate-800 hover:bg-slate-700 text-slate-100 border-slate-700'
+                  }`}
                 >
-                  <ChevronLeft className="w-4 h-4 text-teal-400" />
+                  <ChevronLeft className={`w-4 h-4 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
                   <span>Back to Library</span>
                 </button>
 
-                <div className="p-2 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20 shrink-0 hidden sm:flex">
+                <div className={`p-2 rounded-xl border shrink-0 hidden sm:flex ${
+                  isLight ? 'bg-teal-50 text-teal-600 border-teal-200' : 'bg-teal-500/10 text-teal-400 border-teal-500/20'
+                }`}>
                   <Layers className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[10px] font-mono font-black uppercase tracking-wider px-2 py-0.5 rounded bg-teal-500/20 text-teal-300 border border-teal-500/30">
+                    <span className={`text-[10px] font-mono font-black uppercase tracking-wider px-2 py-0.5 rounded border ${
+                      isLight
+                        ? 'bg-teal-50 text-teal-700 border-teal-300'
+                        : 'bg-teal-500/20 text-teal-300 border-teal-500/30'
+                    }`}>
                       FULL-PAGE TEMPLATE VIEW
                     </span>
-                    <h2 id="library-preview-modal-title" className="text-base md:text-lg font-black truncate max-w-2xl text-white">
+                    <h2 id="library-preview-modal-title" className={`text-base md:text-lg font-black truncate max-w-2xl ${
+                      isLight ? 'text-slate-900' : 'text-white'
+                    }`}>
                       {activeModalCanvas.name}
                     </h2>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-300 mt-0.5">
+                  <div className={`flex items-center gap-2 text-xs mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                     <span>{getArchitectureTypeById(activeModalCanvas.architecture_type || '')?.name || activeModalCanvas.architecture_type}</span>
                     <span>&bull;</span>
                     <span>{modalVersions.length} Version{modalVersions.length > 1 ? 's' : ''}</span>
                     {(activeVersion?.prompt || activeModalCanvas.latest_prompt) && (
                       <>
                         <span>&bull;</span>
-                        <span className="text-teal-300 truncate max-w-xl" title={activeVersion?.prompt || activeModalCanvas.latest_prompt}>
+                        <span className={`truncate max-w-xl font-medium ${isLight ? 'text-teal-700' : 'text-teal-300'}`} title={activeVersion?.prompt || activeModalCanvas.latest_prompt}>
                           &ldquo;{activeVersion?.prompt || activeModalCanvas.latest_prompt}&rdquo;
                         </span>
                       </>
@@ -1127,7 +1279,9 @@ function ArchitectureLibraryContent() {
               {/* Center: Backward / Forward Saved Architecture Navigation */}
               <div
                 id="library-preview-nav-bar"
-                className="flex items-center gap-1.5 bg-slate-900/95 px-2 py-1.5 rounded-2xl border border-slate-700/90 shadow-inner shrink-0"
+                className={`flex items-center gap-1.5 px-2 py-1.5 rounded-2xl border shrink-0 ${
+                  isLight ? 'bg-slate-50 border-slate-200 shadow-2xs' : 'bg-slate-900/95 border-slate-700/90 shadow-inner'
+                }`}
               >
                 <button
                   id="library-preview-prev-btn"
@@ -1138,8 +1292,10 @@ function ArchitectureLibraryContent() {
                   title={prevModalDiagram ? `Previous (←): ${prevModalDiagram.name}` : 'No previous architecture'}
                   className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
                     prevModalDiagram
-                      ? 'bg-slate-800 hover:bg-teal-500 hover:text-slate-950 text-slate-100 border border-slate-700 cursor-pointer shadow-sm'
-                      : 'opacity-35 cursor-not-allowed text-slate-500'
+                      ? isLight
+                        ? 'bg-white hover:bg-teal-600 hover:text-white text-slate-800 border border-slate-300 cursor-pointer shadow-2xs'
+                        : 'bg-slate-800 hover:bg-teal-500 hover:text-slate-950 text-slate-100 border border-slate-700 cursor-pointer shadow-sm'
+                      : 'opacity-35 cursor-not-allowed text-slate-400'
                   }`}
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -1148,7 +1304,9 @@ function ArchitectureLibraryContent() {
 
                 <span
                   id="library-preview-position-badge"
-                  className="text-xs font-mono font-black px-2.5 py-1 rounded-lg bg-slate-950 text-teal-400 border border-slate-800 tabular-nums"
+                  className={`text-xs font-mono font-black px-2.5 py-1 rounded-lg border tabular-nums ${
+                    isLight ? 'bg-white text-teal-700 border-slate-200' : 'bg-slate-950 text-teal-400 border-slate-800'
+                  }`}
                 >
                   {currentModalIndex >= 0 ? `${currentModalIndex + 1} / ${filteredDiagrams.length}` : `1 / ${filteredDiagrams.length}`}
                 </span>
@@ -1162,8 +1320,10 @@ function ArchitectureLibraryContent() {
                   title={nextModalDiagram ? `Next (→): ${nextModalDiagram.name}` : 'No next architecture'}
                   className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
                     nextModalDiagram
-                      ? 'bg-slate-800 hover:bg-teal-500 hover:text-slate-950 text-slate-100 border border-slate-700 cursor-pointer shadow-sm'
-                      : 'opacity-35 cursor-not-allowed text-slate-500'
+                      ? isLight
+                        ? 'bg-white hover:bg-teal-600 hover:text-white text-slate-800 border border-slate-300 cursor-pointer shadow-2xs'
+                        : 'bg-slate-800 hover:bg-teal-500 hover:text-slate-950 text-slate-100 border border-slate-700 cursor-pointer shadow-sm'
+                      : 'opacity-35 cursor-not-allowed text-slate-400'
                   }`}
                 >
                   <span>Next</span>
@@ -1177,17 +1337,25 @@ function ArchitectureLibraryContent() {
                     <button
                       type="button"
                       onClick={() => handleCopyXml(activeVersion.xml_content)}
-                      className="px-3 py-2 rounded-xl border border-slate-700 bg-slate-900 text-xs font-bold text-slate-200 hover:bg-slate-800 transition flex items-center gap-1.5 cursor-pointer"
+                      className={`px-3 py-2 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                        isLight
+                          ? 'bg-white border-slate-300 text-slate-800 hover:bg-slate-100'
+                          : 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800'
+                      }`}
                     >
-                      {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                       <span>{copiedXml ? 'Copied!' : 'Copy XML'}</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDownloadXml(activeModalCanvas.name, activeVersion.version_number, activeVersion.xml_content)}
-                      className="px-3 py-2 rounded-xl border border-slate-700 bg-slate-900 text-xs font-bold text-slate-200 hover:bg-slate-800 transition flex items-center gap-1.5 cursor-pointer"
+                      className={`px-3 py-2 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                        isLight
+                          ? 'bg-white border-slate-300 text-slate-800 hover:bg-slate-100'
+                          : 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800'
+                      }`}
                     >
-                      <Download className="w-3.5 h-3.5 text-sky-400" />
+                      <Download className="w-3.5 h-3.5 text-sky-500" />
                       <span>Download .drawio</span>
                     </button>
                     <DiagramInlineSlidesPreviewer
@@ -1215,7 +1383,7 @@ function ArchitectureLibraryContent() {
                     const cleanCanonicalId = activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '');
                     router.push(`/dashboard?blueprint=${encodeURIComponent(cleanCanonicalId)}`);
                   }}
-                  className="px-4 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-black text-xs transition flex items-center gap-1.5 shadow-md cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-black text-xs transition flex items-center gap-1.5 shadow-md cursor-pointer"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                   <span>Open in Dashboard</span>
@@ -1224,7 +1392,7 @@ function ArchitectureLibraryContent() {
             </div>
 
             {/* Full-Page Body Viewport with Floating Left/Right Navigation Paddles */}
-            <div className="flex-1 overflow-y-auto relative bg-[#0B111E] p-4">
+            <div className={`flex-1 overflow-y-auto relative p-4 ${isLight ? 'bg-slate-50' : 'bg-[#0B111E]'}`}>
               {/* Floating Backward (Previous) Paddle */}
               {prevModalDiagram && (
                 <button
@@ -1233,7 +1401,11 @@ function ArchitectureLibraryContent() {
                   onClick={() => handleOpenPreviewModal(prevModalDiagram)}
                   aria-label={`Previous architecture: ${prevModalDiagram.name}`}
                   title={`Previous (← Left Arrow): ${prevModalDiagram.name}`}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-2xl bg-slate-900/90 hover:bg-teal-500 text-white hover:text-slate-950 border border-slate-700 shadow-2xl flex items-center justify-center transition-all hover:scale-110 cursor-pointer"
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-2xl border shadow-2xl flex items-center justify-center transition-all hover:scale-110 cursor-pointer ${
+                    isLight
+                      ? 'bg-white/95 hover:bg-teal-600 text-slate-800 hover:text-white border-slate-300'
+                      : 'bg-slate-900/90 hover:bg-teal-500 text-white hover:text-slate-950 border-slate-700'
+                  }`}
                 >
                   <ChevronLeft className="w-6 h-6" />
                 </button>
@@ -1247,7 +1419,11 @@ function ArchitectureLibraryContent() {
                   onClick={() => handleOpenPreviewModal(nextModalDiagram)}
                   aria-label={`Next architecture: ${nextModalDiagram.name}`}
                   title={`Next (→ Right Arrow): ${nextModalDiagram.name}`}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-2xl bg-slate-900/90 hover:bg-teal-500 text-white hover:text-slate-950 border border-slate-700 shadow-2xl flex items-center justify-center transition-all hover:scale-110 cursor-pointer"
+                  className={`absolute right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-2xl border shadow-2xl flex items-center justify-center transition-all hover:scale-110 cursor-pointer ${
+                    isLight
+                      ? 'bg-white/95 hover:bg-teal-600 text-slate-800 hover:text-white border-slate-300'
+                      : 'bg-slate-900/90 hover:bg-teal-500 text-white hover:text-slate-950 border-slate-700'
+                  }`}
                 >
                   <ChevronRight className="w-6 h-6" />
                 </button>
@@ -1259,8 +1435,16 @@ function ArchitectureLibraryContent() {
                   <span className="text-sm font-bold">Loading full-screen architecture canvas...</span>
                 </div>
               ) : activeVersion ? (
-                <div className="w-full h-full max-w-[1440px] mx-auto bg-white rounded-2xl overflow-hidden shadow-xl">
-                  <DiagramViewer xml={activeVersion.xml_content} aspectRatioId="16:9" bgTheme="light" />
+                <div className="w-full h-full max-w-[1440px] mx-auto bg-white rounded-2xl overflow-hidden shadow-xl border border-slate-200">
+                  <DiagramViewer
+                    xml={activeVersion.xml_content}
+                    diagramId={activeModalCanvas.id}
+                    versionId={String(activeVersion.id)}
+                    useCaseName={activeModalCanvas.name}
+                    description={activeVersion.prompt || activeModalCanvas.latest_prompt}
+                    aspectRatioId="16:9"
+                    bgTheme="light"
+                  />
                 </div>
               ) : (
                 <div className="h-full flex items-center justify-center text-slate-500 text-xs">
@@ -1270,14 +1454,20 @@ function ArchitectureLibraryContent() {
             </div>
 
             {/* Full-Page Footer: Version Selector & Quick Prev/Next Hints */}
-            <div className="px-6 py-3 border-t border-slate-800 bg-[#0B111E] flex flex-wrap items-center justify-between gap-4 text-xs text-slate-300 shrink-0">
+            <div className={`px-6 py-3 border-t flex flex-wrap items-center justify-between gap-4 text-xs shrink-0 ${
+              isLight ? 'bg-white border-slate-200 text-slate-700' : 'bg-[#0B111E] border-slate-800 text-slate-300'
+            }`}>
               <div className="flex items-center gap-3">
-                <label htmlFor="library-modal-version-select" className="font-bold text-slate-300">Active Version:</label>
+                <label htmlFor="library-modal-version-select" className={`font-bold ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>Active Version:</label>
                 <select
                   id="library-modal-version-select"
                   value={selectedVersionIndex}
                   onChange={(e) => setSelectedVersionIndex(Number(e.target.value))}
-                  className="bg-slate-900 border border-slate-700 text-white rounded-xl px-3 py-1.5 text-xs font-bold outline-none cursor-pointer"
+                  className={`border rounded-xl px-3 py-1.5 text-xs font-bold outline-none cursor-pointer ${
+                    isLight
+                      ? 'bg-slate-50 border-slate-300 text-slate-900'
+                      : 'bg-slate-900 border-slate-700 text-white'
+                  }`}
                 >
                   {modalVersions.map((v, idx) => (
                     <option key={v.id} value={idx}>
@@ -1285,8 +1475,8 @@ function ArchitectureLibraryContent() {
                     </option>
                   ))}
                 </select>
-                <span className="hidden md:inline-flex items-center gap-1.5 text-[11px] text-slate-400 ml-2">
-                  Use <kbd className="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-200 font-mono text-[10px]">←</kbd> <kbd className="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-200 font-mono text-[10px]">→</kbd> to switch architectures &bull; <kbd className="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-200 font-mono text-[10px]">Esc</kbd> to return to Library
+                <span className={`hidden md:inline-flex items-center gap-1.5 text-[11px] ml-2 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                  Use <kbd className={`px-1.5 py-0.5 rounded border font-mono text-[10px] ${isLight ? 'bg-slate-100 border-slate-300 text-slate-700' : 'bg-slate-900 border-slate-700 text-slate-200'}`}>←</kbd> <kbd className={`px-1.5 py-0.5 rounded border font-mono text-[10px] ${isLight ? 'bg-slate-100 border-slate-300 text-slate-700' : 'bg-slate-900 border-slate-700 text-slate-200'}`}>→</kbd> to switch architectures &bull; <kbd className={`px-1.5 py-0.5 rounded border font-mono text-[10px] ${isLight ? 'bg-slate-100 border-slate-300 text-slate-700' : 'bg-slate-900 border-slate-700 text-slate-200'}`}>Esc</kbd> to return to Library
                 </span>
               </div>
 
@@ -1294,7 +1484,11 @@ function ArchitectureLibraryContent() {
                 <button
                   type="button"
                   onClick={() => setActiveModalCanvas(null)}
-                  className="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs transition cursor-pointer"
+                  className={`px-3.5 py-1.5 rounded-xl border font-bold text-xs transition cursor-pointer ${
+                    isLight
+                      ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
+                      : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                  }`}
                 >
                   ← Back to All Tiles
                 </button>
@@ -1531,6 +1725,7 @@ function ArchitectureLibraryContent() {
                 </span>
                 {[
                   { label: 'All', query: '' },
+                  { label: '🏛️ Oracle@Google Exadata EBS', query: 'oracle' },
                   { label: '🚀 NASA Digital-Twin', query: 'nasa' },
                   { label: '🤖 Agentic RAG', query: 'rag' },
                   { label: '🌊 Lakehouse', query: 'lakehouse' },
@@ -1780,12 +1975,29 @@ function ArchitectureLibraryContent() {
                                 : 'bg-slate-950 border-slate-800 group-hover:border-teal-500/50'
                             }`}
                           >
-                            <img
-                              src={thumbSrc}
-                              alt={diagram.name}
-                              loading="lazy"
-                              className="w-full h-full object-contain p-1.5 bg-white transition-transform duration-500 group-hover:scale-[1.03]"
-                            />
+                            {diagram.xml_content &&
+                            (diagram.id === 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1' ||
+                              diagram.xml_content.includes('oracle-at-google-ebs-exadata-2026')) ? (
+                              <div className="w-full h-full bg-white pointer-events-none overflow-hidden flex items-center justify-center">
+                                <div className="w-[1520px] h-[880px] scale-[0.26] origin-center shrink-0">
+                                  <DiagramViewer
+                                    xml={diagram.xml_content}
+                                    diagramId={diagram.id}
+                                    diagramType={diagram.architecture_type || 'gcp_enterprise_reference'}
+                                    useCaseName={diagram.name}
+                                    description={diagram.latest_prompt}
+                                    bgTheme="light"
+                                  />
+                                </div>
+                              </div>
+                            ) : (
+                              <img
+                                src={thumbSrc}
+                                alt={diagram.name}
+                                loading="lazy"
+                                className="w-full h-full object-contain p-1.5 bg-white transition-transform duration-500 group-hover:scale-[1.03]"
+                              />
+                            )}
                             <div className="absolute bottom-2 right-2 px-2.5 py-1 rounded-lg bg-slate-900/85 text-white text-[10px] font-bold flex items-center gap-1 backdrop-blur-xs opacity-90 group-hover:bg-teal-600 transition-colors">
                               <Eye className="w-3 h-3" />
                               <span>Click for Full Page</span>

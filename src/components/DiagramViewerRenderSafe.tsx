@@ -6,6 +6,7 @@ import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { SupportedLanguage, translateDiagramXmlToLanguage } from '@/lib/i18n';
 import { localizeDrawioXmlDeep } from '@/lib/diagramLanguageLocalizer';
 import { sanitizeDrawioXmlAttributes } from '@/lib/diagramCleaner';
+import { healStubOrOracleDiagramXml } from '@/lib/draftMicroVersionStore';
 import { DiagramErrorBoundary } from './DiagramErrorBoundary';
 
 export interface DiagramViewerRenderSafeProps {
@@ -46,7 +47,9 @@ export default function DiagramViewerRenderSafe({
   customW = 16,
   customH = 10,
   bgTheme = 'light',
+  useCaseName,
   diagramType,
+  description,
   isLiveFlow = false,
   allowFullScaleScroll = false,
   fitToWidth = false,
@@ -97,7 +100,7 @@ export default function DiagramViewerRenderSafe({
         : `<mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0" data-blank-canvas="true"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel>`;
     }
     if (!xml) return getDefaultXmlForArchitecture(diagramType || 'unified_system_view') || '';
-    const rawStr = typeof xml === 'string' ? xml : String(xml);
+    const rawStr = healStubOrOracleDiagramXml(typeof xml === 'string' ? xml : String(xml), description, useCaseName).xml;
     try {
       const healed = validateAndHealDrawioXml(rawStr, diagramType);
       if (!healed.xml || healed.xml.length < 100) {
@@ -108,7 +111,7 @@ export default function DiagramViewerRenderSafe({
       console.error('[DiagramViewerRenderSafe] XML healing failed, using catalog fallback:', err);
       return getDefaultXmlForArchitecture(diagramType || 'unified_system_view') || '';
     }
-  }, [xml, diagramType, isIntentionalBlankCanvas]);
+  }, [xml, diagramType, isIntentionalBlankCanvas, description, useCaseName]);
 
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const scriptUrl = `${origin}/viewer-static.min.js`;

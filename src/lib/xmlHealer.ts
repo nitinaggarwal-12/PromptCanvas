@@ -11,6 +11,11 @@ export interface XmlHealerResult {
   healingLog: string[];
 }
 
+export function createBlankCanvasDrawioXml(title = 'Blank Canvas'): string {
+  const safeTitle = title.replace(/[<>&"]/g, '');
+  return `<mxfile host="app.diagrams.net"><diagram id="blank-canvas" name="${safeTitle}"><mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0" data-blank-canvas="true"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel></diagram></mxfile>`;
+}
+
 /**
  * 🛡️ Strict Draw.io XML AST Schema Validator & Auto-Healer + Zero-Defect Preflight Gate
  * 

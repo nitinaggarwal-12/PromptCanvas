@@ -105,7 +105,8 @@ import {
 import {
   computeNextMicroVersion,
   autoSaveGeneratedDiagramAsDraft,
-  getAutoSavedDraftBlueprints
+  getAutoSavedDraftBlueprints,
+  healStubOrOracleDiagramXml
 } from '@/lib/draftMicroVersionStore';
 
 const DEFAULT_DASHBOARD_PROMPT =
@@ -393,12 +394,20 @@ function DashboardContent() {
 
         const targetDraftId =
           draftParam ||
-          (bpParam && (/^draft/i.test(bpParam) || bpParam.toUpperCase().includes('NASA')) ? bpParam : null);
+          (bpParam &&
+          (/^draft/i.test(bpParam) ||
+            bpParam.toUpperCase().includes('NASA') ||
+            bpParam.toUpperCase().includes('ORACLE'))
+            ? bpParam
+            : null);
 
         if (targetDraftId) {
           const allDrafts = getAutoSavedDraftBlueprints();
           const matchedDraft = allDrafts.find(
-            (d) => d.id.toUpperCase() === targetDraftId.toUpperCase()
+            (d) =>
+              d.id.toUpperCase() === targetDraftId.toUpperCase() ||
+              (targetDraftId.toUpperCase().includes('ORACLE') &&
+                d.id === 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1')
           );
           if (matchedDraft) {
             setCanvasTitle(matchedDraft.name);
@@ -434,9 +443,15 @@ function DashboardContent() {
               ]);
             }
             setActiveVersionIndex(0);
-            if (/nasa|multiverse|satellite|satellight/i.test(`${matchedDraft.name} ${matchedDraft.prompt}`)) {
+            if (
+              /nasa|multiverse|satellite|satellight|oracle|exadata|ebuisness|e-business/i.test(
+                `${matchedDraft.name} ${matchedDraft.prompt}`
+              )
+            ) {
               runTruthfulnessAndGroundingCertification({
-                prompt: matchedDraft.prompt || '1. Build an agentic harness for Nasa launching satellights in the different universes',
+                prompt:
+                  matchedDraft.prompt ||
+                  'Create an architecture diagram showing oracle@google for ebuisness suite running on exadata',
                 xmlContent: matchedDraft.xml,
                 blueprintId: matchedDraft.blueprintId || '00'
               })
@@ -510,10 +525,25 @@ function DashboardContent() {
           if (hasRemovedPaperView) {
             sessionStorage.removeItem(`promptcanvas_dashboard_session_${sid}_00`);
           } else if (Array.isArray(parsed.versionHistory) && parsed.versionHistory.length > 1) {
+            const healedHistory = parsed.versionHistory.map((v: any) => {
+              const healedXml = healStubOrOracleDiagramXml(
+                typeof v?.xml === 'string' ? v.xml : '',
+                v?.prompt,
+                v?.title
+              ).xml;
+              return {
+                ...v,
+                xml: healedXml,
+                perspectiveXmlMap:
+                  v?.perspectiveXmlMap && typeof v.perspectiveXmlMap === 'object'
+                    ? { ...v.perspectiveXmlMap, [v.perspective || 'Technical']: healedXml }
+                    : { Technical: healedXml },
+              };
+            });
             setIsSessionForked(true);
             setHasUnsavedSessionChanges(true);
             setSessionCopyId(parsed.sessionCopyId || `fork_bp00_${sid}`);
-            setVersionHistory(parsed.versionHistory);
+            setVersionHistory(healedHistory);
             setActiveVersionIndex(0);
           }
         }
