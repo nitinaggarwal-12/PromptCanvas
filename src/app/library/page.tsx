@@ -354,7 +354,7 @@ function ArchitectureLibraryContent() {
         };
       });
 
-      // Read auto-saved micro-version drafts (including Oracle@Google Exadata EBS v1.0.1, NASA Closed-Loop Multi-Universe Harness v1.0.1, and sessionStorage drafts)
+      // Read auto-saved micro-version drafts (including NASA Closed-Loop Multi-Universe Harness v1.0.1 and sessionStorage drafts)
       const autoDraftItems: CanvasDiagramItem[] = getAutoSavedDraftBlueprints().map((draft) => ({
         id: draft.id,
         name: draft.name,
@@ -379,6 +379,12 @@ function ArchitectureLibraryContent() {
           const healedSavedList: any[] = [];
           if (Array.isArray(rawSaved)) {
             localSavedItems = rawSaved
+              .filter((item: any) => {
+                const combined = `${item?.id || ''} ${item?.name || ''} ${item?.prompt || ''} ${item?.description || ''}`;
+                const isPurgedOracle = /oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|\bebs\s+r12|\boracle\s+ebs\b/i.test(combined);
+                if (isPurgedOracle) savedMutated = true;
+                return !isPurgedOracle;
+              })
               .map((item: any) => {
                 let fullPayload: any = null;
                 try {
@@ -393,10 +399,6 @@ function ArchitectureLibraryContent() {
                   item.prompt || item.description || fullPayload?.description || 'Saved from User Session Copy';
                 const rawXml = item.xml || fullPayload?.xml || '';
                 const healed = healStubOrOracleDiagramXml(rawXml, promptText, item.name);
-                const isOracleDuplicate =
-                  /oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|\bebs\s+r12|\boracle\s+ebs\b/i.test(
-                    `${item.name || ''} ${promptText}`
-                  );
 
                 if (healed.healed) {
                   savedMutated = true;
@@ -414,34 +416,29 @@ function ArchitectureLibraryContent() {
                   }
                 }
 
-                if (!isOracleDuplicate) {
-                  healedSavedList.push({
-                    ...item,
-                    name: healed.canonicalTitle || item.name,
-                    xml: healed.xml || rawXml,
-                  });
-                } else {
-                  savedMutated = true;
-                }
+                healedSavedList.push({
+                  ...item,
+                  name: healed.canonicalTitle || item.name,
+                  xml: healed.xml || rawXml,
+                });
 
                 return {
-                  id: isOracleDuplicate ? 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1' : item.id,
+                  id: item.id,
                   name: healed.canonicalTitle || item.name || 'Saved Project',
                   architecture_type: item.architecture_type || 'gcp_enterprise_reference',
-                  created_studio: isDraftItem || isOracleDuplicate ? 'draft' : item.created_studio || 'studio',
+                  created_studio: isDraftItem ? 'draft' : item.created_studio || 'studio',
                   created_at: item.createdAt || item.updatedAt || new Date().toISOString(),
                   updated_at: item.updatedAt || new Date().toISOString(),
                   version_count: fullPayload?.versions?.length || item.versionCount || 1,
                   micro_version: item.activeVersionTag
                     ? normalizeToMicroVersionTag(item.activeVersionTag)
-                    : isDraftItem || isOracleDuplicate
+                    : isDraftItem
                     ? 'v1.0.1'
                     : undefined,
                   latest_prompt: promptText,
                   xml_content: healed.xml || rawXml,
                 };
-              })
-              .filter((x) => x.id !== 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1');
+              });
             if (savedMutated) {
               try {
                 localStorage.setItem('promptcanvas_saved_blueprints', JSON.stringify(healedSavedList));
@@ -468,11 +465,11 @@ function ArchitectureLibraryContent() {
       const draftIdSet = new Set(autoDraftItems.map((d) => d.id.toUpperCase()));
       const filteredDbList = dbList.filter((d) => {
         if (draftIdSet.has(d.id.toUpperCase())) return false;
-        const isDuplicateOracle =
+        const isPurgedOracle =
           /oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|\bebs\s+r12|\boracle\s+ebs\b/i.test(
-            `${d.name || ''} ${d.latest_prompt || ''}`
-          ) && draftIdSet.has('DRAFT-ORACLE-EXADATA-EBS-V1-0-1');
-        return !isDuplicateOracle;
+            `${d.id || ''} ${d.name || ''} ${d.latest_prompt || ''}`
+          );
+        return !isPurgedOracle;
       });
       const existingIds = new Set([...filteredDbList.map(d => d.id.toUpperCase()), ...Array.from(draftIdSet)]);
       const existingNames = new Set([
@@ -692,14 +689,9 @@ function ArchitectureLibraryContent() {
     setActiveModalCanvas(resolvedDiagram);
     setIsLoadingVersions(true);
     try {
-      // 0. Check auto-saved drafts store first (includes DRAFT-ORACLE-EXADATA-EBS-V1-0-1 & DRAFT-NASA-MULTIVERSE-V1-0-1)
+      // 0. Check auto-saved drafts store first (includes DRAFT-NASA-MULTIVERSE-V1-0-1)
       const matchedAutoDraft = getAutoSavedDraftBlueprints().find(
-        (d) =>
-          d.id.toUpperCase() === resolvedDiagram.id.toUpperCase() ||
-          (/oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|\bebs\s+r12|\boracle\s+ebs\b/i.test(
-            `${resolvedDiagram.name || ''} ${resolvedDiagram.latest_prompt || ''}`
-          ) &&
-            d.id === 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1')
+        (d) => d.id.toUpperCase() === resolvedDiagram.id.toUpperCase()
       );
       if (matchedAutoDraft && Array.isArray(matchedAutoDraft.versions) && matchedAutoDraft.versions.length > 0) {
         const total = matchedAutoDraft.versions.length;
@@ -884,15 +876,6 @@ function ArchitectureLibraryContent() {
     const promptStr = (d.latest_prompt || '').toLowerCase();
     const combined = `${nameStr} ${archStr} ${promptStr}`;
 
-    if (
-      idStr.includes('ORACLE') ||
-      combined.includes('oracle') ||
-      combined.includes('exadata') ||
-      combined.includes('ebuisness') ||
-      combined.includes('e-business')
-    ) {
-      return '/templates/canonical_35.png';
-    }
     if (idStr.includes('NASA') || combined.includes('nasa') || combined.includes('multiverse') || combined.includes('ccsds')) {
       return '/templates/canonical_00.png';
     }
@@ -1725,7 +1708,6 @@ function ArchitectureLibraryContent() {
                 </span>
                 {[
                   { label: 'All', query: '' },
-                  { label: '🏛️ Oracle@Google Exadata EBS', query: 'oracle' },
                   { label: '🚀 NASA Digital-Twin', query: 'nasa' },
                   { label: '🤖 Agentic RAG', query: 'rag' },
                   { label: '🌊 Lakehouse', query: 'lakehouse' },
@@ -1883,26 +1865,6 @@ function ArchitectureLibraryContent() {
                             : 'border-slate-800 bg-slate-900/70 hover:border-teal-500/50 hover:shadow-teal-500/5'
                         }`}
                       >
-                        {/* Real Thumbnail Behind the Tile */}
-                        <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none z-0">
-                          <img
-                            src={thumbSrc}
-                            alt=""
-                            aria-hidden="true"
-                            loading="lazy"
-                            className={`w-full h-full object-cover object-center transition-all duration-500 group-hover:scale-105 ${
-                              isLight ? 'opacity-[0.16] group-hover:opacity-[0.26]' : 'opacity-[0.14] group-hover:opacity-[0.24]'
-                            }`}
-                          />
-                          <div
-                            className={`absolute inset-0 ${
-                              isLight
-                                ? 'bg-gradient-to-b from-white/75 via-white/90 to-white/95'
-                                : 'bg-gradient-to-b from-slate-950/75 via-slate-900/90 to-slate-950/95'
-                            }`}
-                          />
-                        </div>
-
                         <div className="relative z-10">
                           {/* Top Strip: Checkbox (Select Mode), Studio Badge, Arch Type, Privacy & Star */}
                           <div className="flex items-center justify-between gap-2 mb-3">
@@ -1966,7 +1928,7 @@ function ArchitectureLibraryContent() {
                             </div>
                           </div>
 
-                          {/* Crisp Real Diagram Thumbnail Preview Box inside Tile */}
+                          {/* Crisp Live Vector Diagram Thumbnail Preview Box inside Every Tile */}
                           <div
                             data-testid={`library-tile-thumb-${diagram.id}`}
                             className={`relative w-full h-44 mb-3 rounded-xl overflow-hidden border transition-all ${
@@ -1975,9 +1937,7 @@ function ArchitectureLibraryContent() {
                                 : 'bg-slate-950 border-slate-800 group-hover:border-teal-500/50'
                             }`}
                           >
-                            {diagram.xml_content &&
-                            (diagram.id === 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1' ||
-                              diagram.xml_content.includes('oracle-at-google-ebs-exadata-2026')) ? (
+                            {diagram.xml_content && diagram.xml_content.includes('<mxGraphModel') ? (
                               <div className="w-full h-full bg-white pointer-events-none overflow-hidden flex items-center justify-center">
                                 <div className="w-[1520px] h-[880px] scale-[0.26] origin-center shrink-0">
                                   <DiagramViewer
@@ -2209,13 +2169,28 @@ function ArchitectureLibraryContent() {
                               </span>
                             </div>
 
-                            {/* Large 16:9 Diagram Preview */}
+                            {/* Large 16:9 Live Vector Diagram Preview */}
                             <div className="w-full h-60 rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 bg-white mb-3 shadow-inner flex items-center justify-center">
-                              <img
-                                src={thumbSrc}
-                                alt={diagram.name}
-                                className="w-full h-full object-contain p-2 bg-white"
-                              />
+                              {diagram.xml_content && diagram.xml_content.includes('<mxGraphModel') ? (
+                                <div className="w-full h-full bg-white pointer-events-none overflow-hidden flex items-center justify-center">
+                                  <div className="w-[1520px] h-[880px] scale-[0.31] origin-center shrink-0">
+                                    <DiagramViewer
+                                      xml={diagram.xml_content}
+                                      diagramId={diagram.id}
+                                      diagramType={diagram.architecture_type || 'gcp_enterprise_reference'}
+                                      useCaseName={diagram.name}
+                                      description={diagram.latest_prompt}
+                                      bgTheme="light"
+                                    />
+                                  </div>
+                                </div>
+                              ) : (
+                                <img
+                                  src={thumbSrc}
+                                  alt={diagram.name}
+                                  className="w-full h-full object-contain p-2 bg-white"
+                                />
+                              )}
                             </div>
 
                             <h3 className="text-base font-black leading-snug mb-1">

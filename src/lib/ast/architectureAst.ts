@@ -118,7 +118,7 @@ export function inferServiceAndTierFromLabel(label: string): {
   if (lower.includes('alloydb') || lower.includes('cloud sql') || lower.includes('postgres')) {
     return { service: 'AlloyDB / Cloud SQL PostgreSQL', tier: 'data', sla: '99.99%' };
   }
-  if (lower.includes('bigquery') || lower.includes('biglake') || lower.includes('lakehouse') || lower.includes('snowflake') || lower.includes('databricks')) {
+  if (lower.includes('bigquery') || lower.includes('biglake') || lower.includes('lakehouse') || lower.includes('biglake') || lower.includes('databricks')) {
     return { service: 'BigQuery Analytics Lakehouse', tier: 'data', sla: '99.99%' };
   }
   if (lower.includes('redis') || lower.includes('memorystore') || lower.includes('cache')) {

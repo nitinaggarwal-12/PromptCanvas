@@ -1,5 +1,3 @@
-import { generateTemplate09DataFlowXml } from "../canonical/template09DataFlow";
-
 export function buildMasterEtlEltCdcPipelineXml(): string {
   return buildOldMasterEtlEltCdcPipelineXmlInternal();
 }
@@ -63,7 +61,7 @@ function buildOldMasterEtlEltCdcPipelineXmlInternal(): string {
 
     // Lane 1: Operational Sources
     lane('sources', 1, 'ENTERPRISE OPERATIONAL SOURCES', 'OLTP databases, enterprise SaaS platforms, and streaming event buses', 20, 20, 1540, 140, '#4C1D95', '#FFFFFF'),
-    card('src_oracle', 'Oracle RAC / Exadata', 'LogMiner CDC stream via Private Service Connect', ICON.db, 45, 75, 340, 70, '#7C3AED'),
+    card('src_alloydb', 'AlloyDB for PostgreSQL / Spanner', 'Logical replication & Change Streams via Private Service Connect', ICON.db, 45, 75, 340, 70, '#7C3AED'),
     card('src_sql', 'Cloud SQL (Postgres / MySQL)', 'WAL / binlog replication with sub-second replication latency', ICON.db, 415, 75, 360, 70, '#2563EB'),
     card('src_saas', 'Enterprise SaaS (Salesforce / SAP)', 'REST & GraphQL bulk ingestion connectors', ICON.app, 805, 75, 350, 70, '#D97706'),
     card('src_kafka', 'Confluent / Apache Kafka', 'High-throughput enterprise event streams (100k msg/sec)', ICON.dataflow, 1185, 75, 350, 70, '#DC2626'),

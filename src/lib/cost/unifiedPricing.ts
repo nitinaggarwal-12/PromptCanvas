@@ -149,7 +149,7 @@ export function classifyLabelToPricingCategory(label: string): PricingCategoryId
   if (hasToken(l, 'gke', 'kubernetes', 'autopilot', 'eks', 'aks', 'k8s')) return 'kubernetes';
   if (hasToken(l, 'cloud run', 'lambda', 'fargate', 'serverless', 'cloud functions', 'functions', 'app engine', 'microservice', 'microservices')) return 'serverless';
   if (hasToken(l, 'redis', 'memorystore', 'elasticache', 'cache', 'memcached')) return 'cache';
-  if (hasToken(l, 'bigquery', 'biglake', 'lakehouse', 'redshift', 'synapse', 'snowflake', 'databricks', 'warehouse', 'looker', 'dataplex')) return 'analytics_warehouse';
+  if (hasToken(l, 'bigquery', 'biglake', 'lakehouse', 'redshift', 'synapse', 'biglake', 'databricks', 'warehouse', 'looker', 'dataplex')) return 'analytics_warehouse';
   if (hasToken(l, 'spanner', 'alloydb', 'cloud sql', 'postgres', 'postgresql', 'mysql', 'aurora', 'rds', 'dynamodb', 'cosmos', 'cosmos db', 'firestore', 'bigtable', 'database', 'ledger', 'sql')) return 'database';
   if (hasToken(l, 'cloud storage', 'gcs', 'bucket', 'buckets', 's3', 'glacier', 'blob storage', 'object storage', 'archive', 'storage')) return 'storage';
   if (hasToken(l, 'pub/sub', 'pubsub', 'kafka', 'kinesis', 'eventbridge', 'sqs', 'event hub', 'service bus', 'dataflow', 'datastream', 'stream', 'streaming', 'queue', 'event mesh')) return 'messaging';

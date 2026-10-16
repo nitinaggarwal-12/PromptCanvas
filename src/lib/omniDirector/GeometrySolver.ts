@@ -163,8 +163,8 @@ export class GeometrySolver {
     );
 
     // Top-Right Brand Block
-    const brandLogoText = plan.brandBlock?.logoText || (title.toLowerCase().includes('novacura') ? 'NOVACURA' : '');
-    const brandSub = plan.brandBlock?.subtitle || (brandLogoText === 'NOVACURA' ? 'Transforming Therapies. Improving Lives.' : '');
+    const brandLogoText = plan.brandBlock?.logoText || (title.toLowerCase().includes('clinical_ai') ? 'CLINICAL AI' : '');
+    const brandSub = plan.brandBlock?.subtitle || (brandLogoText === 'CLINICAL AI' ? 'Transforming Therapies. Improving Lives.' : '');
     if (brandLogoText) {
       const brandIconKey = /nexus|pay|fintech/i.test(brandLogoText) ? 'brandNexusPay' : 'brandNovacura';
       const brandLogoSvg = renderSvgIcon(brandIconKey, '#1D4ED8', 28);
@@ -767,7 +767,7 @@ export class GeometrySolver {
     );
 
     // Copyright on right
-    const copyrightText = plan.legend?.find(l => /©|copyright/i.test(l)) || (brandLogoText ? (brandLogoText.toLowerCase().includes('novacura') ? `© 2024 ${brandLogoText} Bio-Pharma` : `© 2024 ${brandLogoText} Technologies`) : '© 2024 Enterprise Architecture');
+    const copyrightText = plan.legend?.find(l => /©|copyright/i.test(l)) || (brandLogoText ? (brandLogoText.toLowerCase().includes('clinical_ai') ? `© 2024 ${brandLogoText} Bio-Pharma` : `© 2024 ${brandLogoText} Technologies`) : '© 2024 Enterprise Architecture');
     structuralCells.push(
       `<mxCell id="leg_copy" value="&lt;span style=&quot;font-size:8px;font-weight:700;color:#64748B;&quot;&gt;${escapeXml(copyrightText)}&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;" vertex="1" parent="1">` +
       `<mxGeometry x="${cfg.pageWidth - cfg.margin - 220}" y="${legendY + 7}" width="216" height="28" as="geometry"/>` +

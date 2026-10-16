@@ -162,7 +162,7 @@ export function generateSlideDeck(
       bullets: [
         'Primary Storage: Globally distributed Cloud Spanner / PostgreSQL with multi-region synchronous replication.',
         'Distributed Cache: Redis Cluster with sub-millisecond read latency and LRU memory eviction.',
-        'Analytical Lakehouse: BigQuery / Snowflake data lake for long-term analytical ML queries.',
+        'Analytical Lakehouse: BigQuery / BigLake data lake for long-term analytical ML queries.',
         'Immutable Audit Log: Append-only write-once GxP / SOC 2 tamper-evident log store.',
       ],
       speakerNotes: `For our persistence layer, we utilize synchronous replication across regions to guarantee zero data loss (RPO = 0). Hot entities are cached in Redis with strict time-to-live invalidation rules.`,

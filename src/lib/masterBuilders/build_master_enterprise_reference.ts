@@ -1,11 +1,9 @@
-import { generateTemplate06C4ContextXml } from "../canonical/template06C4Context";
-
 export function buildEnterpriseReferenceArchitectureXml(): string {
   return buildOldEnterpriseReferenceArchitectureXmlInternal();
 }
 
 export function buildOldEnterpriseReferenceArchitectureXml(): string {
-  return generateTemplate06C4ContextXml("biopharma", "light");
+  return buildOldEnterpriseReferenceArchitectureXmlInternal();
 }
 
 const GCP_BRAND =

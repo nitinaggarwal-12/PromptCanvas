@@ -143,7 +143,7 @@ export default function DocGenFloatingCopilot({
     if (d === 'saas' || /\b(tenant|workspace|billing|crm|oauth|workcloud)\b/i.test(title)) {
       return [
         { label: '🏢 Add Multi-Tenant Workspace Isolation Matrix', prompt: `Add a comprehensive multi-tenant database partitioning matrix comparing pool vs silo models with Row-Level Security (RLS) for ${title}.` },
-        { label: '🔒 Add Okta OIDC & SAML 2.0 Identity to Diagram 1', prompt: `Update Diagram 1 to detail enterprise IdP federation via OIDC/SAML 2.0 with SCIM automated user provisioning.` },
+        { label: '🔒 Add Google OIDC & Entra ID & SAML 2.0 Identity to Diagram 1', prompt: `Update Diagram 1 to detail enterprise IdP federation via OIDC/SAML 2.0 with SCIM automated user provisioning.` },
         { label: '📊 Add Distributed Token Bucket Rate Limiter', prompt: `Add a distributed Redis token-bucket rate limiting specification with per-tenant quota tiers and circuit breakers.` },
         { label: '📜 Add SOC 2 Type II Immutable Audit Chaining', prompt: `Add a SOC 2 Type II compliance audit section detailing SHA-256 cryptographic hash chaining for all administrative actions.` },
       ];

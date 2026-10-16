@@ -42,7 +42,10 @@ import {
   resolveGoogleOAuthClientId,
   saveLocalGoogleOAuthClientIdOverride,
 } from '@/lib/googleDriveDirectOpen';
-import { openDiagramInGoogleWorkspace } from '@/components/DiagramInlineSlidesPreviewer';
+import {
+  openDiagramInGoogleWorkspace,
+  normalizeClientManifestKey,
+} from '@/components/DiagramInlineSlidesPreviewer';
 
 interface GoogleWorkspaceDirectOpenModalProps {
   isOpen: boolean;
@@ -531,7 +534,10 @@ export default function GoogleWorkspaceDirectOpenModal({
     if (activeMode === 'pdf') return;
     const productLabel = activeMode === 'docs' ? 'Google Docs' : 'Google Slides';
     const rawBpClean = (blueprintId || '').replace(/^#/, '').trim();
-    const manifestKey = rawBpClean ? `BP-${rawBpClean.padStart(2, '0')}` : 'WS1';
+    const manifestKey = normalizeClientManifestKey(
+      rawBpClean ? (/^\d{1,2}$/.test(rawBpClean) ? `BP-${rawBpClean.padStart(2, '0')}` : rawBpClean) : 'WS1',
+      diagramName
+    );
 
     setIsUploadingToGoogleDrive(true);
     try {
@@ -670,7 +676,10 @@ export default function GoogleWorkspaceDirectOpenModal({
 
     if (modeToUse === 'slides' || modeToUse === 'docs') {
       const rawBpClean = (blueprintId || '').replace(/^#/, '').trim();
-      const manifestKey = rawBpClean ? `BP-${rawBpClean.padStart(2, '0')}` : 'WS1';
+      const manifestKey = normalizeClientManifestKey(
+        rawBpClean ? (/^\d{1,2}$/.test(rawBpClean) ? `BP-${rawBpClean.padStart(2, '0')}` : rawBpClean) : 'WS1',
+        diagramName
+      );
       try {
         const openedUrl = await openDiagramInGoogleWorkspace(
           manifestKey,

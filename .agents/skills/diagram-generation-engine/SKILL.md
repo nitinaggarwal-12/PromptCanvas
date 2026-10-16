@@ -42,7 +42,7 @@ Every diagram generated across any system MUST strictly follow these core pillar
    - Layout engines and repair sanitizers must recognize structured canonical master blueprints and pass them through with **zero coordinate or geometric mutation**.
 
 5. **Top-Right Brand Block Balance**:
-   - Master architecture templates must include the top-right brand block (`🧬 NOVACURA | Transforming Therapies. Improving Lives.`) to maintain balanced visual margins against left titles.
+   - Master architecture templates must follow the Rule 53 26-Blueprint Google Cloud Architecture Center standard (`#78` Hub-and-Spoke, `#00` 2026 GCP & GE Native, `#35`–`#50`, `#67`–`#74` Brand Light; `0` legacy `#01`–`#34` brand blocks).
 
 ---
 
@@ -271,14 +271,18 @@ You are configured to work on this repository with strict architectural and depl
 5. **Quality and Test Gates:**
 * Run local linting, type-checking, and unit tests immediately after modifying code.
 * Fix all errors before presenting the task as complete.
-6. **Deployment Target:**
-* When running deployment commands, strictly target:
-* Platform: Google Cloud Run
-* Project ID: `ramp-portal-dev` (Project Number `248990048888`)
-* Region: `us-west1`
-* Canonical BeyondCorp URL: `https://promptcanvas-248990048888.cr.gclb.goog`
-* Command pattern:
+6. **Deployment Target (Rule 56 Mandatory Synchronous 2-Project Pipeline):**
+* Never run `gcloud run deploy <service> --source . --project=ramp-portal-dev` (corporate IAM blocks `storage.buckets.create`).
+* Always build in `nitina-ggarwal-sandbox-647724` and update the service in `ramp-portal-dev` (`us-west1`) synchronously:
 ```bash
+gcloud builds submit --project=nitina-ggarwal-sandbox-647724 \
+  --tag us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/<service>:<TAG> .
+gcloud run services update <service> \
+  --project=ramp-portal-dev \
+  --region=us-west1 \
+  --image=us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/<service>:<TAG>
+```
+bash
 gcloud run deploy promptcanvas \
   --source . \
   --project ramp-portal-dev \

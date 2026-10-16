@@ -394,20 +394,14 @@ function DashboardContent() {
 
         const targetDraftId =
           draftParam ||
-          (bpParam &&
-          (/^draft/i.test(bpParam) ||
-            bpParam.toUpperCase().includes('NASA') ||
-            bpParam.toUpperCase().includes('ORACLE'))
+          (bpParam && (/^draft/i.test(bpParam) || bpParam.toUpperCase().includes('NASA'))
             ? bpParam
             : null);
 
         if (targetDraftId) {
           const allDrafts = getAutoSavedDraftBlueprints();
           const matchedDraft = allDrafts.find(
-            (d) =>
-              d.id.toUpperCase() === targetDraftId.toUpperCase() ||
-              (targetDraftId.toUpperCase().includes('ORACLE') &&
-                d.id === 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1')
+            (d) => d.id.toUpperCase() === targetDraftId.toUpperCase()
           );
           if (matchedDraft) {
             setCanvasTitle(matchedDraft.name);
@@ -444,14 +438,14 @@ function DashboardContent() {
             }
             setActiveVersionIndex(0);
             if (
-              /nasa|multiverse|satellite|satellight|oracle|exadata|ebuisness|e-business/i.test(
+              /nasa|multiverse|satellite|satellight|closed-loop|counterfactual/i.test(
                 `${matchedDraft.name} ${matchedDraft.prompt}`
               )
             ) {
               runTruthfulnessAndGroundingCertification({
                 prompt:
                   matchedDraft.prompt ||
-                  'Create an architecture diagram showing oracle@google for ebuisness suite running on exadata',
+                  '1. Build an agentic harness for Nasa launching satellights in the different universes',
                 xmlContent: matchedDraft.xml,
                 blueprintId: matchedDraft.blueprintId || '00'
               })
@@ -1623,17 +1617,6 @@ function DashboardContent() {
       const qLower = query.toLowerCase();
       let effectiveTitle = canvasTitle;
       if (
-        qLower.includes('oracle@google') ||
-        qLower.includes('oracle @ google') ||
-        qLower.includes('exadata') ||
-        qLower.includes('ebusiness') ||
-        qLower.includes('ebuisness') ||
-        qLower.includes('e-business') ||
-        (qLower.includes('oracle') && (qLower.includes('ebs') || qLower.includes('erp')))
-      ) {
-        effectiveTitle = 'Oracle Database@Google Cloud — E-Business Suite (EBS R12.2) on Exadata X10M';
-        setCanvasTitle(effectiveTitle);
-      } else if (
         qLower.includes('nasa') ||
         qLower.includes('satellite') ||
         qLower.includes('satellight') ||
@@ -2325,14 +2308,30 @@ function DashboardContent() {
             {/* 2. Header-Only Cloud Viewer + Open with Google Slides Split-Dropdown (Rule 47) */}
             <DiagramInlineSlidesPreviewer
               headerOnly={true}
-              manifestKey={`BP-${(loadedBlueprintId || '01').replace(/^#/, '').trim().padStart(2, '0')}`}
-              title={`${canvasTitle || 'Enterprise Architecture'} — Blueprint #${(loadedBlueprintId || '01').replace(/^#/, '')} (${canvasPerspective})`}
+              manifestKey={
+                isSessionForked && sessionCopyId
+                  ? sessionCopyId
+                  : `BP-${(loadedBlueprintId || '01').replace(/^#/, '').trim().padStart(2, '0')}`
+              }
+              title={
+                isSessionForked
+                  ? `${canvasTitle || 'Custom Architecture'} (${currentVersion.versionTag})`
+                  : `${canvasTitle || 'Enterprise Architecture'} — Blueprint #${(loadedBlueprintId || '01').replace(/^#/, '')} (${canvasPerspective})`
+              }
               subtitle={currentVersion.diffSummary || '100% Collision-Free Multi-Agent Reference Architecture'}
               xml={activeCanvasXml}
               domainId="enterprise"
               domainName="Google Cloud Enterprise"
-              templateId={(loadedBlueprintId || '01').replace(/^#/, '').trim().padStart(2, '0')}
-              badgeLabel={`Blueprint #${(loadedBlueprintId || '01').replace(/^#/, '')} • ${currentVersion.versionTag}`}
+              templateId={
+                isSessionForked && sessionCopyId
+                  ? sessionCopyId
+                  : (loadedBlueprintId || '01').replace(/^#/, '').trim().padStart(2, '0')
+              }
+              badgeLabel={
+                isSessionForked
+                  ? `${sessionCopyId || 'Custom Draft'} • ${currentVersion.versionTag}`
+                  : `Blueprint #${(loadedBlueprintId || '01').replace(/^#/, '')} • ${currentVersion.versionTag}`
+              }
             />
 
             {/* 3. New Diagram Button (Opens Input Selection Modal) */}
@@ -3536,7 +3535,7 @@ function DashboardContent() {
           mode={cloudViewerModalMode}
           xmlContent={activeCanvasXml}
           diagramName={canvasTitle || 'Enterprise Architecture Blueprint'}
-          blueprintId={`#${loadedBlueprintId}`}
+          blueprintId={isSessionForked && sessionCopyId ? sessionCopyId : `#${loadedBlueprintId}`}
           masterImageSrc={
             !isSessionForked && Number(loadedBlueprintId.replace(/^#/, '')) <= 74
               ? `/templates/canonical_${loadedBlueprintId.replace(/^#/, '').padStart(2, '0')}.png`

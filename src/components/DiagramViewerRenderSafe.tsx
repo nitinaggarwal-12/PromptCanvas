@@ -513,9 +513,9 @@ ${origin ? `<base href="${origin}/">` : ''}
           <p className="mt-1.5 text-xs text-slate-600 leading-relaxed">
             Enter an architecture prompt in the composer below (for example:{' '}
             <span className="font-mono font-semibold text-blue-700">
-              &ldquo;Create an architecture diagram showing Oracle@Google for E-Business Suite running on Exadata&rdquo;
+              &ldquo;Build an agentic harness for NASA launching satellites in different universes&rdquo;
             </span>
-            ) to generate a complete multi-tier diagram, or click <strong>Edit in Draw.io</strong> in the toolbar to draw manually.
+            ) to generate a complete Closed-Loop Digital-Twin Harness diagram, or click <strong>Edit in Draw.io</strong> in the toolbar to draw manually.
           </p>
         </div>
       </div>

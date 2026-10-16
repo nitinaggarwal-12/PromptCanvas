@@ -1,7 +1,5 @@
-import { generateTemplate08ComponentArchXml } from "../canonical/template08ComponentArch";
-
 export function buildC4ComponentLldXml(): string {
-  return generateTemplate08ComponentArchXml("biopharma", "light");
+  return buildOldC4ComponentLldXml();
 }
 
 export function buildOldC4ComponentLldXml(): string {

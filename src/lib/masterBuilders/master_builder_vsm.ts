@@ -1,9 +1,9 @@
-import { generateTemplate04ValueStreamXml } from "../canonical/template04ValueStream";
+import { generateFlowDiagramBlueprintXmlById } from "../canonical/flowDiagramBlueprints67to74";
 
 /**
- * Enterprise Value Stream Map (VSM) Builder
- * Delegates to canonical Template 04 matching 100% of images/04.png
+ * Enterprise Value Stream & End-to-End Operational Flow Builder
+ * Delegates to Canonical Google Cloud Brand Light 7-Layer Flowchart (#68).
  */
 export function buildValueStreamMapXml(): string {
-  return generateTemplate04ValueStreamXml("biopharma", "light");
+  return generateFlowDiagramBlueprintXmlById("68");
 }

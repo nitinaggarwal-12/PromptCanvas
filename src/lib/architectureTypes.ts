@@ -309,14 +309,14 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "Google Cloud Federated IAM, SSO & Zero-Trust Workload Identity",
     category: "Identity, Access & Zero-Trust",
     whenToUse: "Official Google Cloud Federated IAM & SSO reference architecture illustrating Google Cloud Directory Sync (GCDS), Cloud Identity IdP Core, Identity-Aware Proxy (IAP), BeyondCorp Enterprise Context-Aware Access, Cloud IAM RBAC, and Workload Identity Federation.",
-    prompt: "Act as a Principal Google Cloud Security & IAM Architect. Design a production-grade Google Cloud Federated IAM, SSO & Zero-Trust Workload Identity Architecture mirror blueprint. Include: External Identity Sources (Federated IdP: Active Directory, Okta) with SAML 2.0 / OIDC federation -> User Client (Browser/Device) with 1. SSO Authenticate -> Google Cloud Container with Google Cloud Identity (IdP Core) & GCDS sync -> BeyondCorp Enterprise Context-Aware Access container with 3. Context & Policy Check, 2. Device Context (MDM/Endpoint signals), and 3. Network Context (IP/Geo) -> Identity-Aware Proxy (IAP) zero-trust ingress with 2. Access Request -> App Engine, Cloud Run, Compute Engine (via Load Balancer) -> Cloud IAM with 4. IAM & 5. Backend Access to IAM Policy Document -> Bottom Workload Identity container with Google Kubernetes Engine (GKE), Application Workload Pod, Kubernetes Service Account (KSA) bound to Google Service Account (GSA) via Workload Identity Link badge, 6. Workload Identity API Call & 6. Short-lived credentials, and IAM access to Cloud Storage and BigQuery."
+    prompt: "Act as a Principal Google Cloud Security & IAM Architect. Design a production-grade Google Cloud Federated IAM, SSO & Zero-Trust Workload Identity Architecture mirror blueprint. Include: External Identity Sources (Federated IdP: Active Directory, Entra ID) with SAML 2.0 / OIDC federation -> User Client (Browser/Device) with 1. SSO Authenticate -> Google Cloud Container with Google Cloud Identity (IdP Core) & GCDS sync -> BeyondCorp Enterprise Context-Aware Access container with 3. Context & Policy Check, 2. Device Context (MDM/Endpoint signals), and 3. Network Context (IP/Geo) -> Identity-Aware Proxy (IAP) zero-trust ingress with 2. Access Request -> App Engine, Cloud Run, Compute Engine (via Load Balancer) -> Cloud IAM with 4. IAM & 5. Backend Access to IAM Policy Document -> Bottom Workload Identity container with Google Kubernetes Engine (GKE), Application Workload Pod, Kubernetes Service Account (KSA) bound to Google Service Account (GSA) via Workload Identity Link badge, 6. Workload Identity API Call & 6. Short-lived credentials, and IAM access to Cloud Storage and BigQuery."
   },
   {
     id: "tech_ai_trism_guardrails",
     name: "AI TRiSM Security Guardrail Pipeline",
     category: "Cloud Infrastructure & Networking",
     whenToUse: "AI TRiSM (Trust, Risk & Security Management) Guardrail Pipeline for LLM prompt injection defense, PII masking, toxic content filtration, model watermarking, and continuous compliance audit.",
-    prompt: "Act as an AI Security & TRiSM Architect. Design a production-grade AI TRiSM Security Guardrail Pipeline (To-Be State) blueprint. Include: Ingress Gateway with User / Client Request -> AI TRiSM Pre-Inference Inspection (Prompt Injection Defense, PII Tokenization & Masking, Jailbreak Detection) -> Model Inference Tier with Gemini Pro / Claude 3.5 -> Post-Inference Evaluation (Hallucination Checker, Toxicity Scoring, Policy & Legal Filter, Cryptographic Model Watermarking) -> Actionable Egress & Centralized Audit Trail Log."
+    prompt: "Act as an AI Security & TRiSM Architect. Design a production-grade AI TRiSM Security Guardrail Pipeline (To-Be State) blueprint. Include: Ingress Gateway with User / Client Request -> AI TRiSM Pre-Inference Inspection (Prompt Injection Defense, PII Tokenization & Masking, Jailbreak Detection) -> Model Inference Tier with Gemini Pro / Gemini 2.5 Pro 3.5 -> Post-Inference Evaluation (Hallucination Checker, Toxicity Scoring, Policy & Legal Filter, Cryptographic Model Watermarking) -> Actionable Egress & Centralized Audit Trail Log."
   },
   {
     id: "tech_micro_frontends",
@@ -790,8 +790,8 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     const { generateDynamicTieredInfographicXml } = require('./canonical/dynamicTieredInfographic');
     xml = generateDynamicTieredInfographicXml(userPrompt || useCaseContext || 'Enterprise Domain Architecture');
   } else if (id === 'context_harness_loop_graph' || id === 'canonical_52' || id === '52' || id.includes('harness_loop')) {
-    const { generateTemplate52ContextHarnessLoopGraphXml } = require('./canonical/template52ContextHarnessLoopGraph');
-    xml = generateTemplate52ContextHarnessLoopGraphXml();
+    const { generateInfographicBlueprintXmlById } = require('./canonical/infographicBlueprints52to66');
+    xml = generateInfographicBlueprintXmlById('52');
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {

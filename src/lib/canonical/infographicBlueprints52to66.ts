@@ -1,5 +1,3 @@
-import { generateTemplate52ContextHarnessLoopGraphXml } from './template52ContextHarnessLoopGraph';
-
 export interface InfographicBlueprintMeta {
   id: string;
   shortType: string;
@@ -201,15 +199,25 @@ function generateBaseInfographicBlueprintXmlById(
 ): string {
   const meta = INFOGRAPHIC_BLUEPRINTS_LIST.find((m) => m.id === id) || INFOGRAPHIC_BLUEPRINTS_LIST[0];
   const items = null;
+  const cleanSvg = (s: string) => esc(s.replace(/\r?\n\s*/g, ' ').replace(/>\s+</g, '><').trim());
 
   // ============================================================================
   // 1. #52: ANATOMY / DECONSTRUCTION (Exact 1:1 Vector Twin of 52.png)
   // ============================================================================
   if (id === '52' && !items) {
-    return generateTemplate52ContextHarnessLoopGraphXml(cleanCustomTitle);
+    const hTitle52 = esc(cleanCustomTitle || 'Context + Harness + Loop + Graph');
+    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="ArchitectureEngine"><diagram id="infographic_52_${level}" name="${hTitle52}"><mxGraphModel dx="1075" dy="1290" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1075" pageHeight="1290" background="#FCFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="poster_bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FCFBF7;strokeColor=#E2DDD3;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1075" height="1290" as="geometry"/></mxCell>
+      <mxCell id="hdr52" value="&lt;div style='font-family:Google Sans,Inter,sans-serif;text-align:left;'&gt;&lt;div style='font-size:38px;font-weight:800;color:#1E293B;'&gt;${hTitle52}&lt;/div&gt;&lt;div style='font-size:17px;color:#57534E;margin-top:6px;'&gt;Four parts of your AI setup: Context, Harness (AGENTS.md), Loop, and Graph.&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="30" y="20" width="1015" height="84" as="geometry"/></mxCell>
+      <mxCell id="c01" value="&lt;b&gt;01 Context&lt;/b&gt; — Loaded Context, Files, Tool Results &amp;amp; Gemini 2.5 Pro Window" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.6;fontColor=#1E293B;fontSize=16;align=left;spacingLeft=20;" vertex="1" parent="1"><mxGeometry x="40" y="130" width="995" height="250" as="geometry"/></mxCell>
+      <mxCell id="c02" value="&lt;b&gt;02 Harness&lt;/b&gt; — AGENTS.md Governance, Skills, MCP Servers &amp;amp; Execution Tools" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=1.6;fontColor=#1E293B;fontSize=16;align=left;spacingLeft=20;" vertex="1" parent="1"><mxGeometry x="40" y="410" width="995" height="250" as="geometry"/></mxCell>
+      <mxCell id="c03" value="&lt;b&gt;03 Loop&lt;/b&gt; — Autonomous Check, Fix &amp;amp; Recheck Verification Cycle" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E8E3E;strokeWidth=1.6;fontColor=#1E293B;fontSize=16;align=left;spacingLeft=20;" vertex="1" parent="1"><mxGeometry x="40" y="690" width="995" height="250" as="geometry"/></mxCell>
+      <mxCell id="c04" value="&lt;b&gt;04 Graph&lt;/b&gt; — File Relationship Mesh &amp;amp; Architecture Dependency Map" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E37400;strokeWidth=1.6;fontColor=#1E293B;fontSize=16;align=left;spacingLeft=20;" vertex="1" parent="1"><mxGeometry x="40" y="970" width="995" height="250" as="geometry"/></mxCell>
+      <mxCell id="e01_02" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#94A3B8;strokeWidth=2;" edge="1" parent="1" source="c01" target="c02"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e02_03" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#94A3B8;strokeWidth=2;" edge="1" parent="1" source="c02" target="c03"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e03_04" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#94A3B8;strokeWidth=2;" edge="1" parent="1" source="c03" target="c04"><mxGeometry relative="1" as="geometry"/></mxCell>
+    </root></mxGraphModel></diagram></mxfile>`;
   }
-
-  const cleanSvg = (s: string) => esc(s.replace(/\r?\n\s*/g, ' ').replace(/>\s+</g, '><').trim());
 
   // ============================================================================
   // 2. #53: HOW TO USE PRIMARY CODING AGENT + REVIEWER AGENT (Exact 1:1 Vector Twin of 53.png)
@@ -241,7 +249,7 @@ function generateBaseInfographicBlueprintXmlById(
     </svg>`;
 
     const codexLogo53 = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" style="vertical-align:middle;margin-right:8px;"><path d="M16 2 C19 2 21 4 23 5 C26 4 29 7 28 10 C30 12 30 15 29 18 C30 21 28 25 25 25 C23 28 19 30 16 29 C13 30 9 28 7 25 C4 25 2 21 3 18 C2 15 2 12 4 10 C3 7 6 4 9 5 C11 4 13 2 16 2 Z" fill="#0F172A"/><text x="16" y="20" font-family="monospace" font-size="12.5" font-weight="900" fill="#FFFFFF" text-anchor="middle">&gt;_</text></svg>`;
-    const claudeCrab53 = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="28" viewBox="0 0 32 28" style="vertical-align:middle;margin-right:8px;"><rect x="4" y="4" width="24" height="14" rx="2" fill="#D96B38"/><rect x="1" y="8" width="3" height="6" fill="#D96B38"/><rect x="28" y="8" width="3" height="6" fill="#D96B38"/><rect x="9" y="8" width="3" height="5" fill="#1E293B"/><rect x="20" y="8" width="3" height="5" fill="#1E293B"/><rect x="6" y="18" width="3" height="6" fill="#D96B38"/><rect x="11" y="18" width="3" height="6" fill="#D96B38"/><rect x="18" y="18" width="3" height="6" fill="#D96B38"/><rect x="23" y="18" width="3" height="6" fill="#D96B38"/></svg>`;
+    const reviewerBot53 = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="28" viewBox="0 0 32 28" style="vertical-align:middle;margin-right:8px;"><rect x="4" y="4" width="24" height="14" rx="2" fill="#D96B38"/><rect x="1" y="8" width="3" height="6" fill="#D96B38"/><rect x="28" y="8" width="3" height="6" fill="#D96B38"/><rect x="9" y="8" width="3" height="5" fill="#1E293B"/><rect x="20" y="8" width="3" height="5" fill="#1E293B"/><rect x="6" y="18" width="3" height="6" fill="#D96B38"/><rect x="11" y="18" width="3" height="6" fill="#D96B38"/><rect x="18" y="18" width="3" height="6" fill="#D96B38"/><rect x="23" y="18" width="3" height="6" fill="#D96B38"/></svg>`;
 
     return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="ArchitectureEngine"><diagram id="infographic_53_${level}" name="${hTitle}"><mxGraphModel dx="1075" dy="1310" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1075" pageHeight="1310" background="#FCFDFE"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
       <mxCell id="poster_bg" value="${cleanSvg(bgSvg53)}" style="text;html=1;align=left;verticalAlign=top;spacing=0;spacingTop=0;spacingLeft=0;fillColor=none;strokeColor=none;overflow=visible;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1075" height="1310" as="geometry"/></mxCell>
@@ -259,10 +267,10 @@ function generateBaseInfographicBlueprintXmlById(
 
       <mxCell id="c53_proj" value="&lt;div style='padding:14px 16px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:22px;font-weight:800;color:#2554B0;margin-top:4px;'&gt;Open a project&lt;/div&gt;&lt;div style='font-size:16px;color:#334155;margin-top:12px;line-height:1.48;'&gt;3. Select your folder.&lt;br/&gt;4. Start a new task.&lt;/div&gt;&lt;div style='font-size:14.5px;color:#64748B;margin-top:10px;'&gt;Add your goal + files.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.8;" vertex="1" parent="1"><mxGeometry x="412" y="246" width="265" height="172" as="geometry"/></mxCell>
 
-      <mxCell id="c53_claude" value="&lt;div style='padding:12px 14px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;align-items:center;justify-content:center;'&gt;${cleanSvg(claudeCrab53)}&lt;span style='font-size:22px;font-weight:800;color:#2554B0;'&gt;Reviewer Agent&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:15.5px;color:#334155;margin-top:8px;line-height:1.42;'&gt;1. Install the Reviewer app.&lt;br/&gt;2. Sign in &amp;rarr; Code tab.&lt;/div&gt;&lt;div style='font-size:14px;color:#64748B;margin-top:8px;line-height:1.35;'&gt;3. Select the same folder.&lt;br/&gt;Optional backup for advice.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="724" y="246" width="305" height="172" as="geometry"/></mxCell>
+      <mxCell id="c53_reviewer" value="&lt;div style='padding:12px 14px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;align-items:center;justify-content:center;'&gt;${cleanSvg(reviewerBot53)}&lt;span style='font-size:22px;font-weight:800;color:#2554B0;'&gt;Reviewer Agent&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:15.5px;color:#334155;margin-top:8px;line-height:1.42;'&gt;1. Install the Reviewer app.&lt;br/&gt;2. Sign in &amp;rarr; Code tab.&lt;/div&gt;&lt;div style='font-size:14px;color:#64748B;margin-top:8px;line-height:1.35;'&gt;3. Select the same folder.&lt;br/&gt;Optional backup for advice.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="724" y="246" width="305" height="172" as="geometry"/></mxCell>
 
       <mxCell id="e53_1a" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2554B0;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="c53_codex" target="c53_proj"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e53_1b" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D96B38;strokeWidth=2;dashed=1;dashPattern=4 4;startArrow=block;startFill=1;endArrow=block;endFill=1;" edge="1" parent="1" source="c53_proj" target="c53_claude"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e53_1b" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D96B38;strokeWidth=2;dashed=1;dashPattern=4 4;startArrow=block;startFill=1;endArrow=block;endFill=1;" edge="1" parent="1" source="c53_proj" target="c53_reviewer"><mxGeometry relative="1" as="geometry"/></mxCell>
 
       <!-- SECTION 02: ADD YOUR TOOLS -->
       <mxCell id="band53_2" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F8F6FF;strokeColor=#E9E5FC;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="26" y="458" width="1023" height="432" as="geometry"/></mxCell>
@@ -1948,7 +1956,7 @@ function applyDynamicInfographicSpecToXml(
   if (effectiveTitle) {
     if (id === '53') {
       out = out.replace(
-        "How to use &lt;span style='color:#EA7A47;'&gt;Claude Code&lt;/span&gt; + &lt;span style='color:#3B82F6;'&gt;Codex&lt;/span&gt;",
+        "How to use &lt;span style='color:#EA7A47;'&gt;Gemini Code Assist&lt;/span&gt; + &lt;span style='color:#3B82F6;'&gt;Codex&lt;/span&gt;",
         esc(effectiveTitle)
       );
     } else if (id === '54') {
@@ -2045,7 +2053,7 @@ function applyDynamicInfographicSpecToXml(
   const dynItems = spec?.items && spec.items.length > 0 ? spec.items : promptDerivedItems;
   if (dynItems) {
     const cellSlotsByBlueprint: Record<string, string[]> = {
-      '53': ['c53_codex', 'c53_proj', 'c53_claude', 'c53_files', 'c53_mcp', 'c53_cu', 'c53_adv', 'c53_fix'],
+      '53': ['c53_codex', 'c53_proj', 'c53_reviewer', 'c53_files', 'c53_mcp', 'c53_cu', 'c53_adv', 'c53_fix'],
       '54': ['job54_1', 'job54_2', 'job54_3', 'job54_4', 's54_1', 's54_2', 's54_3', 's54_4'],
       '55': ['b55_0', 'b55_1', 'b55_2', 'b55_3', 'b55_4', 'b55_5', 'b55_6', 'b55_7'],
       '56': ['R56_0', 'R56_1', 'R56_2', 'R56_3', 'R56_4', 'R56_5'],

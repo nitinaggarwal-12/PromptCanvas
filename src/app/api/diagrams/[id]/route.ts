@@ -12,7 +12,6 @@ import { generateGcpNativeArchitectureXml } from '@/lib/gcpNativeArchitecture';
 import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 import { enrichDrawioXmlWithVectorIcons } from '@/lib/vectorIcons/visionIconEnricher';
 import {
-  buildOracleAtGoogleExadataDraftItem,
   buildNasaMultiverseDraftItem,
   healStubOrOracleDiagramXml,
 } from '@/lib/draftMicroVersionStore';
@@ -93,16 +92,6 @@ export async function GET(request: Request, { params }: RouteParams) {
     // Catalog blueprint deep links or preset library / studio session deep links must not fail when not yet persisted in SQLite.
     if (!diagram) {
       const upperId = id.toUpperCase();
-
-      if (upperId === 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1' || upperId.includes('ORACLE')) {
-        const oracleDraft = buildOracleAtGoogleExadataDraftItem();
-        return NextResponse.json({
-          ...oracleDraft,
-          id,
-          access_level: 'Owner',
-          xml_content: oracleDraft.latest_xml,
-        });
-      }
 
       if (upperId === 'DRAFT-NASA-MULTIVERSE-V1-0-1' || upperId.includes('NASA')) {
         const nasaDraft = buildNasaMultiverseDraftItem();

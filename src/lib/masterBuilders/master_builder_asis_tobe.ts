@@ -1,7 +1,5 @@
-import { generateTemplate05AsIsToBeXml } from "../canonical/template05AsIsToBe";
-
 export function buildAsIsToBeProcessFlowXml(): string {
-  return generateTemplate05AsIsToBeXml("biopharma", "light");
+  return buildOldAsIsToBeXml();
 }
 
 export function buildOldAsIsToBeXml(): string {

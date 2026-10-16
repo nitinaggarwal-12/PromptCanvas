@@ -18,7 +18,7 @@ This phase establishes enforceable visual behavior for every non-notation catalo
 - Removes emoji placeholders from non-notation blueprint output.
 - Preserves editable mxCell geometry and text.
 - Adds semantic brand identity to sufficiently large cards based on their actual label.
-- Recognizes Microsoft/Microsoft 365, Salesforce, SAP, ServiceNow, GitHub, GitLab, Atlassian/Jira/Confluence, Slack, AWS, Azure, Terraform, Kubernetes, Docker, Kafka, PostgreSQL, Redis, Snowflake, Databricks, React and Next.js.
+- Recognizes Microsoft/Microsoft 365, Salesforce, SAP, ServiceNow, GitHub, GitLab, Atlassian/Jira/Confluence, Slack, AWS, Azure, Terraform, Kubernetes, Docker, Kafka, PostgreSQL, Redis, BigLake, Databricks, React and Next.js.
 - Recognizes current Google Cloud product/service labels and uses a self-contained Google Cloud brand mark as the safe fallback when a reliable bundled official product glyph is unavailable.
 - Does not invent unofficial Google Cloud product icons.
 - Skips notation-sensitive blueprints so ERD/UML/C4/BPMN/STRIDE/lineage notation is not flattened into card UI.

@@ -79,98 +79,6 @@ function resolveDomainStandardsAndCompleteness(lowerPrompt: string): {
   groundedStandards: TruthfulnessGroundingDossier['groundedStandards'];
   completenessChecklist: TruthfulnessGroundingDossier['completenessChecklist'];
 } {
-  const isOracleExadataEbs =
-    lowerPrompt.includes('oracle@google') ||
-    lowerPrompt.includes('oracle @ google') ||
-    lowerPrompt.includes('exadata') ||
-    lowerPrompt.includes('ebusiness') ||
-    lowerPrompt.includes('ebuisness') ||
-    lowerPrompt.includes('e-business') ||
-    (lowerPrompt.includes('oracle') && (lowerPrompt.includes('ebs') || lowerPrompt.includes('erp') || lowerPrompt.includes('rac')));
-
-  if (isOracleExadataEbs) {
-    return {
-      domainLabel: 'Oracle Database@Google Cloud & E-Business Suite (EBS R12.2) on Exadata X10M',
-      standardsSummary:
-        'Oracle Database@Google Cloud Colocated OCI Child Site Architecture, Dedicated <0.5ms Partner Interconnect (ODB Network), Oracle Exadata Cloud Infrastructure X10M (100Gbps RoCEv2 + Smart Scan + Persistent Memory), Oracle E-Business Suite R12.2 Online Patching (ADOP) & Shared APPL_TOP on Filestore Enterprise NFSv4.1, Oracle Active Data Guard Maximum Availability Architecture (MAA RPO=0), and GoldenGate 23ai / Datastream CDC to BigQuery Cortex.',
-      groundedStandards: [
-        {
-          standardId: 'Oracle Database@Google Cloud (Colocated ODB Network)',
-          authority: 'Google Cloud & Oracle Cloud Infrastructure (OCI) Joint Engineering',
-          title: 'Colocated OCI Child Site inside Google Cloud Region with Dedicated <0.5ms Partner Interconnect & Direct BGP Routing',
-          mappedArchitectureTier: 'Dedicated ODB Network Bridge (odb_partner_interconnect) & Tier 3 (Colocated OCI Child Site)',
-          referenceUrl: 'https://cloud.google.com/oracle/docs/overview',
-        },
-        {
-          standardId: 'Oracle Exadata X10M RAC & 100Gbps RoCEv2',
-          authority: 'Oracle Maximum Availability Architecture (MAA)',
-          title: 'Oracle Real Application Clusters (RAC) 19c/23ai, RoCEv2 RDMA Internal Fabric, Smart Scan SQL Offload & Storage Indexes',
-          mappedArchitectureTier: 'Tier 3 (exadata_x10m_rac & exadata_storage_rocev2)',
-          referenceUrl: 'https://www.oracle.com/engineered-systems/exadata/',
-        },
-        {
-          standardId: 'Oracle E-Business Suite R12.2 Online Patching (ADOP) & Shared APPL_TOP',
-          authority: 'Oracle E-Business Suite Release 12.2 Reference Architecture',
-          title: 'WebLogic Web/Forms Active-Active Cluster, Concurrent Processing Manager Tier & Shared APPL_TOP / COMMON_TOP over NFSv4.1',
-          mappedArchitectureTier: 'Tier 2 (ebs_weblogic_forms_tier, ebs_concurrent_mgr_tier & ebs_shared_appl_top_filestore)',
-          referenceUrl: 'https://docs.oracle.com/cd/E26401_01/doc.122/e22953/toc.htm',
-        },
-        {
-          standardId: 'Oracle Active Data Guard Far Sync & Autonomous Recovery Service',
-          authority: 'Oracle MAA Platinum / Gold Tier High Availability',
-          title: 'Synchronous Redo Transport (RPO = 0, RTO < 2m), Read-Mostly Reporting Offload & Zero-Data-Loss RMAN Backups',
-          mappedArchitectureTier: 'Tier 3 (exadata_active_dataguard & oci_auto_backup_gcs)',
-          referenceUrl: 'https://www.oracle.com/database/technologies/high-availability/dataguard.html',
-        },
-        {
-          standardId: 'Oracle GoldenGate 23ai CDC & Google Cloud Cortex Framework',
-          authority: 'Google Cloud Data Analytics & Vertex AI',
-          title: 'Real-Time Redo Log Change Data Capture (CDC) into BigQuery ERP Cortex Data Marts & Vertex AI Gemini 2.5 Co-Pilot',
-          mappedArchitectureTier: 'Tier 2 (ebs_vertex_ai_agent) & Tier 4 (goldengate_cdc_bigquery, bigquery_ebs_cortex, vertex_ai_forecasting, looker_exec_bi)',
-          referenceUrl: 'https://cloud.google.com/solutions/cortex',
-        },
-      ],
-      completenessChecklist: [
-        {
-          subsystem: 'Enterprise Edge Ingress: Cloud Armor WAF, Global L7 Load Balancer & Cloud Identity / SSO',
-          presentInDiagram: true,
-          mappedNodeId: 'edge_cloud_armor_waf, edge_global_alb & edge_identity_sso',
-          rationale: 'Secures external/VPN ERP user traffic and OAuth2/SAML SSO before reaching the EBS middle tier.',
-        },
-        {
-          subsystem: 'EBS R12.2 Application Middle Tier: WebLogic Web/Forms, Concurrent Managers & Filestore Shared APPL_TOP',
-          presentInDiagram: true,
-          mappedNodeId: 'ebs_weblogic_forms_tier, ebs_concurrent_mgr_tier & ebs_shared_appl_top_filestore',
-          rationale: 'Mandatory Oracle E-Business Suite R12.2 middle-tier separation with shared NFSv4.1 APPL_TOP and ADOP Dual File System.',
-        },
-        {
-          subsystem: 'Dedicated <0.5ms Oracle Database@Google Cloud Partner Interconnect & ODB Network Subnet',
-          presentInDiagram: true,
-          mappedNodeId: 'odb_partner_interconnect',
-          rationale: 'Provides ultra-low-latency (<0.5ms) SQL*Net / ONS private peering between the GCP Application VPC and colocated Exadata.',
-        },
-        {
-          subsystem: 'Oracle Exadata X10M Primary RAC (19c/23ai) + 100Gbps RoCEv2 Storage Cells',
-          presentInDiagram: true,
-          mappedNodeId: 'exadata_x10m_rac & exadata_storage_rocev2',
-          rationale: 'Runs the core EBS OLTP database with RDMA over Converged Ethernet (RoCEv2), Smart Scan, and Flash Cache.',
-        },
-        {
-          subsystem: 'Oracle Active Data Guard Standby Rack (RPO=0) & Autonomous Recovery Service / GCS Archive',
-          presentInDiagram: true,
-          mappedNodeId: 'exadata_active_dataguard & oci_auto_backup_gcs',
-          rationale: 'Ensures MAA zero-data-loss failover and immutable RMAN backups across OCI Recovery Service and Google Cloud Storage.',
-        },
-        {
-          subsystem: 'GoldenGate 23ai / Datastream CDC to BigQuery ERP Cortex, Vertex AI Gemini 2.5 & Looker BI',
-          presentInDiagram: true,
-          mappedNodeId: 'goldengate_cdc_bigquery, bigquery_ebs_cortex, vertex_ai_forecasting & looker_exec_bi',
-          rationale: 'Streams real-time EBS ledger and supply-chain changes into BigQuery and Vertex AI without taxing OLTP RAC nodes.',
-        },
-      ],
-    };
-  }
-
   const isAerospace =
     lowerPrompt.includes('nasa') ||
     lowerPrompt.includes('satellite') ||
@@ -501,11 +409,6 @@ function inspectXmlAstCompletenessAndRelevance(
 
   // Check domain-specific keywords requested in the prompt vs what is actually present in the XML
   const domainExpectations: Array<{ promptTerms: string[]; xmlRequiredTerms: string[]; label: string }> = [
-    {
-      promptTerms: ['oracle', 'exadata', 'ebusiness', 'ebuisness', 'e-business'],
-      xmlRequiredTerms: ['exadata', 'weblogic', 'concurrent', 'dataguard', 'data guard', 'filestore', 'appl_top', 'interconnect'],
-      label: 'Oracle Database@Google Cloud / Exadata / E-Business Suite tiers',
-    },
     {
       promptTerms: ['spanner'],
       xmlRequiredTerms: ['spanner'],

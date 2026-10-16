@@ -24,7 +24,7 @@ export interface PromptOption {
 }
 
 export const EXTENDED_DOMAIN_OPTIONS: DomainOption[] = [
-  { id: 'biopharma', name: 'Bio-Pharma Precision Oncology & Regulatory AI', prefix: 'NOVACURA', icon: '🧬', category: 'Life Sciences', description: 'FDA 21 CFR Part 11, GxP, Genomics, Spanner Knowledge Graph' },
+  { id: 'biopharma', name: 'Bio-Pharma Precision Oncology & Regulatory AI', prefix: 'CLINICAL AI', icon: '🧬', category: 'Life Sciences', description: 'FDA 21 CFR Part 11, GxP, Genomics, Spanner Knowledge Graph' },
   { id: 'fintech', name: 'FinTech Autonomous Wealth & High-Speed Payments', prefix: 'NEXUSFIN', icon: '💳', category: 'Financial Services', description: 'ISO 20022, sub-5ms Fraud, Spanner Double-Entry Ledger' },
   { id: 'manufacturing', name: 'Smart Manufacturing & Industrial IoT Digital Twin', prefix: 'SYNACTIVE', icon: '🏭', category: 'Industrial & IoT', description: 'SCADA, PLC Telemetry, MQTT, Digital Twin Simulation' },
   { id: 'retail', name: 'Omnichannel Retail & Intelligent Supply Chain', prefix: 'OMNIVUE', icon: '🛍️', category: 'Commerce & Logistics', description: 'Inventory Mesh, Dynamic Pricing, Event-Driven Fulfillment' },

@@ -93,7 +93,7 @@ export async function executeUnifiedDiagramPipeline(
       effectiveArchType = 'agentic_rag';
     } else if (/event|kafka|pubsub|queue|microservice|async|eda/i.test(promptLower)) {
       effectiveArchType = 'enterprise_event_driven';
-    } else if (/data|etl|lakehouse|warehouse|pipeline|bigquery|snowflake|analytics/i.test(promptLower)) {
+    } else if (/data|etl|lakehouse|warehouse|pipeline|bigquery|biglake|analytics/i.test(promptLower)) {
       effectiveArchType = 'modern_data_stack';
     } else if (/security|zero trust|vpc|perimeter|firewall|waf|iam|identity/i.test(promptLower)) {
       effectiveArchType = 'secure_deployment_map';

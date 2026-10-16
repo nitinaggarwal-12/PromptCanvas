@@ -1,10 +1,10 @@
 /**
- * 🏛️ Master Blueprint: 01 — System Context Architecture
- * Delegates to the upgraded canonical C4 Level 1 System Context Blueprint (template01ExactV3).
+ * 🏛️ Master Blueprint: System Context & Conceptual Architecture
+ * Delegates to Canonical Blueprint #00 (Google Cloud & Gemini Enterprise Conceptual Architecture).
  */
 
-import { generateTemplate01ExactV3Xml } from '../canonical/template01ExactV3';
+import { generateTemplate00ConceptualXml } from '../canonical/template00GcpEnterpriseArch';
 
-export function buildNovacuraSystemContextXml(): string {
-  return generateTemplate01ExactV3Xml('biopharma', 'light');
+export function buildEnterpriseSystemContextXml(): string {
+  return generateTemplate00ConceptualXml('GCP ENTERPRISE', 'light');
 }

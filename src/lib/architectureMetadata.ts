@@ -487,7 +487,7 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     businessUseCase: "Enterprise Google Cloud Federated IAM & Single Sign-On (SSO) reference architecture featuring Google Cloud Directory Sync (GCDS), Cloud Identity IdP Core, Identity-Aware Proxy (IAP) zero-trust ingress, BeyondCorp Enterprise Context-Aware Access (ACM device/network signals), Cloud IAM fine-grained RBAC, and Workload Identity Federation (KSA-to-GSA OIDC credential exchange for GKE, Cloud Storage, and BigQuery).",
     primaryActors: "Principal IAM Architects, Chief Information Security Officers (CISOs), Cloud Security Engineers, Multi-Cloud Infrastructure Leads",
     targetOutcomes: "Zero-Trust Access Control (0% VPN Overhead), Real-Time Device & Network Signal Evaluation, 100% Elimination of Long-Lived Service Account Keys via Workload Identity, Centralized SAML 2.0 / OIDC Federation",
-    desc: "Official Google Cloud Federated IAM & SSO blueprint illustrating Active Directory/Okta federation, Cloud Identity, BeyondCorp Context-Aware Access, Identity-Aware Proxy (IAP), and GKE Workload Identity."
+    desc: "Official Google Cloud Federated IAM & SSO blueprint illustrating Microsoft Entra ID / Google OIDC federation, Cloud Identity, BeyondCorp Context-Aware Access, Identity-Aware Proxy (IAP), and GKE Workload Identity."
   },
   tech_federated_iam: {
     id: "federated_iam_sso",

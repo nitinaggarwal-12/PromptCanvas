@@ -1,11 +1,9 @@
-import { generateTemplate10IntegrationArchXml } from "../canonical/template10IntegrationArch";
-
 export function buildMasterEnterpriseApiManagementXml(): string {
-  return generateTemplate10IntegrationArchXml("biopharma", "light");
+  return buildMasterApigeeEnterpriseApiManagementXml();
 }
 
 export function buildOldMasterEnterpriseApiManagementXml(): string {
-  return generateTemplate10IntegrationArchXml("biopharma", "light");
+  return buildMasterApigeeEnterpriseApiManagementXml();
 }
 
 const esc = (value: string): string =>

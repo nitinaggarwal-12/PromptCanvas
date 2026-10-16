@@ -537,10 +537,10 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     badge: "Master Blueprint",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use for enterprise Google Cloud zero-trust architectures requiring Active Directory/Okta federation, Cloud Identity (IdP Core), BeyondCorp Context-Aware Access, Identity-Aware Proxy (IAP) ingress, Cloud IAM fine-grained RBAC, and GKE Workload Identity Federation.",
+    whenToUse: "Use for enterprise Google Cloud zero-trust architectures requiring Microsoft Entra ID / Google OIDC federation, Cloud Identity (IdP Core), BeyondCorp Context-Aware Access, Identity-Aware Proxy (IAP) ingress, Cloud IAM fine-grained RBAC, and GKE Workload Identity Federation.",
     bestFor: [
       "Google Cloud Federated IAM & SSO Reference Architecture",
-      "External Federated IdP: Active Directory / Okta with SAML 2.0 and OIDC Federation",
+      "External Federated IdP: Microsoft Entra ID / Google OIDC with SAML 2.0 and OIDC Federation",
       "Cloud Identity (IdP Core) directory sync and MFA/Security Key enforcement",
       "BeyondCorp Enterprise: Real-time Device Context (MDM/Endpoint) and Network Context (IP/Geo)",
       "Zero-Trust Ingress: Identity-Aware Proxy (IAP) with signed JWT header assertions (No VPN)",
@@ -548,7 +548,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     ],
     keyTech: ["Cloud Identity", "Identity-Aware Proxy (IAP)", "BeyondCorp Enterprise", "Access Context Manager", "Workload Identity", "Cloud IAM", "GKE", "BigQuery", "Cloud Storage"],
     thumbnail: "/templates/federated_iam_sso.png",
-    promptSummary: "Federated IAM & Zero-Trust: Active Directory/Okta -> Cloud Identity -> BeyondCorp Context Engine -> IAP Ingress -> App Engine / Cloud Run / Compute Engine -> GKE Workload Identity -> BigQuery & Cloud Storage."
+    promptSummary: "Federated IAM & Zero-Trust: Microsoft Entra ID / Google OIDC -> Cloud Identity -> BeyondCorp Context Engine -> IAP Ingress -> App Engine / Cloud Run / Compute Engine -> GKE Workload Identity -> BigQuery & Cloud Storage."
   },
   {
     id: "tech_ai_trism_guardrails",
@@ -672,11 +672,11 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     whenToUse: "Use when designing relational and dimensional database schemas with explicit Fact tables, Dimension tables, Primary/Foreign keys, attributes, and cardinality (1:1, 1:N, M:N).",
     bestFor: [
       "Enterprise relational database modeling",
-      "Star schema & Snowflake dimensional modeling",
+      "Star & Normalized Dimensional modeling",
       "PK/FK constraint and relationship mapping",
       "Data warehousing fact & dimension design"
     ],
-    keyTech: ["Fact Tables", "Dimension Tables", "PostgreSQL", "Snowflake", "Cardinality (1:N)", "Foreign Keys"],
+    keyTech: ["Fact Tables", "Dimension Tables", "PostgreSQL", "BigLake", "Cardinality (1:N)", "Foreign Keys"],
     thumbnail: "/templates/erd.png",
     promptSummary: "Dimensional Data Model: Fact Tables, Dimension Tables, Foreign Key Relationships, Data Types, and Explicit Cardinality."
   },

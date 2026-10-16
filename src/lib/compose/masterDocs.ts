@@ -988,7 +988,7 @@ graph TD
 ### 📐 Visual Diagram 1: Zero-Trust Perimeter & Identity Boundaries (Template 18)
 \`\`\`mermaid
 graph LR
-    IDP["Enterprise Okta / Google IdP"] --> OIDC["OIDC Token Minting"]
+    IDP["Enterprise Entra ID / Google IdP"] --> OIDC["OIDC Token Minting"]
     OIDC --> APIGW["API Gateway ABAC Policy Gate"]
     APIGW --> VPC["VPC Service Control Perimeter"]
 \`\`\`

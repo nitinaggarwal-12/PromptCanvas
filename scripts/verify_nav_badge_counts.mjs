@@ -75,13 +75,35 @@ const forbiddenLegacyFiles = pubTemplates.filter((f) =>
   /^(?:0[1-9]|[12]\d|3[0-4]|5[1-9]|6[0-6])\.png$/.test(f) ||
   /^canonical_(?:0[1-9]|[12]\d|3[0-4]|5[1-9]|6[0-6])\.png$/.test(f) ||
   /^(?:P[1-5]|ARCH|IND|NEW)-/.test(f) ||
-  /^infographic_/.test(f)
+  /^infographic_/.test(f) ||
+  f === '40.svg' ||
+  f === 'ge_equipment_optimization_gemini.png'
 );
-if (forbiddenLegacyFiles.length > 0) {
-  console.error(`❌ Legacy Template Purge Guard: Found ${forbiddenLegacyFiles.length} purged legacy files in public/templates/: ${forbiddenLegacyFiles.join(', ')}`);
+if (forbiddenLegacyFiles.length > 0 || pubTemplates.length !== 50) {
+  console.error(`❌ Legacy Template Purge Guard: Found ${forbiddenLegacyFiles.length} purged legacy files in public/templates/ (total=${pubTemplates.length}, expected 50): ${forbiddenLegacyFiles.join(', ')}`);
   failed++;
 } else {
   console.log(`✅ Legacy Template Purge Guard: 0 legacy NOVACURA / P1-P5 / infographic files in public/templates/ (${pubTemplates.length} clean files)`);
+}
+
+// Canonical Source Purge Guard: src/lib/canonical/ must contain 0 retired template01..34 or template51..52 .ts files
+const canonFiles = fs.readdirSync('src/lib/canonical');
+const forbiddenCanonTs = canonFiles.filter((f) => /^template(?:0[1-9]|[12]\d|3[0-4]|5[12]).*\.ts$/.test(f));
+if (forbiddenCanonTs.length > 0) {
+  console.error(`❌ Canonical Source Purge Guard: Found ${forbiddenCanonTs.length} retired template .ts files in src/lib/canonical/: ${forbiddenCanonTs.join(', ')}`);
+  failed++;
+} else {
+  console.log(`✅ Canonical Source Purge Guard: 0 retired template01..34 / template51..52 .ts files in src/lib/canonical/`);
+}
+
+// Public Blueprints Purge Guard: public/blueprints/ must contain strictly the 5 /vision reference assets
+const pubBlueprints = fs.readdirSync('public/blueprints');
+const forbiddenPubBlueprints = pubBlueprints.filter((f) => /^(?:P[1-5]|ARCH|IND|NEW|5\d|6[01])[-_]/.test(f));
+if (forbiddenPubBlueprints.length > 0 || pubBlueprints.length !== 5) {
+  console.error(`❌ Public Blueprints Purge Guard: Found ${forbiddenPubBlueprints.length} legacy files in public/blueprints/ (total=${pubBlueprints.length}, expected 5)`);
+  failed++;
+} else {
+  console.log(`✅ Public Blueprints Purge Guard: 0 legacy P1-P5 / 51-61 files in public/blueprints/ (${pubBlueprints.length} clean Vision assets)`);
 }
 
 if ( failed ) {

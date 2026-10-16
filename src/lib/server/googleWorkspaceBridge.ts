@@ -171,8 +171,12 @@ export async function getServerDriveAccessToken(): Promise<string | null> {
   return null;
 }
 
-export function normalizeManifestKey(rawKey: string): string {
+export function normalizeManifestKey(rawKey: string, titleHint?: string): string {
   const clean = String(rawKey || 'DOC-MT-01').trim();
+  const titleClean = String(titleHint || '').trim();
+  if (/nasa|multiverse|multi-universe|closed-loop\s+mission/i.test(`${clean} ${titleClean}`)) {
+    return 'DRAFT-NASA-MULTIVERSE-V1-0-1';
+  }
   if (!clean) return 'DOC-MT-01';
   const upper = clean.toUpperCase();
   if (/^DOC-(?:MT|REF)-\d{2}$/.test(upper)) {
@@ -194,12 +198,28 @@ export function normalizeManifestKey(rawKey: string): string {
     return `WS${wsPrefixMatch[1]}`;
   }
   const numMatch = clean.match(/^#?(\d{1,2})$/);
-  if (numMatch) {
-    return `BP-${numMatch[1].padStart(2, '0')}`;
-  }
   const bpMatch = clean.match(/^BP[-_]?(\d{1,2})$/i);
-  if (bpMatch) {
-    return `BP-${bpMatch[1].padStart(2, '0')}`;
+  const bpNum = numMatch ? numMatch[1].padStart(2, '0') : bpMatch ? bpMatch[1].padStart(2, '0') : null;
+  if (bpNum) {
+    if (
+      (bpNum === '00' || bpNum === '01') &&
+      titleClean &&
+      !/2026\s+upgraded\s+gcp|official\s+google\s+cloud.*#00|^enterprise\s+architecture\s*—\s*blueprint/i.test(
+        titleClean
+      )
+    ) {
+      const slug = titleClean
+        .replace(/\s*—\s*Blueprint.*$/i, '')
+        .replace(/\s*\(#?\d+\)\s*$/i, '')
+        .replace(/[^A-Za-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '')
+        .toUpperCase()
+        .slice(0, 42);
+      if (slug && slug !== 'BP_00' && slug !== 'BP_01') {
+        return `CUSTOM_${slug}`;
+      }
+    }
+    return `BP-${bpNum}`;
   }
   return clean.replace(/[^A-Za-z0-9_-]/g, '_');
 }
@@ -299,7 +319,7 @@ export async function uploadPptxBufferToGoogleSlides(params: {
   targetFileId?: string;
   accessTokenOverride?: string | null;
 }): Promise<CloudSlidesManifestEntry> {
-  const normalizedKey = normalizeManifestKey(params.cacheKey);
+  const normalizedKey = normalizeManifestKey(params.cacheKey, params.title);
   const manifest = loadCloudViewerManifest();
   const sha = sha256Buffer(params.pptxBuffer);
   const existing = manifest.slides[normalizedKey];
@@ -315,8 +335,8 @@ export async function uploadPptxBufferToGoogleSlides(params: {
 
   const token = params.accessTokenOverride || (await getServerDriveAccessToken());
   if (!token) {
-    const fbKey = resolveFallbackWorkstreamKey(normalizedKey) || 'DOC-MT-01';
-    if (manifest.slides[fbKey]) {
+    const fbKey = resolveFallbackWorkstreamKey(normalizedKey);
+    if (fbKey && manifest.slides[fbKey]) {
       return manifest.slides[fbKey];
     }
     throw new Error('No Google Drive OAuth token available on server to convert .pptx to Google Slides.');
@@ -416,7 +436,7 @@ export async function uploadHtmlOrDocxToGoogleDocs(params: {
   force?: boolean;
   accessTokenOverride?: string | null;
 }): Promise<CloudDocsManifestEntry> {
-  const normalizedKey = normalizeManifestKey(params.cacheKey);
+  const normalizedKey = normalizeManifestKey(params.cacheKey, params.title);
   const manifest = loadCloudViewerManifest();
   const sha = sha256Buffer(params.contentBuffer);
   const existing = manifest.docs[normalizedKey];

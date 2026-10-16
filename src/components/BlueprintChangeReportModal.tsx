@@ -55,14 +55,14 @@ const DOMAIN_PROFILES: Record<string, DomainProfile> = {
     compliancePills: ['SEC Rule 15c3-5', 'FINRA OATS/CAT', 'SOC 1 / SOC 2 Type II', 'PCI-DSS'],
   },
   biopharma: {
-    name: 'NOVACURA Bio-Pharma Platform',
+    name: 'Enterprise Clinical AI Platform',
     badge: '🧬',
     tagline: 'Transforming Therapies. Improving Lives.',
     actors: ['Research Scientists', 'Clinical Operations', 'Regulatory Affairs', 'Safety/PV Specialists', 'Medical Affairs'],
     ingressSources: ['Veeva Vault', 'CTMS / Medidata Rave', 'Argus Safety', 'SAP S/4HANA', 'LIMS Lab Gateways'],
     microservices: ['Clinical Study Service', 'Regulatory Operations', 'AI Copilot RAG Service', 'Safety Signal Engine', 'Clinical Data Store'],
     entities: ['Study', 'Protocol', 'Site', 'Trial', 'Patient', 'Event', 'Document', 'KnowledgeBase', 'Embedding'],
-    sequenceScenario: 'Scientist Q&A: Query -> API Gateway -> Orchestrator -> Vector RAG -> Med-PaLM reasoning -> Policy check -> Citation display',
+    sequenceScenario: 'Scientist Q&A: Query -> API Gateway -> Orchestrator -> Vector RAG -> MedLM & Gemini 2.5 Pro reasoning -> Policy check -> Citation display',
     compliancePills: ['FDA 21 CFR Part 11', 'GxP Validation', 'HIPAA / HITECH', 'ICH E6(R2) GCP'],
   },
   saas: {
@@ -70,7 +70,7 @@ const DOMAIN_PROFILES: Record<string, DomainProfile> = {
     badge: '☁️',
     tagline: 'Infinite Scale. Elastic Enterprise Mesh.',
     actors: ['Workspace Admins', 'Tenant Users', 'Billing Managers', 'DevOps Engineers', 'Security Auditors'],
-    ingressSources: ['Okta SSO / SAML', 'Stripe Billing API', 'GitHub / GitLab VCS', 'Kubernetes API', 'Datadog APM'],
+    ingressSources: ['Google OIDC / Entra ID SAML', 'Stripe Billing API', 'GitHub / GitLab VCS', 'Kubernetes API', 'Datadog APM'],
     microservices: ['Multi-Tenant Router', 'Usage & Metering Engine', 'RBAC & Permission Engine', 'Tenant Isolation Mesh', 'Cloud Spanner DB'],
     entities: ['Tenant', 'Workspace', 'UserAccount', 'Subscription', 'FeatureFlag', 'UsageRecord', 'AuditTrace'],
     sequenceScenario: 'Tenant Ingress: OIDC Token -> Dynamic Tenant Router -> Scoped Database Shard -> Metered API execution -> OpenTelemetry trace',
@@ -104,7 +104,7 @@ export default function BlueprintChangeReportModal({
   const changeMatrix = [
     {
       elementGroup: 'Brand & Title Block',
-      masterBaseline: 'NOVACURA Bio-Pharma Platform / Transforming Therapies. Improving Lives. (🧬)',
+      masterBaseline: 'Enterprise Clinical AI Platform / Transforming Therapies. Improving Lives. (🧬)',
       customProjectChange: `${profile.name} / ${profile.tagline} (${profile.badge})`,
       status: 'Customized for Prompt',
     },
@@ -267,7 +267,7 @@ export default function BlueprintChangeReportModal({
                 </span>
               </div>
               <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 flex items-center justify-between">
-                <span className="font-semibold text-slate-700 dark:text-slate-300">Universal Novacura Scrubbing</span>
+                <span className="font-semibold text-slate-700 dark:text-slate-300">Universal Brand Sanitization</span>
                 <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
                   PASS (0 Leftover Instances)
                 </span>

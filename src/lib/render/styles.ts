@@ -123,7 +123,7 @@ const ICON_MAP: Record<string, string> = {
   'elasticsearch': 'https://api.iconify.design/logos:elasticsearch.svg',
   'opensearch': 'https://api.iconify.design/logos:opensearch.svg',
   'databricks': 'https://api.iconify.design/logos:databricks.svg',
-  'snowflake': 'https://api.iconify.design/logos:snowflake-icon.svg',
+  'biglake': 'https://api.iconify.design/logos:google-bigquery.svg',
   'dbt': 'https://api.iconify.design/logos:dbt-icon.svg',
   'airflow': 'https://api.iconify.design/logos:airflow-icon.svg',
   'neo4j': 'https://api.iconify.design/logos:neo4j.svg',

@@ -42,7 +42,7 @@ User Prompt
 
 ### Stage 1: Explicit Signals & Trigger Phrases (Content-Bound vs. Layout Archetypes)
 - **Stage 1A: Content-Bound Master Templates**:
-  - Triggered ONLY when the user explicitly requests a named static reference blueprint by its exact domain/author identity (e.g., `"Charlie Hills"`, `"Context + Harness + Loop + Graph"`, `"NOVACURA"`, `"Open Knowledge Format Infographic"`).
+  - Triggered ONLY when the user explicitly requests a named static reference blueprint by its exact domain/author identity (e.g., `"Charlie Hills"`, `"Context + Harness + Loop + Graph"`, `"CLINICAL AI"`, `"Open Knowledge Format Infographic"`).
   - Routes deterministically to the immutable canonical master XML (`template_52`, `open_knowledge_infographic`, etc.).
 - **Stage 1B: Dynamic Layout-Style Archetype Triggers (`Rule 41 Anti-Spoofing Law`)**:
   - When a user prompt requests a **visual layout archetype** (e.g., `"infographic"`, `"tiered infographic"`, `"swimlane"`, `"sequence diagram"`, `"entity relationship diagram"`) paired with a **new or arbitrary subject domain** (e.g., `"Healthcare FHIR Infographic"`, `"Zero-Trust Security Infographic"`, `"FinOps Cloud Cost Infographic"`), the router MUST NEVER spoof or return a static content template from another topic (`Charlie Hills / CLAUDE.md`).

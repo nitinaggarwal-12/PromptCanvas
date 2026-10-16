@@ -1,11 +1,9 @@
-import { generateTemplate07C4ContainerXml } from "../canonical/template07C4Container";
-
 export function buildMasterSaasMultiTenantXml(): string {
-  return generateTemplate07C4ContainerXml("biopharma", "light");
+  return buildOldMasterSaasMultiTenantXmlInternal();
 }
 
 export function buildOldMasterSaasMultiTenantXml(): string {
-  return generateTemplate07C4ContainerXml("biopharma", "light");
+  return buildOldMasterSaasMultiTenantXmlInternal();
 }
 
 const esc = (value: string): string =>

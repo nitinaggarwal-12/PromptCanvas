@@ -1204,7 +1204,7 @@ function StudioMain() {
           const extractedUseCasePrompt = targetUseCaseMatch
             ? targetUseCaseMatch[1].trim()
             : isAwsProjectWithGcpXml
-            ? awsUserMsgMatch?.[0]?.trim() || 'AWS Cloud AI Architecture on Amazon Bedrock, SageMaker, Redshift & Claude'
+            ? awsUserMsgMatch?.[0]?.trim() || 'AWS Cloud AI Architecture on Amazon Bedrock, SageMaker, Redshift & Gemini 2.5 Pro'
             : '';
 
           if (extractedUseCasePrompt && (restoredXml.includes('id="z1_bg"') || restoredXml.includes('id="z1"') || restoredXml.includes('id="spatial_gcp_reference_arch"') || !restoredXml.includes('Generative Prompt:') || !restoredXml.includes('AWS CLOUD ARCHITECTURE'))) {
@@ -1797,7 +1797,7 @@ function StudioMain() {
       !isInterrogativeAnalysis &&
       (cleanPrompt.trim().length >= 24 ||
         /^(design|architect|build|create|deploy|synthesize|aws|gcp|google|azure|cloud|enterprise|sovereign|multi-region|zero-trust|real-time|serverless|hybrid|a\s+tiered|tiered|\[p[1-7]\]|\[vision\])/i.test(cleanPrompt.trim()) ||
-        /\b(architecture|stratum|strata|cross-section|diagram|stack|tier|pods|cluster|gateway|mesh|bedrock|sagemaker|redshift|claude|vertex|spanner|bigquery|gke|eks|kubernetes|lakehouse|streaming|kafka|pub\/sub|secops|chronicle|fhir|hl7|sap|finops|landing\s+zone|rag|agentic)\b/i.test(cleanPrompt));
+        /\b(architecture|stratum|strata|cross-section|diagram|stack|tier|pods|cluster|gateway|mesh|bedrock|sagemaker|redshift|gemini|vertex|spanner|bigquery|gke|eks|kubernetes|lakehouse|streaming|kafka|pub\/sub|secops|chronicle|fhir|hl7|sap|finops|landing\s+zone|rag|agentic)\b/i.test(cleanPrompt));
 
     if (isInterrogativeAnalysis || (intentResult.intent !== 'mutation' && !isArchitectureSynthesisPrompt)) {
       let replyText = '';
@@ -1916,7 +1916,7 @@ function StudioMain() {
       const isCache = l.includes('redis') || l.includes('cache') || l.includes('memorystore') || l.includes('elasticache');
       const isQueue = l.includes('kafka') || l.includes('pubsub') || l.includes('pub/sub') || l.includes('kinesis') || l.includes('eventbridge') || l.includes('sqs') || l.includes('queue') || l.includes('stream') || l.includes('dataflow');
       const isDb = l.includes('database') || l.includes('postgres') || l.includes('alloydb') || l.includes('aurora') || l.includes('dynamodb') || l.includes('redshift') || l.includes('sql') || l.includes('spanner') || l.includes('bigquery') || l.includes('lakehouse');
-      const isAi = l.includes('vertex') || l.includes('gemini') || l.includes('bedrock') || l.includes('sagemaker') || l.includes('claude') || l.includes('agent') || l.includes('rag') || l.includes('vector') || l.includes('ai');
+      const isAi = l.includes('vertex') || l.includes('gemini') || l.includes('bedrock') || l.includes('sagemaker') || l.includes('gemini') || l.includes('agent') || l.includes('rag') || l.includes('vector') || l.includes('ai');
       const isSec = l.includes('kms') || l.includes('hsm') || l.includes('cmek') || l.includes('guardduty') || l.includes('vpc') || l.includes('iam') || l.includes('security') || l.includes('zero-trust');
 
       const inferredService = isAwsContext

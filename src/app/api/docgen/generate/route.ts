@@ -8,7 +8,7 @@ import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib
 function scrubUnpromptedAssumptions(markdown: string, projectTitle: string, promptText: string): string {
   const combinedInput = `${projectTitle} ${promptText}`.toLowerCase();
   let cleaned = markdown;
-  const fictionalBrands = ['NovaCura', 'AeroNode', 'ApexPay', 'OmniVue', 'WorkCloud'];
+  const fictionalBrands = ['ClinicalAI', 'AeroNode', 'ApexPay', 'OmniVue', 'WorkCloud'];
   for (const brand of fictionalBrands) {
     if (!combinedInput.includes(brand.toLowerCase())) {
       cleaned = cleaned.replace(new RegExp(`\\b${brand}\\b`, 'gi'), projectTitle);
@@ -124,7 +124,7 @@ Your role is to author an authoritative, publication-ready, deeply technical, an
 
 STRICT RULES:
 1. Write in professional, rigorous executive markdown with clear headings (#, ##, ###), markdown tables, structured key-value bullet points, and code/JSON interface blocks.
-2. DO NOT use generic filler text, fictional company names (never use NovaCura, AeroNode, ApexPay, OmniVue, WorkCloud unless explicitly requested), or placeholder phrases. Every section MUST be concretely tailored to "${projectTitle}" and the provided scope prompt.
+2. DO NOT use generic filler text, fictional company names (never use ClinicalAI, AeroNode, ApexPay, OmniVue, WorkCloud unless explicitly requested), or placeholder phrases. Every section MUST be concretely tailored to "${projectTitle}" and the provided scope prompt.
 3. If the project is about Drone Delivery, EV Charging, FinTech, Retail, IoT, etc., USE ONLY terms, protocols, and microservices relevant to that domain (e.g. 5G, ADS-B, UTM, OCPP 2.0, BESS, ISO 20022, Kafka, Spanner). NEVER include unrelated bio-pharma/clinical terms unless the project is explicitly bio-pharma.
 4. Structure the document with numbered chapters (Chapter 1 to Chapter 6) that align with enterprise architecture review board (ARB) standards.
 5. In each chapter where an architectural diagram is assigned, include the exact diagram reference header:

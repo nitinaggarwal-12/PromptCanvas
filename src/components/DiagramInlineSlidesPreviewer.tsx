@@ -6,10 +6,10 @@ import {
   cleanHtmlToPlainText,
   exportDrawioToEditablePptx,
   parseDrawioXmlForPptx,
+  resolveOrSynthesizeDocGuideForDiagram,
 } from '@/lib/export/editablePptxCompiler';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import cloudViewerManifestData from '@/data/cloud_viewer_manifest.json';
-import { GOOGLE_CLOUD_DOCUMENTATION_SERIES } from '@/lib/blogs/googleCloudDocumentationSeries';
 
 export interface CloudSlidesEntryClient {
   key?: string;
@@ -59,8 +59,30 @@ const FALLBACK_MANIFEST: CloudViewerManifestClient = {
 
 let globalManifestCache: CloudViewerManifestClient = FALLBACK_MANIFEST;
 
-export function normalizeClientManifestKey(rawKey: string): string {
+const STATIC_BLOG_AND_WS_KEYS = new Set([
+  'DOC-MT-01',
+  'DOC-MT-02',
+  'DOC-MT-03',
+  'DOC-MT-04',
+  'DOC-MT-05',
+  'DOC-MT-06',
+  'DOC-REF-07',
+  'DOC-REF-08',
+  'DOC-REF-09',
+  'WS1',
+  'WS2',
+  'WS3',
+  'WS4',
+  'WS5',
+  'ALL',
+]);
+
+export function normalizeClientManifestKey(rawKey: string, titleHint?: string): string {
   const clean = String(rawKey || 'DOC-MT-01').trim();
+  const titleClean = String(titleHint || '').trim();
+  if (/nasa|multiverse|multi-universe|closed-loop\s+mission/i.test(`${clean} ${titleClean}`)) {
+    return 'DRAFT-NASA-MULTIVERSE-V1-0-1';
+  }
   if (!clean) return 'DOC-MT-01';
   const upper = clean.toUpperCase();
   if (/^DOC-(?:MT|REF)-\d{2}$/.test(upper)) return upper;
@@ -74,10 +96,32 @@ export function normalizeClientManifestKey(rawKey: string): string {
   if (lower.startsWith('ws5-') || lower === 'uc-geap-ws5') return 'DOC-MT-06';
   const wsPrefixMatch = clean.match(/^(?:uc-geap-)?ws([1-5])(?:$|[-_.])/i);
   if (wsPrefixMatch) return `WS${wsPrefixMatch[1]}`;
+
+  // If rawKey is #00 / BP-00 or #01 / BP-01, verify that titleHint isn't a custom diagram title
   const numMatch = clean.match(/^#?(\d{1,2})$/);
-  if (numMatch) return `BP-${numMatch[1].padStart(2, '0')}`;
   const bpMatch = clean.match(/^BP[-_]?(\d{1,2})$/i);
-  if (bpMatch) return `BP-${bpMatch[1].padStart(2, '0')}`;
+  const bpNum = numMatch ? numMatch[1].padStart(2, '0') : bpMatch ? bpMatch[1].padStart(2, '0') : null;
+  if (bpNum) {
+    if (
+      (bpNum === '00' || bpNum === '01') &&
+      titleClean &&
+      !/2026\s+upgraded\s+gcp|official\s+google\s+cloud.*#00|^enterprise\s+architecture\s*—\s*blueprint/i.test(
+        titleClean
+      )
+    ) {
+      const slug = titleClean
+        .replace(/\s*—\s*Blueprint.*$/i, '')
+        .replace(/\s*\(#?\d+\)\s*$/i, '')
+        .replace(/[^A-Za-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '')
+        .toUpperCase()
+        .slice(0, 42);
+      if (slug && slug !== 'BP_00' && slug !== 'BP_01') {
+        return `CUSTOM_${slug}`;
+      }
+    }
+    return `BP-${bpNum}`;
+  }
   return clean.replace(/[^A-Za-z0-9_-]/g, '_');
 }
 
@@ -310,12 +354,27 @@ export async function openDiagramInGoogleWorkspace(
         }
       : paramsOrKey;
 
-  const normKey = normalizeClientManifestKey(params.key);
+  const normKey = normalizeClientManifestKey(params.key, params.title);
   const activeManifest = params.manifest || globalManifestCache;
   const sEntry = activeManifest.slides?.[normKey];
   const dEntry = activeManifest.docs?.[normKey];
 
-  if (!params.forceSync) {
+  const isStaticPrewarmedKey = STATIC_BLOG_AND_WS_KEYS.has(normKey);
+  const entryTitleMatches =
+    !params.xmlContent ||
+    isStaticPrewarmedKey ||
+    (sEntry?.title &&
+      params.title &&
+      sEntry.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '')
+        .slice(0, 24) ===
+        params.title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '')
+          .slice(0, 24));
+
+  if (!params.forceSync && entryTitleMatches) {
     if (params.mode === 'slides' && sEntry?.googleSlidesEditUrl) {
       if (typeof window !== 'undefined') {
         window.open(sEntry.googleSlidesEditUrl, '_blank', 'noopener,noreferrer');
@@ -488,7 +547,7 @@ export default function DiagramInlineSlidesPreviewer({
 
   const xmlContent = liveXmlContent || propXmlContent;
 
-  const normKey = useMemo(() => normalizeClientManifestKey(resolvedKeyInput), [resolvedKeyInput]);
+  const normKey = useMemo(() => normalizeClientManifestKey(resolvedKeyInput, title), [resolvedKeyInput, title]);
   const [manifest, setManifest] = useState<CloudViewerManifestClient>(globalManifestCache);
   const [activeSlideIdx, setActiveSlideIdx] = useState<number>(0);
 
@@ -566,10 +625,8 @@ export default function DiagramInlineSlidesPreviewer({
   const connectorCount = Math.max(parsedGraph.edges.length, 23);
 
   const activeDocGuide = useMemo(
-    () =>
-      GOOGLE_CLOUD_DOCUMENTATION_SERIES.find((d) => d.docId.toUpperCase() === normKey) ||
-      GOOGLE_CLOUD_DOCUMENTATION_SERIES[0],
-    [normKey]
+    () => resolveOrSynthesizeDocGuideForDiagram(xmlContent, title, normKey, markdownContent, normKey),
+    [xmlContent, title, normKey, markdownContent]
   );
 
   const slides: SlideDescriptor[] = useMemo(

@@ -1,7 +1,10 @@
-import { buildNasaMultiverseClosedLoopHarnessXml } from './canonical/nasaMultiverseClosedLoopHarness';
 import {
-  generateOracleAtGoogleExadataEbsArchitectureXml,
+  buildNasaMultiverseClosedLoopHarnessXml,
+  buildUniversalClosedLoopDomainHarnessXml,
+} from './canonical/nasaMultiverseClosedLoopHarness';
+import {
   synthesizePromptDrivenDiagramXml,
+  generateOracleAtGoogleExadataEbsArchitectureXml,
 } from './promptDrivenDiagramSynthesizer';
 import { createBlankCanvasDrawioXml } from './xmlHealer';
 
@@ -36,15 +39,14 @@ const DELETED_DRAFTS_KEY = 'promptcanvas_deleted_draft_ids';
 
 /**
  * Self-heals any stale 1-box stub (`copilot_mod_custom_box_0` / `CO-PILOT SYNTHESIS V1.1` / `< 6` vertices)
- * or pre-fix `Oracle@google` draft into the full 23-vertex, 17-edge multi-tier architecture diagram.
+ * or purged 4-tier diagram into the NASA Closed-Loop & Parallel Digital-Twin Agentic Harness (`buildUniversalClosedLoopDomainHarnessXml`).
  */
 export function healStubOrOracleDiagramXml(
   xml?: string | null,
   prompt?: string | null,
   title?: string | null
-): { xml: string; healed: boolean; canonicalTitle?: string } {
+): { xml: string; latest_xml?: string; healed: boolean; canonicalTitle?: string } {
   const safeXml = String(xml || '');
-  const combinedMeta = `${title || ''} ${prompt || ''} ${safeXml.slice(0, 1200)}`;
   const isIntentionalBlankBaseline =
     safeXml.includes('data-blank-canvas="true"') &&
     /initial blank canvas|blank canvas baseline/i.test(`${prompt || ''} ${title || ''}`);
@@ -53,23 +55,25 @@ export function healStubOrOracleDiagramXml(
     return { xml: safeXml, healed: false };
   }
 
-  const isOracleMatch =
-    /oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|\bebs\s+r12|\boracle\s+ebs\b/i.test(
-      combinedMeta
-    );
+  const isPurgedLegacyFourTier =
+    safeXml.includes('oracle-at-google-ebs-exadata-2026') ||
+    safeXml.includes('PromptCanvas-OracleAtGoogleExadataEngine');
 
-  if (isOracleMatch) {
-    const alreadyHealed = safeXml.includes('oracle-at-google-ebs-exadata-2026');
-    const oracleDefaultPrompt =
-      prompt ||
-      'Create an architecture diagram showing oracle@google for ebuisness suite running on exadata';
+  if (isPurgedLegacyFourTier) {
+    const cleanPrompt =
+      prompt && !/oracle|exadata|ebuisness|e-business/i.test(prompt)
+        ? prompt
+        : 'NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness';
+    const healedXml = buildUniversalClosedLoopDomainHarnessXml({
+      prompt: cleanPrompt,
+      theme: 'light',
+    });
     return {
-      xml: alreadyHealed
-        ? safeXml
-        : generateOracleAtGoogleExadataEbsArchitectureXml(oracleDefaultPrompt),
-      healed: !alreadyHealed,
+      xml: healedXml,
+      latest_xml: healedXml,
+      healed: true,
       canonicalTitle:
-        'Oracle Database@Google Cloud — E-Business Suite (EBS R12.2) on Exadata X10M (v1.0.1)',
+        'NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness (v1.0.1)',
     };
   }
 
@@ -84,10 +88,11 @@ export function healStubOrOracleDiagramXml(
 
   if (isOneBoxCoPilotStub) {
     const fallbackPrompt =
-      prompt || title || 'Create an enterprise Google Cloud reference architecture';
-    const synthXml = synthesizePromptDrivenDiagramXml(fallbackPrompt);
+      prompt || title || 'NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness';
+    const synthXml = synthesizePromptDrivenDiagramXml(fallbackPrompt, { noTemplate: true });
     return {
       xml: synthXml,
+      latest_xml: synthXml,
       healed: true,
       canonicalTitle: title || fallbackPrompt,
     };
@@ -185,107 +190,8 @@ export function markDraftDeleted(id: string): void {
 }
 
 /**
- * Built-in Oracle Database@Google Cloud — Oracle E-Business Suite (EBS R12.2) on Exadata X10M (v1.0.1 Draft)
- * Ensures the 23-vertex, 17-edge multi-tier Oracle@Google Exadata EBS diagram is always #1 in Library & Drafts.
- */
-export function buildOracleAtGoogleExadataDraftItem(): AutoSavedDraftBlueprint {
-  const oraclePrompt =
-    'Create an architecture diagram showing oracle@google for ebuisness suite running on exadata';
-  const oracleXml = generateOracleAtGoogleExadataEbsArchitectureXml(oraclePrompt);
-  const blankXml = createBlankCanvasDrawioXml('Oracle@Google EBS R12.2 Blank Canvas Baseline');
-  const oracleTitle =
-    'Oracle Database@Google Cloud — E-Business Suite (EBS R12.2) on Exadata X10M (v1.0.1)';
-  const createdAt = '2026-10-16T20:15:00.000Z';
-
-  const oracleVersions = [
-    {
-      id: 'ver_oracle_exadata_ebs_v1_0_1',
-      versionTag: 'v1.0.1',
-      major: 1,
-      minor: 0,
-      micro: 1,
-      title: oracleTitle,
-      prompt: oraclePrompt,
-      source: 'ai_copilot',
-      sourceLabel: 'Principal Cloud & Oracle Exadata Architect (Technical Draft v1.0.1)',
-      diffSummary:
-        '+ Synthesized 5-Zone, 23-Vertex, 17-Edge Oracle Database@Google Cloud Architecture for Oracle E-Business Suite (EBS R12.2) on Exadata X10M (Cloud Armor + IAP, EBS WebLogic App Tier on Compute Engine + Cloud Filestore Enterprise Shared APPL_TOP, <0.5ms ODB Network Partner Interconnect, Exadata X10M 2-Node RAC + Active Data Guard, GoldenGate 23ai CDC to BigQuery Cortex & Vertex AI Gemini 2.5)',
-      timestamp: '04:15 PM',
-      xml: oracleXml,
-      blueprintId: '00',
-      level: 'L3',
-      perspective: 'Technical',
-      status: 'draft',
-      persona: 'Principal Cloud & Oracle Exadata Architect',
-      modelUsed: 'gemini-3.8-flash • judged by gemini-3.1-pro-preview (97% certified)',
-      aiReasoning:
-        'Synthesized full 5-zone production topology for Oracle E-Business Suite (EBS R12.2) on Google Cloud connected to Oracle Database@Google Cloud on Exadata X10M across ODB Network Partner Interconnect (<0.5ms p99 SQL*Net latency) with Cloud Filestore Enterprise Shared APPL_TOP, Active Data Guard Standby, and GoldenGate 23ai CDC into BigQuery Google Cloud Cortex for Oracle EBS.',
-      plannedSteps: [
-        'Zone 1: Provisioned Cloud Armor WAF, Identity-Aware Proxy (IAP), and Cloud Interconnect / HA VPN for enterprise ERP users & B2B EDI.',
-        'Zone 2: Deployed Oracle EBS R12.2 Application Tier on Compute Engine C3/N2 MIGs (WebLogic oacore/forms, Concurrent Processing Managers) mounted to Cloud Filestore Enterprise Regional NFSv4.1 Shared APPL_TOP.',
-        'Zone 3: Configured ODB Network Dedicated Partner Interconnect + Cloud Router BGP (<0.5ms p99 latency, Jumbo MTU 9000) into Google Cloud Same-Region Colocated Facility.',
-        'Zone 4: Provisioned Oracle Database@Google Cloud on Exadata X10M (19c/23ai 2-Node RAC Primary, Smart Scan RDMA RoCEv2, Active Data Guard Standby, Autonomous Recovery Service).',
-        'Zone 5: Connected Oracle GoldenGate 23ai Real-Time CDC to BigQuery (Google Cloud Cortex for Oracle EBS), Vertex AI Agent Builder (Gemini 2.5 Pro), Cloud KMS CMEK, and Cloud Monitoring.',
-      ],
-    },
-    {
-      id: 'ver_oracle_exadata_ebs_v1_0_0',
-      versionTag: 'v1.0.0',
-      major: 1,
-      minor: 0,
-      micro: 0,
-      title: 'Untitled Architecture (Blank Canvas Baseline)',
-      prompt: 'Initial blank canvas workspace — ready for prompt-driven architecture synthesis.',
-      source: 'initial_load',
-      sourceLabel: 'Blank Canvas (v1.0.0)',
-      diffSummary: 'Initialized empty Draw.io canvas (0 vertices).',
-      timestamp: '04:14 PM',
-      xml: blankXml,
-      blueprintId: 'blank',
-      level: 'L3',
-      perspective: 'Technical',
-      status: 'draft',
-    },
-  ];
-
-  return {
-    id: 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1',
-    name: oracleTitle,
-    domain: 'Enterprise ERP & Hybrid Cloud (Oracle Database@Google Cloud / Exadata X10M / EBS R12.2)',
-    description:
-      'Auto-Saved Draft (v1.0.1) • 5-Zone, 23-Vertex, 17-Edge Reference Architecture for Oracle E-Business Suite (EBS R12.2) on Google Cloud with Oracle Database@Google Cloud on Exadata X10M (<0.5ms ODB Partner Interconnect, Cloud Filestore Enterprise Shared APPL_TOP, Active Data Guard, GoldenGate 23ai CDC to BigQuery Cortex & Vertex AI).',
-    prompt: oraclePrompt,
-    tags: [
-      'Draft',
-      'v1.0.1',
-      'Oracle Database@Google Cloud',
-      'Exadata X10M',
-      'Oracle EBS R12.2',
-      'ODB Network',
-    ],
-    nodeCount: 23,
-    specCount: 17,
-    versionCount: 2,
-    activeVersionTag: 'v1.0.1',
-    major: 1,
-    minor: 0,
-    micro: 1,
-    xml: oracleXml,
-    latest_xml: oracleXml,
-    created_studio: 'draft',
-    status: 'draft',
-    architecture_type: 'conceptual_diagram',
-    blueprintId: '00',
-    perspective: 'Technical',
-    createdAt,
-    updatedAt: createdAt,
-    versions: oracleVersions,
-  };
-}
-
-/**
  * Built-in NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness (v1.0.1 Draft)
- * Ensures the synthesized NASA diagram is always available in Library -> Drafts and /library?q=nasa.
+ * Ensures the synthesized NASA diagram is always #1 in Library -> Drafts and /library?q=nasa.
  */
 export function buildNasaMultiverseDraftItem(): AutoSavedDraftBlueprint {
   const nasaXml = buildNasaMultiverseClosedLoopHarnessXml('light');
@@ -374,6 +280,85 @@ export function buildNasaMultiverseDraftItem(): AutoSavedDraftBlueprint {
 }
 
 /**
+ * Built-in Oracle Database@Google Cloud — E-Business Suite (EBS R12.2) on Exadata X10M (v1.0.1 Draft)
+ */
+export function buildOracleAtGoogleExadataDraftItem(): AutoSavedDraftBlueprint {
+  const oraclePrompt =
+    'Create an architecture diagram for Oracle@google for ebuisness suite running on exadata';
+  const oracleXml = generateOracleAtGoogleExadataEbsArchitectureXml(oraclePrompt);
+  const oracleTitle =
+    'Oracle Database@Google Cloud — E-Business Suite (EBS R12.2) on Exadata X10M (v1.0.1)';
+  const createdAt = '2026-10-16T15:30:00.000Z';
+
+  const oracleVersions = [
+    {
+      id: 'ver_oracle_v1_0_1',
+      versionTag: 'v1.0.1',
+      major: 1,
+      minor: 0,
+      micro: 1,
+      title: oracleTitle,
+      prompt: oraclePrompt,
+      source: 'ai_copilot',
+      sourceLabel: 'Oracle Database@Google Cloud Architect (Technical Draft v1.0.1)',
+      diffSummary:
+        'Synthesized 23-vertex, 17-edge Oracle Database@Google Cloud (Exadata X10M RAC + Active Data Guard) & EBS R12.2 (WebLogic + Concurrent Processing + Cloud Filestore Enterprise Shared APPL_TOP) architecture across <0.5ms ODB Partner Interconnect with GoldenGate CDC to Google Cloud Cortex for Oracle EBS & Vertex AI.',
+      timestamp: '03:30 PM',
+      xml: oracleXml,
+      blueprintId: '00',
+      level: 'L3',
+      perspective: 'Technical',
+      status: 'draft',
+    },
+    {
+      id: 'ver_oracle_v1_0_0',
+      versionTag: 'v1.0.0',
+      major: 1,
+      minor: 0,
+      micro: 0,
+      title: 'Blank Canvas Baseline (v1.0.0)',
+      prompt: 'Blank Canvas initialized',
+      source: 'initial_load',
+      sourceLabel: 'Blank Canvas Baseline',
+      diffSummary: 'Intentional Blank Canvas (0 vertices) prior to prompt synthesis.',
+      timestamp: '03:29 PM',
+      xml: '<mxfile host="app.diagrams.net"><diagram id="blank_canvas" name="Blank Canvas"><mxGraphModel data-blank-canvas="true"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel></diagram></mxfile>',
+      blueprintId: 'blank',
+      level: 'L3',
+      perspective: 'Technical',
+      status: 'draft',
+    },
+  ];
+
+  return {
+    id: 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1',
+    name: oracleTitle,
+    domain: 'Enterprise ERP & Hybrid Cloud (Oracle Database@Google Cloud / Exadata X10M / EBS R12.2)',
+    description:
+      'Auto-Saved Draft (v1.0.1) • 23-vertex, 17-edge reference topology for Oracle E-Business Suite (EBS R12.2) on Google Cloud Engine + Cloud Filestore Enterprise Shared APPL_TOP connected via <0.5ms ODB Partner Interconnect to Oracle Exadata X10M RAC, Active Data Guard, and GoldenGate CDC to BigQuery Cortex.',
+    prompt: oraclePrompt,
+    tags: ['Draft', 'v1.0.1', 'Oracle Database@Google Cloud', 'Exadata X10M', 'EBS R12.2', 'Blueprint #00'],
+    nodeCount: 23,
+    specCount: 17,
+    versionCount: 2,
+    activeVersionTag: 'v1.0.1',
+    major: 1,
+    minor: 0,
+    micro: 1,
+    xml: oracleXml,
+    latest_xml: oracleXml,
+    created_studio: 'draft',
+    status: 'draft',
+    architecture_type: 'conceptual_diagram',
+    blueprintId: '00',
+    perspective: 'Technical',
+    createdAt,
+    updatedAt: createdAt,
+    versions: oracleVersions,
+  };
+}
+
+/**
  * Automatically saves any generated diagram or prompt iteration with a micro-version number
  * so it is immediately available under Library -> Drafts (/library?studio=drafts).
  */
@@ -382,6 +367,7 @@ export function autoSaveGeneratedDiagramAsDraft(params: {
   title: string;
   domain?: string;
   xml: string;
+  latest_xml?: string;
   prompt: string;
   diffSummary?: string;
   blueprintId?: string;

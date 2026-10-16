@@ -11,9 +11,8 @@ import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import { DiagramRowInventory } from './types';
 import { getVisionConverted01Xml } from '../masterBuilders/build_vision_converted_01';
 import { generateGoogleMultiagentArchitectureXml } from '../masterBuilders/build_master_google_multiagent_ai_system';
-import { generateTemplate04ValueStreamXml } from '../canonical/template04ValueStream';
-import { generateTemplate10IntegrationArchXml } from '../canonical/template10IntegrationArch';
-import { generateTemplate20CiCdPipelineXml } from '../canonical/template20CiCdPipeline';
+import { generateFlowDiagramBlueprintXmlById } from '../canonical/flowDiagramBlueprints67to74';
+import { generateTemplate78OfficialGcpArchCenterHubSpokeXml } from '../canonical/templateOfficialGcpArchCenterHubSpoke';
 import { generateTemplate35FintechWealthEngineXml } from '../canonical/template35FintechWealthEngine';
 import { buildMasterPharmaGenomicsPipelineXml } from '../masterBuilders/build_master_pharma_genomics_pipeline';
 import { CANONICAL_TEMPLATES } from '../canonical/canonicalTemplates';
@@ -123,51 +122,48 @@ export function matchMasterBlueprint(detectedTitle: string, promptText: string, 
     };
   }
 
-  // 3. Blueprint 04: Value Stream Delivery
+  // 3. Blueprint 68: End-to-End Operational & Value Stream Flowchart
   if (
-    badgeNumber === '04' ||
-    (/\b04\b/.test(combined) && /value\s+stream/i.test(combined)) ||
+    badgeNumber === '68' ||
     (/value\s+stream/i.test(combined) && /research to patient/i.test(combined))
   ) {
     return {
       isMatch: true,
-      id: '04',
-      title: '04 — Value Stream Delivery Architecture',
-      xml: generateTemplate04ValueStreamXml('biopharma', 'light'),
+      id: '68',
+      title: '68 — End-to-End Operational & Value Stream Flowchart',
+      xml: generateFlowDiagramBlueprintXmlById('68'),
       family: 'VALUE_STREAM',
-      badge: '04',
+      badge: '68',
     };
   }
 
-  // 4. Blueprint 10: Enterprise Integration Mesh
+  // 4. Blueprint 78: Official Google Cloud Architecture Center Hub-and-Spoke
   if (
-    badgeNumber === '10' ||
-    (/\b10\b/.test(combined) && /integration/i.test(combined)) ||
+    badgeNumber === '78' ||
     (/enterprise\s+integration/i.test(combined) && (/gateway/i.test(combined) || /datastream/i.test(combined) || /backbone/i.test(combined)))
   ) {
     return {
       isMatch: true,
-      id: '10',
-      title: '10 — Enterprise Integration Architecture',
-      xml: generateTemplate10IntegrationArchXml('biopharma', 'light'),
+      id: '78',
+      title: '78 — Official Google Cloud Architecture Center Hub-and-Spoke',
+      xml: generateTemplate78OfficialGcpArchCenterHubSpokeXml('arch-center-hybrid-multitenant-spokes'),
       family: 'INTEGRATION',
-      badge: '10',
+      badge: '78',
     };
   }
 
-  // 5. Blueprint 20: DevSecOps CI/CD Pipeline
+  // 5. Blueprint 70: DevSecOps CI/CD & Cloud Deploy Pipeline
   if (
-    badgeNumber === '20' ||
-    (/\b20\b/.test(combined) && (/ci\/cd/i.test(combined) || /devsecops/i.test(combined))) ||
+    badgeNumber === '70' ||
     (/devsecops/i.test(combined) && /canary/i.test(combined))
   ) {
     return {
       isMatch: true,
-      id: '20',
-      title: '20 — DevSecOps CI/CD Pipeline Architecture',
-      xml: generateTemplate20CiCdPipelineXml('biopharma', 'light'),
+      id: '70',
+      title: '70 — DevSecOps CI/CD & Cloud Deploy Pipeline Architecture',
+      xml: generateFlowDiagramBlueprintXmlById('70'),
       family: 'CICD',
-      badge: '20',
+      badge: '70',
     };
   }
 
@@ -274,14 +270,14 @@ Perform an EXHAUSTIVE, VERBATIM structural extraction on this architecture diagr
 
 Return a valid JSON object matching this schema:
 {
-  "badgeNumber": "<e.g. '04' or null if there is a number box/badge at top-left>",
-  "title": "<verbatim main header/title banner, e.g. VALUE STREAM – NOVACURA BIO-PHARMA PRODUCT>",
+  "badgeNumber": "<e.g. '78' or null if there is a number box/badge at top-left>",
+  "title": "<verbatim main header/title banner, e.g. GOOGLE CLOUD MULTI-TENANT AGENTIC AI ARCHITECTURE>",
   "subtitle": "<verbatim subtitle or tagline if present>",
   "theme": "<'light' if background is white/light, 'dark' if dark background>",
   "hasLeftColumn": <true if the diagram has a dedicated left-hand column containing row/band titles like VALUE STAGES, KEY ACTIVITIES, VALUE METRICS, VALUE FLOW, etc.>,
   "brandBlock": {
-    "logoText": "<verbatim brand logo name on top-right, e.g. NOVACURA>",
-    "subtitle": "<verbatim brand tagline, e.g. Transforming Therapies. Improving Lives.>"
+    "logoText": "<verbatim brand logo name on top-right, e.g. GOOGLE CLOUD>",
+    "subtitle": "<verbatim brand tagline, e.g. Enterprise Reference Architecture>"
   },
   "zoneColors": [
     {
@@ -364,17 +360,10 @@ Rules:
 
   // Fallback heuristics for badgeNumber and brandBlock if image title contains them
   if (!badgeNumber) {
-    const numMatch = (detectedTitle + ' ' + promptText).match(/\b0?([1-9]|[1-3][0-9]|04)\b/);
-    if (numMatch && (detectedTitle.toLowerCase().includes('novacura') || promptText.includes('04') || promptText.includes('image'))) {
+    const numMatch = (detectedTitle + ' ' + promptText).match(/\b(00|3[5-9]|4[0-9]|50|6[7-9]|7[0-4]|78)\b/);
+    if (numMatch) {
       badgeNumber = numMatch[1].padStart(2, '0');
     }
-  }
-
-  if (!brandBlock && (detectedTitle.toLowerCase().includes('novacura') || promptText.toLowerCase().includes('novacura'))) {
-    brandBlock = {
-      logoText: 'NOVACURA',
-      subtitle: 'Transforming Therapies. Improving Lives.'
-    };
   }
 
   if (hasLeftColumn === undefined) {

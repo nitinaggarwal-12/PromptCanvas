@@ -11,10 +11,11 @@
  *     to display the exact Diagram Title + "💬 Generative Prompt: ..." banner.
  *  3. Mutates/enriches the saved template's layer cards and domain labels so 100% of
  *     the prompt's technologies and entities are physically rendered on the canvas.
- *  4. Scrubs 100% of any residual NOVACURA / Veeva Vault / Pharmacovigilance text.
+ *  4. Scrubs 100% of any residual CLINICAL AI / Veeva Vault / Pharmacovigilance text.
  */
 
 import { generateUpgradedGcpGeBankingArchitectureXml } from './canonical/upgradedGcpGeBankingAgentTemplate';
+import { buildUniversalClosedLoopDomainHarnessXml } from './canonical/nasaMultiverseClosedLoopHarness';
 import { generateLogicalGcpAgentArchitectureXml } from './canonical/templateLogicalGcpAgentArchitecture';
 import { generateConceptualGcpAgentArchitectureXml } from './canonical/templateConceptualGcpAgentArch';
 import { generateProcessGcpAgentWorkflowXml } from './canonical/templateProcessGcpAgentWorkflow';
@@ -332,6 +333,18 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
         ];
       }
     }
+  } else {
+    // When no explicit canonical blueprint template (#00..#78) is selected, always default
+    // to the NASA Closed-Loop & Parallel Multi-Universe Digital-Twin Agentic Harness generator.
+    return synthesizeZeroTemplateCustomArchitectureXml(
+      prompt,
+      safeTitle,
+      domain,
+      options?.geminiDecision?.tailoredSpec?.customSubsystems,
+      options?.geminiDecision?.tailoredSpec?.decisionGateQuestion,
+      levelBadge,
+      perspBadge
+    );
   }
 
   const isAwsBedrockPrompt =
@@ -415,9 +428,9 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
       domain,
     });
   } else if (isAwsBedrockPrompt) {
-    // Saved Template 41 adapted for AWS Cloud Reference Architecture v2.0 (Amazon Bedrock + Amazon SageMaker + Redshift + Claude)
+    // Saved Template 41 adapted for AWS Cloud Reference Architecture v2.0 (Amazon Bedrock + Amazon SageMaker + Redshift + Gemini 2.5 Pro)
     baseXml = generateTemplate41EnterpriseRagPlatformXml('saas', 'light');
-    templateRefLabel = 'Modified Saved Template #41 • AWS Well-Architected Cloud Reference Architecture v2.0 (Amazon Bedrock, SageMaker, Redshift & Claude)';
+    templateRefLabel = 'Modified Saved Template #41 • AWS Well-Architected Cloud Reference Architecture v2.0 (Amazon Bedrock, SageMaker, Redshift & Gemini 2.5 Pro)';
     domainMutations = [
       [/Google Cloud/gi, 'AWS Cloud'],
       [/41\. Enterprise RAG &amp; Knowledge Intelligence Platform/gi, 'AWS CLOUD ARCHITECTURE ON AMAZON BEDROCK, SAGEMAKER, REDSHIFT &amp; CLAUDE'],
@@ -458,16 +471,6 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
       [/\(GKE \/ Cloud Run \/ Cloud Functions\)/gi, '(Amazon EKS / ECS Fargate / AWS Lambda)'],
       [/\(Artifact Registry \/ Secret Manager \/ Config\)/gi, '(Amazon ECR / Secrets Manager / AppConfig)']
     ];
-  } else if (
-    lower.includes('oracle') ||
-    lower.includes('exadata') ||
-    lower.includes('ebusiness') ||
-    lower.includes('ebuisness') ||
-    /\bebs\b/i.test(lower) ||
-    lower.includes('data guard') ||
-    lower.includes('autonomous database')
-  ) {
-    return generateOracleAtGoogleExadataEbsArchitectureXml(prompt, safeTitle, levelBadge, perspBadge);
   } else if (lower.includes('sap') || lower.includes('s/4hana') || lower.includes('opc-ua') || lower.includes('manufacturing') || lower.includes('supply chain')) {
     // Saved Template 42: Modern Data Lakehouse, SAP Cortex & IoT Digital Twin
     baseXml = generateTemplate42ModernDataLakehouseDataMeshXml('manufacturing', 'light');
@@ -617,7 +620,7 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
     .replace(/Gemini 1\.5&lt;br\/&gt;Flash/gi, 'Gemini 3.8&lt;br/&gt;Flash')
     .replace(/Gemini 1\.5 Pro/gi, 'Gemini 3.1 Pro');
 
-  // Scrub any residual NOVACURA / Bio-Pharma / Veeva Vault / Pharmacovigilance strings
+  // Scrub any residual CLINICAL AI / Bio-Pharma / Veeva Vault / Pharmacovigilance strings
   modifiedXml = modifiedXml
     .replace(/NOVACURA/gi, 'ENTERPRISE')
     .replace(/Veeva Vault/gi, 'Cloud Storage Archive')
@@ -713,42 +716,19 @@ export function synthesizePromptDrivenDiagramXml(
   const perspective = options?.perspective || options?.geminiDecision?.recommendedPerspective || 'Logical';
   const direction = options?.direction || options?.geminiDecision?.recommendedDirection || 'LR';
 
-  // 0. Dedicated Oracle Database@Google Cloud for E-Business Suite on Exadata Reference Architecture
-  if (isOracleAtGoogleExadataPrompt(`${prompt} ${cleanTitle}`)) {
-    return generateOracleAtGoogleExadataEbsArchitectureXml(prompt, cleanTitle, level, perspective);
-  }
-
-  // 1. Explicit Zero-Template Custom 4-Tier Architecture View
-  if (options?.blueprintId === 'custom') {
-    return synthesizeZeroTemplateCustomArchitectureXml(
-      prompt,
-      cleanTitle,
-      domain,
-      customSubs,
-      gateQ,
-      level,
-      perspective
-    );
-  }
-
-  // 2. Explicit Process Flowchart View (or Process perspective with noTemplate)
-  if (
-    options?.blueprintId === 'process_flow' ||
-    (perspective === 'Process' && options?.noTemplate)
-  ) {
+  // 1. Explicit Process Flowchart View
+  if (options?.blueprintId === 'process_flow') {
     return synthesizeZeroTemplateFlowchartXml(prompt, cleanTitle, direction, level, customSubs, gateQ);
   }
 
-  // 3. Explicit Deep Technical L4 4-Stratum Cross-Section View
-  if (
-    options?.blueprintId === 'stratum_l4' ||
-    (perspective === 'Technical' && level === 'L4' && options?.noTemplate)
-  ) {
+  // 2. Explicit Deep Technical L4 4-Stratum Cross-Section View
+  if (options?.blueprintId === 'stratum_l4') {
     return generateVerticalStratumCrossSectionXml(prompt, cleanTitle);
   }
 
-  // 4. Fallback Zero-Template Custom 4-Tier Architecture View
-  if (options?.noTemplate) {
+  // 3. Default No-Blueprint / Blank Canvas / Custom Architecture Synthesis -> NASA Closed-Loop & Parallel Digital-Twin Harness
+  const explicitBp = String(options?.blueprintId || '').trim();
+  if (!explicitBp || explicitBp === 'custom' || explicitBp === 'none' || explicitBp === 'blank' || options?.noTemplate) {
     return synthesizeZeroTemplateCustomArchitectureXml(
       prompt,
       cleanTitle,
@@ -760,12 +740,12 @@ export function synthesizePromptDrivenDiagramXml(
     );
   }
 
-  // 4. Canonical Blueprint Adaptation (using explicit blueprintId or Gemini's recommended blueprint)
+  // 4. Canonical Blueprint Adaptation (only when an explicit canonical blueprint #00..#78 is selected)
   return adaptSavedGoogleCloudTemplateToPrompt(
     prompt,
     cleanTitle,
     domain,
-    options?.blueprintId || options?.geminiDecision?.recommendedBlueprintId,
+    explicitBp,
     options
   );
 }
@@ -1506,6 +1486,12 @@ export function extractRichPromptSubsystems(prompt: string, fallbackTitle: strin
   return result;
 }
 
+/**
+ * 100% Zero-Template Custom Architecture AST Synthesizer
+ * Defaults to the NASA Closed-Loop Mission Control & Parallel Multi-Universe
+ * Digital-Twin Agentic Harness (`buildUniversalClosedLoopDomainHarnessXml`)
+ * whenever no canonical blueprint template (#00..#78) is selected.
+ */
 export function isOracleAtGoogleExadataPrompt(text: string): boolean {
   const lower = String(text || '').toLowerCase();
   return (
@@ -2002,517 +1988,20 @@ export function generateOracleAtGoogleExadataEbsArchitectureXml(
 export function synthesizeZeroTemplateCustomArchitectureXml(
   prompt: string,
   title?: string,
-  domain = 'Enterprise Cloud',
-  customSubsystems?: string[],
+  _domain = 'Enterprise Cloud',
+  _customSubsystems?: string[],
   _decisionGateQuestion?: string,
   _level = 'L2',
   _perspective = 'Logical'
 ): string {
-  const displayTitle = truncateAtWord(
-    title && !title.includes('Global Real-Time Payments') ? title : prompt || 'Upgraded GCP & Gemini Enterprise Multi-Agent Architecture',
-    76
-  );
   if (isOracleAtGoogleExadataPrompt(`${prompt} ${title || ''}`)) {
-    return generateOracleAtGoogleExadataEbsArchitectureXml(prompt, displayTitle, _level, _perspective);
+    return generateOracleAtGoogleExadataEbsArchitectureXml(prompt, title || prompt, _level, _perspective);
   }
-  const combinedLower = `${prompt} ${title || ''} ${domain}`.toLowerCase();
-  const isAgenticOrBankingPrompt =
-    !prompt ||
-    !prompt.trim() ||
-    /\b(bank|banking|payment|cheque|ekyc|agent|adk|a2a|mcp|gemini enterprise|nasa|satellite|universe|multiverse|robot|autonomous|closed-loop|closed loop|harness)\b/i.test(
-      combinedLower
-    );
-  if (!isAgenticOrBankingPrompt) {
-    return synthesizeLegacyFourTierCustomArchitectureXml(
-      prompt,
-      displayTitle,
-      domain,
-      customSubsystems,
-      _decisionGateQuestion,
-      _level,
-      _perspective
-    );
-  }
-  // Default to the uncluttered 2026 Upgraded GCP & Gemini Enterprise Native Technical Architecture
-  return generateUpgradedGcpGeBankingArchitectureXml({
-    prompt,
-    projectTitle: displayTitle,
-    domain,
-    customSubsystems,
+  const effectivePrompt = [prompt, title].filter(Boolean).join(' — ') || 'NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness';
+  return buildUniversalClosedLoopDomainHarnessXml({
+    prompt: effectivePrompt,
+    theme: 'light',
   });
-}
-
-export function synthesizeLegacyFourTierCustomArchitectureXml(
-  prompt: string,
-  title?: string,
-  domain = 'Enterprise Cloud',
-  customSubsystems?: string[],
-  decisionGateQuestion?: string,
-  level = 'L2',
-  perspective = 'Logical'
-): string {
-  const displayTitle = truncateAtWord(
-    title && !title.includes('Global Real-Time Payments') ? title : prompt || 'Custom Enterprise Architecture',
-    76
-  );
-  const shortPrompt = String(prompt || displayTitle).replace(/\s+/g, ' ').trim().slice(0, 128);
-  const baseSubs = extractRichPromptSubsystems(prompt, displayTitle);
-  const subs = customSubsystems && customSubsystems.length >= 12 ? customSubsystems : baseSubs;
-
-  const renderSvg = (kind: 'ingress' | 'mesh' | 'shield' | 'compute' | 'stream' | 'db', stroke = '#FFFFFF') => {
-    if (kind === 'ingress') {
-      return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>`;
-    }
-    if (kind === 'mesh') {
-      return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2.2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><line x1="8.7" y1="7.5" x2="10.5" y2="15.5"/><line x1="15.3" y1="7.5" x2="13.5" y2="15.5"/><line x1="9" y1="6" x2="15" y2="6"/></svg>`;
-    }
-    if (kind === 'shield') {
-      return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`;
-    }
-    if (kind === 'compute') {
-      return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2.2"><rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="2" x2="9" y2="5"/><line x1="15" y1="2" x2="15" y2="5"/><line x1="9" y1="19" x2="9" y2="22"/><line x1="15" y1="19" x2="15" y2="22"/></svg>`;
-    }
-    if (kind === 'stream') {
-      return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`;
-    }
-    return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2.2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>`;
-  };
-
-  const makeTierBand = (
-    id: string,
-    tag: string,
-    bandTitle: string,
-    y: number,
-    h: number,
-    bgFill: string,
-    borderHex: string,
-    badgeBg: string,
-    badgeText: string
-  ) => {
-    const hdr =
-      `<div style="font-family:Inter,-apple-system,sans-serif;display:inline-flex;align-items:center;gap:6px;background:${badgeBg};border:1px solid ${borderHex};border-radius:5px;padding:2px 8px;">` +
-      `<span style="background:#FFFFFF;color:${badgeText};border:1px solid ${borderHex};border-radius:3px;padding:1px 5px;font-size:8px;font-weight:900;letter-spacing:0.4px;white-space:nowrap;">${escHtml(tag)}</span>` +
-      `<span style="font-size:9px;font-weight:900;color:#0F172A;letter-spacing:0.2px;white-space:nowrap;">${escHtml(truncateAtWord(bandTitle, 24))}</span>` +
-      `</div>`;
-    return `<mxCell id="${id}" value="${escAttr(hdr)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${bgFill};strokeColor=${borderHex};strokeWidth=2;arcSize=5;verticalAlign=top;align=left;spacingTop=4;spacingLeft=8;shadow=0;" vertex="1" parent="1"><mxGeometry x="48" y="${y}" width="1172" height="${h}" as="geometry"/></mxCell>`;
-  };
-
-  const makeNodeCard = (
-    id: string,
-    iconKind: 'ingress' | 'mesh' | 'shield' | 'compute' | 'stream' | 'db',
-    badge: string,
-    cardTitle: string,
-    subtitle: string,
-    bullets: string[],
-    slaSpec: string,
-    accentHex: string,
-    lightHex: string,
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    isDark = false
-  ) => {
-    const fill = isDark ? '#1E293B' : '#FFFFFF';
-    const titleHex = isDark ? '#F8FAFC' : '#0F172A';
-    const subHex = isDark ? '#38BDF8' : accentHex;
-    const bulletHex = isDark ? '#CBD5E1' : '#334155';
-    const badgeBg = isDark ? '#0F172A' : lightHex;
-    const bulletHtml = bullets
-      .map((b) => `<div style="font-size:8.2px;color:${bulletHex};line-height:12px;margin-top:2px;">▸ ${escHtml(b)}</div>`)
-      .join('');
-
-    const html =
-      `<div style="font-family:Inter,-apple-system,sans-serif;padding:6px 9px;width:${w - 16}px;box-sizing:border-box;">` +
-      `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">` +
-      `<div style="display:flex;align-items:center;gap:5px;">` +
-      `<span style="display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:4px;background:${accentHex};">${renderSvg(iconKind)}</span>` +
-      `<span style="font-size:9.8px;font-weight:900;color:${titleHex};white-space:nowrap;">${escHtml(truncateAtWord(cardTitle, 28))}</span>` +
-      `</div>` +
-      `<span style="background:${badgeBg};color:${subHex};border:1px solid ${accentHex};border-radius:4px;padding:1px 4px;font-size:7px;font-weight:800;white-space:nowrap;">${escHtml(badge)}</span>` +
-      `</div>` +
-      `<div style="font-size:8.4px;font-weight:700;color:${subHex};margin-bottom:2px;">${escHtml(truncateAtWord(subtitle, 42))}</div>` +
-      bulletHtml +
-      `<div style="margin-top:4px;padding-top:3px;border-top:1px dashed ${accentHex};display:flex;justify-content:space-between;font-size:7.4px;font-weight:800;color:${subHex};">` +
-      `<span>${escHtml(slaSpec)}</span>` +
-      `<span>${escHtml(level)} · ${escHtml(perspective.toUpperCase())}</span>` +
-      `</div>` +
-      `</div>`;
-
-    return `<mxCell id="${id}" value="${escAttr(html)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accentHex};strokeWidth=1.8;arcSize=7;verticalAlign=top;align=left;shadow=0;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`;
-  };
-
-  const makeEdge = (
-    id: string,
-    source: string,
-    target: string,
-    label: string,
-    opts: {
-      exitX: number;
-      exitY: number;
-      entryX: number;
-      entryY: number;
-      color?: string;
-      dashed?: boolean;
-      offsetY?: number;
-    }
-  ) => {
-    const stroke = opts.color || '#2563EB';
-    const dash = opts.dashed ? 'dashed=1;dashPattern=6 4;' : '';
-    const geo =
-      typeof opts.offsetY === 'number'
-        ? `<mxGeometry relative="1" as="geometry"><mxPoint y="${opts.offsetY}" as="offset"/></mxGeometry>`
-        : `<mxGeometry relative="1" as="geometry"/>`;
-    return `<mxCell id="${id}" value="${escAttr(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${stroke};strokeWidth=2;${dash}endArrow=block;endFill=1;fontSize=8;fontStyle=1;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;exitX=${opts.exitX};exitY=${opts.exitY};entryX=${opts.entryX};entryY=${opts.entryY};" edge="1" parent="1" source="${source}" target="${target}">${geo}</mxCell>`;
-  };
-
-  const topBannerHtml =
-    `<div style="font-family:Inter,-apple-system,sans-serif;display:flex;align-items:center;justify-content:space-between;width:1556px;padding:6px 14px;">` +
-    `<div>` +
-    `<div style="display:flex;align-items:center;gap:10px;">` +
-    `<span style="background:#38BDF8;color:#0F172A;border-radius:4px;padding:2px 8px;font-size:9.5px;font-weight:900;letter-spacing:0.7px;">GEMINI AST SYNTHESIS · ${escHtml(level)} ${escHtml(perspective.toUpperCase())}</span>` +
-    `<span style="font-size:15px;font-weight:900;color:#F8FAFC;letter-spacing:0.2px;">${escHtml(displayTitle)}</span>` +
-    `</div>` +
-    `<div style="font-size:9.5px;font-weight:600;color:#93C5FD;margin-top:3px;">▸ Generative Prompt: "${escHtml(shortPrompt)}" • Domain: ${escHtml(domain.toUpperCase())} • Perspective: ${escHtml(perspective)} (${escHtml(level)})</div>` +
-    `</div>` +
-    `<div style="display:flex;gap:8px;">` +
-    `<span style="background:#1E293B;color:#38BDF8;border:1px solid #0284C7;border-radius:6px;padding:4px 9px;font-size:9px;font-weight:800;">${escHtml(perspective.toUpperCase())} · ${escHtml(level)}</span>` +
-    `<span style="background:#1E293B;color:#34D399;border:1px solid #10B981;border-radius:6px;padding:4px 9px;font-size:9px;font-weight:800;">16:9 AST VERIFIED</span>` +
-    `</div>` +
-    `</div>`;
-
-  const gateQText = decisionGateQuestion || `${truncateAtWord(subs[6], 22)} Valid?`;
-  const gateHtml =
-    `<div style="font-family:Inter,-apple-system,sans-serif;text-align:center;padding:4px;">` +
-    `<div style="font-size:8px;font-weight:900;color:#EA580C;">◆ DECISION GATE</div>` +
-    `<div style="font-size:9.5px;font-weight:900;color:#0F172A;line-height:11.5px;margin-top:2px;">${escHtml(truncateAtWord(gateQText, 28))}</div>` +
-    `</div>`;
-
-  const cells: string[] = [
-    `<mxCell id="0"/>`,
-    `<mxCell id="1" parent="0"/>`,
-    `<mxCell id="hdr_title" value="${escAttr(topBannerHtml)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0284C7;strokeWidth=2;arcSize=6;verticalAlign=middle;align=left;" vertex="1" parent="1"><mxGeometry x="48" y="14" width="1584" height="60" as="geometry"/></mxCell>`,
-
-    // TIER 01: INGRESS & PERIMETER
-    makeTierBand('zt_tier_1', 'TIER 01 · INGRESS', 'EDGE INGRESS & PERIMETER', 90, 166, '#EFF6FF', '#0284C7', '#E0F2FE', '#0369A1'),
-    makeNodeCard(
-      'zt_t1_c1',
-      'ingress',
-      'STEP ❶ INGRESS',
-      subs[0],
-      'Edge Producer & Client Telemetry Channel',
-      [
-        `Ingests ${truncateAtWord(subs[0], 26)} traffic over TLS 1.3`,
-        'Enforces edge rate-limiting & payload framing',
-      ],
-      'SLA: 99.99% • p99 < 8ms',
-      '#0284C7',
-      '#E0F2FE',
-      64,
-      126,
-      304,
-      118
-    ),
-    makeNodeCard(
-      'zt_t1_c2',
-      'mesh',
-      'STEP ❶b ROUTER',
-      subs[1],
-      'Global API Gateway & Traffic Multiplexer',
-      [
-        `Routes ${truncateAtWord(subs[1], 26)} across active zones`,
-        'Deterministic protocol normalization & load balancing',
-      ],
-      'THROUGHPUT: 250K req/s',
-      '#0284C7',
-      '#E0F2FE',
-      484,
-      126,
-      304,
-      118
-    ),
-    makeNodeCard(
-      'zt_t1_c3',
-      'shield',
-      'ZERO-TRUST GATE',
-      subs[2],
-      'Mutual TLS, OIDC Workload Identity & WAF',
-      [
-        `Validates ${truncateAtWord(subs[2], 26)} cryptographic claims`,
-        'Blocks malformed payloads before core compute',
-      ],
-      'AUTH: mTLS 1.3 + OIDC',
-      '#0284C7',
-      '#E0F2FE',
-      904,
-      126,
-      304,
-      118
-    ),
-
-    // TIER 02: CORE COMPUTE & ORCHESTRATION
-    makeTierBand('zt_tier_2', 'TIER 02 · COMPUTE', 'CORE ORCHESTRATION & AI', 312, 168, '#F5F3FF', '#7C3AED', '#EDE9FE', '#6D28D9'),
-    makeNodeCard(
-      'zt_t2_c1',
-      'compute',
-      'STEP ❷ ENGINE',
-      subs[3],
-      'Primary Domain Execution Runtime',
-      [
-        `Executes ${truncateAtWord(subs[3], 26)} domain logic`,
-        'Stateless autoscaled workers with idempotency keys',
-      ],
-      'LATENCY: p99 < 18ms',
-      '#7C3AED',
-      '#EDE9FE',
-      64,
-      348,
-      304,
-      120
-    ),
-    makeNodeCard(
-      'zt_t2_c2',
-      'mesh',
-      'ORCHESTRATOR',
-      subs[4],
-      'Central Coordinator & State Machine Bus',
-      [
-        `Coordinates ${truncateAtWord(subs[4], 26)} workflow transitions`,
-        'Dispatches synchronous & asynchronous domain hops',
-      ],
-      'DAG: Deterministic State',
-      '#7C3AED',
-      '#EDE9FE',
-      484,
-      348,
-      304,
-      120
-    ),
-    makeNodeCard(
-      'zt_t2_c3',
-      'stream',
-      'STREAM / AI',
-      subs[5],
-      'Real-Time Enrichment & Intelligence Pipeline',
-      [
-        `Processes ${truncateAtWord(subs[5], 26)} event windows`,
-        'Continuous feature scoring & context enrichment',
-      ],
-      'WINDOW: Sub-50ms Stream',
-      '#7C3AED',
-      '#EDE9FE',
-      904,
-      348,
-      304,
-      120
-    ),
-
-    // TIER 03: POLICY DECISION GATE & QUARANTINE
-    makeTierBand('zt_tier_3', 'TIER 03 · VALIDATION', 'POLICY DECISION GATE', 536, 168, '#FFF7ED', '#EA580C', '#FFEDD5', '#C2410C'),
-    makeNodeCard(
-      'zt_t3_c1',
-      'shield',
-      'STEP ❸ VALIDATOR',
-      subs[6],
-      'Deterministic Schema & Invariant Evaluator',
-      [
-        `Evaluates ${truncateAtWord(subs[6], 26)} contract rules`,
-        'Computes pre-commit checksum & compliance posture',
-      ],
-      'VERIFY: 100% Schema Parity',
-      '#EA580C',
-      '#FFEDD5',
-      64,
-      572,
-      304,
-      120
-    ),
-    `<mxCell id="zt_t3_gate" value="${escAttr(gateHtml)}" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;strokeWidth=2.2;shadow=0;" vertex="1" parent="1"><mxGeometry x="546" y="572" width="180" height="116" as="geometry"/></mxCell>`,
-    makeNodeCard(
-      'zt_t3_c3',
-      'stream',
-      'QUARANTINE / DLQ',
-      subs[7],
-      'Dead-Letter Isolation & Backoff Replay Vault',
-      [
-        `Isolates rejected ${truncateAtWord(subs[7], 24)} payloads`,
-        'Triggers exponential-backoff closed-loop replay',
-      ],
-      'RECOVERY: Auto-Replay Loop',
-      '#EA580C',
-      '#FFEDD5',
-      904,
-      572,
-      304,
-      120
-    ),
-
-    // TIER 04: TRANSACTIONAL STATE & ANALYTICAL PERSISTENCE
-    makeTierBand('zt_tier_4', 'TIER 04 · DATA STORE', 'STATE & ANALYTICAL LEDGER', 760, 176, '#ECFDF5', '#059669', '#D1FAE5', '#047857'),
-    makeNodeCard(
-      'zt_t4_c1',
-      'db',
-      'LOW-LATENCY CACHE',
-      subs[8],
-      'Sub-Millisecond Operational State Cache',
-      [
-        `Serves hot ${truncateAtWord(subs[8], 26)} state lookups`,
-        'Write-through invalidation & session pinning',
-      ],
-      'CACHE: p99 < 0.8ms',
-      '#059669',
-      '#D1FAE5',
-      64,
-      798,
-      304,
-      122
-    ),
-    makeNodeCard(
-      'zt_t4_c2',
-      'db',
-      'STEP ❹ ACID LEDGER',
-      subs[9],
-      'Multi-Region Strongly Consistent Primary Store',
-      [
-        `Commits verified ${truncateAtWord(subs[9], 24)} transactions`,
-        'Synchronous quorum replication (RPO = 0)',
-      ],
-      'DURABILITY: 99.999% ACID',
-      '#059669',
-      '#D1FAE5',
-      484,
-      798,
-      304,
-      122
-    ),
-    makeNodeCard(
-      'zt_t4_c3',
-      'db',
-      'LAKEHOUSE & AUDIT',
-      subs[10],
-      'Analytical Warehouse & Immutable Audit Archive',
-      [
-        `Streams ${truncateAtWord(subs[10], 24)} projections & lineage`,
-        'CMEK-encrypted retention & compliance reporting',
-      ],
-      'RETENTION: 7-Yr Immutable',
-      '#059669',
-      '#D1FAE5',
-      904,
-      798,
-      304,
-      122
-    ),
-
-    // RIGHT-RAIL CROSS-CUTTING GOVERNANCE, SECURITY & SRE OBSERVABILITY PLANE
-    `<mxCell id="zt_obs_plane" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0284C7;strokeWidth=2.5;arcSize=3;" vertex="1" parent="1"><mxGeometry x="1324" y="90" width="308" height="846" as="geometry"/></mxCell>`,
-    `<mxCell id="zt_obs_hdr" value="${escAttr(
-      `<div style="padding:4px 8px;font-family:Inter,-apple-system,sans-serif;text-align:center;">` +
-        `<div style="background:#38BDF8;color:#0F172A;font-size:8px;font-weight:900;padding:1.5px 6px;border-radius:4px;letter-spacing:0.6px;display:inline-block;margin-bottom:2px;">CROSS-CUTTING GOVERNANCE &amp; SRE</div>` +
-        `<div style="font-size:10px;font-weight:900;color:#F8FAFC;">Zero-Trust, Telemetry &amp; Compliance Plane</div>` +
-        `</div>`
-    )}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#38BDF8;strokeWidth=1.2;arcSize=10;" vertex="1" parent="1"><mxGeometry x="1336" y="96" width="284" height="30" as="geometry"/></mxCell>`,
-    makeNodeCard(
-      'zt_obs_1',
-      'shield',
-      'KMS & IAM',
-      `Zero-Trust Policy Guard`,
-      'Least-Privilege Workload Identity & CMEK Vault',
-      [
-        'Hardware-backed key rotation & envelope encryption',
-        'Continuous perimeter & token attestation',
-      ],
-      'FIPS 140-3 L3 • CMEK',
-      '#0284C7',
-      '#0F172A',
-      1336,
-      132,
-      284,
-      114,
-      true
-    ),
-    makeNodeCard(
-      'zt_obs_2',
-      'stream',
-      'OTLP TRACING',
-      subs[11],
-      'Distributed OpenTelemetry Traces & Metrics',
-      [
-        `Tracks end-to-end ${truncateAtWord(subs[3], 20)} latency spans`,
-        'Real-time error budget & saturation alerting',
-      ],
-      'W3C TraceContext • 100Hz',
-      '#7C3AED',
-      '#0F172A',
-      1336,
-      352,
-      284,
-      116,
-      true
-    ),
-    makeNodeCard(
-      'zt_obs_3',
-      'shield',
-      'AUDIT & DRIFT',
-      `Contract & SLA Auditor`,
-      'Continuous Policy & Schema Drift Detection',
-      [
-        `Audits ${truncateAtWord(subs[6], 22)} decision gate outcomes`,
-        'Immutable compliance evidence & SIEM export',
-      ],
-      'ZERO DRIFT • SOC2 / ISO',
-      '#EA580C',
-      '#0F172A',
-      1336,
-      574,
-      284,
-      116,
-      true
-    ),
-    makeNodeCard(
-      'zt_obs_4',
-      'db',
-      'BCDR & FINOPS',
-      `Multi-Region Failover & FinOps`,
-      'Automated DR Readiness & Cost Telemetry',
-      [
-        `Monitors ${truncateAtWord(subs[9], 20)} replication quorum`,
-        'Unit-cost telemetry & autoscaling guardrails',
-      ],
-      'RPO = 0 • RTO < 15s',
-      '#059669',
-      '#0F172A',
-      1336,
-      798,
-      284,
-      122,
-      true
-    ),
-
-    // HORIZONTAL & VERTICAL TYPED CONNECTORS (100% Collision-Free Channels)
-    makeEdge('zt_e_1a', 'zt_t1_c1', 'zt_t1_c2', '❶a TLS Ingress', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#0284C7' }),
-    makeEdge('zt_e_1b', 'zt_t1_c2', 'zt_t1_c3', '❶b Auth Check', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#0284C7' }),
-    makeEdge('zt_e_1_obs', 'zt_t1_c3', 'zt_obs_1', 'IAM Attest', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#0284C7', dashed: true }),
-
-    makeEdge('zt_e_v1', 'zt_t1_c2', 'zt_t2_c2', '❷a Dispatch Request', { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, color: '#2563EB', offsetY: -10 }),
-    makeEdge('zt_e_2a', 'zt_t2_c2', 'zt_t2_c1', '❷b Invoke Runtime', { exitX: 0, exitY: 0.5, entryX: 1, entryY: 0.5, color: '#7C3AED' }),
-    makeEdge('zt_e_2b', 'zt_t2_c2', 'zt_t2_c3', '❷c Publish Stream', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#EA580C', dashed: true }),
-    makeEdge('zt_e_2_obs', 'zt_t2_c3', 'zt_obs_2', 'OTLP Spans', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#7C3AED', dashed: true }),
-
-    makeEdge('zt_e_v2_left', 'zt_t2_c1', 'zt_t3_c1', '❸a Validate Payload', { exitX: 0.85, exitY: 1, entryX: 0.85, entryY: 0, color: '#EA580C', offsetY: -10 }),
-    makeEdge('zt_e_3a', 'zt_t3_c1', 'zt_t3_gate', '❸b Policy Gate', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#EA580C' }),
-    makeEdge('zt_e_3_no', 'zt_t3_gate', 'zt_t3_c3', '✕ NO (Quarantine)', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#DC2626', dashed: true }),
-    makeEdge('zt_e_3_retry', 'zt_t3_c3', 'zt_t2_c3', '↩ Backoff Replay', { exitX: 0.5, exitY: 0, entryX: 0.5, entryY: 1, color: '#0D9488', dashed: true, offsetY: -10 }),
-    makeEdge('zt_e_3_obs', 'zt_t3_c3', 'zt_obs_3', 'Audit Alert', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#EA580C', dashed: true }),
-
-    makeEdge('zt_e_v3_cache', 'zt_t3_c1', 'zt_t4_c1', '❹a Cache Hydrate', { exitX: 0.85, exitY: 1, entryX: 0.85, entryY: 0, color: '#059669', dashed: true, offsetY: -10 }),
-    makeEdge('zt_e_v3_yes', 'zt_t3_gate', 'zt_t4_c2', '✓ YES (Commit State)', { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, color: '#059669', offsetY: -10 }),
-    makeEdge('zt_e_4a', 'zt_t4_c1', 'zt_t4_c2', 'Read/Write Sync', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#059669' }),
-    makeEdge('zt_e_4b', 'zt_t4_c2', 'zt_t4_c3', '❹b CDC Lineage', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#059669', dashed: true }),
-    makeEdge('zt_e_4_obs', 'zt_t4_c3', 'zt_obs_4', 'SLO & FinOps', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#059669', dashed: true }),
-  ];
-
-  return `<mxfile host="embed.diagrams.net" modified="${new Date().toISOString()}" agent="PromptCanvas-ZeroTemplateEngine" version="24.0.0"><diagram id="zero_template_custom_arch" name="Zero-Template Custom Architecture"><mxGraphModel dx="1680" dy="1060" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1680" pageHeight="1060" background="#F8FAFC" math="0" shadow="0"><root>${cells.join('')}</root></mxGraphModel></diagram></mxfile>`;
 }
 
 /**

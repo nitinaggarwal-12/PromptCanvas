@@ -3287,7 +3287,7 @@ function DocGenContent() {
                                   </div>
                                   <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
                                     <span>Wave 3: Relational DBs</span>
-                                    <span>Oracle Exadata / SQL Server</span>
+                                    <span>Legacy Relational / SQL Server</span>
                                     <span className="text-indigo-600 font-bold">Cloud Spanner / Cloud SQL</span>
                                   </div>
                                   <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
@@ -4267,7 +4267,7 @@ function synthesizeCustomExecutiveDocument(
 
   // Scrub hardcoded fictional brand names unless explicitly present in user title/scope
   const lowerInput = `${title} ${scope}`.toLowerCase();
-  for (const brand of ['NovaCura', 'AeroNode', 'ApexPay', 'OmniVue', 'WorkCloud']) {
+  for (const brand of ['ClinicalAI', 'AeroNode', 'ApexPay', 'OmniVue', 'WorkCloud']) {
     if (!lowerInput.includes(brand.toLowerCase())) {
       doc = doc.replace(new RegExp(`\\b${brand}\\b`, 'gi'), title || 'Enterprise System');
     }

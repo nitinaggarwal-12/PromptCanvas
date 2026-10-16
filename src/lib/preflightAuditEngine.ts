@@ -14,7 +14,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     return xmlInput;
   }
   const isMasterOrStructured = (
-    xmlInput.includes('id="oracle-at-google-ebs-exadata-2026"') ||
+    xmlInput.includes('ARCH-NASA-01') ||
     xmlInput.includes('id="upgraded-gcp-ge-multi-agent-banking-2026"') ||
     xmlInput.includes('id="whiteboard-gcp-ge-multi-agent-2026"') ||
     xmlInput.includes('id="paper-gcp-ge-multi-agent-2026"') ||

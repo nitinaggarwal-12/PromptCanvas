@@ -12,7 +12,7 @@ const ICON = {
   microsoft: 'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/microsoft/default.svg',
   salesforce: 'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/salesforce/default.svg',
   sap: 'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/sap/default.svg',
-  snowflake: 'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/snowflake/default.svg',
+  biglake: 'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/google-cloud/default.svg',
   databricks: 'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/databricks/default.svg',
   kafka: 'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/apache-kafka/default.svg',
 };
@@ -59,7 +59,7 @@ export function buildDataLakehouseXml(): string {
   c.push(card('src_files', 'Files & object data', 'Documents • logs • images • semi-structured data • existing object stores', 45, 320, 230, 82, '#1A73E8', ICON.gcs));
   c.push(card('src_stream', 'Streaming events', 'Pub/Sub • Apache Kafka • device/application events', 45, 422, 230, 82, '#1A73E8', ICON.kafka));
   c.push(v('src_cross_bg', '', 'rounded=1;arcSize=7;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=1.05;', 45, 524, 230, 88));
-  c.push(img('src_sf2', ICON.snowflake, 62, 542, 34, 34));
+  c.push(img('src_sf2', ICON.biglake, 62, 542, 34, 34));
   c.push(img('src_dbx', ICON.databricks, 108, 542, 34, 34));
   c.push(v('src_cross_t', '<b>Cross-cloud catalogs</b><br><span style="font-size:8.8px;color:#64748B">Federated Lakehouse patterns where currently supported; preview capabilities must be validated per provider/region.</span>', 'text;html=1;whiteSpace=wrap;overflow=hidden;spacing=3;align=left;verticalAlign=middle;fontColor=#0F172A;fontSize=10.3;', 154, 532, 110, 66));
 

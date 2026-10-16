@@ -2,7 +2,7 @@
  * 🎨 Blueprint Semantic Icons Engine (100% Offline & Self-Contained)
  * 
  * Embeds zero-network-dependency, inline SVG Data URIs across all cloud vendors
- * (GCP, AWS, Azure, OCI, Kubernetes, Kafka, Snowflake, Databricks, AI, DevOps).
+ * (GCP, AWS, Azure, OCI, Kubernetes, Kafka, BigLake, Databricks, AI, DevOps).
  * Guarantees 100% offline, headless, and air-gapped rendering with zero CDN latency.
  */
 
@@ -37,7 +37,7 @@ const SVG_POSTGRES = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 
 
 const SVG_REDIS = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" rx="8" fill="#DC382D"/><path fill="#FFFFFF" d="M24 10l13 7.5v13L24 38 11 30.5v-13L24 10zm0 4.2L14.7 19 24 23.8l9.3-4.8L24 14.2z"/></svg>`);
 
-const SVG_SNOWFLAKE = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#29B5E8"/><path stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" d="M24 8v32M10 16l28 16M10 32l28-16M19 11l5 5 5-5M19 37l5-5 5 5M12 21l6 3-6 3M36 21l-6 3 6 3"/></svg>`);
+const SVG_BIGLAKE = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#29B5E8"/><path stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" d="M24 8v32M10 16l28 16M10 32l28-16M19 11l5 5 5-5M19 37l5-5 5 5M12 21l6 3-6 3M36 21l-6 3 6 3"/></svg>`);
 
 const SVG_DATABRICKS = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" rx="8" fill="#FF3621"/><path fill="#FFFFFF" d="M24 10l12 7-12 7-12-7 12-7zm0 10l12 7-12 7-12-7 12-7zm0 10l12 7-12 7-12-7 12-7z"/></svg>`);
 
@@ -95,7 +95,7 @@ const ICONS = {
   kafka: SVG_KAFKA,
   postgres: SVG_POSTGRES,
   redis: SVG_REDIS,
-  snowflake: SVG_SNOWFLAKE,
+  biglake: SVG_BIGLAKE,
   databricks: SVG_DATABRICKS,
   dbt: SVG_DBT,
   spark: SVG_SPARK,
@@ -150,7 +150,7 @@ const ICON_RULES: IconRule[] = [
   { pattern: /\bKafka\b|\bRedpanda\b/i, icon: ICONS.kafka, family: 'vendor' },
   { pattern: /\bPostgreSQL\b|\bPostgres\b|\bpgvector\b/i, icon: ICONS.postgres, family: 'vendor' },
   { pattern: /\bRedis\b/i, icon: ICONS.redis, family: 'vendor' },
-  { pattern: /\bSnowflake\b/i, icon: ICONS.snowflake, family: 'vendor' },
+  { pattern: /\bSnowflake\b/i, icon: ICONS.biglake, family: 'vendor' },
   { pattern: /\bDatabricks\b|\bUnity Catalog\b/i, icon: ICONS.databricks, family: 'vendor' },
   { pattern: /\bdbt\b|\bdbt Transformation\b/i, icon: ICONS.dbt, family: 'vendor' },
   { pattern: /\bSpark\b|\bApache Spark\b/i, icon: ICONS.spark, family: 'vendor' },

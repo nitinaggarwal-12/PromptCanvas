@@ -12,14 +12,21 @@ export async function GET(request: Request) {
     const user = await getAuthenticatedUser();
     let diagrams = await listDiagrams(user?.id);
 
-    diagrams = diagrams.map((d: any) => {
-      const healed = healStubOrOracleDiagramXml(String(d.latest_xml || ''), d.latest_prompt, d.name);
-      return {
-        ...d,
-        name: healed.canonicalTitle || d.name,
-        latest_xml: d.latest_xml ? healed.xml : d.latest_xml,
-      };
-    });
+    diagrams = diagrams
+      .filter((d: any) => {
+        const text = `${d.id || ''} ${d.name || ''} ${d.latest_prompt || ''}`;
+        return !/DRAFT-ORACLE-EXADATA|oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite/i.test(
+          text
+        );
+      })
+      .map((d: any) => {
+        const healed = healStubOrOracleDiagramXml(String(d.latest_xml || ''), d.latest_prompt, d.name);
+        return {
+          ...d,
+          name: healed.canonicalTitle || d.name,
+          latest_xml: d.latest_xml ? healed.xml : d.latest_xml,
+        };
+      });
 
     if (studioParam) {
       const targetStudio = studioParam.toLowerCase();

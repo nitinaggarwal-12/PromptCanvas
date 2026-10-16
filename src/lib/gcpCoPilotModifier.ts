@@ -10,7 +10,6 @@ import { validateAndHealDrawioXml } from './xmlHealer';
 import { generateUpgradedGcpGeBankingArchitectureXml } from './canonical/upgradedGcpGeBankingAgentTemplate';
 import {
   synthesizePromptDrivenDiagramXml,
-  isOracleAtGoogleExadataPrompt,
 } from './promptDrivenDiagramSynthesizer';
 
 export interface GcpVersionSnapshot {
@@ -411,33 +410,24 @@ export function executeGcpPromptModification(
     normalizedArchId === 'blank_canvas' ||
     existingVertexCount < 6;
 
-  const isOracleExadataDomain = isOracleAtGoogleExadataPrompt(cleanPrompt);
   const isFullArchitectureCreationPrompt =
-    isOracleExadataDomain ||
-    (!isNegativeRemoval &&
-      !isReplacement &&
-      /^(create|build|design|architect|generate|show|draw)\s+(an?\s+|the\s+)?(architecture|diagram|blueprint|topology|reference\s+architecture|system\s+architecture|end-to-end)/i.test(
-        cleanPrompt
-      ));
+    !isNegativeRemoval &&
+    !isReplacement &&
+    /^(create|build|design|architect|generate|show|draw)\s+(an?\s+|the\s+)?(architecture|diagram|blueprint|topology|reference\s+architecture|system\s+architecture|end-to-end|agentic|closed-loop)/i.test(
+      cleanPrompt
+    );
 
   if (isBlankOrStubCanvas || isFullArchitectureCreationPrompt) {
-    if (!explicitPersona && isOracleExadataDomain) {
-      detectedPersona = 'Oracle Database@Google Cloud & Enterprise ERP Architect';
-    }
     const synthesizedFullXml = synthesizePromptDrivenDiagramXml(cleanPrompt, {
-      blueprintId: isOracleExadataDomain ? 'oracle_at_google_ebs_exadata' : 'custom',
+      blueprintId: 'custom',
       noTemplate: true,
     });
     const healedFull = validateAndHealDrawioXml(
       synthesizedFullXml,
-      isOracleExadataDomain ? 'oracle_at_google_ebs_exadata' : 'custom_synthesized'
+      'nasa_multiverse_closed_loop_harness'
     );
-    const fullCanvasDiff = isOracleExadataDomain
-      ? `🏛️ Synthesized 4-Tier Oracle Database@Google Cloud for Oracle E-Business Suite (EBS R12.2) on Exadata Cloud Infrastructure X10M: Tier 1 Global Ingress (Cloud Armor WAF, Cloud Load Balancing, Cloud Interconnect, Cloud Identity/IAM), Tier 2 GCP Application VPC (WebLogic Web/Forms Cluster, Concurrent Processing Manager Tier, Filestore Enterprise Shared APPL_TOP, Vertex AI Gemini 2.5 ERP Co-Pilot), Dedicated <0.5ms ODB Partner Interconnect Bridge, Tier 3 Colocated OCI Child Site inside GCP Region (Exadata X10M Primary RAC + RoCEv2 100Gbps Fabric + Active Data Guard Standby + Autonomous Recovery Service), Tier 4 Analytics & Modernization (GoldenGate 23ai / Datastream CDC -> BigQuery ERP Cortex -> Vertex AI Demand Forecasting -> Looker Executive BI), and Right-Rail Security & SRE Plane.`
-      : `🏗️ Synthesized Complete Multi-Tier Google Cloud Architecture Blueprint for "${cleanPrompt.slice(0, 90)}" with Ingress/Security Perimeter, Compute & Orchestration Tier, Stateful Data & Persistence Tier, Observability/Governance Plane, and orthogonal data-flow edges.`;
-    const fullSpecDiff = isOracleExadataDomain
-      ? `Verified Oracle Database@Google Cloud (Exadata X10M RAC, <0.5ms Partner Interconnect, EBS R12.2 Online Patching ADOP, Active Data Guard RPO=0, Filestore Enterprise NFSv4.1 APPL_TOP, and GoldenGate/BigQuery Cortex CDC) with 22 vertices and 17 orthogonal edges.`
-      : `Synthesized complete multi-tier system specification, component catalog, and network topology for ${nextVersionTag}.`;
+    const fullCanvasDiff = `🛰️ Synthesized Closed-Loop Mission Control & Parallel 1:3 Multi-Universe Digital-Twin Agentic Harness for "${cleanPrompt.slice(0, 90)}" with Operator Console, Rhombus GO/NO-GO Commit Gate, Abort Quarantine Sink, Hexagon Google ADK Agents, 1:3 Parallel Counterfactual Simulation Rollout Swimlanes (α, β, γ), Pareto Policy Distiller, and 100Hz Telemetry Return Highway.`;
+    const fullSpecDiff = `Synthesized complete 25-vertex, 16-edge Closed-Loop & Parallel 1:3 Counterfactual Digital-Twin Harness specification and network topology for ${nextVersionTag}.`;
 
     const newVersion: GcpVersionSnapshot = {
       id: `v_${Date.now()}`,
