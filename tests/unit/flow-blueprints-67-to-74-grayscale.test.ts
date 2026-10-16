@@ -107,8 +107,8 @@ describe('Flow Blueprints #67..#74 Official Google Cloud Brand Light Theme & 9-G
       expect(xml).toContain('id="e_right_db_mcp_bot"');
       expect(xml).toMatch(/id="e_alb_to_mid_left"[^>]*startArrow=open;startFill=0;startSize=7;endArrow=open;endFill=0;endSize=7/);
 
-      // Icon diversity >= 10 distinct service icons per diagram
-      const iconUris = new Set((xml.match(/data:image\/svg\+xml;base64,[A-Za-z0-9+/=]+/g) || []));
+      // Icon diversity >= 12 distinct service icons per diagram
+      const iconUris = new Set((xml.match(/data:image\/(?:png|svg\+xml);(?:utf8|base64),[^"&]+/g) || []));
       expect(iconUris.size, `Guide ${guide.docId} (${bp!.id}) has only ${iconUris.size} distinct icons`).toBeGreaterThanOrEqual(12);
 
       // All 18 cards + 2 boundary wrappers documented across 5 component groups (1 + 5 + 3 + 1 + 5 = 15 rows)

@@ -215,7 +215,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
       llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro & Flash', sub: 'Agent Engine (8k Budget)' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Hop 3: Shared + Agent Alpha' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: 'Hop 5: Workspace & Jira 3LO' },
-      datastore: { icon: 'datastore_alloydb_bq', title: 'Datastore', sub: 'BigQuery, AlloyDB RLS, CMEK' },
+      datastore: { icon: 'alloydb', title: 'Datastore', sub: 'BigQuery, AlloyDB RLS, CMEK' },
       step4Label: 'Sanitize request',
       step6Label: 'Sanitize response',
       step5Label: ['Generates', 'response'],

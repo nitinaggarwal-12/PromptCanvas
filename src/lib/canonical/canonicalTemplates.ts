@@ -1286,11 +1286,11 @@ export function sanitizeAndHealCanonicalBlueprintXml(xml: string, templateId?: s
           )
           .replace(/●\s*/g, `${inlineSvg} `);
 
-        // Auto-enrich sparse functional cards (w>=115, h>=58, area>=9000, <32 chars of plain text) on legacy templates only
+        // Auto-enrich sparse functional cards (w>=115, h>=58, area>=9000, <32 chars of plain text) on legacy templates 01-34 only
         const geom = vertexGeomMap.get(id);
-        const isModernRefArch = Number(templateId || '0') >= 35;
+        const isLegacyTemplate1to34 = Boolean(templateId && Number(templateId) >= 1 && Number(templateId) <= 34);
         const isBorderedCard =
-          !isModernRefArch &&
+          isLegacyTemplate1to34 &&
           geom &&
           geom.w >= 115 &&
           geom.h >= 58 &&
