@@ -952,7 +952,7 @@ export function extractStructuredNodeLayout(rawHtml: string): StructuredNodeLayo
   };
 }
 
-function resolveDocGuideForSlideDeck(
+export function resolveDocGuideForSlideDeck(
   blueprintId: string,
   diagramName: string,
   markdownContent?: string,
@@ -1121,7 +1121,7 @@ export function buildDynamicDocGuideFromDiagramXml(
   const assignZoneLabel = (cardY: number): string => {
     for (const z of containerZones) {
       if (cardY >= z.y - 10 && cardY <= z.y + 260) {
-        return z.title.replace(/^ZONE\s*\d+\s*[:—-]\s*/i, '').slice(0, 42);
+        return z.title.replace(/^ZONE\s*\d+\s*[:—-]\s*/i, '').slice(0, 46);
       }
     }
     if (cardY < 220) return '1. Ingress, Directives & Safety Gate';
@@ -1130,25 +1130,121 @@ export function buildDynamicDocGuideFromDiagramXml(
     return '4. Physical Actuation & Closed-Loop Telemetry';
   };
 
-  const componentGroupsTable = (uniqueCards.length > 0 ? uniqueCards : [
-    { id: 'c1', title: 'Operator Directive & Control Console', subtitle: 'Mission command ingress, telemetry visualization, and real-time human-in-the-loop override.', x: 0, y: 100, shape: '' },
-    { id: 'c2', title: 'Deterministic Commit & Safety Gate', subtitle: 'Evaluates policy invariants and safety thresholds ([GO] vs. [NO-GO / ABORT] quarantine sink).', x: 0, y: 200, shape: '' },
-    { id: 'c3', title: 'Autonomous Coordinator & Specialist Agents', subtitle: 'Orchestrates domain specialist agents via A2A protocol and Model Context Protocol (MCP) tools.', x: 0, y: 300, shape: '' },
-    { id: 'c4', title: '1:3 Parallel Digital-Twin Simulation Sandbox', subtitle: 'Executes parallel counterfactual rollouts (Alpha, Beta, Gamma) with Pareto policy distillation.', x: 0, y: 400, shape: '' },
-    { id: 'c5', title: 'Transactional & GraphRAG State Persistence', subtitle: 'Persists immutable state ledgers in Cloud Spanner, Bigtable telemetry streams, and Vector Search 2.0.', x: 0, y: 550, shape: '' },
-    { id: 'c6', title: 'Closed-Loop Telemetry Return Highway', subtitle: 'Streams high-frequency execution telemetry back to the top operator console for continuous state reconciliation.', x: 0, y: 720, shape: '' },
-  ]).slice(0, 18).map((card) => ({
-    groupName: assignZoneLabel(card.y),
-    serviceName: card.title.replace(/^[❶❷❸❹❺❻❼❽❾❿]\s*/, ''),
-    description: card.subtitle,
-  }));
+  const flatComponentRows = (
+    uniqueCards.length > 0
+      ? uniqueCards
+      : [
+          {
+            id: 'c1',
+            title: 'Operator Directive & Control Console',
+            subtitle: 'Mission command ingress, telemetry visualization, and real-time human-in-the-loop override.',
+            x: 0,
+            y: 100,
+            shape: '',
+          },
+          {
+            id: 'c2',
+            title: 'Deterministic Commit & Safety Gate',
+            subtitle: 'Evaluates policy invariants and safety thresholds ([GO] vs. [NO-GO / ABORT] quarantine sink).',
+            x: 0,
+            y: 200,
+            shape: '',
+          },
+          {
+            id: 'c3',
+            title: 'Autonomous Coordinator & Specialist Agents',
+            subtitle: 'Orchestrates domain specialist agents via A2A protocol and Model Context Protocol (MCP) tools.',
+            x: 0,
+            y: 300,
+            shape: '',
+          },
+          {
+            id: 'c4',
+            title: '1:3 Parallel Digital-Twin Simulation Sandbox',
+            subtitle: 'Executes parallel counterfactual rollouts (Alpha, Beta, Gamma) with Pareto policy distillation.',
+            x: 0,
+            y: 400,
+            shape: '',
+          },
+          {
+            id: 'c5',
+            title: 'Transactional & GraphRAG State Persistence',
+            subtitle: 'Persists immutable state ledgers in Cloud Spanner, Bigtable telemetry streams, and Vector Search 2.0.',
+            x: 0,
+            y: 550,
+            shape: '',
+          },
+          {
+            id: 'c6',
+            title: 'Closed-Loop Telemetry Return Highway',
+            subtitle: 'Streams high-frequency execution telemetry back to the top operator console for continuous state reconciliation.',
+            x: 0,
+            y: 720,
+            shape: '',
+          },
+        ]
+  )
+    .slice(0, 18)
+    .map((card) => ({
+      groupName: assignZoneLabel(card.y),
+      serviceName: card.title.replace(/^[❶❷❸❹❺❻❼❽❾❿]\s*/, ''),
+      description: card.subtitle,
+    }));
 
-  const numberedSteps = componentGroupsTable.slice(0, 7).map((row, idx) => ({
-    title: `Step ${idx + 1}: ${row.serviceName} (${row.groupName})`,
-    description: row.description,
-  }));
+  // Group into up to 6 structured component groups for Slide 3's 2-column Component | Description table
+  const groupedMap = new Map<
+    string,
+    { groupTitle: string; groupLead: string; items: Array<{ name: string; description: string }> }
+  >();
+  for (const row of flatComponentRows) {
+    const existing = groupedMap.get(row.groupName);
+    if (existing) {
+      existing.items.push({ name: row.serviceName, description: row.description });
+    } else {
+      groupedMap.set(row.groupName, {
+        groupTitle: row.groupName,
+        groupLead: `Functional subsystem hosting ${row.serviceName} and associated control/telemetry handlers.`,
+        items: [{ name: row.serviceName, description: row.description }],
+      });
+    }
+  }
+  const componentGroupsTable = Array.from(groupedMap.values()).slice(0, 6);
 
-  const topComponentNames = componentGroupsTable
+  const agenticFlowSteps = isNasaClosedLoop
+    ? [
+        {
+          step: 'Flight Director & Mission Console issues an orbital maneuver or payload directive over mTLS / CAC-PIV authenticated ingress to the Mission Control API Gateway.',
+        },
+        {
+          step: 'Deterministic Launch Commit Criteria (LCC) Rhombus Safety Gate evaluates delta-V propellant margins, thermal envelopes, and NPR 8715.5 range safety invariants.',
+          subSteps: [
+            '[NO-GO / ABORT Branch]: Out-of-envelope commands are immediately shunted into the AFTS Range Safety Abort Quarantine Sink.',
+            '[GO Branch]: Verified directives are signed and forwarded to the Hexagonal Google ADK Mission Coordinator Agent.',
+          ],
+        },
+        {
+          step: 'Hexagonal Google ADK Coordinator Agent decomposes the mission directive across Specialist Domain Agents (GNC & Orbit FDS Agent, Flight Software cFS/F\' Executive Agent, and Multiverse Sim Digital-Twin Agent).',
+        },
+        {
+          step: '1:3 Parallel Counterfactual Digital-Twin Sandbox forks execution across three isolated physics simulation swimlanes on GKE TPU v5e / H100:',
+          subSteps: [
+            'Universe Alpha (Nominal J2000 Ephemeris): Baseline orbital propagation and burn verification.',
+            'Universe Beta (High Solar-Flux Perturbation): Atmospheric drag and radiation fault-injection stress test.',
+            'Universe Gamma (Off-Nominal Thruster / Sensor Degradation): Monte Carlo dispersion and attitude recovery.',
+          ],
+        },
+        {
+          step: '3:1 Cross-Universe Pareto Policy Distiller converges all three simulation rollouts, selects the minimum-risk command trajectory, and commits state to Cloud Spanner TrueTime and Bigtable.',
+        },
+        {
+          step: 'CCSDS 732.0-B Space Link Encoder transmits the command across the NASA Deep Space Network (S/X/Ka-Band Air-Gap Boundary) while the #0D9488 100Hz Closed-Loop Telemetry Return Highway streams live spacecraft state vectors back to the top console.',
+        },
+      ]
+    : flatComponentRows.slice(0, 7).map((row) => ({
+        step: `${row.serviceName} (${row.groupName}): ${row.description}`,
+      }));
+
+  const topComponentNames = flatComponentRows
     .slice(0, 6)
     .map((r) => r.serviceName)
     .join(', ');
@@ -1162,43 +1258,130 @@ export function buildDynamicDocGuideFromDiagramXml(
   const overviewParagraphs = isNasaClosedLoop
     ? [
         `${cleanTitle} establishes a deterministic, closed-loop autonomous control plane for high-consequence mission operations. Rather than relying on open-loop linear request-response chains, operator directives enter through the Flight Director Console and are immediately inspected by an API Gateway and a deterministic Rhombus Safety & Policy Commit Gate ([GO] vs. [NO-GO / ABORT]) with an isolated Abort Quarantine Sink for out-of-envelope commands.`,
-        `Approved directives are orchestrated by a hexagonal Google ADK / A2A Coordinator Agent and dispatched across specialist domain agents (Orbital Astrodynamics, Solar-Array & Thermal Power, and Payload & Deep-Space Link). Before any command is committed to physical hardware, the harness forks execution 1:3 into a Parallel Counterfactual Digital-Twin Simulation Sandbox (Rollout Alpha Nominal, Rollout Beta Solar-Storm Fault Injection, and Rollout Gamma Sensor-Degraded Monte Carlo) and converges into a Cross-Scenario Pareto Policy Distiller.`,
+        `Approved directives are orchestrated by a hexagonal Google ADK / A2A Coordinator Agent and dispatched across specialist domain agents (Orbital Astrodynamics, Flight Software cFS/F', and Counterfactual Digital-Twin Simulation). Before any command is committed to physical hardware, the harness forks execution 1:3 into a Parallel Counterfactual Digital-Twin Simulation Sandbox (Universe Alpha Nominal, Universe Beta Solar-Storm Fault Injection, and Universe Gamma Thruster-Degraded Monte Carlo) and converges into a 3:1 Cross-Universe Pareto Policy Distiller.`,
         `State checkpoints and mission knowledge are persisted in 3D cylinder datastores (Cloud Spanner Mission Ledger, Cloud Bigtable High-Rate Telemetry, and Vertex AI Vector Search 2.0 + GraphRAG). Validated commands cross the dashed CCSDS / Deep-Space Network Air-Gap Boundary into the Spacecraft Flight Software Bus (cFS / F' RTOS), while the outer #0D9488 Closed-Loop Telemetry Return Highway continuously feeds real-time state vectors back to the top operator console.`,
       ]
     : [
         `${cleanTitle} defines a production-grade architecture comprising ${uniqueCards.length || 18} specialized components and ${edges.length || 20} directional data and control channels. It organizes ingress, policy enforcement, core processing, and stateful persistence into clearly bounded architectural zones (${containerZones.map((z) => z.title).slice(0, 4).join('; ') || 'Ingress, Control Plane, Data Plane, and Telemetry'}).`,
         `Core execution flows through ${topComponentNames}. Each component enforces strict transport security, deterministic request validation, and explicit state transitions so workloads maintain predictable latency and high availability under peak enterprise load.`,
-        `Downstream state persistence and observability are anchored by ${componentGroupsTable.slice(-3).map((r) => r.serviceName).join(', ')}, providing end-to-end auditability, automated health verification, and closed-loop operational telemetry across every tier of the topology.`,
+        `Downstream state persistence and observability are anchored by ${flatComponentRows.slice(-3).map((r) => r.serviceName).join(', ')}, providing end-to-end auditability, automated health verification, and closed-loop operational telemetry across every tier of the topology.`,
       ];
 
-  const comparisonRows: string[][] = isNasaClosedLoop
+  const productsUsedItems = flatComponentRows.slice(0, 8).map((r) => ({
+    name: r.serviceName,
+    description: r.description,
+  }));
+
+  const useCaseBenefits = isNasaClosedLoop
     ? [
-        [
-          'Command Validation & Actuation Safety',
-          'Deterministic Rhombus Safety Gate ([GO] / [NO-GO]) + Abort Quarantine Sink before execution',
-          'Direct LLM tool invocation without deterministic invariant gating risks unverified actuation',
-        ],
-        [
-          'Scenario Evaluation & Policy Selection',
-          '1:3 Parallel Counterfactual Digital-Twin Sandbox (Alpha, Beta, Gamma) -> 3:1 Pareto Distiller',
-          'Single-thread sequential evaluation cannot stress-test fault-injection branches in real time',
-        ],
-        [
-          'Ground-to-Spacecraft Protocol Boundary',
-          'Explicit CCSDS 133.0-B-2 / NASA DSN S/X/Ka-Band Air-Gap Boundary with cFS/F\' RTOS bus',
-          'Assuming synchronous low-latency cloud RPC across deep-space links violates light-time physics',
-        ],
-        [
-          'State Reconciliation & Observability',
-          'Outer #0D9488 Closed-Loop Telemetry Return Highway + Cloud Spanner & Bigtable state stores',
-          'Open-loop fire-and-forget pipelines drift from true physical plant state over multi-orbit horizons',
-        ],
+        {
+          title: 'Deterministic Pre-Actuation Safety Gating (NPR 8715.5)',
+          detail:
+            'Every operator or agent command is evaluated by the Rhombus Launch Commit Criteria (LCC) Gate before reaching flight hardware, routing unsafe trajectories to the AFTS Abort Quarantine Sink.',
+        },
+        {
+          title: '1:3 Counterfactual Multi-Universe Digital-Twin Verification',
+          detail:
+            'Simultaneously stress-tests candidate commands across Nominal (Universe Alpha), Solar-Flux Perturbation (Universe Beta), and Thruster-Degraded (Universe Gamma) physics regimes before 3:1 Pareto selection.',
+        },
+        {
+          title: 'Air-Gapped CCSDS 732.0-B & NASA DSN Protocol Fidelity',
+          detail:
+            'Models explicit RF uplink/downlink framing, light-time latency, and onboard NASA cFS / JPL F\' execution across the Ground-to-Spacecraft Air-Gap Boundary.',
+        },
+        {
+          title: '100Hz Closed-Loop Telemetry Reconciliation',
+          detail:
+            'Streams continuous downlink state vectors along the outer #0D9488 Telemetry Return Highway into Cloud Bigtable, Cloud Spanner TrueTime, and the Flight Director console.',
+        },
       ]
-    : componentGroupsTable.slice(0, 4).map((row) => [
-        row.groupName,
-        `${row.serviceName}: ${truncateClean(row.description, 95)}`,
-        'Manual or uncoordinated point-to-point integration increases operational toil and blast radius',
-      ]);
+    : componentGroupsTable.slice(0, 4).map((g) => ({
+        title: g.groupTitle,
+        detail: g.items.map((it) => `${it.name} (${it.description})`).join('; '),
+      }));
+
+  const designAlternativesSubSections = isNasaClosedLoop
+    ? [
+        {
+          heading: 'Closed-Loop Counterfactual Sandbox vs. Open-Loop Direct Actuation',
+          leadParagraphs: [
+            'High-consequence aerospace and autonomous systems cannot rely on single-pass LLM tool execution without deterministic invariant verification and counterfactual simulation.',
+          ],
+          subBlocks: [
+            {
+              subHeading: 'Selected Pattern: Rhombus LCC Gate + 1:3 Parallel Digital-Twin Fork-Join',
+              bullets: [
+                {
+                  label: 'Deterministic Safety',
+                  detail: 'Blocks out-of-envelope commands at the LCC Rhombus Gate and validates trajectories across 3 parallel physics rollouts.',
+                },
+                {
+                  label: 'Closed-Loop Feedback',
+                  detail: 'Reconciles predicted state against actual 100Hz CCSDS downlink telemetry.',
+                },
+              ],
+            },
+            {
+              subHeading: 'Alternative: Single-Thread Sequential Agent Chain',
+              bullets: [
+                {
+                  label: 'Trade-off',
+                  detail: 'Cannot evaluate concurrent solar-flux or sensor-degradation fault branches within real-time burn commit windows.',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          heading: 'Transactional Ephemeris State: Cloud Spanner + Bigtable vs. Single Store',
+          leadParagraphs: [
+            'Mission control requires both external-consistency command ledgers and high-frequency time-series telemetry ingestion.',
+          ],
+          subBlocks: [
+            {
+              subHeading: 'Selected Pattern: Cloud Spanner TrueTime + Cloud Bigtable + Vector Search 2.0',
+              bullets: [
+                {
+                  label: 'Zero-Drift Ledger',
+                  detail: 'Spanner TrueTime serializes command commits while Bigtable absorbs 100Hz+ telemetry streams.',
+                },
+              ],
+            },
+          ],
+        },
+      ]
+    : componentGroupsTable.slice(0, 2).map((g) => ({
+        heading: `${g.groupTitle} Architecture Pattern`,
+        leadParagraphs: [g.groupLead],
+        subBlocks: g.items.slice(0, 2).map((it) => ({
+          subHeading: it.name,
+          bullets: [{ label: 'Primary Role', detail: it.description }],
+        })),
+      }));
+
+  const designConsiderationsSubSections = [
+    {
+      heading: 'Security, Safety & Policy Governance',
+      rows: flatComponentRows.slice(0, 3).map((r) => ({
+        component: r.serviceName,
+        recommendations: [r.description],
+      })),
+    },
+    {
+      heading: 'Reliability & Fault Isolation',
+      rows: flatComponentRows.slice(3, 6).map((r) => ({
+        component: r.serviceName,
+        recommendations: [r.description],
+      })),
+    },
+    {
+      heading: 'Performance & Closed-Loop Observability',
+      rows: flatComponentRows.slice(-3).map((r) => ({
+        component: r.serviceName,
+        recommendations: [r.description],
+      })),
+    },
+  ];
 
   const codeFilename = isNasaClosedLoop
     ? 'verify_nasa_closed_loop_harness.py'
@@ -1227,7 +1410,7 @@ mission_harness = SequentialAgent(
 import urllib.request
 import json
 
-COMPONENTS = ${JSON.stringify(componentGroupsTable.slice(0, 5).map((r) => r.serviceName), null, 2)}
+COMPONENTS = ${JSON.stringify(flatComponentRows.slice(0, 5).map((r) => r.serviceName), null, 2)}
 
 def verify_architecture_readiness(health_endpoint: str) -> dict:
     req = urllib.request.Request(health_endpoint, headers={"Accept": "application/json"})
@@ -1241,10 +1424,11 @@ def verify_architecture_readiness(health_endpoint: str) -> dict:
     partNumber: 1,
     partBadge: isNasaClosedLoop
       ? 'Closed-Loop Agentic Harness • Counterfactual Digital-Twin Topology'
-      : `Architecture Specification • ${ rawBp ? `Blueprint #${rawBp}` : 'Verified Topology' }`,
+      : `Architecture Specification • ${rawBp ? `Blueprint #${rawBp}` : 'Verified Topology'}`,
     category: 'Reference Architecture',
     title: cleanTitle,
     subtitle,
+    overviewParagraphs,
     lastReviewed: '2026-10-16',
     readTimeMinutes: 10,
     useCasePresetId: blueprintId || 'custom-architecture',
@@ -1277,72 +1461,43 @@ def verify_architecture_readiness(health_endpoint: str) -> dict:
           blueprintVariantId: blueprintId || derivedDocId,
         },
         componentGroupsTable,
-        numberedSteps,
+        agenticFlowHeading: isNasaClosedLoop
+          ? 'Closed-loop mission control & 1:3 counterfactual simulation flow'
+          : 'Architecture execution flow',
+        agenticFlowSteps,
       },
       {
-        id: 'products-used',
+        id: 'products_used',
         heading: 'Products used',
         leadParagraphs: [
           `The ${cleanTitle} reference implementation integrates the following core subsystems and Google Cloud services:`,
         ],
-        bullets: componentGroupsTable
-          .slice(0, 9)
-          .map((r) => `${r.serviceName}: ${truncateClean(r.description, 110)}`),
+        productsUsedItems,
       },
       {
-        id: 'use-cases',
-        heading: 'Key architectural capabilities & benefits',
-        leadParagraphs: [
-          `This architecture delivers deterministic governance, fault isolation, and high-throughput execution across four primary operational pillars:`,
-        ],
-        subSections: componentGroupsTable.slice(0, 4).map((r) => ({
-          heading: `${r.serviceName} (${r.groupName})`,
-          paragraphs: [r.description],
-        })),
+        id: 'use_case',
+        heading: 'Use case',
+        useCaseSubHeading: isNasaClosedLoop
+          ? 'Autonomous mission control, range safety gating & counterfactual orbital simulation'
+          : `${cleanTitle} — Production operational deployment`,
+        leadParagraphs: [overviewParagraphs[0], overviewParagraphs[1]],
+        useCaseBenefits,
       },
       {
-        id: 'design-alternatives',
+        id: 'design_alternatives',
         heading: 'Design alternatives',
         leadParagraphs: [
-          `The following table contrasts the primary architectural decisions in ${cleanTitle} against alternative patterns and their operational trade-offs:`,
+          `The following analysis contrasts the primary architectural decisions in ${cleanTitle} against alternative patterns and their operational trade-offs:`,
         ],
-        comparisonTable: {
-          headers: ['Architectural Dimension', 'Selected Pattern in This Topology', 'Alternative & Trade-Off'],
-          rows: comparisonRows,
-        },
+        designAlternativesSubSections,
       },
       {
-        id: 'design-considerations',
+        id: 'design_considerations',
         heading: 'Design considerations',
         leadParagraphs: [
           `This architecture aligns with Google Cloud Well-Architected Framework principles for security, reliability, and performance:`,
         ],
-        subSections: [
-          {
-            heading: 'Security, Safety & Policy Governance',
-            paragraphs: [
-              componentGroupsTable[1]
-                ? `${componentGroupsTable[1].serviceName} enforces deterministic policy gates and cryptographic identity boundaries: ${componentGroupsTable[1].description}`
-                : 'Enforces strict policy gates, mTLS transport encryption, and least-privilege IAM boundaries across all tiers.',
-            ],
-          },
-          {
-            heading: 'Reliability, Fault Isolation & State Durability',
-            paragraphs: [
-              componentGroupsTable[3]
-                ? `${componentGroupsTable[3].serviceName} isolates execution branches and prevents cascading failures: ${componentGroupsTable[3].description}`
-                : 'Multi-zone redundancy, automated circuit breaking, and transactional state ledgers prevent cascading failures.',
-            ],
-          },
-          {
-            heading: 'Performance & Closed-Loop Observability',
-            paragraphs: [
-              componentGroupsTable[componentGroupsTable.length - 1]
-                ? `${componentGroupsTable[componentGroupsTable.length - 1].serviceName} provides continuous telemetry feedback: ${componentGroupsTable[componentGroupsTable.length - 1].description}`
-                : 'Continuous OpenTelemetry tracing and bounded p99 latency budgets keep end-to-end execution deterministic.',
-            ],
-          },
-        ],
+        designConsiderationsSubSections,
       },
       {
         id: 'deployment',
@@ -1357,14 +1512,41 @@ def verify_architecture_readiness(health_endpoint: str) -> dict:
         },
       },
       {
-        id: 'whats-next',
+        id: 'whats_next',
         heading: "What's next",
         leadParagraphs: [],
-        bullets: [
-          `Inspect the interactive vector nodes and protocol connectors for ${cleanTitle} on Slide 2 (Figure 1).`,
-          `Review the component responsibility table and chronological execution sequence on Slide 3.`,
-          `Execute the deployment verification script and validate telemetry watermarks across all active zones.`,
+        whatsNextLinks: [
+          {
+            label: 'Inspect Interactive Figure 1 Topology (Slide 2)',
+            description: `Review all ${uniqueCards.length || 18} native vector shapes, semantic gates, and protocol connectors for ${cleanTitle}.`,
+          },
+          {
+            label: 'Validate Component & Flow Responsibilities (Slide 3)',
+            description: 'Cross-check each functional zone and chronological execution step against operational SLAs.',
+          },
+          {
+            label: 'Execute Reference Verification Harness (Slide 6)',
+            description: `Run ${codeFilename} to verify safety gates, parallel simulation rollouts, and telemetry watermarks.`,
+          },
         ],
+      },
+      {
+        id: 'contributors',
+        heading: 'Contributors',
+        leadParagraphs: [
+          'Except as otherwise noted, the content of this page is licensed under the Creative Commons Attribution 4.0 License, and code samples are licensed under the Apache 2.0 License.',
+        ],
+        contributorsInfo: {
+          authors: [
+            'Google Cloud Principal Systems & Agentic Architecture Team',
+            'Enterprise Topology & Reliability Engineering',
+          ],
+          otherContributors: [
+            'Mission-Critical Control Systems & Safety Verification Group',
+            'Distributed Data Plane & Observability Engineering',
+          ],
+          lastUpdatedDate: '2026-10-16 UTC',
+        },
       },
     ],
   } as unknown as CanonicalDocGuide;

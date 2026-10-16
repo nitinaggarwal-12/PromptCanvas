@@ -2,10 +2,7 @@ import {
   buildNasaMultiverseClosedLoopHarnessXml,
   buildUniversalClosedLoopDomainHarnessXml,
 } from './canonical/nasaMultiverseClosedLoopHarness';
-import {
-  synthesizePromptDrivenDiagramXml,
-  generateOracleAtGoogleExadataEbsArchitectureXml,
-} from './promptDrivenDiagramSynthesizer';
+import { synthesizePromptDrivenDiagramXml } from './promptDrivenDiagramSynthesizer';
 import { createBlankCanvasDrawioXml } from './xmlHealer';
 
 export interface AutoSavedDraftBlueprint {
@@ -280,85 +277,6 @@ export function buildNasaMultiverseDraftItem(): AutoSavedDraftBlueprint {
 }
 
 /**
- * Built-in Oracle Database@Google Cloud — E-Business Suite (EBS R12.2) on Exadata X10M (v1.0.1 Draft)
- */
-export function buildOracleAtGoogleExadataDraftItem(): AutoSavedDraftBlueprint {
-  const oraclePrompt =
-    'Create an architecture diagram for Oracle@google for ebuisness suite running on exadata';
-  const oracleXml = generateOracleAtGoogleExadataEbsArchitectureXml(oraclePrompt);
-  const oracleTitle =
-    'Oracle Database@Google Cloud — E-Business Suite (EBS R12.2) on Exadata X10M (v1.0.1)';
-  const createdAt = '2026-10-16T15:30:00.000Z';
-
-  const oracleVersions = [
-    {
-      id: 'ver_oracle_v1_0_1',
-      versionTag: 'v1.0.1',
-      major: 1,
-      minor: 0,
-      micro: 1,
-      title: oracleTitle,
-      prompt: oraclePrompt,
-      source: 'ai_copilot',
-      sourceLabel: 'Oracle Database@Google Cloud Architect (Technical Draft v1.0.1)',
-      diffSummary:
-        'Synthesized 23-vertex, 17-edge Oracle Database@Google Cloud (Exadata X10M RAC + Active Data Guard) & EBS R12.2 (WebLogic + Concurrent Processing + Cloud Filestore Enterprise Shared APPL_TOP) architecture across <0.5ms ODB Partner Interconnect with GoldenGate CDC to Google Cloud Cortex for Oracle EBS & Vertex AI.',
-      timestamp: '03:30 PM',
-      xml: oracleXml,
-      blueprintId: '00',
-      level: 'L3',
-      perspective: 'Technical',
-      status: 'draft',
-    },
-    {
-      id: 'ver_oracle_v1_0_0',
-      versionTag: 'v1.0.0',
-      major: 1,
-      minor: 0,
-      micro: 0,
-      title: 'Blank Canvas Baseline (v1.0.0)',
-      prompt: 'Blank Canvas initialized',
-      source: 'initial_load',
-      sourceLabel: 'Blank Canvas Baseline',
-      diffSummary: 'Intentional Blank Canvas (0 vertices) prior to prompt synthesis.',
-      timestamp: '03:29 PM',
-      xml: '<mxfile host="app.diagrams.net"><diagram id="blank_canvas" name="Blank Canvas"><mxGraphModel data-blank-canvas="true"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel></diagram></mxfile>',
-      blueprintId: 'blank',
-      level: 'L3',
-      perspective: 'Technical',
-      status: 'draft',
-    },
-  ];
-
-  return {
-    id: 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1',
-    name: oracleTitle,
-    domain: 'Enterprise ERP & Hybrid Cloud (Oracle Database@Google Cloud / Exadata X10M / EBS R12.2)',
-    description:
-      'Auto-Saved Draft (v1.0.1) • 23-vertex, 17-edge reference topology for Oracle E-Business Suite (EBS R12.2) on Google Cloud Engine + Cloud Filestore Enterprise Shared APPL_TOP connected via <0.5ms ODB Partner Interconnect to Oracle Exadata X10M RAC, Active Data Guard, and GoldenGate CDC to BigQuery Cortex.',
-    prompt: oraclePrompt,
-    tags: ['Draft', 'v1.0.1', 'Oracle Database@Google Cloud', 'Exadata X10M', 'EBS R12.2', 'Blueprint #00'],
-    nodeCount: 23,
-    specCount: 17,
-    versionCount: 2,
-    activeVersionTag: 'v1.0.1',
-    major: 1,
-    minor: 0,
-    micro: 1,
-    xml: oracleXml,
-    latest_xml: oracleXml,
-    created_studio: 'draft',
-    status: 'draft',
-    architecture_type: 'conceptual_diagram',
-    blueprintId: '00',
-    perspective: 'Technical',
-    createdAt,
-    updatedAt: createdAt,
-    versions: oracleVersions,
-  };
-}
-
-/**
  * Automatically saves any generated diagram or prompt iteration with a micro-version number
  * so it is immediately available under Library -> Drafts (/library?studio=drafts).
  */
@@ -383,19 +301,13 @@ export function autoSaveGeneratedDiagramAsDraft(params: {
   const cleanPersp = (params.perspective || 'Technical').toLowerCase();
   const combinedMeta = `${params.title} ${params.prompt}`;
   const isNasa = /nasa|satellite|satellight|multiverse|multi-universe|ccsds|dsn/i.test(combinedMeta);
-  const isOracle =
-    /oracle@google|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|\bebs\s+r12|\boracle\s+ebs\b/i.test(
-      combinedMeta
-    );
 
   const healedMain = healStubOrOracleDiagramXml(params.xml, params.prompt, params.title);
   const finalXml = healedMain.xml;
 
   const draftId =
     params.id ||
-    (isOracle
-      ? 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1'
-      : isNasa
+    (isNasa
       ? 'DRAFT-NASA-MULTIVERSE-V1-0-1'
       : `draft_bp${cleanBp}_${cleanPersp}_${params.versionTag.replace(/[^a-zA-Z0-9]/g, '_')}`);
 
@@ -405,7 +317,7 @@ export function autoSaveGeneratedDiagramAsDraft(params: {
     : `${baseTitle} (${params.versionTag})`;
 
   const nowIso = new Date().toISOString();
-  const nodeCount = (finalXml.match(/vertex="1"/g) || []).length || 23;
+  const nodeCount = (finalXml.match(/vertex="1"/g) || []).length || 25;
 
   const healedVersions = Array.isArray(params.versions)
     ? params.versions.map((v: any, idx: number) => {
@@ -422,10 +334,8 @@ export function autoSaveGeneratedDiagramAsDraft(params: {
     name: displayTitle,
     domain:
       params.domain ||
-      (isOracle
-        ? 'Enterprise ERP & Hybrid Cloud (Oracle Database@Google Cloud / Exadata X10M / EBS R12.2)'
-        : isNasa
-        ? 'Aerospace & Defense (NASA CCSDS / DSN)'
+      (isNasa
+        ? 'Aerospace & Defense (NASA CCSDS / DSN / cFS / Digital-Twin)'
         : 'Enterprise Cloud & Multi-Agent AI'),
     description:
       params.diffSummary ||
@@ -433,7 +343,7 @@ export function autoSaveGeneratedDiagramAsDraft(params: {
     prompt: params.prompt,
     tags: ['Draft', params.versionTag, `Blueprint #${cleanBp}`, params.perspective || 'Technical'],
     nodeCount,
-    specCount: 17,
+    specCount: 16,
     versionCount: healedVersions.length > 0 ? healedVersions.length : 2,
     activeVersionTag: params.versionTag,
     major: params.major,
@@ -444,11 +354,7 @@ export function autoSaveGeneratedDiagramAsDraft(params: {
     status: 'draft',
     architecture_type:
       params.architectureType ||
-      (isOracle
-        ? 'conceptual_diagram'
-        : isNasa
-        ? 'nasa_multiverse_closed_loop_harness'
-        : `draft_canonical_${cleanBp}`),
+      (isNasa ? 'nasa_multiverse_closed_loop_harness' : `draft_canonical_${cleanBp}`),
     blueprintId: cleanBp,
     perspective: params.perspective || 'Technical',
     createdAt: nowIso,
@@ -515,7 +421,6 @@ export function autoSaveGeneratedDiagramAsDraft(params: {
 
 /**
  * Returns all auto-saved micro-versioned drafts from localStorage, sessionStorage recovery,
- * the canonical Oracle Database@Google Cloud (EBS R12.2 on Exadata X10M) v1.0.1 draft,
  * and the canonical NASA Closed-Loop Multi-Universe Digital-Twin v1.0.1 draft.
  * Automatically self-heals any stale 1-box (`copilot_mod_custom_box_0`) drafts in browser storage.
  */
@@ -523,17 +428,17 @@ export function getAutoSavedDraftBlueprints(): AutoSavedDraftBlueprint[] {
   const deletedSet = new Set(getDeletedDraftIds().map((x) => x.toUpperCase()));
   const draftsMap = new Map<string, AutoSavedDraftBlueprint>();
 
-  // 1. Always seed the Oracle Database@Google Cloud — EBS R12.2 on Exadata X10M (v1.0.1) draft unless deleted
-  const oracleDraft = buildOracleAtGoogleExadataDraftItem();
-  if (!deletedSet.has(oracleDraft.id.toUpperCase())) {
-    draftsMap.set(oracleDraft.id.toUpperCase(), oracleDraft);
+  // 1. Always seed the NASA Closed-Loop Multi-Universe Digital-Twin Harness (v1.0.1) as #1 draft unless deleted
+  const nasaDraft = buildNasaMultiverseDraftItem();
+  if (!deletedSet.has(nasaDraft.id.toUpperCase())) {
+    draftsMap.set(nasaDraft.id.toUpperCase(), nasaDraft);
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem(
-          `promptcanvas_studio_${oracleDraft.id}`,
+          `promptcanvas_studio_${nasaDraft.id}`,
           JSON.stringify({
-            ...oracleDraft,
-            projectTitle: oracleDraft.name,
+            ...nasaDraft,
+            projectTitle: nasaDraft.name,
             visibility: 'private',
             selectedBlueprintId: '00',
           })
@@ -542,32 +447,11 @@ export function getAutoSavedDraftBlueprints(): AutoSavedDraftBlueprint[] {
     }
   }
 
-  // 2. Always seed the NASA Closed-Loop Multi-Universe Digital-Twin Harness (v1.0.1) unless deleted
-  const nasaDraft = buildNasaMultiverseDraftItem();
-  if (!deletedSet.has(nasaDraft.id.toUpperCase())) {
-    draftsMap.set(nasaDraft.id.toUpperCase(), nasaDraft);
-    if (typeof window !== 'undefined') {
-      try {
-        if (!localStorage.getItem(`promptcanvas_studio_${nasaDraft.id}`)) {
-          localStorage.setItem(
-            `promptcanvas_studio_${nasaDraft.id}`,
-            JSON.stringify({
-              ...nasaDraft,
-              projectTitle: nasaDraft.name,
-              visibility: 'private',
-              selectedBlueprintId: '00',
-            })
-          );
-        }
-      } catch {}
-    }
-  }
-
   if (typeof window === 'undefined') {
     return Array.from(draftsMap.values());
   }
 
-  // 3. Load & self-heal from promptcanvas_draft_blueprints
+  // 2. Load & self-heal from promptcanvas_draft_blueprints (purging any legacy Oracle Exadata drafts)
   try {
     const rawDrafts = JSON.parse(localStorage.getItem(DRAFT_STORAGE_KEY) || '[]');
     let mutatedStorage = false;
@@ -575,12 +459,15 @@ export function getAutoSavedDraftBlueprints(): AutoSavedDraftBlueprint[] {
     if (Array.isArray(rawDrafts)) {
       for (const item of rawDrafts) {
         if (!item?.id || deletedSet.has(String(item.id).toUpperCase())) continue;
+        const combinedText = `${item.id || ''} ${item.name || ''} ${item.prompt || ''} ${item.description || ''}`;
+        if (/oracle-at-google|exadata|oracle@googl/i.test(combinedText)) {
+          mutatedStorage = true;
+          try {
+            localStorage.removeItem(`promptcanvas_studio_${item.id}`);
+          } catch {}
+          continue;
+        }
         const normalizedTag = normalizeToMicroVersionTag(item.activeVersionTag || 'v1.0.1');
-        const combinedText = `${item.name || ''} ${item.prompt || ''} ${item.description || ''}`;
-        const isOracleItem =
-          /oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|\bebs\s+r12|\boracle\s+ebs\b/i.test(
-            combinedText
-          );
         const healedMain = healStubOrOracleDiagramXml(item.xml, item.prompt || item.description, item.name);
         const healedVersions = Array.isArray(item.versions)
           ? item.versions.map((v: any, idx: number) => {
@@ -591,30 +478,25 @@ export function getAutoSavedDraftBlueprints(): AutoSavedDraftBlueprint[] {
                   ...v,
                   xml: idx === 0 ? healedMain.xml : hv.xml,
                   title: hv.canonicalTitle || v?.title || item.name,
-                  diffSummary:
-                    isOracleItem && idx === 0
-                      ? oracleDraft.versions?.[0]?.diffSummary || v?.diffSummary
-                      : v?.diffSummary,
                 };
               }
               return v;
             })
-          : oracleDraft.versions;
+          : nasaDraft.versions;
 
         if (healedMain.healed) {
           mutatedStorage = true;
         }
 
-        // If this was an old pre-fix Oracle@google 1-box draft with a generic ID, merge into canonical DRAFT-ORACLE-EXADATA-EBS-V1-0-1
-        const targetKey = isOracleItem ? oracleDraft.id.toUpperCase() : String(item.id).toUpperCase();
+        const targetKey = String(item.id).toUpperCase();
         const resolvedItem: AutoSavedDraftBlueprint = {
           ...item,
-          id: isOracleItem ? oracleDraft.id : item.id,
-          name: isOracleItem ? oracleDraft.name : healedMain.canonicalTitle || item.name,
-          domain: isOracleItem ? oracleDraft.domain : item.domain,
-          description: isOracleItem ? oracleDraft.description : item.description,
-          xml: healedMain.xml || (isOracleItem ? oracleDraft.xml : item.xml),
-          nodeCount: (healedMain.xml.match(/vertex="1"/g) || []).length || 23,
+          id: item.id,
+          name: healedMain.canonicalTitle || item.name,
+          domain: item.domain,
+          description: item.description,
+          xml: healedMain.xml || item.xml,
+          nodeCount: (healedMain.xml.match(/vertex="1"/g) || []).length || 25,
           activeVersionTag: normalizedTag,
           created_studio: 'draft',
           status: 'draft',
@@ -623,7 +505,6 @@ export function getAutoSavedDraftBlueprints(): AutoSavedDraftBlueprint[] {
         draftsMap.set(targetKey, resolvedItem);
         cleanedDrafts.push(resolvedItem);
 
-        // Also self-heal promptcanvas_studio_<originalId> in localStorage so clicking the old ID in /library renders the healed 23-vertex XML
         try {
           localStorage.setItem(
             `promptcanvas_studio_${item.id}`,
@@ -643,7 +524,7 @@ export function getAutoSavedDraftBlueprints(): AutoSavedDraftBlueprint[] {
     }
   } catch {}
 
-  // 4. Recover & self-heal any active sessionStorage Dashboard Session Copies
+  // 3. Recover & self-heal any active sessionStorage Dashboard Session Copies
   try {
     for (let i = 0; i < sessionStorage.length; i++) {
       const key = sessionStorage.key(i);
@@ -655,14 +536,17 @@ export function getAutoSavedDraftBlueprints(): AutoSavedDraftBlueprint[] {
 
       const latestVer = parsed.versionHistory[0];
       if (!latestVer?.xml) continue;
+      const metaText = `${latestVer.title || ''} ${latestVer.prompt || ''}`;
+      if (/oracle-at-google|exadata|oracle@googl/i.test(metaText)) {
+        try {
+          sessionStorage.removeItem(key);
+        } catch {}
+        continue;
+      }
+
       const microCount = parsed.versionHistory.length - 1;
       const microTag = normalizeToMicroVersionTag(latestVer.versionTag, microCount);
-      const metaText = `${latestVer.title || ''} ${latestVer.prompt || ''}`;
       const isNasaVer = /nasa|satellite|satellight|multiverse|multi-universe/i.test(metaText);
-      const isOracleVer =
-        /oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|\bebs\s+r12|\boracle\s+ebs\b/i.test(
-          metaText
-        );
 
       const healedMain = healStubOrOracleDiagramXml(latestVer.xml, latestVer.prompt, latestVer.title);
       if (healedMain.healed) {
@@ -680,34 +564,26 @@ export function getAutoSavedDraftBlueprints(): AutoSavedDraftBlueprint[] {
         } catch {}
       }
 
-      const recoveredId = isOracleVer
-        ? oracleDraft.id
-        : isNasaVer
+      const recoveredId = isNasaVer
         ? 'DRAFT-NASA-MULTIVERSE-V1-0-1'
         : `draft_${parsed.sessionCopyId || key.replace('promptcanvas_dashboard_session_', '')}`;
 
       if (deletedSet.has(recoveredId.toUpperCase())) continue;
 
-      const baseTitle = isOracleVer
-        ? oracleDraft.name
-        : healedMain.canonicalTitle || latestVer.title || 'Dashboard Session Architecture';
+      const baseTitle = healedMain.canonicalTitle || latestVer.title || 'Dashboard Session Architecture';
       const displayTitle = baseTitle.includes(microTag) ? baseTitle : `${baseTitle} (${microTag})`;
 
       draftsMap.set(recoveredId.toUpperCase(), {
         id: recoveredId,
         name: displayTitle,
-        domain: isOracleVer
-          ? oracleDraft.domain
-          : isNasaVer
-          ? 'Aerospace & Defense (NASA CCSDS / DSN)'
+        domain: isNasaVer
+          ? 'Aerospace & Defense (NASA CCSDS / DSN / cFS / Digital-Twin)'
           : 'Enterprise Cloud & Multi-Agent AI',
-        description: isOracleVer
-          ? oracleDraft.description
-          : latestVer.diffSummary || latestVer.prompt || `Auto-saved Draft (${microTag})`,
-        prompt: latestVer.prompt || (isOracleVer ? oracleDraft.prompt : ''),
+        description: latestVer.diffSummary || latestVer.prompt || `Auto-saved Draft (${microTag})`,
+        prompt: latestVer.prompt || '',
         tags: ['Draft', microTag, `Blueprint #${parsed.blueprintId || '00'}`],
-        nodeCount: (healedMain.xml.match(/vertex="1"/g) || []).length || 23,
-        specCount: 17,
+        nodeCount: (healedMain.xml.match(/vertex="1"/g) || []).length || 25,
+        specCount: 16,
         versionCount: parsed.versionHistory.length,
         activeVersionTag: microTag,
         major: latestVer.major || 1,
@@ -716,9 +592,7 @@ export function getAutoSavedDraftBlueprints(): AutoSavedDraftBlueprint[] {
         xml: healedMain.xml,
         created_studio: 'draft',
         status: 'draft',
-        architecture_type: isOracleVer
-          ? 'conceptual_diagram'
-          : isNasaVer
+        architecture_type: isNasaVer
           ? 'nasa_multiverse_closed_loop_harness'
           : `draft_canonical_${parsed.blueprintId || '00'}`,
         blueprintId: parsed.blueprintId || '00',

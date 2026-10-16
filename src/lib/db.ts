@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { mkdirSync } from 'fs';
 import { Pool } from 'pg';
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
+import { buildUniversalClosedLoopDomainHarnessXml } from './canonical/nasaMultiverseClosedLoopHarness';
 
 // Define TypeScript interfaces for our models
 export interface User {
@@ -973,7 +974,101 @@ async function doEnsureTablesExist(): Promise<void> {
     }
   }
 
-  // Seeding trigger: if no diagrams exist, seed defaults!
+  // Purge legacy 3-to-5 vertex stub rows, empty 0-vertex test fixtures, NOVACURA remnants, and duplicate test spam
+  try {
+    const legacyPurgeNames = [
+      'Sales Assistant',
+      'Sales Intelligence Assistant',
+      'Shared Team Diagram',
+      'Guest Architecture Draft',
+      'Diagram User B',
+      'AWS VPC SecureNetwork',
+      'GCP Streaming Analytics',
+      'DevOps CI/CD Deployment',
+      'AI RAG Core Pipeline',
+      'Gemini Enterprise Portal',
+      'NotebookLM Source Grounding',
+      'Multi-Agent Design Orchestrator',
+      'Deep Research Agent Pipeline',
+    ];
+    if (isPostgres()) {
+      const pool = getPgPool();
+      await pool.query(
+        `DELETE FROM diagram_versions WHERE diagram_id IN (
+          SELECT id FROM diagrams WHERE name = ANY($1::text[])
+          OR name ILIKE 'Add % more components%'
+          OR name ILIKE 'Add ElastiCache%'
+          OR name ILIKE 'AWS Cloud AI%'
+          OR name ILIKE 'Item %WBS%'
+          OR name ILIKE '%OmniCommerce%'
+          OR name ILIKE '%VOLTGRID%'
+          OR name ILIKE '%NEXUSFIN%'
+          OR name ILIKE 'Custom Diagram #%'
+          OR name ILIKE 'Unified Cloud Architecture #%'
+          OR name ILIKE '%NOVACURA%'
+          OR name ILIKE 'CLINICAL AI - %'
+          OR name ILIKE '%Oracle%@Google%'
+          OR name ILIKE '%Exadata%'
+          OR name ILIKE '%E-Business Suite%'
+          OR name ILIKE 'VIS-9745%'
+          OR name ILIKE 'VIS-AGENTIC-01%'
+        )`,
+        [legacyPurgeNames]
+      );
+      await pool.query(
+        `DELETE FROM diagrams WHERE name = ANY($1::text[])
+          OR name ILIKE 'Add % more components%'
+          OR name ILIKE 'Add ElastiCache%'
+          OR name ILIKE 'AWS Cloud AI%'
+          OR name ILIKE 'Item %WBS%'
+          OR name ILIKE '%OmniCommerce%'
+          OR name ILIKE '%VOLTGRID%'
+          OR name ILIKE '%NEXUSFIN%'
+          OR name ILIKE 'Custom Diagram #%'
+          OR name ILIKE 'Unified Cloud Architecture #%'
+          OR name ILIKE '%NOVACURA%'
+          OR name ILIKE 'CLINICAL AI - %'
+          OR name ILIKE '%Oracle%@Google%'
+          OR name ILIKE '%Exadata%'
+          OR name ILIKE '%E-Business Suite%'
+          OR name ILIKE 'VIS-9745%'
+          OR name ILIKE 'VIS-AGENTIC-01%'`,
+        [legacyPurgeNames]
+      );
+      await pool.query(`DELETE FROM diagram_versions WHERE TRIM(COALESCE(xml_content, '')) IN ('', '<mxfile></mxfile>') OR xml_content LIKE '%copilot_mod_custom_box_0%'`);
+      await pool.query(`DELETE FROM diagrams WHERE id NOT IN (SELECT DISTINCT diagram_id FROM diagram_versions)`);
+    } else {
+      const db = getSqliteDb();
+      const placeholders = legacyPurgeNames.map(() => '?').join(', ');
+      const likeClause = `
+        OR UPPER(name) LIKE 'ADD % MORE COMPONENTS%'
+        OR UPPER(name) LIKE 'ADD ELASTICACHE%'
+        OR UPPER(name) LIKE 'AWS CLOUD AI%'
+        OR UPPER(name) LIKE 'ITEM %WBS%'
+        OR UPPER(name) LIKE '%OMNICOMMERCE%'
+        OR UPPER(name) LIKE '%VOLTGRID%'
+        OR UPPER(name) LIKE '%NEXUSFIN%'
+        OR UPPER(name) LIKE 'CUSTOM DIAGRAM #%'
+        OR UPPER(name) LIKE 'UNIFIED CLOUD ARCHITECTURE #%'
+        OR UPPER(name) LIKE '%NOVACURA%'
+        OR UPPER(name) LIKE 'CLINICAL AI - %'
+        OR UPPER(name) LIKE '%ORACLE%'
+        OR UPPER(name) LIKE '%EXADATA%'
+        OR UPPER(name) LIKE '%E-BUSINESS SUITE%'
+        OR UPPER(name) LIKE 'VIS-9745%'
+        OR UPPER(name) LIKE 'VIS-AGENTIC-01%'
+      `;
+      db.prepare(`DELETE FROM diagram_versions WHERE diagram_id IN (SELECT id FROM diagrams WHERE name IN (${placeholders}) ${likeClause})`).run(...legacyPurgeNames);
+      db.prepare(`DELETE FROM diagrams WHERE name IN (${placeholders}) ${likeClause}`).run(...legacyPurgeNames);
+      // Also purge any 0-vertex empty <mxfile></mxfile> test artifacts or 1-box stubs
+      db.prepare(`DELETE FROM diagram_versions WHERE TRIM(COALESCE(xml_content, '')) IN ('', '<mxfile></mxfile>') OR xml_content LIKE '%copilot_mod_custom_box_0%'`).run();
+      db.prepare(`DELETE FROM diagrams WHERE id NOT IN (SELECT DISTINCT diagram_id FROM diagram_versions)`).run();
+    }
+  } catch {
+    // Non-fatal cleanup
+  }
+
+  // Seeding trigger: if no diagrams exist, seed canonical NASA Closed-Loop Harness!
   try {
     const diagCountRes = isPostgres()
       ? await getPgPool().query('SELECT COUNT(*) as count FROM diagrams')
@@ -984,54 +1079,15 @@ async function doEnsureTablesExist(): Promise<void> {
       : Number((diagCountRes as { count: number | bigint }).count);
 
     if (count === 0) {
-      console.log('🌱 Database is empty! Seeding professional default architecture diagrams...');
+      console.log('🌱 Database is empty! Seeding canonical NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness...');
       await seedDiagram(
-        'AWS VPC SecureNetwork',
-        AWS_VPC_XML,
-        'Auto-seeded AWS Secure Network Blueprint',
-        'Design a secure VPC with Public and Private Subnets across two Availability Zones, including Load Balancer and RDS database.'
-      );
-      await seedDiagram(
-        'GCP Streaming Analytics',
-        GCP_ANALYTICS_XML,
-        'Auto-seeded GCP Real-time Analytics Blueprint',
-        'Design a real-time streaming data analytics pipeline using Pub/Sub, Cloud Dataflow, and BigQuery.'
-      );
-      await seedDiagram(
-        'DevOps CI/CD Deployment',
-        CICD_PIPELINE_XML,
-        'Auto-seeded DevOps Git Deployment Blueprint',
-        'Design a secure CI/CD build and deploy pipeline containerizing using Docker, pushing to registry, and deploying to EKS.'
-      );
-      await seedDiagram(
-        'AI RAG Core Pipeline',
-        AI_RAG_XML,
-        'Auto-seeded Cloud RAG Embeddings Blueprint',
-        'Design a Retrieval-Augmented Generation (RAG) system with Cloud Run API, Cloud SQL (pgvector), and Gemini LLM.'
-      );
-      await seedDiagram(
-        'Gemini Enterprise Portal',
-        GEMINI_ENTERPRISE_XML,
-        'Auto-seeded Gemini Multi-User Enterprise App',
-        'Design a secure enterprise application integrated with Gemini Ultra model API, context caching, and redis grounding store.'
-      );
-      await seedDiagram(
-        'NotebookLM Source Grounding',
-        NOTEBOOK_LM_XML,
-        'Auto-seeded NotebookLM Semantic Grounding Workspace',
-        'Design NotebookLM uploader pipeline chunking sources, storing in vector storage, and generating podcast audio overview.'
-      );
-      await seedDiagram(
-        'Multi-Agent Design Orchestrator',
-        AGENT_DESIGNER_XML,
-        'Auto-seeded Agentic Planner Blueprint',
-        'Design a multi-agent orchestrator designing diagrams with code-execution sandbox, critic reflection loops, and short-term memory.'
-      );
-      await seedDiagram(
-        'Deep Research Agent Pipeline',
-        DEEP_RESEARCH_XML,
-        'Auto-seeded Deep Research Loop Blueprint',
-        'Design a deep research agent performing scraper sub-queries, evaluating sources, and generating markdown reports.'
+        'NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness',
+        buildUniversalClosedLoopDomainHarnessXml({
+          domain: 'nasa_multiverse',
+          prompt: 'Design a NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness on Google Cloud',
+        }),
+        'Canonical v1.0.1 — Closed-Loop Semantic Shape Topology (Hexagon ADK Agents + 1:3 Parallel Counterfactual Fork/Join + Rhombus Safety Commit Gate + Cylinder3 Spanner/Bigtable + #0D9488 Return Highway)',
+        'Design a NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness on Google Cloud'
       );
       console.log('✅ Default diagrams seeded successfully!');
     }
@@ -2510,86 +2566,6 @@ export async function updateDiagramVersionUseCases(
 
 
 
-const AWS_VPC_XML = `
-<mxfile host="embed.diagrams.net">
-  <diagram id="aws_vpc" name="AWS VPC SecureNetwork">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="alb" value="&lt;b&gt;[1] Application Load Balancer&lt;/b&gt;&lt;br&gt;&lt;i&gt;Ingress traffic routing&lt;/i&gt;" style="rounded=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="150" y="300" width="220" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="asg" value="&lt;b&gt;[2] Autoscaling Group (EC2)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Private Subnet Compute&lt;/i&gt;" style="rounded=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="470" y="300" width="220" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="rds" value="&lt;b&gt;[3] Amazon RDS (PostgreSQL)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Master-Replica Database&lt;/i&gt;" style="shape=cylinder;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="800" y="290" width="180" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="edge1" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#567c73;" edge="1" parent="1" source="alb" target="asg"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="edge2" value="SQL Query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#567c73;" edge="1" parent="1" source="asg" target="rds"><mxGeometry relative="1" as="geometry" /></mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
-`.trim();
-
-const GCP_ANALYTICS_XML = `
-<mxfile host="embed.diagrams.net">
-  <diagram id="gcp_analytics" name="GCP Streaming Analytics">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="pubsub" value="&lt;b&gt;[1] Google Pub/Sub&lt;/b&gt;&lt;br&gt;&lt;i&gt;Ingest streaming metrics&lt;/i&gt;" style="rounded=1;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="100" y="250" width="200" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="dataflow" value="&lt;b&gt;[2] Cloud Dataflow&lt;/b&gt;&lt;br&gt;&lt;i&gt;Apache Beam ETL pipeline&lt;/i&gt;" style="rounded=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="380" y="250" width="210" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="bq" value="&lt;b&gt;[3] Google BigQuery&lt;/b&gt;&lt;br&gt;&lt;i&gt;Enterprise Data Warehouse&lt;/i&gt;" style="shape=cylinder;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="670" y="240" width="180" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="looker" value="&lt;b&gt;[4] Looker Dashboard&lt;/b&gt;&lt;br&gt;&lt;i&gt;Analytics Visualizer&lt;/i&gt;" style="rounded=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="920" y="250" width="160" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="e1" value="Stream" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="pubsub" target="dataflow"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e2" value="Insert" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="dataflow" target="bq"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e3" value="Query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;dashed=1;" edge="1" parent="1" source="looker" target="bq"><mxGeometry relative="1" as="geometry" /></mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
-`.trim();
-
-const CICD_PIPELINE_XML = `
-<mxfile host="embed.diagrams.net">
-  <diagram id="cicd_pipeline" name="DevOps CI/CD Deployment">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="github" value="&lt;b&gt;[1] GitHub Repository&lt;/b&gt;&lt;br&gt;&lt;i&gt;Source code trigger&lt;/i&gt;" style="rounded=1;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="80" y="200" width="180" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="runner" value="&lt;b&gt;[2] GitHub Actions Runner&lt;/b&gt;&lt;br&gt;&lt;i&gt;Build &amp; unit tests execution&lt;/i&gt;" style="rounded=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="340" y="200" width="220" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="registry" value="&lt;b&gt;[3] Artifact Registry&lt;/b&gt;&lt;br&gt;&lt;i&gt;Docker images versioning&lt;/i&gt;" style="rounded=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="630" y="200" width="200" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="eks" value="&lt;b&gt;[4] AWS EKS (Kubernetes)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Production Cluster Deployment&lt;/i&gt;" style="rounded=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="910" y="195" width="220" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="e1" value="Commit Push" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="github" target="runner"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e2" value="Push Container" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="runner" target="registry"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e3" value="Helm Deploy" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="registry" target="eks"><mxGeometry relative="1" as="geometry" /></mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
-`.trim();
-
 const AI_RAG_XML = getDefaultXmlForArchitecture('agentic_rag') || '';
 
 async function seedDiagram(name: string, xml: string, comment: string, prompt: string) {
@@ -2612,122 +2588,6 @@ async function seedDiagram(name: string, xml: string, comment: string, prompt: s
     `).run(versionId, diagramId, 1, xml, comment, 'AI', prompt);
   }
 }
-
-const GEMINI_ENTERPRISE_XML = `
-<mxfile host="embed.diagrams.net">
-  <diagram id="gemini_enterprise" name="Gemini Enterprise Application">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="client" value="&lt;b&gt;[1] Enterprise Web Client&lt;/b&gt;&lt;br&gt;&lt;i&gt;SSO Authenticated portal&lt;/i&gt;" style="rounded=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="60" y="250" width="180" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="gateway" value="&lt;b&gt;[2] Enterprise Gateway &amp; WAF&lt;/b&gt;&lt;br&gt;&lt;i&gt;PII Scrubbing &amp; guardrails&lt;/i&gt;" style="rounded=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="320" y="250" width="220" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="gemini_llm" value="&lt;b&gt;[3] Gemini Ultra Model API&lt;/b&gt;&lt;br&gt;&lt;i&gt;Context caching enabled&lt;/i&gt;" style="rounded=1;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="620" y="250" width="220" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="rag_store" value="&lt;b&gt;[4] Vector RAG &amp; Cache&lt;/b&gt;&lt;br&gt;&lt;i&gt;Redis Enterprise Store&lt;/i&gt;" style="shape=cylinder;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="920" y="240" width="180" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="e1" value="HTTPS API" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="client" target="gateway"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e2" value="Route Prompt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="gateway" target="gemini_llm"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e3" value="Grounding Query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="gemini_llm" target="rag_store"><mxGeometry relative="1" as="geometry" /></mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
-`.trim();
-
-const NOTEBOOK_LM_XML = `
-<mxfile host="embed.diagrams.net">
-  <diagram id="notebook_lm" name="NotebookLM Document Workspace">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="900">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="sources" value="&lt;b&gt;[1] Multi-Source Uploader&lt;/b&gt;&lt;br&gt;&lt;i&gt;PDFs, URLs, Slides ingestion&lt;/i&gt;" style="rounded=1;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="50" y="250" width="200" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="chunker" value="&lt;b&gt;[2] Chunking &amp; Embeddings&lt;/b&gt;&lt;br&gt;&lt;i&gt;Semantic clustering engine&lt;/i&gt;" style="rounded=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="320" y="250" width="220" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="vectors" value="&lt;b&gt;[3] Vector Storage&lt;/b&gt;&lt;br&gt;&lt;i&gt;Hierarchical source indexes&lt;/i&gt;" style="shape=cylinder;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="610" y="240" width="180" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="podcast" value="&lt;b&gt;[4] Audio Overview Gen&lt;/b&gt;&lt;br&gt;&lt;i&gt;Text-To-Speech Deep Speaker&lt;/i&gt;" style="rounded=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="880" y="250" width="200" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="e1" value="Upload" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="sources" target="chunker"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e2" value="Store Index" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="chunker" target="vectors"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e3" value="Generate Podcast" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="vectors" target="podcast"><mxGeometry relative="1" as="geometry" /></mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
-`.trim();
-
-const AGENT_DESIGNER_XML = `
-<mxfile host="embed.diagrams.net">
-  <diagram id="agent_designer" name="Multi-Agent Design Orchestrator">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="950">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="designer" value="&lt;b&gt;[1] Agentic UI Canvas&lt;/b&gt;&lt;br&gt;&lt;i&gt;Visual workflow editor&lt;/i&gt;" style="rounded=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="60" y="280" width="180" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="orchestrator" value="&lt;b&gt;[2] Router Orchestrator&lt;/b&gt;&lt;br&gt;&lt;i&gt;Goal decomp &amp; delegation&lt;/i&gt;" style="rounded=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="320" y="280" width="220" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="code_agent" value="&lt;b&gt;[3] Code Sandbox Agent&lt;/b&gt;&lt;br&gt;&lt;i&gt;Safe execution environment&lt;/i&gt;" style="rounded=1;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="620" y="200" width="200" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="eval_agent" value="&lt;b&gt;[4] Critic &amp; Validator Agent&lt;/b&gt;&lt;br&gt;&lt;i&gt;Self-reflection E2E checks&lt;/i&gt;" style="rounded=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="620" y="360" width="200" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="memory" value="&lt;b&gt;[5] Short-term Ephemeral Memory&lt;/b&gt;&lt;br&gt;&lt;i&gt;Shared workspace context&lt;/i&gt;" style="shape=cylinder;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="910" y="270" width="200" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="e1" value="Deploy Prompt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="designer" target="orchestrator"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e2" value="Delegate Task" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="orchestrator" target="code_agent"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e3" value="Request Review" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="code_agent" target="eval_agent"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e4" value="Commit Logs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="eval_agent" target="memory"><mxGeometry relative="1" as="geometry" /></mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
-`.trim();
-
-const DEEP_RESEARCH_XML = `
-<mxfile host="embed.diagrams.net">
-  <diagram id="deep_research" name="Deep Research Agent Pipeline">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="950">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="trigger" value="&lt;b&gt;[1] Query Trigger Input&lt;/b&gt;&lt;br&gt;&lt;i&gt;High-level prompt topic&lt;/i&gt;" style="rounded=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="60" y="250" width="180" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="searcher" value="&lt;b&gt;[2] Search &amp; Web Scrapers&lt;/b&gt;&lt;br&gt;&lt;i&gt;Recursive sub-queries engine&lt;/i&gt;" style="rounded=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="320" y="250" width="220" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="evaluator" value="&lt;b&gt;[3] Source Quality Evaluator&lt;/b&gt;&lt;br&gt;&lt;i&gt;Cross-references &amp; factual scoring&lt;/i&gt;" style="rounded=1;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="620" y="250" width="220" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="summarizer" value="&lt;b&gt;[4] Markdown Synthesis Gen&lt;/b&gt;&lt;br&gt;&lt;i&gt;Structured consensus report&lt;/i&gt;" style="shape=cylinder;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;html=1;" vertex="1" parent="1">
-          <mxGeometry x="920" y="240" width="190" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="e1" value="Initiate Research" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="trigger" target="searcher"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e2" value="Fetch Results" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="searcher" target="evaluator"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e3" value="Compile report" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" parent="1" source="evaluator" target="summarizer"><mxGeometry relative="1" as="geometry" /></mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
-`.trim();
 
 // ==========================================
 // MULTI-TENANT WORKSPACE & AUTHORIZATION WATERFALL

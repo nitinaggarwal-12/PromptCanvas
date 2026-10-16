@@ -163,14 +163,23 @@ function migrateLegacyVisionStorage(): void {
       }
     }
 
-    // Ensure VIS-3093, VIS-1787, VIS-5965, and VIS-AGENTIC-01 are present & healed unless explicitly deleted
+    // Ensure VIS-3093 and VIS-1787 are present & healed unless explicitly deleted
     const deletedKey = 'promptcanvas_vision_deleted_ids_v4';
     const deletedIds: string[] = JSON.parse(localStorage.getItem(deletedKey) || '[]');
 
+    // Remove legacy Azure (VIS-9745 / VIS-5965) and dark-mode bismart (VIS-AGENTIC-01) seeds from cached list
+    for (let i = currentList.length - 1; i >= 0; i--) {
+      const upper = (currentList[i]?.id || '').toUpperCase();
+      if (upper === 'VIS-9745' || upper === 'VIS-5965' || upper === 'VIS-AGENTIC-01') {
+        currentList.splice(i, 1);
+        try {
+          localStorage.removeItem(`${STORAGE_PREFIX}${upper}`);
+        } catch {}
+        migratedAny = true;
+      }
+    }
+
     const defaultMasters: { id: string; builder: () => SavedVisionBlueprint }[] = [
-      { id: 'VIS-9745', builder: () => getSelfHealedAzureLandingZoneBlueprint('VIS-9745') },
-      { id: 'VIS-5965', builder: () => getSelfHealedAzureLandingZoneBlueprint('VIS-5965') },
-      { id: 'VIS-AGENTIC-01', builder: () => getSelfHealedAgenticAiBlueprint('VIS-AGENTIC-01') },
       { id: 'VIS-3093', builder: () => getSelfHealedGeminiEnterpriseBlueprint('VIS-3093') },
       { id: 'VIS-1787', builder: () => getSelfHealedGeminiEnterpriseBlueprint('VIS-1787') }
     ];

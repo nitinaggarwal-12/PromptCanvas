@@ -20,100 +20,100 @@ export interface BlueprintCatalogItem {
 
 export const BLUEPRINT_CATALOG_ITEMS: BlueprintCatalogItem[] = [
   {
-    id: 'c4_component_lld',
-    number: 11,
-    name: 'C4 Enterprise System Context & Container Model (L1, L2 & L3 LLD)',
-    category: 'Strategy & C4',
-    icon: '🧩',
+    id: 'official_gcp_arch_center_hub_spoke',
+    number: 78,
+    name: 'Google Cloud Architecture Center: Official Enterprise Hub-and-Spoke Multi-Tenant & Agentic Reference Topology',
+    category: 'AI & Multi-Agent',
+    icon: '🏛️',
     strategicScore: '5.0 / 5.0',
-    whenToUse: 'Phase 0–1 Greenfield RFC before writing backend service code; Growth & Scale during Kubernetes/Istio service mesh adoption.',
-    whereToUse: 'Technical Design Document (TDD / RFC) Section 2; SOC2 Type II Audit Dossier; C-Suite Boardroom Review Deck Slide 3.',
+    whenToUse: 'Multi-tenant enterprise AI platforms, Hub-and-Spoke VPC Service Controls perimeters, Private Service Connect (PSC), and Google ADK / A2A agent orchestration.',
+    whereToUse: 'Google Cloud Architecture Center Reference Guides; CISO Zero-Trust Perimeter Review; Multi-Tenant Platform RFC.',
     personas: {
-      creator: 'Principal Staff Cloud / Security Architect (Staff L7+ at Google)',
-      consumer: 'CISO, VP of Engineering, External SOC2 Security Auditors'
+      creator: 'Principal Cloud / AI Platform Architect (Staff L7+ at Google Cloud)',
+      consumer: 'CISO, VP of Cloud Platform Engineering, Enterprise AI Leads'
     },
-    bigTechStandpoint: 'Mandatory inside every Architectural RFC before design freeze. Enforces BeyondCorp IAP and GCP Private Service Connect zero-trust boundaries.',
-    consultingStandpoint: 'Boardroom Baseline comparing "As-Is Monolith" vs "To-Be Cloud Native". Accelerates Application Portfolio Rationalization (APM) in 60 minutes.'
+    bigTechStandpoint: 'Official Google Cloud Architecture Center Hub-and-Spoke topology with #aecbfa Routing Hub, #ceead6 Governance Hub, #feefc3/#fad2cf Tenant Spokes, and 23/23 vertex-bound edges.',
+    consultingStandpoint: 'Provides deterministic tenant isolation, CMEK cryptographic custody, and zero cross-tenant blast radius across shared and dedicated spokes.'
   },
   {
-    id: 'modern_data_stack',
-    number: 12,
-    name: 'Modern Data Stack Architecture Blueprint (CDC, Medallion & Reverse ETL)',
+    id: 'gcp_ge_2026_upgraded_architecture',
+    number: 0,
+    name: '2026 Upgraded GCP & Gemini Enterprise Native Architecture (Gemini 3.8 Flash, Vector Search 2.0 & Cloud Run v2)',
+    category: 'AI & Multi-Agent',
+    icon: '✨',
+    strategicScore: '5.0 / 5.0',
+    whenToUse: 'Modernizing enterprise GenAI stacks to Gemini 3.8 Flash, Vertex AI Vector Search 2.0, AlloyDB AI, and Cloud Run v2.',
+    whereToUse: 'Enterprise AI Reference Architecture; Solution Architecture Document (SAD); Executive Steering Committee.',
+    personas: {
+      creator: 'Principal Staff AI / Data Architect',
+      consumer: 'CTO, Chief AI Officer, VP Platform Engineering'
+    },
+    bigTechStandpoint: 'Native Google Cloud 2026 stack combining Gemini 3.8 Flash, Model Armor, Vertex AI Vector Search 2.0, and BigQuery Lakehouse.',
+    consultingStandpoint: 'Eliminates legacy third-party glue layers and reduces P99 agentic inference latency with end-to-end Google Cloud telemetry.'
+  },
+  {
+    id: 'dataops_anomaly_detection',
+    number: 35,
+    name: 'Google Cloud DataOps: Autonomous Data Quality & Real-Time Anomaly Detection Pipeline',
     category: 'Data & Lakehouse',
     icon: '📊',
     strategicScore: '5.0 / 5.0',
-    whenToUse: 'Series B+ Data Modernization when SQL analytics databases stall; AI & RAG feature store monetization.',
-    whereToUse: 'Enterprise Data Strategy & Governance Charter; Solution Architecture Document (SAD); Steering Committee Deck.',
+    whenToUse: 'Real-time streaming ingestion, Dataplex automated data quality gates, BigQuery anomaly detection, and self-healing pipelines.',
+    whereToUse: 'Enterprise Data Governance Charter; Lakehouse Reliability RFC; Data Engineering Runbook.',
     personas: {
-      creator: 'Principal Staff Data Architect / Analytics Engineer',
-      consumer: 'Chief Data Officer (CDO), VP BI, VP Revenue Ops, AI Leads'
+      creator: 'Principal Data Architect / Staff Data Reliability Engineer',
+      consumer: 'Chief Data Officer (CDO), VP Analytics, Data Platform Leads'
     },
-    bigTechStandpoint: 'Real-time CDC WAL events feeding BigQuery & Vertex AI Feature Store with Soda.io/Great Expectations data contracts.',
-    consultingStandpoint: 'Medallion Lakehouse Zones (Bronze Raw, Silver Cleansed, Gold Boardroom) delivering immediate top-line ROI via Reverse ETL.'
+    bigTechStandpoint: 'Pub/Sub + Dataflow streaming into BigQuery with Dataplex quality contracts, Vertex AI anomaly detection, and Quarantine DLQ routing.',
+    consultingStandpoint: 'Prevents downstream BI & RAG corruption with automated SLA enforcement and zero-data-loss replay.'
   },
   {
-    id: 'event_driven_architecture',
-    number: 13,
-    name: 'Enterprise Event-Driven Microservices Architecture (EDA Blueprint)',
-    category: 'Strategy & C4',
-    icon: '⚡',
-    strategicScore: '4.9 / 5.0',
-    whenToUse: 'High-concurrency scale-out during peak traffic spikes; Multi-region asynchronous resilience and DLQ replay.',
-    whereToUse: 'High-Availability & Reliability RFC; Disaster Recovery (DR) & Chaos Runbook; Fintech Payment Whitepaper.',
+    id: 'tech_multi_region_dr',
+    number: 36,
+    name: 'Google Cloud Resilience: Active-Active Multi-Region High Availability & Disaster Recovery (RPO=0)',
+    category: 'Cloud Migration',
+    icon: '🌐',
+    strategicScore: '5.0 / 5.0',
+    whenToUse: 'Mission-critical Tier-0 workloads requiring RPO=0 and sub-second RTO across dual Google Cloud regions.',
+    whereToUse: 'High-Availability & DR RFC; Operational Resilience Audit; Financial / Regulated Workload Certification.',
     personas: {
-      creator: 'Principal Distributed Systems Architect / Event-Driven Architect',
-      consumer: 'CTO, Head of SRE & Reliability Engineering, Chief Risk Officer'
+      creator: 'Principal Distributed Systems & SRE Architect',
+      consumer: 'CIO, Head of SRE, Enterprise Risk & Continuity Officers'
     },
-    bigTechStandpoint: 'Non-blocking concurrency decoupling payment settlement from heavy downstream consumers with Transactional Outbox pattern.',
-    consultingStandpoint: 'Digital Core Banking PCI-DSS compliance with sub-12ms Complex Event Processing (CEP) fraud engine.'
+    bigTechStandpoint: 'Global External Application Load Balancer with Cloud Armor, multi-region GKE Enterprise / Cloud Run, and Cloud Spanner synchronous replication.',
+    consultingStandpoint: 'Provable regional failover with automated health checks and zero manual DNS intervention.'
   },
   {
-    id: 'enterprise_agent_runtime',
-    number: 19,
-    name: 'Enterprise Multi-Agent Cognitive Runtime Architecture',
+    id: 'blueprint_67_cymbal_agentic_Support',
+    number: 67,
+    name: 'Google Cloud Brand Light 7-Layer Flowchart: Enterprise Customer Support & Order Resolution Agent',
     category: 'AI & Multi-Agent',
     icon: '🤖',
     strategicScore: '5.0 / 5.0',
-    whenToUse: 'Complex multi-step reasoning systems where single LLM prompts hallucinate; Orchestrating specialized sub-agents with MCP tool buses.',
-    whereToUse: 'Enterprise GenAI Architecture Roadmap; C-Suite AI Steering Committee; Security Review Board Dossier.',
+    whenToUse: '7-layer operational agentic workflows with semantic decision gates, RAG grounding, Model Armor safety, and HITL escalation.',
+    whereToUse: 'AI Agent Operational Flowchart; CISO & ARB Governance Review; Production Agent Readiness Dossier.',
     personas: {
-      creator: 'Principal AI Systems Architect / Chief AI Officer',
-      consumer: 'CTO, Head of Enterprise AI, SecOps & Compliance Directors'
+      creator: 'Lead Agentic Systems Architect',
+      consumer: 'VP Customer Operations, AI Platform Engineering, SecOps'
     },
-    bigTechStandpoint: 'Sub-100ms Gemini inference with Model Armor prompt sanitization, ScaNN vector memory, and Redis session state.',
-    consultingStandpoint: 'High-ROI agentic automation engine replacing manual business ops with auditable multi-agent task dispatch.'
+    bigTechStandpoint: 'Official Google Cloud Brand Light 7-layer operational flowchart with explicit YES/NO rhombus gates, Apigee/MCP tool calls, and Cloud Trace audit.',
+    consultingStandpoint: 'End-to-end operational transparency from user ingress to governed tool execution and human-in-the-loop escalation.'
   },
   {
-    id: 'ai_agent_approval_workflow',
-    number: 23,
-    name: 'Production AI Agent Enterprise Approval Workflow & ARB Gate',
-    category: 'AI & Multi-Agent',
-    icon: '⚖️',
+    id: 'blueprint_71_autonomous_sre_incident',
+    number: 71,
+    name: 'Google Cloud Brand Light 7-Layer Flowchart: Autonomous SRE Incident Triage & Remediation Agent',
+    category: 'Strategy & C4',
+    icon: '⚡',
     strategicScore: '5.0 / 5.0',
-    whenToUse: 'Deploying high-stakes autonomous AI agents in regulated enterprises requiring human-in-the-loop (HITL) and CISO governance sign-off.',
-    whereToUse: 'AI Safety & Governance RFC; CISO Architecture Review Board (ARB) Protocol; Regulatory Compliance Dossier.',
+    whenToUse: 'Automated production incident triage, log correlation, root-cause synthesis, and policy-gated canary rollback.',
+    whereToUse: 'SRE Automation Charter; Incident Response Playbook; Platform Engineering RFC.',
     personas: {
-      creator: 'Lead AI Governance Architect / CISO Staff Engineer',
-      consumer: 'Architecture Review Board (ARB), Enterprise Risk Committee, Internal Auditors'
+      creator: 'Principal SRE & Autonomous Operations Architect',
+      consumer: 'VP Infrastructure, SRE Leads, Platform Security'
     },
-    bigTechStandpoint: 'Automated CI/CD benchmark gates (Score ≥95%, Toxicity <0.01%) with KMS Binary Auth cryptographic provenance.',
-    consultingStandpoint: 'Full audit defense dossier with automated quarantine loops and C-Suite executive sign-off trails.'
-  },
-  {
-    id: 'six_rs_migration',
-    number: 29,
-    name: 'AWS/GCP 6Rs Cloud Migration & Workload Portfolio Rationalization',
-    category: 'Cloud Migration',
-    icon: '☁️',
-    strategicScore: '5.0 / 5.0',
-    whenToUse: 'Multi-million dollar datacenter exit, cloud migration program, or application portfolio rationalization.',
-    whereToUse: 'Executive Cloud Transformation Charter; Migration WBS Plan; CIO Steering Committee Presentation.',
-    personas: {
-      creator: 'Lead Cloud Migration Architect / Enterprise Transformation Lead',
-      consumer: 'CIO, VP Infrastructure, FinOps Director, Application Owners'
-    },
-    bigTechStandpoint: 'Automated Discovery & Assessment mapping workloads directly to Rehost, Replatform, Refactor, Repurchase, Retain, or Retire tracks.',
-    consultingStandpoint: 'Billable Transformation anchor establishing wave-based migration velocity and 3-year TCO cost reduction.'
+    bigTechStandpoint: 'Correlates Cloud Logging, Cloud Monitoring, and Cloud Trace signals via Gemini 3.8 Flash with Binary Authorization and HITL rollback gates.',
+    consultingStandpoint: 'Compresses Mean Time to Resolution (MTTR) while enforcing strict blast-radius guardrails on production mutations.'
   },
   {
     id: 'supply_chain',

@@ -1,18 +1,14 @@
 {
   "service": "promptcanvas",
-  "runtimeProject": "ramp-portal-dev",
-  "runtimeProjectNumber": "248990048888",
-  "region": "us-west1",
+  "project": "ramp-portal-dev",
   "buildProject": "nitina-ggarwal-sandbox-647724",
-  "image": "us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/promptcanvas:v20261016-1640",
+  "region": "us-west1",
   "beyondCorpUrl": "https://promptcanvas-248990048888.cr.gclb.goog",
-  "runAppUrl": "https://promptcanvas-mi7l4h536a-uw.a.run.app",
-  "gitCommit": "578ff36",
-  "latestCreatedRevisionName": "promptcanvas-00044-2qs",
-  "latestReadyRevisionName": "promptcanvas-00044-2qs",
-  "readyConditionStatus": "True",
+  "image": "us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/promptcanvas:v-nasa-slides-purge-1792189368",
+  "latestCreatedRevisionName": "promptcanvas-00046-2h7",
+  "latestReadyRevisionName": "promptcanvas-00046-2h7",
+  "readyStatus": "True",
   "trafficPercent": 100,
   "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"promptcanvas-1\" on port 8080.",
-  "startupProbeTimestamp": "2026-10-16T20:46:11.858981Z",
-  "verifiedAt": "2026-10-16T20:46:15Z"
+  "verifiedAt": "2026-10-16T22:27:28.879Z"
 }

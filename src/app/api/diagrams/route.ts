@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     diagrams = diagrams
       .filter((d: any) => {
         const text = `${d.id || ''} ${d.name || ''} ${d.latest_prompt || ''}`;
-        return !/DRAFT-ORACLE-EXADATA|oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite/i.test(
+        return !/oracle-at-google|oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|novacura|^add\s+\d+\s+more\s+components|clinical\s+ai\s+-|vis-9745|vis-agentic-01/i.test(
           text
         );
       })

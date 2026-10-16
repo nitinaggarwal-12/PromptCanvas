@@ -301,13 +301,13 @@ function ArchitectureLibraryContent() {
       });
     }
 
-    // 2. Custom & Certified Vision Blueprints (VIS-1787, VIS-9745, VIS-AGENTIC-01, etc.)
+    // 2. Custom & Certified Google Cloud Vision Blueprints (VIS-1787, etc.)
     seen.add('VIS-3093');
     seen.add('VIS-5965');
+    seen.add('VIS-9745');
+    seen.add('VIS-AGENTIC-01');
     const presetVisionItems = [
       getSelfHealedGeminiEnterpriseBlueprint('VIS-1787'),
-      getSelfHealedAzureLandingZoneBlueprint('VIS-9745'),
-      getSelfHealedAgenticAiBlueprint('VIS-AGENTIC-01'),
       ...getCustomVisionBlueprints(),
     ];
 
@@ -315,7 +315,7 @@ function ArchitectureLibraryContent() {
       const upperId = v.id.toUpperCase();
       if (deletedSet.has(upperId) || seen.has(upperId)) continue;
       seen.add(upperId);
-      const isBuiltInPreset = ['VIS-1787', 'VIS-3093', 'VIS-9745', 'VIS-5965', 'VIS-AGENTIC-01'].includes(upperId);
+      const isBuiltInPreset = ['VIS-1787', 'VIS-3093'].includes(upperId);
       const itemTs = !isBuiltInPreset && v.timestamp ? new Date(v.timestamp).toISOString() : BASELINE_REF_TIMESTAMP;
       items.push({
         id: v.id,
@@ -462,22 +462,26 @@ function ArchitectureLibraryContent() {
         xml_content: tpl.generateXml('biopharma', 'light'),
       }));
 
+      const normalizeDiagramTitle = (s?: string) =>
+        (s || '').replace(/\s*\(v\d+\.\d+(?:\.\d+)?\)\s*$/i, '').toLowerCase().trim();
       const draftIdSet = new Set(autoDraftItems.map((d) => d.id.toUpperCase()));
+      const draftNameSet = new Set(autoDraftItems.map((d) => normalizeDiagramTitle(d.name)));
       const filteredDbList = dbList.filter((d) => {
         if (draftIdSet.has(d.id.toUpperCase())) return false;
-        const isPurgedOracle =
-          /oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|\bebs\s+r12|\boracle\s+ebs\b/i.test(
+        if (draftNameSet.has(normalizeDiagramTitle(d.name))) return false;
+        const isPurgedLegacy =
+          /oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|\bebs\s+r12|\boracle\s+ebs\b|novacura|^add\s+\d+\s+more\s+components|clinical\s+ai\s+-|vis-9745|vis-agentic-01/i.test(
             `${d.id || ''} ${d.name || ''} ${d.latest_prompt || ''}`
           );
-        return !isPurgedOracle;
+        return !isPurgedLegacy;
       });
       const existingIds = new Set([...filteredDbList.map(d => d.id.toUpperCase()), ...Array.from(draftIdSet)]);
       const existingNames = new Set([
-        ...filteredDbList.map(d => (d.name || '').toLowerCase().trim()),
-        ...autoDraftItems.map(d => (d.name || '').toLowerCase().trim()),
+        ...filteredDbList.map(d => normalizeDiagramTitle(d.name)),
+        ...Array.from(draftNameSet),
       ]);
       const uniqueLocalSaved = localSavedItems.filter(
-        l => !existingIds.has(l.id.toUpperCase()) && !existingNames.has((l.name || '').toLowerCase().trim())
+        l => !existingIds.has(l.id.toUpperCase()) && !existingNames.has(normalizeDiagramTitle(l.name))
       );
 
       const merged = [
@@ -1674,10 +1678,9 @@ function ArchitectureLibraryContent() {
                     <option value="vision_saved">👁️ Saved Library (Vision Decompiler All)</option>
                     <option value="gcp_multiagent">🤖 Google Multiagent AI System (87)</option>
                     <option value="gemini_enterprise">✨ VIS-1787 / VIS-3093 Gemini Enterprise Agent Platform</option>
-                    <option value="vision_landing_agentic">☁️ VIS-9745 Landing Zone &amp; Agentic AI Core</option>
                     <option value="studio_pro">💎 Architecture Studio (Pro)</option>
                     <option value="studio1_lab">🧪 Prompt Lab (Studio 1)</option>
-                    <option value="canonical_50">📚 Canonical Reference Blueprints (50)</option>
+                    <option value="canonical_50">📚 Canonical Reference Blueprints (26)</option>
                   </select>
 
                   {/* Sort By Dropdown */}
@@ -1713,7 +1716,7 @@ function ArchitectureLibraryContent() {
                   { label: '🌊 Lakehouse', query: 'lakehouse' },
                   { label: '🗄️ Dimensional ERD', query: 'erd' },
                   { label: '🔄 Sequence Flow', query: 'sequence' },
-                  { label: '☁️ AWS', query: 'aws' },
+                  { label: '🔒 Zero-Trust ADK', query: 'adk' },
                   { label: '🌐 GCP', query: 'gcp' },
                   { label: '🛡️ PCI-DSS Security', query: 'security' },
                   { label: '💳 FinTech', query: 'fintech' },
@@ -2015,6 +2018,7 @@ function ArchitectureLibraryContent() {
                             {/* Full Page View */}
                             <button
                               type="button"
+                              data-testid={`library-tile-fullpage-${diagram.id}`}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleOpenPreviewModal(diagram);
