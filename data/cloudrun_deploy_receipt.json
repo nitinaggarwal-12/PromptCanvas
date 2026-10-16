@@ -1,0 +1,20 @@
+{
+  "service": "promptcanvas",
+  "project": "ramp-portal-dev",
+  "projectNumber": "248990048888",
+  "buildProject": "nitina-ggarwal-sandbox-647724",
+  "region": "us-west1",
+  "beyondCorpUrl": "https://promptcanvas-248990048888.cr.gclb.goog/",
+  "cloudRunUrl": "https://promptcanvas-mi7l4h536a-uw.a.run.app",
+  "buildId": "22306ab7-de0f-49cc-b108-b3f4ee0f3437",
+  "imageTag": "us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/promptcanvas:v20261016-1025",
+  "imageDigest": "us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/promptcanvas@sha256:9eff63a2a1a78dcaf35f84265140b279240cea16f2c7a10ad00c7e67d2238aaa",
+  "latestReadyRevisionName": "promptcanvas-00041-5hl",
+  "latestCreatedRevisionName": "promptcanvas-00041-5hl",
+  "readyConditionStatus": "True",
+  "trafficPercent": 100,
+  "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"promptcanvas-1\" on port 8080.",
+  "deployedAt": "2026-10-16T14:30:11.610467Z",
+  "gitCommit": "4415e75",
+  "trafficLatestRevision": true
+}
