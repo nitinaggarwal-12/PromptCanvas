@@ -9,7 +9,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { mkdirSync } from 'fs';
 import { Pool } from 'pg';
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
-import { buildUniversalClosedLoopDomainHarnessXml } from './canonical/nasaMultiverseClosedLoopHarness';
+import {
+  buildOracleEbsExadataClosedLoopHarnessXml,
+  buildUniversalClosedLoopDomainHarnessXml,
+} from './canonical/nasaMultiverseClosedLoopHarness';
 
 // Define TypeScript interfaces for our models
 export interface User {
@@ -1028,14 +1031,13 @@ async function doEnsureTablesExist(): Promise<void> {
           OR name ILIKE 'Unified Cloud Architecture #%'
           OR name ILIKE '%NOVACURA%'
           OR name ILIKE 'CLINICAL AI - %'
-          OR name ILIKE '%Oracle%@Google%'
-          OR name ILIKE '%Exadata%'
-          OR name ILIKE '%E-Business Suite%'
           OR name ILIKE 'VIS-9745%'
           OR name ILIKE 'VIS-AGENTIC-01%'`,
         [legacyPurgeNames]
       );
-      await pool.query(`DELETE FROM diagram_versions WHERE TRIM(COALESCE(xml_content, '')) IN ('', '<mxfile></mxfile>') OR xml_content LIKE '%copilot_mod_custom_box_0%'`);
+      await pool.query(
+        `DELETE FROM diagram_versions WHERE TRIM(COALESCE(xml_content, '')) IN ('', '<mxfile></mxfile>') OR xml_content LIKE '%copilot_mod_custom_box_0%' OR xml_content LIKE '%oracle-at-google-ebs-exadata-2026%'`
+      );
       await pool.query(`DELETE FROM diagrams WHERE id NOT IN (SELECT DISTINCT diagram_id FROM diagram_versions)`);
     } else {
       const db = getSqliteDb();
@@ -1052,34 +1054,55 @@ async function doEnsureTablesExist(): Promise<void> {
         OR UPPER(name) LIKE 'UNIFIED CLOUD ARCHITECTURE #%'
         OR UPPER(name) LIKE '%NOVACURA%'
         OR UPPER(name) LIKE 'CLINICAL AI - %'
-        OR UPPER(name) LIKE '%ORACLE%'
-        OR UPPER(name) LIKE '%EXADATA%'
-        OR UPPER(name) LIKE '%E-BUSINESS SUITE%'
         OR UPPER(name) LIKE 'VIS-9745%'
         OR UPPER(name) LIKE 'VIS-AGENTIC-01%'
       `;
       db.prepare(`DELETE FROM diagram_versions WHERE diagram_id IN (SELECT id FROM diagrams WHERE name IN (${placeholders}) ${likeClause})`).run(...legacyPurgeNames);
       db.prepare(`DELETE FROM diagrams WHERE name IN (${placeholders}) ${likeClause}`).run(...legacyPurgeNames);
-      // Also purge any 0-vertex empty <mxfile></mxfile> test artifacts or 1-box stubs
-      db.prepare(`DELETE FROM diagram_versions WHERE TRIM(COALESCE(xml_content, '')) IN ('', '<mxfile></mxfile>') OR xml_content LIKE '%copilot_mod_custom_box_0%'`).run();
+      // Also purge any 0-vertex empty <mxfile></mxfile> test artifacts, 1-box stubs, or legacy flat 4-tier / Proposal-3 Oracle XML
+      db.prepare(
+        `DELETE FROM diagram_versions WHERE TRIM(COALESCE(xml_content, '')) IN ('', '<mxfile></mxfile>') OR xml_content LIKE '%copilot_mod_custom_box_0%' OR xml_content LIKE '%oracle-at-google-ebs-exadata-2026%' OR xml_content LIKE '%oracle_ebs_exadata_closed_loop_harness%'`
+      ).run();
       db.prepare(`DELETE FROM diagrams WHERE id NOT IN (SELECT DISTINCT diagram_id FROM diagram_versions)`).run();
     }
   } catch {
     // Non-fatal cleanup
   }
 
-  // Seeding trigger: if no diagrams exist, seed canonical NASA Closed-Loop Harness!
+  // Seeding trigger: ensure both Oracle E-Business Suite (EBS R12.2) on Oracle Database@Google Cloud (Exadata X10M) Official Split-VPC and NASA Closed-Loop Harness exist!
   try {
-    const diagCountRes = isPostgres()
-      ? await getPgPool().query('SELECT COUNT(*) as count FROM diagrams')
-      : getSqliteDb().prepare('SELECT COUNT(*) as count FROM diagrams').get() as { count: number | bigint };
-    
-    const count = isPostgres() 
-      ? parseInt((diagCountRes as { rows: { count: string | number }[] }).rows[0].count.toString(), 10) 
-      : Number((diagCountRes as { count: number | bigint }).count);
+    const oracleCheck = isPostgres()
+      ? await getPgPool().query(
+          `SELECT COUNT(*) as count FROM diagrams WHERE name ILIKE '%Oracle E-Business Suite (EBS R12.2) on Oracle Database@Google Cloud%'`
+        )
+      : (getSqliteDb()
+          .prepare(`SELECT COUNT(*) as count FROM diagrams WHERE name LIKE '%Oracle E-Business Suite (EBS R12.2) on Oracle Database@Google Cloud%'`)
+          .get() as { count: number | bigint });
+    const oracleCount = isPostgres()
+      ? parseInt((oracleCheck as { rows: { count: string | number }[] }).rows[0].count.toString(), 10)
+      : Number((oracleCheck as { count: number | bigint }).count);
 
-    if (count === 0) {
-      console.log('🌱 Database is empty! Seeding canonical NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness...');
+    if (oracleCount === 0) {
+      await seedDiagram(
+        'Oracle E-Business Suite (EBS R12.2) on Oracle Database@Google Cloud (Exadata X10M) — Official Split-VPC Architecture',
+        buildOracleEbsExadataClosedLoopHarnessXml('light'),
+        'Canonical v1.0.1 — Official Google Cloud 4-Zone Split-VPC & Co-Located OCI Child Site Topology (Multi-Zone C3 WebLogic & PCP Cluster + Cloud Filestore/NetApp Volumes NFSv4.1 Shared APPL_TOP fs1/fs2/fs_ne + <0.5ms ODB Network Partner Interconnect Bridge + Delegated ODB Client & Backup Subnets + Exadata X10M RAC 100GbE RoCEv2 & Smart Scan Storage Cells + Active Data Guard RPO=0 + GoldenGate 23ai CDC to BigQuery Cortex)',
+        'Build the Oracle@Google Cloud E-Business Suite (EBS R12.2) running on Exadata X10M architecture diagram'
+      );
+    }
+
+    const nasaCheck = isPostgres()
+      ? await getPgPool().query(
+          `SELECT COUNT(*) as count FROM diagrams WHERE name ILIKE '%NASA Closed-Loop Mission Control%'`
+        )
+      : (getSqliteDb()
+          .prepare(`SELECT COUNT(*) as count FROM diagrams WHERE name LIKE '%NASA Closed-Loop Mission Control%'`)
+          .get() as { count: number | bigint });
+    const nasaCount = isPostgres()
+      ? parseInt((nasaCheck as { rows: { count: string | number }[] }).rows[0].count.toString(), 10)
+      : Number((nasaCheck as { count: number | bigint }).count);
+
+    if (nasaCount === 0) {
       await seedDiagram(
         'NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness',
         buildUniversalClosedLoopDomainHarnessXml({
@@ -1089,7 +1112,6 @@ async function doEnsureTablesExist(): Promise<void> {
         'Canonical v1.0.1 — Closed-Loop Semantic Shape Topology (Hexagon ADK Agents + 1:3 Parallel Counterfactual Fork/Join + Rhombus Safety Commit Gate + Cylinder3 Spanner/Bigtable + #0D9488 Return Highway)',
         'Design a NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness on Google Cloud'
       );
-      console.log('✅ Default diagrams seeded successfully!');
     }
   } catch (seedErr) {
     console.error('Failed to seed default diagrams:', seedErr);

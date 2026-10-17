@@ -17,6 +17,11 @@
  *    Purple Dashed 1:3 Fork / 3:1 Join, and Teal Outer Closed-Loop Telemetry Return Highway).
  */
 
+import {
+  buildOfficialOracleEbsExadataGcpSplitVpcXml,
+  buildOfficialOracleEbsExadataArchCenter78Xml,
+} from './oracleAtGoogleExadataEbsTopology';
+
 function escAttr(s: string): string {
   return String(s || '')
     .replace(/&/g, '&amp;')
@@ -93,9 +98,16 @@ interface ClosedLoopDomainTopologySpec {
   distillerTitleHtml: string;
   distillerSubHtml: string;
   distillerVectorEdgeHtml: string;
+  aiClusterTitleHtml?: string;
+  sandboxModelLabelHtml?: string;
+  distillerModelHtml?: string;
+  spannerTitleHtml?: string;
   spannerSubHtml: string;
+  bigtableTitleHtml?: string;
   bigtableSubHtml: string;
+  firestoreTitleHtml?: string;
   firestoreSubHtml: string;
+  vectorTitleHtml?: string;
   vectorSubHtml: string;
   boundaryBannerHtml: string;
   executionHeaderHtml: string;
@@ -121,6 +133,13 @@ export function shouldUseUniversalClosedLoopHarness(text: string): boolean {
   const lower = String(text || '').toLowerCase();
   if (!lower) return false;
   return (
+    lower.includes('oracle') ||
+    lower.includes('exadata') ||
+    lower.includes('ebusiness') ||
+    lower.includes('e-business') ||
+    /\bebs\b/.test(lower) ||
+    lower.includes('goldengate') ||
+    lower.includes('weblogic') ||
     lower.includes('nasa') ||
     lower.includes('satellite') ||
     lower.includes('satellight') ||
@@ -416,6 +435,23 @@ function resolveClosedLoopDomainSpec(options?: UniversalClosedLoopHarnessOptions
 export function buildUniversalClosedLoopDomainHarnessXml(
   options: UniversalClosedLoopHarnessOptions = {}
 ): string {
+  const combined = `${options?.prompt || ''} ${options?.projectTitle || ''} ${options?.domain || ''}`.toLowerCase();
+  const isOracleExadataEbs =
+    combined.includes('oracle') ||
+    combined.includes('exadata') ||
+    combined.includes('ebusiness') ||
+    combined.includes('e-business') ||
+    /\bebs\b/.test(combined) ||
+    combined.includes('goldengate') ||
+    combined.includes('weblogic');
+
+  if (isOracleExadataEbs) {
+    if (options.domain === 'oracle_exadata_ebs_arch_center_78' || combined.includes('#78') || combined.includes('hub-and-spoke')) {
+      return buildOfficialOracleEbsExadataArchCenter78Xml(options.theme || 'light');
+    }
+    return buildOfficialOracleEbsExadataGcpSplitVpcXml(options.theme || 'light');
+  }
+
   const isDark = options.theme === 'dark';
   const bg = isDark ? '#0B111E' : '#FFFFFF';
   const strokeMain = isDark ? '#94A3B8' : '#334155';
@@ -619,7 +655,7 @@ export function buildUniversalClosedLoopDomainHarnessXml(
   v(
     'ai_cluster_container',
     `<div style="font-family:Inter,Arial,sans-serif;font-size:9.5px;font-weight:700;color:#0F172A;">` +
-      `AI Cluster <span style="color:#15803D;font-weight:700;">(Google ADK • A2A)</span>` +
+      `${spec.aiClusterTitleHtml || `AI Cluster <span style="color:#15803D;font-weight:700;">(Google ADK • A2A)</span>`}` +
       `</div>`,
     `rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#475569;strokeWidth=1.5;dashed=1;dashPattern=6 4;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;`,
     325,
@@ -689,7 +725,7 @@ export function buildUniversalClosedLoopDomainHarnessXml(
   v(
     'llm_container',
     `<div style="font-family:Inter,Arial,sans-serif;font-size:9.5px;font-weight:700;color:#0F172A;">` +
-      `${numBadgeHtml('5')}${spec.sandboxTitleHtml} <span style="color:#B45309;">(Vertex AI Gemini 3.1 Pro / 3.8 Flash + GKE TPU v5e &amp; H100)</span>` +
+      `${numBadgeHtml('5')}${spec.sandboxTitleHtml} <span style="color:#B45309;">${spec.sandboxModelLabelHtml || '(Vertex AI Gemini 3.1 Pro / 3.8 Flash + GKE TPU v5e &amp; H100)'}</span>` +
       `</div>`,
     `rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#CA8A04;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;`,
     870,
@@ -742,7 +778,7 @@ export function buildUniversalClosedLoopDomainHarnessXml(
     `<div style="line-height:1.22;font-family:Inter,Arial,sans-serif;padding:0 4px;">` +
       `<b style="font-size:9.5px;color:#065F46;">${spec.distillerTitleHtml}</b><br/>` +
       `<hr style="border:none;border-top:1px solid #A7F3D0;margin:4px 0;"/>` +
-      `<span style="font-size:8.2px;color:#047857;"><b>Gemini 3.1 Pro + 3.8 Flash</b><br/>(Deep Research Max)</span><br/><br/>` +
+      `<span style="font-size:8.2px;color:#047857;">${spec.distillerModelHtml || '<b>Gemini 3.1 Pro + 3.8 Flash</b><br/>(Deep Research Max)'}</span><br/><br/>` +
       `<span style="font-size:7.8px;color:#064E3B;">${spec.distillerSubHtml}</span>` +
       `</div>`,
     `rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=2;align=center;verticalAlign=middle;`,
@@ -758,7 +794,7 @@ export function buildUniversalClosedLoopDomainHarnessXml(
   v(
     'db_spanner',
     `<div style="line-height:1.15;font-family:Inter,Arial,sans-serif;padding-top:8px;">` +
-      `${numBadgeHtml('7')}<b style="font-size:9.5px;color:#0F172A;">Cloud Spanner</b><br/>` +
+      `${numBadgeHtml('7')}<b style="font-size:9.5px;color:#0F172A;">${spec.spannerTitleHtml || 'Cloud Spanner'}</b><br/>` +
       `<span style="font-size:7.8px;color:#334155;">${spec.spannerSubHtml}</span>` +
       `</div>`,
     `shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=9;fillColor=#D6E4FF;strokeColor=#5B8DEF;strokeWidth=1.6;align=center;verticalAlign=middle;`,
@@ -771,7 +807,7 @@ export function buildUniversalClosedLoopDomainHarnessXml(
   v(
     'db_bigtable',
     `<div style="line-height:1.15;font-family:Inter,Arial,sans-serif;padding-top:8px;">` +
-      `<b style="font-size:9.5px;color:#7F1D1D;">Bigtable</b><br/>` +
+      `<b style="font-size:9.5px;color:#7F1D1D;">${spec.bigtableTitleHtml || 'Bigtable'}</b><br/>` +
       `<span style="font-size:7.8px;color:#991B1B;">${spec.bigtableSubHtml}</span>` +
       `</div>`,
     `shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=9;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.6;align=center;verticalAlign=middle;`,
@@ -784,7 +820,7 @@ export function buildUniversalClosedLoopDomainHarnessXml(
   v(
     'db_firestore',
     `<div style="line-height:1.15;font-family:Inter,Arial,sans-serif;padding-top:8px;">` +
-      `<b style="font-size:9.5px;color:#0F172A;">Firestore</b><br/>` +
+      `<b style="font-size:9.5px;color:#0F172A;">${spec.firestoreTitleHtml || 'Firestore'}</b><br/>` +
       `<span style="font-size:7.8px;color:#334155;">${spec.firestoreSubHtml}</span>` +
       `</div>`,
     `shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=9;fillColor=#D6E4FF;strokeColor=#5B8DEF;strokeWidth=1.6;align=center;verticalAlign=middle;`,
@@ -797,7 +833,7 @@ export function buildUniversalClosedLoopDomainHarnessXml(
   v(
     'vector_search_db',
     `<div style="line-height:1.18;font-family:Inter,Arial,sans-serif;padding-top:8px;">` +
-      `${numBadgeHtml('6')}<b style="font-size:9.5px;color:#0F172A;">Vector Search 2.0 (Valkey + GraphRAG)</b><br/>` +
+      `${numBadgeHtml('6')}<b style="font-size:9.5px;color:#0F172A;">${spec.vectorTitleHtml || 'Vector Search 2.0 (Valkey + GraphRAG)'}</b><br/>` +
       `<span style="font-size:8px;color:#334155;">${spec.vectorSubHtml}</span>` +
       `</div>`,
     `shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#D6E4FF;strokeColor=#5B8DEF;strokeWidth=1.6;align=center;verticalAlign=middle;`,
@@ -1181,3 +1217,15 @@ export function buildNasaMultiverseClosedLoopHarnessXml(
     theme,
   });
 }
+
+export function buildOracleEbsExadataClosedLoopHarnessXml(
+  theme: 'light' | 'dark' = 'light'
+): string {
+  return buildOfficialOracleEbsExadataGcpSplitVpcXml(theme);
+}
+
+export {
+  buildOfficialOracleEbsExadataGcpSplitVpcXml,
+  buildOfficialOracleEbsExadataArchCenter78Xml,
+};
+

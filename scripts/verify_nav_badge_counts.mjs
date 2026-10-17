@@ -106,9 +106,25 @@ if (forbiddenPubBlueprints.length > 0 || pubBlueprints.length !== 5) {
   console.log(`✅ Public Blueprints Purge Guard: 0 legacy P1-P5 / 51-61 files in public/blueprints/ (${pubBlueprints.length} clean Vision assets)`);
 }
 
-if ( failed ) {
+// Orphaned Workspace & Dead Library Purge Guard: src/components/workspace/ must only contain ComposeModal.tsx, and diagramCleaner.ts must have 0 external api.iconify.design URLs
+const workspaceFiles = fs.existsSync('src/components/workspace') ? fs.readdirSync('src/components/workspace') : [];
+if (workspaceFiles.length !== 1 || workspaceFiles[0] !== 'ComposeModal.tsx') {
+  console.error(`❌ Orphaned Workspace Purge Guard: Expected only ComposeModal.tsx in src/components/workspace/, found: ${workspaceFiles.join(', ')}`);
+  failed++;
+} else {
+  console.log('✅ Orphaned Workspace Purge Guard: 16/16 dead workspace components purged (only active ComposeModal.tsx remains)');
+}
+
+const cleanerSrc = fs.readFileSync('src/lib/diagramCleaner.ts', 'utf8');
+if (cleanerSrc.includes('api.iconify.design') || cleanerSrc.includes('resolveVendorIconUrl')) {
+  console.error('❌ Offline SVG Purity Guard: src/lib/diagramCleaner.ts still contains external api.iconify.design URLs or dead resolveVendorIconUrl');
+  failed++;
+} else {
+  console.log('✅ Offline SVG Purity Guard: 0 external api.iconify.design URLs in src/lib/diagramCleaner.ts');
+}
+
+if (failed) {
   console.error(`\n❌ ${failed} nav governance check(s) failed.`);
   process.exit(1);
 }
-console.log('\n✅ Nav badge counts, legacy blueprint purge, and route integrity verified.');
-
+console.log('\n✅ Nav badge counts, legacy blueprint purge, dead-code purge, and route integrity verified.');

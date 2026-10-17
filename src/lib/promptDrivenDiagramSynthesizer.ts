@@ -15,7 +15,10 @@
  */
 
 import { generateUpgradedGcpGeBankingArchitectureXml } from './canonical/upgradedGcpGeBankingAgentTemplate';
-import { buildUniversalClosedLoopDomainHarnessXml } from './canonical/nasaMultiverseClosedLoopHarness';
+import {
+  buildUniversalClosedLoopDomainHarnessXml,
+  buildOfficialOracleEbsExadataArchCenter78Xml,
+} from './canonical/nasaMultiverseClosedLoopHarness';
 import { generateLogicalGcpAgentArchitectureXml } from './canonical/templateLogicalGcpAgentArchitecture';
 import { generateConceptualGcpAgentArchitectureXml } from './canonical/templateConceptualGcpAgentArch';
 import { generateProcessGcpAgentWorkflowXml } from './canonical/templateProcessGcpAgentWorkflow';
@@ -27,7 +30,6 @@ import { generateTemplate43RealTimeStreamingEventEnterpriseXml } from './canonic
 import { generateTemplate44ZeroTrustCybersecuritySocPlatformXml } from './canonical/template44ZeroTrustCybersecuritySocPlatform';
 import { generateTemplate45EnterpriseApiIntegrationMcpGatewayXml } from './canonical/template45EnterpriseApiIntegrationMcpGateway';
 import { generateTemplate46EnterpriseKubernetesPlatformEngineeringXml } from './canonical/template46EnterpriseKubernetesPlatformEngineering';
-import { generateTemplate48BcdrCyberRecoveryResilienceXml } from './canonical/template48BcdrCyberRecoveryResilience';
 import { generateTemplate49HealthcareLifeSciencesPlatformXml } from './canonical/template49HealthcareLifeSciencesPlatform';
 import { generateTemplate50SustainabilityEsgPlatformXml } from './canonical/template50SustainabilityEsgPlatform';
 import {
@@ -433,8 +435,8 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
     templateRefLabel = 'Modified Saved Template #41 • AWS Well-Architected Cloud Reference Architecture v2.0 (Amazon Bedrock, SageMaker, Redshift & Gemini 2.5 Pro)';
     domainMutations = [
       [/Google Cloud/gi, 'AWS Cloud'],
-      [/41\. Enterprise RAG &amp; Knowledge Intelligence Platform/gi, 'AWS CLOUD ARCHITECTURE ON AMAZON BEDROCK, SAGEMAKER, REDSHIFT &amp; CLAUDE'],
-      [/ENTERPRISE RAG &amp; KNOWLEDGE INTELLIGENCE PLATFORM/gi, 'AWS CLOUD ARCHITECTURE ON AMAZON BEDROCK, SAGEMAKER, REDSHIFT &amp; CLAUDE'],
+      [/41\. Enterprise RAG &amp; Knowledge Intelligence Platform/gi, 'AWS CLOUD ARCHITECTURE ON AMAZON BEDROCK, SAGEMAKER, REDSHIFT &amp; GEMINI 2.5 PRO'],
+      [/ENTERPRISE RAG &amp; KNOWLEDGE INTELLIGENCE PLATFORM/gi, 'AWS CLOUD ARCHITECTURE ON AMAZON BEDROCK, SAGEMAKER, REDSHIFT &amp; GEMINI 2.5 PRO'],
       [/Cloud Armor/gi, 'AWS WAF Shield'],
       [/Query Rewriting \/&lt;br\/&gt;Decomposition/gi, 'Bedrock Agents /&lt;br/&gt;Orchestrator'],
       [/Model Gateway \/&lt;br\/&gt;LLM Router/gi, 'Amazon Bedrock&lt;br/&gt;FM Gateway'],

@@ -38,21 +38,21 @@ async function main() {
   console.log('🔬 PROMPTCANVAS FORENSIC GATE: BLANK CANVAS, NASA DEFAULT, SLIDES & LEGACY PURGE');
   console.log('================================================================================\n');
 
-  // 0. Purge any Oracle Exadata rows from SQLite database
+  // 0. Purge any legacy 4-tier Oracle Exadata rows from SQLite database
   try {
     const allDbDiagrams = await listDiagrams();
     let purgedCount = 0;
     for (const d of allDbDiagrams) {
       const rowAny = d as Record<string, any>;
-      const text = `${d.id || ''} ${d.name || ''} ${d.prompt || rowAny.latest_prompt || ''} ${d.xml_content || rowAny.latest_xml || ''}`;
-      if (/oracle-at-google|exadata|oracle@googl|DRAFT-ORACLE-EXADATA/i.test(text)) {
+      const xmlText = `${d.xml_content || rowAny.latest_xml || ''}`;
+      if (xmlText.includes('oracle-at-google-ebs-exadata-2026')) {
         await deleteDiagram(d.id);
         purgedCount++;
       }
     }
     check(
       'GATE-00',
-      'SQLite database has zero purged Oracle Exadata diagrams',
+      'SQLite database has zero legacy 4-tier oracle-at-google-ebs-exadata-2026 diagrams',
       true,
       `Purged ${purgedCount} stale rows from SQLite`
     );
@@ -136,17 +136,19 @@ async function main() {
     `vertices=${modVertices}, summary="${modFromBlank.newVersion.actionSummary.slice(0, 80)}"`
   );
 
-  // 6. getAutoSavedDraftBlueprints seeds DRAFT-NASA-MULTIVERSE-V1-0-1 as #1 draft and has 0 Oracle Exadata drafts
+  // 6. getAutoSavedDraftBlueprints seeds DRAFT-ORACLE-EXADATA-EBS-V1-0-1 (Official Split-VPC) & DRAFT-NASA-MULTIVERSE-V1-0-1
   const drafts = getAutoSavedDraftBlueprints();
-  const hasNasaFirst = drafts.length >= 1 && drafts[0].id === 'DRAFT-NASA-MULTIVERSE-V1-0-1';
-  const hasAnyOracleDraft = drafts.some((d) =>
-    /oracle-at-google|exadata|DRAFT-ORACLE-EXADATA/i.test(`${d.id} ${d.name} ${d.xml}`)
+  const hasOracleSplitVpc = drafts.some(
+    (d) =>
+      d.id === 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1' &&
+      d.xml.includes('oracle_ebs_exadata_gcp_split_vpc_official')
   );
+  const hasNasaDraft = drafts.some((d) => d.id === 'DRAFT-NASA-MULTIVERSE-V1-0-1');
   check(
     'GATE-06',
-    'getAutoSavedDraftBlueprints() seeds DRAFT-NASA-MULTIVERSE-V1-0-1 as #1 draft with 0 Oracle Exadata drafts',
-    hasNasaFirst && !hasAnyOracleDraft,
-    `firstDraftId=${drafts[0]?.id}, totalDrafts=${drafts.length}, hasAnyOracleDraft=${hasAnyOracleDraft}`
+    'getAutoSavedDraftBlueprints() seeds DRAFT-ORACLE-EXADATA-EBS-V1-0-1 (Official Split-VPC) & DRAFT-NASA-MULTIVERSE-V1-0-1',
+    hasOracleSplitVpc && hasNasaDraft,
+    `firstDraftId=${drafts[0]?.id}, totalDrafts=${drafts.length}, hasOracleSplitVpc=${hasOracleSplitVpc}, hasNasaDraft=${hasNasaDraft}`
   );
 
   // 7. Self-healing converts any 1-box stub or purged 4-tier XML into NASA Closed-Loop Harness

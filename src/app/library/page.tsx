@@ -379,12 +379,6 @@ function ArchitectureLibraryContent() {
           const healedSavedList: any[] = [];
           if (Array.isArray(rawSaved)) {
             localSavedItems = rawSaved
-              .filter((item: any) => {
-                const combined = `${item?.id || ''} ${item?.name || ''} ${item?.prompt || ''} ${item?.description || ''}`;
-                const isPurgedOracle = /oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|\bebs\s+r12|\boracle\s+ebs\b/i.test(combined);
-                if (isPurgedOracle) savedMutated = true;
-                return !isPurgedOracle;
-              })
               .map((item: any) => {
                 let fullPayload: any = null;
                 try {
@@ -470,7 +464,7 @@ function ArchitectureLibraryContent() {
         if (draftIdSet.has(d.id.toUpperCase())) return false;
         if (draftNameSet.has(normalizeDiagramTitle(d.name))) return false;
         const isPurgedLegacy =
-          /oracle@googl|oracle\s+database@google|exadata|ebuisness|e-business\s+suite|\bebs\s+r12|\boracle\s+ebs\b|novacura|^add\s+\d+\s+more\s+components|clinical\s+ai\s+-|vis-9745|vis-agentic-01/i.test(
+          /novacura|^add\s+\d+\s+more\s+components|clinical\s+ai\s+-|vis-9745|vis-agentic-01/i.test(
             `${d.id || ''} ${d.name || ''} ${d.latest_prompt || ''}`
           );
         return !isPurgedLegacy;

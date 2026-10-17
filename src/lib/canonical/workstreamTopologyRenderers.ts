@@ -180,6 +180,107 @@ export const EXTRA_GCP_ICONS: Record<string, string> = {
       <circle cx="20" cy="20" r="3" fill="#34a853"/>
     </svg>
   `),
+  compute_engine: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+      <rect x="11" y="11" width="18" height="18" rx="2.5" fill="#4285f4" stroke="#174ea6" stroke-width="1.8"/>
+      <rect x="15" y="15" width="10" height="10" rx="1" fill="#ffffff"/>
+      <path d="M15 7 V11 M20 7 V11 M25 7 V11 M15 29 V33 M20 29 V33 M25 29 V33 M7 15 H11 M7 20 H11 M7 25 H11 M29 15 H33 M29 20 H33 M29 25 H33" stroke="#174ea6" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  `),
+  load_balancing: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+      <circle cx="20" cy="10" r="4" fill="#174ea6"/>
+      <circle cx="10" cy="29" r="3.8" fill="#4285f4"/>
+      <circle cx="20" cy="29" r="3.8" fill="#4285f4"/>
+      <circle cx="30" cy="29" r="3.8" fill="#4285f4"/>
+      <path d="M20 14 V20 M10 20 H30 M10 20 V25 M20 20 V25 M30 20 V25" fill="none" stroke="#174ea6" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+  `),
+  cloud_interconnect: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#fce8e6" stroke="#d93025" stroke-width="2"/>
+      <rect x="6" y="13" width="8" height="14" rx="2" fill="#1a73e8"/>
+      <rect x="26" y="13" width="8" height="14" rx="2" fill="#d93025"/>
+      <path d="M14 17 H26 M14 23 H26" stroke="#202124" stroke-width="2.4" stroke-linecap="round"/>
+      <polygon points="20,13 23,17 20,21" fill="#d93025"/>
+      <polygon points="20,19 17,23 20,27" fill="#1a73e8"/>
+    </svg>
+  `),
+  cloud_router: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+      <circle cx="20" cy="20" r="10" fill="none" stroke="#174ea6" stroke-width="2"/>
+      <path d="M20 7 V14 M20 26 V33 M7 20 H14 M26 20 H33" stroke="#1a73e8" stroke-width="2.4" stroke-linecap="round"/>
+      <circle cx="20" cy="20" r="3.5" fill="#34a853"/>
+    </svg>
+  `),
+  cloud_build: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#fef7e0" stroke="#ea8600" stroke-width="2"/>
+      <polygon points="20,7 31,13.5 20,20 9,13.5" fill="#fbbc04" stroke="#b06000" stroke-width="1.5"/>
+      <polygon points="9,16 20,22.5 20,33 9,26.5" fill="#4285f4"/>
+      <polygon points="31,16 20,22.5 20,33 31,26.5" fill="#1a73e8"/>
+    </svg>
+  `),
+  datastream: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e6f4ea" stroke="#0d9488" stroke-width="2"/>
+      <path d="M8 14 H25 L22 11 M25 14 L22 17" fill="none" stroke="#0d9488" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M8 20 H31 L28 17 M31 20 L28 23" fill="none" stroke="#1a73e8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M8 26 H25 L22 23 M25 26 L22 29" fill="none" stroke="#137333" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  `),
+  filestore_nas: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e6f4ea" stroke="#188038" stroke-width="2"/>
+      <path d="M8 12 H17 L20 15 H32 V29 H8 Z" fill="#34a853" stroke="#137333" stroke-width="1.8" stroke-linejoin="round"/>
+      <line x1="13" y1="21" x2="27" y2="21" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="13" y1="25" x2="23" y2="25" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+  `),
+  exadata_rac: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#fce8e6" stroke="#b31412" stroke-width="2"/>
+      <ellipse cx="14" cy="13" rx="6" ry="2.8" fill="#ea4335" stroke="#b31412" stroke-width="1.5"/>
+      <path d="M8 13 V25 C8 26.6 10.7 28 14 28 C17.3 28 20 26.6 20 25 V13" fill="#ffffff" stroke="#b31412" stroke-width="1.6"/>
+      <ellipse cx="26" cy="15" rx="6" ry="2.8" fill="#d93025" stroke="#b31412" stroke-width="1.5"/>
+      <path d="M20 15 V27 C20 28.6 22.7 30 26 30 C29.3 30 32 28.6 32 27 V15" fill="#fce8e6" stroke="#b31412" stroke-width="1.6"/>
+    </svg>
+  `),
+  exadata_storage: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#fce8e6" stroke="#b31412" stroke-width="2"/>
+      <rect x="8" y="9" width="24" height="6" rx="1.5" fill="#d93025"/>
+      <rect x="8" y="17" width="24" height="6" rx="1.5" fill="#ea4335"/>
+      <rect x="8" y="25" width="24" height="6" rx="1.5" fill="#b31412"/>
+      <circle cx="12" cy="12" r="1.3" fill="#ffffff"/>
+      <circle cx="12" cy="20" r="1.3" fill="#ffffff"/>
+      <circle cx="12" cy="28" r="1.3" fill="#ffffff"/>
+    </svg>
+  `),
+  exadata_dataguard: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#fce8e6" stroke="#d93025" stroke-width="2"/>
+      <path d="M20 7 L31 11.5 V20 C31 27 26.2 31.8 20 34 C13.8 31.8 9 27 9 20 V11.5 Z" fill="#ea4335" opacity="0.2" stroke="#b31412" stroke-width="2"/>
+      <path d="M15 20 L18.5 23.5 L26 16" fill="none" stroke="#b31412" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  `),
+  iam: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e6f4ea" stroke="#188038" stroke-width="2"/>
+      <circle cx="20" cy="15" r="5" fill="#34a853"/>
+      <path d="M10 30 C10 24.5 14.5 22 20 22 C25.5 22 30 24.5 30 30" fill="none" stroke="#137333" stroke-width="2.6" stroke-linecap="round"/>
+    </svg>
+  `),
+  client: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1967d2" stroke-width="2"/>
+      <rect x="8" y="10" width="24" height="15" rx="2" fill="#4285f4" stroke="#174ea6" stroke-width="1.8"/>
+      <path d="M14 30 H26 M20 25 V30" stroke="#174ea6" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+  `),
 };
 
 export function resolveArchIconUri(iconKey: string, title = '', _sub = ''): string {

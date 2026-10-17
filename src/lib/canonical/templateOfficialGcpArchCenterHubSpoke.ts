@@ -27,6 +27,8 @@ export interface OfficialArchCardItem {
   title: string;
   title2?: string;
   sub: string;
+  l400Badge?: string;
+  l400Spec?: string;
 }
 
 export interface OfficialArchCenterBlueprintConfig {
@@ -1391,6 +1393,14 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     true
   );
 
+  const fitSpanText = (text: string, maxW: number, fontSizePx: number, bold = false) => {
+    const factor = bold ? 0.58 : 0.54;
+    const estW = text.length * (fontSizePx * factor);
+    const adjFs = estW > maxW ? Math.max(9.5, Math.floor((maxW / (text.length * factor)) * 10) / 10) : fontSizePx;
+    const weightCss = bold ? 'font-weight:700;' : '';
+    return `<span style="font-size:${adjFs}px;color:#202124;white-space:nowrap;${weightCss}">${text}</span>`;
+  };
+
   // 5. Four Semantic Hub & Spoke Zones (#aecbfa, #ceead6, #feefc3, #fad2cf)
   addVertex(
     'zone_routing_hub',
@@ -1398,7 +1408,7 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     338,
     664,
     330,
-    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;">${bp.routingHubTitle}</b><br/><span style="font-size:12.5px;color:#202124;">${bp.routingHubSub}</span></div>`,
+    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.22;">${fitSpanText(bp.routingHubTitle, 440, 14.5, true)}<br/>${fitSpanText(bp.routingHubSub, 390, 12.0, false)}</div>`,
     'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#aecbfa;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;',
     true
   );
@@ -1429,7 +1439,7 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     808,
     484,
     508,
-    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;">${bp.leftZoneTitle}</b><br/><span style="font-size:12.5px;color:#202124;">${bp.leftZoneSub}</span></div>`,
+    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;">${fitSpanText(bp.leftZoneTitle, 336, 14.5, true)}<br/>${fitSpanText(bp.leftZoneSub, 336, 12.2, false)}</div>`,
     'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#feefc3;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;',
     true
   );
@@ -1450,14 +1460,47 @@ export function compileOfficialArchCenterDrawioXml(bp: OfficialArchCenterBluepri
     808,
     484,
     508,
-    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;">${bp.rightZoneTitle}</b><br/><span style="font-size:12.5px;color:#202124;">${bp.rightZoneSub}</span></div>`,
+    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;">${fitSpanText(bp.rightZoneTitle, 336, 14.5, true)}<br/>${fitSpanText(bp.rightZoneSub, 336, 12.2, false)}</div>`,
     'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#fad2cf;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;',
     true
   );
 
-  // 6. Helper to add Official Architecture Center Card with Resolved Distinct Service Icon
+  // 6. Helper to add Official Architecture Center Card with Resolved Distinct Service Icon (and optional L400 Deep Implementation Spec)
   const addArchCard = (id: string, x: number, y: number, w: number, h: number, cardObj: OfficialArchCardItem) => {
     const iconUri = resolveArchIconUri(cardObj.icon, cardObj.title, cardObj.sub);
+    if (cardObj.l400Spec || cardObj.l400Badge) {
+      const textMaxW = Math.max(124, w - 46);
+      const calcFs = (txt: string, maxFs: number, minFs: number, charFactor = 0.55) => {
+        const plainLen = Math.max(1, txt.replace(/&[a-zA-Z0-9#]+;/g, 'X').length);
+        const raw = textMaxW / (plainLen * charFactor);
+        return Math.max(minFs, Math.min(maxFs, Math.floor(raw * 10) / 10));
+      };
+      const badgeFs = cardObj.l400Badge ? calcFs(cardObj.l400Badge, 7.6, 6.2, 0.56) : 7.4;
+      const titleFs = calcFs(cardObj.title, 10.4, 7.8, 0.56);
+      const subFs = cardObj.sub ? calcFs(cardObj.sub, 8.5, 6.8, 0.52) : 8.2;
+      const specFs = cardObj.l400Spec ? calcFs(cardObj.l400Spec, 7.4, 6.0, 0.58) : 7.2;
+
+      const badgeHtml = cardObj.l400Badge
+        ? `<div style="font-size:${badgeFs}px;font-weight:700;color:#174ea6;letter-spacing:0.15px;white-space:nowrap;">${cardObj.l400Badge}</div>`
+        : '';
+      const titleHtml = `<div style="font-size:${titleFs}px;font-weight:700;color:#202124;white-space:nowrap;">${cardObj.title}</div>`;
+      const subHtml = cardObj.sub
+        ? `<div style="font-size:${subFs}px;color:#3c4043;white-space:nowrap;">${cardObj.sub}</div>`
+        : '';
+      const specHtml = cardObj.l400Spec
+        ? `<div style="font-size:${specFs}px;font-family:'Roboto Mono',monospace;color:#b31412;background:#f8f9fa;border:1px solid #dadce0;border-radius:3px;padding:1px 3px;margin-top:1px;white-space:nowrap;display:inline-block;">${cardObj.l400Spec}</div>`
+        : '';
+      const htmlVal = `<table style="width:100%;height:100%;border-collapse:collapse;font-family:'Google Sans',Roboto,Arial,sans-serif;"><tr><td style="width:34px;text-align:center;vertical-align:middle;padding-left:3px;"><img src="${iconUri}" width="26" height="26"/></td><td style="text-align:left;vertical-align:middle;padding-left:4px;padding-right:3px;line-height:1.15;">${badgeHtml}${titleHtml}${subHtml}${specHtml}</td></tr></table>`;
+      return addVertex(
+        id,
+        x,
+        y,
+        w,
+        h,
+        htmlVal,
+        'rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=2;align=left;verticalAlign=middle;spacingLeft=1;spacingRight=2;'
+      );
+    }
     const titleHtml = cardObj.title2
       ? `<b style="font-size:12.5px;color:#202124;">${cardObj.title}<br/>${cardObj.title2}</b>`
       : `<b style="font-size:12.5px;color:#202124;">${cardObj.title}</b>`;

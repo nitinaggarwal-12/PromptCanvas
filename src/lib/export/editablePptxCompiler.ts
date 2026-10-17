@@ -1033,19 +1033,27 @@ export function buildDynamicDocGuideFromDiagramXml(
       .replace(/\s*\((?:Blueprint\s*)?#?\w+\)\s*$/i, '')
       .trim() || 'Enterprise Cloud Architecture';
 
+  const isOracleExadataEbs =
+    /oracle|exadata|e-business\s+suite|ebuisness|\bebs\s+r12|\boracle\s+ebs\b|weblogic|appl_top|goldengate|oracle_ebs_exadata/i.test(
+      `${cleanTitle} ${blueprintId || ''} ${xmlContent}`
+    );
+
   const isNasaClosedLoop =
+    !isOracleExadataEbs &&
     /nasa|multiverse|multi-universe|closed-loop|spaceflight|ccsds|parallel.*digital-twin/i.test(
-      `${cleanTitle} ${xmlContent}`
+      `${cleanTitle} ${blueprintId || ''} ${xmlContent}`
     );
 
   const rawBp = String(blueprintId || '')
     .replace(/^#/, '')
     .trim();
-  const derivedDocId = isNasaClosedLoop
-    ? 'ARCH-NASA-01'
-    : rawBp && /^(?:BP-)?\d{1,2}$/i.test(rawBp)
-      ? `BP-${rawBp.replace(/^BP-/i, '').padStart(2, '0')}`
-      : 'ARCH-SPEC-01';
+  const derivedDocId = isOracleExadataEbs
+    ? 'ARCH-ORA-EBS-01'
+    : isNasaClosedLoop
+      ? 'ARCH-NASA-01'
+      : rawBp && /^(?:BP-)?\d{1,2}$/i.test(rawBp)
+        ? `BP-${rawBp.replace(/^BP-/i, '').padStart(2, '0')}`
+        : 'ARCH-SPEC-01';
 
   // Extract header subtitle if present in XML
   const subtitleCell = cells.find(
@@ -1210,39 +1218,69 @@ export function buildDynamicDocGuideFromDiagramXml(
   }
   const componentGroupsTable = Array.from(groupedMap.values()).slice(0, 6);
 
-  const agenticFlowSteps = isNasaClosedLoop
+  const agenticFlowSteps = isOracleExadataEbs
     ? [
         {
-          step: 'Flight Director & Mission Console issues an orbital maneuver or payload directive over mTLS / CAC-PIV authenticated ingress to the Mission Control API Gateway.',
+          step: 'Oracle EBS R12.2 Users & CFO Close Console submit financial close, Order-to-Cash (O2C), or Procure-to-Pay (P2P) transactions through Cloud Armor WAF, IAP, and the Apigee / Global ALB Ingress Gateway.',
         },
         {
-          step: 'Deterministic Launch Commit Criteria (LCC) Rhombus Safety Gate evaluates delta-V propellant margins, thermal envelopes, and NPR 8715.5 range safety invariants.',
+          step: 'Deterministic SOX 404 & GL Period Commit Rhombus Gate evaluates Segregation of Duties (SoD), Dual-Control limits, and EBS ADOP Online Patching invariants.',
           subSteps: [
-            '[NO-GO / ABORT Branch]: Out-of-envelope commands are immediately shunted into the AFTS Range Safety Abort Quarantine Sink.',
-            '[GO Branch]: Verified directives are signed and forwarded to the Hexagonal Google ADK Mission Coordinator Agent.',
+            '[NO-GO / ABORT Branch]: SoD violations or unapproved journal overrides are quarantined in the SOX Exception & Audit Quarantine Sink.',
+            '[GO Branch]: Verified ERP directives route to the Hexagonal EBS R12.2 & Cortex Coordinator Agent.',
           ],
         },
         {
-          step: 'Hexagonal Google ADK Coordinator Agent decomposes the mission directive across Specialist Domain Agents (GNC & Orbit FDS Agent, Flight Software cFS/F\' Executive Agent, and Multiverse Sim Digital-Twin Agent).',
+          step: 'Hexagonal EBS R12.2 & Cortex Coordinator Agent orchestrates Specialist Agents (WebLogic 12c & Forms Tier Agent, Concurrent Manager & Workflow Agent, and GoldenGate CDC & BigQuery Cortex Agent).',
         },
         {
-          step: '1:3 Parallel Counterfactual Digital-Twin Sandbox forks execution across three isolated physics simulation swimlanes on GKE TPU v5e / H100:',
+          step: '1:3 Parallel EBS R12.2 App Tier & Online Patching (ADOP) Cluster executes concurrent workloads on Compute Engine C3 VMs with Cloud Filestore Enterprise Shared APPL_TOP:',
           subSteps: [
-            'Universe Alpha (Nominal J2000 Ephemeris): Baseline orbital propagation and burn verification.',
-            'Universe Beta (High Solar-Flux Perturbation): Atmospheric drag and radiation fault-injection stress test.',
-            'Universe Gamma (Off-Nominal Thruster / Sensor Degradation): Monte Carlo dispersion and attitude recovery.',
+            'Swimlane Alpha (O2C & P2P WebLogic Managed Servers): Active-Active Forms/OAF JVM cluster with Application Continuity.',
+            'Swimlane Beta (Parallel Concurrent Processing PCP & Workflow Mailer): High-throughput batch payroll, MRP, and AutoInvoice.',
+            'Swimlane Gamma (ADOP Online Patching Run/Patch Edition Sandbox): Zero-downtime dual-filesystem cutover validation.',
           ],
         },
         {
-          step: '3:1 Cross-Universe Pareto Policy Distiller converges all three simulation rollouts, selects the minimum-risk command trajectory, and commits state to Cloud Spanner TrueTime and Bigtable.',
+          step: '3:1 Cross-Edition Transaction & GL Reconciler converges all three EBS execution lanes, validates trial-balance integrity, and commits across the <0.5ms ODB Partner Interconnect.',
         },
         {
-          step: 'CCSDS 732.0-B Space Link Encoder transmits the command across the NASA Deep Space Network (S/X/Ka-Band Air-Gap Boundary) while the #0D9488 100Hz Closed-Loop Telemetry Return Highway streams live spacecraft state vectors back to the top console.',
+          step: 'Exadata X10M Primary RAC (Oracle 19c/23ai CDB/PDB) commits transactions with RoCEv2 RDMA and Data Guard sync while the #0D9488 Real-Time GoldenGate CDC & Telemetry Return Highway streams reconciled ledger updates back to the CFO Close Console.',
         },
       ]
-    : flatComponentRows.slice(0, 7).map((row) => ({
-        step: `${row.serviceName} (${row.groupName}): ${row.description}`,
-      }));
+    : isNasaClosedLoop
+      ? [
+          {
+            step: 'Flight Director & Mission Console issues an orbital maneuver or payload directive over mTLS / CAC-PIV authenticated ingress to the Mission Control API Gateway.',
+          },
+          {
+            step: 'Deterministic Launch Commit Criteria (LCC) Rhombus Safety Gate evaluates delta-V propellant margins, thermal envelopes, and NPR 8715.5 range safety invariants.',
+            subSteps: [
+              '[NO-GO / ABORT Branch]: Out-of-envelope commands are immediately shunted into the AFTS Range Safety Abort Quarantine Sink.',
+              '[GO Branch]: Verified directives are signed and forwarded to the Hexagonal Google ADK Mission Coordinator Agent.',
+            ],
+          },
+          {
+            step: 'Hexagonal Google ADK Coordinator Agent decomposes the mission directive across Specialist Domain Agents (GNC & Orbit FDS Agent, Flight Software cFS/F\' Executive Agent, and Multiverse Sim Digital-Twin Agent).',
+          },
+          {
+            step: '1:3 Parallel Counterfactual Digital-Twin Sandbox forks execution across three isolated physics simulation swimlanes on GKE TPU v5e / H100:',
+            subSteps: [
+              'Universe Alpha (Nominal J2000 Ephemeris): Baseline orbital propagation and burn verification.',
+              'Universe Beta (High Solar-Flux Perturbation): Atmospheric drag and radiation fault-injection stress test.',
+              'Universe Gamma (Off-Nominal Thruster / Sensor Degradation): Monte Carlo dispersion and attitude recovery.',
+            ],
+          },
+          {
+            step: '3:1 Cross-Universe Pareto Policy Distiller converges all three simulation rollouts, selects the minimum-risk command trajectory, and commits state to Cloud Spanner TrueTime and Bigtable.',
+          },
+          {
+            step: 'CCSDS 732.0-B Space Link Encoder transmits the command across the NASA Deep Space Network (S/X/Ka-Band Air-Gap Boundary) while the #0D9488 100Hz Closed-Loop Telemetry Return Highway streams live spacecraft state vectors back to the top console.',
+          },
+        ]
+      : flatComponentRows.slice(0, 7).map((row) => ({
+          step: `${row.serviceName} (${row.groupName}): ${row.description}`,
+        }));
 
   const topComponentNames = flatComponentRows
     .slice(0, 6)
@@ -1251,113 +1289,194 @@ export function buildDynamicDocGuideFromDiagramXml(
 
   const subtitle =
     extractedSub ||
-    (isNasaClosedLoop
-      ? 'Closed-loop mission control architecture pairing a deterministic [GO]/[NO-GO] rhombus safety gate, hexagonal ADK coordinator agents, a 1:3 parallel counterfactual digital-twin simulation sandbox, CCSDS deep-space air-gap boundary, and a continuous telemetry return highway.'
-      : `End-to-end architecture specification for ${cleanTitle} integrating ${topComponentNames} across ${edges.length || 17} verified protocol channels.`);
+    (isOracleExadataEbs
+      ? 'Closed-loop enterprise ERP architecture pairing a deterministic SOX 404 Rhombus Commit Gate, hexagonal EBS R12.2 & Cortex Coordinator Agents, 1:3 Parallel WebLogic/PCP/ADOP App Tiers, <0.5ms ODB Partner Interconnect to Exadata X10M RAC, and a GoldenGate CDC return highway.'
+      : isNasaClosedLoop
+        ? 'Closed-loop mission control architecture pairing a deterministic [GO]/[NO-GO] rhombus safety gate, hexagonal ADK coordinator agents, a 1:3 parallel counterfactual digital-twin simulation sandbox, CCSDS deep-space air-gap boundary, and a continuous telemetry return highway.'
+        : `End-to-end architecture specification for ${cleanTitle} integrating ${topComponentNames} across ${edges.length || 17} verified protocol channels.`);
 
-  const overviewParagraphs = isNasaClosedLoop
+  const overviewParagraphs = isOracleExadataEbs
     ? [
-        `${cleanTitle} establishes a deterministic, closed-loop autonomous control plane for high-consequence mission operations. Rather than relying on open-loop linear request-response chains, operator directives enter through the Flight Director Console and are immediately inspected by an API Gateway and a deterministic Rhombus Safety & Policy Commit Gate ([GO] vs. [NO-GO / ABORT]) with an isolated Abort Quarantine Sink for out-of-envelope commands.`,
-        `Approved directives are orchestrated by a hexagonal Google ADK / A2A Coordinator Agent and dispatched across specialist domain agents (Orbital Astrodynamics, Flight Software cFS/F', and Counterfactual Digital-Twin Simulation). Before any command is committed to physical hardware, the harness forks execution 1:3 into a Parallel Counterfactual Digital-Twin Simulation Sandbox (Universe Alpha Nominal, Universe Beta Solar-Storm Fault Injection, and Universe Gamma Thruster-Degraded Monte Carlo) and converges into a 3:1 Cross-Universe Pareto Policy Distiller.`,
-        `State checkpoints and mission knowledge are persisted in 3D cylinder datastores (Cloud Spanner Mission Ledger, Cloud Bigtable High-Rate Telemetry, and Vertex AI Vector Search 2.0 + GraphRAG). Validated commands cross the dashed CCSDS / Deep-Space Network Air-Gap Boundary into the Spacecraft Flight Software Bus (cFS / F' RTOS), while the outer #0D9488 Closed-Loop Telemetry Return Highway continuously feeds real-time state vectors back to the top operator console.`,
+        `${cleanTitle} establishes a deterministic, closed-loop enterprise ERP control plane for Oracle E-Business Suite (EBS R12.2) running on Oracle Database@Google Cloud (Exadata X10M). User and automated ERP workflows enter through the CFO Close & EBS HTML5/Forms Console, pass through Cloud Armor WAF and Apigee API Gateway, and are inspected by a deterministic SOX 404 & GL Period Commit Rhombus Gate ([GO] vs. [NO-GO / ABORT]) with an isolated SOX Exception Quarantine Sink.`,
+        `Approved ERP operations are coordinated by a hexagonal EBS R12.2 & Cortex Coordinator Agent across specialist agents (WebLogic 12c & Forms Tier, Parallel Concurrent Processing PCP, and GoldenGate CDC & BigQuery Cortex). The application tier forks 1:3 across an Active-Active O2C/P2P WebLogic cluster, a high-throughput PCP Batch & Workflow Mailer pool, and an ADOP Online Patching Run/Patch Edition sandbox sharing Cloud Filestore Enterprise (NFSv4.1 APPL_TOP), before converging at a 3:1 Cross-Edition Transaction & GL Reconciler.`,
+        `State persistence and enterprise analytics span 3D cylinder datastores (Exadata X10M Primary RAC 19c/23ai, Exadata Active Data Guard Standby, Cloud Filestore Enterprise Shared APPL_TOP, and BigQuery Cortex for Oracle EBS + Vector Search 2.0). Validated SQL*Net / ONS Fan-Out commits cross the dashed <0.5ms ODB Network Partner Interconnect Boundary into the OCI Child Site Exadata X10M hardware, while the outer #0D9488 Real-Time GoldenGate CDC & Telemetry Return Highway streams reconciled ledger updates back to the top console.`,
       ]
-    : [
-        `${cleanTitle} defines a production-grade architecture comprising ${uniqueCards.length || 18} specialized components and ${edges.length || 20} directional data and control channels. It organizes ingress, policy enforcement, core processing, and stateful persistence into clearly bounded architectural zones (${containerZones.map((z) => z.title).slice(0, 4).join('; ') || 'Ingress, Control Plane, Data Plane, and Telemetry'}).`,
-        `Core execution flows through ${topComponentNames}. Each component enforces strict transport security, deterministic request validation, and explicit state transitions so workloads maintain predictable latency and high availability under peak enterprise load.`,
-        `Downstream state persistence and observability are anchored by ${flatComponentRows.slice(-3).map((r) => r.serviceName).join(', ')}, providing end-to-end auditability, automated health verification, and closed-loop operational telemetry across every tier of the topology.`,
-      ];
+    : isNasaClosedLoop
+      ? [
+          `${cleanTitle} establishes a deterministic, closed-loop autonomous control plane for high-consequence mission operations. Rather than relying on open-loop linear request-response chains, operator directives enter through the Flight Director Console and are immediately inspected by an API Gateway and a deterministic Rhombus Safety & Policy Commit Gate ([GO] vs. [NO-GO / ABORT]) with an isolated Abort Quarantine Sink for out-of-envelope commands.`,
+          `Approved directives are orchestrated by a hexagonal Google ADK / A2A Coordinator Agent and dispatched across specialist domain agents (Orbital Astrodynamics, Flight Software cFS/F', and Counterfactual Digital-Twin Simulation). Before any command is committed to physical hardware, the harness forks execution 1:3 into a Parallel Counterfactual Digital-Twin Simulation Sandbox (Universe Alpha Nominal, Universe Beta Solar-Storm Fault Injection, and Universe Gamma Thruster-Degraded Monte Carlo) and converges into a 3:1 Cross-Universe Pareto Policy Distiller.`,
+          `State checkpoints and mission knowledge are persisted in 3D cylinder datastores (Cloud Spanner Mission Ledger, Cloud Bigtable High-Rate Telemetry, and Vertex AI Vector Search 2.0 + GraphRAG). Validated commands cross the dashed CCSDS / Deep-Space Network Air-Gap Boundary into the Spacecraft Flight Software Bus (cFS / F' RTOS), while the outer #0D9488 Closed-Loop Telemetry Return Highway continuously feeds real-time state vectors back to the top operator console.`,
+        ]
+      : [
+          `${cleanTitle} defines a production-grade architecture comprising ${uniqueCards.length || 18} specialized components and ${edges.length || 20} directional data and control channels. It organizes ingress, policy enforcement, core processing, and stateful persistence into clearly bounded architectural zones (${containerZones.map((z) => z.title).slice(0, 4).join('; ') || 'Ingress, Control Plane, Data Plane, and Telemetry'}).`,
+          `Core execution flows through ${topComponentNames}. Each component enforces strict transport security, deterministic request validation, and explicit state transitions so workloads maintain predictable latency and high availability under peak enterprise load.`,
+          `Downstream state persistence and observability are anchored by ${flatComponentRows.slice(-3).map((r) => r.serviceName).join(', ')}, providing end-to-end auditability, automated health verification, and closed-loop operational telemetry across every tier of the topology.`,
+        ];
 
   const productsUsedItems = flatComponentRows.slice(0, 8).map((r) => ({
     name: r.serviceName,
     description: r.description,
   }));
 
-  const useCaseBenefits = isNasaClosedLoop
+  const useCaseBenefits = isOracleExadataEbs
     ? [
         {
-          title: 'Deterministic Pre-Actuation Safety Gating (NPR 8715.5)',
+          title: 'Deterministic SOX 404 & Segregation-of-Duties Gating',
           detail:
-            'Every operator or agent command is evaluated by the Rhombus Launch Commit Criteria (LCC) Gate before reaching flight hardware, routing unsafe trajectories to the AFTS Abort Quarantine Sink.',
+            'Every GL journal commit, AP payment batch, and ADOP cutover is verified at the Rhombus SOX 404 Gate before reaching the EBS database tier, routing policy violations to the SOX Quarantine Sink.',
         },
         {
-          title: '1:3 Counterfactual Multi-Universe Digital-Twin Verification',
+          title: '1:3 Parallel WebLogic, PCP Batch & ADOP Online Patching Isolation',
           detail:
-            'Simultaneously stress-tests candidate commands across Nominal (Universe Alpha), Solar-Flux Perturbation (Universe Beta), and Thruster-Degraded (Universe Gamma) physics regimes before 3:1 Pareto selection.',
+            'Concurrently runs interactive O2C/P2P WebLogic Managed Servers, Parallel Concurrent Processing (PCP) batch workers, and ADOP Run/Patch Edition validation backed by Cloud Filestore Enterprise Shared APPL_TOP.',
         },
         {
-          title: 'Air-Gapped CCSDS 732.0-B & NASA DSN Protocol Fidelity',
+          title: 'Sub-0.5ms ODB Partner Interconnect to Exadata X10M RAC',
           detail:
-            'Models explicit RF uplink/downlink framing, light-time latency, and onboard NASA cFS / JPL F\' execution across the Ground-to-Spacecraft Air-Gap Boundary.',
+            'Co-locates Exadata X10M Quarter/Half Rack (RoCEv2 100GbE RDMA, Smart Scan, Storage Indexes) inside the Google Cloud region via dedicated Partner Interconnect with Active Data Guard.',
         },
         {
-          title: '100Hz Closed-Loop Telemetry Reconciliation',
+          title: 'Closed-Loop GoldenGate 23ai CDC & BigQuery Cortex Reconciliation',
           detail:
-            'Streams continuous downlink state vectors along the outer #0D9488 Telemetry Return Highway into Cloud Bigtable, Cloud Spanner TrueTime, and the Flight Director console.',
+            'Streams real-time redo-log changes along the outer #0D9488 GoldenGate CDC Return Highway into BigQuery Cortex for Oracle EBS, Vertex AI Agents, and the CFO Financial Close Console.',
         },
       ]
-    : componentGroupsTable.slice(0, 4).map((g) => ({
-        title: g.groupTitle,
-        detail: g.items.map((it) => `${it.name} (${it.description})`).join('; '),
-      }));
+    : isNasaClosedLoop
+      ? [
+          {
+            title: 'Deterministic Pre-Actuation Safety Gating (NPR 8715.5)',
+            detail:
+              'Every operator or agent command is evaluated by the Rhombus Launch Commit Criteria (LCC) Gate before reaching flight hardware, routing unsafe trajectories to the AFTS Abort Quarantine Sink.',
+          },
+          {
+            title: '1:3 Counterfactual Multi-Universe Digital-Twin Verification',
+            detail:
+              'Simultaneously stress-tests candidate commands across Nominal (Universe Alpha), Solar-Flux Perturbation (Universe Beta), and Thruster-Degraded (Universe Gamma) physics regimes before 3:1 Pareto selection.',
+          },
+          {
+            title: 'Air-Gapped CCSDS 732.0-B & NASA DSN Protocol Fidelity',
+            detail:
+              'Models explicit RF uplink/downlink framing, light-time latency, and onboard NASA cFS / JPL F\' execution across the Ground-to-Spacecraft Air-Gap Boundary.',
+          },
+          {
+            title: '100Hz Closed-Loop Telemetry Reconciliation',
+            detail:
+              'Streams continuous downlink state vectors along the outer #0D9488 Telemetry Return Highway into Cloud Bigtable, Cloud Spanner TrueTime, and the Flight Director console.',
+          },
+        ]
+      : componentGroupsTable.slice(0, 4).map((g) => ({
+          title: g.groupTitle,
+          detail: g.items.map((it) => `${it.name} (${it.description})`).join('; '),
+        }));
 
-  const designAlternativesSubSections = isNasaClosedLoop
+  const designAlternativesSubSections = isOracleExadataEbs
     ? [
         {
-          heading: 'Closed-Loop Counterfactual Sandbox vs. Open-Loop Direct Actuation',
+          heading: 'Oracle Database@Google Cloud (Exadata X10M) vs. Cross-Cloud VPN/WAN',
           leadParagraphs: [
-            'High-consequence aerospace and autonomous systems cannot rely on single-pass LLM tool execution without deterministic invariant verification and counterfactual simulation.',
+            'Oracle E-Business Suite R12.2 Forms, OAF, and Parallel Concurrent Processing (PCP) generate chatty SQL*Net traffic that degrades severely over >5ms cross-cloud WAN links.',
           ],
           subBlocks: [
             {
-              subHeading: 'Selected Pattern: Rhombus LCC Gate + 1:3 Parallel Digital-Twin Fork-Join',
+              subHeading: 'Selected Pattern: Co-Located ODB Network (<0.5ms Partner Interconnect) + Exadata X10M RAC',
               bullets: [
                 {
-                  label: 'Deterministic Safety',
-                  detail: 'Blocks out-of-envelope commands at the LCC Rhombus Gate and validates trajectories across 3 parallel physics rollouts.',
+                  label: 'Sub-Millisecond Latency',
+                  detail: 'Dedicated dual-100GbE Partner Interconnect delivers <0.5ms RTT between GCE C3 EBS App nodes and Exadata X10M RAC.',
                 },
                 {
-                  label: 'Closed-Loop Feedback',
-                  detail: 'Reconciles predicted state against actual 100Hz CCSDS downlink telemetry.',
+                  label: 'Zero-Downtime HA',
+                  detail: 'Oracle TAC / FAN / ONS and Active Data Guard Far Sync maintain RPO=0 and automated failover.',
                 },
               ],
             },
             {
-              subHeading: 'Alternative: Single-Thread Sequential Agent Chain',
+              subHeading: 'Alternative: Self-Managed DB on Standard VM Block Storage',
               bullets: [
                 {
                   label: 'Trade-off',
-                  detail: 'Cannot evaluate concurrent solar-flux or sensor-degradation fault branches within real-time burn commit windows.',
+                  detail: 'Lacks Exadata Smart Scan SQL offload, RoCEv2 RDMA internal fabric, and native Oracle RAC certification.',
                 },
               ],
             },
           ],
         },
         {
-          heading: 'Transactional Ephemeris State: Cloud Spanner + Bigtable vs. Single Store',
+          heading: 'Real-Time Analytics: GoldenGate 23ai CDC to BigQuery Cortex vs. Direct OLTP Queries',
           leadParagraphs: [
-            'Mission control requires both external-consistency command ledgers and high-frequency time-series telemetry ingestion.',
+            'Running heavy financial close and supply-chain AI queries directly against the EBS OLTP database contends with Order-to-Cash locks.',
           ],
           subBlocks: [
             {
-              subHeading: 'Selected Pattern: Cloud Spanner TrueTime + Cloud Bigtable + Vector Search 2.0',
+              subHeading: 'Selected Pattern: GoldenGate 23ai Redo-Log CDC + BigQuery Cortex for Oracle EBS',
               bullets: [
                 {
-                  label: 'Zero-Drift Ledger',
-                  detail: 'Spanner TrueTime serializes command commits while Bigtable absorbs 100Hz+ telemetry streams.',
+                  label: 'Zero OLTP Contention',
+                  detail: 'Offloads non-intrusive redo-log CDC to BigQuery Cortex views and Vertex AI Vector Search 2.0.',
                 },
               ],
             },
           ],
         },
       ]
-    : componentGroupsTable.slice(0, 2).map((g) => ({
-        heading: `${g.groupTitle} Architecture Pattern`,
-        leadParagraphs: [g.groupLead],
-        subBlocks: g.items.slice(0, 2).map((it) => ({
-          subHeading: it.name,
-          bullets: [{ label: 'Primary Role', detail: it.description }],
-        })),
-      }));
+    : isNasaClosedLoop
+      ? [
+          {
+            heading: 'Closed-Loop Counterfactual Sandbox vs. Open-Loop Direct Actuation',
+            leadParagraphs: [
+              'High-consequence aerospace and autonomous systems cannot rely on single-pass LLM tool execution without deterministic invariant verification and counterfactual simulation.',
+            ],
+            subBlocks: [
+              {
+                subHeading: 'Selected Pattern: Rhombus LCC Gate + 1:3 Parallel Digital-Twin Fork-Join',
+                bullets: [
+                  {
+                    label: 'Deterministic Safety',
+                    detail: 'Blocks out-of-envelope commands at the LCC Rhombus Gate and validates trajectories across 3 parallel physics rollouts.',
+                  },
+                  {
+                    label: 'Closed-Loop Feedback',
+                    detail: 'Reconciles predicted state against actual 100Hz CCSDS downlink telemetry.',
+                  },
+                ],
+              },
+              {
+                subHeading: 'Alternative: Single-Thread Sequential Agent Chain',
+                bullets: [
+                  {
+                    label: 'Trade-off',
+                    detail: 'Cannot evaluate concurrent solar-flux or sensor-degradation fault branches within real-time burn commit windows.',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            heading: 'Transactional Ephemeris State: Cloud Spanner + Bigtable vs. Single Store',
+            leadParagraphs: [
+              'Mission control requires both external-consistency command ledgers and high-frequency time-series telemetry ingestion.',
+            ],
+            subBlocks: [
+              {
+                subHeading: 'Selected Pattern: Cloud Spanner TrueTime + Cloud Bigtable + Vector Search 2.0',
+                bullets: [
+                  {
+                    label: 'Zero-Drift Ledger',
+                    detail: 'Spanner TrueTime serializes command commits while Bigtable absorbs 100Hz+ telemetry streams.',
+                  },
+                ],
+              },
+            ],
+          },
+        ]
+      : componentGroupsTable.slice(0, 2).map((g) => ({
+          heading: `${g.groupTitle} Architecture Pattern`,
+          leadParagraphs: [g.groupLead],
+          subBlocks: g.items.slice(0, 2).map((it) => ({
+            subHeading: it.name,
+            bullets: [{ label: 'Primary Role', detail: it.description }],
+          })),
+        }));
 
   const designConsiderationsSubSections = [
     {
@@ -1383,12 +1502,33 @@ export function buildDynamicDocGuideFromDiagramXml(
     },
   ];
 
-  const codeFilename = isNasaClosedLoop
-    ? 'verify_nasa_closed_loop_harness.py'
-    : 'verify_architecture_topology.py';
+  const codeFilename = isOracleExadataEbs
+    ? 'verify_oracle_ebs_exadata_closed_loop.py'
+    : isNasaClosedLoop
+      ? 'verify_nasa_closed_loop_harness.py'
+      : 'verify_architecture_topology.py';
 
-  const codeSnippetText = isNasaClosedLoop
-    ? `from google.adk.agents import ParallelAgent, SequentialAgent, LlmAgent
+  const codeSnippetText = isOracleExadataEbs
+    ? `from google.adk.agents import ParallelAgent, SequentialAgent
+from google.cloud import bigquery
+
+# 1. Deterministic SOX 404 & GL Period Commit Gate ([GO] vs [NO-GO / ABORT])
+def evaluate_sox404_commit_gate(tx: dict) -> str:
+    if tx.get("sod_conflict") or tx.get("gl_period_status") != "OPEN":
+        return "NO_GO_SOX_QUARANTINE"
+    return "GO_COMMIT_EBS_CLUSTER"
+
+# 2. 1:3 Parallel EBS R12.2 App Tier & Online Patching (ADOP) Cluster
+ebs_parallel_cluster = ParallelAgent(
+    name="ebs_r122_parallel_app_cluster",
+    sub_agents=[weblogic_o2c_p2p_lane, pcp_concurrent_manager_lane, adop_patch_edition_lane],
+)
+oracle_ebs_harness = SequentialAgent(
+    name="oracle_ebs_exadata_closed_loop_harness",
+    sub_agents=[ebs_cortex_coordinator, ebs_parallel_cluster, gl_reconciler, exadata_x10m_commit],
+)`
+    : isNasaClosedLoop
+      ? `from google.adk.agents import ParallelAgent, SequentialAgent, LlmAgent
 from google.cloud import spanner, bigtable
 
 # 1. Deterministic Safety Gate ([GO] vs [NO-GO / ABORT] Quarantine Sink)
@@ -1406,7 +1546,7 @@ mission_harness = SequentialAgent(
     name="nasa_closed_loop_mission_harness",
     sub_agents=[adk_coordinator, parallel_sandbox, pareto_policy_distiller, ccsds_uplink_encoder],
 )`
-    : `# Automated Topology & Endpoint Verification for ${cleanTitle}
+      : `# Automated Topology & Endpoint Verification for ${cleanTitle}
 import urllib.request
 import json
 
@@ -1422,9 +1562,11 @@ def verify_architecture_readiness(health_endpoint: str) -> dict:
   return {
     docId: derivedDocId,
     partNumber: 1,
-    partBadge: isNasaClosedLoop
-      ? 'Closed-Loop Agentic Harness • Counterfactual Digital-Twin Topology'
-      : `Architecture Specification • ${rawBp ? `Blueprint #${rawBp}` : 'Verified Topology'}`,
+    partBadge: isOracleExadataEbs
+      ? 'Closed-Loop Enterprise ERP • Oracle Database@Google Cloud (Exadata X10M)'
+      : isNasaClosedLoop
+        ? 'Closed-Loop Agentic Harness • Counterfactual Digital-Twin Topology'
+        : `Architecture Specification • ${rawBp ? `Blueprint #${rawBp}` : 'Verified Topology'}`,
     category: 'Reference Architecture',
     title: cleanTitle,
     subtitle,
@@ -1461,9 +1603,11 @@ def verify_architecture_readiness(health_endpoint: str) -> dict:
           blueprintVariantId: blueprintId || derivedDocId,
         },
         componentGroupsTable,
-        agenticFlowHeading: isNasaClosedLoop
-          ? 'Closed-loop mission control & 1:3 counterfactual simulation flow'
-          : 'Architecture execution flow',
+        agenticFlowHeading: isOracleExadataEbs
+          ? 'Closed-loop EBS R12.2 execution, 1:3 parallel App/ADOP cluster & Exadata X10M flow'
+          : isNasaClosedLoop
+            ? 'Closed-loop mission control & 1:3 counterfactual simulation flow'
+            : 'Architecture execution flow',
         agenticFlowSteps,
       },
       {
@@ -1477,9 +1621,11 @@ def verify_architecture_readiness(health_endpoint: str) -> dict:
       {
         id: 'use_case',
         heading: 'Use case',
-        useCaseSubHeading: isNasaClosedLoop
-          ? 'Autonomous mission control, range safety gating & counterfactual orbital simulation'
-          : `${cleanTitle} — Production operational deployment`,
+        useCaseSubHeading: isOracleExadataEbs
+          ? 'Oracle E-Business Suite R12.2 on Exadata X10M with closed-loop GoldenGate CDC & BigQuery Cortex'
+          : isNasaClosedLoop
+            ? 'Autonomous mission control, range safety gating & counterfactual orbital simulation'
+            : `${cleanTitle} — Production operational deployment`,
         leadParagraphs: [overviewParagraphs[0], overviewParagraphs[1]],
         useCaseBenefits,
       },
