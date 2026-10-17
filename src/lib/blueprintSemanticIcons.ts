@@ -52,8 +52,6 @@ const SVG_ELASTIC = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0
 // 4. AI Models & Agents
 const SVG_OPENAI = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#000000"/><path fill="#FFFFFF" d="M24 12c-6.6 0-12 5.4-12 12 0 2.2.6 4.3 1.7 6.1l2.5-1.5C15.4 27.2 15 25.6 15 24c0-5 4-9 9-9 2.2 0 4.2.8 5.7 2.1l2-2C29.6 13.2 26.9 12 24 12zm8.3 5.9l-2.5 1.5c.8 1.4 1.2 3 1.2 4.6 0 5-4 9-9 9-2.2 0-4.2-.8-5.7-2.1l-2 2C18.4 34.8 21.1 36 24 36c6.6 0 12-5.4 12-12 0-2.2-.6-4.3-1.7-6.1z"/></svg>`);
 
-const SVG_ANTHROPIC = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#D97706"/><path stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" d="M24 12v24M12 24h24M15 15l18 18M15 33l18-18"/></svg>`);
-
 const SVG_GEMINI = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#1E293B"/><path fill="#38BDF8" d="M24 8c0 8.8-7.2 16-16 16 8.8 0 16 7.2 16 16 0-8.8 7.2-16 16-16-8.8 0-16-7.2-16-16z"/></svg>`);
 
 // 5. SRE, Observability & Security
@@ -102,7 +100,6 @@ const ICONS = {
   mongodb: SVG_MONGODB,
   elastic: SVG_ELASTIC,
   openai: SVG_OPENAI,
-  anthropic: SVG_ANTHROPIC,
   gemini: SVG_GEMINI,
   datadog: SVG_DATADOG,
   grafana: SVG_GRAFANA,
@@ -150,14 +147,13 @@ const ICON_RULES: IconRule[] = [
   { pattern: /\bKafka\b|\bRedpanda\b/i, icon: ICONS.kafka, family: 'vendor' },
   { pattern: /\bPostgreSQL\b|\bPostgres\b|\bpgvector\b/i, icon: ICONS.postgres, family: 'vendor' },
   { pattern: /\bRedis\b/i, icon: ICONS.redis, family: 'vendor' },
-  { pattern: /\bSnowflake\b/i, icon: ICONS.biglake, family: 'vendor' },
+  { pattern: /\bBigLake\b|\bIceberg\b/i, icon: ICONS.biglake, family: 'vendor' },
   { pattern: /\bDatabricks\b|\bUnity Catalog\b/i, icon: ICONS.databricks, family: 'vendor' },
   { pattern: /\bdbt\b|\bdbt Transformation\b/i, icon: ICONS.dbt, family: 'vendor' },
   { pattern: /\bSpark\b|\bApache Spark\b/i, icon: ICONS.spark, family: 'vendor' },
   { pattern: /\bMongoDB\b/i, icon: ICONS.mongodb, family: 'vendor' },
   { pattern: /\bElasticsearch\b|\bElastic\b/i, icon: ICONS.elastic, family: 'vendor' },
   { pattern: /\bOpenAI\b|\bGPT-4\b|\bChatGPT\b/i, icon: ICONS.openai, family: 'vendor' },
-  { pattern: /\bAnthropic\b|\bClaude\b/i, icon: ICONS.anthropic, family: 'vendor' },
   { pattern: /\bGemini\b|\bVertex AI\b|\bAgent Runtime\b/i, icon: ICONS.gemini, family: 'vendor' },
   { pattern: /\bDatadog\b/i, icon: ICONS.datadog, family: 'vendor' },
   { pattern: /\bGrafana\b/i, icon: ICONS.grafana, family: 'vendor' },

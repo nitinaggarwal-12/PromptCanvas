@@ -1,6 +1,7 @@
 ---
 name: gcp-enterprise-diagram-engine
-description: Universal engineering standard and coordinate matrix for generating 100% collision-free, production-grade Google Cloud Enterprise Reference Architecture diagrams in Draw.io XML with zero human back-and-forth.
+description: >-
+  Builds and certifies the 26 Production Google Cloud Blueprints (#78, #00, #35-#50, #67-#74) and 14 workstream topologies.
 ---
 
 # 📐 GCP Enterprise Architecture Diagram Engine (SKILL.md)

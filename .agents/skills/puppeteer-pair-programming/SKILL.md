@@ -1,6 +1,7 @@
 ---
 name: puppeteer-pair-programming
-description: Comprehensive architecture, cheatsheet, and patterns for building robust end-to-end (E2E) Puppeteer automation suites that run asynchronously in the background during pair programming with interactive setup modes, clean profile management, DOM verification, and screenshot review galleries.
+description: >-
+  Automates headless Chrome DOM inspection, computed-style geometry checks, and before/after screenshot capture.
 ---
 
 # Puppeteer Pair Programming & Autonomous E2E Testing Suite

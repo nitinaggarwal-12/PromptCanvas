@@ -354,7 +354,6 @@ function normalizeGeminiDecision(
 
   const lowerPrompt = prompt.toLowerCase();
   const isGcpNativeTech =
-    !lowerPrompt.includes('time machine') &&
     !lowerPrompt.includes('chronos') &&
     !lowerPrompt.includes('aws') &&
     !lowerPrompt.includes('bedrock') &&

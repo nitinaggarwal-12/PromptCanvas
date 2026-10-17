@@ -13,7 +13,7 @@ Welcome to the **PromptCanvas** Architecture Specification. This document outlin
 2. **Dynamic Clause-Driven Synthesis & Word-Safe Wrapping**: Extracts 4+ domain clauses (`extractPromptDomainClauses`) and populates multi-tier Google Cloud architecture cards (`adaptSavedGoogleCloudTemplateToPrompt`) and sequential swimlane flowcharts (`generateLogicalFlowchartDrawioXml`) with word-safe two-line wrapping (`formatTwoLineCardClause`) in `src/lib/promptDrivenDiagramSynthesizer.ts`.
 3. **2-Stage Vision Image-to-Draw.io XML Decompilation**: Converts uploaded raster architecture diagrams (PNG/JPG/WebP) into editable Draw.io XML with 100% verbatim text parity (`src/lib/deepmindVisionDecompiler.ts` & `/api/decompile-image`).
 4. **16 Synchronized Living Specifications**: Automatically compiles 16 architecture documents (PRD, SRS, HLD, LLD, API Contracts, Security & Threat Model, SRE Runbook, FinOps & TCO, etc.) with dynamic domain entities and protocols (`src/lib/spec/livingSpecsGenerator.ts`).
-5. **Autonomous Closed-Loop Quality Certification**: Enforces the 11-Gate Master Omni 1.1 Quality Suite (`scripts/runQualityGate.ts`) and 28-Workflow End-to-End Forensic Audit (`scratch/run_e2e_28_workflows_audit.ts`) ensuring 0 spatial collisions, 100% viewport containment, and full XML schema validity.
+5. **Autonomous Closed-Loop Quality Certification**: Enforces the 11-Gate Master Omni 1.1 Quality Suite (`scripts/runQualityGate.ts`), Canonical Blueprint Certification (`scripts/verify_canonical_certification.ts`), and NASA Closed-Loop Default & Fail-Closed Audit Verification (`scripts/verify_blank_canvas_nasa_default_and_slides.ts`) ensuring 0 spatial collisions, 100% viewport containment, and full XML schema validity.
 6. **Dual-Engine Persistence**: Local-first development via SQLite (`dev.db`) with seamless PostgreSQL production synchronization.
 
 ---
@@ -23,8 +23,8 @@ Welcome to the **PromptCanvas** Architecture Specification. This document outlin
 ```text
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                                   CLIENT LAYER                                         │
-│  Next.js 16 App Router (React 19) · Unified Architecture Studio (/studio?id=<uuid>)    │
-│  Lightweight Redirect Shims: /workspace, /studio1, /gcp -> /studio                     │
+│  Next.js 16 App Router (React 19) · Unified Architecture Studio (/dashboard & /studio) │
+│  Enterprise Catalog & Docs: /library, /blogs, /blogs/[docId], /vision, /docgen         │
 └───────────────────────────────────────────┬────────────────────────────────────────────┘
                                             │ REST / JSON-RPC / SSE (Guarded via enforceGeminiRouteGuard)
                                             ▼
@@ -36,9 +36,9 @@ Welcome to the **PromptCanvas** Architecture Specification. This document outlin
                       ▼                     ▼                    ▼
 ┌──────────────────────────┐ ┌─────────────────────────┐ ┌───────────────────────────────┐
 │     PROMPT COMPILER      │ │  CANONICAL MASTER ENGINE│ │    PERSISTENCE & LINEAGE      │
-│  • 5-Tier Gemini Stack   │ │  • 77 Blueprints (01-77)│ │  • Dual SQLite / PostgreSQL   │
-│  • Clause Synthesizer    │ │  • 60 Certified Matrix  │ │  • Deep-link UUID routing     │
-│  • 4-Cat Intent Guard    │ │  • 16:9 Master Geometry │ │  • Version History Lineage    │
+│  • 5-Tier Gemini Stack   │ │  • 26 Prod Blueprints   │ │  • Dual SQLite / PostgreSQL   │
+│  • Clause Synthesizer    │ │  • 26/26 Certified      │ │  • Deep-link UUID routing     │
+│  • 4-Cat Intent Guard    │ │  • 16:9 Master Geometry │ │  • Micro-Version Lineage      │
 └─────────────┬────────────┘ └──────────────┬──────────┘ └───────────────┬───────────────┘
               │                             │                            │
               └──────────────────────┬──────┴────────────────────────────┘
@@ -63,13 +63,13 @@ Welcome to the **PromptCanvas** Architecture Specification. This document outlin
 
 ### 3.1 Prompt Compiler & Clause Synthesizer (`src/lib/diagramCompiler.ts`, `src/lib/promptDrivenDiagramSynthesizer.ts`, `prompts/`)
 - **4-Category Conversational Non-Mutation Gate (`src/lib/intentGuard.ts`)**: Intercepts greetings (`"Hi"`), capability queries (`"who are you"`), courtesies (`"thanks"`), and short ambiguous inputs ($\le 2$ words) with zero canvas mutation and zero version increment.
-- **Intent Classification & Archetype Routing (`src/lib/router/intentClassifier.ts`)**: Maps architectural prompts into canonical diagram families (`conceptual_diagram`, `logical_architecture`, `technical_infrastructure`, `erd`, `sequence_diagram`, `dynamic_tiered_infographic`, or bespoke clause-driven synthesis).
+- **Architectural Decision & Archetype Routing (`src/lib/geminiArchitecturalDecisionEngine.ts`)**: Maps architectural prompts into canonical diagram families (`#78` Hub-and-Spoke, `#00` 2026 GCP Native, `#35`–`#50` Reference Architectures, `#67`–`#74` Brand Light 7-Layer Flowcharts, or `buildUniversalClosedLoopDomainHarnessXml` NASA Closed-Loop Default).
 - **Dynamic Clause-Driven Synthesis (`src/lib/promptDrivenDiagramSynthesizer.ts`)**:
   - `extractPromptDomainClauses(prompt)`: Splits multi-clause enterprise prompts on `->`, `;`, `,`, `with`, `featuring`, `using`, `across` and pairs each clause with authentic Google Cloud / enterprise services.
   - `formatTwoLineCardClause(text, maxLine1, maxLine2)`: Word-boundary line splitter ensuring card subtitles never clip mid-word (`Cloud S...`).
 
-### 3.2 Master Blueprint Catalog (`src/lib/canonical/`, `templates/master_blueprints/`)
-- Contains **77 canonical templates (`01` through `77`)** in `src/lib/canonical/canonicalTemplates.ts` (including Infographics `#52–#66`, Flow Diagrams `#67–#75`, Whiteboard `#76`, and Paper `#77`) and **60 certified architecture blueprints** in `src/lib/blueprintKnowledgeMatrixNormalized.ts`.
+### 3.2 Master Blueprint Catalog (`src/lib/canonical/canonicalTemplates.ts`, `src/lib/canonical/canonicalContracts.ts`)
+- Contains **26 production Google Cloud reference blueprints (`#78`, `#00`, `#35`–`#50`, `#67`–`#74`)** across 6 families (`26/26` `100%` certified in `src/lib/canonical/canonicalContracts.ts`).
 - **Zero-Mutation Preflight Passthrough**: `validateAndHealDrawioXml` and `preflightVerifyAndHealXmlAcrossAll6Audits` pass canonical templates through with **zero coordinate or geometric mutation**.
 - **Domain Flavoring**: Re-flavors titles, descriptions, and metric badges across financial, healthcare, supply chain, and retail domains without altering the master 2D geometry.
 
@@ -96,7 +96,7 @@ Executes 4 deterministic validation gates on all generated XML:
 ### 3.6 Server-Side Refresh-Token Google Workspace Bridge & Universal Inline Slides Previewer (`src/lib/server/googleWorkspaceBridge.ts`, `src/data/cloud_viewer_manifest.json`, `src/components/DiagramInlineSlidesPreviewer.tsx`)
 - **Why Legacy Browser GIS Popup Failed vs. Server-Side Refresh-Token Bridge Succeeded**:
   - Desktop/Installed-App OAuth credentials in `.gsheet_oauth_token.json` (`nitinagga@google.com`) cannot be used inside browser Google Identity Services (`google.accounts.oauth2.initTokenClient`) popups due to missing browser Authorized JavaScript Origins (`origin_mismatch` / `popup_closed`).
-  - `src/lib/server/googleWorkspaceBridge.ts` exchanges `grant_type=refresh_token` **server-side** at `https://oauth2.googleapis.com/token` (using `.gsheet_oauth_token.json` locally or `GOOGLE_OAUTH_CLIENT_ID` / `GOOGLE_OAUTH_CLIENT_SECRET` / `GOOGLE_OAUTH_REFRESH_TOKEN` on Cloud Run), uploads `.pptx` / `.html` bytes via multipart `POST https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true` with `mimeType: "application/vnd.google-apps.presentation"` (or `.document`) and header `x-goog-user-project: "nitina-ggarwal-sandbox-647724"`, and caches the resulting URLs in `src/data/cloud_viewer_manifest.json`.
+  - `src/lib/server/googleWorkspaceBridge.ts` exchanges `grant_type=refresh_token` **server-side** at `https://oauth2.googleapis.com/token` (using `.gsheet_oauth_token.json` locally or `GOOGLE_OAUTH_CLIENT_ID` / `GOOGLE_OAUTH_CLIENT_SECRET` / `GOOGLE_OAUTH_REFRESH_TOKEN` on Cloud Run), uploads `.pptx` bytes via multipart `POST https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true` with `mimeType: "application/vnd.google-apps.presentation"` and header `x-goog-user-project: "nitina-ggarwal-sandbox-647724"`, clones/updates Google Docs natively via `drive.files.copy` + `documents.batchUpdate` (`Rule 49`), and caches the resulting URLs in `src/data/cloud_viewer_manifest.json`.
 - **Pre-Warmed Google Drive Manifest (`0ms` Direct Open)**:
   - `src/data/cloud_viewer_manifest.json` (`GET /api/google-workspace/manifest` & `POST /api/google-workspace/open`) stores verified `https://docs.google.com/presentation/d/<id>/edit?authuser=nitinagga%40google.com` and `https://docs.google.com/document/d/<id>/edit?authuser=nitinagga%40google.com` links for `WS1`–`WS5`, `ALL`, `BP-00`..`BP-78`, `GCP-MULTIAGENT-01`, and all 7 Official Google Cloud Architecture Center variants.
 - **Header-Only Action Controls & 100% Full-Width Diagram Canvas (`src/components/DiagramInlineSlidesPreviewer.tsx`)**:

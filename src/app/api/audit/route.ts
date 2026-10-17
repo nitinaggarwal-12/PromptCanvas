@@ -164,15 +164,15 @@ function runDeterministicCategoryAstAudit(
     }
 
     // 2. Broken Vendor Logo Image Asset (Detects argo-icon.svg or invalid logo URLs)
-    if (xmlContent.includes('argo-icon.svg') || (xmlLower.includes('argo') && !xmlContent.includes('logos:argo'))) {
+    if (xmlContent.includes('argo-icon.svg') || (xmlLower.includes('argo') && !xmlContent.includes('data:image/svg+xml'))) {
       const argoNode = vertices.find(v => v.rawText.toLowerCase().includes('argo') || v.rawText.toLowerCase().includes('gitops'));
       gaps.push({
         id: 'gap_vis_broken_logo_1',
         title: 'Broken Vendor Logo Image Asset',
         severity: 'MEDIUM',
         component: argoNode ? `[${argoNode.rawText.split('\n')[0]}]` : '[8] GitOps Controller (ArgoCD)',
-        description: 'Node references a non-existent or broken icon URL (argo-icon.svg), resulting in a missing image placeholder box.',
-        remediation: 'Update icon URL to official Iconify asset endpoint (https://api.iconify.design/logos:argo.svg) with fallback error handlers.'
+        description: 'Node references a non-existent or broken external icon URL (argo-icon.svg), resulting in a missing image placeholder box.',
+        remediation: 'Embed an offline RFC 2397 SVG data URI (data:image/svg+xml;utf8,...) from blueprintSemanticIcons.ts or gcpIcons.ts with zero external CDN dependencies.'
       });
     }
 

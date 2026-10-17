@@ -1,15 +1,7 @@
 ---
 name: slide-design
-description: >
-  Designs and generates Google-branded presentations and demo decks using 100% native editable
-  architectural diagram layouts (architecture-zone-topology / three-zone-architecture,
-  payload-transformation-triptych / payload-transformation, uml-sequence-swimlane / swimlane-sequence,
-  phased-roadmap-timeline / roadmap-timeline, async-state-flow-pipeline / async-state-machine,
-  strategic-operating-model-pillars / operating-model-pillars), executive semantic layouts
-  (title-cover, quad-metrics, three-pillar, comparison-grid, section-divider, next-steps), and
-  grounded live screenshot callout slides (live-screenshot-callout / grounded-screenshot-proof).
-  Use whenever the user asks to create, design, draft, or outline Google Slides, pitch decks,
-  or technical demos.
+description: >-
+  Compiles 100% editable Google Slides & PPTX decks using the 6 visual archetypes, Quad-Color order, and 16:9 screenshots.
 ---
 
 # Slide Design & Native Editable Visual Architecture Workflow (`v2.0.0`)

@@ -1,6 +1,7 @@
 ---
 name: performance-and-telemetry
-description: Comprehensive client-side Core Web Vitals (LCP, CLS, TTFB) metric profiling, DOM node budget tracking, Railway container telemetry streaming, and server error log monitoring.
+description: >-
+  Profiles frontend bundle sizes, Web Vitals, API latency, and OpenTelemetry trace spans.
 ---
 
 # Performance & Production Telemetry Skill

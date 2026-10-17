@@ -1593,7 +1593,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
   {
     "combinedId": "ARCH-MCP-06_ARCH-MCP-02_model_context_protocol_gateway",
     "diagramName": "Model Context Protocol (MCP) Gateway",
-    "intentKeywords": "mcp, model context protocol, anthropic mcp, tool gateway, agent tools, standardized context, tool bus",
+    "intentKeywords": "mcp, model context protocol, adk mcp, tool gateway, agent tools, standardized context, tool bus",
     "goldenExamplePayload": "Build a Model Context Protocol (MCP) Gateway architecture on GCP decoupling Gemini and Gemini 2.5 Pro models from enterprise tools (PostgreSQL, GitHub, Slack) via normalized JSON-RPC MCP servers.",
     "uiCardDesc": "Multi-source context ingestion, normalized MCP message bus, tool proxies, and actionable tool integration.",
     "phase": "Phase 7",

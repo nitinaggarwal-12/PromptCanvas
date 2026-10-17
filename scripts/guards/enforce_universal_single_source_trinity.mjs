@@ -93,6 +93,9 @@ function syncRulesAndSkillsAcrossWorkspaces() {
       for (const ws of WORKSPACE_ROOTS) {
         const wsRulesDir = path.join(ws, ".agents", "rules");
         if (fs.existsSync(wsRulesDir)) {
+          try {
+            if (fs.realpathSync(wsRulesDir) === fs.realpathSync(CANONICAL_RULES_DIR)) continue;
+          } catch {}
           targets.push(path.join(wsRulesDir, rf));
         }
       }
@@ -103,14 +106,32 @@ function syncRulesAndSkillsAcrossWorkspaces() {
         existingCandidates.sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs);
         const sourceRule = existingCandidates[0];
         const sourceSha = sha256Full(sourceRule);
+        // Ensure canonical ~/.gemini/config/rules/<rf> is a real file with the latest content
+        if (path.resolve(sourceRule) !== path.resolve(canonRule)) {
+          const canonSha = fs.existsSync(canonRule) ? sha256Full(canonRule) : "";
+          if (canonSha !== sourceSha || fs.lstatSync(canonRule).isSymbolicLink()) {
+            const buf = fs.readFileSync(sourceRule);
+            try { if (fs.lstatSync(canonRule).isSymbolicLink()) fs.unlinkSync(canonRule); } catch {}
+            fs.writeFileSync(canonRule, buf);
+          }
+        }
+        // Symlink all workspace .agents/rules/<rf> to canonRule so Jetski realpath deduplication (docs/SKILL.md:L109) prevents 2x rule injection
         for (const targetRule of targets) {
-          if (path.resolve(targetRule) === path.resolve(sourceRule)) continue;
-          let targetSha = "";
-          try { if (fs.existsSync(targetRule)) targetSha = sha256Full(targetRule); } catch {}
-          if (targetSha !== sourceSha) {
-            try { if (fs.lstatSync(targetRule).isSymbolicLink()) fs.unlinkSync(targetRule); } catch {}
+          if (path.resolve(targetRule) === path.resolve(canonRule)) continue;
+          try {
+            if (fs.realpathSync(path.dirname(targetRule)) === fs.realpathSync(CANONICAL_RULES_DIR)) continue;
+          } catch {}
+          let isAlreadyLinked = false;
+          try {
+            const st = fs.lstatSync(targetRule);
+            if (st.isSymbolicLink() && path.resolve(path.dirname(targetRule), fs.readlinkSync(targetRule)) === path.resolve(canonRule)) {
+              isAlreadyLinked = true;
+            }
+          } catch {}
+          if (!isAlreadyLinked) {
+            try { fs.rmSync(targetRule, { force: true }); } catch {}
             fs.mkdirSync(path.dirname(targetRule), { recursive: true });
-            fs.copyFileSync(sourceRule, targetRule);
+            fs.symlinkSync(canonRule, targetRule);
           }
         }
       }
@@ -163,6 +184,14 @@ function syncRulesAndSkillsAcrossWorkspaces() {
     let mutated = false;
     if (parsed.version !== "3.7.0") {
       parsed.version = "3.7.0";
+      mutated = true;
+    }
+    const requiredEntries = [
+      { path: "~/.gemini/config/skills" },
+      { path: "/Users/nitinagga/Documents/Demoes-GE/enterprise-skills" }
+    ];
+    if (JSON.stringify(parsed.entries) !== JSON.stringify(requiredEntries)) {
+      parsed.entries = requiredEntries;
       mutated = true;
     }
 

@@ -1,6 +1,7 @@
 ---
 name: load-and-stress-testing
-description: High-throughput concurrent user load and stress testing using autocannon or native node concurrency runners to evaluate API rate-limiting, database lock contention, and Gemini AI queue limits under heavy traffic.
+description: >-
+  Executes concurrent HTTP load, p99 latency, and rate-limit stress tests against local and Cloud Run endpoints.
 ---
 
 # Load & Stress Testing Skill

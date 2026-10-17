@@ -361,7 +361,7 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
   } else if (/erd|dimensional|fact|dimension|schema|database|table/i.test(promptLower)) {
     dynPersonas = 'Data Architect, Database Modeler, Analytics Engineer';
     dynStakeholders = 'Enterprise Data Governance, Business Intelligence Lead';
-    dynDefinition = 'Dimensional Enterprise Star/Snowflake Schema with PK/FK Integrity & Lineage';
+    dynDefinition = 'Dimensional Enterprise Star &amp; Normalized Schema with PK/FK Integrity &amp; Lineage';
     dynSla = 'SLA: ACID Consistent | Read-Replica HA';
     dynArchName = 'Dimensional Data Model (ERD)';
   } else if (/rag|agent|cognitive|llm|embedding|vector|pinecone|pgvector/i.test(promptLower)) {
@@ -1090,10 +1090,10 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
         .replace(/Cloud Run/gi, 'OCI Container Instances')
         .replace(/BigQuery/gi, 'OCI Autonomous Database')
         .replace(/Cloud Storage/gi, 'OCI Object Storage');
-    } else if (promptLowerFull.includes('snowflake') || promptLowerFull.includes('databricks')) {
+    } else if (promptLowerFull.includes('databricks')) {
       updatedXml = updatedXml
         .replace(/Cloud Pub\/Sub/gi, 'Databricks Event Stream / Kafka')
-        .replace(/BigQuery/gi, 'Snowflake Iceberg Lakehouse')
+        .replace(/BigQuery/gi, 'BigLake &amp; Apache Iceberg Lakehouse')
         .replace(/Cloud Storage/gi, 'Databricks Unity Catalog Storage');
     }
   }

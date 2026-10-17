@@ -1,6 +1,7 @@
 ---
 name: visual-regression-testing
-description: Automated pixel-by-pixel image comparison using pixelmatch and canvas to detect visual layout shifts, CSS regressions, and font rendering anomalies between baseline and current screenshots.
+description: >-
+  Runs pixel-level and bounding-box visual regression checks across web pages, SVG diagrams, and slide exports.
 ---
 
 # Visual Regression Testing & Image Diffing Skill

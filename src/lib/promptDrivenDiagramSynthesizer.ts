@@ -403,13 +403,13 @@ export function renderPromptArchitectureToDrawioXml(spec: PromptArchitectureSpec
 }
 
 /**
- * Entry point used by Dashboard (/dashboard), Studio (/studio), and Studio 1 (/studio1)
+ * Entry point used by Dashboard (/dashboard) and Studio (/studio)
  * when previewing or executing a generative prompt.
  * Supports:
  * - Explicit `perspective` ('Conceptual' | 'Logical' | 'Technical' | 'Process')
  * - Explicit `level` ('L1' | 'L2' | 'L3' | 'L4')
  * - Explicit `direction` ('LR' | 'TD')
- * - Explicit `blueprintId` ('01'..'75' | 'custom' | 'process_flow' | 'stratum_l4')
+ * - Explicit `blueprintId` ('00', '35'..'50', '67'..'74', '78', 'custom', 'process_flow', 'stratum_l4')
  * - Live `geminiDecision` from POST /api/architect-decision
  */
 export function synthesizePromptDrivenDiagramXml(

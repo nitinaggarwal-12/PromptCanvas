@@ -1,6 +1,7 @@
 ---
 name: diagram-generation-engine
-description: Comprehensive enterprise skill for compiling, generating, styling, and verifying 100% collision-free Draw.io architecture diagrams, canonical master templates, and high-contrast cloud topologies across Light and Dark themes.
+description: >-
+  Synthesizes Official Google Cloud Architecture Center Template #78 Hub-and-Spoke, NASA Closed-Loop, and Exadata XML.
 ---
 
 # 📐 Diagram Generation Engine & Universal Quality Standard (SKILL.md)
@@ -240,15 +241,15 @@ For all Google Cloud Platform (GCP) architectures, diagrams, and components:
 
 ---
 
-## 🎯 Pillar 13: Anti-Static-Spoofing, Layout Archetype vs. Subject Domain Separation & Universal Dynamic Infographic Synthesis (`Rule 41`)
+## 🎯 Pillar 13: Anti-Static-Spoofing, Layout Archetype vs. Subject Domain Separation & Closed-Loop Semantic Synthesis (`Rule 41` & `Rule 53`)
 
 1. **Strict Separation of Layout Archetype vs. Subject Domain**:
-   - Never confuse a **Visual Layout Archetype** (`Tiered Architectural Infographic`, `Infographic`, `Swimlane`, `Sequence Diagram`, `C4 Topology`) with a **Static Content Template** (`Charlie Hills / Context + Harness + Loop + Graph`, `NOVACURA Biopharma`).
-   - When a user prompt requests a layout archetype for a **new or arbitrary subject topic** (e.g., `"Open Knowledge format Infographic"`, `"Healthcare FHIR Infographic"`, `"Zero-Trust Security Infographic"`, `"FinOps Cloud Cost Infographic"`), the prompt router and diagram generator MUST NEVER spoof or return a static template belonging to an unrelated subject domain (`Context + Harness + Loop + Graph` or `Charlie Hills`).
-2. **Universal Dynamic Tiered Infographic Engine (`src/lib/canonical/dynamicTieredInfographic.ts`)**:
-   - Any prompt containing `"infographic"` that is not an explicit named reference template MUST route to `generateDynamicTieredInfographicXml(prompt)`, which dynamically synthesizes a complete 16:9 4-Tier Architectural Infographic (`01 Ingestion` • `02 Harness` • `03 Validation` • `04 Graph` with numbered spine, dashed enclaves, decision gates, and bottom rule/prompt bars) customized 100% to the user's subject domain.
+   - Never confuse a **Visual Layout Archetype** (`Hub-and-Spoke #78`, `7-Layer Brand Light Flowchart #67-#74`, `Closed-Loop Digital-Twin Harness`, `Sequence Diagram`, `C4 Topology`) with a **Static Content Template**.
+   - When a user prompt requests a layout archetype for a **new or arbitrary subject topic**, the prompt router and diagram generator MUST NEVER spoof or return a static template belonging to an unrelated subject domain.
+2. **Universal Closed-Loop Domain Harness & Clause-Driven Synthesis (`src/lib/canonical/nasaMultiverseClosedLoopHarness.ts` & `src/lib/promptDrivenDiagramSynthesizer.ts`)**:
+   - Any open-ended or custom prompt without an explicit canonical template MUST route to `buildUniversalClosedLoopDomainHarnessXml` (`31` vertices, `26` edges) or `adaptSavedGoogleCloudTemplateToPrompt`, dynamically synthesizing a complete 16:9 architecture diagram customized 100% to the user's subject domain.
 3. **Mandatory Semantic Subject Parity Audit**:
-   - Before certifying any generated diagram, verify that the rendered canvas header title, tier subtitles, node labels, and footer pill explicitly contain the subject domain nouns from the user's prompt and contain **zero** leaked strings from unrelated templates (`Charlie Hills`, `CLAUDE.md`, `NOVACURA`).
+   - Before certifying any generated diagram, verify that the rendered canvas header title, tier subtitles, node labels, and footer pill explicitly contain the subject domain nouns from the user's prompt and contain **zero** leaked strings from unrelated templates.
 
 ---
 

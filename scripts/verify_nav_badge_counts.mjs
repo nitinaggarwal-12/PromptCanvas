@@ -12,7 +12,9 @@
  * linked to. This check makes that impossible to reintroduce silently.
  */
 import fs from 'fs';
+import path from 'path';
 
+const ROOT = process.cwd();
 const read = (p) => fs.readFileSync(p, 'utf8');
 let failed = 0;
 
@@ -123,8 +125,43 @@ if (cleanerSrc.includes('api.iconify.design') || cleanerSrc.includes('resolveVen
   console.log('✅ Offline SVG Purity Guard: 0 external api.iconify.design URLs in src/lib/diagramCleaner.ts');
 }
 
+// 9. Full-Repo Source Purity Scan across all src/**/*.{ts,tsx}
+function walkSrcFiles(dir) {
+  let out = [];
+  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, ent.name);
+    if (ent.isDirectory()) out.push(...walkSrcFiles(p));
+    else if (/\.(ts|tsx)$/.test(ent.name)) out.push(p);
+  }
+  return out;
+}
+const allSrcFiles = walkSrcFiles(path.join(ROOT, 'src'));
+const srcViolations = [];
+for (const f of allSrcFiles) {
+  const rel = path.relative(ROOT, f);
+  const txt = fs.readFileSync(f, 'utf8');
+  if (txt.includes('api.iconify.design')) {
+    srcViolations.push(`${rel}: contains external api.iconify.design URL`);
+  }
+  if (/thinkingBudget\s*:/.test(txt)) {
+    srcViolations.push(`${rel}: contains numeric thinkingBudget (violates Law 16 / Rule 55)`);
+  }
+  if (/window\.(prompt|alert|confirm)\s*\(/.test(txt)) {
+    srcViolations.push(`${rel}: contains thread-blocking window.prompt/alert/confirm (violates Law 10 / Rule 25J)`);
+  }
+  if (/\b(Anthropic|Claude|Snowflake)\b/i.test(txt)) {
+    srcViolations.push(`${rel}: contains banned Anthropic/Claude/Snowflake vendor reference (violates Rule 53)`);
+  }
+}
+if (srcViolations.length > 0) {
+  console.error(`❌ Full-Repo Source Purity Guard (${srcViolations.length} violation(s)):`, srcViolations);
+  failed++;
+} else {
+  console.log(`✅ Full-Repo Source Purity Guard: ${allSrcFiles.length} src/**/*.{ts,tsx} files verified (0 api.iconify.design, 0 thinkingBudget, 0 window.confirm/prompt/alert, 0 Anthropic/Claude/Snowflake)`);
+}
+
 if (failed) {
   console.error(`\n❌ ${failed} nav governance check(s) failed.`);
   process.exit(1);
 }
-console.log('\n✅ Nav badge counts, legacy blueprint purge, dead-code purge, and route integrity verified.');
+console.log('\n✅ Nav badge counts, legacy blueprint purge, dead-code purge, full-repo source purity, and route integrity verified.');

@@ -1,6 +1,7 @@
 ---
 name: database-schema-guard
-description: Automated schema drift detection, SQLite to PostgreSQL type compatibility auditing, index efficiency verification, and database migration safety validation.
+description: >-
+  Validates SQLite, PostgreSQL, AlloyDB, and BigQuery schema migrations, indexes, and backward compatibility.
 ---
 
 # Database Schema Drift & Migration Guard Skill

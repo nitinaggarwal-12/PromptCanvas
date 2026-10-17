@@ -53,7 +53,7 @@ GOOGLE_DRIVE_QUOTA_PROJECT=nitina-ggarwal-sandbox-647724
 
 ### 📊 Universal 1:1 Inline Slides Previewer & `"Open with Google Slides"` Bridge (`Rule 47`)
 Every diagram across `/blogs`, `/dashboard`, `/library`, and `/viewer` embeds [`DiagramInlineSlidesPreviewer.tsx`](src/components/DiagramInlineSlidesPreviewer.tsx) backed by [`src/lib/server/googleWorkspaceBridge.ts`](src/lib/server/googleWorkspaceBridge.ts) and [`src/data/cloud_viewer_manifest.json`](src/data/cloud_viewer_manifest.json):
-- **Zero Browser GIS OAuth Popups**: Instead of calling browser `google.accounts.oauth2.initTokenClient` (which fails with Desktop OAuth credentials due to missing Authorized JavaScript Origins), the server exchanges `grant_type=refresh_token` at `https://oauth2.googleapis.com/token` and converts `.pptx` / `.html` via Google Drive v3 (`mimeType: "application/vnd.google-apps.presentation"` / `.document`, `x-goog-user-project: "nitina-ggarwal-sandbox-647724"`).
+- **Zero Browser GIS OAuth Popups**: Instead of calling browser `google.accounts.oauth2.initTokenClient` (which fails with Desktop OAuth credentials due to missing Authorized JavaScript Origins), the server exchanges `grant_type=refresh_token` at `https://oauth2.googleapis.com/token`, converts `.pptx` via Google Drive v3 (`mimeType: "application/vnd.google-apps.presentation"`, `x-goog-user-project: "nitina-ggarwal-sandbox-647724"`), and clones/updates Google Docs natively via `drive.files.copy` + `documents.batchUpdate` (`Rule 49`).
 - **Pre-Warmed `0ms` Direct Open & Disk-Over-Memory Manifest Priority**: Pre-warmed Google Slides (`https://docs.google.com/presentation/d/<id>/edit?authuser=nitinagga%40google.com`) and Google Docs URLs in `src/data/cloud_viewer_manifest.json` override in-memory cache (`globalThis.__pcCloudViewerManifestCache`), map `ws1-*..ws5-*` to `DOC-MT-01..DOC-MT-06`, and open in `0ms` (`manifestKey || diagramKey`), while dynamic diagrams convert or update in-place (`PATCH /upload/drive/v3/files/{preferredId}?uploadType=multipart`) via `POST /api/google-workspace/open`.
 - **Header-Only Action Controls + 3-Mode Cloud Viewer Modal (`6` Slides `1:1`)**: Renders **only** the compact `👁️ Cloud Viewer` + `[ S | Open with Google Slides ↗ | ▼ ]` split-dropdown menu in the header bar while keeping the architecture diagram at 100% full width (zero on-page `1. EDITABLE SLIDE DECK PREVIEWER` clutter, zero native `title="..."` tooltip on `open-gcp-verify-drawer-btn`), and opens the Same-Screen Cloud Viewer Modal (`✨ Interactive Slides Studio` rendering all 6 slides `1:1`, `🌐 Live Google Slides Embed`, `📄 Live Google Docs Spec`) on click.
 
@@ -75,7 +75,7 @@ Pass `layoutEngineV2: true` (or `false`) in the `POST /api/generate` request bod
 ## 🧪 Testing & Validation CLI
 
 ### Master Omni 1.1 Architecture Quality Gate (11 Gates)
-Executes the comprehensive 11-step quality verification gate covering render safety, master catalog quality (77 blueprints), canvas generator self-healing, hooks schema validation, governance doc sync, and 5-tier model stack verification:
+Executes the comprehensive 11-step quality verification gate covering render safety, master catalog quality (26 production Google Cloud blueprints), canvas generator self-healing, hooks schema validation, governance doc sync, and 5-tier model stack verification:
 ```bash
 npm run quality-gate
 ```
@@ -104,7 +104,7 @@ npm run validate path/to/diagram.xml
 ## 📚 Architecture Documentation
 
 * **[docs/INTENT_ROUTER.md](docs/INTENT_ROUTER.md)**: **Authoritative 5-Tier Model Selection & Intent Router Specification (`v3.3.0`)**.
-* **[docs/ARCHITECTURE_TAXONOMY_V1.md](docs/ARCHITECTURE_TAXONOMY_V1.md)**: **Canonical Architecture Taxonomy (v1.0)** — Complete 39-Family Architecture Matrix, 34 Visual Grammars, 8 Visual Families, and 16 Document Bindings.
+* **[docs/ARCHITECTURE_TAXONOMY_V1.md](docs/ARCHITECTURE_TAXONOMY_V1.md)**: **Canonical Architecture Taxonomy (v1.0)** — Complete 26-Blueprint Google Cloud Catalog, 6 Families, and 16 Document Bindings.
 * **[docs/PromptCanvas_Architecture_Taxonomy_v1.0_Consolidated.xlsx](docs/PromptCanvas_Architecture_Taxonomy_v1.0_Consolidated.xlsx)**: Consolidated Excel Workbook.
 * **[docs/ARCHITECTURE_BEFORE.md](docs/ARCHITECTURE_BEFORE.md)**: Codebase map of Legacy Pipeline V1.
 * **[docs/ARCHITECTURE_AFTER.md](docs/ARCHITECTURE_AFTER.md)**: Pipeline V2 Architecture with Mermaid flow diagram.
@@ -117,7 +117,7 @@ npm run validate path/to/diagram.xml
 npm run dev
 ```
 
-Open [http://localhost:3000/studio](http://localhost:3000/studio) to launch the unified **Architecture Studio**.
+Open [http://localhost:3000/dashboard](http://localhost:3000/dashboard) or [http://localhost:3000/studio](http://localhost:3000/studio) to launch the unified **Architecture Studio**.
 
 ---
 
@@ -125,7 +125,7 @@ Open [http://localhost:3000/studio](http://localhost:3000/studio) to launch the 
 
 You are configured to work on this repository with strict architectural and deployment constraints. Follow these instructions exactly:
 
-1. **Planning First:** Before editing or generating code across multiple files, provide a concise 3 to 5 bullet execution plan. Do not touch any files until this plan is stated.
+1. **RCA-First + Immediate Same-Turn Execution (`Rule 28A`):** State the root cause and execution plan clearly at the top of your turn and execute all code, test, and governance fixes in the **exact same turn** without stopping to ask permission.
 2. **Strict File Boundaries:**
 * Only edit files directly required to complete the assigned task.
 * Do not reformat, refactor, or delete unrelated files, functions, or utilities.
@@ -138,21 +138,21 @@ You are configured to work on this repository with strict architectural and depl
 * In Node.js: `process.on('SIGTERM', ...)`
 * In Python: `signal.signal(signal.SIGTERM, ...)`
 5. **Quality and Test Gates:**
-* Run local linting, type-checking, and unit tests (`npx tsx scripts/verify_export_slides_quality_gate.ts && npx tsx scripts/verify_blogs_and_gcp_workstreams.ts`) immediately after modifying code.
+* Run local linting, type-checking, and unit tests (`npx tsx scripts/verify_export_slides_quality_gate.ts && npx tsx scripts/verify_blogs_and_gcp_workstreams.ts && npx tsx scripts/verify_blank_canvas_nasa_default_and_slides.ts`) immediately after modifying code.
 * Fix all errors before presenting the task as complete.
-6. **Deployment Target:**
-* When running deployment commands, strictly target:
+6. **Synchronous 2-Project Cloud Run Deployment Target (`Rule 56`):**
 * Platform: Google Cloud Run
-* Project ID: `ramp-portal-dev` (Project Number `248990048888`)
-* Region: `us-west1`
+* Runtime Project ID: `ramp-portal-dev` (Project Number `248990048888`, Region `us-west1`)
+* Build Project ID: `nitina-ggarwal-sandbox-647724`
 * Canonical BeyondCorp URL: `https://promptcanvas-248990048888.cr.gclb.goog`
-* Command pattern:
+* Mandatory 2-Project Command Pattern:
 ```bash
-gcloud run deploy promptcanvas \
-  --source . \
-  --project ramp-portal-dev \
-  --region us-west1 \
-  --platform managed
+gcloud builds submit --project=nitina-ggarwal-sandbox-647724 \
+  --tag us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/promptcanvas:latest && \
+gcloud run services update promptcanvas \
+  --project=ramp-portal-dev \
+  --region=us-west1 \
+  --image=us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/promptcanvas:latest
 ```
 
 

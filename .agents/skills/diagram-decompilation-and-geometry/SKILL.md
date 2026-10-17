@@ -1,6 +1,7 @@
 ---
 name: diagram-decompilation-and-geometry
-description: High-precision multimodal diagram decompilation, 100% literal verbatim text extraction, sharp geometric arrow routing (straight & 90-degree orthogonal only), and zero-slant/zero-dogleg layout laws.
+description: >-
+  Decompiles Draw.io XML and SVG diagrams to verify zero bounding-box collisions, 23 edges, and 52px spoke channels.
 ---
 
 # 📐 Diagram Decompilation & Sharp Geometric Layout Engine

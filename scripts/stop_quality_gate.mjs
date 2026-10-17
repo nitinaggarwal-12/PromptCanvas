@@ -18,9 +18,10 @@ function executeQualityGate() {
     if (inputData.trim()) payload = JSON.parse(inputData);
   } catch (e) {}
 
-  // If stopped due to an error, permit stop without running gates
-  if (payload.terminationReason && payload.terminationReason !== 'model_stop') {
-    console.log(JSON.stringify({ decision: 'stop' }));
+  // Official Jetski Stop contract: stopReason is "DONE" or "ERROR"
+  const stopReason = payload.stopReason || payload.terminationReason || 'DONE';
+  if (stopReason === 'ERROR' || (payload.terminationReason && payload.terminationReason !== 'model_stop')) {
+    console.log(JSON.stringify({ decision: 'allow' }));
     process.exit(0);
   }
 
@@ -32,8 +33,8 @@ function executeQualityGate() {
       killSignal: 'SIGKILL'
     });
     
-    // All quality gates passed -> permit stop
-    console.log(JSON.stringify({ decision: 'stop' }));
+    // All quality gates passed -> permit stop per official Jetski Stop hook contract ("allow" | "continue")
+    console.log(JSON.stringify({ decision: 'allow' }));
     process.exit(0);
   } catch (err) {
     const errMsg = err.stderr ? err.stderr.toString() : err.message;

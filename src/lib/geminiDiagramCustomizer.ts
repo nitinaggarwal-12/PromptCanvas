@@ -38,7 +38,7 @@ function parseNodeValue(id: string, rawVal: string): ParsedNodeContext {
   let currentTitle = '';
   let currentSubtitle = '';
   let currentBadge = '';
-  let logoUrl = 'https://api.iconify.design/logos:google-cloud.svg';
+  let logoUrl = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='5' fill='%234285F4'/><circle cx='12' cy='12' r='5' fill='%23ffffff'/></svg>";
   let isCard = false;
 
   const unescaped = (rawVal || '')

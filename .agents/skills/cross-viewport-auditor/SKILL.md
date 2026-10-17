@@ -1,6 +1,7 @@
 ---
 name: cross-viewport-auditor
-description: Multi-device and cross-browser viewport scaling tests across Mobile (390x844), Tablet (834x1194), and Ultra-Wide Desktop (1600x950) to ensure responsive layout balance.
+description: >-
+  Audits responsive layout geometry, fluid edge-to-edge width, and zero horizontal overflow across desktop/tablet/mobile.
 ---
 
 # Cross-Viewport Responsive UI Auditor Skill

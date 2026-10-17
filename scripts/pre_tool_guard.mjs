@@ -17,8 +17,8 @@ function evaluatePreToolUse() {
     if (inputData.trim()) payload = JSON.parse(inputData);
   } catch (e) {}
 
-  const toolName = payload?.toolCall?.name || '';
-  const args = payload?.toolCall?.args || {};
+  const toolName = payload?.toolCall?.name || payload?.tool_name || '';
+  const args = payload?.toolCall?.args || payload?.tool_input || {};
 
   let blocked = false;
   let blockReason = '';
@@ -45,19 +45,24 @@ function evaluatePreToolUse() {
       /\bgcloud\s+(projects|spanner|bigquery|dataproc)\s+delete\b/i,
       // Filesystem destruction
       /\bmkfs(\.\w+)?\b/i,
-      /\bdd\s+if=.*of=\/dev\//i
+      /\bdd\s+if=.*of=\/dev\//i,
+      // Rule 56: Ban single-project gcloud run deploy --source against ramp-portal-dev
+      /\bgcloud\s+run\s+deploy\b.*--source\b.*ramp-portal-dev/i,
+      /\bgcloud\s+run\s+deploy\b.*ramp-portal-dev.*--source\b/i,
+      // Rule 56: Ban detached fire-and-forget nohup background Cloud Run builds/deploys
+      /\bnohup\s+.*\bgcloud\s+(builds\s+submit|run\s+(deploy|services\s+update))\b/i
     ];
 
     for (const pattern of dangerousCommandPatterns) {
       if (pattern.test(commandLine)) {
         blocked = true;
-        blockReason = `Destructive command blocked by Zero-Data-Loss Safety Gate: matched pattern ${pattern}`;
+        blockReason = `Command blocked by PreToolUse Safety & Cloud Run Gate (Law 2 / Rule 56): matched pattern ${pattern}`;
         break;
       }
     }
   }
 
-  // 2. Guard file write/replace operations against sensitive system files & direct DB corruption
+  // 2. Guard file write/replace operations against sensitive system files, Law 2 protected files, & direct DB corruption
   if (!blocked && (toolName === 'write_to_file' || toolName === 'replace_file_content' || toolName === 'multi_replace_file_content')) {
     const targetFile = args.TargetFile || '';
 
@@ -65,13 +70,17 @@ function evaluatePreToolUse() {
       /^\/(etc|usr|bin|sbin|System|Library|private)\b/i,
       /[\\\/]\.ssh[\\\/]/i,
       /[\\\/]\.aws[\\\/]/i,
-      /[\\\/]\.config[\\\/]gcloud[\\\/]/i
+      /[\\\/]\.config[\\\/]gcloud[\\\/]/i,
+      // Law 2: Strict File & Resource Boundaries (.env, .git/, package-lock.json, poetry.lock)
+      /(?:^|[\\\/])\.env(?:\.[a-zA-Z0-9_-]+)?$/i,
+      /[\\\/]\.git[\\\/]/i,
+      /(?:^|[\\\/])(package-lock\.json|poetry\.lock)$/i
     ];
 
     for (const pathPattern of protectedSystemPaths) {
       if (pathPattern.test(targetFile)) {
         blocked = true;
-        blockReason = `Modifying sensitive system path blocked by Security Gate: ${targetFile}`;
+        blockReason = `Modifying protected file or system path blocked by Law 2 Security Gate: ${targetFile}`;
         break;
       }
     }

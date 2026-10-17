@@ -1,6 +1,7 @@
 ---
 name: security-code-scanner
-description: Static Application Security Testing (SAST) for XSS in custom SVG renderers, unhandled API route inputs, environment secret leak checks, and npm audit dependency CVE scanning.
+description: >-
+  Scans codebases for OWASP vulnerabilities, secret leaks, injection vectors, and IAM privilege escalations.
 ---
 
 # Security Code Scanner & Vulnerability Guard Skill

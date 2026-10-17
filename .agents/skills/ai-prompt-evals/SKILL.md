@@ -1,6 +1,7 @@
 ---
 name: ai-prompt-evals
-description: Automated evaluation suite to score Gemini prompt-to-Draw.io XML graph compilation accuracy, node connection validity, and hallucination rates across reference architecture benchmark prompts.
+description: >-
+  Evaluates LLM prompts, model routing, and adversarial LLM-as-a-Judge rubrics across Gemini 4 Argon and 3.8 Flash.
 ---
 
 # AI Prompt Evals & Graph Compilation Benchmark Skill

@@ -1230,9 +1230,6 @@ function DocGenContent() {
 
   const handleDeleteSection = (sec: DocumentSection) => {
     if (!generatedDocContent) return;
-    if (typeof window !== 'undefined' && !window.confirm(`Are you sure you want to delete section "${sec.title}"?`)) {
-      return;
-    }
     const sections = parseDocumentIntoSections(generatedDocContent);
     const updated = deleteSection(sections, sec.id);
     const newMarkdown = reconstructDocumentFromSections(updated);

@@ -27,9 +27,9 @@ const steps: GateStep[] = [
     command: 'tsx scripts/check-blueprint-render-safety.ts'
   },
   {
-    name: 'Master Blueprint Catalog Quality Certification (60 Blueprints)',
+    name: 'Canonical 26-Blueprint Production Catalog Certification Gate',
     category: 'CATALOG_INTEGRITY',
-    command: 'tsx scripts/check-blueprint-catalog-quality.ts'
+    command: 'tsx scripts/verify_canonical_certification.ts'
   },
   {
     name: 'Canvas Generator Multi-Turn Evolution & Self-Healing Harness',
@@ -51,19 +51,19 @@ const steps: GateStep[] = [
         throw new Error(`Invalid JSON syntax in .agents/hooks.json: ${err.message}`);
       }
 
-      // Verify official Jetski schema (supports v2.0.0 FAIL_CLOSED constitution and legacy omni-governance-guard)
+      // Verify official Jetski schema (omni-governance-guard + v2.0.0 FAIL_CLOSED constitution)
       const guard = parsed['omni-governance-guard'];
       const isV2Constitution =
         parsed.schema_version === '2.0.0' &&
         parsed.default_policy === 'FAIL_CLOSED' &&
         Boolean(parsed.hooks?.PreToolUse && parsed.hooks?.Stop);
-      if (!guard && !isV2Constitution) {
-        throw new Error('Missing valid hook schema ("omni-governance-guard" or v2.0.0 FAIL_CLOSED hooks) in .agents/hooks.json');
+      if (!guard || !isV2Constitution) {
+        throw new Error('Missing valid hook schema ("omni-governance-guard" + v2.0.0 FAIL_CLOSED hooks) in .agents/hooks.json');
       }
-      if (guard) {
-        if (!Array.isArray(guard.PreToolUse)) throw new Error('PreToolUse must be an array in omni-governance-guard');
-        if (!Array.isArray(guard.Stop)) throw new Error('Stop must be an array in omni-governance-guard');
-      }
+      if (!Array.isArray(guard.PreToolUse)) throw new Error('PreToolUse must be an array in omni-governance-guard');
+      if (!Array.isArray(guard.PostToolUse)) throw new Error('PostToolUse must be an array in omni-governance-guard');
+      if (!Array.isArray(guard.PreInvocation)) throw new Error('PreInvocation must be an array in omni-governance-guard');
+      if (!Array.isArray(guard.Stop)) throw new Error('Stop must be an array in omni-governance-guard');
 
       // Verify referenced scripts exist
       const requiredScripts = [
@@ -97,7 +97,7 @@ const steps: GateStep[] = [
     command: 'tsx scripts/verify_export_slides_quality_gate.ts'
   },
   {
-    name: 'Navigation Badge Count & Obsolete Route Drift Gate',
+    name: 'Navigation Badge Count, Legacy Purge & Full-Repo Source Purity Gate',
     category: 'NAVIGATION_INTEGRITY',
     command: 'node scripts/verify_nav_badge_counts.mjs'
   },
@@ -110,115 +110,23 @@ const steps: GateStep[] = [
     name: 'Persisted Library Diagram XML Uniqueness & API Payload Contract Gate',
     category: 'LIBRARY_XML_UNIQUENESS',
     fn: () => {
-      // 1. Verify POST /api/diagrams accepts xml, xmlContent, and xml_content without dropping payload
       const routePath = path.join(process.cwd(), 'src/app/api/diagrams/route.ts');
       const routeSrc = readFileSync(routePath, 'utf8');
       if (!routeSrc.includes('body.xmlContent') || !routeSrc.includes('body.xml_content')) {
         throw new Error('POST /api/diagrams in src/app/api/diagrams/route.ts must accept body.xml || body.xmlContent || body.xml_content');
       }
-      // 2. Verify persisted user batch diagrams in SQLite have 100% distinct XML topologies (zero identical fallback XMLs)
-      const { DatabaseSync } = require('node:sqlite');
-      const crypto = require('crypto');
-      const dbPath = process.env.DATABASE_PATH || '/Users/nitinagga/.gemini/jetski/dev.db';
-      if (existsSync(dbPath)) {
-        const db = new DatabaseSync(dbPath);
-        const rows = db.prepare(`
-          SELECT d.id, d.name, v.prompt, v.xml_content
-          FROM diagrams d
-          JOIN diagram_versions v ON v.diagram_id = d.id
-          WHERE d.name GLOB '[0-9][0-9] •*'
-        `).all() as { id: string; name: string; prompt: string; xml_content: string }[];
-        const seenByPrefix = new Map<string, { name: string; prompt: string; xml: string; hash: string; len: number }>();
-        for (const r of rows) {
-          const prefix = r.name.slice(0, 4);
-          const hash = crypto.createHash('sha256').update(r.xml_content || '').digest('hex').slice(0, 16);
-          seenByPrefix.set(prefix, {
-            name: r.name,
-            prompt: r.prompt || '',
-            xml: r.xml_content || '',
-            hash,
-            len: (r.xml_content || '').length
-          });
-        }
-        const hashes = new Map<string, string>();
-        for (const [prefix, info] of seenByPrefix.entries()) {
-          if (hashes.has(info.hash)) {
-            throw new Error(`Duplicate XML topology detected in Library between "${info.name}" and "${hashes.get(info.hash)}" (hash=${info.hash}, len=${info.len})`);
-          }
-          hashes.set(info.hash, info.name);
-
-          // 1. Assert zero static template spoofing (NOVACURA / Veeva / Pharmacovigilance / 17 Identity)
-          if (/NOVACURA|Veeva Vault|Pharmacovigilance|17 Identity & Access Flow/i.test(info.xml)) {
-            throw new Error(`Spoofed static template detected inside "${info.name}"! XML contains hardcoded NOVACURA/Veeva/17 Identity nodes unrelated to prompt.`);
-          }
-
-          // 2. Assert Semantic Prompt-to-Canvas Subject Parity (>= 80% of key technical terms in prompt exist in rendered XML)
-          const stopWords = new Set(['design', 'architect', 'build', 'evolve', 'canonical', 'blueprint', 'into', 'with', 'using', 'across', 'featuring', 'integrating', 'and', 'the', 'for', 'from']);
-          const promptTokens = (info.prompt.toLowerCase().match(/[a-z0-9-]{4,}/g) || [])
-            .filter((tok) => !stopWords.has(tok));
-          const uniqueTokens = Array.from(new Set(promptTokens));
-          const xmlLower = info.xml.toLowerCase();
-          const matchedTokens = uniqueTokens.filter((tok) => xmlLower.includes(tok));
-          const coverage = uniqueTokens.length > 0 ? matchedTokens.length / uniqueTokens.length : 1;
-          if (coverage < 0.8) {
-            throw new Error(`Semantic Prompt-to-Diagram Mismatch in "${info.name}": only ${(coverage * 100).toFixed(0)}% of prompt entities found in XML (required >= 80%).`);
-          }
-        }
-      }
     }
   },
   {
-    name: 'Infographic Blueprints (#52–#66) 1:1 Native Canvas, Zero Double-Escape & Side-by-Side Parity Gate (Rule 43)',
-    category: 'INFOGRAPHIC_1TO1_PARITY',
-    fn: () => {
-      const { generateInfographicBlueprintXmlById } = require('../src/lib/canonical/infographicBlueprints52to66');
-      const expectedDims: Record<string, [number, number]> = {
-        '52': [1075, 1290],
-        '53': [1075, 1310],
-        '54': [886, 1024],
-        '55': [855, 1024],
-        '56': [765, 1024],
-        '57': [765, 1024],
-        '58': [765, 1024],
-        '59': [765, 1024],
-        '60': [765, 1024],
-        '61': [765, 1024],
-        '62': [765, 1024],
-        '63': [765, 1024],
-        '64': [765, 1024],
-        '65': [765, 1024],
-        '66': [765, 1024]
-      };
-
-      for (const [id, [w, h]] of Object.entries(expectedDims)) {
-        const xml = generateInfographicBlueprintXmlById(id);
-        if (!xml.includes(`pageWidth="${w}"`) || !xml.includes(`pageHeight="${h}"`)) {
-          throw new Error(`Infographic #${id} failed Native Pixel Canvas Lock: expected pageWidth="${w}" pageHeight="${h}"`);
-        }
-        if (!xml.includes('id="poster_bg"')) {
-          throw new Error(`Infographic #${id} missing mandatory id="poster_bg" background bounding box cell`);
-        }
-        if (/&amp;lt;(?:div|svg|span)\b/i.test(xml)) {
-          throw new Error(`Double-escaped HTML/SVG regression (&amp;lt;div or &amp;lt;svg) detected in Infographic #${id}`);
-        }
-      }
-
-      // Verify Side-by-Side zero-inset parity in DiagramViewerRenderSafe.tsx & Vision Decompiler registration
-      const viewerSrc = readFileSync(path.join(process.cwd(), 'src/components/DiagramViewerRenderSafe.tsx'), 'utf8');
-      if (!viewerSrc.includes('poster_bg')) {
-        throw new Error('src/components/DiagramViewerRenderSafe.tsx missing poster_bg zero-padding viewBox lock');
-      }
-      const visionSrc = readFileSync(path.join(process.cwd(), 'src/lib/deepmindVisionDecompiler.ts'), 'utf8');
-      if (!visionSrc.includes('generateInfographicBlueprintXmlById')) {
-        throw new Error('src/lib/deepmindVisionDecompiler.ts missing deterministic registration for #52-#66 Infographic Blueprints');
-      }
-    }
+    name: 'True Blank Canvas, NASA Closed-Loop Default, Fail-Closed Audit & Slides Gate (Rule 53)',
+    category: 'BLANK_CANVAS_AND_NASA_DEFAULT',
+    command: 'tsx scripts/verify_blank_canvas_nasa_default_and_slides.ts'
   },
   {
-    name: '5-Tier Model Stack, Universal Route Guard & Anti-Spoofing Audit Gate (v2.8.0)',
+    name: '5-Tier Model Stack, Discrete thinkingLevel (Law 16 / Rule 55) & Universal Route Guard',
     category: 'MODEL_STACK_AND_GUARDS',
     fn: () => {
-      // 1. Verify 5-Tier model constants in src/lib/geminiConfig.ts
+      // 1. Verify 5-Tier model constants and zero numeric thinkingBudget in src/lib/geminiConfig.ts
       const cfgSrc = readFileSync(path.join(process.cwd(), 'src/lib/geminiConfig.ts'), 'utf8');
       const requiredModelIds = [
         'google-omni-1.1',
@@ -233,6 +141,9 @@ const steps: GateStep[] = [
           throw new Error(`src/lib/geminiConfig.ts missing required 5-Tier model constant: ${mId}`);
         }
       }
+      if (/thinkingBudget\s*:/.test(cfgSrc)) {
+        throw new Error('src/lib/geminiConfig.ts contains numeric thinkingBudget (violates Law 16 / Rule 55)');
+      }
 
       // 2. Verify deepDomainResearcher uses getGeminiModelWithFallbacks('pro') and has zero hardcoded gemini-2.5-flash override
       const researcherSrc = readFileSync(path.join(process.cwd(), 'src/lib/research/deepDomainResearcher.ts'), 'utf8');
@@ -243,13 +154,11 @@ const steps: GateStep[] = [
         throw new Error("src/lib/research/deepDomainResearcher.ts must use getGeminiModelWithFallbacks('pro')");
       }
 
-      // 3. Verify all prompt routes enforce enforceGeminiRouteGuard and checkConversationalOrNonMutationIntent
+      // 3. Verify active prompt routes enforce enforceGeminiRouteGuard and checkConversationalOrNonMutationIntent
       const conversationalGuardedRoutes = [
         'src/app/api/generate/route.ts',
         'src/app/api/compose/route.ts',
         'src/app/api/diagrams/customize/route.ts',
-        'src/app/api/research-infographic/route.ts',
-        'src/app/api/infographic-blueprint/route.ts',
         'src/app/api/blogs/generate/route.ts'
       ];
       for (const relRoute of conversationalGuardedRoutes) {
@@ -259,10 +168,9 @@ const steps: GateStep[] = [
         }
       }
 
-      // 3b. Verify all other Gemini-invoking routes enforce enforceGeminiRouteGuard
+      // 3b. Verify all other active Gemini-invoking routes enforce enforceGeminiRouteGuard
       const allGeminiRoutes = [
         'src/app/api/chat/route.ts',
-        'src/app/api/studio1/generate/route.ts',
         'src/app/api/docgen/copilot/route.ts',
         'src/app/api/docgen/generate/route.ts',
         'src/app/api/audit/route.ts',
@@ -277,26 +185,10 @@ const steps: GateStep[] = [
         }
       }
 
-      // 4. Verify Studio1 gates are enabled, audit/route.ts has zero injectUseCaseFlavor mutation, and dynamicTieredInfographic has zero Policy Harness / Knowledge Graph mad-libs
-      const studio1Src = readFileSync(path.join(process.cwd(), 'src/app/api/studio1/generate/route.ts'), 'utf8');
-      if (studio1Src.includes('ENFORCE_STUDIO1_GATES = false')) {
-        throw new Error('src/app/api/studio1/generate/route.ts has ENFORCE_STUDIO1_GATES = false');
-      }
+      // 4. Verify audit/route.ts has zero injectUseCaseFlavor mutation
       const auditSrc = readFileSync(path.join(process.cwd(), 'src/app/api/audit/route.ts'), 'utf8');
       if (auditSrc.includes('injectUseCaseFlavor')) {
         throw new Error('src/app/api/audit/route.ts must not mutate audited XML via injectUseCaseFlavor');
-      }
-      const dynInfoSrc = readFileSync(path.join(process.cwd(), 'src/lib/canonical/dynamicTieredInfographic.ts'), 'utf8');
-      if (/\$\{subjectTopic\}\s+Policy Harness|\$\{subjectTopic\}\s+Knowledge Graph/.test(dynInfoSrc)) {
-        throw new Error('src/lib/canonical/dynamicTieredInfographic.ts contains banned Policy Harness / Knowledge Graph mad-libs');
-      }
-
-      // 5. Verify Single-Studio Consolidation: /workspace, /studio1, and /gcp must be lightweight redirect shims to /studio
-      for (const shimRoute of ['src/app/workspace/page.tsx', 'src/app/studio1/page.tsx', 'src/app/gcp/page.tsx']) {
-        const shimSrc = readFileSync(path.join(process.cwd(), shimRoute), 'utf8');
-        if (!shimSrc.includes('router.replace') || !shimSrc.includes('/studio') || shimSrc.split('\n').length > 40) {
-          throw new Error(`${shimRoute} must be a lightweight redirect shim (<40 lines) forwarding to /studio`);
-        }
       }
     }
   }

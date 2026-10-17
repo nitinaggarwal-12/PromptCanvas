@@ -40,38 +40,28 @@ User Prompt
 
 ## 🔍 Router Stages
 
-### Stage 1: Explicit Signals & Trigger Phrases (Content-Bound vs. Layout Archetypes)
-- **Stage 1A: Content-Bound Master Templates**:
-  - Triggered ONLY when the user explicitly requests a named static reference blueprint by its exact domain/author identity (e.g., `"Charlie Hills"`, `"Context + Harness + Loop + Graph"`, `"CLINICAL AI"`, `"Open Knowledge Format Infographic"`).
-  - Routes deterministically to the immutable canonical master XML (`template_52`, `open_knowledge_infographic`, etc.).
-- **Stage 1B: Dynamic Layout-Style Archetype Triggers (`Rule 41 Anti-Spoofing Law`)**:
-  - When a user prompt requests a **visual layout archetype** (e.g., `"infographic"`, `"tiered infographic"`, `"swimlane"`, `"sequence diagram"`, `"entity relationship diagram"`) paired with a **new or arbitrary subject domain** (e.g., `"Healthcare FHIR Infographic"`, `"Zero-Trust Security Infographic"`, `"FinOps Cloud Cost Infographic"`), the router MUST NEVER spoof or return a static content template from another topic (`Charlie Hills / CLAUDE.md`).
-  - Instead, it routes to the **Universal Dynamic Tiered Infographic Engine** (`dynamic_tiered_infographic` -> `await researchAndCompileDomainInfographic(prompt)` via `gemini-3.1-pro-preview`), which dynamically researches and synthesizes the 4-tier infographic structure (`01` • `02` • `03` • `04`) populated 100% with the user's requested subject domain.
+### Stage 1: Explicit Signals & Trigger Phrases (26 Production Google Cloud Blueprints vs. Zero-Template Closed-Loop Default)
+- **Stage 1A: Canonical Google Cloud Reference Blueprints (`26/26` Certified)**:
+  - Triggered when the user selects or requests one of the 26 production Google Cloud reference blueprints (`#78` Official Google Cloud Architecture Center Hub-and-Spoke, `#00` 2026 Upgraded GCP & Gemini Enterprise Native Architecture, `#35`–`#50` 16 Reference Architectures, or `#67`–`#74` 8 Official Google Cloud Brand Light 7-Layer Operational & Agentic Flow Blueprints).
+  - Routes deterministically to the immutable canonical master XML (`src/lib/canonical/canonicalTemplates.ts`).
+- **Stage 1B: Zero-Template / Custom Prompt Closed-Loop Semantic Synthesis (`Rule 53`)**:
+  - When a user submits an open-ended or custom prompt on a Blank Canvas (`data-blank-canvas="true"`) or without selecting a canonical template, `executeGcpPromptModification` (`src/lib/gcpCoPilotModifier.ts`) and `synthesizePromptDrivenDiagramXml` (`src/lib/promptDrivenDiagramSynthesizer.ts`) route directly to `buildUniversalClosedLoopDomainHarnessXml` (`31` vertices, `26` edges, `shape=rhombus` safety gate, `shape=hexagon` ADK agents, 1:3 parallel counterfactual swimlanes, `shape=cylinder3` Spanner/Bigtable, `#0D9488` closed-loop return highway).
 - **Stage 1C: Dynamic Clause-Driven Architecture & Flowchart Synthesis (`Rule 46`)**:
-  - Bespoke domain architecture prompts in `/studio` route to `adaptSavedGoogleCloudTemplateToPrompt` (`src/lib/promptDrivenDiagramSynthesizer.ts`), extracting 4 domain clauses (`extractPromptDomainClauses`) and populating Tier 3, Tier 4, and Tier 5 node cards with word-safe two-line wrapping (`formatTwoLineCardClause`).
+  - Bespoke domain architecture prompts in `/dashboard` and `/studio` route to `adaptSavedGoogleCloudTemplateToPrompt` (`src/lib/promptDrivenDiagramSynthesizer.ts`), extracting 4 domain clauses (`extractPromptDomainClauses`) and populating Tier 3, Tier 4, and Tier 5 node cards with word-safe two-line wrapping (`formatTwoLineCardClause`).
   - Bespoke flowchart prompts route to `generateLogicalFlowchartDrawioXml` (`src/lib/promptDrivenDiagramSynthesizer.ts`), dynamically populating `[1]`, `[1a]`, `[2] ◆ Decision Gate`, `[2b]`, `[3]`, `[3a]`, and Tier 1–3 swimlane headers.
 
-### Stage 2: Intent Classifier Module (`src/lib/router/intentClassifier.ts`)
-- Runs for untyped prompts when `LAYOUT_ENGINE_V2` is enabled.
-- Invokes `gemini-3.8-flash` (with fallback to `gemini-3.1-flash-live-preview`) with a build-time prompt embedding all 22 diagram template options and `whenToUse` descriptions.
+### Stage 2: Architectural Decision Engine (`src/lib/geminiArchitecturalDecisionEngine.ts`)
+- Invokes `gemini-3.8-flash` (with fallback to `gemini-3.1-flash-live-preview`) with discrete `thinkingConfig: { thinkingLevel: 'LOW' | 'MEDIUM' | 'HIGH' }` (`Law 16 / Rule 55`) to classify perspective (`Conceptual`, `Logical`, `Technical`, `Process`), abstraction level (`L1`–`L4`), and recommended blueprint ID among the 26 production Google Cloud blueprints.
 - **Constraints & Thresholds**:
   - `TEMPLATE_CONFIDENCE_THRESHOLD = 0.8`
   - `FREEFORM_CONFIDENCE_THRESHOLD = 0.6`
-  - `CLASSIFIER_TIMEOUT_MS = 2500` (enforced via `AbortController`)
-  - Validates output using Zod schema (`IntentClassificationSchema`).
-  - Single retry fallback on network/timeout error before returning `null` (never throws).
+  - Single retry fallback on network/timeout error before returning deterministic fallback decision (never throws).
 
-### Stage 3: Disambiguation Chips UI (`src/components/workspace/DiagramTypeSelector.tsx`)
-- Triggered when classifier confidence is `< 0.6` (Ambiguous Classification).
-- API returns HTTP 200 with `needsDisambiguation: true` and a list of `suggestedTypes`.
-- Studio displays a modal presenting one-tap chips for the suggested diagram types.
-- Clicking a chip re-submits the prompt with explicit `architectureType`, immediately routing to Stage 1.
+### Stage 3: Conversational Non-Mutation Gate (`src/lib/intentGuard.ts`)
+- Intercepts standalone greetings (`"hi"`), capability queries, courtesies (`"thanks"`), and `<= 2`-word ambiguous inputs with zero canvas mutation and zero version increment (`Law 3`).
 
-### Stage 4: Stated Assumptions Banner (`src/components/workspace/AssumptionBanner.tsx`)
-- Triggered when diagram is generated with stated assumptions or alternative template recommendations.
-- Renders a dismissible top banner on the canvas displaying:
-  - Stated assumptions (e.g., `⚡ Assumption: GCP cloud provider`, `⚡ Assumption: REST microservices`).
-  - Clickable alternative template pills allowing 1-tap switching.
+### Stage 4: Speculative-Premise Reframing & Grounding Certification (`src/lib/truthfulnessGroundingEngine.ts`)
+- Flags speculative premises (`REFRAMED_SPECULATIVE_PREMISE`) and reframes them into verifiable **Counterfactual Digital-Twin / Monte Carlo Simulation Sandboxes** while enforcing fail-closed audit scoring (`0%` on Blank Canvas, `<= 30%` on `< 6`-vertex stubs).
 
 ---
 

@@ -1,6 +1,7 @@
 ---
 name: ui-first-design-system
-description: Executive Light-Theme Web App UI/UX design system (Rule 25, Rule 26, Rule 50, Rule 54), 100% fluid edge-to-edge layouts, 4-band multi-column card grid uniformity, non-blocking drawers, table cell containment, and programmatic DOM bounding-box + visual screenshot verification.
+description: >-
+  Enforces Rule 54 Universal Light Theme, Google Sans typography, and zero-redundancy executive UI components.
 ---
 
 # UI-First Design System & Executive Web App UI/UX Architecture (`v2.0.0`)

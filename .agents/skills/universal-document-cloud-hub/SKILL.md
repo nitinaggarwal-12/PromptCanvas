@@ -1,6 +1,7 @@
 ---
 name: universal-document-cloud-hub
-description: Universal in-browser document preview, transformation, and 1-click cloud editor bridge across all enterprise formats (Google Slides/PPTX, Google Sheets/XLSX, Google Docs/Word, PDF, Flat CSV, Draw.io/Architecture XML, JSON) with zero-download live editing, Gmail-style preview bars, and multi-sheet data grid viewers.
+description: >-
+  Synchronizes editable Google Slides (Rule 47) and native-cloned Google Docs (Rule 49) via server-side refresh tokens.
 ---
 
 # 📑 Universal Document & Cloud Workspace Hub Skill
