@@ -85,7 +85,6 @@ export function getTemplatePerspective(tpl: CanonicalTemplate): ArchitecturePers
   if (
     tpl.family === 'Process' ||
     tpl.family === 'Flow' ||
-    ['67', '03', '04', '11', '12', '13', '26', '28', '29'].includes(tpl.id) ||
     (idNum >= 67 && idNum <= 74)
   ) {
     return 'Process';
@@ -94,8 +93,7 @@ export function getTemplatePerspective(tpl: CanonicalTemplate): ArchitecturePers
     tpl.family === 'Understand' ||
     tpl.family === 'Infographic' ||
     tpl.family === 'Analysis & Planning' ||
-    ['78', '50', '01', '02', '05', '06', '31', '32', '33'].includes(tpl.id) ||
-    (idNum >= 52 && idNum <= 66)
+    ['78', '50', '49', '45'].includes(tpl.id)
   ) {
     return 'Conceptual';
   }
@@ -103,7 +101,7 @@ export function getTemplatePerspective(tpl: CanonicalTemplate): ArchitecturePers
     tpl.family === 'Infrastructure' ||
     tpl.family === 'Security & Governance' ||
     tpl.family === 'Delivery & Operations' ||
-    ['00', '38', '42', '43', '44', '46', '48', '15', '16', '17', '18', '19', '20', '21', '22', '27', '30', '34', '51'].includes(tpl.id)
+    ['00', '38', '42', '43', '44', '46', '48'].includes(tpl.id)
   ) {
     return 'Technical';
   }
@@ -191,7 +189,7 @@ Never use naive keyword/regex guessing. Analyze the user's architecture prompt s
 4. **Exact Modifications & Subsystems ("tailoredSpec")**:
    - "diagramTitle": A crisp, authoritative architecture title tailored to the user's prompt (max 56 chars).
    - "diagramSubtitle": Technical subtitle naming the cloud stack, models, and topology pattern.
-   - "decisionGateQuestion": A concise validation question for a diamond decision gate (max 34 chars, e.g. "Causality & Epoch Lock Valid?").
+   - "decisionGateQuestion": A concise validation question for a diamond decision gate (max 34 chars, e.g. "Policy & Safety Gate Valid?").
    - "customSubsystems": Exactly 12 domain-specific component titles (max 26 chars each) tailored specifically to the user's prompt across the 4 tiers:
      [0] Tier 1 Client/Edge Producer
      [1] Tier 1 API Gateway / Load Balancer
@@ -221,7 +219,7 @@ Return strictly valid JSON matching this structure:
   "levelReasoning": "string",
   "recommendedDirection": "LR" | "TD",
   "recommendedDomain": "enterprise" | "fintech" | "healthcare" | "biopharma" | "saas" | "retail" | "manufacturing" | "cybersecurity",
-  "recommendedBlueprintId": "string (2-digit ID like '00', '40', '24', '16', '01', '03', '13')",
+  "recommendedBlueprintId": "string (2-digit ID from the 26 production blueprints: '00', '78', '35'..'50', '67'..'74')",
   "blueprintReasoning": "string",
   "plannedModificationsSummary": ["string", "string", "string", "string"],
   "topCandidates": [
@@ -239,7 +237,7 @@ Return strictly valid JSON matching this structure:
   "perspectiveMatches": {
     "Conceptual": {
       "perspective": "Conceptual",
-      "blueprintId": "01",
+      "blueprintId": "78",
       "blueprintName": "string",
       "recommendedLevel": "L1",
       "tailoredTitle": "string",
@@ -248,7 +246,7 @@ Return strictly valid JSON matching this structure:
     },
     "Logical": {
       "perspective": "Logical",
-      "blueprintId": "00",
+      "blueprintId": "40",
       "blueprintName": "string",
       "recommendedLevel": "L3",
       "tailoredTitle": "string",
@@ -266,7 +264,7 @@ Return strictly valid JSON matching this structure:
     },
     "Process": {
       "perspective": "Process",
-      "blueprintId": "13",
+      "blueprintId": "67",
       "blueprintName": "string",
       "recommendedLevel": "L2",
       "tailoredTitle": "string",
@@ -620,14 +618,14 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
       diagramSubtitle: 'Google Cloud & Gemini Enterprise Multi-Agent & High-Assurance Topology',
       decisionGateQuestion: 'Policy & Invariant Contract Valid?',
       customSubsystems: [
-        'Capsule / Client Telemetry HUD',
+        'Enterprise Client & Edge Ingress',
         'Cloud LB & Apigee X Gateway',
-        'Cloud Armor WAF & KMS PQC',
+        'Cloud Armor WAF & KMS CMEK',
         'Gemini Enterprise Supervisor',
-        'GKE Autopilot & Workflows',
-        'Vertex AI TPU v5p Simulator',
-        'Gemini Causality & Policy Guard',
-        'Pub/Sub DLQ & Epoch Replay',
+        'GKE Autopilot & Cloud Workflows',
+        'Vertex AI Agent Engine & ADK',
+        'Model Armor & Policy Guard',
+        'Cloud Pub/Sub DLQ & Replay',
         'Memorystore Low-Latency Cache',
         'Cloud Spanner TrueTime Ledger',
         'BigQuery & Vertex Vector DB',

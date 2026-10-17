@@ -15,6 +15,9 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   }
   const isMasterOrStructured = (
     xmlInput.includes('ARCH-NASA-01') ||
+    xmlInput.includes('oracle_ebs_exadata_gcp_split_vpc_official') ||
+    xmlInput.includes('oracle_ebs_exadata_arch_center_78') ||
+    xmlInput.includes('universal_closed_loop_domain_harness') ||
     xmlInput.includes('id="upgraded-gcp-ge-multi-agent-banking-2026"') ||
     xmlInput.includes('id="whiteboard-gcp-ge-multi-agent-2026"') ||
     xmlInput.includes('id="paper-gcp-ge-multi-agent-2026"') ||
@@ -298,6 +301,10 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // resizing structured template nodes or v2 nodes without re-running ELK manufactures overlaps and container escapes)
   const isStructuredTemplateXml =
     xml.includes('PromptCanvas-LayoutEngineV2') ||
+    xml.includes('oracle_ebs_exadata_gcp_split_vpc_official') ||
+    xml.includes('oracle_ebs_exadata_arch_center_78') ||
+    xml.includes('universal_closed_loop_domain_harness') ||
+    xml.includes('ARCH-NASA-01') ||
     xml.includes('col_ingestion') ||
     xml.includes('col_processing') ||
     xml.includes('col_delivery') ||
@@ -342,7 +349,9 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
 
   // 6. RHOMBUS SHAPE DIMENSION & TEXT OVERFLOW HEALER (Fixes Rhombus Edge Overflow):
   // Auto-expand all rhombus/diamond shapes to width=340 and height=115 so multi-line API text never crops or spills over
-  xml = xml.replace(/(<mxCell[^>]*style="[^"]*rhombus[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?width=")\d+("\s+height=")\d+(")/gi, '$1340$2115"');
+  if (!isStructuredTemplateXml && !isV2LayoutEngineOutput) {
+    xml = xml.replace(/(<mxCell[^>]*style="[^"]*rhombus[^"]*"[\s\S]*?<mxGeometry\s+(?:[^>]*?\s+)?width=")\d+("\s+height=")\d+(")/gi, '$1340$2115"');
+  }
 
   // 7. EDGE LABEL MULTI-LINE SPLITTING & TEXT OVERLAP HEALING:
   // Compact multi-word edge labels so they fit perfectly inside corridors without clipping cards
@@ -365,7 +374,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     xml = xml.replace(/(<mxCell[^>]*\bedge="1"[^>]*style=")([^"]*)(")/gi, (m, p1, p2, p3) => {
       let s = p2;
       if (!s.includes('labelBackgroundColor')) {
-        s += ';labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=10padding=4;';
+        s += ';labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=10;padding=4;';
       } else {
         if (!s.includes('verticalLabelPosition')) s += '';
         if (!s.includes('labelBorderColor')) s += ';labelBorderColor=#0284C7;';

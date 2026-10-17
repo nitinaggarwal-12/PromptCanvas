@@ -80,8 +80,15 @@ const STATIC_BLOG_AND_WS_KEYS = new Set([
 export function normalizeClientManifestKey(rawKey: string, titleHint?: string): string {
   const clean = String(rawKey || 'DOC-MT-01').trim();
   const titleClean = String(titleHint || '').trim();
-  if (/nasa|multiverse|multi-universe|closed-loop\s+mission/i.test(`${clean} ${titleClean}`)) {
+  const combined = `${clean} ${titleClean}`;
+  if (/nasa|multiverse|multi-universe|closed-loop\s+mission/i.test(combined)) {
     return 'DRAFT-NASA-MULTIVERSE-V1-0-1';
+  }
+  if (/oracle|exadata|e-business\s+suite|\bebs\b/i.test(combined)) {
+    if (/#78|hub[- ]and[- ]spoke|arch_center_78|78-v1/i.test(combined)) {
+      return 'DRAFT-ORACLE-EXADATA-EBS-78-V1-0-1';
+    }
+    return 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1';
   }
   if (!clean) return 'DOC-MT-01';
   const upper = clean.toUpperCase();

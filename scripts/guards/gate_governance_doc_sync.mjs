@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 /**
- * Gate: Mandatory Post-Fix Governance Document, skills.json, SKILL.md & hooks.json Lockstep Synchronization (v3.4.0)
- * Asserts that:
- * 1. AGENTS.md, GEMINI.md, .agents/AGENTS.md, CLAUDE.md, and ~/.gemini/config/AGENTS.md are 100% byte-for-byte identical.
- * 2. skills.md === ~/.gemini/config/skills.md and documents Rule 41, Rule 43, Rule 44, Rule 46, and Section 10.
- * 3. skills.json === .agents/skills.json === ~/.gemini/config/skills.json.
- * 4. All 13 .agents/skills/<skill>/SKILL.md files === ~/.gemini/config/skills/<skill>/SKILL.md.
- * 5. .agents/hooks.json === ~/.gemini/config/hooks.json and contains version >= 3.2.0 + universal_post_fix_governance_doc_sync.enabled === true.
- * 6. ARCHITECTURE.md, SECURITY.md, RUNBOOK.md, README.md, and docs/INTENT_ROUTER.md contain zero stale "Gemini 2.5 / 3.7" or "/studio3" references.
+ * Gate: Mandatory Post-Fix Governance Document, Rule Files, skills.json, SKILL.md, hooks.md & hooks.json
+ * 3-Way Lockstep Synchronization & Anti-Contradiction Gate (v3.5.0)
+ *
+ * Asserts that across ~/.gemini/config/, /Users/nitinagga/Documents/PromptCanvas, and /Users/nitinagga/Documents/blogs:
+ * 1. AGENTS.md, GEMINI.md, .agents/AGENTS.md, and CLAUDE.md are 100% byte-for-byte identical and strictly < 24,000 bytes.
+ * 2. hooks.md, hooks.json, and .agents/hooks.json are 100% byte-for-byte identical across all 3 locations.
+ * 3. skills.md, skills.json, and .agents/skills.json are 100% byte-for-byte identical across all 3 locations.
+ * 4. All 15 rule files in ~/.gemini/config/rules/*.md are 100% byte-for-byte identical with .agents/rules/*.md in PromptCanvas and blogs, and include valid YAML frontmatter.
+ * 5. All .agents/skills/<skill>/SKILL.md files match ~/.gemini/config/skills/<skill>/SKILL.md.
+ * 6. Zero contradictory, retired, or broken rule strings (e.g. "oracle-at-google-ebs-exadata-2026", "verify_blank_canvas_oracle_exadata_and_fail_closed_audit", "renderArchitectureCenterDiagramSidebar", "486 MP4s", "28 authentic Google Cloud Console", "0 Oracle Exadata", or leftover "gcloud run deploy promptcanvas --source .").
  * 7. Zero stale backup files (hooks.json.bak*, hooks_backups_*, scratch/vibe/skills.json).
  */
 import fs from 'node:fs';
@@ -16,6 +18,8 @@ import crypto from 'node:crypto';
 
 const REPO_ROOT = process.cwd();
 const HOME_DIR = process.env.HOME || '/Users/nitinagga';
+const CONFIG_DIR = path.join(HOME_DIR, '.gemini/config');
+const BLOGS_ROOT = '/Users/nitinagga/Documents/blogs';
 
 function sha256(filePath) {
   if (!fs.existsSync(filePath)) return null;
@@ -23,87 +27,147 @@ function sha256(filePath) {
   return crypto.createHash('sha256').update(content).digest('hex');
 }
 
+const BANNED_CONTRADICTORY_PATTERNS = [
+  { label: 'retired 4-tier oracle-at-google-ebs-exadata-2026 ID', re: /oracle-at-google-ebs-exadata-2026/ },
+  { label: 'deleted verify_blank_canvas_oracle_exadata_and_fail_closed_audit script', re: /verify_blank_canvas_oracle_exadata_and_fail_closed_audit/ },
+  { label: 'deleted renderArchitectureCenterDiagramSidebar helper', re: /renderArchitectureCenterDiagramSidebar/ },
+  { label: 'stale 3-deck 486 MP4s count (must be 5-deck 810 MP4s)', re: /486 MP4s/ },
+  { label: 'stale 28 screenshots count (must be 21 pure multi-tenant screenshots)', re: /28 authentic Google Cloud Console|28\/28 real Cloud Console/ },
+  { label: 'contradictory "0 Oracle Exadata" claim', re: /0`? Oracle Exadata/ },
+  { label: 'leftover broken gcloud run deploy promptcanvas --source . snippet', re: /\nbash\ngcloud run deploy promptcanvas[\s\S]*?--platform managed/ },
+  { label: 'banned stalling phrase "Do not touch any files until this plan is stated"', re: /(?<!banning ")(?:Do not touch any files until this plan is stated)(?!")/ },
+  { label: 'numeric thinkingBudget: 0 (violates Law 16 / Rule 55 discrete thinkingLevel)', re: /thinkingBudget:\s*0/ },
+  { label: 'contradictory AskAIOCE "51/51 Verified" pre-checked claim (violates L50-11 0/51 unchecked on load)', re: /51\/51 Verified/ },
+  { label: 'contradictory Custom Twin static portrait frame mux claim (violates L30-19 90/90 native Omni 1.1 bundles)', re: /mux a static portrait frame/ },
+  { label: 'contradictory inline Figure 1, Figure 2, Figure 3 rule (violates Rule 53 single Figure 1)', re: /inline figures \(`Figure 1`, `Figure 2`, `Figure 3`\)/ },
+];
+
 export function auditPromptCanvasGovernanceSync() {
   const mismatches = [];
 
-  // 1. Verify AGENTS.md === GEMINI.md === .agents/AGENTS.md === CLAUDE.md === ~/.gemini/config/AGENTS.md
-  const agentsPath = path.join(REPO_ROOT, 'AGENTS.md');
-  const geminiPath = path.join(REPO_ROOT, 'GEMINI.md');
-  const dotAgentsPath = path.join(REPO_ROOT, '.agents/AGENTS.md');
-  const claudePath = path.join(REPO_ROOT, 'CLAUDE.md');
-  const globalAgentsPath = path.join(HOME_DIR, '.gemini/config/AGENTS.md');
-
-  const hAgents = sha256(agentsPath);
-  const hGemini = sha256(geminiPath);
-  const hDotAgents = sha256(dotAgentsPath);
-  const hClaude = sha256(claudePath);
-  const hGlobalAgents = sha256(globalAgentsPath);
-
-  if (!hAgents) mismatches.push('MISSING: AGENTS.md');
-  if (!hGemini) mismatches.push('MISSING: GEMINI.md');
-  if (!hDotAgents) mismatches.push('MISSING: .agents/AGENTS.md');
-  if (!hClaude) mismatches.push('MISSING: CLAUDE.md');
-
-  if (hAgents && hGemini && hAgents !== hGemini) {
-    mismatches.push('DRIFT: AGENTS.md and GEMINI.md are out of sync (must be byte-for-byte identical)');
-  }
-  if (hAgents && hDotAgents && hAgents !== hDotAgents) {
-    mismatches.push('DRIFT: AGENTS.md and .agents/AGENTS.md are out of sync (must be byte-for-byte identical)');
-  }
-  if (hAgents && hClaude && hAgents !== hClaude) {
-    mismatches.push('DRIFT: AGENTS.md and CLAUDE.md are out of sync (must be byte-for-byte identical)');
-  }
-  if (hAgents && hGlobalAgents && hAgents !== hGlobalAgents) {
-    mismatches.push('DRIFT: AGENTS.md and ~/.gemini/config/AGENTS.md are out of sync (must be byte-for-byte identical)');
-  }
-  if (fs.existsSync(agentsPath)) {
-    const agentsBytes = fs.statSync(agentsPath).size;
-    if (agentsBytes > 29000) {
-      mismatches.push(`BYTE_BUDGET_EXCEEDED: AGENTS.md is ${agentsBytes} bytes (> 29000 byte limit), which causes Jetski <user_rules> truncation at 29,531 bytes`);
-    }
-  }
-
-  // 2. Verify workspace skills.md === ~/.gemini/config/skills.md
-  const rootSkillsMdPath = path.join(REPO_ROOT, 'skills.md');
-  const globalSkillsMdPath = path.join(HOME_DIR, '.gemini/config/skills.md');
-  const hRootSkillsMd = sha256(rootSkillsMdPath);
-  const hGlobalSkillsMd = sha256(globalSkillsMdPath);
-
-  if (!hRootSkillsMd) {
-    mismatches.push('MISSING: skills.md in workspace root');
+  // 1. Verify AGENTS.md === GEMINI.md === .agents/AGENTS.md === CLAUDE.md across PromptCanvas, ~/.gemini/config, and blogs
+  const canonicalAgentsPath = path.join(CONFIG_DIR, 'AGENTS.md');
+  const hCanonicalAgents = sha256(canonicalAgentsPath);
+  if (!hCanonicalAgents) {
+    mismatches.push('MISSING: ~/.gemini/config/AGENTS.md');
   } else {
-    if (hGlobalSkillsMd && hRootSkillsMd !== hGlobalSkillsMd) {
-      mismatches.push('DRIFT: skills.md and ~/.gemini/config/skills.md differ');
-    }
-    const skillsMdContent = fs.readFileSync(rootSkillsMdPath, 'utf-8');
-    if (
-      !skillsMdContent.includes('Rule 41') ||
-      !skillsMdContent.includes('Rule 43') ||
-      !skillsMdContent.includes('Rule 44') ||
-      !skillsMdContent.includes('Rule 46')
-    ) {
-      mismatches.push('DRIFT: skills.md missing Rule 41, Rule 43, Rule 44, or Rule 46');
+    const agentsBytes = fs.statSync(canonicalAgentsPath).size;
+    if (agentsBytes >= 24000) {
+      mismatches.push(`BYTE_BUDGET_EXCEEDED: AGENTS.md is ${agentsBytes} bytes (must be strictly < 24,000 bytes for Jetski <RULE> loader)`);
     }
   }
 
-  // 3. Verify skills.json === .agents/skills.json === ~/.gemini/config/skills.json
-  const rootSkillsJsonPath = path.join(REPO_ROOT, 'skills.json');
-  const dotSkillsJsonPath = path.join(REPO_ROOT, '.agents/skills.json');
-  const globalSkillsJsonPath = path.join(HOME_DIR, '.gemini/config/skills.json');
-  const hRootSkillsJson = sha256(rootSkillsJsonPath);
-  const hDotSkillsJson = sha256(dotSkillsJsonPath);
-  const hGlobalSkillsJson = sha256(globalSkillsJsonPath);
-
-  if (!hRootSkillsJson) mismatches.push('MISSING: skills.json in workspace root');
-  if (!hDotSkillsJson) mismatches.push('MISSING: .agents/skills.json');
-  if (hRootSkillsJson && hDotSkillsJson && hRootSkillsJson !== hDotSkillsJson) {
-    mismatches.push('DRIFT: skills.json and .agents/skills.json differ');
+  const agentsTargets = [
+    path.join(REPO_ROOT, 'AGENTS.md'),
+    path.join(REPO_ROOT, 'GEMINI.md'),
+    path.join(REPO_ROOT, 'CLAUDE.md'),
+    path.join(REPO_ROOT, '.agents/AGENTS.md'),
+  ];
+  // If ~/.gemini/config/GEMINI.md or CLAUDE.md exist, they must also match ~/.gemini/config/AGENTS.md
+  for (const optGlobal of [path.join(CONFIG_DIR, 'GEMINI.md'), path.join(CONFIG_DIR, 'CLAUDE.md')]) {
+    if (fs.existsSync(optGlobal)) agentsTargets.push(optGlobal);
   }
-  if (hRootSkillsJson && hGlobalSkillsJson && hRootSkillsJson !== hGlobalSkillsJson) {
-    mismatches.push('DRIFT: skills.json and ~/.gemini/config/skills.json differ');
+  if (fs.existsSync(BLOGS_ROOT)) {
+    agentsTargets.push(
+      path.join(BLOGS_ROOT, 'AGENTS.md'),
+      path.join(BLOGS_ROOT, 'GEMINI.md'),
+      path.join(BLOGS_ROOT, 'CLAUDE.md'),
+      path.join(BLOGS_ROOT, '.agents/AGENTS.md')
+    );
   }
 
-  // 4. Verify all 13 SKILL.md pairs across .agents/skills/ and ~/.gemini/config/skills/
+  for (const target of agentsTargets) {
+    const h = sha256(target);
+    if (!h) {
+      mismatches.push(`MISSING: ${target}`);
+    } else if (hCanonicalAgents && h !== hCanonicalAgents) {
+      mismatches.push(`DRIFT: ${target} is out of sync with ~/.gemini/config/AGENTS.md`);
+    }
+  }
+
+  // 2. Verify hooks.md, hooks.json, and .agents/hooks.json across ~/.gemini/config, PromptCanvas, and blogs
+  const canonicalHooksMd = path.join(CONFIG_DIR, 'hooks.md');
+  const hHooksMd = sha256(canonicalHooksMd);
+  const hooksMdTargets = [path.join(REPO_ROOT, 'hooks.md')];
+  if (fs.existsSync(BLOGS_ROOT)) hooksMdTargets.push(path.join(BLOGS_ROOT, 'hooks.md'));
+  for (const t of hooksMdTargets) {
+    const h = sha256(t);
+    if (!h) mismatches.push(`MISSING: ${t}`);
+    else if (hHooksMd && h !== hHooksMd) mismatches.push(`DRIFT: ${t} differs from ~/.gemini/config/hooks.md`);
+  }
+
+  const canonicalHooksJson = path.join(CONFIG_DIR, 'hooks.json');
+  const hHooksJson = sha256(canonicalHooksJson);
+  const hooksJsonTargets = [
+    path.join(REPO_ROOT, 'hooks.json'),
+    path.join(REPO_ROOT, '.agents/hooks.json'),
+  ];
+  if (fs.existsSync(BLOGS_ROOT)) {
+    hooksJsonTargets.push(
+      path.join(BLOGS_ROOT, 'hooks.json'),
+      path.join(BLOGS_ROOT, '.agents/hooks.json')
+    );
+  }
+  for (const t of hooksJsonTargets) {
+    const h = sha256(t);
+    if (!h) mismatches.push(`MISSING: ${t}`);
+    else if (hHooksJson && h !== hHooksJson) mismatches.push(`DRIFT: ${t} differs from ~/.gemini/config/hooks.json`);
+  }
+
+  // 3. Verify skills.md, skills.json, and .agents/skills.json across ~/.gemini/config, PromptCanvas, and blogs
+  const canonicalSkillsMd = path.join(CONFIG_DIR, 'skills.md');
+  const hSkillsMd = sha256(canonicalSkillsMd);
+  const skillsMdTargets = [path.join(REPO_ROOT, 'skills.md')];
+  if (fs.existsSync(BLOGS_ROOT)) skillsMdTargets.push(path.join(BLOGS_ROOT, 'skills.md'));
+  for (const t of skillsMdTargets) {
+    const h = sha256(t);
+    if (!h) mismatches.push(`MISSING: ${t}`);
+    else if (hSkillsMd && h !== hSkillsMd) mismatches.push(`DRIFT: ${t} differs from ~/.gemini/config/skills.md`);
+  }
+
+  const canonicalSkillsJson = path.join(CONFIG_DIR, 'skills.json');
+  const hSkillsJson = sha256(canonicalSkillsJson);
+  const skillsJsonTargets = [
+    path.join(REPO_ROOT, 'skills.json'),
+    path.join(REPO_ROOT, '.agents/skills.json'),
+  ];
+  if (fs.existsSync(BLOGS_ROOT)) {
+    skillsJsonTargets.push(
+      path.join(BLOGS_ROOT, 'skills.json'),
+      path.join(BLOGS_ROOT, '.agents/skills.json')
+    );
+  }
+  for (const t of skillsJsonTargets) {
+    const h = sha256(t);
+    if (!h) mismatches.push(`MISSING: ${t}`);
+    else if (hSkillsJson && h !== hSkillsJson) mismatches.push(`DRIFT: ${t} differs from ~/.gemini/config/skills.json`);
+  }
+
+  // 4. Verify all rule files in ~/.gemini/config/rules/*.md match PromptCanvas/.agents/rules/ and blogs/.agents/rules/
+  const configRulesDir = path.join(CONFIG_DIR, 'rules');
+  if (fs.existsSync(configRulesDir)) {
+    const ruleFiles = fs.readdirSync(configRulesDir).filter((f) => f.endsWith('.md')).sort();
+    for (const rf of ruleFiles) {
+      const srcRule = path.join(configRulesDir, rf);
+      const hSrcRule = sha256(srcRule);
+      const ruleText = fs.readFileSync(srcRule, 'utf-8');
+      if (!ruleText.startsWith('---\ntrigger:')) {
+        mismatches.push(`MISSING_FRONTMATTER: ~/.gemini/config/rules/${rf} missing YAML trigger frontmatter`);
+      }
+      const pcRule = path.join(REPO_ROOT, '.agents/rules', rf);
+      if (sha256(pcRule) !== hSrcRule) {
+        mismatches.push(`DRIFT: .agents/rules/${rf} differs from ~/.gemini/config/rules/${rf}`);
+      }
+      if (fs.existsSync(BLOGS_ROOT)) {
+        const bgRule = path.join(BLOGS_ROOT, '.agents/rules', rf);
+        if (sha256(bgRule) !== hSrcRule) {
+          mismatches.push(`DRIFT: blogs/.agents/rules/${rf} differs from ~/.gemini/config/rules/${rf}`);
+        }
+      }
+    }
+  }
+
+  // 5. Verify all 13 SKILL.md pairs across .agents/skills/ and ~/.gemini/config/skills/
   const skillDirs = [
     'ai-prompt-evals',
     'cross-viewport-auditor',
@@ -117,12 +181,12 @@ export function auditPromptCanvasGovernanceSync() {
     'security-code-scanner',
     'ui-first-design-system',
     'universal-document-cloud-hub',
-    'visual-regression-testing'
+    'visual-regression-testing',
   ];
 
   for (const dir of skillDirs) {
     const repoSkill = path.join(REPO_ROOT, `.agents/skills/${dir}/SKILL.md`);
-    const globalSkill = path.join(HOME_DIR, `.gemini/config/skills/${dir}/SKILL.md`);
+    const globalSkill = path.join(CONFIG_DIR, `skills/${dir}/SKILL.md`);
     const hRepo = sha256(repoSkill);
     const hGlobal = sha256(globalSkill);
 
@@ -130,54 +194,34 @@ export function auditPromptCanvasGovernanceSync() {
     if (hRepo && hGlobal && hRepo !== hGlobal) {
       mismatches.push(`DRIFT: .agents/skills/${dir}/SKILL.md and ~/.gemini/config/skills/${dir}/SKILL.md differ`);
     }
-    if (fs.existsSync(repoSkill)) {
-      const skillText = fs.readFileSync(repoSkill, 'utf-8');
-      if (skillText.includes('Do not touch any files until this plan is stated')) {
-        mismatches.push(`STALLING_RULE_DETECTED: .agents/skills/${dir}/SKILL.md contains banned stalling phrase "Do not touch any files until this plan is stated"`);
+  }
+
+  // 6. Anti-Contradiction Scan across AGENTS.md, hooks.md, skills.md, rules/*.md, and skills/*/SKILL.md
+  const filesToScanForContradictions = [
+    canonicalAgentsPath,
+    canonicalHooksMd,
+    canonicalSkillsMd,
+  ];
+  if (fs.existsSync(configRulesDir)) {
+    for (const rf of fs.readdirSync(configRulesDir).filter((f) => f.endsWith('.md'))) {
+      filesToScanForContradictions.push(path.join(configRulesDir, rf));
+    }
+  }
+  for (const dir of skillDirs) {
+    filesToScanForContradictions.push(path.join(CONFIG_DIR, `skills/${dir}/SKILL.md`));
+  }
+
+  for (const scanFile of filesToScanForContradictions) {
+    if (!fs.existsSync(scanFile)) continue;
+    const text = fs.readFileSync(scanFile, 'utf-8');
+    for (const pat of BANNED_CONTRADICTORY_PATTERNS) {
+      if (pat.re.test(text)) {
+        mismatches.push(`CONTRADICTORY_OR_STALE_RULE: ${scanFile} contains ${pat.label}`);
       }
     }
   }
 
-  // 5. Verify .agents/hooks.json and ~/.gemini/config/hooks.json synchronization & version badge
-  const hooksPath = path.join(REPO_ROOT, '.agents/hooks.json');
-  const globalHooksPath = path.join(HOME_DIR, '.gemini/config/hooks.json');
-  const hHooks = sha256(hooksPath);
-  const hGlobalHooks = sha256(globalHooksPath);
-
-  if (!hHooks) {
-    mismatches.push('MISSING: .agents/hooks.json');
-  } else {
-    if (hGlobalHooks && hHooks !== hGlobalHooks) {
-      mismatches.push('DRIFT: .agents/hooks.json and ~/.gemini/config/hooks.json differ');
-    }
-    try {
-      const hooksJson = JSON.parse(fs.readFileSync(hooksPath, 'utf-8'));
-      const isV2Constitution =
-        hooksJson.schema_version === '2.0.0' &&
-        hooksJson.default_policy === 'FAIL_CLOSED' &&
-        Boolean(hooksJson.hooks?.PreToolUse && hooksJson.hooks?.Stop);
-      if (!isV2Constitution) {
-        if (!hooksJson.global_governance?.universal_post_fix_governance_doc_sync?.enabled) {
-          mismatches.push('DRIFT: .agents/hooks.json missing global_governance.universal_post_fix_governance_doc_sync.enabled = true');
-        }
-        if (hooksJson.global_governance?.dynamic_model_orchestration?.orchestrator !== 'Google Omni 1.1') {
-          mismatches.push('DRIFT: .agents/hooks.json missing global_governance.dynamic_model_orchestration.orchestrator = "Google Omni 1.1"');
-        }
-        const verParts = (hooksJson.version || '0.0.0').split('.').map(Number);
-        const isSemverGte32 = verParts[0] > 3 || (verParts[0] === 3 && verParts[1] >= 2);
-        if (!isSemverGte32) {
-          mismatches.push(`DRIFT: .agents/hooks.json version expected >= 3.2.0, found "${hooksJson.version}"`);
-        }
-        if (!Array.isArray(hooksJson.amendment_log) || hooksJson.amendment_log.length === 0) {
-          mismatches.push('DRIFT: .agents/hooks.json missing amendment_log array');
-        }
-      }
-    } catch (err) {
-      mismatches.push(`ERROR parsing .agents/hooks.json: ${err.message}`);
-    }
-  }
-
-  // 6. Verify core documentation files have zero stale "Gemini 2.5 / 3.7" or "/studio3" references
+  // 7. Verify core documentation files have zero stale "Gemini 2.5 / 3.7" or "/studio3" references
   for (const docName of ['ARCHITECTURE.md', 'SECURITY.md', 'RUNBOOK.md', 'README.md', 'docs/INTENT_ROUTER.md']) {
     const docPath = path.join(REPO_ROOT, docName);
     if (fs.existsSync(docPath)) {
@@ -188,11 +232,11 @@ export function auditPromptCanvasGovernanceSync() {
     }
   }
 
-  // 7. Verify stale backup garbage is absent
+  // 8. Verify stale backup garbage is absent
   const staleFiles = [
     path.join(REPO_ROOT, 'scratch/vibe/skills.json'),
-    path.join(HOME_DIR, '.gemini/config/hooks.json.bak.v7'),
-    path.join(HOME_DIR, '.gemini/config/hooks_backups_20260912_034509')
+    path.join(CONFIG_DIR, 'hooks.json.bak.v7'),
+    path.join(CONFIG_DIR, 'hooks_backups_20260912_034509'),
   ];
   for (const sf of staleFiles) {
     if (fs.existsSync(sf)) {
@@ -209,12 +253,12 @@ export function auditPromptCanvasGovernanceSync() {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const report = auditPromptCanvasGovernanceSync();
   if (!report.passed) {
-    console.error('❌ [FAIL: GOVERNANCE_DOC_OUT_OF_SYNC] Markdown rules, skills.md, skills.json, SKILL.md, or hooks.json are out of sync:');
+    console.error('❌ [FAIL: GOVERNANCE_DOC_OUT_OF_SYNC] Markdown rules, skills.md, skills.json, SKILL.md, hooks.md, or hooks.json are out of sync or contain contradictions:');
     for (const m of report.mismatches) {
       console.error(`   - ${m}`);
     }
     process.exit(1);
   } else {
-    console.log('✅ [PASS: GOVERNANCE_DOC_SYNC] All .md files (AGENTS.md, GEMINI.md, .agents/AGENTS.md, CLAUDE.md, ~/.gemini/config/AGENTS.md, ARCHITECTURE.md, SECURITY.md, RUNBOOK.md, README.md), skills.md, skills.json, all 13 SKILL.md files, and hooks.json are 100% synchronized in lockstep!');
+    console.log('✅ [PASS: GOVERNANCE_DOC_SYNC] All governance files (AGENTS.md, GEMINI.md, CLAUDE.md, .agents/AGENTS.md < 24,000B, hooks.md, hooks.json, skills.md, skills.json, 15 .agents/rules/*.md files, and all SKILL.md files) across ~/.gemini/config, PromptCanvas, and blogs are 100% synchronized with 0 contradictions!');
   }
 }

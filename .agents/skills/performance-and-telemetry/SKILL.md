@@ -150,11 +150,4 @@ gcloud run services update <service> \
   --region=us-west1 \
   --image=us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/<service>:<TAG>
 ```
-bash
-gcloud run deploy promptcanvas \
-  --source . \
-  --project ramp-portal-dev \
-  --region us-west1 \
-  --platform managed
-```
 

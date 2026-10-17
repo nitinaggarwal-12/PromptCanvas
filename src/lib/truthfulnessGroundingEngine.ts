@@ -254,6 +254,89 @@ function resolveDomainStandardsAndCompleteness(lowerPrompt: string): {
     };
   }
 
+  if (
+    lowerPrompt.includes('oracle') ||
+    lowerPrompt.includes('exadata') ||
+    lowerPrompt.includes('e-business suite') ||
+    lowerPrompt.includes('ebs') ||
+    lowerPrompt.includes('goldengate') ||
+    lowerPrompt.includes('weblogic')
+  ) {
+    return {
+      domainLabel: 'Oracle Database@Google Cloud (Exadata X10M) & E-Business Suite (EBS R12.2)',
+      standardsSummary:
+        'Oracle Database@Google Cloud Split-VPC Reference Architecture, Oracle MAA (Maximum Availability Architecture) Platinum Tier, EBS R12.2 ADOP Online Patching, <0.5ms ODB Network Partner Interconnect (Dual 100GbE), Exadata X10M RoCEv2 RDMA, Active Data Guard Far Sync, GoldenGate 23ai CDC to BigQuery Cortex, and SOX 404 / FIPS 140-3 CMEK.',
+      groundedStandards: [
+        {
+          standardId: 'Oracle Database@Google Cloud & ODB Network (<0.5ms Partner Interconnect)',
+          authority: 'Google Cloud & Oracle Joint Cloud Engineering',
+          title: 'Co-Located OCI Child Site Exadata X10M inside Google Cloud Region via Dual 100GbE Partner Interconnect',
+          mappedArchitectureTier: 'Network Interconnect (ODB Partner Interconnect <0.5ms RTT) & Exadata X10M Subsystem',
+          referenceUrl: 'https://cloud.google.com/oracle/docs/overview',
+        },
+        {
+          standardId: 'Oracle MAA Platinum Tier (RAC + Active Data Guard Far Sync)',
+          authority: 'Oracle Maximum Availability Architecture (MAA)',
+          title: 'Exadata X10M Real Application Clusters (RAC), RoCEv2 100GbE RDMA, Smart Scan & RPO=0 Data Guard Standby',
+          mappedArchitectureTier: 'Exadata X10M Compute (RAC Nodes 1 & 2) & Storage Cells + Active Data Guard Standby',
+          referenceUrl: 'https://www.oracle.com/database/technologies/high-availability/maa.html',
+        },
+        {
+          standardId: 'Oracle E-Business Suite (EBS R12.2) ADOP & Shared APPL_TOP',
+          authority: 'Oracle EBS R12.2 Reference Architecture on Compute Engine C3 & Cloud Filestore Enterprise',
+          title: 'Active-Active WebLogic 12c Forms/OAF Cluster, Parallel Concurrent Processing (PCP) & Regional HA NFSv4.1 Shared APPL_TOP',
+          mappedArchitectureTier: 'Customer Google Cloud VPC (EBS R12.2 App Tier & Cloud Filestore Enterprise)',
+          referenceUrl: 'https://cloud.google.com/architecture',
+        },
+        {
+          standardId: 'Oracle GoldenGate 23ai CDC & Google Cloud Cortex Framework',
+          authority: 'Google Cloud Data & Analytics / Vertex AI',
+          title: 'Zero-Lock Redo-Log Change Data Capture into BigQuery Cortex for Oracle EBS & Vertex AI Gemini 2.5 Agents',
+          mappedArchitectureTier: 'Private Service Connect (PSC) & BigQuery Cortex / Vertex AI Analytics Zone',
+          referenceUrl: 'https://cloud.google.com/cortex/docs/overview',
+        },
+      ],
+      completenessChecklist: [
+        {
+          subsystem: 'Zero-Trust Edge Ingress (Cloud Armor WAF, Identity-Aware Proxy IAP & Internal ALB)',
+          presentInDiagram: true,
+          mappedNodeId: 'edge_users, edge_waf_iap & gcp_ilb, c1, c2 & c7',
+          rationale: 'Secures corporate HTML5/Forms users and B2B EDI gateways entering the EBS application tier.',
+        },
+        {
+          subsystem: 'Active-Active EBS R12.2 WebLogic 12c & Parallel Concurrent Processing (PCP) on GCE C3 VMs',
+          presentInDiagram: true,
+          mappedNodeId: 'ebs_wls_1, ebs_wls_2, ebs_cm_1, ebs_cm_2, c3, c4 & c9',
+          rationale: 'Separates interactive Order-to-Cash/Procure-to-Pay JVM traffic from heavy batch concurrent requests.',
+        },
+        {
+          subsystem: 'Cloud Filestore Enterprise Shared APPL_TOP / COMMON_TOP (Regional HA NFSv4.1 for ADOP)',
+          presentInDiagram: true,
+          mappedNodeId: 'ebs_filestore & c8',
+          rationale: 'Mandatory shared filesystem across all EBS R12.2 application and concurrent nodes for ADOP online patching.',
+        },
+        {
+          subsystem: 'Sub-0.5ms ODB Network Partner Interconnect & Cloud HA Routers (Dual 100GbE VLANs)',
+          presentInDiagram: true,
+          mappedNodeId: 'odb_interconnect_band, e_sqlnet_odb, c10 & c11',
+          rationale: 'Prevents chatty EBS SQL*Net latency degradation between GCE C3 VMs and Exadata X10M RAC.',
+        },
+        {
+          subsystem: 'Oracle Exadata X10M RAC (19c/23ai CDB/PDB, RoCEv2 RDMA, Smart Scan & Active Data Guard)',
+          presentInDiagram: true,
+          mappedNodeId: 'exa_rac_1, exa_rac_2, exa_roce_switch, exa_cells, exa_dataguard, c14, c15 & c16',
+          rationale: 'Provides hardware-accelerated Oracle RAC clustering, Smart Scan offload, and RPO=0 standby resilience.',
+        },
+        {
+          subsystem: 'Oracle GoldenGate 23ai CDC to BigQuery Cortex for Oracle EBS & Vertex AI Agents',
+          presentInDiagram: true,
+          mappedNodeId: 'AI_gg, AI_bq, AI_vtx, c5, c6, c12 & c17',
+          rationale: 'Streams real-time ERP ledger and supply-chain events to BigQuery Cortex and Vertex AI without OLTP contention.',
+        },
+      ],
+    };
+  }
+
   return {
     domainLabel: 'Enterprise Cloud & Autonomous Multi-Agent Systems',
     standardsSummary:
@@ -340,17 +423,22 @@ function inspectXmlAstCompletenessAndRelevance(
 } {
   if (!xmlContent || !xmlContent.trim()) {
     return {
-      isBlankCanvas: false,
+      isBlankCanvas: true,
       isStubOrSingleBox: false,
-      componentVertexCount: 16,
-      edgeCount: 12,
-      maxTruthfulnessCeiling: 100,
-      maxGroundingCeiling: 100,
-      maxCompletenessCeiling: 100,
-      maxRelevanceCeiling: 100,
-      maxGeometryCeiling: 100,
-      verifiedChecklist: checklist,
-      failureDiagnosticSummary: null,
+      componentVertexCount: 0,
+      edgeCount: 0,
+      maxTruthfulnessCeiling: 0,
+      maxGroundingCeiling: 0,
+      maxCompletenessCeiling: 0,
+      maxRelevanceCeiling: 0,
+      maxGeometryCeiling: 0,
+      verifiedChecklist: checklist.map((item) => ({
+        ...item,
+        presentInDiagram: false,
+        rationale: `MISSING: Empty XML payload has 0 architectural components and 0 data-flow edges.`,
+      })),
+      failureDiagnosticSummary:
+        'FAIL-CLOSED AUDIT: Diagram XML is empty (0 architectural components, 0 edges). An empty canvas cannot be certified as an architecture diagram.',
     };
   }
 
@@ -428,6 +516,16 @@ function inspectXmlAstCompletenessAndRelevance(
       promptTerms: ['apigee'],
       xmlRequiredTerms: ['apigee'],
       label: 'Apigee API Management',
+    },
+    {
+      promptTerms: ['exadata'],
+      xmlRequiredTerms: ['exadata'],
+      label: 'Oracle Exadata X10M',
+    },
+    {
+      promptTerms: ['e-business suite', 'ebs r12'],
+      xmlRequiredTerms: ['weblogic', 'filestore', 'concurrent'],
+      label: 'Oracle E-Business Suite R12.2 (WebLogic, PCP & Cloud Filestore APPL_TOP)',
     },
   ];
 

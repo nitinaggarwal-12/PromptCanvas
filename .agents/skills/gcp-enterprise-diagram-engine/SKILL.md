@@ -196,17 +196,10 @@ gcloud run services update <service> \
   --region=us-west1 \
   --image=us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/<service>:<TAG>
 ```
-bash
-gcloud run deploy promptcanvas \
-  --source . \
-  --project ramp-portal-dev \
-  --region us-west1 \
-  --platform managed
-```
 
 ---
 
 ## 🏛️ 7. Mandatory Official Google Cloud Architecture Center Hub-and-Spoke Template (`#78` / `WS1`–`WS5` / `Rule 53`)
 
-In `/blogs` (`src/lib/canonical/templateOfficialGcpArchCenterHubSpoke.ts`, `src/lib/blogs/useCaseBlogEngine.ts`, `src/lib/export/editablePptxCompiler.ts`, and `src/app/blogs/page.tsx`), all 9 Canonical `BLOG_USE_CASE_PRESETS` (`primaryTemplateId: '78'`, `ingestionTemplateId: '78'`, `searchTemplateId: '78'`), all 3 interactive workflow tabs (`1️⃣ High-Level Topology (#78)`, `2️⃣ Data Ingestion / MCP Flow (#78)`, `3️⃣ Hybrid GraphRAG & Action Flow (#78)`), and all inline figures (`Figure 1`, `Figure 2`, `Figure 3`) must strictly render the **Official Google Cloud Architecture Center Hub-and-Spoke Template (`#78`)** (`#1a73e8` outer Google Cloud frame, `#aecbfa` Routing Hub, `#ceead6` Governance Hub, `#feefc3` Left Spoke, `#fad2cf` Right Spoke) with zone-matched `addCalloutText` background knockouts, vertex-connected Draw.io XML, and calibrated 6-slide Editable Diagram + Blog Content Google Slides decks (`uniformScale = Math.min(availW / effGraphW, availH / effGraphH)`, skipping `hdr_title_box` inside the diagram canvas, `renderArchitectureCenterDiagramSidebar`, `isTopFullWidthContainer`, `isSpokeOuterWrapper`, and `postProcessPptxCompactArrowsBase64`, verified via `npx tsx scripts/verify_blogs_and_gcp_workstreams.ts` and `npx tsx scripts/verify_export_slides_quality_gate.ts`). Never fall back to legacy templates (`#67`, `#68`, `#24`, `#25`, `#72`) or non-uniform `scaleX !== scaleY` PptxGenJS scaling.
+In `/blogs` (`src/lib/canonical/templateOfficialGcpArchCenterHubSpoke.ts`, `src/lib/blogs/useCaseBlogEngine.ts`, `src/lib/export/editablePptxCompiler.ts`, and `src/app/blogs/page.tsx`), all 9 Canonical `BLOG_USE_CASE_PRESETS` (`primaryTemplateId: '78'`, `ingestionTemplateId: '78'`, `searchTemplateId: '78'`), all 3 interactive workflow tabs (`1️⃣ High-Level Topology (#78)`, `2️⃣ Data Ingestion / MCP Flow (#78)`, `3️⃣ Hybrid GraphRAG & Action Flow (#78)`), and the single authoritative inline figure (`Figure 1`, `secondaryInlineDiagram: undefined`, `0` duplicate `Figure 2`) must strictly render the **Official Google Cloud Architecture Center Hub-and-Spoke Template (`#78`)** (`#1a73e8` outer Google Cloud frame, `#aecbfa` Routing Hub, `#ceead6` Governance Hub, `#feefc3` Left Spoke, `#fad2cf` Right Spoke) with zone-matched `addCalloutText` background knockouts, vertex-connected Draw.io XML, and calibrated 6-slide Single-Column White DevSite `<article>` Google Slides decks (`uniformScale = Math.min(availW / effGraphW, availH / effGraphH)`, skipping `hdr_title_box` inside the diagram canvas, `addDevSiteArticleSheet` with `0` 4-zone bento sidebars, `isTopFullWidthContainer`, `isSpokeOuterWrapper`, and `postProcessPptxCompactArrowsBase64`, verified via `npx tsx scripts/verify_blogs_and_gcp_workstreams.ts` and `npx tsx scripts/verify_export_slides_quality_gate.ts`). Never fall back to legacy templates (`#67`, `#68`, `#24`, `#25`, `#72`) or non-uniform `scaleX !== scaleY` PptxGenJS scaling.
 

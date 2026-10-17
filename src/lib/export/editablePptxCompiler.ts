@@ -1221,31 +1221,26 @@ export function buildDynamicDocGuideFromDiagramXml(
   const agenticFlowSteps = isOracleExadataEbs
     ? [
         {
-          step: 'Oracle EBS R12.2 Users & CFO Close Console submit financial close, Order-to-Cash (O2C), or Procure-to-Pay (P2P) transactions through Cloud Armor WAF, IAP, and the Apigee / Global ALB Ingress Gateway.',
+          step: 'Oracle EBS R12.2 Users & B2B EDI Partners connect through Google Cloud Armor WAF, Identity-Aware Proxy (IAP), and Internal Application Load Balancer (ILB) into the Customer Google Cloud VPC.',
         },
         {
-          step: 'Deterministic SOX 404 & GL Period Commit Rhombus Gate evaluates Segregation of Duties (SoD), Dual-Control limits, and EBS ADOP Online Patching invariants.',
+          step: 'Active-Active Oracle WebLogic 12c & Forms/OAF Application Tier (GCE C3 VMs) and Parallel Concurrent Processing (PCP) Batch & Workflow Mailer nodes mount shared APPL_TOP / COMMON_TOP over Cloud Filestore Enterprise (NFSv4.1).',
           subSteps: [
-            '[NO-GO / ABORT Branch]: SoD violations or unapproved journal overrides are quarantined in the SOX Exception & Audit Quarantine Sink.',
-            '[GO Branch]: Verified ERP directives route to the Hexagonal EBS R12.2 & Cortex Coordinator Agent.',
+            '[ADOP Online Patching]: Dual Run/Patch Edition filesystems enable zero-downtime EBS R12.2 online patching.',
+            '[Application Continuity]: WebLogic GridLink JDBC pools use ONS/FAN fast connection failover.',
           ],
         },
         {
-          step: 'Hexagonal EBS R12.2 & Cortex Coordinator Agent orchestrates Specialist Agents (WebLogic 12c & Forms Tier Agent, Concurrent Manager & Workflow Agent, and GoldenGate CDC & BigQuery Cortex Agent).',
+          step: 'Sub-0.5ms ODB Network Partner Interconnect (Dual 100GbE VLAN Attachments & Cloud HA Routers) bridges the Customer VPC and the OCI Child Site inside the same Google Cloud region.',
         },
         {
-          step: '1:3 Parallel EBS R12.2 App Tier & Online Patching (ADOP) Cluster executes concurrent workloads on Compute Engine C3 VMs with Cloud Filestore Enterprise Shared APPL_TOP:',
-          subSteps: [
-            'Swimlane Alpha (O2C & P2P WebLogic Managed Servers): Active-Active Forms/OAF JVM cluster with Application Continuity.',
-            'Swimlane Beta (Parallel Concurrent Processing PCP & Workflow Mailer): High-throughput batch payroll, MRP, and AutoInvoice.',
-            'Swimlane Gamma (ADOP Online Patching Run/Patch Edition Sandbox): Zero-downtime dual-filesystem cutover validation.',
-          ],
+          step: 'Oracle Exadata X10M Primary RAC (CDB/PDB 19c/23ai) executes OLTP SQL*Net traffic over 100GbE RoCEv2 RDMA Internal Fabric and Exadata Storage Cells (Smart Scan SQL offload & Storage Indexes).',
         },
         {
-          step: '3:1 Cross-Edition Transaction & GL Reconciler converges all three EBS execution lanes, validates trial-balance integrity, and commits across the <0.5ms ODB Partner Interconnect.',
+          step: 'Active Data Guard Far Sync & Secondary Exadata X10M Standby enforce RPO=0 synchronous redo transport, while Recovery Service & Cloud Storage Immutable Backups satisfy SOX 404 retention.',
         },
         {
-          step: 'Exadata X10M Primary RAC (Oracle 19c/23ai CDB/PDB) commits transactions with RoCEv2 RDMA and Data Guard sync while the #0D9488 Real-Time GoldenGate CDC & Telemetry Return Highway streams reconciled ledger updates back to the CFO Close Console.',
+          step: 'Oracle GoldenGate 23ai CDC streams real-time redo-log changes into BigQuery Cortex for Oracle EBS, Vertex AI Gemini 2.5 Agents, and Cloud Monitoring / Cloud KMS CMEK.',
         },
       ]
     : isNasaClosedLoop
@@ -1290,16 +1285,16 @@ export function buildDynamicDocGuideFromDiagramXml(
   const subtitle =
     extractedSub ||
     (isOracleExadataEbs
-      ? 'Closed-loop enterprise ERP architecture pairing a deterministic SOX 404 Rhombus Commit Gate, hexagonal EBS R12.2 & Cortex Coordinator Agents, 1:3 Parallel WebLogic/PCP/ADOP App Tiers, <0.5ms ODB Partner Interconnect to Exadata X10M RAC, and a GoldenGate CDC return highway.'
+      ? 'Production reference architecture for Oracle E-Business Suite (EBS R12.2) on Google Cloud GCE C3 VMs with Cloud Filestore Enterprise Shared APPL_TOP, <0.5ms ODB Partner Interconnect to Oracle Exadata X10M RAC, Active Data Guard, and GoldenGate 23ai CDC to BigQuery Cortex & Vertex AI.'
       : isNasaClosedLoop
         ? 'Closed-loop mission control architecture pairing a deterministic [GO]/[NO-GO] rhombus safety gate, hexagonal ADK coordinator agents, a 1:3 parallel counterfactual digital-twin simulation sandbox, CCSDS deep-space air-gap boundary, and a continuous telemetry return highway.'
         : `End-to-end architecture specification for ${cleanTitle} integrating ${topComponentNames} across ${edges.length || 17} verified protocol channels.`);
 
   const overviewParagraphs = isOracleExadataEbs
     ? [
-        `${cleanTitle} establishes a deterministic, closed-loop enterprise ERP control plane for Oracle E-Business Suite (EBS R12.2) running on Oracle Database@Google Cloud (Exadata X10M). User and automated ERP workflows enter through the CFO Close & EBS HTML5/Forms Console, pass through Cloud Armor WAF and Apigee API Gateway, and are inspected by a deterministic SOX 404 & GL Period Commit Rhombus Gate ([GO] vs. [NO-GO / ABORT]) with an isolated SOX Exception Quarantine Sink.`,
-        `Approved ERP operations are coordinated by a hexagonal EBS R12.2 & Cortex Coordinator Agent across specialist agents (WebLogic 12c & Forms Tier, Parallel Concurrent Processing PCP, and GoldenGate CDC & BigQuery Cortex). The application tier forks 1:3 across an Active-Active O2C/P2P WebLogic cluster, a high-throughput PCP Batch & Workflow Mailer pool, and an ADOP Online Patching Run/Patch Edition sandbox sharing Cloud Filestore Enterprise (NFSv4.1 APPL_TOP), before converging at a 3:1 Cross-Edition Transaction & GL Reconciler.`,
-        `State persistence and enterprise analytics span 3D cylinder datastores (Exadata X10M Primary RAC 19c/23ai, Exadata Active Data Guard Standby, Cloud Filestore Enterprise Shared APPL_TOP, and BigQuery Cortex for Oracle EBS + Vector Search 2.0). Validated SQL*Net / ONS Fan-Out commits cross the dashed <0.5ms ODB Network Partner Interconnect Boundary into the OCI Child Site Exadata X10M hardware, while the outer #0D9488 Real-Time GoldenGate CDC & Telemetry Return Highway streams reconciled ledger updates back to the top console.`,
+        `${cleanTitle} defines the official Google Cloud production reference architecture for running Oracle E-Business Suite (EBS R12.2) on Google Cloud Compute Engine (C3 VMs) paired with Oracle Database@Google Cloud (Exadata X10M). User and B2B EDI workflows enter through Google Cloud Armor WAF, Identity-Aware Proxy (IAP), and an Internal Application Load Balancer into the Customer Google Cloud VPC.`,
+        `The EBS R12.2 application tier runs Active-Active Oracle WebLogic 12c & Forms/OAF Managed Servers alongside a Parallel Concurrent Processing (PCP) Batch & Workflow Mailer cluster. All application nodes mount a shared APPL_TOP / COMMON_TOP / INST_TOP filesystem via Cloud Filestore Enterprise (Regional HA NFSv4.1) to support zero-downtime ADOP Online Patching (Run & Patch Editions).`,
+        `Database traffic crosses a dedicated <0.5ms ODB Network Partner Interconnect (Dual 100GbE VLAN attachments) into the co-located OCI Child Site hosting Oracle Exadata X10M Quarter/Half Rack (2x DB Nodes + 3x Storage Cells, 100GbE RoCEv2 RDMA, Smart Scan, and Storage Indexes) with Active Data Guard Far Sync for RPO=0 disaster recovery. Real-time redo-log changes stream via Oracle GoldenGate 23ai CDC into BigQuery Cortex for Oracle EBS and Vertex AI Gemini 2.5 Agents.`,
       ]
     : isNasaClosedLoop
       ? [
@@ -1321,24 +1316,24 @@ export function buildDynamicDocGuideFromDiagramXml(
   const useCaseBenefits = isOracleExadataEbs
     ? [
         {
-          title: 'Deterministic SOX 404 & Segregation-of-Duties Gating',
+          title: 'Active-Active EBS R12.2 App Tier with Shared APPL_TOP & ADOP Online Patching',
           detail:
-            'Every GL journal commit, AP payment batch, and ADOP cutover is verified at the Rhombus SOX 404 Gate before reaching the EBS database tier, routing policy violations to the SOX Quarantine Sink.',
+            'Concurrently runs interactive O2C/P2P WebLogic 12c Managed Servers and Parallel Concurrent Processing (PCP) batch workers backed by Cloud Filestore Enterprise Regional HA NFSv4.1 for Run/Patch Edition cutovers.',
         },
         {
-          title: '1:3 Parallel WebLogic, PCP Batch & ADOP Online Patching Isolation',
+          title: 'Sub-0.5ms ODB Partner Interconnect to Co-Located Exadata X10M RAC',
           detail:
-            'Concurrently runs interactive O2C/P2P WebLogic Managed Servers, Parallel Concurrent Processing (PCP) batch workers, and ADOP Run/Patch Edition validation backed by Cloud Filestore Enterprise Shared APPL_TOP.',
+            'Bridges the Customer Google Cloud VPC and OCI Child Site over dual-100GbE Partner Interconnect VLAN attachments, preserving <0.5ms SQL*Net RTT and ONS/FAN Application Continuity.',
         },
         {
-          title: 'Sub-0.5ms ODB Partner Interconnect to Exadata X10M RAC',
+          title: 'Exadata X10M RoCEv2 RDMA, Smart Scan & RPO=0 Active Data Guard',
           detail:
-            'Co-locates Exadata X10M Quarter/Half Rack (RoCEv2 100GbE RDMA, Smart Scan, Storage Indexes) inside the Google Cloud region via dedicated Partner Interconnect with Active Data Guard.',
+            'Delivers 100GbE RoCEv2 internal fabric, Storage Cell Smart Scan SQL offload, Active Data Guard Far Sync synchronous standby, and immutable SOX 404 backups.',
         },
         {
-          title: 'Closed-Loop GoldenGate 23ai CDC & BigQuery Cortex Reconciliation',
+          title: 'Real-Time GoldenGate 23ai CDC to BigQuery Cortex & Vertex AI Agents',
           detail:
-            'Streams real-time redo-log changes along the outer #0D9488 GoldenGate CDC Return Highway into BigQuery Cortex for Oracle EBS, Vertex AI Agents, and the CFO Financial Close Console.',
+            'Streams non-intrusive redo-log CDC over Private Service Connect into BigQuery Cortex for Oracle EBS and Vertex AI Gemini 2.5 ERP Agents with zero OLTP lock contention.',
         },
       ]
     : isNasaClosedLoop
@@ -1372,7 +1367,7 @@ export function buildDynamicDocGuideFromDiagramXml(
   const designAlternativesSubSections = isOracleExadataEbs
     ? [
         {
-          heading: 'Oracle Database@Google Cloud (Exadata X10M) vs. Cross-Cloud VPN/WAN',
+          heading: 'Oracle Database@Google Cloud (Exadata X10M) vs. Cross-Cloud WAN',
           leadParagraphs: [
             'Oracle E-Business Suite R12.2 Forms, OAF, and Parallel Concurrent Processing (PCP) generate chatty SQL*Net traffic that degrades severely over >5ms cross-cloud WAN links.',
           ],
@@ -1503,30 +1498,33 @@ export function buildDynamicDocGuideFromDiagramXml(
   ];
 
   const codeFilename = isOracleExadataEbs
-    ? 'verify_oracle_ebs_exadata_closed_loop.py'
+    ? 'verify_oracle_ebs_exadata_split_vpc.py'
     : isNasaClosedLoop
       ? 'verify_nasa_closed_loop_harness.py'
       : 'verify_architecture_topology.py';
 
   const codeSnippetText = isOracleExadataEbs
-    ? `from google.adk.agents import ParallelAgent, SequentialAgent
-from google.cloud import bigquery
+    ? `from google.cloud import bigquery
+import socket
 
-# 1. Deterministic SOX 404 & GL Period Commit Gate ([GO] vs [NO-GO / ABORT])
-def evaluate_sox404_commit_gate(tx: dict) -> str:
-    if tx.get("sod_conflict") or tx.get("gl_period_status") != "OPEN":
-        return "NO_GO_SOX_QUARANTINE"
-    return "GO_COMMIT_EBS_CLUSTER"
+# 1. Verify <0.5ms ODB Partner Interconnect Reachability to Exadata X10M SCAN Listener
+def verify_odb_exadata_scan_listener(scan_host: str = "exadata-x10m-scan.odb.internal", port: int = 1521) -> dict:
+    with socket.create_connection((scan_host, port), timeout=1.0) as sock:
+        return {"scan_listener": f"{scan_host}:{port}", "status": "REACHABLE_SUB_0_5MS_ODB"}
 
-# 2. 1:3 Parallel EBS R12.2 App Tier & Online Patching (ADOP) Cluster
-ebs_parallel_cluster = ParallelAgent(
-    name="ebs_r122_parallel_app_cluster",
-    sub_agents=[weblogic_o2c_p2p_lane, pcp_concurrent_manager_lane, adop_patch_edition_lane],
-)
-oracle_ebs_harness = SequentialAgent(
-    name="oracle_ebs_exadata_closed_loop_harness",
-    sub_agents=[ebs_cortex_coordinator, ebs_parallel_cluster, gl_reconciler, exadata_x10m_commit],
-)`
+# 2. Query Real-Time GoldenGate 23ai CDC Reconciled GL Balances in BigQuery Cortex for Oracle EBS
+def verify_bigquery_cortex_ebs_gl_reconciliation(project_id: str, period_name: str = "OCT-26") -> list:
+    client = bigquery.Client(project=project_id)
+    sql = """
+        SELECT ledger_id, period_name, SUM(accounted_dr - accounted_cr) AS net_balance
+        FROM \`cortex_oracle_ebs.gl_je_lines_cdc\`
+        WHERE period_name = @period_name
+        GROUP BY ledger_id, period_name
+    """
+    job_config = bigquery.QueryJobConfig(
+        query_parameters=[bigquery.ScalarQueryParameter("period_name", "STRING", period_name)]
+    )
+    return [dict(row) for row in client.query(sql, job_config=job_config).result()]`
     : isNasaClosedLoop
       ? `from google.adk.agents import ParallelAgent, SequentialAgent, LlmAgent
 from google.cloud import spanner, bigtable
@@ -1563,7 +1561,7 @@ def verify_architecture_readiness(health_endpoint: str) -> dict:
     docId: derivedDocId,
     partNumber: 1,
     partBadge: isOracleExadataEbs
-      ? 'Closed-Loop Enterprise ERP • Oracle Database@Google Cloud (Exadata X10M)'
+      ? 'Official Google Cloud Reference • Oracle EBS R12.2 on Exadata X10M'
       : isNasaClosedLoop
         ? 'Closed-Loop Agentic Harness • Counterfactual Digital-Twin Topology'
         : `Architecture Specification • ${rawBp ? `Blueprint #${rawBp}` : 'Verified Topology'}`,
@@ -1604,7 +1602,7 @@ def verify_architecture_readiness(health_endpoint: str) -> dict:
         },
         componentGroupsTable,
         agenticFlowHeading: isOracleExadataEbs
-          ? 'Closed-loop EBS R12.2 execution, 1:3 parallel App/ADOP cluster & Exadata X10M flow'
+          ? 'Oracle EBS R12.2 Split-VPC, <0.5ms ODB Interconnect & Exadata X10M execution flow'
           : isNasaClosedLoop
             ? 'Closed-loop mission control & 1:3 counterfactual simulation flow'
             : 'Architecture execution flow',

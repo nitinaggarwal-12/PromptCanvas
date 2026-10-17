@@ -177,7 +177,7 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
     return generateVerticalStratumCrossSectionXml(prompt, safeTitle);
   }
 
-  // Helper to build Template #40 mutations from either Gemini API's template40Adaptation or domain fallback
+  // Helper to build Template #40 mutations from either Gemini API's template40Adaptation or enterprise defaults
   const buildTemplate40Mutations = (): Array<[RegExp, string]> => {
     const t40 = options?.geminiDecision?.tailoredSpec?.template40Adaptation;
     if (t40 && Array.isArray(t40.personas) && t40.personas.length >= 5 && Array.isArray(t40.agents) && t40.agents.length >= 7) {
@@ -187,15 +187,15 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
         [/Developers/gi, escHtml(truncateAtWord(t40.personas[2], 18))],
         [/Operations/gi, escHtml(truncateAtWord(t40.personas[3], 18))],
         [/External Partners/gi, escHtml(truncateAtWord(t40.personas[4], 18))],
-        [/Web App/gi, escHtml(truncateAtWord(t40.channels?.[0] || 'Capsule HUD', 18))],
-        [/Mobile App/gi, escHtml(truncateAtWord(t40.channels?.[1] || 'Mobile Cockpit', 18))],
-        [/Chat \/ Messaging/gi, escHtml(truncateAtWord(t40.channels?.[2] || 'Quantum Comms', 18))],
-        [/API \/ SDK/gi, escHtml(truncateAtWord(t40.channels?.[3] || 'TrueTime SDK', 18))],
-        [/Contact Center/gi, escHtml(truncateAtWord(t40.channels?.[4] || 'Mission Control', 18))],
-        [/Enterprise Copilots \/&lt;br\/&gt;Chat UI \/ Portal/gi, `Gemini Enterprise \/&lt;br\/&gt;${escHtml(truncateAtWord(t40.copilotName || 'Chronos Copilot', 26))}`],
+        [/Web App/gi, escHtml(truncateAtWord(t40.channels?.[0] || 'Enterprise Web App', 18))],
+        [/Mobile App/gi, escHtml(truncateAtWord(t40.channels?.[1] || 'Mobile Portal', 18))],
+        [/Chat \/ Messaging/gi, escHtml(truncateAtWord(t40.channels?.[2] || 'Google Chat / Slack', 18))],
+        [/API \/ SDK/gi, escHtml(truncateAtWord(t40.channels?.[3] || 'REST / gRPC SDK', 18))],
+        [/Contact Center/gi, escHtml(truncateAtWord(t40.channels?.[4] || 'CCAI Hub', 18))],
+        [/Enterprise Copilots \/&lt;br\/&gt;Chat UI \/ Portal/gi, `Gemini Enterprise \/&lt;br\/&gt;${escHtml(truncateAtWord(t40.copilotName || 'Workspace Copilot', 26))}`],
         [/Hello! How can I help you\?/gi, escHtml(truncateAtWord(t40.copilotStatus || 'Target State: Verified & Locked', 32))],
         [/Supervisor \/ Orchestrator Agent/gi, escHtml(truncateAtWord(t40.supervisorTitle || 'Gemini Enterprise Multi-Agent Supervisor', 64))],
-        [/Agent Router \/ Planner \/ Task Decomposer/gi, escHtml(truncateAtWord(t40.supervisorSubtitle || 'Vertex AI Agent Builder • Task Planner & Decomposer', 74))],
+        [/Agent Router \/ Planner \/ Task Decomposer/gi, escHtml(truncateAtWord(t40.supervisorSubtitle || 'Vertex AI Agent Engine • Task Planner & Decomposer', 74))],
         [/Research Agent/gi, escHtml(truncateAtWord(t40.agents[0].name, 20))],
         [/Web research, market intel, competitors/gi, escHtml(truncateAtWord(t40.agents[0].role, 46))],
         [/Analytics Agent/gi, escHtml(truncateAtWord(t40.agents[1].name, 20))],
@@ -210,57 +210,15 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
         [/Code gen, review, refactor, debug/gi, escHtml(truncateAtWord(t40.agents[5].role, 46))],
         [/Compliance Agent/gi, escHtml(truncateAtWord(t40.agents[6].name, 20))],
         [/Policy check, PII, regulatory compliance/gi, escHtml(truncateAtWord(t40.agents[6].role, 46))],
-        [/1\.5 Pro \/ 1\.5 Flash/gi, escHtml(truncateAtWord(t40.models?.primaryPro || 'Enterprise 3.1 Pro', 22))],
-        [/1\.5 Pro \(Vision\)/gi, escHtml(truncateAtWord(t40.models?.visionModel || 'Spacetime Vision', 22))],
-        [/Gemma/gi, escHtml(truncateAtWord(t40.models?.specializedModel || 'TPU v5p Sim', 18))],
-        [/\(7B \/ 28B\)/gi, escHtml(truncateAtWord(t40.models?.specializedSub || '(Quantum Flux)', 18))],
-        [/Customer CRM/gi, escHtml(truncateAtWord(t40.enterpriseSystems?.[0] || 'Capsule Sensors', 18))],
-        [/Core ERP/gi, escHtml(truncateAtWord(t40.enterpriseSystems?.[1] || 'Flux Reactor PLC', 18))],
-        [/ITSM Platform/gi, escHtml(truncateAtWord(t40.enterpriseSystems?.[2] || 'Beacon Network', 18))],
-        [/HCM \/ HRIS/gi, escHtml(truncateAtWord(t40.enterpriseSystems?.[3] || 'Bio-Stasis Pod', 18))],
-        [/Spanner/gi, escHtml(truncateAtWord(t40.primaryDatabase || 'Spanner TrueTime', 20))],
-      ];
-    }
-    const isTimeMachinePrompt = lower.includes('time machine') || lower.includes('time travel') || lower.includes('chronos') || lower.includes('temporal capsule');
-    if (isTimeMachinePrompt) {
-      return [
-        [/Business Users/gi, 'Chrononauts'],
-        [/Analysts/gi, 'Physicists'],
-        [/Developers/gi, 'Chronos Eng'],
-        [/Operations/gi, 'Flight Ops'],
-        [/External Partners/gi, 'Epoch Beacons'],
-        [/Web App/gi, 'Capsule HUD'],
-        [/Mobile App/gi, 'Chronos Suit'],
-        [/Chat \/ Messaging/gi, 'Quantum Comms'],
-        [/API \/ SDK/gi, 'TrueTime SDK'],
-        [/Contact Center/gi, 'Mission Control'],
-        [/Enterprise Copilots \/&lt;br\/&gt;Chat UI \/ Portal/gi, 'Gemini Enterprise \/&lt;br\/&gt;Chronos Capsule Copilot'],
-        [/Hello! How can I help you\?/gi, 'Target Epoch: 2150 CE Locked'],
-        [/Supervisor \/ Orchestrator Agent/gi, 'Gemini Enterprise Chronos Supervisor &amp; Temporal Trajectory Orchestrator'],
-        [/Agent Router \/ Planner \/ Task Decomposer/gi, 'Vertex AI Agent Builder • Closed-Timelike-Curve (CTC) Planner &amp; Epoch Decomposer'],
-        [/Research Agent/gi, 'Epoch Intel Agent'],
-        [/Web research, market intel, competitors/gi, 'Historical era, cultural &amp; linguistic grounding'],
-        [/Analytics Agent/gi, 'Relativity Agent'],
-        [/Data analysis, BI, insight generation/gi, 'Spacetime ephemeris, gravity well &amp; drift calc'],
-        [/Workflow Agent/gi, 'Jump Seq Agent'],
-        [/Process automation, orchestration/gi, 'Flux coil charge sequence &amp; jump orchestration'],
-        [/Support Agent/gi, 'Bio-Stasis Agent'],
-        [/Customer support, Q&amp;amp;A, case mgmt/gi, 'Chrononaut vitals, radiation &amp; stasis telemetry'],
-        [/Retrieval Agent/gi, 'Temporal RAG Agent'],
-        [/Semantic search, RAG, context retrieval/gi, 'Multi-millennia ScaNN vector &amp; era retrieval'],
-        [/Code Agent/gi, 'CTC Solver Agent'],
-        [/Code gen, review, refactor, debug/gi, 'Closed-timelike-curve tensor &amp; jump solver'],
-        [/Compliance Agent/gi, 'Paradox Guard'],
-        [/Policy check, PII, regulatory compliance/gi, 'Grandfather-paradox &amp; causality invariant check'],
-        [/1\.5 Pro \/ 1\.5 Flash/gi, 'Enterprise 3.1 Pro'],
-        [/1\.5 Pro \(Vision\)/gi, 'Spacetime Vision'],
-        [/Gemma/gi, 'TPU v5p Sim'],
-        [/\(7B \/ 28B\)/gi, '(Quantum Flux)'],
-        [/Customer CRM/gi, 'Capsule Sensors'],
-        [/Core ERP/gi, 'Flux Reactor PLC'],
-        [/ITSM Platform/gi, 'Beacon Network'],
-        [/HCM \/ HRIS/gi, 'Bio-Stasis Pod'],
-        [/Spanner/gi, 'Spanner TrueTime'],
+        [/1\.5 Pro \/ 1\.5 Flash/gi, escHtml(truncateAtWord(t40.models?.primaryPro || 'Gemini 3.1 Pro', 22))],
+        [/1\.5 Pro \(Vision\)/gi, escHtml(truncateAtWord(t40.models?.visionModel || 'Gemini 3.8 Flash', 22))],
+        [/Gemma/gi, escHtml(truncateAtWord(t40.models?.specializedModel || 'Gemma 3 27B', 18))],
+        [/\(7B \/ 28B\)/gi, escHtml(truncateAtWord(t40.models?.specializedSub || '(Vertex TPU v5p)', 18))],
+        [/Customer CRM/gi, escHtml(truncateAtWord(t40.enterpriseSystems?.[0] || 'Salesforce CRM', 18))],
+        [/Core ERP/gi, escHtml(truncateAtWord(t40.enterpriseSystems?.[1] || 'SAP / Oracle ERP', 18))],
+        [/ITSM Platform/gi, escHtml(truncateAtWord(t40.enterpriseSystems?.[2] || 'ServiceNow ITSM', 18))],
+        [/HCM \/ HRIS/gi, escHtml(truncateAtWord(t40.enterpriseSystems?.[3] || 'Workday HCM', 18))],
+        [/Spanner/gi, escHtml(truncateAtWord(t40.primaryDatabase || 'Cloud Spanner', 20))],
       ];
     }
     return [
@@ -272,6 +230,16 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
   // 1. If an explicit Canonical Blueprint ID ("00".."78") was selected by Gemini API or User Dropdown:
   if (explicitBpId && explicitBpId !== 'custom' && explicitBpId !== 'process_flow') {
     const paddedId = explicitBpId.padStart(2, '0');
+    const isOraclePrompt =
+      lower.includes('oracle') ||
+      lower.includes('exadata') ||
+      lower.includes('ebusiness') ||
+      lower.includes('e-business') ||
+      /\bebs\b/.test(lower);
+
+    if (paddedId === '78' && isOraclePrompt) {
+      return buildOfficialOracleEbsExadataArchCenter78Xml('light');
+    }
     if (paddedId === '00') {
       if (options?.perspective === 'Logical') {
         return generateLogicalGcpAgentArchitectureXml({
@@ -333,272 +301,21 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
           [/Core ERP/gi, escHtml(truncateAtWord(subs[4] || 'Core Orchestrator', 22))],
           [/Cloud Spanner/gi, escHtml(truncateAtWord(subs[9] || 'Cloud Spanner Ledger', 22))],
         ];
+      } else {
+        return synthesizeZeroTemplateCustomArchitectureXml(
+          prompt,
+          safeTitle,
+          domain,
+          options?.geminiDecision?.tailoredSpec?.customSubsystems,
+          options?.geminiDecision?.tailoredSpec?.decisionGateQuestion,
+          levelBadge,
+          perspBadge
+        );
       }
     }
   } else {
     // When no explicit canonical blueprint template (#00..#78) is selected, always default
-    // to the NASA Closed-Loop & Parallel Multi-Universe Digital-Twin Agentic Harness generator.
-    return synthesizeZeroTemplateCustomArchitectureXml(
-      prompt,
-      safeTitle,
-      domain,
-      options?.geminiDecision?.tailoredSpec?.customSubsystems,
-      options?.geminiDecision?.tailoredSpec?.decisionGateQuestion,
-      levelBadge,
-      perspBadge
-    );
-  }
-
-  const isAwsBedrockPrompt =
-    !baseXml &&
-    (lower.includes('amazon bedrock') ||
-      lower.includes('aws bedrock') ||
-      lower.includes('sagemaker') ||
-      (lower.includes('bedrock') && !lower.includes('foundation bedrock') && !lower.includes('infrastructure bedrock')) ||
-      (lower.includes('aws') && !lower.includes('to gcp') && !lower.includes('alloydb') && !lower.includes('decompile')));
-
-  const matchesSpecializedTemplateBranch =
-    lower.includes('sap') ||
-    lower.includes('s/4hana') ||
-    lower.includes('opc-ua') ||
-    lower.includes('manufacturing') ||
-    lower.includes('supply chain') ||
-    lower.includes('route53') ||
-    lower.includes('eks') ||
-    lower.includes('aurora') ||
-    lower.includes('alloydb') ||
-    lower.includes('decompile') ||
-    lower.includes('active-active') ||
-    lower.includes('disaster recovery') ||
-    lower.includes('multi-region dr') ||
-    lower.includes('chaos') ||
-    lower.includes('europe-west1') ||
-    lower.includes('finops') ||
-    lower.includes('carbon') ||
-    lower.includes('kueue') ||
-    lower.includes('spot vm') ||
-    lower.includes('gpu scheduler') ||
-    lower.includes('streaming') ||
-    lower.includes('dead-letter') ||
-    lower.includes('dlq') ||
-    lower.includes('confluent') ||
-    lower.includes('iceberg') ||
-    lower.includes('landing zone') ||
-    lower.includes('interconnect') ||
-    lower.includes('shared vpc') ||
-    lower.includes('bfd') ||
-    lower.includes('secops') ||
-    lower.includes('chronicle') ||
-    lower.includes('soar') ||
-    lower.includes('siem') ||
-    lower.includes('beyondcorp') ||
-    lower.includes('hl7') ||
-    lower.includes('fhir') ||
-    lower.includes('dicom') ||
-    lower.includes('omop') ||
-    lower.includes('healthcare') ||
-    lower.includes('clinical') ||
-    (lower.includes('iso-20022') && (lower.includes('payment') || lower.includes('fraud'))) ||
-    lower.includes('time machine') ||
-    lower.includes('time travel') ||
-    lower.includes('temporal capsule') ||
-    lower.includes('chronos') ||
-    (lower.includes('rag') && (lower.includes('scann') || lower.includes('vector mesh') || lower.includes('knowledge intelligence')));
-
-  const isGcpNativeTechnicalPrompt =
-    !baseXml &&
-    !isAwsBedrockPrompt &&
-    !matchesSpecializedTemplateBranch &&
-    (lower.includes('gcp native') ||
-      lower.includes('native technical') ||
-      lower.includes('gemini enterprise') ||
-      lower.includes('multi-agent') ||
-      lower.includes('multiagent') ||
-      lower.includes('google adk') ||
-      lower.includes('adk') ||
-      lower.includes('a2a') ||
-      lower.includes('banking') ||
-      lower.includes('coordinator agent') ||
-      lower.includes('model armor'));
-
-  if (baseXml) {
-    // Already resolved via explicit blueprint selection or Gemini decision above
-  } else if (isGcpNativeTechnicalPrompt) {
-    return generateUpgradedGcpGeBankingArchitectureXml({
-      prompt,
-      projectTitle: safeTitle,
-      domain,
-    });
-  } else if (isAwsBedrockPrompt) {
-    // Saved Template 41 adapted for AWS Cloud Reference Architecture v2.0 (Amazon Bedrock + Amazon SageMaker + Redshift + Gemini 2.5 Pro)
-    baseXml = generateTemplate41EnterpriseRagPlatformXml('saas', 'light');
-    templateRefLabel = 'Modified Saved Template #41 • AWS Well-Architected Cloud Reference Architecture v2.0 (Amazon Bedrock, SageMaker, Redshift & Gemini 2.5 Pro)';
-    domainMutations = [
-      [/Google Cloud/gi, 'AWS Cloud'],
-      [/41\. Enterprise RAG &amp; Knowledge Intelligence Platform/gi, 'AWS CLOUD ARCHITECTURE ON AMAZON BEDROCK, SAGEMAKER, REDSHIFT &amp; GEMINI 2.5 PRO'],
-      [/ENTERPRISE RAG &amp; KNOWLEDGE INTELLIGENCE PLATFORM/gi, 'AWS CLOUD ARCHITECTURE ON AMAZON BEDROCK, SAGEMAKER, REDSHIFT &amp; GEMINI 2.5 PRO'],
-      [/Cloud Armor/gi, 'AWS WAF Shield'],
-      [/Query Rewriting \/&lt;br\/&gt;Decomposition/gi, 'Bedrock Agents /&lt;br/&gt;Orchestrator'],
-      [/Model Gateway \/&lt;br\/&gt;LLM Router/gi, 'Amazon Bedrock&lt;br/&gt;FM Gateway'],
-      [/Gemini 1\.5&lt;br\/&gt;Pro/gi, 'Gemini 2.5 Pro&lt;br/&gt;Sonnet'],
-      [/Gemini 1\.5&lt;br\/&gt;Flash/gi, 'SageMaker&lt;br/&gt;Endpoints'],
-      [/Embedding&lt;br\/&gt;Models/gi, 'Bedrock Titan&lt;br/&gt;Embeddings'],
-      [/Re-ranker \/&lt;br\/&gt;Relevance Layer/gi, 'SageMaker&lt;br/&gt;Reranker'],
-      [/Guardrails &amp; Safety/gi, 'Amazon Bedrock Guardrails &amp; Safety'],
-      [/\(Vertex AI Matching Engine\)/gi, '(OpenSearch Serverless Vector)'],
-      [/\(Cloud Search \/ Apigee Search\)/gi, '(Amazon Bedrock Knowledge Base)'],
-      [/\(Neo4j \/ AlloyDB Graph\)/gi, '(Amazon Neptune GraphRAG)'],
-      [/\(Data Catalog\)/gi, '(AWS Glue Catalog)'],
-      [/\(Cloud Memorystore\)/gi, '(Amazon ElastiCache)'],
-      [/\(Cloud Workflows\)/gi, '(AWS Step Functions)'],
-      [/\(Vertex AI\)/gi, '(Amazon SageMaker)'],
-      [/Google Drive/gi, 'Amazon WorkDocs'],
-      [/BigQuery/gi, 'Amazon Redshift'],
-      [/Cloud SQL/gi, 'Amazon RDS'],
-      [/AlloyDB/gi, 'Aurora pgvector'],
-      [/Spanner/gi, 'DynamoDB'],
-      [/Bigtable/gi, 'Neptune DB'],
-      [/Cloud Storage/gi, 'Amazon S3 Lake'],
-      [/Pub\/Sub/gi, 'Amazon Kinesis'],
-      [/Dataflow/gi, 'AWS Glue Spark'],
-      [/Dataplex/gi, 'Lake Formation'],
-      [/Data Catalog/gi, 'Glue Catalog'],
-      [/Private Service&lt;br\/&gt;Connect/gi, 'AWS PrivateLink&lt;br/&gt;Endpoints'],
-      [/Cloud NAT/gi, 'AWS NAT GW'],
-      [/CMEK \/ KMS/gi, 'AWS KMS HSM'],
-      [/Secret Manager/gi, 'Secrets Manager'],
-      [/Identity-Aware Proxy/gi, 'AWS IAM Identity Ctr'],
-      [/Logs, Metrics, Traces/gi, 'CloudWatch, X-Ray &amp; CloudTrail'],
-      [/Model Registry \/ Rollout/gi, 'SageMaker Model Registry'],
-      [/\(GKE \/ Cloud Run \/ Cloud Functions\)/gi, '(Amazon EKS / ECS Fargate / AWS Lambda)'],
-      [/\(Artifact Registry \/ Secret Manager \/ Config\)/gi, '(Amazon ECR / Secrets Manager / AppConfig)']
-    ];
-  } else if (lower.includes('sap') || lower.includes('s/4hana') || lower.includes('opc-ua') || lower.includes('manufacturing') || lower.includes('supply chain')) {
-    // Saved Template 42: Modern Data Lakehouse, SAP Cortex & IoT Digital Twin
-    baseXml = generateTemplate42ModernDataLakehouseDataMeshXml('manufacturing', 'light');
-    templateRefLabel = 'Modified Saved Template #42 • Google Cloud SAP S/4HANA Cortex & IoT Digital Twin Reference Architecture';
-    domainMutations = [
-      [/MODERN DATA LAKEHOUSE &amp; DATA MESH/gi, 'GLOBAL SAP S/4HANA RISE &amp; IOT SUPPLY CHAIN DIGITAL TWIN'],
-      [/Transactional DBs/gi, 'SAP S/4HANA RISE (MM/PP/SD)'],
-      [/ERP \/ CRM \/ SaaS/gi, 'Apigee B2B EDI (856/850) Supplier APIs'],
-      [/IoT \/ Edge Streams/gi, 'Factory Floor OPC-UA &amp; MQTT Edge Gateways'],
-      [/CDC \/ Datastream/gi, 'SAP SLT &amp; Manufacturing Data Engine (MDE)'],
-      [/Pub\/Sub Ingestion/gi, 'Cloud Pub/Sub Telemetry &amp; Edge Broker'],
-      [/Dataflow Streaming/gi, 'MDE ISA-95 Harmonizer &amp; Beam Pipeline'],
-      [/BigQuery Lakehouse/gi, 'BigQuery Manufacturing Data Engine (MDE) &amp; Cortex'],
-      [/Vertex AI Workbench/gi, 'Vertex AI Demand Forecasting (TimesFM)']
-    ];
-  } else if (lower.includes('aws') || lower.includes('route53') || lower.includes('eks') || lower.includes('aurora') || lower.includes('alloydb') || lower.includes('decompile')) {
-    // Saved Template 46: Enterprise Kubernetes & Cloud-Native Modernization Platform
-    baseXml = generateTemplate46EnterpriseKubernetesPlatformEngineeringXml('fintech', 'light');
-    templateRefLabel = 'Modified Saved Template #46 • Google Cloud AWS-to-GCP Cloud-Native Modernization Reference Architecture';
-    domainMutations = [
-      [/ENTERPRISE KUBERNETES &amp; PLATFORM ENGINEERING/gi, 'AWS (ROUTE53 / ALB / EKS / MSK / AURORA / S3) TO GCP CLOUD-NATIVE BLUEPRINT'],
-      [/Global Load Balancer/gi, 'Route53/ALB → Cloud DNS, Cloud Armor &amp; Global LB'],
-      [/GKE Fleet \/ Clusters/gi, 'AWS EKS → GKE Autopilot + Workload Identity'],
-      [/Service Mesh \(ASM\)/gi, 'AWS MSK Kafka → Cloud Pub/Sub &amp; Service Mesh'],
-      [/Cloud SQL \/ Spanner/gi, 'Aurora PostgreSQL → AlloyDB (DMS Continuous CDC)'],
-      [/Artifact Registry/gi, 'AWS S3 &amp; KMS → Cloud Storage Lake &amp; Cloud KMS HSM']
-    ];
-  } else if (lower.includes('active-active') || lower.includes('disaster recovery') || lower.includes('multi-region dr') || lower.includes('chaos') || lower.includes('europe-west1')) {
-    // Saved Template 46/48: Google Cloud Tier-0 Active-Active Multi-Region DR & GKE Fleet Mesh (1600x1100 Reference Architecture v2.0)
-    baseXml = generateTemplate46EnterpriseKubernetesPlatformEngineeringXml('fintech', 'light');
-    templateRefLabel = 'Modified Saved Template #48 • Google Cloud Tier-0 Active-Active Multi-Region DR & GKE Fleet Mesh';
-    domainMutations = [
-      [/ENTERPRISE KUBERNETES &amp; PLATFORM ENGINEERING/gi, 'TIER-0 ACTIVE-ACTIVE MULTI-REGION DR (US-CENTRAL1 &amp; EUROPE-WEST1) &amp; GKE FLEET MESH'],
-      [/Global Load Balancer/gi, 'Global Anycast Load Balancing + Cloud Armor WAF'],
-      [/GKE Fleet \/ Clusters/gi, 'Active Region A (us-central1 GKE Fleet + Anthos/Istio Mesh)'],
-      [/Service Mesh \(ASM\)/gi, 'Active Region B (europe-west1 GKE Fleet + Anthos/Istio Mesh)'],
-      [/Cloud SQL \/ Spanner/gi, 'Cloud Spanner Multi-Region nam-eur-asia1 (Zero RPO)'],
-      [/Artifact Registry/gi, 'Automated Chaos Engineering Failover Drills (&lt;12s RTO)']
-    ];
-  } else if (lower.includes('finops') || lower.includes('carbon') || lower.includes('kueue') || lower.includes('spot vm') || lower.includes('gpu scheduler')) {
-    // Saved Template 50: Sustainability, Carbon-Aware ESG & FinOps Platform
-    baseXml = generateTemplate50SustainabilityEsgPlatformXml('fintech', 'light');
-    templateRefLabel = 'Modified Saved Template #50 • Google Cloud Autonomous FinOps & Carbon-Aware GPU/TPU Scheduler';
-    domainMutations = [
-      [/SUSTAINABILITY, ESG &amp; CARBON INTELLIGENCE PLATFORM/gi, 'AUTONOMOUS CLOUD FINOPS &amp; CARBON-AWARE GKE GPU/TPU CLUSTER SCHEDULER'],
-      [/Carbon Footprint API/gi, 'Electricity Maps Grid Carbon API + Cloud Billing BigQuery Export'],
-      [/Smart Grid Telemetry/gi, 'NVIDIA DCGM GPU/TPU Telemetry &amp; Spot VM Preemption Oracle'],
-      [/Workload Placement/gi, 'Kueue Batch Job Queueing + Spot VM Fallback Orchestration'],
-      [/ESG Reporting/gi, 'Vertex AI Quota Governance &amp; FOCUS $/Token FinOps Ledger']
-    ];
-  } else if (lower.includes('streaming') || lower.includes('dead-letter') || lower.includes('dlq') || lower.includes('confluent') || lower.includes('iceberg')) {
-    // Saved Template 43: Real-Time Streaming & Event-Driven Enterprise
-    baseXml = generateTemplate43RealTimeStreamingEventEnterpriseXml('streaming', 'light');
-    templateRefLabel = 'Modified Saved Template #43 • Google Cloud Event-Driven Streaming Mesh & Dead-Letter Replay Engine';
-    domainMutations = [
-      [/REAL-TIME STREAMING &amp; EVENT-DRIVEN ENTERPRISE/gi, 'EVENT-DRIVEN STREAMING MESH + DEAD-LETTER QUEUE (DLQ) REPLAY ENGINE'],
-      [/Kafka \/ Confluent/gi, 'Confluent Schema Registry (Avro/Protobuf Validation)'],
-      [/Pub\/Sub Managed/gi, 'Cloud Pub/Sub High-Fanout Partitioned Topics'],
-      [/Dead-Letter Queues/gi, 'Automated Dead-Letter Queue (DLQ) Quarantine Vault'],
-      [/Retry Handling/gi, 'Cloud Run Exponential-Backoff Replay Workers'],
-      [/Dataflow \/ Beam/gi, 'Apache Beam / Cloud Dataflow Stateful Windowing'],
-      [/Cloud Storage/gi, 'Cloud Storage Apache Iceberg Compaction Tier']
-    ];
-  } else if (lower.includes('landing zone') || lower.includes('interconnect') || lower.includes('shared vpc') || lower.includes('bfd')) {
-    // Saved Template 38: Enterprise Cloud Landing Zone & Hub-Spoke Network
-    baseXml = generateTemplate38CloudLandingZoneXml('fintech', 'light');
-    templateRefLabel = 'Modified Saved Template #38 • Google Cloud Dual-Region Sovereign Landing Zone & Dedicated Interconnect';
-    domainMutations = [
-      [/CLOUD LANDING ZONE &amp; SHARED VPC ARCHITECTURE/gi, 'DUAL-REGION SOVEREIGN GCP LANDING ZONE + 2x100GBPS DEDICATED INTERCONNECT'],
-      [/Dedicated Interconnect/gi, 'Dual 100Gbps Dedicated Interconnects (MACsec) + Cloud Router BGP/BFD'],
-      [/Shared VPC Host/gi, 'Shared VPC Host/Service Projects + Private Service Connect (PSC)'],
-      [/Organization Policy/gi, 'Organization Policy Guardrails &amp; Assured Workloads Folder']
-    ];
-  } else if (lower.includes('secops') || lower.includes('chronicle') || lower.includes('soar') || lower.includes('siem') || lower.includes('beyondcorp')) {
-    // Saved Template 44: Zero-Trust Cybersecurity & Autonomous SOC Platform
-    baseXml = generateTemplate44ZeroTrustCybersecuritySocPlatformXml('cybersecurity', 'light');
-    templateRefLabel = 'Modified Saved Template #44 • Google Cloud Zero-Trust SecOps, Chronicle SIEM/SOAR & Gemini Security AI';
-    domainMutations = [
-      [/ZERO-TRUST CYBERSECURITY &amp; AUTONOMOUS SOC PLATFORM/gi, 'AUTONOMOUS ZERO-TRUST SECOPS, CHRONICLE SIEM/SOAR &amp; CLOUD RUN QUARANTINE'],
-      [/BeyondCorp Enterprise/gi, 'BeyondCorp Enterprise IAP + VPC Service Controls + Packet Mirroring'],
-      [/Chronicle SIEM/gi, 'Google SecOps (Chronicle SIEM) Petabyte UDM + YARA-L 2.0'],
-      [/Chronicle SOAR/gi, 'Chronicle SOAR + Automated Cloud Run Firewall Quarantine Playbooks'],
-      [/Security AI/gi, 'Gemini 3.1 Pro in Security Operations (Autonomous Alert Triage)']
-    ];
-  } else if (lower.includes('hl7') || lower.includes('fhir') || lower.includes('dicom') || lower.includes('omop') || lower.includes('healthcare') || lower.includes('clinical')) {
-    // Saved Template 49: Healthcare & Life Sciences Clinical AI Platform
-    baseXml = generateTemplate49HealthcareLifeSciencesPlatformXml('healthcare', 'light');
-    templateRefLabel = 'Modified Saved Template #49 • Google Cloud HIPAA HL7/FHIR/DICOM Medallion Lakehouse & Clinical AI';
-    domainMutations = [
-      [/HEALTHCARE &amp; LIFE SCIENCES CLINICAL AI PLATFORM/gi, 'HIPAA HL7v2 / FHIR R4 / DICOM MEDALLION LAKEHOUSE &amp; VERTEX CLINICAL AI'],
-      [/FHIR \/ HL7v2 Ingress/gi, 'Cloud Healthcare API (HL7v2, FHIR R4 &amp; DICOMweb) + Cloud DLP De-ID'],
-      [/Dataflow Pipelines/gi, 'Cloud Dataflow Bronze-Silver-Gold Medallion Pipelines'],
-      [/BigQuery Clinical/gi, 'BigQuery OMOP CDM Warehouse + Dataplex PHI Governance'],
-      [/Clinical AIAgents/gi, 'Vertex AI MedLM &amp; Gemini 3.1 Pro Clinical Summarization']
-    ];
-  } else if (lower.includes('iso-20022') && (lower.includes('payment') || lower.includes('fraud'))) {
-    // Saved Template 45: Enterprise API Integration, Payment Gateway & Event Mesh
-    baseXml = generateTemplate45EnterpriseApiIntegrationMcpGatewayXml('fintech', 'light');
-    templateRefLabel = 'Modified Saved Template #45 • Google Cloud ISO-20022 Real-Time Payment Settlement & Inline Fraud ML';
-    domainMutations = [
-      [/ENTERPRISE API, INTEGRATION &amp; MCP GATEWAY/gi, 'ISO-20022 REAL-TIME PAYMENT SETTLEMENT &amp; INLINE VERTEX AI FRAUD ENGINE (&lt;15MS)'],
-      [/Apigee API Gateway/gi, 'Cloud Armor WAF + Apigee X ISO-20022 Payment Gateway'],
-      [/GKE Microservices/gi, 'GKE Autopilot Payment Settlement Microservices + Apache Kafka / Pub/Sub'],
-      [/Vertex AI Agents/gi, 'Vertex AI Inline Fraud Scoring Engine (&lt;15ms P99 Latency)'],
-      [/Cloud Spanner/gi, 'Cloud Spanner Multi-Region Externally Consistent ACID Ledger']
-    ];
-  } else if (lower.includes('time machine') || lower.includes('time travel') || lower.includes('temporal capsule') || lower.includes('chronos')) {
-    // Saved Template 40: Enterprise GenAI & Multi-Agent Platform customized for Chronos Time Machine Capsule on GCP & Gemini Enterprise
-    baseXml = generateTemplate40EnterpriseGenAiPlatformXml('enterprise', 'light');
-    templateRefLabel = `Modified Saved Template #40 • [${perspBadge} · ${levelBadge}] Google Cloud & Gemini Enterprise Chronos Time Machine Capsule & Temporal Navigation Platform`;
-    domainMutations = buildTemplate40Mutations();
-  } else if (lower.includes('rag') && (lower.includes('scann') || lower.includes('vector mesh') || lower.includes('knowledge intelligence'))) {
-    // Saved Template 41: Enterprise RAG & Knowledge Intelligence Platform
-    baseXml = generateTemplate41EnterpriseRagPlatformXml('saas', 'light');
-    templateRefLabel = 'Modified Saved Template #41 • Google Cloud Sovereign Agentic RAG, Gemini 3.1 Pro & ScaNN Vector Mesh';
-    domainMutations = [
-      [/41\. Enterprise RAG &amp; Knowledge Intelligence Platform/gi, 'SOVEREIGN AGENTIC RAG, GEMINI 3.1 PRO &amp; VERTEX SCANN VECTOR MESH'],
-      [/API Gateway/gi, 'Apigee API Gateway (OAuth2/OIDC) + Cloud Armor WAF'],
-      [/Gemini 1\.5&lt;br\/&gt;Pro/gi, 'Gemini 3.1&lt;br/&gt;Pro'],
-      [/Gemini 1\.5&lt;br\/&gt;Flash/gi, 'Gemini 3.8&lt;br/&gt;Flash'],
-      [/Gemini 1\.5 Pro/gi, 'Gemini 3.1 Pro Multi-Agent Orchestrator'],
-      [/Vector Search/gi, 'Vertex AI Vector Search (ScaNN) + BigQuery Vector Store'],
-      [/Cloud KMS/gi, 'Cloud KMS CMEK FIPS 140-3 L3 Hardware Encryption']
-    ];
-  } else {
-    // 100% Zero-Template Custom Architecture Synthesis for any brand-new requirement prompt
+    // to the Universal Closed-Loop & Parallel Digital-Twin Agentic Harness (or L400 Oracle Split-VPC).
     return synthesizeZeroTemplateCustomArchitectureXml(
       prompt,
       safeTitle,
@@ -1416,22 +1133,6 @@ export function generateVerticalStratumCrossSectionXml(prompt: string, title: st
  */
 export function extractRichPromptSubsystems(prompt: string, fallbackTitle: string): string[] {
   const rawLower = `${prompt} ${fallbackTitle}`.toLowerCase();
-  if (rawLower.includes('time machine') || rawLower.includes('time travel') || rawLower.includes('temporal capsule') || rawLower.includes('chronos')) {
-    return [
-      'Time Machine Capsule HUD',
-      'Cloud LB & Apigee Gateway',
-      'Cloud Armor WAF & KMS PQC',
-      'Gemini Temporal Navigator',
-      'GKE & Workflows Chronos',
-      'Vertex TPU v5p Simulator',
-      'Gemini Causality Guard',
-      'Pub/Sub DLQ & Epoch Lock',
-      'Memorystore Ephemeris Cache',
-      'Spanner TrueTime Ledger',
-      'BigQuery & Vertex Vector DB',
-      'Cloud Trace & Clock HUD',
-    ];
-  }
 
   const cleaned = String(prompt || fallbackTitle || 'Custom Cloud Architecture')
     .replace(/^(please\s+)?((design|architect|build|create|deploy|synthesize|generate|draw|show)\s+)?(a\s+|an\s+|the\s+)?(full\s+|complete\s+|enterprise\s+|brand[- ]new\s+)?(flowchart\s+(for|of)\s+|infographic\s+(for|of)\s+|architecture\s+(for|of)\s+|diagram\s+(for|of)\s+)?/i, '')
