@@ -202,6 +202,8 @@ function purgeShadowGarbage() {
     ...walk(path.join(HOME, ".gemini", "config"), (n) => /\.shadow_backup$|~origin_main$|^hooks\.json\.bak/i.test(n)),
     path.join(ZYVORIQ_ROOT, "ZYVORIQ_COMPLETE_CONSOLIDATED_CONFIG.md"),
     path.join(ZYVORIQ_ROOT, "ZYVORIQ_MD_AND_HOOKS_FORENSIC_AUDIT.md"),
+    path.join(ZYVORIQ_ROOT, "public", "assets", "ZYVORIQ_COMPLETE_CONSOLIDATED_CONFIG.md"),
+    path.join(ZYVORIQ_ROOT, "public", "assets", "ZYVORIQ_MD_AND_HOOKS_FORENSIC_AUDIT.md"),
     // Enforce zero duplicate global AGENTS.md symlinks in ~/.gemini/config and ~/.gemini (Section 20 of skills.md)
     path.join(HOME, ".gemini", "config", "GEMINI.md"),
     path.join(HOME, ".gemini", "config", "CLAUDE.md"),

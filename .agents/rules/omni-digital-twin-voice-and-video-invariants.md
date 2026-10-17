@@ -1,6 +1,6 @@
 ---
 trigger: model_decision
-description: Use when modifying, pre-baking, or auditing Demoes-GE (/Users/nitinagga/Documents/Demoes-GE) Omni 1.1 Digital Twin talking-head videos, Chirp 3: HD audio, or 13-project menus (Rule 48).
+description: "Use when modifying, pre-baking, or auditing Demoes-GE (/Users/nitinagga/Documents/Demoes-GE) Omni 1.1 Digital Twin talking-head videos, Chirp 3: HD audio, or 13-project menus (Rule 48)."
 ---
 
 # Omni 1.1 Digital Twin Video Continuity, 60fps Lip-Sync Canvas Overlay, 5-Deck Full Pre-Baking (810 MP4s + 810 MP3s), Native AV Bundle Purity, Expressive Chirp 3: HD Prosody, Transparent Studio Video Canvas, WebAudio Suspension Guard, On-Screen Health Inspector & 13-Project Menu Parity Rule (`Rule 48` / `L30-01`..`L30-21`)
