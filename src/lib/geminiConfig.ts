@@ -253,15 +253,15 @@ export function getGenConfig(kind: GenConfigKind) {
     case 'repair':
       return {
         thinkingConfig: {
-          thinkingBudget: 100, // Minimal thinking budget for mechanical repair calls
+          thinkingLevel: 'LOW' as any,
         },
         temperature: 0.1,
-        maxOutputTokens: 65536,
+        maxOutputTokens: 32768,
       };
     case 'audit':
       return {
         thinkingConfig: {
-          thinkingBudget: 1000, // Deep thinking budget for Gemini 3.1 Pro architectural critic
+          thinkingLevel: 'HIGH' as any,
         },
         temperature: 0.2,
         maxOutputTokens: 32768,
@@ -269,23 +269,26 @@ export function getGenConfig(kind: GenConfigKind) {
     case 'vision':
       return {
         thinkingConfig: {
-          thinkingBudget: 500, // Thinking budget for spatial bounding box estimation and OCR alignment
+          thinkingLevel: 'HIGH' as any,
         },
         temperature: 0.1,
-        maxOutputTokens: 65536, // CRITICAL: Prevent 8192 token truncation on dense 45+ node enterprise architecture diagrams
+        maxOutputTokens: 32768,
       };
     case 'generate':
       return {
         thinkingConfig: {
-          thinkingBudget: 500, // Modest thinking budget for creative generation calls
+          thinkingLevel: 'MEDIUM' as any,
         },
         temperature: 0.3,
-        maxOutputTokens: 65536,
+        maxOutputTokens: 32768,
       };
     case 'edit':
     case 'narrative':
     default:
       return {
+        thinkingConfig: {
+          thinkingLevel: 'LOW' as any,
+        },
         temperature: 0.5,
         maxOutputTokens: 32768,
       };
@@ -293,17 +296,15 @@ export function getGenConfig(kind: GenConfigKind) {
 }
 
 /**
- * Payload-safe configuration resolver for Gemini 4 Argon (`gemini-4-argon`), which strictly
- * rejects numeric `thinkingBudget` and `MINIMAL` with HTTP 400 and requires discrete
- * `thinkingLevel: 'LOW' | 'MEDIUM' | 'HIGH'` and `maxOutputTokens <= 32768`.
+ * Payload-safe configuration resolver for Gemini 4 Argon (`gemini-4-argon`) and Gemini 3.8 Flash (`gemini-3.8-flash`),
+ * enforcing discrete `thinkingLevel: 'LOW' | 'MEDIUM' | 'HIGH'` and `maxOutputTokens <= 32768` (`Law 16 / Rule 55`).
  */
 export function getGenConfigForModel(kind: GenConfigKind, modelId?: string) {
   const base = getGenConfig(kind);
   const norm = (modelId || '').toLowerCase();
-  if (norm.includes('4-argon') || norm.includes('argon')) {
-    const budget = (base as any).thinkingConfig?.thinkingBudget;
+  if (norm.includes('4-argon') || norm.includes('argon') || norm.includes('3.8-flash')) {
     const thinkingLevel =
-      kind === 'audit' || kind === 'vision' || (typeof budget === 'number' && budget >= 500)
+      kind === 'audit' || kind === 'vision'
         ? 'HIGH'
         : kind === 'repair'
           ? 'LOW'

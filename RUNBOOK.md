@@ -34,9 +34,10 @@ npm test
 npm run validate:blueprints
 npm run validate:canvas
 
-# 6. Run 13-Point Studio Architecture & Intent Audit + 28-Workflow E2E Forensic Audit
-npm run test:studio1
-npx tsx scratch/run_e2e_28_workflows_audit.ts
+# 6. Run Canonical Blueprint Certification, Blank Canvas & NASA Default Suite, and Nav Badge Count Gate
+npx tsx scripts/verify_canonical_certification.ts
+npx tsx scripts/verify_blank_canvas_nasa_default_and_slides.ts
+node scripts/verify_nav_badge_counts.mjs
 
 # 7. Run Headless Chrome Real-Browser Journey
 npx tsx scripts/e2e_real_browser_journey.ts
@@ -79,7 +80,7 @@ const browser = await puppeteer.launch({
      return !!svg && svg.childNodes.length > 0;
    });
    ```
-4. **Visual Review Delivery**: Present captured screenshots to the user using clickable `file://` Markdown links.
+4. **Visual Review Delivery**: Copy `before_*.png` and `after_*.png` into the conversation's `<appDataDir>/brain/<conversation-id>/` artifact directory and embed them using `![Descriptive caption](/abs/path/in/artifact/dir.png)` syntax alongside clickable `file://` links.
 
 ### Rule 4: Iterative Closed-Loop Convergence (Loop Until Zero Defects)
 E2E testing must execute in an automated self-correcting loop until all issues are resolved:
@@ -107,19 +108,19 @@ while (loop < MAX_LOOPS) {
 Every test suite must probe all blindspots:
 1. *Boundary States*: Empty payloads, max-width string wraps, unescaped XML/HTML entities (`&`, `<`, `>`).
 2. *Responsive & Aspect Ratios*: Breakpoint tests at Mobile (390px), Tablet (834px), Desktop (1440px), and Ultra-Wide (1600px+), plus aspect ratio morphing (`16:9`, `9:16`, `1:1`, `21:9`).
-3. *State Transitions & Theme Shifts*: Full dark/light theme switching with 800ms settled transitions.
+3. *Executive Light Theme Invariant (`Rule 54`)*: Verify high-contrast Executive Light Theme (`#f8fafc` root, `#ffffff` cards, `#0f172a` text) with zero unrequested dark-mode root classes (`class="dark"`, `bg-slate-950`).
 4. *Embedded Viewport Mutation*: Physically asserting child element attribute mutation inside iframe/canvas viewports.
 
 ---
 
-## 4. Local-First Development & Deferred Git Commit Law
+## 4. Local-First Development & Atomic Governance Co-Update (`Law 13`)
 
 All development follows a strict 3-step sequence:
 
 ```text
 ┌────────────────────────────────────────┐
 │  Step 1: Local Implementation          │
-│  • Modify workspace files              │
+│  • Modify workspace + governance files │
 │  • Compile cleanly (npx tsc --noEmit)  │
 └──────────────────┬─────────────────────┘
                    │
@@ -127,34 +128,42 @@ All development follows a strict 3-step sequence:
 ┌────────────────────────────────────────┐
 │  Step 2: Visual Review & Diffs         │
 │  • Headless Puppeteer E2E run          │
-│  • Inspect Before & After screenshots  │
-│  • Present clickable file:// links     │
+│  • Embed before_*.png & after_*.png    │
+│  • Run quality-gate & governance gate  │
 └──────────────────┬─────────────────────┘
                    │
                    ▼
 ┌────────────────────────────────────────┐
-│  Step 3: Deferred Git Commit & Push    │
+│  Step 3: Atomic Git Commit & Push      │
 │  • git commit -m "feat/fix: ..."       │
 │  • Immediately execute:                │
 │    git push origin main                │
-│  • Cloud Run / BeyondCorp verification │
+│  • 2-Project Cloud Run verification    │
 └────────────────────────────────────────┘
 ```
 
 ---
 
-## 5. Post-Push Cloud Run & BeyondCorp Deployment Verification
+## 5. Synchronous 2-Project Cloud Run & BeyondCorp Deployment Verification (`Rule 56`)
 
-Whenever code is pushed to `origin/main` and deployed to Google Cloud Run (`ramp-portal-dev`, `us-west1`), execute verification against the canonical BeyondCorp URL:
-1. **Deploy to Cloud Run**:
+Whenever code is pushed to `origin/main` and deployed to Google Cloud Run (`ramp-portal-dev`, `us-west1`), always execute the **2-Project Build + Image Update Pipeline** (never run single-project `--source .` against `ramp-portal-dev`):
+1. **Step 1 (Build Image in Sandbox Project)**:
    ```bash
-   gcloud run deploy promptcanvas --source . --project ramp-portal-dev --region us-west1 --platform managed
+   TAG="v$(date +%Y%m%d-%H%M%S)"
+   gcloud builds submit --project=nitina-ggarwal-sandbox-647724 \
+     --tag="us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/promptcanvas:${TAG}" .
    ```
-2. **Health & Endpoint Verification**: Poll the canonical BeyondCorp endpoint:
+2. **Step 2 (Update Cloud Run Service in Runtime Project)**:
+   ```bash
+   gcloud run services update promptcanvas \
+     --project=ramp-portal-dev \
+     --region=us-west1 \
+     --image="us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/promptcanvas:${TAG}"
+   ```
+3. **Health, 4-Gate Readiness & BeyondCorp Endpoint Verification**: Verify `latestReadyRevisionName === latestCreatedRevisionName`, `Ready=True`, `traffic=100%`, and poll the canonical BeyondCorp endpoint:
    ```bash
    curl -sI https://promptcanvas-248990048888.cr.gclb.goog
    ```
-3. **Independent String Verification**: Verify the active Cloud Run revision and HTTP response before reporting completion.
 
 ---
 

@@ -15,8 +15,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 
-const REPO_ROOT = process.cwd();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const REPO_ROOT = path.resolve(__dirname, '../..');
 const HOME_DIR = process.env.HOME || '/Users/nitinagga';
 const CONFIG_DIR = path.join(HOME_DIR, '.gemini/config');
 const BLOGS_ROOT = '/Users/nitinagga/Documents/blogs';
@@ -40,6 +43,8 @@ const BANNED_CONTRADICTORY_PATTERNS = [
   { label: 'contradictory AskAIOCE "51/51 Verified" pre-checked claim (violates L50-11 0/51 unchecked on load)', re: /51\/51 Verified/ },
   { label: 'contradictory Custom Twin static portrait frame mux claim (violates L30-19 90/90 native Omni 1.1 bundles)', re: /mux a static portrait frame/ },
   { label: 'contradictory inline Figure 1, Figure 2, Figure 3 rule (violates Rule 53 single Figure 1)', re: /inline figures \(`Figure 1`, `Figure 2`, `Figure 3`\)/ },
+  { label: 'stale 26-vertex / 20-edge Split-VPC count (must be 31-vertex / 27-edge)', re: /26`?\s*vertices,\s*`?20`?\s*edges|26-vertex\s*\/\s*20-edge/ },
+  { label: 'contradictory 5m / 300,000ms polling interval (violates Rule 30 <2m polling)', re: /every `5m`|every `300,000ms`|Real 60s\/5m Polling/ },
 ];
 
 export function auditPromptCanvasGovernanceSync() {
@@ -196,11 +201,16 @@ export function auditPromptCanvasGovernanceSync() {
     }
   }
 
-  // 6. Anti-Contradiction Scan across AGENTS.md, hooks.md, skills.md, rules/*.md, and skills/*/SKILL.md
+  // 6. Anti-Contradiction Scan across AGENTS.md, hooks.md, skills.md, rules/*.md, skills/*/SKILL.md, and core repo docs
   const filesToScanForContradictions = [
     canonicalAgentsPath,
     canonicalHooksMd,
     canonicalSkillsMd,
+    path.join(REPO_ROOT, 'README.md'),
+    path.join(REPO_ROOT, 'ARCHITECTURE.md'),
+    path.join(REPO_ROOT, 'SECURITY.md'),
+    path.join(REPO_ROOT, 'RUNBOOK.md'),
+    path.join(REPO_ROOT, 'docs/INTENT_ROUTER.md'),
   ];
   if (fs.existsSync(configRulesDir)) {
     for (const rf of fs.readdirSync(configRulesDir).filter((f) => f.endsWith('.md'))) {
@@ -211,10 +221,19 @@ export function auditPromptCanvasGovernanceSync() {
     filesToScanForContradictions.push(path.join(CONFIG_DIR, `skills/${dir}/SKILL.md`));
   }
 
+  const DOC_BANNED_PATTERNS = [
+    ...BANNED_CONTRADICTORY_PATTERNS,
+    { re: /src\/lib\/router\/intentClassifier\.ts/i, label: 'Deleted file reference (src/lib/router/intentClassifier.ts)' },
+    { re: /DiagramTypeSelector\.tsx|AssumptionBanner\.tsx/i, label: 'Deleted workspace component reference (DiagramTypeSelector.tsx / AssumptionBanner.tsx)' },
+    { re: /npm run test:studio1/i, label: 'Retired npm script reference (npm run test:studio1)' },
+    { re: /gcloud run deploy promptcanvas[\s\\]+--source/i, label: 'Rule 56 banned single-project --source deploy in docs' },
+    { re: /converts `\.pptx` \/ `\.html` via Google Drive v3|uploads `\.pptx` \/ `\.html` bytes via multipart/i, label: 'Rule 49 banned .html multipart upload in docs' },
+  ];
+
   for (const scanFile of filesToScanForContradictions) {
     if (!fs.existsSync(scanFile)) continue;
     const text = fs.readFileSync(scanFile, 'utf-8');
-    for (const pat of BANNED_CONTRADICTORY_PATTERNS) {
+    for (const pat of DOC_BANNED_PATTERNS) {
       if (pat.re.test(text)) {
         mismatches.push(`CONTRADICTORY_OR_STALE_RULE: ${scanFile} contains ${pat.label}`);
       }

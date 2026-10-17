@@ -41,18 +41,21 @@ describe('Gemini Model Routing & Vision Decompilation Architecture', () => {
     expect(chatChain).toEqual(['gemini-3.8-flash', 'gemini-2.5-flash']);
   });
 
-  it('configures specialized thinking budgets and converts gemini-4-argon to discrete thinkingLevel', () => {
+  it('configures discrete thinkingLevel and maxOutputTokens <= 32768 per Law 16 / Rule 55', () => {
     const visionConfig = getGenConfig('vision');
-    expect(visionConfig.thinkingConfig?.thinkingBudget).toBe(500);
+    expect(visionConfig.thinkingConfig?.thinkingLevel).toBe('HIGH');
     expect(visionConfig.temperature).toBe(0.1);
+    expect(visionConfig.maxOutputTokens).toBeLessThanOrEqual(32768);
 
     const auditConfig = getGenConfig('audit');
-    expect(auditConfig.thinkingConfig?.thinkingBudget).toBe(1000);
+    expect(auditConfig.thinkingConfig?.thinkingLevel).toBe('HIGH');
     expect(auditConfig.temperature).toBe(0.2);
+    expect(auditConfig.maxOutputTokens).toBeLessThanOrEqual(32768);
 
     const repairConfig = getGenConfig('repair');
-    expect(repairConfig.thinkingConfig?.thinkingBudget).toBe(100);
+    expect(repairConfig.thinkingConfig?.thinkingLevel).toBe('LOW');
     expect(repairConfig.temperature).toBe(0.1);
+    expect(repairConfig.maxOutputTokens).toBeLessThanOrEqual(32768);
 
     const argonAuditConfig = getGenConfigForModel('audit', 'gemini-4-argon');
     expect((argonAuditConfig.thinkingConfig as any)?.thinkingLevel).toBe('HIGH');
