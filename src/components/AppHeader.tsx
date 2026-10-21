@@ -10,9 +10,7 @@ import Link from 'next/link';
 import { Menu } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import ByokHeaderButton from './ByokHeaderButton';
-
-/** Canonical geometry. Change it here and every route moves together. */
-export const APP_HEADER_HEIGHT_PX = 56;
+import { FeedbackHeaderEmailButton } from './UniversalFeedbackSystem';
 
 const SHELL_DARK =
   'dark sticky top-0 w-full min-h-14 py-1.5 shrink-0 border-b flex items-center justify-between gap-3 flex-wrap ' +
@@ -24,7 +22,7 @@ const SHELL_LIGHT =
   'px-4 md:px-6 bg-white/95 backdrop-blur-md border-slate-200 text-slate-900 shadow-xs ' +
   'transition-colors';
 
-export type HeaderTone =
+type HeaderTone =
   | 'blue'
   | 'teal'
   | 'indigo'
@@ -94,7 +92,7 @@ export function btnClass(variant: keyof Omit<typeof headerBtn, 'base'> = 'neutra
   return `${headerBtn.base} ${headerBtn[variant]} ${extra}`.trim();
 }
 
-export interface AppHeaderProps {
+interface AppHeaderProps {
   children?: React.ReactNode;
   icon?: React.ElementType;
   tone?: HeaderTone;
@@ -156,6 +154,12 @@ export function AppHeader({
           <div className="flex items-center justify-between flex-1 min-w-0 gap-3">
             {children}
           </div>
+          <FeedbackHeaderEmailButton
+            appId="promptcanvas"
+            appName="PromptCanvas"
+            defaultSenderEmail="nitinagga@google.com"
+            defaultSenderName="Nitin Aggarwal"
+          />
         </div>
       </header>
     );
@@ -204,6 +208,12 @@ export function AppHeader({
 
       <div className="flex items-center justify-end gap-1.5 flex-wrap min-w-0">
         {actions}
+        <FeedbackHeaderEmailButton
+          appId="promptcanvas"
+          appName="PromptCanvas"
+          defaultSenderEmail="nitinagga@google.com"
+          defaultSenderName="Nitin Aggarwal"
+        />
       </div>
     </header>
   );
