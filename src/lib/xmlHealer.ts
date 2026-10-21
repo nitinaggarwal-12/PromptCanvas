@@ -4,7 +4,7 @@ import { sanitizeDrawioXmlAttributes } from '@/lib/diagramCleaner';
 import { buildCompleteWellArchitectedGcpDrMasterXml } from './masterBuilders/master_builder';
 import { getDefaultXmlForArchitecture } from './architectureTypes';
 
-export interface XmlHealerResult {
+interface XmlHealerResult {
   isValid: boolean;
   isHealed: boolean;
   xml: string;
@@ -147,6 +147,8 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     )
   ) || (
     inputXml.includes('PromptCanvas') ||
+    inputXml.includes('id="info-') ||
+    inputXml.includes('id="infographic_') ||
     inputXml.includes('canonical') ||
     inputXml.includes('NOVACURA') ||
     inputXml.includes('template_') ||
@@ -190,6 +192,14 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('Google Cloud Multiagent AI System') ||
     inputXml.includes('azure_landing_zone') ||
     inputXml.includes('agentic_ai_architecture') ||
+    inputXml.includes('ARCH-NASA-01') ||
+    inputXml.includes('nasa_multiverse_closed_loop_harness') ||
+    inputXml.includes('oracle_ebs_exadata_gcp_split_vpc_official') ||
+    inputXml.includes('oracle_ebs_exadata_arch_center_78') ||
+    inputXml.includes('universal_closed_loop_domain_harness') ||
+    inputXml.includes('compositional_chain_architecture') ||
+    inputXml.includes('data-compositional-chain="true"') ||
+    inputXml.includes('PromptCanvas-CompositionalChainCompiler') ||
     archType === 'vision_decompiled'
   );
 
