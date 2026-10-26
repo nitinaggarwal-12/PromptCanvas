@@ -1,11 +1,11 @@
 ---
 name: gcp-enterprise-diagram-engine
-description: "Builds and certifies the 26 Production Google Cloud Blueprints (#78, #00, #35-#50, #67-#74)."
+description: "Builds and certifies the 29 Production Google Cloud Blueprints (#78-#84, #00, #38, #42, #44, #67-#69, #52-#66) with pure #FFFFFF white-background thumbnails and semicolon-safe SVG data URIs."
 ---
 
 # 📐 GCP Enterprise Architecture Diagram Engine (SKILL.md)
 
-This skill serves as the single source of truth for generating, compiling, styling, and verifying production-grade Google Cloud Platform (GCP) Multi-Tier Enterprise Architecture diagrams in Draw.io XML.
+This skill serves as the single source of truth for generating, compiling, styling, and verifying production-grade Google Cloud Platform (GCP) Multi-Tier Enterprise Architecture diagrams in Draw.io XML across all **29 Certified Canonical Blueprints** (`#78`–`#84` L100–L400 Agentic Workspace / Principal Sequence / Oracle EBS R12.2 on Exadata X10M, `#00` GCP Native, `#38` Landing Zone, `#42` Lakehouse, `#44` Zero-Trust SOC, `#67`–`#69` Brand Light Flowcharts, and `#52`–`#66` Infographics), enforcing pure `#FFFFFF` white-background catalog thumbnails (`public/templates/canonical_*.png`, `Rule 54`) and semicolon-safe `data:image/svg+xml,` RFC 2397 data URIs (`Rule 57B`).
 
 ---
 

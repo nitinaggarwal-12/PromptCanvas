@@ -5,13 +5,13 @@
   "buildProject": "nitina-ggarwal-sandbox-647724",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "promptcanvas-00054-l8d",
-  "latestCreatedRevisionName": "promptcanvas-00054-l8d",
+  "latestReadyRevisionName": "promptcanvas-00055-8h9",
+  "latestCreatedRevisionName": "promptcanvas-00055-8h9",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/promptcanvas:v20261026-124447-rule58",
-  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for promptcanvas-00054-l8d",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/promptcanvas:v20261026-151027-rule58",
+  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for promptcanvas-00055-8h9",
   "catalogDemosCount": 13,
   "catalogTilesCount": 14,
-  "verifiedAt": "2026-10-26T12:46:03Z"
+  "verifiedAt": "2026-10-26T15:12:19Z"
 }

@@ -13,7 +13,7 @@ import officialAssetsRaw from './officialArchCenterAssets.json';
 const OFFICIAL_ASSETS = officialAssetsRaw as Record<string, string>;
 
 function svgToDataUri(svgStr: string): string {
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svgStr.trim())}`;
+  return `data:image/svg+xml,${encodeURIComponent(svgStr.trim()).replace(/;/g, '%3B')}`;
 }
 
 export const EXTRA_GCP_ICONS: Record<string, string> = {

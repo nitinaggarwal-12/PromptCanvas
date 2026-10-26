@@ -39,32 +39,32 @@ function fitCardLineFs(
 
 const ORACLE_EBS_ICONS: Record<string, string> = {
   users:
-    'data:image/svg+xml;utf8,' +
+    'data:image/svg+xml,' +
     encodeURIComponent(
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="#1967D2"/><circle cx="12" cy="8.5" r="3.2" fill="#FFF"/><path d="M6 19c0-3 2.8-5 6-5s6 2 6 5" fill="#FFF"/></svg>`
     ),
   onprem:
-    'data:image/svg+xml;utf8,' +
+    'data:image/svg+xml,' +
     encodeURIComponent(
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="#3C4043"/><path d="M5 19V7l7-3 7 3v12H5zm3-9h2v2H8v-2zm0 4h2v2H8v-2zm6-4h2v2h-2v-2zm0 4h2v2h-2v-2z" fill="#FFF"/></svg>`
     ),
   exadata_rac:
-    'data:image/svg+xml;utf8,' +
+    'data:image/svg+xml,' +
     encodeURIComponent(
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#FFF" stroke="#B31412" stroke-width="2"/><ellipse cx="8.5" cy="7.5" rx="4" ry="1.8" fill="none" stroke="#B31412" stroke-width="1.6"/><path d="M4.5 7.5v8c0 1 1.8 1.8 4 1.8s4-.8 4-1.8v-8" fill="none" stroke="#B31412" stroke-width="1.6"/><ellipse cx="15.5" cy="8.5" rx="4" ry="1.8" fill="#FCE8E6" stroke="#B31412" stroke-width="1.6"/><path d="M11.5 8.5v8c0 1 1.8 1.8 4 1.8s4-.8 4-1.8v-8" fill="#FCE8E6" stroke="#B31412" stroke-width="1.6"/></svg>`
     ),
   exadata_storage:
-    'data:image/svg+xml;utf8,' +
+    'data:image/svg+xml,' +
     encodeURIComponent(
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#B31412"/><rect x="4" y="5" width="16" height="4" rx="1" fill="#FFF"/><rect x="4" y="10" width="16" height="4" rx="1" fill="#FFF"/><rect x="4" y="15" width="16" height="4" rx="1" fill="#FFF"/><circle cx="7" cy="7" r="1" fill="#B31412"/><circle cx="7" cy="12" r="1" fill="#B31412"/><circle cx="7" cy="17" r="1" fill="#B31412"/><path d="M11 7h6M11 12h6M11 17h6" stroke="#B31412" stroke-width="1.4"/></svg>`
     ),
   exadata_dataguard:
-    'data:image/svg+xml;utf8,' +
+    'data:image/svg+xml,' +
     encodeURIComponent(
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#FCE8E6" stroke="#D93025" stroke-width="2"/><path d="M12 4l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V7l7-3z" fill="none" stroke="#D93025" stroke-width="1.7"/><path d="M9 12l2 2 4-4" fill="none" stroke="#D93025" stroke-width="1.8" stroke-linecap="round"/></svg>`
     ),
   filestore_nas:
-    'data:image/svg+xml;utf8,' +
+    'data:image/svg+xml,' +
     encodeURIComponent(
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="#188038"/><path d="M5 7h5l2 2h7v9H5V7z" fill="#FFF"/><path d="M8 13h8M8 15.5h5" stroke="#188038" stroke-width="1.5" stroke-linecap="round"/></svg>`
     ),
@@ -900,7 +900,7 @@ export function buildOfficialOracleEbsExadataArchCenter78Xml(
     58,
     250,
     74,
-    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;text-align:center;line-height:1.25;"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23202124'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 20c0-4 3.6-7 8-7s8 3 8 7'/%3E%3C/svg%3E" width="18" height="18"/><br/><b style="font-size:12.5px;color:#202124;">EBS R12.2 Enterprise Users</b><br/><span style="font-size:9.2px;color:#3c4043;">HTML5 OAF, Java Forms JWS &amp; ISG REST (:443)</span></div>`,
+    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;text-align:center;line-height:1.25;"><img src="${ORACLE_EBS_ICONS.users}" width="18" height="18"/><br/><b style="font-size:12.5px;color:#202124;">EBS R12.2 Enterprise Users</b><br/><span style="font-size:9.2px;color:#3c4043;">HTML5 OAF, Java Forms JWS &amp; ISG REST (:443)</span></div>`,
     'rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=2;align=center;verticalAlign=middle;'
   );
 
