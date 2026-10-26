@@ -85,8 +85,8 @@ export async function POST(req: NextRequest) {
       currentDocMarkdown = '',
       currentDocVersion = 'v1.0',
       currentDiagramSlots = {},
-      archetypeId = 'fdd',
-      selectedDomain = 'manufacturing',
+      archetypeId = 'prd',
+      selectedDomain = 'biopharma',
       projectTitle = 'Enterprise Architecture',
     } = body;
 

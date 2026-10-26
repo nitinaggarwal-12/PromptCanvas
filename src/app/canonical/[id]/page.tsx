@@ -389,14 +389,14 @@ export default function CanonicalTemplateDetailPage() {
         {/* Viewport Frame */}
         {isSideBySide ? (
           <div className="flex-1 w-full h-[calc(100vh-90px)] flex flex-col gap-3 overflow-hidden">
-            {/* Quick 23 Certified Production Blueprint Switcher (#78, #00, #38, #42, #44, #67–#69, #52–#66) */}
+            {/* Quick 29 Certified Production Blueprint Switcher (#78–#84, #00, #38, #42, #44, #67–#69, #52–#66) */}
             <div className="bg-white rounded-2xl border border-slate-200 px-4 py-2 shadow-sm flex items-center justify-between gap-3 overflow-x-auto shrink-0">
               <div className="flex items-center gap-2 shrink-0">
                 <span className="px-2.5 py-0.5 rounded-md bg-indigo-600 text-white font-mono text-[10px] font-extrabold uppercase tracking-wider">
                   Side-by-Side Comparison
                 </span>
                 <span className="text-xs font-extrabold text-slate-800">
-                  23 Certified Blueprints:
+                  29 Certified Blueprints:
                 </span>
               </div>
               <div className="flex items-center gap-1 overflow-x-auto py-0.5">

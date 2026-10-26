@@ -2520,10 +2520,10 @@ function DashboardContent() {
                       ? 'bg-teal-600 text-white border-teal-700'
                       : 'bg-teal-600 text-white border-teal-500'
                   }`}
-                  title="Workflow 1: Start from one of 23 certified Google Cloud reference & infographic architectures"
+                  title="Workflow 1: Start from one of 29 certified Google Cloud reference & infographic architectures"
                 >
                   <span className="truncate">🏛️ Blueprint</span>
-                  <span className="text-[8.5px] font-medium opacity-90 truncate">23 Certified</span>
+                  <span className="text-[8.5px] font-medium opacity-90 truncate">29 Certified</span>
                 </button>
                 <Link
                   href="/prompt-to-diagram"

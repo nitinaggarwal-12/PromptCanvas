@@ -72,7 +72,8 @@ import {
   DOMAIN_PRESETS,
   CanonicalTemplate,
   CANONICAL_FAMILIES,
-  injectDomainFlavorXml
+  injectDomainFlavorXml,
+  getCanonicalTemplateById,
 } from '@/lib/canonical/canonicalTemplates';
 import {
   ARCHETYPE_REGISTRY,
@@ -80,7 +81,8 @@ import {
   DocArchetype,
   DOC_ARCHETYPES_META,
   DocArchetypeMeta,
-  BlueprintSlot
+  BlueprintSlot,
+  resolveSurvivingArchetypeId,
 } from '@/lib/compose/archetypes';
 import { MASTER_DOCUMENTS, getDomainMasterDocument } from '@/lib/compose/masterDocs';
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
@@ -140,13 +142,13 @@ export const DIAGRAM_FAMILY_PRESETS = [
 
 export const FAMILY_TO_TEMPLATE_IDS: Record<string, string[]> = {
   all: CANONICAL_TEMPLATES.map(t => t.id),
-  structure: CANONICAL_TEMPLATES.filter(t => t.family === 'Structure' || ['78', '00', '35', '36', '46'].includes(t.id)).map(t => t.id),
-  flow: CANONICAL_TEMPLATES.filter(t => t.family === 'Flow' || t.family === 'Process' || ['43', '67', '68', '69', '70', '71', '72', '73', '74'].includes(t.id)).map(t => t.id),
-  infrastructure: CANONICAL_TEMPLATES.filter(t => t.family === 'Infrastructure' || t.family === 'Delivery & Operations' || ['78', '00', '37', '38', '45', '48'].includes(t.id)).map(t => t.id),
-  data: CANONICAL_TEMPLATES.filter(t => ['42', '43', '69', '70', '71', '72'].includes(t.id)).map(t => t.id),
-  ai: CANONICAL_TEMPLATES.filter(t => t.family === 'Whiteboard' || t.family === 'Paper' || ['78', '00', '40', '41', '47', '67', '68', '73', '74'].includes(t.id)).map(t => t.id),
-  security: CANONICAL_TEMPLATES.filter(t => t.family === 'Security & Governance' || ['78', '39', '44', '73'].includes(t.id)).map(t => t.id),
-  business: CANONICAL_TEMPLATES.filter(t => t.family === 'Understand' || t.family === 'Analysis & Planning' || t.family === 'Infographic' || ['35', '36', '49', '50'].includes(t.id)).map(t => t.id),
+  structure: CANONICAL_TEMPLATES.filter(t => t.family === 'Structure' || ['78', '82', '83', '00'].includes(t.id)).map(t => t.id),
+  flow: CANONICAL_TEMPLATES.filter(t => t.family === 'Flow' || t.family === 'Process' || ['81', '67', '68', '69'].includes(t.id)).map(t => t.id),
+  infrastructure: CANONICAL_TEMPLATES.filter(t => t.family === 'Infrastructure' || t.family === 'Delivery & Operations' || ['78', '79', '80', '84', '00', '38'].includes(t.id)).map(t => t.id),
+  data: CANONICAL_TEMPLATES.filter(t => ['42', '84', '69'].includes(t.id)).map(t => t.id),
+  ai: CANONICAL_TEMPLATES.filter(t => t.family === 'Whiteboard' || t.family === 'Paper' || ['78', '79', '80', '81', '82', '83', '00', '67', '68'].includes(t.id)).map(t => t.id),
+  security: CANONICAL_TEMPLATES.filter(t => t.family === 'Security & Governance' || ['78', '79', '81', '44'].includes(t.id)).map(t => t.id),
+  business: CANONICAL_TEMPLATES.filter(t => t.family === 'Understand' || t.family === 'Analysis & Planning' || t.family === 'Infographic' || ['83'].includes(t.id)).map(t => t.id),
 };
 
 export function getTemplatesForFamily(familyId: string): CanonicalTemplate[] {
@@ -225,9 +227,7 @@ function InlineDiagramFigure({
   const [isExpanded, setIsExpanded] = useState(false);
   const [copiedXml, setCopiedXml] = useState(false);
 
-  const canonicalTpl =
-    CANONICAL_TEMPLATES.find((t) => t.id === templateId) ||
-    CANONICAL_TEMPLATES.find((t) => t.id === '01');
+  const canonicalTpl = getCanonicalTemplateById(templateId);
 
   const effectiveDomain = useMemo(() => {
     if (selectedDomain && selectedDomain !== 'biopharma') return selectedDomain;
@@ -867,7 +867,7 @@ function DocGenContent() {
   const liveStudioDiagramXml = useMemo(() => {
     if (customInsertedXml) return customInsertedXml;
     const targetId = currentPreviewTemplateId;
-    const tpl = CANONICAL_TEMPLATES.find((t) => t.id === targetId) || CANONICAL_TEMPLATES[0];
+    const tpl = getCanonicalTemplateById(targetId);
     try {
       const rawXml = tpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
       const domainCleaned = injectDomainFlavorXml(rawXml, selectedDomain);
@@ -1304,7 +1304,7 @@ function DocGenContent() {
     try {
       const primarySlot = activeMeta.blueprintPack[0];
       const selectedTplId = slotCustomizations[0]?.templateId || primarySlot.recommendedTemplateId;
-      const primaryTpl = CANONICAL_TEMPLATES.find((t) => t.id === selectedTplId) || CANONICAL_TEMPLATES[0];
+      const primaryTpl = getCanonicalTemplateById(selectedTplId);
       const primaryXml = primaryTpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
 
       const res = await fetch('/api/compose', {
@@ -2072,10 +2072,10 @@ function DocGenContent() {
                       ? 'text-slate-700 hover:text-sky-700'
                       : 'text-slate-300 hover:text-white'
                   }`}
-                  title="17 Document Archetypes Catalog"
+                  title="Lean 8 Document Archetypes Catalog"
                 >
                   <FileText className={`w-3.5 h-3.5 shrink-0 ${isLight ? 'text-sky-600' : 'text-sky-400'}`} aria-hidden="true" />
-                  <span>17 Document Archetypes</span>
+                  <span>Lean 8 Document Archetypes</span>
                 </button>
 
                 <button
@@ -2155,13 +2155,13 @@ function DocGenContent() {
                   </div>
                   <div>
                     <h1 className="text-sm sm:text-base font-black tracking-tight leading-none text-slate-900 dark:text-white flex items-center gap-2">
-                      Enterprise Specification Engine
+                      Enterprise Specification Engine — &ldquo;Lean 8&rdquo; Pharma Regulatory Rigor
                       <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20">
-                        17 ARCHETYPES
+                        {DOC_ARCHETYPES_META.length} SURVIVING CORE DOCS
                       </span>
                     </h1>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 hidden sm:block">
-                      Synthesize multi-chapter engineering specs with attached 16:9 Draw.io diagrams &amp; compliance matrices.
+                      Consolidated from 17 legacy specs into 8 zero-redundancy, GxP / FDA 21 CFR Part 11 inspection-ready documents with 100% deduplicated blueprints.
                     </p>
                   </div>
                 </div>
@@ -2198,8 +2198,8 @@ function DocGenContent() {
                   isLight ? 'bg-white/90 border-slate-200' : 'bg-[#090D18]/90 border-slate-800'
                 }`}>
                   <div className="flex items-center gap-1">
-                    <span className="font-extrabold text-teal-600 dark:text-teal-400">17</span>
-                    <span className="text-[10px] text-slate-500 uppercase font-bold">Specs</span>
+                    <span className="font-extrabold text-teal-600 dark:text-teal-400">{DOC_ARCHETYPES_META.length}</span>
+                    <span className="text-[10px] text-slate-500 uppercase font-bold">Core Docs</span>
                   </div>
                   <span className="text-slate-300 dark:text-slate-700">|</span>
                   <div className="flex items-center gap-1">
@@ -2208,8 +2208,8 @@ function DocGenContent() {
                   </div>
                   <span className="text-slate-300 dark:text-slate-700">|</span>
                   <div className="flex items-center gap-1">
-                    <span className="font-extrabold text-emerald-600 dark:text-emerald-400">100%</span>
-                    <span className="text-[10px] text-slate-500 uppercase font-bold">Word</span>
+                    <span className="font-extrabold text-emerald-600 dark:text-emerald-400">9</span>
+                    <span className="text-[10px] text-slate-500 uppercase font-bold">Absorbed</span>
                   </div>
                 </div>
 
@@ -2229,55 +2229,137 @@ function DocGenContent() {
           </div>
         )}
 
-        {/* TAB 1: CATALOG VIEW (PREVIEW ALL 17 DOCUMENT BLUEPRINTS) */}
+        {/* TAB 1: CATALOG VIEW (LEAN 8 SURVIVING CORE DOCUMENTS + MASTER CONSOLIDATION TABLE) */}
         {activeTab === 'catalog' && (
           <div className="py-4 space-y-6">
+            {/* 1. MASTER CONSOLIDATION & BLUEPRINT MAPPING TABLE */}
+            <div className={`rounded-3xl border p-5 sm:p-6 shadow-xs space-y-3 ${
+              isLight ? 'bg-white border-slate-200/90' : 'bg-[#0B111E] border-slate-800'
+            }`}>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                    <span>1. Master Consolidation &amp; Blueprint Mapping Table</span>
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                      Pharma Regulatory Rigor &bull; Zero Redundancy
+                    </span>
+                  </h2>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Maps every absorbed redundant document, its specialized topics, and its deduplicated blueprint #IDs directly into the 8 surviving core documents.
+                  </p>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className={isLight ? 'bg-slate-50 text-slate-700 border-b border-slate-200' : 'bg-slate-900 text-slate-300 border-b border-slate-800'}>
+                      <th className="py-2.5 px-3.5 font-black uppercase tracking-wider text-[10px]">Surviving Core Document</th>
+                      <th className="py-2.5 px-3.5 font-black uppercase tracking-wider text-[10px]">Absorbed Redundant Docs</th>
+                      <th className="py-2.5 px-3.5 font-black uppercase tracking-wider text-[10px]">Newly Merged Chapters / Topics</th>
+                      <th className="py-2.5 px-3.5 font-black uppercase tracking-wider text-[10px]">Consolidated Blueprint IDs (Deduplicated)</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200/70 dark:divide-slate-800">
+                    {DOC_ARCHETYPES_META.map((meta, idx) => (
+                      <tr key={meta.id} className={isLight ? 'hover:bg-slate-50/80' : 'hover:bg-slate-900/50'}>
+                        <td className="py-2.5 px-3.5 align-top font-bold text-slate-900 dark:text-white whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <span className="px-2 py-0.5 rounded-md bg-teal-500/10 text-teal-700 dark:text-teal-400 font-mono text-[10px] font-black border border-teal-500/20">
+                              {idx + 1}. {meta.shortName}
+                            </span>
+                          </div>
+                          <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">
+                            ({meta.badge})
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-3.5 align-top">
+                          <div className="flex flex-wrap gap-1">
+                            {meta.absorbedDocs.map((ab, aIdx) => (
+                              <span
+                                key={aIdx}
+                                className="px-2 py-0.5 rounded-md text-[10.5px] font-semibold bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700"
+                              >
+                                {ab}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-3.5 align-top text-slate-600 dark:text-slate-300">
+                          <ul className="space-y-0.5 list-disc list-inside text-[11px]">
+                            {meta.mergedTopics.map((topic, tIdx) => (
+                              <li key={tIdx}>{topic}</li>
+                            ))}
+                          </ul>
+                        </td>
+                        <td className="py-2.5 px-3.5 align-top font-mono text-[11px] font-bold text-sky-700 dark:text-sky-400">
+                          {meta.consolidatedBlueprintIds}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div>
                 <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-                  <span>17 Production Document Archetypes</span>
+                  <span>2. The &ldquo;Lean 8&rdquo; Surviving Document Archetypes</span>
                   <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
                     Domain: {DOMAIN_PRESETS.find(d => d.id === selectedDomain)?.name || selectedDomain}
                   </span>
                 </h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Select any archetype to inspect its chapters, attached architecture blueprints, and preview complete generated specifications.
+                  Select any surviving core document to inspect its consolidated chapters, attached architecture blueprints, and preview or export complete specifications.
                 </p>
               </div>
             </div>
 
-            {/* 17 DOCUMENT ARCHETYPE CARDS GRID (BEAUTIFIED) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 min-[1600px]:grid-cols-3 gap-6">
-              {DOC_ARCHETYPES_META.map((meta, idx) => {
-                const docNumber = String(idx + 1).padStart(2, '0');
+            {/* LEAN 8 DOCUMENT ARCHETYPE CARDS GRID */}
+            <div className="grid grid-cols-1 md:grid-cols-2 min-[1600px]:grid-cols-4 gap-5">
+              {DOC_ARCHETYPES_META.map((meta) => {
+                const docNumber = meta.docCode.replace('DOC ', '');
                 return (
                   <div
                     key={meta.id}
-                    className={`rounded-3xl border p-6 flex flex-col justify-between transition-all duration-300 group hover:-translate-y-1 ${
+                    className={`rounded-3xl border p-5 flex flex-col justify-between transition-all duration-300 group hover:-translate-y-1 ${
                       isLight
                         ? 'bg-gradient-to-b from-white to-slate-50/60 border-slate-200/90 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_36px_-6px_rgba(13,148,136,0.12)] hover:border-teal-400/80'
                         : 'bg-gradient-to-b from-[#0B111E] to-[#070D18] border-slate-800 shadow-2xl hover:border-teal-500/50 hover:shadow-teal-500/10'
                     }`}
                   >
-                    <div className="space-y-4">
-                      {/* Top Row: Doc Number, Short Tag & Category Badge */}
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <span className="w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-500/15 to-sky-500/15 text-teal-700 dark:text-teal-400 border border-teal-500/25 font-black text-sm flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                    <div className="space-y-3.5">
+                      {/* Top Row: Doc Code, Short Tag & Category Badge */}
+                      <div className="flex items-start justify-between gap-2.5">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-500/15 to-sky-500/15 text-teal-700 dark:text-teal-400 border border-teal-500/25 font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
                             {docNumber}
                           </span>
                           <div className="min-w-0">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">
-                              DOC {docNumber} &bull; <span className="text-teal-600 dark:text-teal-400 font-black">{meta.shortName}</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block truncate">
+                              <span className="text-teal-600 dark:text-teal-400 font-black">{meta.shortName}</span>
                             </span>
-                            <h3 className="text-base font-black text-slate-900 dark:text-white leading-tight group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                            <h3 className="text-sm font-black text-slate-900 dark:text-white leading-snug group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                               {meta.name}
                             </h3>
                           </div>
                         </div>
-                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border shrink-0 ${meta.badgeColor}`}>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className={`px-2 py-0.5 rounded-full text-[9.5px] font-black uppercase tracking-wider border ${meta.badgeColor}`}>
                           {meta.badge}
                         </span>
+                        <span className="px-2 py-0.5 rounded-md text-[9.5px] font-mono font-bold bg-sky-50 text-sky-700 border border-sky-200 dark:bg-sky-950/50 dark:text-sky-300 dark:border-sky-800">
+                          {meta.consolidatedBlueprintIds}
+                        </span>
+                      </div>
+
+                      {/* Absorbed Redundant Docs */}
+                      <div className="text-[10.5px] text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/70 p-2 rounded-xl border border-slate-200/70 dark:border-slate-800">
+                        <span className="font-black uppercase text-[9.5px] text-slate-400 block mb-0.5">Absorbed Docs:</span>
+                        <span className="font-semibold">{meta.absorbedDocs.join(' • ')}</span>
                       </div>
 
                       {/* Purpose */}
@@ -2289,7 +2371,7 @@ function DocGenContent() {
 
                       {/* Target Audience */}
                       <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                        <span className="font-bold text-slate-700 dark:text-slate-300">Audience:</span>
+                        <span className="font-bold text-slate-700 dark:text-slate-300 shrink-0">Audience:</span>
                         <span className="truncate">{meta.audience}</span>
                       </div>
 
@@ -2298,17 +2380,17 @@ function DocGenContent() {
                         <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center justify-between">
                           <span className="flex items-center gap-1 font-bold">
                             <Network className="w-3 h-3 text-teal-500" />
-                            <span>Attached Blueprints ({meta.blueprintPack.length})</span>
+                            <span>Consolidated Chapters ({meta.blueprintPack.length} Visuals)</span>
                           </span>
-                          <span className="text-teal-600 dark:text-teal-400 font-mono font-bold">{meta.sectionsCount} Sections</span>
+                          <span className="text-teal-600 dark:text-teal-400 font-mono font-bold">{meta.sectionsCount} Ch.</span>
                         </div>
 
-                        <div className="space-y-1.5">
+                        <div className="space-y-1.5 max-h-[210px] overflow-y-auto pr-0.5">
                           {meta.blueprintPack.map((slot, sIdx) => {
                             return (
                               <div
                                 key={sIdx}
-                                className={`flex items-center justify-between p-2 rounded-xl text-xs border transition-colors ${
+                                className={`flex items-center justify-between p-1.5 rounded-xl text-xs border transition-colors ${
                                   isLight
                                     ? 'bg-white/80 border-slate-200/80 hover:bg-slate-50'
                                     : 'bg-slate-900/80 border-slate-800 hover:bg-slate-800'
@@ -2333,7 +2415,7 @@ function DocGenContent() {
                     </div>
 
                     {/* Card Actions */}
-                    <div className="pt-5 mt-4 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-2 gap-2">
+                    <div className="pt-4 mt-3 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-2 gap-2">
                       <button
                         type="button"
                         onClick={() => handleOpenPreview(meta)}
@@ -2381,14 +2463,14 @@ function DocGenContent() {
                     Studio Generation Mode:
                   </h1>
                   <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-950/40 dark:text-teal-400 dark:border-teal-800">
-                    {studioMode === 'diagrams' && '53 Canonical 16:9 Master Blueprints'}
-                    {studioMode === 'documents' && '17 Production-Ready Archetypes'}
+                    {studioMode === 'diagrams' && `${CANONICAL_TEMPLATES.length} Certified 16:9 Master Blueprints`}
+                    {studioMode === 'documents' && `Lean ${DOC_ARCHETYPES_META.length} Production-Ready Archetypes`}
                     {studioMode === 'both' && 'Unified Multi-Blueprint Specifications'}
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 dark:text-slate-300">
                   {studioMode === 'diagrams' && 'Synthesize standalone 16:9 architecture diagrams with domain flavoring, component matrices & Canonical Blueprints suite.'}
-                  {studioMode === 'documents' && 'Synthesize 17 production-ready enterprise specifications (BRD, PRD, SDD, TDD, STRIDE) with full section controls.'}
+                  {studioMode === 'documents' && 'Synthesize the Lean 8 production-ready enterprise specifications (BRD, PRD, SDD, TDD, AI Card, STRIDE, GRC, SRE) with full section controls.'}
                   {studioMode === 'both' && 'Generate multi-chapter enterprise specifications with live 16:9 interactive diagrams embedded in each chapter.'}
                 </p>
               </div>
@@ -2472,7 +2554,7 @@ function DocGenContent() {
                       <span className="text-[10px] font-bold text-slate-400">
                         {studioMode === 'diagrams' 
                           ? `${getTemplatesForFamily(selectedDiagramFamily).length} Blueprints in Category (${CANONICAL_TEMPLATES.length} Total)` 
-                          : '17 Archetypes Available'}
+                          : `${DOC_ARCHETYPES_META.length} Surviving Core Archetypes`}
                       </span>
                     </div>
 
@@ -2543,7 +2625,7 @@ function DocGenContent() {
                           </span>
                         </div>
                         <span className="text-[11px] font-mono font-bold text-teal-700 dark:text-teal-400">
-                          #{selectedDiagramTemplateId || '01'} &bull; {CANONICAL_TEMPLATES.find(t => t.id === selectedDiagramTemplateId)?.name || 'System Context'}
+                          #{selectedDiagramTemplateId || '01'} &bull; {getCanonicalTemplateById(selectedDiagramTemplateId)?.name || 'System Context'}
                         </span>
                       </div>
 
@@ -3129,7 +3211,7 @@ function DocGenContent() {
                             {(() => {
                               const activeSlot = activeMeta.blueprintPack[activePreviewChapterIndex] || activeMeta.blueprintPack[0];
                               const slotTplId = slotCustomizations[activePreviewChapterIndex + 1]?.templateId || activeSlot?.recommendedTemplateId || '01';
-                              const chapterTpl = CANONICAL_TEMPLATES.find((t) => t.id === slotTplId) || CANONICAL_TEMPLATES[0];
+                              const chapterTpl = getCanonicalTemplateById(slotTplId);
                               const chapterXml = chapterTpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
                               const flavoredChapterXml = injectDomainFlavorXml(chapterXml, selectedDomain);
                               return (
@@ -3197,34 +3279,6 @@ function DocGenContent() {
                                     <span className="text-emerald-600 font-bold">99.99% Up</span>
                                   </div>
                                 </div>
-                              ) : activeMeta.id === 'vendor_rfp' ? (
-                                <div className="space-y-1 font-mono text-[10px]">
-                                  <div className="flex justify-between border-b pb-1 text-slate-400 font-bold">
-                                    <span>RFP EVALUATION PILLAR</span>
-                                    <span>WEIGHT</span>
-                                    <span>TARGET REQUIREMENT &amp; SCORE</span>
-                                  </div>
-                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
-                                    <span>Architectural Parity &amp; APIs</span>
-                                    <span>35%</span>
-                                    <span className="text-sky-600 font-bold">9.4/10.0 (Native GCP)</span>
-                                  </div>
-                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
-                                    <span>Security &amp; ISO Certifications</span>
-                                    <span>25%</span>
-                                    <span className="text-emerald-600 font-bold">100% (FedRAMP High)</span>
-                                  </div>
-                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
-                                    <span>Disaster Recovery &amp; Multi-Region</span>
-                                    <span>20%</span>
-                                    <span className="text-teal-600 font-bold">RTO &lt; 5m, RPO &lt; 1m</span>
-                                  </div>
-                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
-                                    <span>Unit Economics &amp; 3-Yr TCO</span>
-                                    <span>20%</span>
-                                    <span className="text-indigo-600 font-bold">42% Projected Savings</span>
-                                  </div>
-                                </div>
                               ) : activeMeta.id === 'tdd' ? (
                                 <div className="space-y-1 font-mono text-[10px]">
                                   <div className="flex justify-between border-b pb-1 text-slate-400 font-bold">
@@ -3253,34 +3307,6 @@ function DocGenContent() {
                                     <span className="text-teal-600 font-bold">100k msg/sec</span>
                                   </div>
                                 </div>
-                              ) : activeMeta.id === 'cloud_migration' ? (
-                                <div className="space-y-1 font-mono text-[10px]">
-                                  <div className="flex justify-between border-b pb-1 text-slate-400 font-bold">
-                                    <span>MIGRATION WAVE</span>
-                                    <span>SOURCE WORKLOAD</span>
-                                    <span>TARGET GCP DESTINATION</span>
-                                  </div>
-                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
-                                    <span>Wave 1: Edge &amp; Ingress</span>
-                                    <span>F5 BIG-IP / On-Prem WAF</span>
-                                    <span className="text-teal-600 font-bold">Cloud Armor + Cloud CDN</span>
-                                  </div>
-                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
-                                    <span>Wave 2: Microservices</span>
-                                    <span>Legacy WebSphere / VMs</span>
-                                    <span className="text-sky-600 font-bold">GKE Autopilot / Cloud Run</span>
-                                  </div>
-                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
-                                    <span>Wave 3: Relational DBs</span>
-                                    <span>Legacy Relational / SQL Server</span>
-                                    <span className="text-indigo-600 font-bold">Cloud Spanner / Cloud SQL</span>
-                                  </div>
-                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
-                                    <span>Wave 4: Lakehouse &amp; CDC</span>
-                                    <span>Hadoop / Teradata Warehouse</span>
-                                    <span className="text-purple-600 font-bold">BigQuery + Dataproc</span>
-                                  </div>
-                                </div>
                               ) : activeMeta.id === 'ai_system_card' ? (
                                 <div className="space-y-1 font-mono text-[10px]">
                                   <div className="flex justify-between border-b pb-1 text-slate-400 font-bold">
@@ -3307,34 +3333,6 @@ function DocGenContent() {
                                     <span>Inference &amp; Grounding</span>
                                     <span>Gemini 3.8 Flash / 3.1 Pro</span>
                                     <span className="text-purple-600 font-bold">Toxicity &lt; 0.01</span>
-                                  </div>
-                                </div>
-                              ) : activeMeta.id === 'cloud_finops' ? (
-                                <div className="space-y-1 font-mono text-[10px]">
-                                  <div className="flex justify-between border-b pb-1 text-slate-400 font-bold">
-                                    <span>RESOURCE ALLOCATION</span>
-                                    <span>UNIT COST DRIVER</span>
-                                    <span>OPTIMIZATION LEVER</span>
-                                  </div>
-                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
-                                    <span>GKE Autopilot Clusters</span>
-                                    <span>vCPU / GiB Allocated-Hour</span>
-                                    <span className="text-emerald-600 font-bold">CUDs &amp; Spot VM Pools</span>
-                                  </div>
-                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
-                                    <span>Cloud Spanner Database</span>
-                                    <span>Provisioned Compute Units</span>
-                                    <span className="text-sky-600 font-bold">Auto-Scale Min/Max Nodes</span>
-                                  </div>
-                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
-                                    <span>BigQuery Analytics</span>
-                                    <span>TB Scanned / On-Demand</span>
-                                    <span className="text-teal-600 font-bold">Slot Reservations &amp; Partitioning</span>
-                                  </div>
-                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
-                                    <span>Ingress / Egress Network</span>
-                                    <span>Cross-Region Transfer GiB</span>
-                                    <span className="text-indigo-600 font-bold">Cloud CDN Cache Shield</span>
                                   </div>
                                 </div>
                               ) : (activeMeta.id as string) === 'grc' || (activeMeta.id as string) === 'security_package' ? (
@@ -3558,7 +3556,7 @@ function DocGenContent() {
                   <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
                     {diagramSlotsList.map((slot, sIdx) => {
                       const isSlotActive = activeDiagramSlotIndex === sIdx;
-                      const tpl = CANONICAL_TEMPLATES.find((t) => t.id === slot.templateId) || CANONICAL_TEMPLATES[0];
+                      const tpl = getCanonicalTemplateById(slot.templateId) || CANONICAL_TEMPLATES[0];
 
                       return (
                         <button
@@ -4025,7 +4023,7 @@ function DocGenContent() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {previewModalDoc.blueprintPack.map((slot, sIdx) => {
-                      const tpl = CANONICAL_TEMPLATES.find((t) => t.id === slot.recommendedTemplateId);
+                      const tpl = getCanonicalTemplateById(slot.recommendedTemplateId);
                       return (
                         <div
                           key={sIdx}
@@ -4286,7 +4284,7 @@ function synthesizeCustomExecutiveDocument(
   // Update Slot Diagram Chapter References based on slotCustomizations
   meta.blueprintPack.forEach((slot, sIdx) => {
     const assignedTplId = slotCustomizations[sIdx]?.templateId || slot.recommendedTemplateId;
-    const tpl = CANONICAL_TEMPLATES.find((t) => t.id === assignedTplId);
+    const tpl = getCanonicalTemplateById(assignedTplId);
     if (tpl) {
       const pattern = new RegExp(`### 📐 Visual Diagram ${sIdx + 1}:[^\n]+`, 'g');
       doc = doc.replace(pattern, `### 📐 Visual Diagram ${sIdx + 1}: ${slot.slotTitle} (Template ${tpl.id})`);

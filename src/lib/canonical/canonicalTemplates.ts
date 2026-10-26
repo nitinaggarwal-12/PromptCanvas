@@ -2,9 +2,17 @@ import { CANONICAL_CONTRACTS, CanonicalContract } from './canonicalContracts';
 import { INFOGRAPHIC_BLUEPRINTS_LIST, generateInfographicBlueprintXmlById } from './infographicBlueprints52to66';
 import { FLOW_DIAGRAM_BLUEPRINTS_67_TO_74, generateFlowDiagramBlueprintXmlById } from './flowDiagramBlueprints67to74';
 import { generateTemplate78OfficialGcpArchCenterHubSpokeXml } from './templateOfficialGcpArchCenterHubSpoke';
+import {
+  generateTemplate79L400MultiTenantHubSpokeNetworkSpecXml,
+  generateTemplate80L400PhysicalNetworkAgenticWorkspaceXml,
+  generateTemplate81L400PrincipalSequenceA2aMcpXml,
+  generateTemplate82L200LogicalGcpMultiAgentSystemXml,
+  generateTemplate83L100ConceptualAgenticWorkspaceXml,
+  generateTemplate84L400OracleEbsExadataArchCenter78Xml,
+} from './templateL100L400AgenticWorkspaceBlueprints';
 
 export interface CanonicalTemplate {
-  id: string; // e.g. "01", "02" ... "77"
+  id: string; // e.g. "00", "38" ... "84"
   name: string;
   family: 'Infographic' | 'Understand' | 'Process' | 'Whiteboard' | 'Paper' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: 'L1' | 'L2' | 'L3';
@@ -26,6 +34,7 @@ export const CANONICAL_FAMILIES = [
   'All',
   'Reference Architectures',
   'Infographic',
+  'Understand',
   'Structure',
   'Flow',
   'Infrastructure',
@@ -57,22 +66,14 @@ interface ArchitectureDocumentBinding {
 }
 
 export const ARCHITECTURE_DOCUMENT_BINDINGS: ArchitectureDocumentBinding[] = [
-  { docId: 'DOC-01', title: 'Product Requirements Document (PRD)', primaryPurpose: 'Business requirements, user personas, functional scope, and success KPIs', requiredDiagramViews: ['78 Hub & Spoke', '00 GCP Enterprise Arch', '67 Agentic Flow', '68 Agentic Flowchart'] },
-  { docId: 'DOC-02', title: 'Functional Design Document (FDD)', primaryPurpose: 'Detailed functional specifications, business rules, and user interaction workflows', requiredDiagramViews: ['67 Agentic Flow', '68 Agentic Flowchart', '78 Hub & Spoke', '00 GCP Enterprise Arch'] },
-  { docId: 'DOC-03', title: 'High-Level Architecture Design (HLD)', primaryPurpose: 'End-to-end system architecture, major platform subsystems, integration, and cloud landing zone', requiredDiagramViews: ['78 Hub & Spoke', '00 GCP Enterprise Arch', '38 Cloud Landing Zone', '42 Modern Data Lakehouse'] },
-  { docId: 'DOC-04', title: 'Low-Level Technical Design (LLD)', primaryPurpose: 'Detailed component design, internal class structures, API schemas, and thread/connection pools', requiredDiagramViews: ['78 Hub & Spoke', '38 Cloud Landing Zone', '67 Agentic Flow', '68 Agentic Flowchart'] },
-  { docId: 'DOC-05', title: 'Data Architecture & Governance Spec', primaryPurpose: 'Data mesh topology, medallion lakehouse, schema catalog, data quality SLAs, and privacy tags', requiredDiagramViews: ['42 Modern Data Lakehouse', '44 Zero-Trust & SOC', '78 Hub & Spoke', '68 Agentic Flowchart'] },
-  { docId: 'DOC-06', title: 'Enterprise Security Architecture & Threat Model', primaryPurpose: 'Zero-trust boundaries, STRIDE threat model, identity federation, and encryption specs', requiredDiagramViews: ['44 Zero-Trust & SOC', '38 Cloud Landing Zone', '78 Hub & Spoke', '67 Agentic Flow'] },
-  { docId: 'DOC-07', title: 'AI System Card & Cognitive Architecture Spec', primaryPurpose: 'Model specifications, multi-agent orchestration, RAG knowledge graph, and prompt safety guardrails', requiredDiagramViews: ['78 Hub & Spoke', '00 GCP Enterprise Arch', '67 Agentic Flow', '68 Agentic Flowchart'] },
-  { docId: 'DOC-08', title: 'Infrastructure & Cloud Deployment Spec', primaryPurpose: 'Physical cloud resource mapping, GKE cluster topology, multi-zone compute, and subnet CIDRs', requiredDiagramViews: ['38 Cloud Landing Zone', '44 Zero-Trust & SOC', '00 GCP Enterprise Arch', '78 Hub & Spoke'] },
-  { docId: 'DOC-09', title: 'High Availability & Disaster Recovery (BCDR) Plan', primaryPurpose: 'RTO/RPO targets, multi-region replication, failover automation, and disaster recovery exercises', requiredDiagramViews: ['44 Zero-Trust & SOC', '38 Cloud Landing Zone', '68 Agentic Flowchart'] },
-  { docId: 'DOC-10', title: 'Software Delivery & CI/CD Specification', primaryPurpose: 'Automated build/test pipelines, GitOps declarative delivery, progressive canary rollout, and SLSA L3', requiredDiagramViews: ['38 Cloud Landing Zone', '67 Agentic Flow', '68 Agentic Flowchart'] },
-  { docId: 'DOC-11', title: 'Site Reliability Engineering (SRE) & Telemetry Spec', primaryPurpose: 'SLO/SLA definitions, error budget policies, OpenTelemetry distributed tracing, and alert matrices', requiredDiagramViews: ['44 Zero-Trust & SOC', '67 Agentic Flow', '68 Agentic Flowchart'] },
-  { docId: 'DOC-12', title: 'Migration & Modernization Strategy (6-Rs)', primaryPurpose: 'Legacy inventory assessment, dependency mapping, migration wave prioritization, and cutover', requiredDiagramViews: ['38 Cloud Landing Zone', '00 GCP Enterprise Arch', '42 Modern Data Lakehouse'] },
-  { docId: 'DOC-13', title: 'Production Go-Live & Cutover Runbook', primaryPurpose: 'Minute-by-minute execution steps for launch, war room operations, smoke tests, and rollback', requiredDiagramViews: ['38 Cloud Landing Zone', '67 Agentic Flow', '68 Agentic Flowchart'] },
-  { docId: 'DOC-14', title: 'Cloud FinOps & Unit Economics Model', primaryPurpose: 'Cloud spend allocation by business unit, automated idle reclaimer, and AI token cost budgeting', requiredDiagramViews: ['38 Cloud Landing Zone', '42 Modern Data Lakehouse', '78 Hub & Spoke'] },
-  { docId: 'DOC-15', title: 'Regulatory Compliance & GxP / HIPAA Validation Pack', primaryPurpose: '21 CFR Part 11 electronic records, HIPAA audit trails, sovereign cloud boundaries, and CSV protocols', requiredDiagramViews: ['44 Zero-Trust & SOC', '38 Cloud Landing Zone', '78 Hub & Spoke'] },
-  { docId: 'DOC-16', title: 'Architecture Decision Record (ADR) Log', primaryPurpose: 'Formal record of architectural trade-offs, technology evaluations, and approved decision rationale', requiredDiagramViews: ['78 Hub & Spoke', '00 GCP Enterprise Arch', '42 Modern Data Lakehouse'] },
+  { docId: 'DOC-01', title: 'Business Requirements & FinOps Strategy (BRD)', primaryPurpose: 'C-Suite strategic pillars, As-Is vs. To-Be matrix, value stream & ROI formulas, vendor fit-gap, 3-year TCO FinOps, HITL gates, and 30-60-90 day roadmap (Absorbs DOC 06 EAB, DOC 10 Workshop, DOC 14 RFP, DOC 15 FinOps)', requiredDiagramViews: ['01 Executive Context', '05 As-Is vs To-Be', '04 Value Stream', '33 Fit-Gap Heatmap', '30 Cloud Spend & TCO', '26 HITL Gates', '32 Phased Roadmap'] },
+  { docId: 'DOC-02', title: 'Product & Functional Requirements Document (PRD / URS)', primaryPurpose: 'Product scope, capability taxonomy & MVP grid, multi-actor clinical swimlanes, clinician copilot UX journey, lifecycle state machine, and 21 CFR Part 11 e-signature workbench (Absorbs DOC 04 FDD & DOC 10 Workshop)', requiredDiagramViews: ['01 Product Boundary', '02 Capability Taxonomy', '03 Multi-Actor Swimlane', '23 User Journey', '12 State Machine', '26 E-Signature Workbench'] },
+  { docId: 'DOC-03', title: 'System Design Document (SDD - High-Level Architecture)', primaryPurpose: 'Scale math & CAP trade-offs, ADR decision trees, multi-tier container topology, GPU sizing & FinOps reclamation, zero-trust VPC, model gateway routing, multi-region DR, and 6-R migration CDC appendix (Absorbs DOC 11, DOC 12, DOC 14, DOC 15)', requiredDiagramViews: ['13 ADR Decision Tree', '08 Container Topology', '16 Compute/Storage Map', '33 Waste Reclamation', '15 Zero-Trust VPC', '23 Model Gateway', '19 Multi-Region DR', '22 CDC Sync', '31 Dependency Mesh'] },
+  { docId: 'DOC-05', title: 'Technical Design & API Specification (TDD - Low-Level Engineering)', primaryPurpose: 'REST/gRPC/GraphQL gateway routing & rate limits, micro-level API & webhook sequences, logical/physical/JSON schema ERDs, saga outbox transactions, circuit breakers, and 22-stage CI/CD quality gates (Absorbs DOC 04 Data/Seq & DOC 08 API Spec)', requiredDiagramViews: ['08 API Gateway Routing', '11 Sequence & Callback Flow', '14 Physical & JSON ERD', '28 Circuit Breaker Flow', '20 CI/CD Scanning Pipeline'] },
+  { docId: 'DOC-13', title: 'Enterprise AI / LLM System Card & Safety Governance Spec', primaryPurpose: 'Foundation model benchmarks & token throttling, multi-agent ReAct reasoning loops, ScaNN vector RAG mesh, Model Armor prompt injection shields, dual-custody clinical HITL gates, and GenAI platform topology (Absorbs DOC 04 Agent Flows & DOC 15 Token Throttling)', requiredDiagramViews: ['23 Multi-Agent ReAct Flow', '24 RAG Knowledge Mesh', '26 Dual-Custody Gate', '40 GenAI Platform Topology'] },
+  { docId: 'DOC-07', title: 'STRIDE Threat Model & Security Posture', primaryPurpose: 'Standalone zero-bloat cybersecurity posture covering trust boundaries, attack surface DFDs, zero-trust perimeter defense, STRIDE threat matrix, mitigations, and residual risk', requiredDiagramViews: ['18 Trust Boundaries', '15 Perimeter Defense', '27 STRIDE Matrix'] },
+  { docId: 'DOC-09', title: 'GRC & Regulatory Compliance Package', primaryPurpose: 'Standalone zero-bloat regulatory audit package mapping technical controls to FDA 21 CFR Part 11, HIPAA, SOC 2 Type II, and ISO 27001 with ABAC/PAM identity governance and immutable audit pipelines', requiredDiagramViews: ['15 Defense-in-Depth', '17 Identity Governance Flow', '21 Immutable Audit Pipeline'] },
+  { docId: 'DOC-17', title: 'SRE Reliability, Chaos & Production Cutover Runbook', primaryPurpose: '99.999% SLA error budgets & Four Golden Signals, active-active multi-region failover & chaos engineering, bulkheads & load shedding, air-gapped cyber recovery vault, T-24h war room swimlane, and minute-by-minute traffic cutover & rollback (Absorbs DOC 11, DOC 12, DOC 16)', requiredDiagramViews: ['21 Observability Mesh', '19 Active-Active DR', '28 Bulkhead & Rollback Tree', '48 Cyber Recovery Vault', '03 War Room Swimlane', '29 Cutover Timeline', '11 Traffic Cutover Sequence'] },
 ];
 
 import { generateTemplate00GcpEnterpriseArchXml } from "./template00GcpEnterpriseArch";
@@ -85,6 +86,7 @@ interface RawCanonicalTemplate {
   name: string;
   family: 'Infographic' | 'Understand' | 'Process' | 'Whiteboard' | 'Paper' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: 'L1' | 'L2' | 'L3';
+  theme?: 'light' | 'dark';
   primaryPurpose: string;
   examples: string;
   defaultDomain: string;
@@ -169,17 +171,97 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
   })),
   {
     id: '78',
-    name: 'Official Google Cloud Architecture Center — Hub-and-Spoke Multi-Tenant Agentic AI',
+    name: 'L300 Cloud Reference & Security Architecture — Hub-and-Spoke Multi-Tenant Agentic AI',
     family: 'Reference Architectures',
     level: 'L2',
+    theme: 'light',
     primaryPurpose: 'Official Google Cloud Architecture Center Hub-and-Spoke topology (#1a73e8 outer frame, #aecbfa Routing Hub, #ceead6 Governance Hub, #feefc3 Shared Pool, #fad2cf Sovereign Spoke & Step ①–⑦ callouts)',
     examples: 'Google Cloud Architecture Center, multi-tenant-agentic-ai-system.svg, Pattern A Pooled, Pattern B Sovereign Silos, Pattern C Hybrid PSC, 5-Hop Context Chain',
     defaultDomain: 'Google Cloud Architecture Center Hub-and-Spoke',
     previewImage: '/templates/canonical_78.png',
     keyComponents: ['Competing B2B Tenants / Users', 'Google Cloud Outer Container (#1a73e8)', 'Routing Hub (Cloud Armor & IAP, Model Armor, OBO+DPoP, External ALB, Cloud Run)', 'Central Governance & FinOps Hub (Security Command Center, IAM & PAB, Cloud Logging & BQ)', 'Pattern A Pooled Shared Runtime (#feefc3)', 'Pattern B Sovereign Silos & Pattern C Hybrid PSC Spokes (#fad2cf)', 'Numbered Callout Steps ①–⑦'],
     generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate78OfficialGcpArchCenterHubSpokeXml(domainFlavor, theme)
+  },
+  {
+    id: '79',
+    name: 'L400 Deployment & Network Spec — Multi-Tenant Agentic Hub-and-Spoke (GCP us-central1 • VPC-SC)',
+    family: 'Reference Architectures',
+    level: 'L3',
+    theme: 'light',
+    primaryPurpose: 'L400 physical network, subnet CIDR, BGP ASN 64512, WAF policy (mt-prod-waf-v4), PSC attachment (10.200.1.0/28), and VPC-SC perimeter specification for Multi-Tenant Hub-and-Spoke Agentic AI',
+    examples: 'Hub VPC 10.100.0.0/16, BGP ASN 64512, Global Ext ALB VIP 34.120.55.10, Tenant Pool Shared VPC 10.110.0.0/20, Dedicated Sovereign Silo Spoke VPC 10.200.0.0/20, p-finvault-silo',
+    defaultDomain: 'L400 Multi-Tenant Hub-and-Spoke Network & VPC-SC Specification',
+    previewImage: '/templates/canonical_79.png',
+    keyComponents: ['Hub VPC 10.100.0.0/16 (BGP ASN 64512)', 'Cloud Armor WAF (mt-prod-waf-v4)', 'Global External ALB VIP (34.120.55.10 :443 HTTP/3)', 'Apigee X / AgentGateway PSC (10.100.1.0/28 :8443 gRPC)', 'Central KMS HSM & BigQuery FinOps Hub (10.100.8.0/24)', 'Pattern A Pooled Subnet (10.110.0.0/20) with AlloyDB FORCE RLS', 'Pattern B/C Dedicated Sovereign Silo VPC (10.200.0.0/20 • p-finvault-silo)'],
+    generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate79L400MultiTenantHubSpokeNetworkSpecXml(domainFlavor, theme)
+  },
+  {
+    id: '80',
+    name: 'L400 Physical Network & Deployment Topology — The Agentic Workspace (Orchestrator V1)',
+    family: 'Infrastructure',
+    level: 'L3',
+    theme: 'light',
+    primaryPurpose: 'Physical L400 deployment topology for The Agentic Workspace (Orchestrator V1) across On-Prem Edge (192.168.1.8/24), Perimeter Subnet (10.10.1.0/24), Intelligence Orchestration Plane (Gemma 2 9B & ADK v1.4), 100 Gbps Partner Interconnect, and Zone 2 Decision Ignition Plane with active-passive multi-region ValKey',
+    examples: 'On-Prem Edge 192.168.1.8/24, Perimeter Subnet 10.10.1.0/24, OIDC & Envoy gRPC Proxy, Gemma 2 9B Serving, ADK v1.4 / LangGraph v0.2.1, Cloud Filestore HA NFSv4.1, 100G Partner Interconnect, ValKey Active-Passive',
+    defaultDomain: 'L400 Physical Network & Multi-Region Agentic Workspace',
+    previewImage: '/templates/canonical_80.png',
+    keyComponents: ['On-Prem Edge (192.168.1.8/24) & WAN Interconnect', 'Perimeter Subnet (10.10.1.0/24 • Cloud Armor, ALB VIP 10.10.1.100, Cloud NAT)', 'OIDC & Envoy Access Proxy (gRPC mTLS 1.3)', 'Gemini Enterprise Agent Platform (Gemma 2 9B & ADK v1.4 / LangGraph v0.2.1)', 'Cloud Filestore Enterprise (Regional HA NFSv4.1)', '100 Gbps Partner Interconnect (BGP ASN 16550 ⇄ 31998)', 'Zone 2 Decision Ignition Plane (DECISION_LOG_STATE, STATE_SNAPSHOT, Active-Passive ValKey)', 'External Action Tools (BigQuery, Vertex AI, KMS/DLP, Security Command Center)'],
+    generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate80L400PhysicalNetworkAgenticWorkspaceXml(domainFlavor, theme)
+  },
+  {
+    id: '81',
+    name: 'L400 Principal Sequence — OIDC JWT, SPIFFE mTLS, FW & VPC-SC (A2A & MCP)',
+    family: 'Flow',
+    level: 'L3',
+    theme: 'light',
+    primaryPurpose: 'Principal L400 sequence diagram (P3-APP-L-10) detailing 16 governed runtime interactions across User/Requestor, Gemini Enterprise, Coordinator Agent, Agent Gateway, Retrieval Specialist, Analytics Specialist, and Enterprise Data & Tools with grounded retrieval, governed analytics, and HITL review',
+    examples: 'L400 Principal Sequence, OIDC JWT, SPIFFE mTLS, A2A Delegation, MCP Tool Execution, Grounded Retrieval, Governed Analytics, HITL Review Gate',
+    defaultDomain: 'L400 Principal Sequence — A2A & MCP Runtime Governance',
+    previewImage: '/templates/canonical_81.png',
+    keyComponents: ['User / Requestor Lifeline', 'Gemini Enterprise Lifeline', 'Coordinator Agent Lifeline', 'Agent Gateway (Policy, Identity, Delegation Control)', 'Retrieval Specialist & Analytics Specialist Subagents', 'Enterprise Data & Tools (BigQuery, RAG Corpus, APIs)', 'ref: Grounded Retrieval & ref: Governed Analytics Frames', 'alt: HITL Review (Approve / Reject / Revise)'],
+    generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate81L400PrincipalSequenceA2aMcpXml(domainFlavor, theme)
+  },
+  {
+    id: '82',
+    name: 'L200 Logical — Google Cloud Multi-Agent System Architecture',
+    family: 'Reference Architectures',
+    level: 'L2',
+    theme: 'light',
+    primaryPurpose: 'Logical L200 Google Cloud multi-agent system architecture showing Application Users, AI Developers, and DevOps Engineers interacting with Cloud Run Frontend, ADK Coordinator Agent, Sequence & Iterative Refinement Subagents, Model Armor, Gemini Models, MCP Clients, and Google Cloud Observability',
+    examples: 'Google Cloud Multi-Agent System, ADK Coordinator Agent, Sequence Pattern (Task-A, Task-A.1), Iterative Refinement (Task-B, Quality Evaluator, Prompt Enhancer), Model Armor, MCP Clients',
+    defaultDomain: 'L200 Logical Google Cloud Multi-Agent Architecture',
+    previewImage: '/templates/canonical_82.png',
+    keyComponents: ['Application Users, AI Developers & Platform Admins', 'Frontend Cloud Run Service', 'ADK Coordinator Agent & Response Generator', 'Sequence Subagents (Task-A, Task-A.1)', 'Iterative Refinement Loop (Task-B, Quality Evaluator, Prompt Enhancer)', 'Model Armor & Gemini Foundation Models', 'MCP Clients, Tools within Google Cloud (Databases/APIs) & External Tools', 'Google Cloud Observability'],
+    generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate82L200LogicalGcpMultiAgentSystemXml(domainFlavor, theme)
+  },
+  {
+    id: '83',
+    name: 'L100 Conceptual — The Agentic Workspace (L100 Conceptual Map) - Business Value View',
+    family: 'Understand',
+    level: 'L1',
+    theme: 'light',
+    primaryPurpose: 'Executive L100 Conceptual Map & Business Value View of The Agentic Workspace illustrating how user business prompts flow through Model Armor safety gateways, Enterprise Knowledge Store, and the central Gemini Agent Coordinator into the Zone 2 Actionable Insights Tool Loop',
+    examples: 'L100 Conceptual Map, Business Value View, User Prompt to Safe Request, Model Armor Safety Gateway, Enterprise Knowledge Store, Gemini Agent Coordinator, Actionable Insights Tool Loop',
+    defaultDomain: 'L100 Conceptual Agentic Workspace Business Value View',
+    previewImage: '/templates/canonical_83.png',
+    keyComponents: ['1. User / Client (Business Prompt Ingress)', '2. Model Armor (Safety Gateway & Input Filtering)', '3. Enterprise Knowledge Store (Vector Embeddings & Long-Term Memory)', 'Intelligence Orchestration Plane & Gemini Agent Coordinator', 'Cloud Filestore (Regional HA NFSv4.1)', 'Dedicated ODB Network (100 Gbps Partner Interconnect)', 'Zone 2: Actionable Insights / Tool Loop (Customer Lookup, Function Execution, Active ValKey)', '4. External Action Tools & Technology Stack'],
+    generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate83L100ConceptualAgenticWorkspaceXml(domainFlavor, theme)
+  },
+  {
+    id: '84',
+    name: 'L400 Deep Technical Implementation — Oracle EBS R12.2 on Oracle Database@Google Cloud (Exadata X10M)',
+    family: 'Reference Architectures',
+    level: 'L3',
+    theme: 'light',
+    primaryPurpose: 'Official Google Cloud Architecture Center #78 (L400) reference implementation for Oracle E-Business Suite (EBS R12.2) on Google Cloud GCE C3 HA WebLogic & Cloud Filestore Enterprise NFSv4.1 connected via <0.5ms Dual 100GbE ODB Partner Interconnect to Co-Located OCI Child Site Exadata X10M 2-Node RAC, Smart Scan & Active Data Guard',
+    examples: 'Oracle EBS R12.2 on Google Cloud, Oracle Database@Google Cloud Exadata X10M, ODB Partner Interconnect (<0.5ms), GCE C3 WebLogic & PCP, Cloud Filestore NFSv4.1 ADOP fs1/fs2, GoldenGate 23ai to BigQuery Cortex',
+    defaultDomain: 'Oracle EBS R12.2 on Oracle Database@Google Cloud (Exadata X10M L400)',
+    previewImage: '/templates/canonical_84.png',
+    keyComponents: ['EBS R12.2 Enterprise Users (O2C, P2P, GL & Manufacturing)', 'Ingress, Hybrid BGP & ODB Routing Hub (10.20.0.0/16 • Cloud Armor, Cloud Router/DNS, IAP, Global ALB, ODB Partner Interconnect)', 'Security, KMS, GoldenGate 23ai & BigQuery Cortex Hub (10.20.20.0/24)', 'Zone 1: Google Cloud Customer VPC (EBS App Tier 10.20.1.0/24 • WebLogic 12c, GridLink, PCP, ADOP, Cloud Filestore NFSv4.1)', 'Zone 2: Co-Located OCI Child Site (Exadata X10M Tier 10.20.2.0/24 • ODB SCAN/Backup Subnets, 2-Node RAC, 100GbE RoCEv2 Smart Scan, Active Data Guard)'],
+    generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate84L400OracleEbsExadataArchCenter78Xml(domainFlavor, theme)
   }
 ];
+
 
 
 
@@ -972,7 +1054,7 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/GxP/gi, 'SMPTE');
   }
 
-  if (out.includes('id="flow_blueprint_') || out.includes('official_gcp_arch_center')) {
+  if (out.includes('id="flow_blueprint_') || out.includes('official_gcp_arch_center') || out.includes('id="bp79_') || out.includes('id="bp80_') || out.includes('id="bp82_') || out.includes('id="bp83_') || out.includes('oracle_exadata_ebs_topology')) {
     return out;
   }
   return sanitizeAndHealCanonicalBlueprintXml(out);
@@ -980,6 +1062,12 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
 
 export const ACTIVE_CANONICAL_BLUEPRINT_IDS: readonly string[] = [
   '78',
+  '79',
+  '80',
+  '81',
+  '82',
+  '83',
+  '84',
   '00',
   '38',
   '42',
@@ -1005,45 +1093,45 @@ export const ACTIVE_CANONICAL_BLUEPRINT_IDS: readonly string[] = [
 ] as const;
 
 const LEGACY_TO_MODERN_BLUEPRINT_MAP: Record<string, string> = {
-  '01': '78',
-  '02': '78',
-  '03': '67',
-  '04': '38',
-  '05': '78',
+  '01': '83',
+  '02': '55',
+  '03': '69',
+  '04': '83',
+  '05': '56',
   '06': '42',
   '07': '42',
-  '08': '42',
+  '08': '78',
   '09': '42',
   '10': '78',
-  '11': '67',
-  '12': '67',
+  '11': '81',
+  '12': '68',
   '13': '67',
   '14': '42',
-  '15': '38',
-  '16': '38',
-  '17': '38',
+  '15': '79',
+  '16': '80',
+  '17': '44',
   '18': '44',
-  '19': '44',
+  '19': '84',
   '20': '38',
   '21': '38',
-  '22': '42',
-  '23': '78',
+  '22': '84',
+  '23': '82',
   '24': '00',
   '25': '78',
-  '26': '78',
+  '26': '67',
   '27': '44',
-  '28': '38',
-  '29': '67',
-  '30': '44',
-  '31': '78',
-  '32': '38',
-  '33': '38',
+  '28': '68',
+  '29': '53',
+  '30': '61',
+  '31': '42',
+  '32': '62',
+  '33': '63',
   '34': '44',
   '35': '38',
   '36': '38',
   '37': '38',
   '39': '44',
-  '40': '78',
+  '40': '00',
   '41': '78',
   '43': '42',
   '45': '78',
@@ -1071,15 +1159,16 @@ const ALL_RAW_CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => 
   const paddedId = t.id.padStart(2, '0');
   const isFlowBp = Number(t.id) >= 67 && Number(t.id) <= 69;
   const isInfographicBp = Number(t.id) >= 52 && Number(t.id) <= 66;
+  const isNewArchBp = Number(t.id) >= 78 && Number(t.id) <= 84;
   const rawCleanName = t.id === '00'
     ? '2026 Upgraded GCP & Gemini Enterprise Native Architecture'
-    : t.id === '78' || isFlowBp || isInfographicBp
+    : isNewArchBp || isFlowBp || isInfographicBp
     ? t.name
     : t.name
         .replace(/\bCLAUDE\.md\b/gi, 'AGENTS.md')
         .replace(/\bGPT-6\s+Astra\b/gi, 'Frontier Agent');
   const cleanName = decodeCanonicalMetadataText(rawCleanName);
-  const isSketchBp = t.id === '76' || t.id === '77' || t.id === '78' || isFlowBp;
+  const isSketchBp = t.id === '76' || t.id === '77' || isNewArchBp || isFlowBp;
   return {
     ...t,
     name: cleanName,
@@ -1107,7 +1196,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = ACTIVE_CANONICAL_BLUEPRI
   .filter((t): t is CanonicalTemplate => Boolean(t));
 
 export function getCanonicalTemplateById(rawId?: string | null): CanonicalTemplate {
-  const padded = String(rawId || '78').replace(/^(bp_|canonical_)/i, '').padStart(2, '0');
+  const padded = String(rawId || '78').replace(/^(bp_|canonical_|#)/i, '').trim().padStart(2, '0');
   const direct = CANONICAL_TEMPLATES.find((t) => t.id === padded || t.id === rawId);
   if (direct) return direct;
   const mappedId = LEGACY_TO_MODERN_BLUEPRINT_MAP[padded] || '78';

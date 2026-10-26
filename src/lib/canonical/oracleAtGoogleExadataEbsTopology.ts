@@ -788,10 +788,10 @@ export function buildOfficialOracleEbsExadataArchCenter78Xml(
   ) => {
     const iconUri = resolveArchIconUri(iconKey, title, sub);
     const maxW = Math.max(110, w - 50);
-    const bFs = fitCardLineFs(l400Badge, maxW, 7.6, 5.4, 0.62);
+    const bFs = fitCardLineFs(l400Badge, maxW, 7.6, 6.0, 0.62);
     const tFs = fitCardLineFs(title, maxW, 10.2, 6.8, 0.62);
-    const sFs = fitCardLineFs(sub, maxW, 8.4, 5.8, 0.58);
-    const lFs = fitCardLineFs(l400Spec, maxW - 8, 7.2, 5.2, 0.65);
+    const sFs = fitCardLineFs(sub, maxW, 8.4, 6.0, 0.58);
+    const lFs = fitCardLineFs(l400Spec, maxW - 8, 7.2, 6.0, 0.65);
     const topPad = isCylinder ? 'margin-top:5px;' : '';
     const html = `${SVG_GUARD}<table style="width:100%;height:100%;border-collapse:collapse;font-family:'Google Sans',Roboto,Arial,sans-serif;${topPad}"><tr><td style="width:32px;text-align:center;vertical-align:middle;padding-left:3px;"><img src="${iconUri}" width="24" height="24"/></td><td style="text-align:left;vertical-align:middle;padding:2px 5px;line-height:1.15;"><div style="font-size:${bFs}px;font-weight:700;color:${badgeColor};letter-spacing:0.12px;white-space:nowrap;">${l400Badge}</div><div style="font-size:${tFs}px;font-weight:700;color:#202124;white-space:nowrap;">${title}</div><div style="font-size:${sFs}px;color:#3c4043;white-space:nowrap;">${sub}</div><div style="font-size:${lFs}px;font-family:'Roboto Mono',monospace;color:#b31412;background:#f8f9fa;border:1px solid #dadce0;border-radius:3px;padding:0px 3px;margin-top:1px;white-space:nowrap;display:inline-block;">${l400Spec}</div></td></tr></table>`;
     const style = isCylinder

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-25T21:06:33.439Z",
+  "updatedAt": "2026-10-26T15:02:11.260Z",
   "accountEmail": "nitinagga@google.com",
   "oauthClientId": "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com",
   "slides": {
@@ -261,15 +261,15 @@
     "DRAFT-NASA-MULTIVERSE-V1-0-1": {
       "key": "DRAFT-NASA-MULTIVERSE-V1-0-1",
       "title": "NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness (v1.0.1)",
-      "sha256": "9e8ec10d2b032ee2f12873e37fef4fb4957f6584c22804e26ec67afee42585aa",
-      "sizeBytes": 44882,
+      "sha256": "072192da8355c5e01f1636632daa8457d2e5d75a22f01e5f2ba3ed7f40d598fe",
+      "sizeBytes": 44881,
       "googleSlidesId": "10l01lm732E1rPnH7owII4jK-TFiBHKNOla1WzlZpD9E",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/10l01lm732E1rPnH7owII4jK-TFiBHKNOla1WzlZpD9E/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/10l01lm732E1rPnH7owII4jK-TFiBHKNOla1WzlZpD9E/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/10l01lm732E1rPnH7owII4jK-TFiBHKNOla1WzlZpD9E/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/10l01lm732E1rPnH7owII4jK-TFiBHKNOla1WzlZpD9E/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/10l01lm732E1rPnH7owII4jK-TFiBHKNOla1WzlZpD9E/edit",
-      "syncedAt": "2026-10-25T21:06:33.439Z"
+      "syncedAt": "2026-10-26T15:02:11.260Z"
     },
     "BP-78-A": {
       "key": "BP-78-A",

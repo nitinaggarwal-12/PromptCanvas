@@ -78,52 +78,57 @@ export function renderMarkdown(input: ComposeRenderInput): string {
   const timestamp = new Date().toISOString().split('T')[0];
   const availableDiagramTypes = Object.keys(diagramRepository);
 
-  // Exact Section-ID to Diagram Location Insertion Map across all 21 architectural diagrams
+  // Exact Section-ID to Diagram Location Insertion Map across the Lean 8 surviving documents
   const SECTION_DIAGRAM_INSERTION_MAP: Record<string, Record<string, string[]>> = {
-    sdd: {
-      deployment_topology: ['secure_deployment_map', 'tech_serverless_gcp'],
-      network_security: ['tech_vpc_infra'],
-      react_runtime: ['macro_sequence_diagram', 'tech_serverless_gcp'],
-      model_gateway: ['tech_serverless_gcp', 'eval_safety_benchmarking'],
-      data_retrieval: ['agentic_rag', 'tech_data_lakehouse_gcp'],
-      tool_gateway_audit: ['governance_state_machine', 'sequence_diagram'],
-      observability_reliability: ['tech_multi_region_dr', 'tech_iot_telemetry'],
+    brd: {
+      exec_summary_pillars: ['conceptual_diagram'],
+      asis_vs_tobe_clinical: ['unified_system_view'],
+      value_stream_roi: ['data_ai_pipeline'],
+      vendor_fit_gap_eval: ['eval_safety_benchmarking'],
+      tco_cloud_finops: ['tech_multi_region_dr'],
+      autonomy_governance_gates: ['business_agent_gov_hitl', 'governance_state_machine'],
     },
     prd: {
-      problem_statement: ['conceptual_diagram'],
-      personas: ['unified_system_view'],
-      epics: ['sequence_diagram'],
-      functional_reqs: ['agentic_rag'],
-      acceptance_criteria: ['governance_state_machine'],
-      nfrs: ['devops_cicd_pipeline', 'eval_safety_benchmarking'],
+      product_scope_personas: ['conceptual_diagram'],
+      capability_taxonomy_mvp: ['unified_system_view'],
+      clinical_workflows_swimlanes: ['sequence_diagram'],
+      ux_clinician_copilot: ['agentic_rag'],
+      domain_lifecycle_gates: ['governance_state_machine'],
+      hitl_21cfr11_esignatures: ['business_agent_gov_hitl'],
     },
-    fdd: {
-      functional_overview: ['unified_system_view'],
-      roles_permissions: ['sequence_diagram'],
-      planning_orchestration: ['sequence_diagram', 'macro_sequence_diagram'],
-      retrieval_evidence: ['agentic_rag'],
-      safety_pv_detection: ['business_agent_gov_hitl', 'governance_state_machine', 'eval_safety_benchmarking'],
-      compliance_qc: ['erd'],
-    },
-    brd: {
-      exec_problem_solution: ['conceptual_diagram'],
-      business_context: ['unified_system_view'],
-      business_capabilities: ['data_ai_pipeline'],
-      autonomy_matrix: ['business_agent_gov_hitl', 'governance_state_machine'],
-      value_realization: ['tech_multi_region_dr'],
+    sdd: {
+      adrs_selection_trees: ['conceptual_diagram'],
+      multi_tier_container_topology: ['secure_deployment_map', 'tech_serverless_gcp'],
+      compute_gpu_finops_reclamation: ['tech_serverless_gcp', 'eval_safety_benchmarking'],
+      zero_trust_vpc_perimeter: ['tech_vpc_infra'],
+      cognitive_runtime_gateway: ['macro_sequence_diagram', 'agentic_rag'],
+      ha_multi_region_dr: ['tech_multi_region_dr'],
     },
     tdd: {
-      tech_overview_repo: ['secure_deployment_map'],
-      architecture_patterns: ['tech_event_driven_eda', 'tech_event_driven_aws', 'tech_streaming_analytics'],
-      data_persistence: ['tech_data_lakehouse_gcp', 'tech_data_lakehouse', 'erd'],
-      cicd_automation: ['devops_cicd_pipeline', 'eval_safety_benchmarking'],
+      api_gateway_rate_limits: ['secure_deployment_map'],
+      micro_sequences_webhooks: ['sequence_diagram'],
+      domain_physical_json_erds: ['tech_data_lakehouse_gcp', 'erd'],
+      saga_outbox_idempotency: ['tech_event_driven_eda'],
+      fault_tolerance_circuit_breakers: ['governance_state_machine'],
     },
-    exec_brief: {
-      proposal_decision: ['unified_system_view'],
-      eight_layer_blueprint: ['conceptual_diagram'],
-      specialized_agent_delegation: ['tech_multi_agent_langgraph', 'macro_sequence_diagram'],
-      autonomy_ladder_oversight: ['business_agent_gov_hitl', 'governance_state_machine', 'eval_safety_benchmarking'],
-      roadmap_investment_gates: ['tech_multi_region_dr'],
+    ai_system_card: {
+      multi_agent_react_loops: ['macro_sequence_diagram'],
+      rag_mesh_scann_vector: ['agentic_rag'],
+      dual_custody_hitl_gates: ['business_agent_gov_hitl', 'governance_state_machine'],
+    },
+    threat_model: {
+      trust_boundaries_dfd: ['unified_system_view'],
+      perimeter_zero_trust: ['secure_deployment_map', 'tech_vpc_infra'],
+    },
+    security_package: {
+      abac_rbac_identity_flow: ['governance_state_machine'],
+      tamper_evident_audit_logs: ['secure_deployment_map'],
+    },
+    sre_resilience: {
+      multi_region_failover_chaos: ['tech_multi_region_dr'],
+      bulkheads_load_shedding: ['governance_state_machine'],
+      bcdr_cyber_ransomware_vault: ['secure_deployment_map'],
+      war_room_t24h_swimlane: ['sequence_diagram'],
     },
   };
 

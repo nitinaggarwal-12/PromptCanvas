@@ -108,7 +108,7 @@ export function loadAllHistoricalProjects(): HistoricalProjectItem[] {
         {
           id: 'proj_apexpay_332',
           title: 'ApexPay Ultra-Low Latency FX Settlement Mesh',
-          archetypeId: 'fdd',
+          archetypeId: 'prd',
           domainId: 'fintech',
           docVersion: 'v2.0',
           snapshotCount: 6,

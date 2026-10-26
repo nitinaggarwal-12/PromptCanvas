@@ -29,7 +29,7 @@ describe('Phase 5: Docx & Markdown Document Composer', () => {
       inferredMap: {},
     });
 
-    expect(md).toContain('# Product Requirement Document (PRD)');
+    expect(md).toContain('# Product & Functional Requirements Document (PRD / URS)');
     expect(md).toContain('| Section ID | Section Title | Provenance Class |');
     expect(md).toContain('TODO [HUMAN ACTION REQUIRED — DO NOT AUTO-FILL]');
     expect(md).toContain('Derived diagrams describe what is designed, not what was excluded');

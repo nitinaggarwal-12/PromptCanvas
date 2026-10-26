@@ -27,8 +27,8 @@ import {
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
-import { CANONICAL_TEMPLATES, DOMAIN_PRESETS } from '@/lib/canonical/canonicalTemplates';
-import { ARCHETYPE_REGISTRY, ArchetypeId, DOC_ARCHETYPES_META, DocArchetypeMeta } from '@/lib/compose/archetypes';
+import { CANONICAL_TEMPLATES, DOMAIN_PRESETS, getCanonicalTemplateById } from '@/lib/canonical/canonicalTemplates';
+import { ARCHETYPE_REGISTRY, ArchetypeId, DOC_ARCHETYPES_META, DocArchetypeMeta, resolveSurvivingArchetypeId } from '@/lib/compose/archetypes';
 import { MASTER_DOCUMENTS, getDomainMasterDocument } from '@/lib/compose/masterDocs';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import BlueprintChangeReportModal from '@/components/BlueprintChangeReportModal';
@@ -59,8 +59,8 @@ function InlineDiagramFigure({
   const [copiedXml, setCopiedXml] = useState(false);
 
   const canonicalTpl =
-    CANONICAL_TEMPLATES.find((t) => t.id === templateId) ||
-    CANONICAL_TEMPLATES.find((t) => t.id === '01');
+    getCanonicalTemplateById(templateId) ||
+    CANONICAL_TEMPLATES[0];
 
   const diagramXml = useMemo(() => {
     if (!canonicalTpl) return '';
@@ -335,12 +335,18 @@ function DocDetailPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const rawId = Array.isArray(params?.id) ? params.id[0] : params?.id;
-  const docId = (rawId || 'sdd').toLowerCase() as ArchetypeId;
+  const docId: ArchetypeId = useMemo(() => {
+    try {
+      return resolveSurvivingArchetypeId(rawId || 'sdd');
+    } catch {
+      return 'sdd';
+    }
+  }, [rawId]);
 
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
-  const initialDomain = searchParams?.get('domain') || 'retail';
+  const initialDomain = searchParams?.get('domain') || 'biopharma';
   const initialTitle = searchParams?.get('title') ? decodeURIComponent(searchParams.get('title')!) : '';
   const initialProj = searchParams?.get('proj') || searchParams?.get('project') || '';
 
@@ -391,7 +397,7 @@ function DocDetailPageContent() {
       const primaryXml = primaryTpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
 
       const domainPreset = DOMAIN_PRESETS.find((d) => d.id === selectedDomain);
-      const domainName = domainPreset ? domainPreset.name : 'Omnichannel Retail & E-Commerce';
+      const domainName = domainPreset ? domainPreset.name : 'Bio-Pharma Precision Oncology & Regulatory AI';
 
       const res = await fetch('/api/compose', {
         method: 'POST',
@@ -400,7 +406,7 @@ function DocDetailPageContent() {
           archetypeId: docMeta.id,
           format: 'docx',
           xml: primaryXml,
-          title: `${domainPreset?.prefix || 'OMNIVUE'} Platform ${docMeta.name}`,
+          title: `${domainPreset?.prefix || 'CLINICALAI'} Platform ${docMeta.name}`,
           domain: domainName,
           userPrompt: 'Master architectural baseline for high-throughput production scale.',
         }),
@@ -433,7 +439,7 @@ function DocDetailPageContent() {
         elements.push(
           <div key={`h1-${i}`} className={`pb-4 border-b-2 mt-6 mb-4 ${isLight ? 'border-sky-600' : 'border-sky-500/60'}`}>
             <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-1">
-              <Sparkles className="w-3.5 h-3.5" /> PromptCanvas Architecture Specification
+              <Sparkles className="w-3.5 h-3.5" /> PromptCanvas Lean 8 Architecture Specification ({docMeta.docCode})
             </div>
             <h1 className={`text-2xl md:text-3xl font-black tracking-tight ${isLight ? 'text-slate-900' : 'text-slate-50'}`}>
               {line.replace('# ', '')}
@@ -601,7 +607,6 @@ function DocDetailPageContent() {
 
         const tplMatch = precedingHeading.match(/Template\s*([0-9]{1,2})/i);
         const matchedTemplateId = tplMatch ? tplMatch[1].padStart(2, '0') : null;
-        const canonicalTpl = matchedTemplateId ? CANONICAL_TEMPLATES.find((t) => t.id === matchedTemplateId) : null;
 
         const parsedNodes: { id: string; label: string; tier: string }[] = [];
         const parsedFlows: { from: string; to: string; label?: string }[] = [];
@@ -673,34 +678,53 @@ function DocDetailPageContent() {
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         {/* HEADER */}
         <AppHeader>
- <div className="w-full max-w-[1600px] mx-auto flex items-center justify-between gap-4">
+        <div className="w-full max-w-[1600px] mx-auto flex items-center justify-between gap-3">
           {/* Left: Breadcrumbs */}
           <div className="flex items-center gap-3 min-w-0">
             <Link
               href="/docgen"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors text-xs font-bold shrink-0"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-colors text-xs font-bold shrink-0 whitespace-nowrap ${
+                isLight
+                  ? 'border-slate-200 bg-slate-100 hover:bg-slate-200 text-slate-800'
+                  : 'border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200'
+              }`}
               title="Return to Document Standards Catalog"
             >
-              <ArrowLeft className="w-4 h-4 text-sky-400" />
-              <span className="hidden sm:inline">All Archetypes</span>
+              <ArrowLeft className="w-4 h-4 text-sky-600" />
+              <span className="hidden sm:inline">All 8 Archetypes</span>
             </Link>
 
-            <div className="h-6 w-px bg-slate-800 shrink-0" />
+            <div className={`h-6 w-px shrink-0 ${isLight ? 'bg-slate-200' : 'bg-slate-800'}`} />
 
             <div className="flex items-center gap-2.5 min-w-0">
-              <span className="w-8 h-8 rounded-lg bg-sky-500 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-sm">
+              <span className="w-8 h-8 rounded-lg bg-sky-600 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-sm">
                 <FileText className="w-4 h-4 text-white" />
               </span>
               <div className="truncate">
                 <div className="flex items-center gap-2">
-                  <h1 className="text-sm md:text-base font-extrabold tracking-tight truncate text-white">
-                    {docMeta.name} <span className="text-sky-400 font-extrabold">({docMeta.shortName})</span>
+                  <span className={`hidden sm:inline-flex text-[10px] font-mono font-extrabold px-2 py-0.5 rounded border shrink-0 ${
+                    isLight
+                      ? 'bg-sky-50 text-sky-700 border-sky-200'
+                      : 'bg-sky-500/20 text-sky-300 border-sky-500/30'
+                  }`}>
+                    {docMeta.docCode}
+                  </span>
+                  <h1 className={`text-sm md:text-base font-extrabold tracking-tight truncate ${
+                    isLight ? 'text-slate-900' : 'text-white'
+                  }`}>
+                    {docMeta.name} <span className="text-sky-600 font-extrabold">({docMeta.shortName})</span>
                   </h1>
-                  <span className="hidden md:inline-flex text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 shrink-0">
-                    Master Baseline
+                  <span className={`hidden xl:inline-flex text-[10px] font-bold px-2 py-0.5 rounded border shrink-0 ${
+                    isLight
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                  }`}>
+                    {docMeta.consolidatedBlueprintIds}
                   </span>
                 </div>
-                <p className="hidden md:block text-[11px] text-slate-400 truncate">
+                <p className={`hidden md:block text-[11px] truncate ${
+                  isLight ? 'text-slate-500' : 'text-slate-400'
+                }`}>
                   {docMeta.primaryPurpose}
                 </p>
               </div>
@@ -708,48 +732,66 @@ function DocDetailPageContent() {
           </div>
 
           {/* Navigation Prev / Next */}
-          <div className="flex items-center gap-2 bg-slate-900 p-1 rounded-xl border border-slate-700 text-xs font-bold">
+          <div className={`flex items-center gap-1.5 p-1 rounded-xl border text-xs font-bold shrink-0 whitespace-nowrap ${
+            isLight
+              ? 'bg-slate-100 border-slate-200 text-slate-800'
+              : 'bg-slate-900 border-slate-700 text-slate-200'
+          }`}>
             <button
               disabled={!prevDoc}
               onClick={() => prevDoc && router.push(`/docgen/${prevDoc.id}`)}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg transition-all ${
-                prevDoc ? 'hover:bg-slate-800 text-slate-200 shadow-sm cursor-pointer' : 'opacity-30 cursor-not-allowed text-slate-500'
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg transition-all whitespace-nowrap shrink-0 ${
+                prevDoc
+                  ? isLight
+                    ? 'hover:bg-white text-slate-800 shadow-sm cursor-pointer'
+                    : 'hover:bg-slate-800 text-slate-200 shadow-sm cursor-pointer'
+                  : 'opacity-40 cursor-not-allowed text-slate-400'
               }`}
             >
-              <ChevronLeft className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">Prev {prevDoc ? `(${prevDoc.shortName})` : ''}</span>
+              <ChevronLeft className="w-3.5 h-3.5 shrink-0" />
+              <span className="hidden lg:inline">Prev {prevDoc ? `(${prevDoc.shortName})` : ''}</span>
             </button>
 
-            <span className="text-[11px] font-mono font-bold px-2 text-slate-400">
+            <span className={`text-[11px] font-mono font-bold px-2 whitespace-nowrap shrink-0 ${
+              isLight ? 'text-slate-600' : 'text-slate-400'
+            }`}>
               {currentIndex + 1} / {DOC_ARCHETYPES_META.length}
             </span>
 
             <button
               disabled={!nextDoc}
               onClick={() => nextDoc && router.push(`/docgen/${nextDoc.id}`)}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg transition-all ${
-                nextDoc ? 'hover:bg-slate-800 text-slate-200 shadow-sm cursor-pointer' : 'opacity-30 cursor-not-allowed text-slate-500'
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg transition-all whitespace-nowrap shrink-0 ${
+                nextDoc
+                  ? isLight
+                    ? 'hover:bg-white text-slate-800 shadow-sm cursor-pointer'
+                    : 'hover:bg-slate-800 text-slate-200 shadow-sm cursor-pointer'
+                  : 'opacity-40 cursor-not-allowed text-slate-400'
               }`}
             >
-              <span className="hidden md:inline">Next {nextDoc ? `(${nextDoc.shortName})` : ''}</span>
-              <ChevronRight className="w-3.5 h-3.5" />
+              <span className="hidden lg:inline">Next {nextDoc ? `(${nextDoc.shortName})` : ''}</span>
+              <ChevronRight className="w-3.5 h-3.5 shrink-0" />
             </button>
           </div>
 
           {/* Right Action Buttons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0 whitespace-nowrap">
             <button
               onClick={handleCopyShareUrl}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors whitespace-nowrap shrink-0 ${
+                isLight
+                  ? 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200 shadow-sm'
+                  : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+              }`}
               title="Copy direct shareable URL"
             >
-              {shareCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 text-sky-400" />}
+              {shareCopied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5 text-sky-600" />}
               <span className="hidden md:inline">{shareCopied ? 'Copied Link!' : 'Share'}</span>
             </button>
 
             <button
               onClick={handleDownloadDocx}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-sm transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-sm transition-all whitespace-nowrap shrink-0"
             >
               <Download className="w-3.5 h-3.5" />
               <span className="hidden md:inline">Download .docx</span>
@@ -765,7 +807,7 @@ function DocDetailPageContent() {
                 if (projectTitle) q.set('title', projectTitle);
                 router.push(`/docgen?${q.toString()}`);
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-md shadow-sky-500/20 hover:scale-[1.02] transition-transform"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-md shadow-sky-500/20 hover:scale-[1.02] transition-transform whitespace-nowrap shrink-0"
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>Customize in Studio</span>
@@ -794,9 +836,9 @@ function DocDetailPageContent() {
 
           <div className="flex flex-wrap items-center gap-2">
             {[
+              { id: 'biopharma', label: '🧬 Bio-Pharma Clinical AI', badge: 'Clinical AI' },
               { id: 'retail', label: '🛒 Omnichannel Retail (Amazon Scale)', badge: 'E-Commerce' },
               { id: 'fintech', label: '💳 FinTech Payments & Wealth', badge: 'NexusFin' },
-              { id: 'biopharma', label: '🧬 Bio-Pharma Clinical AI', badge: 'Clinical AI' },
               { id: 'saas', label: '☁️ Enterprise SaaS Platform', badge: 'Aether' },
               { id: 'manufacturing', label: '🏭 Smart Manufacturing IoT', badge: 'Synactive' },
             ].map((d) => (
@@ -883,11 +925,11 @@ function DocDetailPageContent() {
         {activeTab === 'blueprints' && (
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-              Attached Blueprints for {docMeta.name}
+              Attached Blueprints for {docMeta.name} ({docMeta.consolidatedBlueprintIds})
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {docMeta.blueprintPack.map((slot, sIdx) => {
-                const tpl = CANONICAL_TEMPLATES.find((t) => t.id === slot.recommendedTemplateId);
+                const tpl = getCanonicalTemplateById(slot.recommendedTemplateId);
                 return (
                   <div key={sIdx} className="p-5 rounded-2xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 space-y-3">
                     <div className="flex items-center justify-between">

@@ -79,7 +79,7 @@ if (
   console.log('✅ Obsolete Route Guard: Zero retired studio links or route directories (/workspace, /studio1, /gcp)');
 }
 
-// Legacy & Purged Tier 1/2/3 Template Guard: public/templates must only contain the 23 active blueprints (8 core Google Cloud blueprints #78, #00, #38, #42, #44, #67, #68, #69 + 15 Infographic blueprints #52–#66 -> 46 files)
+// Legacy & Purged Tier 1/2/3 Template Guard: public/templates must only contain the 29 active blueprints (14 core Google Cloud blueprints #78–#84, #00, #38, #42, #44, #67, #68, #69 + 15 Infographic blueprints #52–#66 -> 58 files)
 const pubTemplates = fs.readdirSync('public/templates');
 const forbiddenLegacyFiles = pubTemplates.filter((f) =>
   /^(?:0[1-9]|[12]\d|3[0-79]|4[0135-9]|5[01]|7[0-4])\.png$/.test(f) ||
@@ -89,8 +89,8 @@ const forbiddenLegacyFiles = pubTemplates.filter((f) =>
   f === '40.svg' ||
   f === 'ge_equipment_optimization_gemini.png'
 );
-if (forbiddenLegacyFiles.length > 0 || pubTemplates.length !== 46) {
-  console.error(`❌ Legacy Template Purge Guard: Found ${forbiddenLegacyFiles.length} purged legacy files in public/templates/ (total=${pubTemplates.length}, expected 46): ${forbiddenLegacyFiles.join(', ')}`);
+if (forbiddenLegacyFiles.length > 0 || pubTemplates.length !== 58) {
+  console.error(`❌ Legacy Template Purge Guard: Found ${forbiddenLegacyFiles.length} purged legacy files in public/templates/ (total=${pubTemplates.length}, expected 58): ${forbiddenLegacyFiles.join(', ')}`);
   failed++;
 } else {
   console.log(`✅ Legacy Template Purge Guard: 0 purged Tier 1/2/3 or legacy files in public/templates/ (${pubTemplates.length} clean files)`);

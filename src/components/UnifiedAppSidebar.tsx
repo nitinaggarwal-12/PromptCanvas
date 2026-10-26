@@ -76,7 +76,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { id: 'dashboard', name: 'Home Dashboard', icon: Compass, href: '/dashboard', badge: 'HOME', badgeColor: 'bg-sky-500/20 text-sky-400 border-sky-500/30' },
       { id: 'vision', name: 'Image to Diagram', icon: Sparkles, href: '/vision', badge: 'AI', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
-      { id: 'docgen', name: 'Document Studio', icon: FileText, href: '/docgen', badge: '17' },
+      { id: 'docgen', name: 'Document Studio', icon: FileText, href: '/docgen', badge: '8' },
       { id: 'blogs', name: 'Technical Blog Studio', icon: Newspaper, href: '/blogs', badge: 'BLOG', badgeColor: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30' },
     ],
   },
@@ -85,7 +85,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: 'Library & Blueprints',
     items: [
       { id: 'library', name: 'Saved Architectures', icon: LayoutGrid, href: '/library', badge: 'SAVED', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
-      { id: 'canonical', name: 'Blueprint Catalog', icon: Network, href: '/canonical', badge: '23' },
+      { id: 'canonical', name: 'Blueprint Catalog', icon: Network, href: '/canonical', badge: '29' },
     ],
   },
   {

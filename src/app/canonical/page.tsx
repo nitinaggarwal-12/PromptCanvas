@@ -960,7 +960,7 @@ export default function CanonicalPage() {
       <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center text-slate-900">
         <div className="flex items-center gap-2 font-mono text-xs text-sky-600">
           <RefreshCw className="w-4 h-4 animate-spin" />
-          <span>Loading 23 Certified Production Blueprints...</span>
+          <span>Loading 29 Certified Production Blueprints...</span>
         </div>
       </div>
     }>

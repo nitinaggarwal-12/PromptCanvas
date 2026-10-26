@@ -1,2172 +1,705 @@
+import { resolveSurvivingArchetypeId } from './archetypes';
+
 export const MASTER_DOCUMENTS: Record<string, string> = {
-  brd: `# Business Requirements Document (BRD)
+  brd: `# DOC 01 • Business Requirements & FinOps Strategy (BRD)
 
-## Enterprise Architecture Platform — Bio-Pharma Autonomous Safety Screener & Commercial AI Hub
+## Enterprise Architecture Platform — Bio-Pharma Autonomous Safety Screener, Commercial AI Hub & Cloud FinOps Strategy
 
-**Document ID:** BRD-BIO-2026-001  
-**Document Version:** v1.0 (Executive Steering Committee & ARB Approved Baseline)  
-**Document Status:** Approved — Executive Steering Committee Sign-Off  
-**Executive Sponsor:** Chief Solutions Architect (Enterprise Executive Sponsor)  
-**Business Owner:** Enterprise Product & Business Steering Committee  
-**Program Director:** Jennifer Sterling (Enterprise AI Program Management Director)  
-**Principal Business Analyst:** Kabir Mehta (Principal Healthcare Systems Analyst)  
-**Medical & Regulatory Lead:** Enterprise Risk & Safety Compliance Lead  
-**Compliance & Legal Lead:** Principal Architecture Lead (Enterprise Architecture Review Board)  
-**Principal Enterprise Architect:** Enterprise Architecture Review Board (ARB)  
-**Target Release:** Release 1 Production Pilot (Q3 2026)  
-**Confidentiality:** Enterprise Confidential — GxP Validated Repository  
+**Document ID:** DOC-01-BRD-BIO-2026-001  
+**Document Version:** v2.0 (Lean 8 Consolidated Baseline — Executive Steering Committee & ARB Approved)  
+**Absorbed Redundant Docs:** DOC 06 (EAB), DOC 10 (Workshop), DOC 14 (RFP - Business), DOC 15 (FinOps - ROI)  
+**Consolidated Blueprints:** #01, #04, #05, #26 (Base) + Absorbed #30, #32, #33  
+**Target Audience:** C-Suite, Executive Sponsors, CFO, Procurement Committee, Architecture Review Board (ARB)  
+**Regulatory & GxP Mandate:** FDA 21 CFR Part 11, EMA Annex 11, HIPAA, GxP Computer System Validation (CSV)  
 
 ---
 
-# 1. Executive Summary & Transformation Vision
+# 1. Executive Summary & C-Suite Strategic Pillars
 
-### 1.1 Business Problem Statement
-Global enterprise life-sciences operations require cross-functional scientific review across Medical Affairs, Commercial MLR (Medical, Legal, Regulatory), and Pharmacovigilance (PV) safety intake. Today, over 65% of scientific reviews experience turnaround delays averaging 14 business days per submission due to fragmented data repositories, manual fair-balance claims verification, and lack of real-time adverse event triage.
+### 1.1 Business Problem & Transformation Mandate
+Global life-sciences operations require cross-functional scientific review across Medical Affairs, Commercial MLR (Medical, Legal, Regulatory), Clinical Trial Operations, and Pharmacovigilance (PV) safety intake. Legacy fragmented silos result in 14-business-day turnaround delays, manual fair-balance verification friction, and reactive adverse event triage. The **Enterprise Architecture Platform** consolidates C-Suite executive governance, customer co-design discovery, vendor procurement scoring, and 3-year Cloud FinOps unit economics into a single GxP-validated cognitive platform.
 
-### 1.2 Strategic Transformation Vision
-The **Enterprise Architecture Platform** delivers a governed, access-aware cognitive orchestration platform that automates multi-step scientific workflows while guaranteeing 100% compliance with FDA 21 CFR Part 11, HIPAA, and EMA Annex 11 regulations.
-
----
-
-# 2. Business Context & Stakeholder Topology
-
-### 📐 Visual Diagram 1: Executive System Context & Stakeholder Topology (Template 01)
+### 📐 Visual Diagram 1: Executive Summary & Strategic Pillars (Template 01)
 \`\`\`mermaid
 graph TD
-    USERS["👥 Medical Info Specialists & Regulatory Reviewers"] --> PORTAL["🌐 Executive Digital Workspace Portal"]
-    PORTAL --> PERIMETER["🛡️ Cloud Armor WAF & Google API Gateway (VPC-SC Perimeter)"]
-    PERIMETER --> ORCH["⚙️ Multi-Agent Workflow Orchestrator (GKE Private Subnet)"]
-    
-    ORCH <--> KNOWLEDGE["🗄️ Enterprise Scientific Knowledge Lake (Spanner + GCS)"]
-    ORCH <--> SAFETY["⚖️ Human-in-the-Loop Governance Board"]
-    ORCH <--> SYSTEMS["☁️ Systems of Record (Enterprise ERP / Core Storage / CRM)"]
+    USERS["👥 Medical Info Specialists, Clinicians & Regulatory Reviewers"] --> PORTAL["🌐 Executive Digital Workspace Portal"]
+    PORTAL --> PERIMETER["🛡️ Cloud Armor WAF & Apigee API Gateway (VPC-SC Perimeter)"]
+    PERIMETER --> ORCH["⚙️ Multi-Agent Workflow Orchestrator (Vertex AI Agent Engine)"]
+    ORCH <--> KNOWLEDGE["🗄️ Enterprise Scientific Knowledge Lake (Spanner + AlloyDB ScaNN)"]
+    ORCH <--> SAFETY["⚖️ 21 CFR Part 11 Dual-Custody HITL Governance Board"]
+    ORCH <--> SYSTEMS["☁️ GxP Systems of Record (Veeva Vault / Argus Safety / SAP ERP)"]
 \`\`\`
 
 ---
 
-# 3. Current-State vs. Future-State Process Modernization
+# 2. As-Is Clinical Pain Points vs. To-Be Target State
 
-| Transformation Dimension | Current Legacy Baseline (As-Is) | Target Future State (To-Be) | Strategic Impact & ROI |
+### 📐 Visual Diagram 2: As-Is Clinical Pain Points vs. To-Be Target State (Template 05)
+
+| Transformation Dimension | Current Legacy Baseline (As-Is) | Target Future State (To-Be) | Audited Business Impact & ROI |
 |---|---|---|---|
-| **Medical Info Response (MIR)** | 14 business days manual literature review | **< 48 hours** with verified evidence citations | **85% cycle time reduction** |
-| **MLR Claims Review** | 3.4 manual revision cycles per marketing asset | **< 1.2 revision cycles** with automated policy screening | **65% reduction in review friction** |
-| **Pharmacovigilance (PV) Triage** | Batch ingestion; 24–48h AE identification | **Real-time (< 500ms)** Adverse Event detection | **Zero regulatory non-compliance fines** |
-| **Audit & Traceability** | Disparate PDF signature logs | **Immutable SHA-256 event chaining** | **100% inspection-readiness** |
+| **Medical Info Response (MIR)** | 14 business days manual literature review | **< 48 hours** with grounded citation spans | **85% cycle-time compression** |
+| **MLR Promotional Review** | 3.4 manual revision cycles per asset | **< 1.2 revision cycles** via automated policy rules | **65% reduction in review friction** |
+| **Pharmacovigilance (PV) Triage** | Batch ingestion; 24–48h AE identification | **Real-time (< 500ms)** Adverse Event escalation | **100% FDA 15-day expedited compliance** |
+| **Audit & Traceability** | Disparate PDF wet-ink/manual logs | **Immutable SHA-256 WORM ledger** | **Zero FDA Form 483 audit observations** |
 
 ---
 
-# 4. Strategic Business Capability Inventory
+# 3. Value Stream & ROI Realization Formulas
 
-### 📐 Visual Diagram 2: Strategic Business Capability Pods & Domain Mesh (Template 05)
-\`\`\`mermaid
-graph TD
-    subgraph CAP_SEARCH["🔍 Knowledge Discovery Pod"]
-        C1["Hybrid Vector Search"]
-        C2["ABAC Entitlement Filter"]
-    end
-    subgraph CAP_SYNTH["🧬 Cognitive Synthesis Pod"]
-        C3["ReAct Reasoning Engine"]
-        C4["Citation Grounding Verifier"]
-    end
-    subgraph CAP_GOV["⚖️ Regulatory Governance Pod"]
-        C5["21 CFR Part 11 Signature Gate"]
-        C6["WORM Cryptographic Audit Ledger"]
-    end
-    CAP_SEARCH --> CAP_SYNTH
-    CAP_SYNTH --> CAP_GOV
-\`\`\`
+### 📐 Visual Diagram 3: Value Stream & ROI Realization Formulas (Template 04)
 
-| Capability ID | Business Capability Pod | Functional Description | Strategic Priority |
-|---|---|---|---|
-| **CAP-01** | **Access-Aware Knowledge Retrieval** | Hybrid dense/sparse vector search with ABAC entitlement filtering | **P0 (Critical)** |
-| **CAP-02** | **Cognitive Scientific Synthesis** | ReAct reasoning agents generating evidence-grounded dossiers | **P0 (Critical)** |
-| **CAP-03** | **Real-Time Safety & PV Screener** | Automated screening for adverse events with instant Argus escalation | **P0 (Critical)** |
-| **CAP-04** | **Human Review Workbench** | FDA 21 CFR Part 11 compliant digital signature & dual-custody gate | **P0 (Critical)** |
-| **CAP-05** | **Cryptographic Audit Ledger** | WORM-compliant immutable ledger for all model prompts & outputs | **P1 (High)** |
+**Net Annual Value (NAV) Formula:**  
+NAV = Σ (ΔT_i × V_annual,i × C_FTE) + Avoided Regulatory Penalty Risk − Annualized Cloud FinOps TCO
+
+* **Direct Clinical & MLR Productivity Savings:** $14.8M / year across 42,000 annual submissions.
+* **Cycle-Time Acceleration Value:** 11.2 days faster time-to-market for global medical communications.
+* **Payback Period & IRR:** Full capital payback in **5.4 months** with a 3-year Net Present Value (NPV) of **$34.2M** (IRR = 184%).
 
 ---
 
-# 5. Risk-Based Autonomy Matrix & Mandatory Human Triggers
+# 4. Vendor Fit-Gap & Build-vs-Buy Evaluation
 
-### 📐 Visual Diagram 3: Eight-Layer Enterprise Governed Architecture Blueprint (Template 04)
-\`\`\`mermaid
-graph TD
-    L1["1. User & Channel Tier"] --> L2["2. Security & Perimeter Tier"]
-    L2 --> L3["3. Orchestration & Agents Tier"]
-    L3 --> L4["4. Retrieval & Knowledge Tier"]
-    L4 --> L5["5. Foundation Model Tier"]
-    L5 --> L6["6. Governance & HITL Tier"]
-    L6 --> L7["7. Tool & Action Execution Tier"]
-    L7 --> L8["8. Ledger & Compliance Tier"]
-\`\`\`
+### 📐 Visual Diagram 4: Vendor Fit-Gap & Build-vs-Buy Evaluation (Template 33)
 
-| Risk Level | Autonomy Tier | Permitted Autonomous Operations | Mandatory Human-in-the-Loop (HITL) Triggers |
-|---|---|---|---|
-| **Low Risk** | **Tier 1: Autonomous** | Internal document indexing, vector embedding, telemetry health logging | None (Fully automated background processing) |
-| **Moderate Risk** | **Tier 2: Supervised** | Draft response generation, literature summarization, semantic tagging | Human must review and click "Acknowledge" before dispatch |
-| **High Risk** | **Tier 3: Dual-Custody** | External regulatory dossier filing, promotional material publication | **Two licensed reviewers** must provide 21 CFR Part 11 e-signatures |
-| **Critical Risk** | **Tier 4: Human-Only** | Final Pharmacovigilance adverse event report submission to FDA MedWatch | System pre-populates data; **Human makes final filing determination** |
+| Evaluation Criterion | Weight | Off-the-Shelf SaaS Point Tool | Bespoke DIY Open-Source | **Option B: Governed GCP + Vertex AI Platform (Selected)** |
+|---|:---:|:---:|:---:|:---:|
+| **FDA 21 CFR Part 11 & GxP Auditability** | 30% | 62% (Opaque black-box logs) | 70% (High custom CSV burden) | **98% (Immutable WORM + Dual-Custody E-Sign)** |
+| **VPC-SC Data Sovereignty & Zero Data Egress** | 25% | 55% (Multi-tenant SaaS egress) | 85% (Self-managed VPC) | **100% (CMEK + VPC Service Controls)** |
+| **Multi-Agent ReAct & ScaNN Hybrid RAG** | 25% | 68% (Fixed prompt chains) | 80% (High maintenance) | **96% (Vertex AI Agent Engine + AlloyDB)** |
+| **3-Year Total Cost of Ownership (TCO)** | 20% | 60% (Per-seat licensing bloat) | 64% (High SRE headcount) | **94% (CUD + Semantic KV-Cache FinOps)** |
+| **Weighted Composite Score** | **100%** | **61.4%** | **75.1%** | **97.2% (ARB Winner)** |
 
 ---
 
-# 6. Regulatory & Industry Compliance Mandates
+# 5. 3-Year TCO & Cloud FinOps Unit Economics
 
-* **FDA 21 CFR Part 11:** Enforces dual-factor electronic signatures, tamper-evident audit trails, and strict session timeouts.
-* **HIPAA / GDPR:** Automated PHI/PII de-identification and tokenization before LLM context injection.
-* **EMA Annex 11:** Computerized systems validation for European commercial distribution.
+### 📐 Visual Diagram 5: 3-Year TCO & Cloud FinOps Unit Economics (Template 30)
 
----
-
-# 7. Business Value Realization & ROI Model
-
-### 7.1 Capital & Operational Expenditure Model
-* **Annual Operational Savings:** Projected $4.2M annually across 4 therapeutic areas.
-* **Review Capacity Increase:** 300% increase in processed medical information inquiries without additional headcount.
-* **Time-to-Value:** 6 months to break-even from initial deployment.
-
----
-
-# 8. Executive Governance Approval Gates (Gates 1–5)
-
-### 📐 Visual Diagram 4: Regulatory Multi-Stage Approval Gate & Governance (Template 26)
-\`\`\`mermaid
-graph LR
-    G1["Gate 1: Concept & Charter"] --> G2["Gate 2: Architecture Review"]
-    G2 --> G3["Gate 3: Clinical Pilot (100 Users)"]
-    G3 --> G4["Gate 4: GxP Validation Sign-Off"]
-    G4 --> G5["Gate 5: Global Production Scale"]
-\`\`\`
-
-| Stage Gate | Gate Name | Entry Criteria | Exit Deliverable | Status |
-|---|---|---|---|:---:|
-| **Gate 1** | **Concept & Feasibility** | Business case approval & initial ROI modeling | Signed Charter & Architecture Principles | ✅ PASSED |
-| **Gate 2** | **Architecture Validation** | Threat modeling & VPC-SC security review | Approved SDD & GxP Validation Protocol | ✅ PASSED |
-| **Gate 3** | **Pilot Deployment** | Controlled deployment to 100 internal reviewers | 95% Precision score & Zero Security Incidents | 🔄 ACTIVE |
-| **Gate 4** | **Regulatory Inspection** | Mock FDA audit & electronic record verification | 21 CFR Part 11 Compliance Sign-off | ⏳ QUEUED |
-| **Gate 5** | **Commercial Scale** | Multi-region active-active cluster ready | Full Production Release Promotion | ⏳ QUEUED |
-
----
-
-# 9. Executive Charter Sign-Off
-
-| Reviewer Role | Executive Sign-Off Name | Approval Status | Signature Stamp | Date |
+| FinOps Cost Bucket | Year 1 (Pilot + Wave 1) | Year 2 (Global Scale) | Year 3 (Steady State) | FinOps Optimization Control |
 |---|---|---|---|---|
-| **Executive Sponsor** | Chief Solutions Architect (Executive Sponsor) | ✅ APPROVED | \`SIG_EXEC_99214_VERIFIED\` | August 2, 2026 |
-| **Business Owner** | Business Architecture Lead | ✅ APPROVED | \`SIG_BUS_88102_VERIFIED\` | August 2, 2026 |
-| **Principal Architect** | Principal Architecture Lead (ARB) | ✅ APPROVED | \`SIG_ARCH_44192_VERIFIED\` | August 2, 2026 |
-| **Global Quality Lead** | Principal Systems Architect (Enterprise ARB) | ✅ APPROVED | \`SIG_QUAL_11904_VERIFIED\` | August 2, 2026 |
+| **Vertex AI Token Inference & Embeddings** | $420,000 | $680,000 | $790,000 | Semantic KV-Cache (−42% token spend) + Tiered Model Routing |
+| **GKE Autopilot & Cloud Run Compute** | $310,000 | $460,000 | $510,000 | 3-Year Committed Use Discounts (CUDs, −55% unit compute cost) |
+| **Cloud Spanner, AlloyDB & WORM GCS** | $240,000 | $350,000 | $390,000 | Automated Coldline/Archive lifecycle tiering after 90 days |
+| **Unit Cost per GxP Dossier Reviewed** | **$14.20** | **$8.40** | **$6.15** | **89% lower than legacy $58.00 manual review baseline** |
+
+---
+
+# 6. Risk-Based Autonomy & Governance Approval Gates
+
+### 📐 Visual Diagram 6: Risk-Based Autonomy & Governance Approval Gates (Template 26)
+
+| Risk Tier | Autonomy Level | Permitted Agent Operations | Mandatory Human-in-the-Loop (HITL) Gate |
+|---|---|---|---|
+| **Tier 1 (Low)** | **Autonomous** | Document chunking, embedding generation, telemetry logging | Automated schema & hash verification |
+| **Tier 2 (Moderate)** | **Supervised Copilot** | Internal literature synthesis, citation extraction | Single reviewer acknowledgment in Workbench |
+| **Tier 3 (High)** | **Dual-Custody GxP** | External MLR promotional approval, regulatory dossier draft | **Two licensed reviewers** + 21 CFR Part 11 e-signatures |
+| **Tier 4 (Critical)** | **Human-Only Filing** | Expedited FDA MedWatch / EudraVigilance ICSR submission | Agent pre-populates; **Qualified Person (QPPV) executes filing** |
+
+---
+
+# 7. Phased 30-60-90 Day Pilot & Capital Roadmap
+
+### 📐 Visual Diagram 7: Phased 30-60-90 Day Pilot & Capital Roadmap (Template 32)
+
+* **Days 1–30 (Foundation & VPC-SC Landing Zone):** Provision CMEK-encrypted VPC-SC perimeter, AlloyDB ScaNN vector index, and GxP Installation Qualification (IQ).
+* **Days 31–60 (Clinician Copilot & PV Safety Gate):** Launch Multi-Agent ReAct Orchestrator, Model Armor guardrails, and 21 CFR Part 11 Human Review Workbench (OQ).
+* **Days 61–90 (Production Cutover & FinOps Telemetry):** Complete Performance Qualification (PQ), enable 3-year CUD FinOps budgets, and transition 100% of Wave 1 Medical Affairs traffic.
 `,
 
-  prd: `# Product Requirements Document (PRD)
+  prd: `# DOC 02 • Product & Functional Requirements Document (PRD / URS)
 
-## Enterprise Architecture Platform — Medical Affairs & Commercial AI Workspace
+## Enterprise Architecture Platform — GxP User Requirements Specification (URS), Clinical Swimlanes & 21 CFR Part 11 Workbench
 
-**Document ID:** PRD-BIO-2026-001  
-**Document Version:** v1.0 (Product Leadership & Engineering Lead Baseline)  
-**Product Manager:** Enterprise Product & Business Steering Committee  
-**Lead Technical Architect:** Enterprise Architecture Review Board (ARB)  
-**UX & Workflow Design Lead:** Maya Lin (Principal AI Experience Designer)  
-**Regulatory Affairs Specialist:** Principal Architecture Lead (Enterprise Architecture Review Board)  
-**Target Release:** Release 1 Production Pilot (Q3 2026)  
+**Document ID:** DOC-02-PRD-URS-2026-001  
+**Document Version:** v2.0 (Lean 8 Consolidated Baseline — Product, UX & GxP Validation Approved)  
+**Absorbed Redundant Docs:** DOC 04 (FDD - Functional), DOC 10 (Workshop - Scope)  
+**Consolidated Blueprints:** #01, #02, #12, #23 (Base) + Absorbed #03, #26  
+**Target Audience:** Product Managers, Clinical UX Designers, QA / Computer System Validation (CSV) Teams  
 
 ---
 
-# 1. Product Context & Scope Boundary
+# 1. Product Scope, Personas & System Boundary
 
-The **Enterprise Architecture Platform** provides an interactive web workspace and backend cognitive runtime enabling medical writers, regulatory affairs specialists, and PV reviewers to collaborate with governed ReAct reasoning agents.
+### 📐 Visual Diagram 1: Product Scope, Personas & System Boundary (Template 01)
 
-### 📐 Visual Diagram 1: Product System Context & Boundary (Template 01)
-\`\`\`mermaid
-graph TD
-    USER["👤 Medical Specialist"] --> UI["🌐 Web Workspace UI"]
-    UI --> API["⚙️ API Gateway & Auth Envoy"]
-    API --> REASONING["🧠 Cognitive Reasoning Engine"]
-    REASONING --> VDB["🗄️ Vertex AI Vector Store"]
-    REASONING --> SPANNER["🗄️ Spanner Graph Database"]
-    REASONING --> AUDIT["🔒 WORM Audit Ledger"]
-\`\`\`
-
----
-
-# 2. User Personas & Journey Workflows
-
-### 📐 Visual Diagram 2: User Persona & Journey Experience Topology (Template 02)
-\`\`\`mermaid
-graph LR
-    P1["1. Specialist Intake"] --> P2["2. Semantic Search & Retrieve"]
-    P2 --> P3["3. Automated Evidence Draft"]
-    P3 --> P4["4. Human Clinical Review"]
-    P4 --> P5["5. Cryptographic E-Signature Stamp"]
-\`\`\`
-
-| Persona ID | Persona Name & Role | Primary Objectives | Critical Friction Points |
+| Persona ID | Clinical / Enterprise Persona | Primary Responsibilities | GxP Authority Level |
 |---|---|---|---|
-| **PER-01** | **Lead Domain Specialist** (Enterprise Operations Specialist) | Rapidly draft verified domain responses to incoming queries | Fragmented knowledge repositories; manual verification |
-| **PER-02** | **Compliance Reviewer** (Regulatory & Policy Reviewer) | Ensure operational transactions align with enterprise governance policies | Ambiguous policies; iterative manual sign-off cycles |
-| **PER-03** | **Safety & Risk Officer** (Continuous Risk Assessment Officer) | Identify and escalate anomalies occurring in real-time streams | High throughput volume; strict SLA deadlines |
+| **PER-01** | **Medical Information Specialist** | Authors scientific responses and verifies fair-balance citations | Tier 2 Supervised Reviewer |
+| **PER-02** | **Pharmacovigilance (PV) Safety Officer** | Triages adverse events (AEs) and escalates ICSR cases to Argus | Tier 3/4 Safety Signatory |
+| **PER-03** | **MLR Regulatory Reviewer** | Approves promotional and scientific exchange assets | Tier 3 Dual-Custody Signatory |
+| **PER-04** | **QA / CSV Compliance Auditor** | Inspects immutable audit trails, SHA-256 hashes, and e-signatures | Read-Only Inspector |
 
 ---
 
-# 3. Functional Epics & Feature Decomposition
+# 2. Core Functional Capability Taxonomy & MVP Grid
 
-### 📐 Visual Diagram 3: Feature Ingestion & State Machine Pipeline (Template 23)
-\`\`\`mermaid
-graph TD
-    INGEST["Raw Scientific PDF"] --> CHUNK["Semantic Chunking & Embedding"]
-    CHUNK --> VECTOR["Vector Knowledge Store"]
-    VECTOR --> REASON["ReAct Reasoning Loop"]
-    REASON --> DRAFT["Evidence Grounded Output"]
-\`\`\`
+### 📐 Visual Diagram 2: Core Functional Capability Taxonomy & MVP Grid (Template 02)
 
-### EPIC-01: Access-Aware Knowledge Discovery (P0)
-* **FEAT-101 (Semantic Chunk Search):** Hybrid dense and sparse vector retrieval over peer-reviewed journals, clinical study reports (CSRs), and package inserts.
-* **FEAT-102 (Attribute-Based Access Control):** Dynamic filtering of search results based on user entitlement tokens (e.g. country, therapeutic area, role).
-
-### EPIC-02: Evidence-Grounded Scientific Drafting (P0)
-* **FEAT-201 (Claim-Level Citation Binding):** Every generated assertion must bind directly to a verifiable bounding box chunk in the source document.
-* **FEAT-202 (Fair-Balance Verification):** Automated cross-checking to ensure risk disclosures proportionally accompany efficacy claims.
-
-### EPIC-03: Governed Human-in-the-Loop Review & E-Signatures (P0)
-* **FEAT-301 (Interactive Audit Diff):** Visual side-by-side comparison of agent draft versus human modifications.
-* **FEAT-302 (FDA 21 CFR Part 11 E-Signature):** Dual-credential authentication with cryptographic SHA-256 signature stamping.
-
----
-
-# 4. Measurable Acceptance Criteria & Quality Gates
-
-### 📐 Visual Diagram 4: Quality Control & Acceptance Verification Gate (Template 12)
-\`\`\`mermaid
-graph LR
-    DRAFT["Agent Output Draft"] --> CITE_CHECK["Citation Precision Filter (>95%)"]
-    CITE_CHECK --> SAFETY_CHECK["Adverse Event & Toxicity Filter"]
-    SAFETY_CHECK --> PASS["Acceptance Verified (Ready for Human Review)"]
-\`\`\`
-
-### AC-01: Claim Citation Grounding
-* **Given** a medical information specialist submits a clinical query regarding drug efficacy,
-* **When** the cognitive engine generates a 3-paragraph synthesis,
-* **Then** 100% of factual sentences must have an active clickable bracketed citation linking to an approved source document.
-
-### AC-02: Adverse Event Interception
-* **Given** an ingested inquiry containing adverse event keywords (e.g. "myocardial infarction", "anaphylaxis"),
-* **When** the safety screening worker processes the text stream,
-* **Then** it must generate an urgent Security & Safety Notification within **< 500ms** and lock the ticket from unauthorized closure.
-
----
-
-# 5. Non-Functional Requirements (NFRs)
-
-| NFR Category | Metric / Target | Verification Method |
-|---|---|---|
-| **Latency Budget** | P95 Response < 2.5s for vector search; P95 < 8.0s for multi-step reasoning | Automated K6 load test suite |
-| **Availability** | 99.95% uptime across active-active regional clusters | Cloud Monitoring SLI probes |
-| **Data Protection** | AES-256 at rest (CMEK); TLS 1.3 in transit with mTLS between microservices | Automated SAST/DAST security scans |
-| **Audit Retention** | 7-year immutable WORM ledger storage | Google Cloud Storage Bucket Lock validation |
-
----
-
-# 6. Approved Document Sign-Off
-
-| Reviewer Role | Executive Sign-Off Name | Approval Status | Timestamp |
-|---|---|---|---|
-| **Product Owner** | Business Architecture Lead | ✅ **APPROVED** | August 2, 2026 |
-| **Business Sponsor** | Chief Solutions Architect (Executive Sponsor) | ✅ **APPROVED** | August 2, 2026 |
-| **Technical Owner** | Principal Architecture Lead (ARB) | ✅ **APPROVED** | August 2, 2026 |
-| **Quality & Regulatory Lead** | Principal Systems Architect (Enterprise ARB) | ✅ **APPROVED** | August 2, 2026 |
-`,
-
-  sdd: `# System Design Document (SDD / HLD)
-
-## Enterprise Architecture Platform — Bio-Pharma Cognitive Hub & High-Availability Infrastructure
-
-**Document ID:** SDD-BIO-2026-001  
-**Document Version:** v1.0 (Technical & Infrastructure Architecture Review Ready)  
-**Document Status:** Approved — Engineering, DevSecOps & Regulatory Sign-Off  
-**Principal AI Systems Architect:** Principal Architecture Lead (ARB)  
-**Cloud Infrastructure & SRE Lead:** DevSecOps & SRE Lead  
-**Cybersecurity & VPC-SC Lead:** Chief Information Security Officer (CISO)  
-**Principal Data Architect:** Principal Data Architect  
-**Validation & Quality Director:** Domain Safety & Risk Officer  
-**Target Release:** Release 1 Production Pilot (Q3 2026)  
-**Confidentiality:** Confidential — Enterprise Architecture Review Board Repository  
-
----
-
-# 1. Document Purpose & Architectural Principles
-
-This System Design Document (SDD) defines the technical and infrastructure architecture of the **Enterprise Architecture Platform**. The architecture adheres to five core engineering tenets:
-1. **Zero-Trust VPC Perimeter:** All compute and data services reside within strict VPC Service Controls with no public internet ingress.
-2. **Access-Aware Retrieval (ABAC):** Context retrieval strictly bounds document chunks to user entitlement claims.
-3. **Cryptographic Idempotency:** Every tool invocation requires unique UUIDv4 tokens and pre-commit state snapshots.
-4. **Deterministic Cognitive Loop:** ReAct agent iterations enforce hard timeout budgets (< 30s) and token limits (< 128k).
-5. **Multi-Region Disaster Recovery:** Active-active multi-zone GKE clusters with automated cross-region Spanner replication.
-
----
-
-# 2. Multi-Tier Cloud Deployment Architecture
-
-### 📐 Visual Diagram 1: Multi-Tier Cloud Physical Deployment & Container Compute Topology (Template 08)
-\`\`\`mermaid
-graph TD
-    subgraph ZONE_PUBLIC["🌐 Public Ingress & Edge Protection Zone"]
-        CLIENT["💻 Web Workspace Client / Mobile / Portal"]
-        WAF["🛡️ External HTTPS Load Balancer + Cloud Armor WAF"]
-        GW["🔐 Google API Gateway (OAuth2 / OIDC & Rate Limiting)"]
-        CLIENT -->|"HTTPS / TLS 1.3"| WAF
-        WAF -->|"WAF Filtered Egress"| GW
-    end
-
-    subgraph ZONE_VPCSC["🔒 Protected VPC Service Control (VPC-SC) Perimeter"]
-        subgraph TIER_COMPUTE["⚡ Compute & Cognitive Reasoning Tier (Private Subnet)"]
-            GW -->|"Internal mTLS"| GKE["⚙️ Agent Orchestrator Pods (GKE Cluster)"]
-            GKE <--> PROMPT["📜 Integrated System Prompt Registry"]
-            GKE <--> MEMORY["🧠 Conversation & Workflow Memory Manager"]
-            GKE <--> GEMINI["🤖 Gemini LLM Reasoner Engine (ReAct Loop)"]
-        end
-
-        subgraph TIER_DATA["🛢️ Enterprise Data & Feature Engineering Tier"]
-            GKE -->|"IAM Scoped Access"| GCS["🪣 GCS Secure Bucket (Raw Data Lake)"]
-            GKE -->|"Analytical Query"| BQ["📊 BigQuery Data Warehouse"]
-            GCS -->|"Transformation"| DBT["🛢️ dbt Pipeline"]
-            DBT --> STORE["🗃️ Managed Feature Store"]
-            STORE --> GKE
-        end
-
-        subgraph TIER_GOVERNANCE["🛡️ AI Lifecycle, Evaluation & Governance Tier"]
-            GKE --> VETTING["🔍 Data Vetting Gateway"]
-            VETTING --> HIL["🛡️👤 Unified Governance Board (HITL Gate)"]
-            HIL -->|"APPROVED"| CANARY["🐤 Canary Deployment Stage (5% Traffic)"]
-            CANARY --> PROMOTE["🚀 Production Promotion (100% Traffic)"]
-            GKE --> DRIFT["📈 Continuous Observability & Drift Monitoring"]
-            DRIFT --> ARCHIVE["🗄️ Model & Prompt Archival Registry"]
-        end
-    end
-\`\`\`
-
----
-
-# 3. Zero-Trust Network Architecture & Security Perimeter
-
-### 📐 Visual Diagram 2: Dedicated Network Topology & Perimeter Security (Template 15)
-\`\`\`mermaid
-graph LR
-    subgraph EXTERNAL["🌐 External Users"]
-        USER["👤 Authorized Medical Specialist"]
-    end
-
-    subgraph EDGE["🛡️ Google Cloud Edge Ingress"]
-        LB["External HTTPS Load Balancer"]
-        WAF["Cloud Armor WAF (OWASP Top 10 + DDoS)"]
-        APIGW["Google API Gateway"]
-        USER -->|"TLS 1.3 / mTLS"| LB
-        LB --> WAF
-        WAF --> APIGW
-    end
-
-    subgraph PERIMETER["🔒 Cryptographic VPC Service Control (VPC-SC) Perimeter"]
-        GKE_POD["⚙️ GKE Private Application Subnet"]
-        KMS["🗝️ Google Cloud KMS (Customer-Managed Keys)"]
-        GCS_DATA["🪣 GCS Raw Data Lake (CMEK Encrypted)"]
-        BQ_DATA["📊 BigQuery Data Warehouse (CMEK Encrypted)"]
-
-        APIGW -->|"Private Service Connect (PSC)"| GKE_POD
-        GKE_POD <-->|"mTLS Istio Mesh"| KMS
-        GKE_POD -->|"VPC Egress Restricted"| GCS_DATA
-        GKE_POD -->|"VPC Egress Restricted"| BQ_DATA
-    end
-\`\`\`
-
----
-
-# 4. GKE Microservice Runtime & Worker Pod Topology
-
-### 📐 Visual Diagram 3: GKE Microservice Runtime & Worker Pods (Template 16)
-\`\`\`mermaid
-graph TD
-    INGRESS["Istio Ingress Gateway"] --> AUTH_POD["Auth Proxy Pods (3 Replicas)"]
-    AUTH_POD --> ORCH_POD["ReAct Orchestrator Pods (5 Replicas)"]
-    ORCH_POD --> TOOL_POD["Tool Execution Sandbox (gVisor)"]
-    ORCH_POD --> RETRIEVAL_POD["Hybrid Vector Retrieval Pods"]
-\`\`\`
-
----
-
-# 5. Enterprise Data Pipeline & Ingestion Topology
-
-### 📐 Visual Diagram 4: Enterprise Data Pipeline & Ingestion Topology (Template 23)
-\`\`\`mermaid
-graph LR
-    RAW["Veeva & Argus CDC Feed"] --> PUBSUB["Pub/Sub Event Bus"]
-    PUBSUB --> DATAFLOW["Dataflow Streaming Worker"]
-    DATAFLOW --> SPANNER["Spanner Core Database"]
-    DATAFLOW --> BIGQUERY["BigQuery Analytics Warehouse"]
-    DATAFLOW --> VECTOR_INDEX["Vertex Vector ScaNN Index"]
-\`\`\`
-
----
-
-# 6. Disaster Recovery & Multi-Region Replication
-
-### 📐 Visual Diagram 5: Disaster Recovery & Multi-Region Replication (Template 19)
-\`\`\`mermaid
-graph LR
-    subgraph REGION_PRIMARY["Primary Region (us-central1)"]
-        GKE_PRI["GKE Primary Cluster"]
-        SPAN_PRI["Spanner Primary Leader"]
-    end
-    subgraph REGION_SECONDARY["DR Standby Region (us-east4)"]
-        GKE_SEC["GKE Standby Cluster"]
-        SPAN_SEC["Spanner Synchronous Replica"]
-    end
-    GKE_PRI -.->|"DNS Failover (<15m)"| GKE_SEC
-    SPAN_PRI <==>|"Synchronous Paxos (RPO=0)"| SPAN_SEC
-\`\`\`
-
-* **Active-Active Deployment:** Primary Region \`us-central1\` (Iowa), Secondary Region \`us-east4\` (Virginia).
-* **Recovery Point Objective (RPO):** 0 seconds (Synchronous Spanner cross-region Paxos consensus).
-* **Recovery Time Objective (RTO):** < 15 minutes automated DNS Anycast health probe failover.
-
----
-
-# 7. Architecture Review Board (ARB) Sign-Off
-
-| Reviewer Role | Name & Title | Approval Status | Signature Stamp | Date |
+| Requirement ID | GxP Functional Capability | MVP (Release 1.0) Scope | Phase 2 (Release 2.0) Expansion | Traceability ID |
 |---|---|---|---|---|
-| **Chief Systems Architect** | Principal Architecture Lead (ARB) | ✅ **APPROVED** | \`SIG_ARB_99014_VERIFIED\` | August 2, 2026 |
-| **Lead Cloud SRE** | DevSecOps & SRE Lead | ✅ **APPROVED** | \`SIG_SRE_88192_VERIFIED\` | August 2, 2026 |
-| **Enterprise Security Lead** | Chief Information Security Officer (CISO) | ✅ **APPROVED** | \`SIG_SEC_77012_VERIFIED\` | August 2, 2026 |
+| **URS-FUNC-01** | **Access-Aware Hybrid RAG** | Dense ScaNN + BM25 search with ABAC pre-filtering | Cross-lingual EU/APAC regulatory corpus federation | TST-OQ-101 |
+| **URS-FUNC-02** | **Real-Time PV Adverse Event Gate** | Inline < 500ms AE/SAE detection & quarantine | Automated E2B(R3) XML draft generation | TST-OQ-102 |
+| **URS-FUNC-03** | **Citation Grounding Verifier** | Sentence-level SHA-256 source span bounding boxes | Automated contradiction detection across clinical trials | TST-OQ-103 |
+| **URS-FUNC-04** | **21 CFR Part 11 Workbench** | Dual-factor OIDC re-authentication + reason-for-signing | Biometric hardware key (FIDO2/WebAuthn) attestation | TST-PQ-201 |
+
+---
+
+# 3. Multi-Actor Clinical Workflows & Swimlanes
+
+### 📐 Visual Diagram 3: Multi-Actor Clinical Workflows & Swimlanes (Template 03)
+
+1. **Initiation Lane (Clinician / Medical Affairs):** Submits clinical inquiry or promotional manuscript draft via the Executive Workspace.
+2. **Cognitive Orchestration Lane (Supervisor + RAG Agents):** Decomposes query, enforces ABAC entitlements, retrieves grounded clinical trial evidence, and runs inline PV safety screening.
+3. **Pharmacovigilance Quarantine Lane (Conditional Branch):** If an Adverse Event (AE) or off-label safety signal is detected, the payload is immediately quarantined and routed to the PV Safety Officer queue.
+4. **Dual-Custody Approval Lane (Medical + Regulatory Reviewers):** Two authorized reviewers inspect highlighted source citations and apply cryptographic 21 CFR Part 11 electronic signatures.
+
+---
+
+# 4. UX Interaction & Clinician Copilot Journey
+
+### 📐 Visual Diagram 4: UX Interaction & Clinician Copilot Journey (Template 23)
+
+* **Split-Screen Evidence Verification:** Left pane displays the synthesized clinical response with inline [Source 1, p. 14] badges; right pane renders the exact PDF page with highlighted bounding boxes.
+* **Confidence & Hallucination Telemetry Bar:** Displays real-time FactScore grounding score (≥ 99.2%), retrieval latency, and zero-PII Model Armor verification badge.
+
+---
+
+# 5. Domain Object Lifecycle & State Machine Gates
+
+### 📐 Visual Diagram 5: Domain Object Lifecycle & State Machine Gates (Template 12)
+
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> DRAFT_INGESTED
+    DRAFT_INGESTED --> AI_GROUNDING_IN_PROGRESS : Trigger ReAct Loop
+    AI_GROUNDING_IN_PROGRESS --> PV_QUARANTINE_HOLD : Adverse Event Detected
+    AI_GROUNDING_IN_PROGRESS --> PENDING_PRIMARY_REVIEW : Grounding >= 0.95 & Zero AE
+    PV_QUARANTINE_HOLD --> ESCALATED_TO_ARGUS : PV Officer Confirms ICSR
+    PENDING_PRIMARY_REVIEW --> PENDING_SECONDARY_SIGN : Reviewer 1 E-Signs (21 CFR 11)
+    PENDING_SECONDARY_SIGN --> GXP_APPROVED_PUBLISHED : Reviewer 2 E-Signs (Dual Custody)
+    GXP_APPROVED_PUBLISHED --> WORM_ARCHIVED : Immutable SHA-256 Seal
+\`\`\`
+
+---
+
+# 6. Human Review Workbench & 21 CFR Part 11 E-Signature Controls
+
+### 📐 Visual Diagram 6: Human Review Workbench & 21 CFR Part 11 E-Signature Controls (Template 26)
+
+* **21 CFR §11.50 Signature Manifestation:** Every signed record displays the printed name of the signer, the UTC timestamp (NTP-synchronized), and the explicit meaning of the signature (*"Reviewed", "Approved", "Safety Verified"*).
+* **21 CFR §11.70 Signature/Record Linking:** Electronic signatures are cryptographically bound to the target document via HMAC-SHA256(doc_sha256 || signer_sub || timestamp || meaning) stored in Cloud KMS HSM.
+* **21 CFR §11.200 Re-Authentication:** Every signature action requires live credential re-entry (OIDC step-up challenge) and prohibits cached session auto-signing.
+
+---
+
+# 7. Measurable Acceptance Criteria & Non-Functional Requirements (NFRs)
+
+* **NFR-PERF-01:** End-to-end RAG synthesis P95 latency ≤ 3.8 seconds; PV safety gate P99 latency ≤ 500ms.
+* **NFR-QUAL-02:** Zero ungrounded medical claims (Hallucination Rate < 0.5% on 5,000-case golden clinical benchmark).
+* **Scope Disclaimer:** Derived diagrams describe what is designed, not what was excluded; absence of a capability here is not a scope decision.
 `,
 
-  fdd: `# Functional Design Document (FDD)
+  sdd: `# DOC 03 • System Design Document (SDD - High-Level Architecture)
 
-## Enterprise Architecture Platform — Functional Specifications & Workflow Sequence
+## Enterprise Architecture Platform — High-Level Cloud Architecture, Scale Math, ADRs & Zero-Trust VPC-SC Topology
 
-**Document ID:** FDD-BIO-2026-001  
-**Document Version:** v1.0 (Functional Architecture Review Baseline)  
-**Document Status:** Approved — Production Architecture & ARB Sign-Off  
-**Functional Systems Architect:** Principal Architecture Lead (ARB)  
-**Quality & Compliance Lead:** Principal Systems Architect (Enterprise ARB)  
-**Target Release:** Release 1 Controlled Production Pilot (Q3 2026)  
-
----
-
-# 1. End-to-End Functional Process Flow
-
-### 📐 Visual Diagram 1: End-to-End Functional Process Flow (Template 03)
-\`\`\`mermaid
-graph LR
-    SUBMIT["1. Submit Medical Inquiry"] --> TRIAGE["2. Adverse Event Screening"]
-    TRIAGE --> RETRIEVE["3. Context Retrieval (ABAC)"]
-    RETRIEVE --> GENERATE["4. Evidence Dossier Drafting"]
-    GENERATE --> REVIEW["5. Dual-Custody HITL Review"]
-    REVIEW --> DISPATCH["6. Cryptographic Audit Commit"]
-\`\`\`
+**Document ID:** DOC-03-SDD-HLD-2026-001  
+**Document Version:** v2.0 (Lean 8 Consolidated Baseline — ARB Approved)  
+**Absorbed Redundant Docs:** DOC 11 (Interview Defense), DOC 12 (6-R Migration), DOC 14 (RFP - ADRs), DOC 15 (FinOps - Infra)  
+**Consolidated Blueprints:** #08, #15, #16, #19, #23 (Base) + Absorbed #13, #22, #31, #33  
+**Target Audience:** Principal Architects, Cloud Engineers, Architecture Review Board (ARB) Panel  
 
 ---
 
-# 2. Multi-Service Interaction Sequence Flow
+# 1. Scale Estimations, Back-of-the-Envelope Math & CAP Trade-Offs
 
-### 📐 Visual Diagram 2: Multi-Service Interaction Sequence Flow (Template 11)
-\`\`\`mermaid
-graph TD
-    INTAKE["📥 User Objective Intake"] --> PLANNER["📋 Planner Agent (Task Graph Decomposition)"]
-    
-    PLANNER --> RETRIEVAL["🔍 Retrieval Agent (Access-Aware Search)"]
-    PLANNER --> DOMAIN["🧬 Domain Specialist Agents (Medical / Regulatory Synthesis)"]
-    PLANNER --> SAFETY["🛡️ Safety & PV Detector Agent (Real-Time AE Screening)"]
-    PLANNER --> COMPLIANCE["📋 Compliance & Policy Agent (FDA Label & Fair Balance)"]
-
-    RETRIEVAL --> EVAL["📌 Evidence-Assessment Agent (Claim-Level Citations)"]
-    DOMAIN --> QC["🎯 Quality-Control Agent (NLI Claim Verification)"]
-
-    QC --> HITL["🛡️👤 Human-Review Coordinator (Unified Governance Board Gate)"]
-    HITL --> ACTION["🔌 Action Agent (Idempotent System Commit)"]
-\`\`\`
+* **Peak Workload & QPS:** 25,000 active global clinicians, 1,200 peak concurrent RAG queries/sec (QPS), 48M tokens/min sustained throughput.
+* **Vector & Ledger Storage Math:** 50M scientific chunks × 1,536 dims × 4 bytes ≈ 307 GB HNSW/ScaNN RAM footprint per shard; 18 TB/year WORM audit ledger growth.
+* **CAP Theorem Partitioning:** **CP (Strong Consistency via Cloud Spanner TrueTime)** for 21 CFR Part 11 e-signatures, RBAC/ABAC entitlements, and Saga Outbox state; **AP (High Availability with bounded staleness ≤ 5s)** for read-only vector similarity caches.
 
 ---
 
-# 3. Domain Entity Relationship Diagram (ERD)
+# 2. Architecture Decision Records (ADRs) & Selection Trees
 
-### 📐 Visual Diagram 3: Domain Entity Model (Template 14)
-\`\`\`mermaid
-erDiagram
-    TENANT ||--o{ USER_ACCOUNT : contains
-    USER_ACCOUNT ||--o{ WORKFLOW_SESSION : initiates
-    WORKFLOW_SESSION ||--o{ AGENT_STEP : executes
-    AGENT_STEP ||--o{ CITATION_RECORD : binds
-    WORKFLOW_SESSION ||--o{ HITL_APPROVAL : requires
-    HITL_APPROVAL ||--|| AUDIT_RECORD : commits
-\`\`\`
+### 📐 Visual Diagram 1: Architecture Decision Records (ADRs) & Selection Trees (Template 13)
+
+| ADR ID | Architectural Decision | Evaluated Alternatives | Justification & GxP Impact |
+|---|---|---|---|
+| **ADR-001** | **AlloyDB ScaNN + Spanner Hybrid Storage** | Standalone Pinecone vs. Raw Postgres pgvector | Combines < 8ms ScaNN vector recall inside VPC-SC with Spanner external consistency for 21 CFR Part 11 ledgers. |
+| **ADR-002** | **Vertex AI Agent Engine + ADK A2A Mesh** | Self-hosted LangChain on raw VMs | Managed session state, native IAM Workload Identity, and built-in OpenTelemetry tracing. |
+| **ADR-003** | **Private Service Connect (PSC) + VPC-SC** | Public API endpoints with IP allowlists | Eliminates public internet traversal; enforces hardware-level data exfiltration prevention. |
 
 ---
 
-# 4. Governance Decision & Exception Matrix
+# 3. Multi-Tier Subsystem & Decoupled Container Topology
 
-### 📐 Visual Diagram 4: Governance Decision & Exception Matrix (Template 26)
-\`\`\`mermaid
-graph TD
-    CHECK["Is Claim Grounded in Approved Label?"] -->|Yes| APPROVE["Auto-Approve for Reviewer Queue"]
-    CHECK -->|No| REJECT["Flag Off-Label Warning & Require Dual Signature"]
-\`\`\`
+### 📐 Visual Diagram 2: Multi-Tier Subsystem & Decoupled Container Topology (Template 08)
 
-| Requirement ID | Module Mapping | Validation Test Case | Status |
-|---|---|---|:---:|
-| **REQ-RAG-001** | \`retrieval_agent.py\` | \`test_access_aware_abac_filter()\` | ✅ VERIFIED |
-| **REQ-AGENT-001** | \`react_orchestrator.go\` | \`test_max_iterations_budget()\` | ✅ VERIFIED |
-| **REQ-HITL-001** | \`governance_gate.ts\` | \`test_dual_custody_signature()\` | ✅ VERIFIED |
-| **REQ-PV-001** | \`safety_screener.py\` | \`test_realtime_ae_escalation()\` | ✅ VERIFIED |
+* **Tier 1 (Edge & Identity):** Global External Application Load Balancer, Cloud Armor WAF, Identity-Aware Proxy (IAP), and Workforce Identity Federation.
+* **Tier 2 (Agentic Routing Hub):** Apigee X Gateway, A2A Orchestrator Pod, and MCP Tool Broker running on regional GKE Autopilot clusters.
+* **Tier 3 (Cognitive & Data Spokes):** Vertex AI Gemini frontier endpoints, Model Armor inline filter, AlloyDB ScaNN vector store, and Cloud Spanner transactional ledger.
 
 ---
 
-# 5. Functional Sign-Off
+# 4. Cloud Compute, GPU Sizing & FinOps Reclamation Policies
 
-| Reviewer Role | Name & Title | Approval Status | Signature Stamp | Date |
+### 📐 Visual Diagram 3: Cloud Compute, GPU Sizing & FinOps Allocation (Template 16)
+
+### 📐 Visual Diagram 4: FinOps Waste Reclamation & Spot Optimization Matrix (Template 33)
+
+* **Committed Use Discounts (CUDs) & Spot Mix:** Baseline steady-state GKE pods run on 3-year flexible CUDs (100% coverage); asynchronous bulk document ingestion and embedding pipelines run on **GKE Spot Node Pools** (−72% compute cost) with graceful 30-second SIGTERM checkpointing.
+* **Automated Waste Reclamation:** Idle preview namespaces auto-scale to zero after 15 minutes of inactivity; semantic KV-cache deduplicates repeated clinical protocol queries (42% token reduction).
+
+---
+
+# 5. Zero-Trust Network Perimeter & VPC Infrastructure
+
+### 📐 Visual Diagram 5: Zero-Trust Network Perimeter & VPC Infrastructure (Template 15)
+
+* **VPC Service Controls (VPC-SC):** Enforces a dry-run and enforced service perimeter around aiplatform.googleapis.com, spanner.googleapis.com, and storage.googleapis.com with zero internet egress.
+* **SPIFFE / Istio Ambient mTLS:** Every pod-to-pod call is authenticated via short-lived (15-minute) X.509 SVID certificates issued by Cloud Certificate Authority Service.
+
+---
+
+# 6. Cognitive Runtime & Model Gateway Routing
+
+### 📐 Visual Diagram 6: Cognitive Runtime & Model Gateway Routing (Template 23)
+
+* **Dynamic Complexity Router:** Routes deterministic classification and metadata extraction to low-latency Flash models while escalating complex multi-study clinical synthesis to deep-thinking Pro/Argon models.
+
+---
+
+# 7. High-Availability & Multi-Region DR Strategy
+
+### 📐 Visual Diagram 7: High-Availability & Multi-Region DR Strategy (Template 19)
+
+* **Active-Active Multi-Region Deployment (us-central1 + us-east4):** Global Anycast DNS with health-checked failover (RTO < 60 seconds, RPO = 0 via synchronous Spanner multi-region quorum).
+
+---
+
+# 8. (Conditional Appendix) Legacy 6-R Cloud Migration & CDC Sync
+
+### 📐 Visual Diagram 8: Legacy 6-R Cloud Migration Wave & CDC Sync (Template 22)
+
+### 📐 Visual Diagram 9: Enterprise Subsystem & Database Dependency Mesh (Template 31)
+
+* **Strangler-Fig & Dual-Write CDC:** Legacy on-premises Oracle/Documentum clinical repositories are replicated in real time via Google Cloud Datastream CDC into Cloud Storage and AlloyDB with automated SHA-256 row-count reconciliation prior to wave cutover.
+`,
+
+  tdd: `# DOC 05 • Technical Design & API Specification (TDD - Low-Level Engineering)
+
+## Enterprise Architecture Platform — Low-Level Engineering, REST/gRPC API Contracts, Physical Schemas & Saga Outbox
+
+**Document ID:** DOC-05-TDD-LLD-2026-001  
+**Document Version:** v2.0 (Lean 8 Consolidated Baseline — Engineering & API Spec Approved)  
+**Absorbed Redundant Docs:** DOC 04 (FDD - Data/Seq), DOC 08 (API Spec)  
+**Consolidated Blueprints:** #11, #14, #20, #28 (Base) + Absorbed #08  
+**Target Audience:** Backend Engineers, API Developers, Database Administrators (DBAs), DevOps / SecOps  
+
+---
+
+# 1. Enterprise API Gateway, Rate Limits & Traffic Routing
+
+### 📐 Visual Diagram 1: Enterprise API Gateway, Rate Limits & Traffic Routing (Template 08)
+
+| Endpoint Route | Protocol | Auth & Scope | Rate Limit (Token Bucket) | P99 Latency SLA |
 |---|---|---|---|---|
-| **Lead Functional Architect** | Principal Architecture Lead (ARB) | ✅ APPROVED | \`SIG_FDD_44901_VERIFIED\` | August 2, 2026 |
-| **Medical Safety Officer** | Domain Safety & Risk Officer | ✅ APPROVED | \`SIG_MED_88102_VERIFIED\` | August 2, 2026 |
-| **Principal Quality Engineer** | Principal Systems Architect (Enterprise ARB) | ✅ APPROVED | \`SIG_QUAL_99014_VERIFIED\` | August 2, 2026 |
-`,
+| **POST /v1/dossiers:synthesize** | REST / JSON | OIDC Bearer + gxp.dossier.write | 120 req/min per tenant | ≤ 3,800ms |
+| **POST /v1/signatures:attest** | gRPC / HTTP2 | Step-Up OIDC + cfr11.sign | 60 req/min per user | ≤ 180ms |
+| **POST /v1/pv/events:screen** | gRPC / Protobuf | SPIFFE mTLS + pv.screen | 2,500 req/min burst | ≤ 450ms |
 
-  tdd: `# Technical Design Document (TDD / LLD)
-
-## Enterprise Architecture Platform — Low-Level Engineering, Database Schemas & Infrastructure Code
-
-**Document ID:** TDD-BIO-2026-001  
-**Document Version:** v1.0 (Engineering Architecture Review Ready)  
-**Document Status:** Approved — Engineering Lead & SRE Sign-Off  
-**Principal AI Systems Architect:** Principal Architecture Lead (ARB)  
-**Lead Backend Engineer:** Lead Platform Engineer  
-**Database Architect:** Principal Data Architect  
-**DevSecOps & SRE Lead:** DevSecOps & SRE Lead  
-**Target Release:** Release 1 Production Pilot (Q3 2026)  
-**Confidentiality:** Enterprise Confidential — Technical Implementation Repository  
-
----
-
-# 1. Monorepo Architecture & Microservice Directory Tree
-
-The platform is structured as an enterprise monorepo using Bazel and Turborepo for deterministic, reproducible builds:
-
-\`\`\`
-promptcanvas/
-├── apps/
-│   ├── web-workspace/          # Next.js 15 App Router Frontend (React 19, Tailwind)
-│   ├── cognitive-engine/       # Go / FastAPI ReAct Agent Orchestrator
-│   └── safety-screener/        # High-Throughput Real-Time PV Detection Service
-├── packages/
-│   ├── api-contracts/          # Protocol Buffers & gRPC Definitions
-│   ├── db-schema/              # Spanner DDL & PostgreSQL Migrations
-│   ├── security-auth/          # OAuth2/OIDC Token Validators & ABAC PDP
-│   └── drawio-compiler/        # 16:9 Collision-Free Diagram AST Engine
-└── infra/
-    ├── terraform/              # Multi-Region GCP Infrastructure (VPC-SC, GKE)
-    └── k8s/                    # Helm Charts & Istio Service Mesh Manifests
-\`\`\`
-
----
-
-# 2. Micro-Level API Interaction Sequence & Latency Budget Specifications
-
-### 📐 Visual Diagram 1: Micro-Level API Interaction Sequence Flow (Template 11)
-\`\`\`mermaid
-graph TD
-    CLIENT["💻 Web Workspace (< 50ms)"] --> GATEWAY["🚪 Envoy API Gateway (< 5ms)"]
-    GATEWAY --> AUTH["🔐 OIDC Token Validator (< 10ms)"]
-    AUTH --> ORCHESTRATOR["⚙️ ReAct Agent Orchestrator (< 20ms)"]
-    
-    ORCHESTRATOR --> VDB["🔍 Vertex Vector Search (< 45ms)"]
-    ORCHESTRATOR --> GEMINI["🤖 Gemini 3.8 Flash Model (< 1200ms)"]
-    ORCHESTRATOR --> SPANNER["🗄️ Spanner Distributed Ledger (< 15ms)"]
-    ORCHESTRATOR --> AUDIT["🔒 Cryptographic SHA-256 Audit Logger (< 8ms)"]
-\`\`\`
-
-### Detailed API Latency Budget Matrix
-| RPC Endpoint | Protocol | Max P95 Latency | Max P99 Latency | Retry Policy | Timeout Budget |
-|---|---|---|---|---|---|
-| \`/api/v1/auth/verify\` | gRPC | 10ms | 25ms | 2 retries (exp backoff) | 50ms |
-| \`/api/v1/rag/search\` | gRPC | 45ms | 90ms | 1 retry | 150ms |
-| \`/api/v1/reason/step\` | HTTPS / SSE | 1,200ms | 2,500ms | 0 retries (circuit breaker) | 5,000ms |
-| \`/api/v1/ledger/commit\` | gRPC | 15ms | 35ms | 3 retries (idempotent token) | 100ms |
-| \`/api/v1/audit/log\` | Asynchronous | 8ms | 15ms | Unbounded dead-letter queue | 50ms |
-
----
-
-# 3. Physical Database Schema & Index Specifications
-
-### 3.1 Distributed Cloud Spanner Session DDL
-\`\`\`sql
-CREATE TABLE workflow_sessions (
-    tenant_id STRING(36) NOT NULL,
-    session_id STRING(36) NOT NULL,
-    user_id STRING(64) NOT NULL,
-    session_state STRING(32) NOT NULL,
-    total_tokens_used INT64 NOT NULL,
-    active_agent_id STRING(64),
-    created_at TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp = true),
-    updated_at TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp = true),
-    session_payload JSON,
-    sha256_checksum BYTES(32) NOT NULL
-) PRIMARY KEY (tenant_id, session_id);
-
-CREATE INDEX idx_sessions_user ON workflow_sessions(tenant_id, user_id, created_at DESC);
-CREATE INDEX idx_sessions_state ON workflow_sessions(tenant_id, session_state, updated_at);
-\`\`\`
-
-### 3.2 Immutable Audit Ledger DDL (WORM Certified)
-\`\`\`sql
-CREATE TABLE immutable_audit_trail (
-    tenant_id STRING(36) NOT NULL,
-    audit_event_id STRING(36) NOT NULL,
-    session_id STRING(36) NOT NULL,
-    actor_id STRING(64) NOT NULL,
-    actor_role STRING(32) NOT NULL,
-    event_type STRING(32) NOT NULL,
-    event_payload JSON NOT NULL,
-    previous_hash BYTES(32) NOT NULL,
-    current_hash BYTES(32) NOT NULL,
-    timestamp TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp = true)
-) PRIMARY KEY (tenant_id, audit_event_id);
-
-CREATE INDEX idx_audit_session ON immutable_audit_trail(tenant_id, session_id, timestamp ASC);
-\`\`\`
-
----
-
-# 4. Distributed Saga & Idempotent Transaction Protocol
-
-### 📐 Visual Diagram 2: Distributed Saga, Fault Tolerance & Exception Handling (Template 28)
-\`\`\`mermaid
-graph TD
-    EXEC["⚙️ Action Dispatcher"] --> TRY["Attempt Tool Invocation"]
-    TRY -->|Success| COMMIT["✅ Commit Spanner State"]
-    TRY -->|Transient Error| RETRY["🔁 Exponential Backoff (3x)"]
-    RETRY -->|Exhausted| DLQ["📥 Dead Letter Queue (Pub/Sub)"]
-    DLQ --> NOTIFY["🚨 PagerDuty Alert & HITL Rollback"]
-\`\`\`
-
-* **Idempotency Guarantee:** Every state-mutating request requires an \`Idempotency-Key: UUIDv4\` header.
-* **Two-Phase Commit:** Distributed transactions between Spanner and external systems (Veeva / Argus) employ an Outbox Saga pattern with transactional commit.
-
----
-
-# 5. Zero-Trust Network Perimeter & Trust Boundaries
-
-### 📐 Visual Diagram 3: Zero-Trust Network Perimeter & Trust Boundaries (Template 18)
-\`\`\`mermaid
-graph LR
-    subgraph PUBLIC["🌐 Public DMZ"]
-        USER["Browser Client"]
-    end
-    subgraph EDGE["🛡️ Edge Gateway"]
-        WAF["Cloud Armor WAF"]
-        APIGW["Google API Gateway"]
-    end
-    subgraph PERIMETER["🔒 VPC Service Control"]
-        GKE["GKE Private Cluster"]
-        DB["Spanner CMEK Database"]
-    end
-    USER --> WAF
-    WAF --> APIGW
-    APIGW --> GKE
-    GKE --> DB
-\`\`\`
-
----
-
-# 6. Multi-Stage CI/CD & Automated Security Gates
-
-### 📐 Visual Diagram 4: Multi-Stage CI/CD Deployment Pipeline (Template 20)
-\`\`\`mermaid
-graph LR
-    COMMIT["git push"] --> LINT["1. Lint & TypeScript (npx tsc)"]
-    LINT --> UNIT["2. Unit & Contract Tests (>90%)"]
-    UNIT --> SAST["3. Semgrep SAST & Snyk Scan"]
-    SAST --> BUILD["4. Distroless Container Build"]
-    BUILD --> CANARY["5. GKE Canary Deploy (5%)"]
-    CANARY --> PROMOTE["6. Full Production (100%)"]
-\`\`\`
-
-| Pipeline Stage | Tooling & Engine | Acceptance Criteria | Blocker Behavior |
-|---|---|---|---|
-| **Stage 1: Linting** | \`eslint\`, \`tsc --noEmit\`, \`golangci-lint\` | 0 warnings, 0 type errors | Immediate Build Termination |
-| **Stage 2: Unit Testing** | Jest, Go testing, PyTest | > 90% branch coverage | Immediate Build Termination |
-| **Stage 3: SAST Security** | Semgrep, Snyk, SonarQube | 0 Critical / 0 High CVEs | Security Gate Quarantine |
-| **Stage 4: Container Build** | Docker Multi-Stage / Distroless | Non-root user, minimal attack surface | Image Signing Rejection |
-| **Stage 5: Canary Stage** | Argo Rollouts / Istio Traffic Router | P95 latency < baseline + 5% | Automated Rollback |
-
----
-
-# 7. Technical Design Review Board Sign-Off
-
-| Reviewer Role | Name & Title | Approval Status | Signature Stamp | Date |
-|---|---|---|---|---|
-| **Principal Systems Architect** | Principal Architecture Lead (ARB) | ✅ APPROVED | \`SIG_TDD_99014_VERIFIED\` | August 2, 2026 |
-| **Lead Backend Engineer** | Lead Platform Engineer | ✅ APPROVED | \`SIG_DEV_88192_VERIFIED\` | August 2, 2026 |
-| **Principal Database Architect** | Principal Data Architect | ✅ APPROVED | \`SIG_DATA_77012_VERIFIED\` | August 2, 2026 |
-| **DevSecOps & SRE Lead** | DevSecOps & SRE Lead | ✅ APPROVED | \`SIG_SRE_44019_VERIFIED\` | August 2, 2026 |
-`,
-
-  exec_brief: `# Executive Architecture Brief (EAB)
-
-## Enterprise Architecture Platform — Executive C-Suite Strategic Architecture Brief
-
-**Document ID:** EAB-BIO-2026-001  
-**Document Version:** v1.0 (Executive Steering Committee Baseline)  
-**Document Status:** Approved — Executive Steering Committee Sign-Off  
-**Executive Sponsor:** Chief Solutions Architect (Enterprise Executive Sponsor)  
-**Target Audience:** CIO, CTO, Board of Directors, Enterprise Investment Committee  
-
----
-
-# 1. Strategic Pillars & Executive System Context
-
-The enterprise life-sciences domain requires transforming high-friction, error-prone manual document reviews into an AI-accelerated, fully audited operating model:
-
-### 📐 Visual Diagram 1: Executive System Context & Value Exchange (Template 01)
-\`\`\`mermaid
-graph TD
-    USERS["👥 Healthcare Providers & Regulators"] --> PORTAL["🌐 Executive Digital Workspace Portal"]
-    PORTAL --> PERIMETER["🛡️ Zero-Trust Security Perimeter"]
-    PERIMETER --> ORCH["⚙️ Multi-Agent Workflow Orchestrator"]
-    ORCH <--> KNOWLEDGE["🗄️ Enterprise Scientific Knowledge Lake"]
-    ORCH <--> SAFETY["⚖️ Human-in-the-Loop Governance Board"]
-\`\`\`
-
----
-
-# 2. Eight-Layer Enterprise Governed Architecture Blueprint
-
-### 📐 Visual Diagram 2: Eight-Layer Enterprise Governed Architecture Blueprint (Template 04)
-\`\`\`mermaid
-graph TD
-    L1["1. Executive Digital Workspace & Portal"] --> L2["2. Zero-Trust Identity & ABAC Perimeter"]
-    L2 --> L3["3. Agentic Workflow Orchestration (GKE)"]
-    L3 --> L4["4. Access-Aware Hybrid Vector RAG"]
-    L4 --> L5["5. Model Gateway & Governance (Gemini 3.8 Flash)"]
-    L5 --> L6["6. Human-in-the-Loop Governance Board"]
-    L6 --> L7["7. Governed Tool Execution Gateway"]
-    L7 --> L8["8. Immutable Cryptographic Audit Ledger"]
-\`\`\`
-
----
-
-# 3. Target State Modernization Roadmap (2026–2028)
-
-### 📐 Visual Diagram 3: Target State Modernization Roadmap (Template 32)
-\`\`\`mermaid
-graph LR
-    Q1["Phase 1: Pilot Intake (Q3 2026)"] --> Q2["Phase 2: Commercial Scale (Q1 2027)"]
-    Q2 --> Q3["Phase 3: Multi-Region Active-Active (Q3 2027)"]
-    Q3 --> Q4["Phase 4: Autonomous Closed-Loop (2028)"]
-\`\`\`
-
----
-
-# 4. Executive Capital Allocation & Financial ROI Realization
-
-| Investment Dimension | Year 1 (Foundation) | Year 2 (Scaling) | Year 3 (Run-Rate) | Cumulative Benefit |
-|---|---|---|---|---|
-| **Cloud Infrastructure (GCP)** | $480,000 | $620,000 | $680,000 | High-availability active-active clusters |
-| **Model Tokens & RAG Ingestion** | $140,000 | $220,000 | $260,000 | Sub-second inference across 40M tokens/mo |
-| **Engineering & GxP Validation** | $1,200,000 | $400,000 | $200,000 | 100% inspection-ready FDA 21 CFR Part 11 |
-| **Operational Labor Savings** | **+$2,100,000** | **+$4,800,000** | **+$6,200,000** | **+$13,100,000 Net Operational Gain** |
-
----
-
-# 5. Enterprise Risk Posture & Autonomy Governance
-
-* **Regulatory Fines Risk:** Mitigated to near-zero through automated Adverse Event interception (< 500ms).
-* **IP Leakage & Data Privacy:** Protected via zero-egress VPC Service Controls with Customer-Managed Keys (CMEK).
-* **Model Hallucination:** Eliminated via mandatory claim-level citation binding with threshold scoring > 0.82.
-
----
-
-# 6. Executive Steering Committee Sign-Off
-
-| Executive Role | Name & Title | Approval Status | Signature Stamp | Date |
-|---|---|---|---|---|
-| **Chief Executive Officer** | Chief Solutions Architect (Executive Sponsor) | ✅ APPROVED | \`SIG_EXEC_CEO_9901\` | August 2, 2026 |
-| **Chief Information Officer** | Chief Information Security Officer (CISO) | ✅ APPROVED | \`SIG_EXEC_CIO_4812\` | August 2, 2026 |
-| **Chief Medical Officer** | Domain Safety & Risk Officer | ✅ APPROVED | \`SIG_EXEC_CMO_2291\` | August 2, 2026 |
-`,
-
-  threat_model: `# STRIDE Threat Model & Security Assessment
-
-## Enterprise Architecture Platform — Comprehensive Threat Modeling & Security Posture
-
-**Document ID:** STRIDE-BIO-2026-001  
-**Document Version:** v1.0 (Enterprise Security Architecture Review Baseline)  
-**Document Status:** Approved — CISO & Cyber Risk Review Ready  
-**Lead Security Architect:** Chief Information Security Officer (CISO) (Director of Cyber Risk & Cloud Security)  
-**Target Release:** Release 1 Production Pilot (Q3 2026)  
-
----
-
-# 1. Trust Boundaries & Network Attack Surfaces
-
-### 📐 Visual Diagram 1: Zero-Trust Network Perimeter & Trust Boundaries (Template 18)
-\`\`\`mermaid
-graph LR
-    subgraph PUBLIC["🌐 Untrusted Public Zone"]
-        CLIENT["Web Browser"]
-    end
-    
-    subgraph DMZ["🛡️ DMZ Edge Ingress"]
-        WAF["Cloud Armor WAF"]
-        APIGW["API Gateway (mTLS)"]
-    end
-    
-    subgraph ISOLATED["🔒 Protected VPC-SC Perimeter"]
-        APP["GKE Private Microservices"]
-        DB["Spanner & GCS (CMEK Encrypted)"]
-        KMS["Cloud KMS"]
-    end
-    
-    CLIENT -->|"TLS 1.3"| WAF
-    WAF --> APIGW
-    APIGW -->|"PSC Tunnel"| APP
-    APP <--> DB
-    APP <--> KMS
-\`\`\`
-
----
-
-# 2. Attack Surface & Ingress Threat Vectors
-
-### 📐 Visual Diagram 2: Attack Surface & Ingress Threat Analysis (Template 27)
-\`\`\`mermaid
-graph TD
-    ATTACKER["Potential Threat Actor"] -->|OWASP / DDoS| WAF_BLOCK["Cloud Armor Automated Drop"]
-    ATTACKER -->|Prompt Injection| DLP_SANITIZE["DLP Inspection & Redaction"]
-    ATTACKER -->|Token Forgery| AUTH_DENY["RS256 Signature Verification Reject"]
-\`\`\`
-
----
-
-# 3. Comprehensive STRIDE Threat Analysis Matrix
-
-| Threat Category | Target Subsystem | Threat Scenario & Vector | Compensating Security Control | Residual Risk |
-|---|---|---|---|---|
-| **Spoofing** | API Gateway Ingress | Forged JWT token claiming administrative privileges | RS256 token signature validation against Google IdP with 15-minute token TTL | **LOW** |
-| **Tampering** | Model Prompt Context | Prompt injection injecting malicious system instructions | Google Cloud DLP input sanitation + Regex Jailbreak Filter | **LOW** |
-| **Repudiation** | Human Approval Gate | Reviewer denies approving an off-label marketing claim | Cryptographic SHA-256 dual-custody audit record stored on WORM GCS Bucket Lock | **VERY LOW** |
-| **Information Disclosure** | Vertex Vector Search | Multi-tenant context leak exposing confidential trial data | Scoped ABAC query predicates enforced at database query compilation | **LOW** |
-| **Denial of Service** | Cognitive Reasoning Pods | High-frequency recursive prompt loops exhausting compute | Istio rate-limiting (max 60 req/min/user) + Hard 30s execution timeout | **LOW** |
-| **Elevation of Privilege** | GKE Worker Node | Container escape to host VM kernel | GKE Autopilot with hardened COS (Container-Optimized OS) & gVisor sandbox | **VERY LOW** |
-
----
-
-# 4. Cryptographic Key Management (CMEK) Hierarchy & HSM Vault
-
-### 📐 Visual Diagram 3: Cryptographic Key Hierarchy & HSM Key Vault (Template 44)
-\`\`\`mermaid
-graph TD
-    HSM["Google Cloud KMS (FIPS 140-2 Level 3 HSM)"] --> KEK["Key Encryption Key (Rotated 90 Days)"]
-    KEK --> DEK1["DEK: Spanner Database Partition"]
-    KEK --> DEK2["DEK: GCS Vector Knowledge Store"]
-    KEK --> DEK3["DEK: WORM Audit Ledger Chaining"]
-\`\`\`
-
-* **Root Key:** Hardware Security Module (FIPS 140-2 Level 3 HSM) in Google Cloud KMS.
-* **Key Encryption Keys (KEK):** Rotated automatically every 90 days.
-* **Data Encryption Keys (DEK):** Envelope encryption per database partition using AES-256-GCM.
-
----
-
-# 5. Security Architecture Sign-Off
-
-| Reviewer Role | Name & Title | Approval Status | Signature Stamp | Date |
-|---|---|---|---|---|
-| **Chief Information Security Officer** | Chief Information Security Officer (CISO) | ✅ APPROVED | \`SIG_CISO_99412_VERIFIED\` | August 2, 2026 |
-| **Principal Security Architect** | Principal Architecture Lead (ARB) | ✅ APPROVED | \`SIG_SEC_48102_VERIFIED\` | August 2, 2026 |
-| **Lead Privacy Officer** | Principal Systems Architect (Enterprise ARB) | ✅ APPROVED | \`SIG_PRIV_21904_VERIFIED\` | August 2, 2026 |
-`,
-
-  api_spec: `# API & Service Interface Specification
-
-## Enterprise Architecture Platform — REST & gRPC Service Interface Contracts
-
-**Document ID:** API-BIO-2026-001  
-**Document Version:** v1.0 (Integration Architecture Review Baseline)  
-**Lead Integration Architect:** Principal Architecture Lead (ARB)  
-**Target Release:** Release 1 Production Pilot (Q3 2026)  
-
----
-
-# 1. API Architecture & Component Subsystem Topology
-
-### 📐 Visual Diagram 1: Component & Subsystem Topology (Template 08)
-\`\`\`mermaid
-graph TD
-    CLIENT["Client Applications"] --> APIGW["API Gateway (OpenAPI 3.1)"]
-    APIGW --> AUTH_SVC["Auth & Policy Service (gRPC)"]
-    APIGW --> RAG_SVC["Vector Search Service (gRPC)"]
-    APIGW --> REASON_SVC["Cognitive Reasoning Engine (SSE / gRPC)"]
-    APIGW --> AUDIT_SVC["Immutable Audit Logger (Kafka / PubSub)"]
-\`\`\`
-
----
-
-# 2. API Gateway & Ingress Traffic Routing
-
-### 📐 Visual Diagram 2: API Gateway & Ingress Traffic Routing (Template 45)
-\`\`\`mermaid
-graph LR
-    INGRESS["HTTPS Client Traffic"] --> ENVOY["Envoy Proxy Mesh"]
-    ENVOY -->|Rate Limit & Auth Check| GATEWAY["Google API Gateway"]
-    GATEWAY -->|gRPC / JSON-RPC| SVC_ROUTER["Internal Kubernetes Service Mesh"]
-\`\`\`
-
----
-
-# 3. gRPC & REST Interaction Sequence Flow
-
-### 📐 Visual Diagram 3: gRPC & REST Interaction Sequence Flow (Template 11)
-\`\`\`mermaid
-graph TD
-    REQ["REST Client Request"] --> GW["Envoy Gateway"]
-    GW --> TOKEN["Token Validation (gRPC)"]
-    TOKEN --> ENGINE["Reasoning Engine (SSE Stream)"]
-    ENGINE --> LOG["Audit Commit (Asynchronous)"]
-\`\`\`
-
----
-
-# 4. REST Endpoint Specifications
-
-### 4.1 Initiate Reasoning Workflow
-* **Method:** \`POST /api/v1/reason/initiate\`
-* **Headers:** \`Authorization: Bearer <JWT>\`, \`Idempotency-Key: <UUIDv4>\`
-* **Request Payload:**
-\`\`\`json
-{
-  "workflow_type": "MEDICAL_INFORMATION_RESPONSE",
-  "therapeutic_area": "ONCOLOGY",
-  "query_text": "What is the safety profile of Compound X in pediatric patients?",
-  "entitlement_context": {
-    "user_id": "usr_98412",
-    "role": "ROLE-MED-01",
-    "allowed_cds_ids": ["CDS-ONC-2026", "CSR-PHASE3-001"]
-  }
-}
-\`\`\`
-* **Response Payload (200 OK):**
-\`\`\`json
-{
-  "session_id": "sess_881924_a9",
-  "status": "PROCESSING",
-  "sse_stream_url": "/api/v1/reason/stream/sess_881924_a9",
-  "created_at": "2026-08-24T21:40:00Z"
-}
-\`\`\`
-
----
-
-# 5. Integration & Protocol Sign-Off
-
-| Reviewer Role | Name & Title | Approval Status | Signature Stamp | Date |
-|---|---|---|---|---|
-| **Principal API Architect** | Principal Architecture Lead (ARB) | ✅ APPROVED | \`SIG_API_99014_VERIFIED\` | August 2, 2026 |
-| **Integration Lead** | Lead Platform Engineer | ✅ APPROVED | \`SIG_INT_88192_VERIFIED\` | August 2, 2026 |
-`,
-
-  security_package: `# Enterprise Security & Compliance Package (GRC)
-
-## Enterprise Architecture Platform — 21 CFR Part 11, HIPAA & SOC2 Type II Compliance
-
-**Document ID:** GRC-BIO-2026-001  
-**Document Version:** v1.0 (Compliance & Audit Review Baseline)  
-**Compliance Director:** Principal Architecture Lead (Enterprise Architecture Review Board)  
-**Lead Security Architect:** Chief Information Security Officer (CISO)  
-**Principal Enterprise Architect:** Principal Architecture Lead (ARB)  
-**Target Release:** Release 1 Production Pilot (Q3 2026)  
-
----
-
-# 1. Zero-Trust Perimeter & Identity Boundaries
-
-### 📐 Visual Diagram 1: Zero-Trust Perimeter & Identity Boundaries (Template 18)
-\`\`\`mermaid
-graph LR
-    IDP["Enterprise Entra ID / Google IdP"] --> OIDC["OIDC Token Minting"]
-    OIDC --> APIGW["API Gateway ABAC Policy Gate"]
-    APIGW --> VPC["VPC Service Control Perimeter"]
-\`\`\`
-
----
-
-# 2. Dedicated Cloud Infrastructure & Data Isolation
-
-### 📐 Visual Diagram 2: Dedicated Cloud Infrastructure & Data Isolation (Template 37)
-\`\`\`mermaid
-graph TD
-    PERIMETER["🔒 Dedicated VPC-SC Security Perimeter"] --> GKE["⚙️ Multi-Tenant GKE Application Cluster"]
-    PERIMETER --> SPANNER["🗄️ Regional Spanner Database (Encrypted)"]
-    PERIMETER --> KMS["🗝️ FIPS 140-2 Level 3 KMS"]
-    PERIMETER --> WORM["🗄️ WORM Compliance Storage (7-Year Lock)"]
-\`\`\`
-
----
-
-# 3. Audit Trail & Cryptographic Event Chaining
-
-### 📐 Visual Diagram 3: Audit Trail & Cryptographic Event Chaining (Template 39)
-\`\`\`mermaid
-graph LR
-    EVENT1["Event N-1: Hash H(N-1)"] --> EVENT2["Event N: SHA-256(H(N-1) + Payload)"]
-    EVENT2 --> EVENT3["Event N+1: SHA-256(H(N) + Payload)"]
-    EVENT3 --> WORM_STORE["Immutable WORM GCS Storage"]
-\`\`\`
-
----
-
-# 4. FIPS 140-2 Level 3 HSM Key Management Hierarchy
-
-### 📐 Visual Diagram 4: FIPS 140-2 Level 3 HSM Key Management (Template 44)
-\`\`\`mermaid
-graph TD
-    ROOT["Cloud KMS HSM Root Key"] --> KEK["Key Encryption Key (KEK)"]
-    KEK --> DEK_DATA["Data Encryption Key: Patient Data"]
-    KEK --> DEK_LOG["Data Encryption Key: WORM Logs"]
-\`\`\`
-
----
-
-# 5. FDA 21 CFR Part 11 Regulatory Compliance Matrix
-
-| Regulation Clause | Regulatory Requirement | System Enforcement Mechanism | Audit Verification Test |
-|---|---|---|---|
-| **11.10(a)** | Validation of systems to ensure accuracy, reliability, and consistent performance | Automated continuous integration test suite with >90% coverage | \`audit_val_part11_accuracy.py\` |
-| **11.10(b)** | Ability to generate accurate and complete copies of records in human readable form | 1-click export to high-resolution PDF and Microsoft Word (.docx) with embedded figures | \`audit_val_export_fidelity.py\` |
-| **11.10(c)** | Protection of records to enable accurate retrieval throughout records retention period | WORM (Write-Once-Read-Many) bucket lock retention policy (7 years) | \`audit_val_worm_retention.py\` |
-| **11.10(e)** | Secure, computer-generated, time-stamped audit trails | SHA-256 cryptographic chained audit log in dedicated Spanner partition | \`audit_val_sha256_chain.py\` |
-| **11.50** | Signature manifest including printed name, date/time, and meaning | Formal signature table with user role, name, status, stamp, and ISO 8601 timestamp | \`audit_val_signature_manifest.py\` |
-
----
-
-# 6. GRC Audit Sign-Off
-
-| Reviewer Role | Name & Title | Approval Status | Signature Stamp | Date |
-|---|---|---|---|---|
-| **Global Quality Lead** | Principal Systems Architect (Enterprise ARB) | ✅ APPROVED | \`SIG_GRC_99014_VERIFIED\` | August 2, 2026 |
-| **Chief Information Security Officer** | Chief Information Security Officer (CISO) | ✅ APPROVED | \`SIG_CISO_88192_VERIFIED\` | August 2, 2026 |
-| **Principal Systems Architect** | Principal Architecture Lead (ARB) | ✅ APPROVED | \`SIG_ARCH_77012_VERIFIED\` | August 2, 2026 |
-
----
-
-`,
-  workshop: `# Customer Architecture Discovery & Co-Design Workshop
-
-## Enterprise Architecture Platform — Interactive Customer Discovery & Solution Blueprint
-
-**Document ID:** WS-CUST-2026-001  
-**Document Version:** v1.0 (Facilitator & Architecture Review Baseline)  
-**Lead Solution Architect:** Principal Enterprise Architect (Architecture Review Board)  
-**Customer Executive Sponsor:** Customer Chief Technology Officer (CTO)  
-**Target Delivery Window:** 30-60-90 Day Phased Pilot  
-
----
-
-# 1. Workshop Charter & Executive Discovery Agenda
-
-### 1.1 Discovery Objectives & Scope
-This interactive co-design workshop aligns enterprise stakeholders around technical feasibility, target cloud modernization, and measurable business ROI.
-
-| Time Slot | Session Module | Facilitator Role | Key Deliverable |
-|---|---|---|---|
-| **00:00 - 00:20** | Executive Framing & Business Goals | Lead Solutions Architect | Identified Top 3 Business Drivers |
-| **00:20 - 00:50** | As-Is Architecture Pain Points | Enterprise Cloud Architect | Friction & Legacy Silo Inventory |
-| **00:50 - 01:30** | Interactive Whiteboarding & Target Co-Design | Principal Systems Architect | Agreed Multi-Tier Topology & APIs |
-| **01:30 - 02:00** | 30-60-90 Day Phased Pilot Roadmap | Transformation Lead | Implementation Milestones & ARB Sign-Off |
-
----
-
-# 2. Customer Ecosystem & Stakeholder Scope
-
-### 📐 Visual Diagram 1: Customer Ecosystem & Stakeholder Scope (Template 01)
-\`\`\`mermaid
-graph TD
-    CUST["👥 Customer Personas & Enterprise Teams"] --> PORTAL["🌐 Co-Designed Digital Portal / API Ingress"]
-    PORTAL --> EDGE["🛡️ Zero-Trust Security Perimeter & Gateway"]
-    EDGE --> CORE["⚙️ Decoupled Core Business Microservices"]
-    CORE --> DATA["🗄️ Enterprise Data Mesh & Lakehouse"]
-\`\`\`
-
----
-
-# 3. As-Is Pain Points vs. To-Be Target Architecture
-
-### 📐 Visual Diagram 2: As-Is Pain Points vs. To-Be Target Architecture (Template 05)
-\`\`\`mermaid
-graph LR
-    ASIS["⚠️ Legacy Manual Silos (Slow, High Friction)"] --> TRANS["🚀 Cloud Modernization & Automation Engine"]
-    TRANS --> TOBE["✨ Scalable Governed Target Architecture (<50ms Latency)"]
-\`\`\`
-
----
-
-# 4. Target Business Capability Prioritization Grid
-
-### 📐 Visual Diagram 3: Target Business Capability Prioritization Grid (Template 02)
-\`\`\`mermaid
-graph TD
-    subgraph TIER1["Tier 1: Core Foundation"]
-        B1["Identity & ABAC Access"]
-        B2["Real-Time API Ingress"]
-    end
-    subgraph TIER2["Tier 2: Business Logic"]
-        B3["Event Stream Orchestrator"]
-        B4["Data Ledger & Storage"]
-    end
-    TIER1 --> TIER2
-\`\`\`
-
----
-
-# 5. Phased Implementation & Quick-Win Roadmap
-
-### 📐 Visual Diagram 4: Phased Implementation & Quick-Win Roadmap (Template 32)
-\`\`\`mermaid
-graph LR
-    P1["Phase 1: Foundation (Days 1-30)"] --> P2["Phase 2: Core Workflows (Days 31-60)"]
-    P2 --> P3["Phase 3: Scale & GA (Days 61-90)"]
-\`\`\`
-
----
-
-# 6. Co-Design Action Items & Sign-Off
-
-| Milestone | Deliverable Commitment | Responsible Owner | Target Date |
-|---|---|---|---|
-| **Pilot Sandbox** | Deployed VPC-SC environment with mock APIs | Solutions Architecture | Day 14 |
-| **Integration Test** | End-to-end data pipeline validation | Customer Tech Lead | Day 45 |
-| **ARB Production Gate** | Security, GRC and performance sign-off | Architecture Review Board | Day 75 |
-`,
-  interview_defense: `# Principal Architect System Design Interview & Defense Brief
-
-## Enterprise Architecture Platform — High-Throughput Distributed Architecture Specification
-
-**Document ID:** ARCH-DEFENSE-2026-001  
-**Target Evaluation:** Principal / Staff Systems Architect Technical Defense  
-**Architecture Review Panel:** Enterprise Architecture Review Board (ARB)  
-**System Target Scale:** 100,000+ Peak QPS, Sub-20ms p99 Latency, 99.999% SLA  
-
----
-
-# 1. Problem Scope, Boundary & Scale Math Estimations
-
-### 1.1 Scale & Capacity Calculations
-* **Throughput:** 50,000 sustained QPS, 120,000 peak QPS (flash burst).
-* **Payload Footprint:** Average request 4KB $\to$ 480 MB/s network ingress bandwidth.
-* **Storage Growth:** $120\text{k QPS} \times 86,400\text{s} \times 4\text{KB} = 41.4\text{ TB/day}$ raw data $\to$ Tiered to cold GCS after 30 days.
-* **Latency Budget:** Ingress WAF (2ms) + Gateway Envoy (3ms) + Microservice Compute (8ms) + Spanner Quorum (5ms) = **18ms p99 total**.
-
-### 📐 Visual Diagram 1: Problem Scope, Boundary & Scale Estimations (Template 01)
-\`\`\`mermaid
-graph TD
-    CLIENTS["🌐 High-Volume Clients (100k+ QPS)"] --> WAF["🛡️ Global Anycast Cloud Armor WAF"]
-    WAF --> GATEWAY["⚡ Envoy API Gateway & Rate Limiter"]
-    GATEWAY --> CLUSTER["⚙️ GKE Microservice Mesh"]
-\`\`\`
-
----
-
-# 2. Multi-Tier Decoupled Component Architecture
-
-### 📐 Visual Diagram 2: Multi-Tier Decoupled Component Architecture (Template 08)
-\`\`\`mermaid
-graph TD
-    L1["Layer A: Experience & Ingress"] --> L2["Layer B: Process & Saga Orchestrator"]
-    L2 --> L3["Layer C: Domain Business Microservices"]
-    L3 --> L4["Layer D: Real-Time AI / ML Inference"]
-    L3 --> L5["Layer E: Distributed Storage & Spanner"]
-\`\`\`
-
----
-
-# 3. Architectural Trade-Offs & Deep-Dives
-
-| Dimension | Option A: Monolithic Relational | Option B: Event-Driven Spanner Mesh (Selected) | Technical Rationale & Trade-Off |
-|---|---|---|---|
-| **Consistency** | Strong single-node ACID | Multi-Region TrueTime Paxos Synchronous ACID | Eliminates cross-region replication lag while retaining strict serializability. |
-| **Partitioning** | Manual DB Sharding (Complex) | Automatic Range Partitioning & Tablet Splitting | Zero re-sharding maintenance downtime during 10x traffic spikes. |
-| **Caching** | Local In-Memory Cache | Distributed Redis Cluster with 900s TTL + Bloom Filter | 99.2% cache hit rate protects primary database from read storms. |
-
----
-
-# 4. High-Availability & Multi-Region Active-Active DR
-
-### 📐 Visual Diagram 3: High-Availability & Multi-Region Active-Active DR (Template 19)
-\`\`\`mermaid
-graph LR
-    subgraph US_EAST["Region 1: us-east4 (Active)"]
-        GKE1["GKE Primary Pods"] <--> DB1["Spanner Regional Read/Write"]
-    end
-    subgraph US_WEST["Region 2: us-west1 (Active)"]
-        GKE2["GKE Secondary Pods"] <--> DB2["Spanner Regional Read/Write"]
-    end
-    US_EAST <-->|TrueTime Paxos Synchronous Sync| US_WEST
-\`\`\`
-
----
-
-# 5. Failure Modes, Circuit Breakers & Chaos Resilience
-
-### 📐 Visual Diagram 4: Failure Modes, Circuit Breakers & Chaos Resilience (Template 28)
-\`\`\`mermaid
-graph TD
-    REQ["Incoming RPC Request"] --> CB{"Circuit Breaker State"}
-    CB -->|Closed| SVC["Primary Downstream Microservice"]
-    CB -->|Open / Timeout| FALLBACK["Degraded Read-Only Cache / Dead-Letter Queue"]
-\`\`\`
-
----
-
-# 6. Top 10 Anticipated Panel Questions & Model Defenses
-
-1. **How do you prevent hot-spotting in distributed key-value partitions?**  
-   *Defense:* Prepend high-entropy salt prefix (SHA-256 hash modulo 64) to primary keys to ensure even distribution across tablet boundaries.
-2. **What happens during a complete cloud region outage?**  
-   *Defense:* Global Anycast DNS immediately shifts 100% of ingress to Region 2 within 3 seconds; Spanner TrueTime quorum requires $(N/2)+1$ witness nodes to maintain zero data loss (RPO = 0, RTO < 5s).
-`,
-  cloud_migration: `# Cloud Migration & Modernization Playbook (6-R Migration)
-
-## Enterprise Architecture Platform — Legacy Modernization & Cloud Transition Specification
-
-**Document ID:** MIG-6R-2026-001  
-**Document Version:** v1.0 (Cloud Transformation Office Approved Baseline)  
-**Program Director:** Cloud Migration Lead (Enterprise Architecture Review Board)  
-**Migration Strategy:** 6-R Workload Classification with Zero-Downtime CDC  
-
----
-
-# 1. Migration Executive Vision & 6-R Classification
-
-| 6-R Strategy | Target Workloads | Target Platform | Business Benefit |
-|---|---|---|---|
-| **Refactor** | Monolithic core transaction engine | GKE Autopilot Microservices + Cloud Spanner | 10x throughput scalability and zero maintenance windows |
-| **Replatform** | Relational databases and batch jobs | Managed AlloyDB PostgreSQL + Cloud Dataflow | 60% operational toil reduction with managed backups |
-| **Rehost (Lift & Shift)** | Legacy compliance archival engines | Compute Engine VMs with Persistent Disks | Rapid on-premises datacenter evacuation |
-| **Retire** | Redundant legacy reporting silos | Consolidated into BigQuery Lakehouse | $1.2M annual hardware license savings |
-
----
-
-# 2. Legacy As-Is Architecture vs Target Cloud State
-
-### 📐 Visual Diagram 1: Legacy As-Is Architecture vs Target Cloud State (Template 05)
-\`\`\`mermaid
-graph LR
-    LEGACY["🏢 On-Premises Legacy Monolith (Silos, Manual Deployments)"] --> STRANGLER["🔄 Strangler Fig Ingress Gateway"]
-    STRANGLER --> CLOUD["☁️ Cloud-Native Microservices (Kubernetes, Spanner, BigQuery)"]
-\`\`\`
-
----
-
-# 3. Phased Migration Wave Architecture & Dual-Write CDC Sync
-
-### 📐 Visual Diagram 2: Phased Migration Wave Architecture & CDC Sync (Template 22)
-\`\`\`mermaid
-graph TD
-    SOURCE_DB["On-Premises Source DB"] --> CDC["Debezium / Datastream CDC Pipeline"]
-    CDC --> KAFKA["Kafka Event Replication Bus"]
-    KAFKA --> CLOUD_DB["Cloud Target Spanner / AlloyDB"]
-    CLOUD_DB --> VALIDATOR["Automated Data Reconciliation Validator"]
-\`\`\`
-
----
-
-# 4. Enterprise Subsystem & Database Dependency Mesh
-
-### 📐 Visual Diagram 3: Enterprise Subsystem & Database Dependency Mesh (Template 31)
-\`\`\`mermaid
-graph TD
-    APP1["Core Auth Service"] --> DB_SHARED["Shared Legacy Database"]
-    APP2["Order Management"] --> DB_SHARED
-    APP3["Inventory Service"] --> DB_SHARED
-    DB_SHARED -->|Decouple to| MESH["Isolated Microservice Databases"]
-\`\`\`
-
----
-
-# 5. Production Cutover & Automated Rollback Runbook
-
-### 📐 Visual Diagram 4: Production Cutover & Automated Rollback Runbook (Template 29)
-\`\`\`mermaid
-graph LR
-    T_MINUS["T-24h: Pre-Flight Checklist"] --> DUAL_WRITE["T-0: Dual-Write Traffic Enabled"]
-    DUAL_WRITE --> DNS_SWITCH["T+1h: DNS Anycast Flip to Cloud"]
-    DNS_SWITCH --> MONITOR["T+2h: SRE Telemetry & Burn Rate Verification"]
-\`\`\`
-
----
-
-# 6. Cloud Transformation Board Sign-Off
-
-| Role | Responsibility | Approval Status |
-|---|---|---|
-| **Cloud Architecture Lead** | Technical architecture and data replication integrity | ✅ APPROVED |
-| **Security & Compliance Lead** | Zero-trust encryption and network perimeter verification | ✅ APPROVED |
-| **Infrastructure & SRE Lead** | Cutover execution readiness and rollback procedures | ✅ APPROVED |
-`,
-  ai_system_card: `# Enterprise AI / LLM System Card & Safety Governance Spec
-
-## Enterprise Architecture Platform — Foundation Model Governance & Cognitive Architecture
-
-**Document ID:** AI-CARD-2026-001  
-**Document Version:** v1.0 (AI Safety & Architecture Review Board Approved)  
-**Chief AI Officer:** Lead AI Platform Architect (Enterprise ARB)  
-**Compliance Standard:** NIST AI RMF, EU AI Act Tier-1 Transparency  
-
----
-
-# 1. AI System Overview & Foundation Model Hierarchy
-
-| Model Tier | Foundation Model | Architectural Role | Latency / SLA Target |
-|---|---|---|---|
-| **Tier 1: Fast Router & Classifier** | Gemini 3.8 Flash / DistilBERT | Query intent classification, PII redaction & safety filter | < 50ms p99 |
-| **Tier 2: Deep Cognitive Reasoning** | Gemini 3.1 Pro ReAct Orchestrator | Multi-step agent planning, tool orchestration & synthesis | < 800ms p99 |
-| **Tier 3: Domain Specialized Embedder** | ScaNN 768-dim Text-Embedding-004 | Enterprise vector search, semantic clustering & RAG | < 15ms p99 |
-
----
-
-# 2. Multi-Agent Cognitive Reasoning & ReAct Loop Topology
-
-### 📐 Visual Diagram 1: Multi-Agent Cognitive Reasoning & ReAct Loop Topology (Template 23)
-\`\`\`mermaid
-graph TD
-    PROMPT["User Query / Ingress Trigger"] --> PLANNER["🧠 Multi-Agent Planner (Gemini 3.1 Pro)"]
-    PLANNER --> TOOL1["⚙️ Vector Knowledge Tool"]
-    PLANNER --> TOOL2["🗄️ Database Query Tool"]
-    TOOL1 --> SYNTH["🔬 Evidence Synthesis & Grounding"]
-    TOOL2 --> SYNTH
-    SYNTH --> SAFETY{"⚖️ Model Armor Safety Gate"}
-    SAFETY -->|Approved| RESP["Final Verified Output"]
-\`\`\`
-
----
-
-# 3. Enterprise RAG Knowledge Mesh & Vector Search
-
-### 📐 Visual Diagram 2: Enterprise RAG Knowledge Mesh & Vector Search (Template 24)
-\`\`\`mermaid
-graph LR
-    DOCS["Enterprise Structured / Unstructured Corpus"] --> CHUNKER["Semantic Chunking Pipeline"]
-    CHUNKER --> EMBED["Text-Embedding-004 Generator"]
-    EMBED --> SCANN["Vertex AI Vector Search (ScaNN Index)"]
-    SCANN --> GROUNDING["RAG Triad Faithfulness Verifier (>0.98)"]
-\`\`\`
-
----
-
-# 4. Human-in-the-Loop Dual-Custody Approval Gate
-
-### 📐 Visual Diagram 3: Human-in-the-Loop Dual-Custody Approval Gate (Template 26)
-\`\`\`mermaid
-graph TD
-    AI_OUTPUT["AI Draft Synthesis"] --> CONF_CHECK{"Confidence Score >= 0.95?"}
-    CONF_CHECK -->|Yes| AUTO["Autonomous Execution Channel"]
-    CONF_CHECK -->|No / High Risk| HITL["👥 Human Review Workbench (Dual Signature)"]
-    HITL --> SIGNED["Approved & Cryptographically Logged"]
-\`\`\`
-
----
-
-# 5. Enterprise GenAI Platform Infrastructure Topology
-
-### 📐 Visual Diagram 4: Enterprise GenAI Platform Infrastructure Topology (Template 40)
-\`\`\`mermaid
-graph TD
-    INGRESS["API Ingress & Rate Limiter"] --> GATEWAY["⚡ Model Gateway & Token Cache"]
-    GATEWAY --> GPU_POOL["⚙️ GKE Multi-Tenant GPU Cluster (A100/H100)"]
-    GATEWAY --> PROMPT_SHIELD["🛡️ Model Armor Prompt Shield"]
-    GPU_POOL --> VECTOR_DB["🗄️ Managed Vector Store"]
-\`\`\`
-
----
-
-# 6. AI Safety Board & Regulatory Certification
-
-| Safety Control | Verification Standard | Enforcement Mechanism |
-|---|---|---|
-| **Prompt Injection Defense** | OWASP Top 10 for LLMs | Real-time input token filtering and Model Armor perimeter |
-| **Groundedness & Hallucination** | RAG Triad Metric > 0.98 | Automated cross-reference verification against source text |
-| **PII & Data Isolation** | GDPR / HIPAA BAA | Deterministic regex masking and customer tenant encryption |
-`,
-  vendor_rfp: `# Vendor RFP & Build-vs-Buy Evaluation Scorecard
-
-## Enterprise Architecture Platform — Strategic Vendor Selection & TCO Financial Analysis
-
-**Document ID:** RFP-EVAL-2026-001  
-**Document Version:** v1.0 (Procurement & Architecture Review Board Approved)  
-**Lead Evaluator:** Principal Enterprise Architect (Architecture Review Board)  
-**Evaluation Scope:** Build vs Buy, Commercial Vendor Matrix & 3-Year TCO  
-
----
-
-# 1. RFP Purpose, Business Drivers & Evaluation Scope
-
-### 1.1 Executive Procurement Charter
-This evaluation establishes an objective, mathematically weighted decision framework to select the enterprise technology platform that maximizes throughput, security compliance, and developer productivity while minimizing 3-year total cost of ownership.
-
----
-
-# 2. Vendor Fit-Gap & Capability Heatmap Grid
-
-### 📐 Visual Diagram 1: Vendor Fit-Gap & Capability Heatmap Grid (Template 33)
-\`\`\`mermaid
-graph TD
-    V1["Vendor Option A: Custom In-House Build"] --> EVAL["⚖️ Weighted Capability Scoring Matrix"]
-    V2["Vendor Option B: Commercial Off-the-Shelf (COTS)"] --> EVAL
-    V3["Vendor Option C: Managed Cloud Native Platform (Selected)"] --> EVAL
-    EVAL --> RESULT["🏆 Final Approved Selection"]
-\`\`\`
-
----
-
-# 3. Architecture Decision Record (ADR) & Selection Tree
-
-### 📐 Visual Diagram 2: Architecture Decision Record & Selection Tree (Template 13)
-\`\`\`mermaid
-graph TD
-    START["Architecture Decision: Core Platform Engine"] --> CRIT1{"SLA Requirement: 99.999%?"}
-    CRIT1 -->|Yes| CRIT2{"Zero-Trust VPC Isolation Supported?"}
-    CRIT2 -->|Yes| APPROVED["✅ Approved: Managed Cloud Platform"]
-    CRIT2 -->|No| REJECT["❌ Rejected: Security Non-Compliance"]
-\`\`\`
-
----
-
-# 4. Core Business Capability Coverage Map
-
-### 📐 Visual Diagram 3: Core Business Capability Coverage Map (Template 02)
-\`\`\`mermaid
-graph TD
-    CAPS["Enterprise Capability Taxonomy"] --> COVERAGE["Vendor Feature Match: 94.2% Coverage"]
-    COVERAGE --> EXTEND["Custom Microservice Extensions: 5.8%"]
-\`\`\`
-
----
-
-# 5. Total Cost of Ownership (TCO) & FinOps Breakdown
-
-### 📐 Visual Diagram 4: Total Cost of Ownership & FinOps Breakdown (Template 30)
-\`\`\`mermaid
-graph LR
-    Y1["Year 1: $1.4M (Setup & Licenses)"] --> Y2["Year 2: $850k (Run & Scale)"]
-    Y2 --> Y3["Year 3: $820k (Optimized)"]
-    Y3 --> ROI["Total 3-Year ROI: 312%"]
-\`\`\`
-
----
-
-# 6. Procurement & ARB Selection Sign-Off
-
-| Evaluation Committee Role | Name & Title | Recommendation | Signature Stamp |
-|---|---|---|---|
-| **Chief Technology Officer** | Enterprise Technology Executive Sponsor | ✅ APPROVED | \`SIG_CTO_99182_APPROVED\` |
-| **Director of Procurement** | Enterprise Strategic Sourcing Lead | ✅ APPROVED | \`SIG_PROC_88192_APPROVED\` |
-| **Chief Information Security Officer** | Lead Cyber Security Architect | ✅ APPROVED | \`SIG_CISO_77014_APPROVED\` |
-`,
-  cloud_finops: `# Cloud FinOps & Unit Economics Optimization Blueprint
-
-## Enterprise Architecture Platform — Cloud Cost Allocation & Unit Economics Model
-
-**Document ID:** FINOPS-2026-001  
-**Document Version:** v1.0 (CFO & Cloud Infrastructure Approved Baseline)  
-**Lead FinOps Architect:** Principal Cloud FinOps Lead (Enterprise ARB)  
-**Target Unit Cost Metric:** Sub-$0.0012 per Transaction / Active Session  
-
----
-
-# 1. FinOps Charter, Unit Economics Objectives & Governance
-
-### 1.1 Unit Cost Target & Financial Discipline
-Cloud infrastructure spend must scale sub-linearly relative to business transaction volume. Every microservice, Kubernetes namespace, and BigQuery dataset is tagged for automated cost attribution and monthly unit-economic auditing.
-
----
-
-# 2. Enterprise Cloud Spend Attribution & Cost Flow Mesh
-
-### 📐 Visual Diagram 1: Enterprise Cloud Spend Attribution & Cost Flow Mesh (Template 30)
-\`\`\`mermaid
-graph LR
-    TOTAL["Enterprise Monthly Cloud Spend"] --> COMPUTE["⚙️ Compute & GKE (42%)"]
-    TOTAL --> STORAGE["🗄️ Spanner & Storage (28%)"]
-    TOTAL --> AI["🧠 Vertex AI & GPU Inference (18%)"]
-    TOTAL --> NET["🌐 Network Ingress/Egress (12%)"]
-\`\`\`
-
----
-
-# 3. Unit Cost Economics & Value Stream Lead Time Metrics
-
-### 📐 Visual Diagram 2: Value Stream Lead Time & Unit Cost Efficiency (Template 04)
-\`\`\`mermaid
-graph LR
-    STAGE1["Order Ingestion ($0.0002)"] --> STAGE2["Risk Validation ($0.0004)"]
-    STAGE2 --> STAGE3["Ledger Settlement ($0.0006)"]
-    STAGE3 --> TOTAL_COST["Total Cost / Unit: $0.0012"]
-\`\`\`
-
----
-
-# 4. Compute, Storage & Spot Resource Allocation Matrix
-
-### 📐 Visual Diagram 3: Compute, Storage & Spot Resource Allocation (Template 16)
-\`\`\`mermaid
-graph TD
-    WORKLOADS["Enterprise Workloads"] --> PROD["Production: 100% Committed Use Discounts (CUD)"]
-    WORKLOADS --> BATCH["Batch Dataflow: 80% Spot Preemptible VMs"]
-    WORKLOADS --> DEV["Dev/QA: Automated 7PM Shutdown Schedule"]
-\`\`\`
-
----
-
-# 5. Automated Waste Reclamation & CUD Commitments
-
-### 📐 Visual Diagram 4: Cost Optimization & Waste Reclamation Matrix (Template 33)
-\`\`\`mermaid
-graph TD
-    MONITOR["Cloud Asset Inventory Crawler"] --> IDLE{"Unattached Disks / Idle IP?"}
-    IDLE -->|Yes| RECLAIM["Automated 72h Deletion Policy"]
-    IDLE -->|No| RETAIN["Valid Workload Tag Confirmed"]
-\`\`\`
-
----
-
-# 6. CFO & Infrastructure FinOps Charter Sign-Off
-
-| Executive Role | Responsibility | Approval Status |
-|---|---|---|
-| **Chief Financial Officer** | Enterprise Cloud Capital & Operating Budget | ✅ APPROVED |
-| **VP of Cloud Infrastructure** | Infrastructure efficiency and auto-scaling throttles | ✅ APPROVED |
-| **Principal FinOps Architect** | Tagging compliance and unit economics tracking | ✅ APPROVED |
-`,
-  golive_runbook: `# Production Go-Live & Cutover War Room Runbook
-
-## Enterprise Architecture Platform — Minute-by-Minute Launch Execution Plan
-
-**Document ID:** RUNBOOK-GOLIVE-2026-001  
-**Document Version:** v1.0 (War Room & Incident Commander Approved)  
-**Incident Commander:** Lead Site Reliability Engineer (Enterprise ARB)  
-**Target Cutover Window:** Saturday 02:00 UTC to 04:00 UTC (Zero Downtime)  
-
----
-
-# 1. Launch Charter, War Room Governance & Incident Hierarchy
-
-| War Room Role | Operational Mandate | Lead Contact | Escalation Channel |
-|---|---|---|---|
-| **Incident Commander** | Sole authority on Go / No-Go decision | Lead SRE Architect | \`#warroom-commander-voice\` |
-| **Database Lead** | CDC sync replication lag and tablet splits | Principal DBA | \`#warroom-database\` |
-| **Network & Ingress Lead** | Anycast DNS flipping and WAF canary gates | Principal Network Architect | \`#warroom-network\` |
-| **Security & GRC Lead** | Live token verification and audit log health | Lead Security Architect | \`#warroom-security\` |
-
----
-
-# 2. Minute-by-Minute Operational Cutover Step Matrix
-
-### 📐 Visual Diagram 1: Minute-by-Minute Operational Cutover Runbook (Template 29)
-\`\`\`mermaid
-graph LR
-    T1["02:00: Lock Source DB"] --> T2["02:15: Final CDC Drain"]
-    T2 --> T3["02:30: Canary DNS 10%"]
-    T3 --> T4["02:45: Full Traffic 100%"]
-    T4 --> T5["03:00: Smoke Tests Passed"]
-\`\`\`
-
----
-
-# 3. Cross-Functional Launch Hand-Off Swimlane
-
-### 📐 Visual Diagram 2: Cross-Functional Launch Hand-Off Swimlane (Template 03)
-\`\`\`mermaid
-graph TD
-    subgraph SRE["SRE & Ops"]
-        S1["Pre-Flight Health Check"]
-        S2["Traffic Shift Execution"]
-    end
-    subgraph QA["QA & Validation"]
-        Q1["Synthetic Transaction Suite"]
-        Q2["Latency Budget Sign-Off"]
-    end
-    S1 --> S2
-    S2 --> Q1
-    Q1 --> Q2
-\`\`\`
-
----
-
-# 4. Production Traffic Cutover & Sequence Flow
-
-### 📐 Visual Diagram 3: Production Traffic Cutover & Sequence Flow (Template 11)
-\`\`\`mermaid
-graph TD
-    DNS["Global Anycast DNS"] --> ROUTE1["Old Datacenter (Draining)"]
-    DNS --> ROUTE2["New Cloud Region (Active-Active)"]
-    ROUTE2 --> CACHE["Pre-Warmed Redis Cache"]
-    CACHE --> GKE["GKE Live Traffic Pods"]
-\`\`\`
-
----
-
-# 5. Emergency Abort Criteria & Automated Rollback Decision Tree
-
-### 📐 Visual Diagram 4: Emergency Abort & Automated Rollback Decision Tree (Template 28)
-\`\`\`mermaid
-graph TD
-    CUTOVER["Live Cutover in Progress"] --> ERROR_CHECK{"Error Rate > 0.01% or Latency > 100ms?"}
-    ERROR_CHECK -->|No| PROCEED["Proceed to 100% Traffic Shift"]
-    ERROR_CHECK -->|Yes| ABORT["🚨 Trigger Instant Rollback: Flip DNS to Standby Region (<60s)"]
-\`\`\`
-
----
-
-# 6. Production Go-Live Executive Sign-Off
-
-| Milestone | Sign-Off Authority | Status | Time Stamp |
-|---|---|---|---|
-| **Go-Live Execution Authorized** | Chief Technology Officer | ✅ AUTHORIZED | 02:00:00 UTC |
-| **100% Production Traffic Shifted** | Lead Incident Commander | ✅ COMPLETED | 02:45:12 UTC |
-| **Post-Launch Warranty Passed** | Global Quality & SRE Lead | ✅ PASSED | 04:00:00 UTC |
-`,
-  sre_resilience: `# SRE Reliability & Chaos Engineering Resilience Spec
-
-## Enterprise Architecture Platform — 99.999% SLA Site Reliability & Disaster Recovery Specification
-
-**Document ID:** SRE-RESILIENCE-2026-001  
-**Document Version:** v1.0 (SRE Director & Architecture Review Board Approved)  
-**Lead SRE Architect:** Principal Site Reliability Engineer (Enterprise ARB)  
-**Availability Target:** 99.999% SLA (< 5.26 minutes total downtime / year)  
-
----
-
-# 1. SRE Principles, Service Tiering & 99.999% SLO Definitions
-
-| Service Tier | Target Availability | p95 Latency SLA | Error Budget (Monthly) | Burn Rate Alert Trigger |
-|---|---|---|---|---|
-| **Tier 0: Core Ingress & Invoicing** | **99.999%** | **< 15ms** | 4.38 minutes | 14.4x burn rate (1h window) |
-| **Tier 1: Search & Inventory Mesh** | **99.99%** | **< 40ms** | 43.8 minutes | 6x burn rate (6h window) |
-| **Tier 2: Reporting & Analytics** | **99.9%** | **< 200ms** | 438 minutes | 1x burn rate (24h window) |
-
----
-
-# 2. Four Golden Signals & SRE Telemetry Mesh
-
-### 📐 Visual Diagram 1: Enterprise Observability & SRE Telemetry Mesh (Template 21)
-\`\`\`mermaid
-graph TD
-    COLLECTORS["OpenTelemetry DaemonSet (GKE Nodes)"] --> OTEL_COLLECTOR["OTel Collector Gateway"]
-    OTEL_COLLECTOR --> TRACES["Cloud Trace (Distributed Spans)"]
-    OTEL_COLLECTOR --> METRICS["Managed Prometheus (Golden Signals)"]
-    OTEL_COLLECTOR --> LOGS["Cloud Logging (Structured JSON)"]
-    METRICS --> SLI_ENGINE["SLO / Error Budget Engine"]
-\`\`\`
-
----
-
-# 3. High-Availability Multi-Region Active-Active DR
-
-### 📐 Visual Diagram 2: High-Availability Multi-Region Active-Active DR (Template 19)
-\`\`\`mermaid
-graph LR
-    subgraph REGION_A["Primary Region: us-central1"]
-        APP_A["GKE Pod Mesh"] <--> DB_A["Cloud Spanner Regional Node"]
-    end
-    subgraph REGION_B["Secondary Region: us-east4"]
-        APP_B["GKE Pod Mesh"] <--> DB_B["Cloud Spanner Regional Node"]
-    end
-    REGION_A <-->|Synchronous TrueTime Paxos Multi-Region Replication| REGION_B
-\`\`\`
-
 ---
 
-# 4. Circuit Breakers, Bulkheads & Graceful Degradation
-
-### 📐 Visual Diagram 3: Circuit Breakers, Bulkheads & Graceful Degradation (Template 28)
-\`\`\`mermaid
-graph TD
-    RPC["Upstream RPC Request"] --> CB{"Circuit Breaker"}
-    CB -->|Healthy| PRIMARY["Execute Synchronous Call"]
-    CB -->|5 Failures in 10s| TRIP["Trip Circuit Breaker to OPEN"]
-    TRIP --> CACHE["Return Degraded Cached Payload (<5ms)"]
-    TRIP --> DLQ["Enqueue Write to Pub/Sub Dead-Letter Queue"]
-\`\`\`
-
----
-
-# 5. BCDR Cyber Recovery & Ransomware Resilience
-
-### 📐 Visual Diagram 4: BCDR Cyber Recovery & Ransomware Resilience (Template 48)
-\`\`\`mermaid
-graph TD
-    PROD_VAULT["Production Data Store"] --> AIRGAP["🔒 Air-Gapped Immutable WORM Backup"]
-    AIRGAP --> SCANNER["Automated Ransomware Malware Scanner"]
-    SCANNER --> CLEANROOM["Isolated Clean-Room Recovery Environment"]
-    CLEANROOM --> RESTORE["Verified 1-Click Production Recovery"]
-\`\`\`
-
----
-
-# 6. SRE Director & Resilience Architecture Sign-Off
-
-| Reviewer Role | Name & Title | Certification Status |
-|---|---|---|
-| **SRE Director** | Global Site Reliability Engineering Lead | ✅ CERTIFIED (99.999% SLA Architecture) |
-| **Chief Information Security Officer** | Enterprise Cyber Resilience Officer | ✅ CERTIFIED (Air-Gapped BCDR Immutability) |
-| **Principal Solutions Architect** | Principal Systems Architect (Enterprise ARB) | ✅ CERTIFIED (Production Chaos Verified) |
-`
-};
-
-const RETAIL_AMAZON_DOCUMENTS: Record<string, string> = {
-  sdd: `# System Design Document (SDD / HLD)
-
-## Amazon-Scale Hyper-Scalable Omnichannel Marketplace & Logistics Platform
-
-**Document ID:** SDD-RETAIL-2026-001  
-**Document Version:** v2.4 (Enterprise Architecture Review Board Approved)  
-**Target Throughput:** 100,000+ Peak Order QPS (< 15ms P95 Latency)  
-**System Availability:** 99.999% Multi-Region Active-Active Uptime  
-**Compliance Standards:** PCI-DSS Level 1 v4.0, SOC 2 Type II, GDPR, CCPA  
-
----
-
-# 1. Executive Architecture Summary
-
-### 1.1 Business & Architectural Objectives
-The **Omnichannel Marketplace Platform** is an enterprise-grade distributed commerce and supply chain engine designed to support multi-million concurrent shoppers, 3P marketplace merchant onboarding, sub-second product search over 50M+ SKUs, automated inventory reservation sagas, and intelligent warehouse routing across global fulfillment centers.
-
-### 1.2 Core Architectural Principles
-* **Decoupled Event-Driven Core**: Asynchronous event streams (Apache Kafka / Google Cloud Pub/Sub) decouple catalog updates, order lifecycle events, and warehouse carrier dispatch.
-* **Two-Phase Distributed Sagas**: All order reservations utilize an Outbox Pattern with automatic compensating transactions to eliminate overselling and race conditions.
-* **Cardholder Data Isolation**: Zero plain credit card numbers (PAN) touch core infrastructure; all payment credentials are tokenized at the edge via a dedicated PCI-DSS Level 1 Cardholder Data Environment (CDE).
-
----
-
-# 2. Multi-Tier Subsystem & Container Topology
-
-### 📐 Visual Diagram 1: Multi-Tier Cloud Subsystems & Compute Mesh (Template 08)
-\`\`\`mermaid
-graph TD
-    SHOPPER["👤 Global Shoppers (Web / Mobile / Voice)"] --> CDN["🌐 Google Cloud Armor & Anycast Edge CDN"]
-    SELLER["🏢 3P Marketplace Merchants"] --> CDN
-    CDN --> APIGW["🚪 Envoy API Gateway & Kong Ingress Mesh"]
-    
-    APIGW --> CATALOG["🔍 Product Catalog & Semantic Search Service (GKE Pods)"]
-    APIGW --> CART["🛒 Distributed Cart & Dynamic Pricing Service (Redis Cluster)"]
-    APIGW --> ORDER_SAGA["⚙️ High-Throughput Order Orchestration Saga (Go / gRPC)"]
-    
-    ORDER_SAGA --> PAYMENTS["💳 Tokenized Payment & Settlement Service (PCI-DSS CDE)"]
-    ORDER_SAGA --> WMS["📦 Fulfillment & Warehouse Logistics Engine (WMS / 3PL)"]
-    CATALOG <--> REC_AI["🤖 Two-Tower Collaborative Recommendation Engine"]
-\`\`\`
-
----
+# 2. Micro-Level API Sequences, Webhooks & Latency Budgets
 
-# 3. Microsecond Interaction Flow & Checkout Sequence
+### 📐 Visual Diagram 2: Micro-Level API Sequences, Webhooks & Latency Budgets (Template 11)
 
-### 📐 Visual Diagram 2: Micro-Level API Interaction Sequence & Latency Budget (Template 11)
 \`\`\`mermaid
 sequenceDiagram
     autonumber
-    actor Shopper as 👤 Shopper
-    participant Gateway as 🚪 API Gateway
-    participant OrderSaga as ⚙️ Order Orchestrator
-    participant Inventory as 📦 WMS Inventory Lock
-    participant Payment as 💳 PCI Token Vault
-    participant Kafka as ⚡ Event Bus
+    actor Reviewer as 👤 Licensed Reviewer
+    participant Gateway as 🚪 Apigee / Envoy Gateway
+    participant Orch as ⚙️ ReAct Orchestrator
+    participant Armor as 🛡️ Model Armor & DLP
+    participant Spanner as 🗄️ Cloud Spanner Ledger
+    participant KMS as 🔐 Cloud KMS HSM
 
-    Shopper->>Gateway: POST /api/v1/checkout/1-click (Idempotency-Key)
-    Gateway->>OrderSaga: gRPC ExecuteCheckout() [< 10ms]
-    OrderSaga->>Inventory: AcquireTemporaryHold(SKU, qty=1, ttl=900s) [< 15ms]
-    Inventory-->>OrderSaga: ✅ HoldConfirmed(reservation_id)
-    OrderSaga->>Payment: ChargeTokenizedCard(amount, token) [< 120ms]
-    Payment-->>OrderSaga: ✅ ChargeSettled(tx_id)
-    OrderSaga->>Kafka: PublishOrderCreated(order_id) [< 5ms]
-    OrderSaga-->>Gateway: 200 OK (Order Confirmed)
-    Gateway-->>Shopper: 🎉 Order Placed & Delivery ETA
+    Reviewer->>Gateway: POST /v1/signatures:attest (Idempotency-Key, Step-Up JWT)
+    Gateway->>Orch: ValidateJwtAndReason(sub, doc_id, meaning) [< 15ms]
+    Orch->>Armor: VerifyZeroUnredactedPII(doc_id) [< 25ms]
+    Armor-->>Orch: PASS (clean_hash)
+    Orch->>KMS: AsymmetricSign(SHA256(doc_hash || sub || meaning || ts)) [< 35ms]
+    KMS-->>Orch: pkcs7_signature_bytes
+    Orch->>Spanner: CommitTransaction(signature_record + outbox_event) [< 20ms]
+    Spanner-->>Gateway: 201 Created (Immutable Audit Receipt)
 \`\`\`
 
 ---
 
-# 4. Enterprise Domain Entity Model & Storage Architecture
+# 3. Logical Domain Model, Physical Database Schema & JSON ERDs
 
-### 📐 Visual Diagram 3: Relational Domain ERD & High-Throughput Storage (Template 14)
-\`\`\`mermaid
-erDiagram
-    MERCHANTS ||--o{ PRODUCTS : lists
-    PRODUCTS ||--o{ SKUS : contains
-    SKUS ||--o{ INVENTORY_LOTS : tracks
-    SHOPPERS ||--o{ ORDERS : places
-    ORDERS ||--|{ ORDER_LINE_ITEMS : includes
-    ORDERS ||--o{ SHIPMENTS : dispatches
-    ORDERS ||--|| PAYMENT_TRANSACTIONS : settles
-
-    MERCHANTS {
-        string merchant_id PK
-        string business_name
-        string payout_account_token
-        string kyb_status
-    }
-    PRODUCTS {
-        string product_id PK
-        string merchant_id FK
-        string title
-        string category_path
-    }
-    SKUS {
-        string sku_id PK
-        string product_id FK
-        int price_cents
-        string barcode
-    }
-    ORDERS {
-        string order_id PK
-        string shopper_id FK
-        int total_amount_cents
-        string order_status
-        string idempotency_key
-    }
-\`\`\`
-
----
-
-# 5. Zero-Trust Security Perimeter & PCI-DSS Boundaries
-
-### 📐 Visual Diagram 4: Zero-Trust Network Perimeter & Payment Isolation (Template 18)
-\`\`\`mermaid
-graph LR
-    subgraph UNTRUSTED["🌐 Public Internet Zone"]
-        CLIENT["Shopper Mobile & Web Clients"]
-    end
-    subgraph DMZ["🛡️ DMZ Edge Perimeter"]
-        WAF["Cloud Armor DDoS & OWASP Top 10"]
-        PROXY["Envoy mTLS Reverse Proxy"]
-    end
-    subgraph CDE["🔒 Isolated Cardholder Data Environment (PCI-DSS CDE)"]
-        VAULT["💳 Card Tokenization Engine (Cloud KMS HSM)"]
-        PSP["🏦 Multi-PSP Payment Gateway Mesh (Stripe / Adyen)"]
-    end
-    
-    CLIENT -->|"TLS 1.3"| WAF
-    WAF --> PROXY
-    PROXY -->|"Private Service Connect"| VAULT
-    VAULT --> PSP
-\`\`\`
-
----
-
-# 6. Disaster Recovery & Multi-Region Replication
-
-### 📐 Visual Diagram 5: HA / DR Architecture & Multi-Region Replication (Template 19)
-\`\`\`mermaid
-graph TD
-    DNS["🌐 Anycast Global DNS & Cloud CDN (Latency-Based Routing)"] --> REGION_A["🏢 Primary Region (us-central1 GKE Active)"]
-    DNS --> REGION_B["🏢 Secondary Region (us-east4 GKE Active)"]
-    
-    REGION_A --> SPANNER_A["🗄️ Cloud Spanner Multi-Region Paxos Leader"]
-    REGION_B --> SPANNER_B["🗄️ Cloud Spanner Multi-Region Paxos Replicas"]
-    
-    SPANNER_A <-->|"Synchronous Cross-Region Paxos (RPO=0, RTO<15s)"| SPANNER_B
-\`\`\`
-
----
-
-# 7. CI/CD Delivery Pipeline & Canary Rollouts
-
-### 📐 Visual Diagram 6: Multi-Stage CI/CD Security Pipeline & Progressive Canary (Template 20)
-\`\`\`mermaid
-graph LR
-    GIT["💻 Git Push / PR"] --> SAST["🛡️ SonarQube & Trivy Security Scan"]
-    SAST --> BUILD["📦 Docker Multi-Stage Container Build"]
-    BUILD --> SIGN["🔏 Cosign SLSA L3 Container Signing"]
-    SIGN --> CANARY["🚀 Argo Rollouts Canary (10% -> 25% -> 50% -> 100%)"]
-    CANARY --> PROD["🎉 Production GKE Cluster"]
-\`\`\`
-`,
-
-  tdd: `# Technical Design Document (TDD / LLD)
-
-## Amazon-Scale E-Commerce Microservices & Low-Level Component Engineering
-
-**Document ID:** TDD-RETAIL-2026-001  
-**Target Latency:** Sub-10ms gRPC Service-to-Service P99  
-**Concurrency Target:** 250,000 Concurrent Active Shopping Sessions  
-
----
-
-# 1. Microservices Monorepo Architecture
-
-\`\`\`
-amazon-marketplace/
-├── apps/
-│   ├── shopper-portal/         # Next.js 15 SSR High-Performance Storefront
-│   ├── seller-center/          # Merchant Onboarding & Inventory Management
-│   ├── checkout-orchestrator/  # Go gRPC High-Throughput Order Saga Engine
-│   ├── catalog-search/         # Elasticsearch + ScaNN Vector Hybrid Search
-│   └── fulfillment-engine/     # Real-Time Warehouse Allocation & Routing
-├── packages/
-│   ├── proto-contracts/        # gRPC Protobuf Contracts & Type Definitions
-│   ├── db-schema/              # Spanner DDL & PostgreSQL Migrations
-│   └── pci-tokens/             # Zero-Knowledge Card Tokenizer SDK
-└── infra/
-    ├── terraform/              # Multi-Region GKE & Cloud Armor Infrastructure
-    └── argo-rollouts/          # Canary Deployment & Automated Metric Rollback
-\`\`\`
-
----
-
-# 2. Production Database Schema (Cloud Spanner DDL)
+### 📐 Visual Diagram 3: Logical Domain Model, Physical Database Schema & JSON ERDs (Template 14)
 
 \`\`\`sql
-CREATE TABLE orders (
+CREATE TABLE gxp_clinical_dossiers (
     tenant_id STRING(36) NOT NULL,
-    order_id STRING(36) NOT NULL,
-    shopper_id STRING(64) NOT NULL,
-    merchant_id STRING(64) NOT NULL,
-    total_amount_cents INT64 NOT NULL,
-    currency STRING(3) NOT NULL,
-    order_status STRING(32) NOT NULL, -- PENDING, RESERVED, PAID, FULFILLED, CANCELLED
-    shipping_address JSON NOT NULL,
-    idempotency_key STRING(64) NOT NULL,
+    dossier_id STRING(36) NOT NULL,
+    protocol_number STRING(64) NOT NULL,
+    lifecycle_state STRING(32) NOT NULL, -- DRAFT, PV_HOLD, PENDING_SIGN, APPROVED, ARCHIVED
+    content_sha256 STRING(64) NOT NULL,
+    grounding_score FLOAT64 NOT NULL,
+    created_by STRING(128) NOT NULL,
     created_at TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp = true)
-) PRIMARY KEY (tenant_id, order_id);
+) PRIMARY KEY (tenant_id, dossier_id);
 
-CREATE TABLE order_line_items (
+CREATE TABLE cfr11_electronic_signatures (
     tenant_id STRING(36) NOT NULL,
-    order_id STRING(36) NOT NULL,
-    line_item_id STRING(36) NOT NULL,
-    sku_id STRING(64) NOT NULL,
-    quantity INT64 NOT NULL,
-    unit_price_cents INT64 NOT NULL,
-    warehouse_id STRING(64) NOT NULL
-) PRIMARY KEY (tenant_id, order_id, line_item_id),
-  INTERLEAVE IN PARENT orders ON DELETE CASCADE;
-
-CREATE UNIQUE INDEX idx_orders_idempotency ON orders(tenant_id, idempotency_key);
-CREATE INDEX idx_orders_shopper ON orders(tenant_id, shopper_id, created_at DESC);
+    dossier_id STRING(36) NOT NULL,
+    signature_id STRING(36) NOT NULL,
+    signer_subject STRING(128) NOT NULL,
+    signer_printed_name STRING(256) NOT NULL,
+    signature_meaning STRING(64) NOT NULL, -- REVIEWED, APPROVED, PV_CLEARED
+    kms_key_version STRING(256) NOT NULL,
+    cryptographic_digest BYTES(512) NOT NULL,
+    signed_at TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp = true)
+) PRIMARY KEY (tenant_id, dossier_id, signature_id),
+  INTERLEAVE IN PARENT gxp_clinical_dossiers ON DELETE NO ACTION;
 \`\`\`
 
 ---
 
-# 3. 1-Click Checkout Distributed Saga (Outbox Pattern)
+# 4. Distributed Saga Outbox Transactions & Idempotency
 
-### 📐 Visual Diagram 1: Distributed Outbox Saga & Compensating Transaction Flow (Template 28)
-\`\`\`mermaid
-graph TD
-    START["1. Shopper Clicks 1-Click Buy"] --> LOCK["2. Acquire Redis Distributed Lock on SKU"]
-    LOCK --> SAGA["3. Order Orchestrator Creates Pending Saga Entry"]
-    SAGA --> INVENTORY["4. Reserve Warehouse Lot Quantity (TTL=900s)"]
-    
-    INVENTORY -->|Success| CHARGE["5. Charge Payment via PCI Token Vault"]
-    INVENTORY -->|Out of Stock| COMPENSATE_OUT["❌ Abort Order & Release Lock"]
-    
-    CHARGE -->|Approved| COMMIT["6. Commit Spanner Transaction & Publish to Kafka"]
-    CHARGE -->|Declined| COMPENSATE_PAY["❌ Release Warehouse Lot & Notify User"]
-\`\`\`
+* **Transactional Outbox Pattern:** Every mutation to gxp_clinical_dossiers atomically inserts an event row into saga_outbox_events within the same Cloud Spanner read-write transaction, guaranteeing zero dual-write drift between Spanner and Pub/Sub.
+* **Cryptographic Idempotency:** All write endpoints require an Idempotency-Key header stored in Spanner with a 7-day retention lock to prevent duplicate adverse event filings or double signatures.
 
 ---
 
-# 4. End-to-End Microservice Compute Topology
+# 5. Application Fault Tolerance, Circuit Breakers & Retry Policies
 
-### 📐 Visual Diagram 2: Microservice Compute Mesh & gRPC Channels (Template 08)
-\`\`\`mermaid
-graph TD
-    APIGW["🚪 Envoy Gateway (HTTP/3 & gRPC-Web)"] --> CATALOG_POD["🔍 Catalog Service (128 Pods Autoscaled)"]
-    APIGW --> CART_POD["🛒 Cart & Pricing Service (64 Pods)"]
-    APIGW --> SAGA_POD["⚙️ Order Orchestrator (Go High-Concurrency)"]
-    
-    CART_POD <--> REDIS["⚡ Redis Enterprise Cluster (Sub-1ms Latency)"]
-    CATALOG_POD <--> ELASTIC["🔍 OpenSearch / Elasticsearch Cluster"]
-    SAGA_POD <--> SPANNER["🗄️ Cloud Spanner Multi-Region Database"]
-\`\`\`
+### 📐 Visual Diagram 4: Application Fault Tolerance, Circuit Breakers & Retry Policies (Template 28)
+
+* **Adaptive Circuit Breakers:** Envoy outlier detection ejects upstream model endpoints if consecutive 5xx errors exceed 3 within 10 seconds, failing over transparently to the secondary region (us-east4).
+* **Bounded Exponential Backoff:** Retries follow T_sleep = min(8000ms, 200ms × 2^attempt) + Uniform(0, 100ms) with dead-letter queue (DLQ) persistence after 4 failed attempts.
+
+---
+
+# 6. Multi-Stage CI/CD & DevSecOps Quality Gates
+
+### 📐 Visual Diagram 5: Multi-Stage CI/CD & DevSecOps Quality Gates (Template 20)
+
+* **22-Stage GxP Automated Pipeline:** Enforces static AST analysis, Trivy container CVE scanning, SLSA Level 3 Cosign attestation, automated IQ/OQ Vitest/Playwright regression suites, and canary rollouts (5% → 25% → 100%).
 `,
 
-  prd: `# Product Requirements Document (PRD)
+  ai_system_card: `# DOC 13 • Enterprise AI / LLM System Card & Safety Governance Spec
 
-## Amazon-Scale Omnichannel E-Commerce & Merchant Marketplace Platform
+## Enterprise Architecture Platform — Multi-Agent ReAct Orchestration, ScaNN Vector RAG, Model Armor & Token Governance
 
-**Document ID:** PRD-RETAIL-2026-001  
-**Target Audience:** Product Managers, UX Architects, Engineering Leads  
-
----
-
-# 1. Product Context & Personas
-
-### 📐 Visual Diagram 1: Marketplace System Context & Multi-Actor Ecosystem (Template 01)
-\`\`\`mermaid
-graph TD
-    SHOPPER["👤 Retail Shoppers (Mobile, Web, Voice)"] --> PLATFORM["🌐 Omnichannel E-Commerce Platform"]
-    SELLER["🏢 3P Marketplace Merchants"] --> PLATFORM
-    CARRIER["🚚 Logistics & 3PL Delivery Fleet"] --> PLATFORM
-    PSP["🏦 Payment Gateways (Stripe, Adyen, Apple Pay)"] --> PLATFORM
-\`\`\`
+**Document ID:** DOC-13-AI-CARD-2026-001  
+**Document Version:** v2.0 (Lean 8 Consolidated Baseline — AI Ethics Board & Regulatory Approved)  
+**Absorbed Redundant Docs:** DOC 04 (FDD - Agent Flows), DOC 15 (Token Throttling)  
+**Consolidated Blueprints:** #23, #24, #26, #40 (Base)  
+**Target Audience:** Chief AI Officer, AI Ethics Board, ML Engineers, GxP Regulators  
 
 ---
 
-# 2. Product Functional Epics & Acceptance Criteria
+# 1. Foundation Model Selection, Benchmarks & Token Throttling
 
-### EPIC-01: Universal Catalog & Sub-50ms Faceted Search (P0)
-* **Description**: Shoppers can search across 50M+ SKUs with instant typo-tolerant suggestions, category filters, and personalized ranking.
-* **Acceptance Criteria**: Search P95 response time $< 50\text{ms}$; real-time inventory stock badges updated within 2 seconds of stock changes.
+| Model Tier | Vertex AI Model ID | Assigned Clinical / Operational Role | Token Budget & Throttling Policy |
+|---|---|---|---|
+| **Tier 1 Reasoning** | gemini-3.1-pro-preview | Complex clinical synthesis, multi-trial contradiction analysis | thinkingLevel: HIGH, max 16,384 output tokens, tenant quota cap |
+| **Tier 2 High-Speed** | gemini-2.5-flash | Inline PV adverse event screening, metadata routing | Low-latency streaming, < 450ms SLA, semantic cache first |
+| **Tier 3 Embeddings** | text-embedding-005 | 768/1536-dim dense clinical passage indexing | Batch quota throttling + content-SHA256 deduplication |
 
-### EPIC-02: 1-Click Buy & Streamlined Checkout (P0)
-* **Description**: Authenticated shoppers can complete an order in a single click using their stored default payment token and shipping address.
-* **Acceptance Criteria**: Checkout conversion rate target $\ge 88\%$; zero duplicate charges under rapid multiple clicks (enforced by idempotency key).
+---
 
-### EPIC-03: 3P Seller Central & Inventory Bulk Ingestion (P0)
-* **Description**: Merchants can register, undergo automated KYB verification, and sync inventory catalogs via CSV bulk upload or REST APIs.
-* **Acceptance Criteria**: Automated onboarding turnaround $< 15\text{ minutes}$; automated commission split calculation per category.
+# 2. Multi-Agent Cognitive Reasoning & ReAct Loops
+
+### 📐 Visual Diagram 1: Multi-Agent Cognitive Reasoning & ReAct Loops (Template 23)
+
+* **Bounded ReAct Loop Governor:** Supervisor Agent orchestrates specialized sub-agents (*Clinical Literature Retriever*, *Biostatistics Verifier*, *Pharmacovigilance Screener*, *Citation Auditor*) with a hard ceiling of ≤ 5 reasoning iterations and deterministic loop-cycle detection.
+
+---
+
+# 3. Enterprise RAG Knowledge Mesh & ScaNN Vector Search
+
+### 📐 Visual Diagram 2: Enterprise RAG Knowledge Mesh & ScaNN Vector Search (Template 24)
+
+**Hybrid Retrieval Scoring Formula:**  
+HybridScore(q, d) = [ 0.65 × cos(e_q, e_d) + 0.35 × BM25(q, d) ] × I(ABAC(u, d) == ALLOW)
+
+* **Pre-Retrieval ABAC Enforcement:** Document ACL security predicates are evaluated inside the AlloyDB ScaNN query plan *before* vector cosine ranking so unauthorized clinical trial data never enters context memory.
+
+---
+
+# 4. Model Armor Prompt Injection Shields & Guardrails
+
+* **Inline Bi-Directional Filtering:** Google Cloud Model Armor + Cloud DLP inspect 100% of user prompts and retrieved chunks for jailbreak patterns, indirect prompt injection, and unredacted HIPAA PHI before LLM invocation.
+
+---
+
+# 5. Dual-Custody Human-in-the-Loop Clinical Approval Gates
+
+### 📐 Visual Diagram 3: Dual-Custody Human-in-the-Loop Clinical Approval Gates (Template 26)
+
+* **Confidence & Safety Escalation:** Any synthesis with grounding confidence < 0.92 or a positive Pharmacovigilance signal automatically blocks autonomous release and routes to the 21 CFR Part 11 Dual-Custody Workbench.
+
+---
+
+# 6. Enterprise GenAI Platform Infrastructure Topology
+
+### 📐 Visual Diagram 4: Enterprise GenAI Platform Infrastructure Topology (Template 40)
+
+* **Dedicated Provisioned Throughput & Semantic KV Cache:** Provisioned Throughput (PT) reservations guarantee zero noisy-neighbor latency spikes during FDA regulatory submission windows.
 `,
 
-  brd: `# Business Requirements Document (BRD)
+  threat_model: `# DOC 07 • STRIDE Threat Model & Security Posture
 
-## Amazon-Scale Omnichannel Retail & Merchant Marketplace Transformation
+## Enterprise Architecture Platform — Cross-Zone Data Flow Diagrams (DFD), Trust Boundaries & STRIDE Mitigations
 
-**Document ID:** BRD-RETAIL-2026-001  
-**Target GMV:** $10B+ Annual Gross Merchandise Value Target  
-**Strategic Horizon:** 2026–2029 Multi-Year Commercial Growth Baseline  
-
----
-
-# 1. Executive Summary & Market Opportunity
-
-### 1.1 Business Problem Statement
-Traditional retail channels suffer from fragmented inventory silos, high shopping cart abandonment ($> 70\%$), and manual merchant onboarding. The **Amazon-Scale Omnichannel Marketplace** delivers a frictionless, hyper-personalized commerce platform that scales to multi-million concurrent shoppers while enabling third-party merchants to list and fulfill goods globally.
-
-### 1.2 Strategic Transformation & ROI Realization
-* **Conversion Rate Optimization**: 1-Click Buy increases mobile checkout conversion by $+32\%$.
-* **Merchant Ecosystem Growth**: Automated KYB seller onboarding enables $10\text{x}$ growth in active seller listings.
-* **Supply Chain Efficiency**: Automated multi-warehouse order routing reduces fulfillment delivery cost by $22\%$.
+**Document ID:** DOC-07-STRIDE-2026-001  
+**Document Version:** v2.0 (Lean 8 Standalone Zero-Bloat Baseline — CISO Approved)  
+**Absorbed Redundant Docs:** (Standalone — Zero Bloat)  
+**Consolidated Blueprints:** #15, #18, #27 (Base)  
+**Target Audience:** Chief Information Security Officer (CISO), Penetration Testers, SecOps  
 
 ---
 
-# 2. Marketplace Context & Actor Topology
+# 1. Security Posture Scope & Threat Modeling Methodology
 
-### 📐 Visual Diagram 1: Executive System Context & Stakeholder Topology (Template 01)
-\`\`\`mermaid
-graph TD
-    SHOPPERS["👥 Global Consumers & Prime Subscribers"] --> STOREFRONT["🌐 Omnichannel Web & Mobile Storefront"]
-    SELLERS["🏢 3P Marketplace Sellers"] --> SELLER_HUB["💼 Seller Central Portal & Catalog Ingestion"]
-    
-    STOREFRONT --> CORE["⚙️ Core Marketplace Engine & Dynamic Pricing"]
-    SELLER_HUB --> CORE
-    
-    CORE <--> PAYMENTS["💳 Global Payment Mesh (PCI-DSS Level 1)"]
-    CORE <--> LOGISTICS["🚚 3PL Carrier Mesh & Warehouse Management"]
-    CORE <--> ANALYTICS["📊 Real-Time Commerce Lakehouse & Dynamic Pricing"]
-\`\`\`
+This standalone **STRIDE Threat Model** evaluates every trust boundary crossing across external clinician clients, the DMZ edge perimeter, the GKE/Vertex AI cognitive plane, and the CMEK-encrypted GxP persistence zone.
+
+---
+
+# 2. Data Flow Diagrams (DFD) & Cross-Zone Trust Boundaries
+
+### 📐 Visual Diagram 1: Security Trust Boundaries & Attack Surface DFD (Template 18)
+
+* **Trust Boundary TB-01 (Internet to Edge DMZ):** Enforced via Cloud Armor WAF (OWASP Top 10 + adaptive DDoS) and Identity-Aware Proxy (IAP).
+* **Trust Boundary TB-02 (Edge DMZ to Agentic Runtime):** Enforced via Apigee OAuth2/OIDC JWT validation and Istio Ambient SPIFFE mTLS.
+* **Trust Boundary TB-03 (Agentic Runtime to GxP Data Lake & LLM):** Enforced via VPC Service Controls (VPC-SC) and Private Service Connect (PSC) with zero internet egress.
+
+---
+
+# 3. Perimeter Defense & Zero-Trust Access Architecture
+
+### 📐 Visual Diagram 2: Perimeter Defense & Zero-Trust Access Architecture (Template 15)
+
+* **Hardware-Backed Encryption:** All data at rest in Cloud Spanner, AlloyDB, and Cloud Storage is encrypted via Customer-Managed Encryption Keys (CMEK) in Cloud HSM with 90-day automated rotation.
+
+---
+
+# 4. STRIDE Threat Assessment Matrix & Mitigation Flow
+
+### 📐 Visual Diagram 3: STRIDE Threat Assessment Matrix & Mitigation Flow (Template 27)
+
+| STRIDE Category | Target Component | Attack Vector Scenario | Enforced Architectural Control | Residual Risk |
+|---|---|---|---|---|
+| **S — Spoofing** | 21 CFR Part 11 Signature API | Stolen session cookie used to forge approval | Step-up OIDC re-authentication + FIDO2 challenge per signature | **VERY LOW** |
+| **T — Tampering** | WORM Audit Ledger | Malicious insider alters historical AI prompt log | GCS Bucket Lock (WORM retention) + SHA-256 hash chaining | **NEGLIGIBLE** |
+| **R — Repudiation** | Clinical Dossier Release | Reviewer denies approving off-label claim | Cloud HSM asymmetric signature over (doc_hash, sub, ts) | **NEGLIGIBLE** |
+| **I — Info Disclosure** | Vector RAG Search | Cross-tenant prompt injection extracts rival trial data | AlloyDB pre-filter ABAC + VPC-SC perimeter isolation | **LOW** |
+| **D — Denial of Service** | Vertex AI Inference Gateway | Token-exhaustion bomb degrades clinical copilot | Per-tenant token-bucket quotas + semantic KV cache | **LOW** |
+| **E — Elevation of Privilege** | MCP Tool Execution Broker | Agent tricked into invoking admin write tool | Scoped IAM Workload Identity + HITL approval token required | **VERY LOW** |
 `,
 
-  threat_model: `# STRIDE Threat Model & Payment Security Architecture
+  security_package: `# DOC 09 • GRC & Regulatory Compliance Package
 
-## Amazon-Scale E-Commerce Platform Threat Assessment
+## Enterprise Architecture Platform — FDA 21 CFR Part 11, HIPAA, SOC 2 Type II & ISO 27001 Audit Evidence Package
 
-**Document ID:** SEC-RETAIL-2026-001  
-**Target Compliance:** PCI-DSS Level 1 v4.0, SOC 2 Type II  
-
----
-
-# 1. Security Trust Boundaries & Perimeter Defense
-
-### 📐 Visual Diagram 1: Zero-Trust Security Perimeter & Cardholder Data Isolation (Template 18)
-\`\`\`mermaid
-graph LR
-    subgraph PUBLIC["🌐 Public Zone"]
-        CLIENT["Mobile / Web Browser"]
-    end
-    subgraph DMZ["🛡️ DMZ Edge"]
-        WAF["Cloud Armor (OWASP Top 10 + Rate Limiting)"]
-        GATEWAY["API Gateway (mTLS & OAuth2 Token Inspection)"]
-    end
-    subgraph CDE["🔒 Isolated Cardholder Data Environment (PCI-DSS CDE)"]
-        VAULT["💳 Tokenization Engine (KMS Cloud HSM)"]
-        PSP["🏦 Multi-Acquirer Payment Mesh"]
-    end
-    
-    CLIENT -->|"TLS 1.3"| WAF
-    WAF --> GATEWAY
-    GATEWAY -->|"Dedicated Private Link"| VAULT
-    VAULT --> PSP
-\`\`\`
+**Document ID:** DOC-09-GRC-2026-001  
+**Document Version:** v2.0 (Lean 8 Standalone Zero-Bloat Baseline — QA & Regulatory Compliance Approved)  
+**Absorbed Redundant Docs:** (Standalone — Zero Bloat)  
+**Consolidated Blueprints:** #15, #17, #21 (Base)  
+**Target Audience:** FDA/EMA Auditors, Quality Assurance (QA), Compliance Officers, Legal Counsel  
 
 ---
 
-# 2. STRIDE Threat Analysis Matrix
+# 1. Enterprise Security Architecture & Defense-in-Depth
 
-| Threat Category | Target Subsystem | Attack Vector | Security Control & Mitigation | Risk Level |
-|---|---|---|---|:---:|
-| **Spoofing** | Seller API Gateway | Compromised API tokens attempting inventory theft | mTLS + HMAC-SHA256 request signing with nonces | **LOW** |
-| **Tampering** | Shopping Cart Price | Client-side payload price modification | Server-side cart calculation; price source locked to Spanner | **VERY LOW** |
-| **Repudiation** | Merchant Payouts | Disputed commission fee calculations | Immutable append-only audit ledger with cryptographic hashes | **VERY LOW** |
-| **Information Disclosure** | Customer Database | SQL Injection / Credential Stuffing | Prepared statements only; column-level AES-256 envelope encryption | **LOW** |
-| **Denial of Service** | Flash Sale Checkout | Bot army scalping high-demand inventory | Cloud Armor reCAPTCHA Enterprise + Virtual Waiting Room | **LOW** |
+### 📐 Visual Diagram 1: Enterprise Security Architecture & Defense-in-Depth (Template 15)
+
+* **Zero-Trust Regulatory Isolation:** Production GxP workloads operate inside dedicated Google Cloud folders guarded by Organization Policy constraints (constraints/gcp.resourceLocations, constraints/compute.vmExternalIpAccess) and VPC Service Controls.
+
+---
+
+# 2. Identity Governance, ABAC & Privileged Access Flow
+
+### 📐 Visual Diagram 2: Identity Governance, ABAC & Privilege Access Flow (Template 17)
+
+* **Least-Privilege ABAC & JIT PAM:** Clinicians authenticate via SAML 2.0 / OIDC federation; administrative break-glass access requires Privileged Access Manager (PAM) dual approval, is capped at 60 minutes, and streams full keystroke/API telemetry to Chronicle SIEM.
+
+---
+
+# 3. Tamper-Evident Audit Logging & Observability Pipeline
+
+### 📐 Visual Diagram 3: Tamper-Evident Audit Logging & Observability Pipeline (Template 21)
+
+* **7-Year WORM Retention:** Cloud Audit Logs (Admin Activity + Data Access) and 21 CFR Part 11 application events are streamed into retention-locked Cloud Storage buckets (retentionPolicy.isLocked = true, 7-year GxP retention).
+
+---
+
+# 4. Control Mapping: FDA 21 CFR Part 11, HIPAA, SOC 2 & ISO 27001
+
+| Regulatory Framework | Clause / Control ID | Mandate Description | Implemented Technical Control & Evidence Artifact |
+|---|---|---|---|
+| **FDA 21 CFR Part 11** | §11.10(e) | Time-stamped, computer-generated audit trails | Cloud Spanner commit timestamps + WORM GCS hash chain (EVD-CFR11-01) |
+| **FDA 21 CFR Part 11** | §11.50 & §11.70 | Signature manifestation & cryptographic binding | Cloud KMS HSM signature over document SHA-256 digest (EVD-CFR11-02) |
+| **HIPAA Security Rule** | 45 CFR §164.312(a)(2)(iv) | Encryption and decryption of ePHI | Cloud DLP de-identification + CMEK HSM AES-256 at rest (EVD-HIPAA-04) |
+| **SOC 2 Type II** | CC6.1 & CC7.2 | Logical access controls & anomaly detection | IAP + Workforce Identity + Security Command Center Premium (EVD-SOC2-09) |
+| **ISO/IEC 27001:2022** | Annex A.8.15 | Logging and protection of log information | Immutable log sink + BigQuery/Chronicle SIEM alerting (EVD-ISO-15) |
 `,
 
-  api_spec: `# API & Protocol Interface Specification
+  sre_resilience: `# DOC 17 • SRE Reliability, Chaos & Production Cutover Runbook
 
-## Amazon-Scale E-Commerce OpenAPI 3.1 & gRPC Interface Contracts
+## Enterprise Architecture Platform — 99.999% SLA Error Budgets, Chaos Engineering, BCDR Vault & War Room Cutover
 
-**Document ID:** API-RETAIL-2026-001  
-**Protocols:** REST (HTTPS/JSON), gRPC (HTTP/2 Protobuf)  
-
----
-
-# 1. Primary Checkout Execution Endpoint
-
-* **Route:** \`POST /api/v1/checkout/execute\`
-* **Headers:** \`Authorization: Bearer <JWT>\`, \`Idempotency-Key: <UUIDv4>\`
-* **Request Payload**:
-\`\`\`json
-{
-  "shopper_id": "usr_9984120",
-  "cart_id": "cart_881920_a1",
-  "payment_method_token": "pm_tok_pci_7719284",
-  "shipping_address_id": "addr_home_primary",
-  "delivery_speed": "SAME_DAY_PRIORITY",
-  "expected_total_cents": 12499,
-  "currency": "USD"
-}
-\`\`\`
-
-* **Response (201 Created)**:
-\`\`\`json
-{
-  "order_id": "ord_2026_99410294",
-  "status": "CONFIRMED",
-  "estimated_delivery": "2026-08-25T18:00:00Z",
-  "tracking_url": "https://amazon-app.internal/orders/ord_2026_99410294/track",
-  "line_items_count": 2,
-  "created_at": "2026-08-24T22:48:00Z"
-}
-\`\`\`
+**Document ID:** DOC-17-SRE-OPS-2026-001  
+**Document Version:** v2.0 (Lean 8 Consolidated Baseline — SRE Director & Release Management Approved)  
+**Absorbed Redundant Docs:** DOC 16 (Go-Live Runbook), DOC 12 (Cutover Ch. 6), DOC 11 (Failure Modes)  
+**Consolidated Blueprints:** #19, #21, #28, #48 (Base) + Absorbed #03, #11, #29  
+**Target Audience:** Site Reliability Engineers (SREs), Incident Commanders, Release Managers, Infrastructure Leads  
 
 ---
 
-# 2. Enterprise API Gateway & Traffic Routing Map
+# 1. 99.999% SLA, Four Golden Signals & Error Budget Policies
 
-### 📐 Visual Diagram 1: Enterprise API Gateway & Traffic Routing Map (Template 08)
+### 📐 Visual Diagram 1: 99.999% SLA, Four Golden Signals & Error Budget Policies (Template 21)
+
+| Golden Signal | Service Level Indicator (SLI) | 99.999% SLO Target | Fast-Burn Alert (2% Budget in 1h) |
+|---|---|---|---|
+| **Latency** | P95 / P99 Dossier Synthesis & PV Triage | P95 ≤ 3.8s, P99 PV ≤ 500ms | Page Primary SRE + Auto-Shift Traffic |
+| **Traffic** | Requests/sec & Token Throughput | Up to 1,200 QPS sustained | Trigger GKE HPA + Provisioned Throughput burst |
+| **Errors** | HTTP 5xx + Uncaught Agent Exceptions | < 0.001% error rate | Freeze feature releases + Automatic Canary Rollback |
+| **Saturation** | GKE Pod CPU/Memory & Spanner CPU | < 65% high-priority Spanner CPU | Scale node pools + Shed Tier-1 background indexing |
 
 ---
 
-# 3. End-to-End API Sequence & Callback Flow
+# 2. Multi-Region Active-Active Failover & Chaos Engineering
 
-### 📐 Visual Diagram 2: End-to-End API Sequence & Callback Flow (Template 11)
+### 📐 Visual Diagram 2: Multi-Region Active-Active Failover & Chaos Engineering (Template 19)
+
+* **Automated Regional Evacuation:** Continuous synthetic probes test us-central1 and us-east4 every 10 seconds; regional degradation triggers Cloud Load Balancing evacuation in < 30 seconds with zero lost transactions (RPO = 0).
 
 ---
 
-# 4. Entity Resource Data Model & JSON Schema ERD
+# 3. Bulkheads, Load Shedding & Graceful Degradation
 
-### 📐 Visual Diagram 3: Entity Resource Data Model & JSON Schema ERD (Template 14)
-`
+### 📐 Visual Diagram 3: Bulkheads, Load Shedding & Graceful Degradation (Template 28)
+
+* **Priority Load Shedding:** Under extreme surge, Tier-1 background literature indexing is paused first so Tier-3/4 Pharmacovigilance safety screening and 21 CFR Part 11 signature endpoints retain 100% compute capacity.
+
+---
+
+# 4. BCDR Air-Gapped Cyber Recovery & Ransomware Vault
+
+### 📐 Visual Diagram 4: BCDR Air-Gapped Cyber Recovery & Ransomware Vault (Template 48)
+
+* **Isolated Clean-Room Recovery Project:** Point-in-time Spanner backups and WORM GCS ledgers are replicated every 15 minutes into a separate, air-gapped GCP organization project with independent IAM root credentials.
+
+---
+
+# 5. T-Minus 24h Pre-Flight & Cross-Functional War Room Swimlane
+
+### 📐 Visual Diagram 5: T-Minus 24h Pre-Flight & Cross-Functional War Room Swimlane (Template 03)
+
+* **War Room Command Structure:** Incident Commander (SRE Lead), GxP Quality Signatory (QA Lead), Database Lead (DBA), and Security Officer (SecOps) execute the T-24h, T-4h, and T-0 readiness checklists prior to production traffic cutover.
+
+---
+
+# 6. Minute-by-Minute Traffic Cutover & Automated Rollback Tree
+
+### 📐 Visual Diagram 6: Minute-by-Minute Operational Cutover Runbook Matrix (Template 29)
+
+### 📐 Visual Diagram 7: Production Traffic Cutover Sequence & Auto-Rollback Tree (Template 11)
+
+| Cutover Timestamp | Execution Step | Owner | Verification Probe / Rollback Trigger |
+|---|---|---|---|
+| **T-00:00** | Freeze legacy dual-write queue & verify Datastream CDC lag = 0ms | DBA Lead | spanner_row_count == legacy_row_count |
+| **T+00:05** | Shift 5% canary traffic via Cloud Load Balancing weight | SRE Lead | Error rate < 0.01%, P99 < 4.0s |
+| **T+00:20** | Ramp traffic 5% → 25% → 50% → 100% | Release Manager | Continuous 21 CFR Part 11 signature smoke test PASS |
+| **Abort Trigger** | Any P0 safety regression or error rate > 0.5% for 120s | Incident Commander | Execute gcloud compute url-maps import --rollback (< 15s) |
+`,
 };
 
-export function getDomainMasterDocument(docId: string, domainId: string = 'retail', userPrompt?: string): string {
-  const isAmazonOrRetail = domainId === 'retail' || (userPrompt && /amazon|retail|ecommerce|cart|store|shop|marketplace/i.test(userPrompt));
+const RETAIL_AMAZON_DOCUMENTS: Record<string, string> = {
+  sdd: `# DOC 03 • System Design Document (SDD - High-Level Architecture)
 
-  if (isAmazonOrRetail && RETAIL_AMAZON_DOCUMENTS[docId]) {
-    return RETAIL_AMAZON_DOCUMENTS[docId];
+## Amazon-Scale Hyper-Scalable Omnichannel Marketplace & Logistics Platform
+
+**Document ID:** DOC-03-SDD-RETAIL-2026-001  
+**Document Version:** v2.4 (Lean 8 Consolidated Baseline — ARB Approved)  
+**Target Throughput:** 100,000+ Peak Order QPS (< 15ms P95 Latency)  
+**System Availability:** 99.999% Multi-Region Active-Active Uptime  
+
+---
+
+# 1. Scale Estimations, Back-of-the-Envelope Math & CAP Trade-Offs
+
+* **Peak Throughput:** 100,000 Order QPS, 50M+ SKUs, sub-15ms P95 catalog search, RPO=0 synchronous Cloud Spanner order ledger.
+
+---
+
+# 2. Architecture Decision Records (ADRs) & Selection Trees
+
+### 📐 Visual Diagram 1: Architecture Decision Records (ADRs) & Selection Trees (Template 13)
+
+---
+
+# 3. Multi-Tier Subsystem & Decoupled Container Topology
+
+### 📐 Visual Diagram 2: Multi-Tier Subsystem & Decoupled Container Topology (Template 08)
+
+---
+
+# 4. Cloud Compute, GPU Sizing & FinOps Reclamation Policies
+
+### 📐 Visual Diagram 3: Cloud Compute, GPU Sizing & FinOps Allocation (Template 16)
+
+### 📐 Visual Diagram 4: FinOps Waste Reclamation & Spot Optimization Matrix (Template 33)
+
+---
+
+# 5. Zero-Trust Network Perimeter & VPC Infrastructure
+
+### 📐 Visual Diagram 5: Zero-Trust Network Perimeter & VPC Infrastructure (Template 15)
+
+---
+
+# 6. Cognitive Runtime & Model Gateway Routing
+
+### 📐 Visual Diagram 6: Cognitive Runtime & Model Gateway Routing (Template 23)
+
+---
+
+# 7. High-Availability & Multi-Region DR Strategy
+
+### 📐 Visual Diagram 7: High-Availability & Multi-Region DR Strategy (Template 19)
+
+---
+
+# 8. (Conditional Appendix) Legacy 6-R Cloud Migration & CDC Sync
+
+### 📐 Visual Diagram 8: Legacy 6-R Cloud Migration Wave & CDC Sync (Template 22)
+
+### 📐 Visual Diagram 9: Enterprise Subsystem & Database Dependency Mesh (Template 31)
+`,
+};
+
+export function getDomainMasterDocument(docId: string, domainId: string = 'biopharma', userPrompt?: string): string {
+  let resolvedId = 'sdd';
+  try {
+    resolvedId = resolveSurvivingArchetypeId(docId);
+  } catch {
+    resolvedId = 'sdd';
+  }
+  const isAmazonOrRetail =
+    domainId === 'retail' || (userPrompt && /amazon|retail|ecommerce|cart|store|shop|marketplace/i.test(userPrompt));
+
+  if (isAmazonOrRetail && RETAIL_AMAZON_DOCUMENTS[resolvedId]) {
+    return RETAIL_AMAZON_DOCUMENTS[resolvedId];
   }
 
-  return MASTER_DOCUMENTS[docId] || MASTER_DOCUMENTS.sdd;
+  return MASTER_DOCUMENTS[resolvedId] || MASTER_DOCUMENTS.sdd;
 }

@@ -48,15 +48,16 @@ const ALLOWED_GOOGLE_BRAND_LIGHT_HEXES = new Set([
   '#B31412',
 ]);
 
-describe('23 Canonical Blueprints (8 Core Architecture/Flow #78, #00, #38, #42, #44, #67–#69 + 15 Infographic #52–#66), Permanent Tier 1/2/3 Purge & 9-Guide Diagram Parity', () => {
-  it('retains strictly the 23 canonical blueprints (8 core architecture/flow + 15 infographic #52–#66) and permanently purges all Tier 1 (except #68/#69), Tier 2, and Tier 3 blueprints', () => {
+describe('29 Canonical Blueprints (14 Core Architecture/Flow #78–#84, #00, #38, #42, #44, #67–#69 + 15 Infographic #52–#66), Permanent Tier 1/2/3 Purge & 9-Guide Diagram Parity', () => {
+  it('retains strictly the 29 canonical blueprints (14 core architecture/flow + 15 infographic #52–#66) and permanently purges all Tier 1 (except #68/#69), Tier 2, and Tier 3 blueprints', () => {
     expect(ACTIVE_CANONICAL_BLUEPRINT_IDS).toEqual([
-      '78', '00', '38', '42', '44', '67', '68', '69',
+      '78', '79', '80', '81', '82', '83', '84',
+      '00', '38', '42', '44', '67', '68', '69',
       '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66',
     ]);
-    expect(CANONICAL_TEMPLATES.length).toBe(23);
+    expect(CANONICAL_TEMPLATES.length).toBe(29);
 
-    for (const id of ['67', '68', '69']) {
+    for (const id of ['78', '79', '80', '81', '82', '83', '84', '67', '68', '69']) {
       expect(ACTIVE_CANONICAL_BLUEPRINT_IDS.includes(id)).toBe(true);
       const bp = CANONICAL_TEMPLATES.find((t) => t.id === id);
       expect(bp).toBeDefined();

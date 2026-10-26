@@ -222,6 +222,91 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
     sourceImage: 'canonical_78.png',
     generatorVersion: '4.0',
     certificationStatus: 'certified'
+  },
+  '79': {
+    id: '79',
+    grammar: 'L400 Deployment & Network Spec — Multi-Tenant Agentic Hub-and-Spoke (GCP us-central1 • VPC-SC)',
+    family: 'Reference Architectures',
+    level: ['L3'],
+    semanticQuestion: 'How are subnet CIDRs, BGP ASN 64512 routing, Cloud Armor WAF policies, PSC endpoints, and VPC-SC perimeters configured across the shared control hub and isolated tenant spokes?',
+    requiredElements: ['10.100.0.0/16', '64512', 'p-finvault-silo', '10.110.0.0/20', '10.200.0.0/20'],
+    forbiddenElements: ['unconnected-edges', 'overlapping-cards'],
+    edgeTypes: ['tls-ingress', 'mtls-grpc', 'psc-attachment', 'force-rls'],
+    iconPolicy: 'authentic-brand',
+    sourceImage: 'canonical_79.png',
+    generatorVersion: '4.0',
+    certificationStatus: 'certified'
+  },
+  '80': {
+    id: '80',
+    grammar: 'L400 Physical Network & Deployment Topology — The Agentic Workspace (Orchestrator V1)',
+    family: 'Infrastructure',
+    level: ['L3'],
+    semanticQuestion: 'How does the physical L400 network topology connect On-Prem Edge (192.168.1.8/24), Perimeter Subnet (10.10.1.0/24), Intelligence Orchestration Plane (Gemma 2 9B & ADK v1.4), 100G Partner Interconnect, and Zone 2 Decision Ignition Plane with active-passive ValKey?',
+    requiredElements: ['192.168.1.8/24', '10.10.1.0/24', 'orchestrator', 'valkey', 'filestore'],
+    forbiddenElements: ['unconnected-edges', 'overlapping-cards'],
+    edgeTypes: ['wan-interconnect', 'grpc-mtls', 'nfs-mount', 'bgp-peering'],
+    iconPolicy: 'authentic-brand',
+    sourceImage: 'canonical_80.png',
+    generatorVersion: '4.0',
+    certificationStatus: 'certified'
+  },
+  '81': {
+    id: '81',
+    grammar: '[L400 PRINCIPAL SEQUENCE] OIDC JWT, SPIFFE mTLS, FW & VPC-SC (P3-APP-L-10)',
+    family: 'Flow',
+    level: ['L3'],
+    semanticQuestion: 'How do User/Requestor, Gemini Enterprise, Coordinator Agent, Agent Gateway, Retrieval Specialist, Analytics Specialist, and Enterprise Data & Tools execute 16 governed sequence interactions across A2A and MCP boundaries?',
+    requiredElements: ['p3-app-l-10', 'coordinator agent', 'agent gateway', 'retrieval specialist', 'analytics specialist'],
+    forbiddenElements: ['unconnected-edges', 'overlapping-cards'],
+    edgeTypes: ['a2a-delegation', 'mcp-tool-call', 'hitl-approval', 'audit-telemetry'],
+    iconPolicy: 'authentic-brand',
+    sourceImage: 'canonical_81.png',
+    generatorVersion: '4.0',
+    certificationStatus: 'certified'
+  },
+  '82': {
+    id: '82',
+    grammar: 'L200 Logical — Google Cloud Multi-Agent System Architecture',
+    family: 'Reference Architectures',
+    level: ['L2'],
+    semanticQuestion: 'How do Application Users, AI Developers, and DevOps Engineers interact with Frontend Cloud Run, ADK Coordinator Agent, Sequence & Iterative Refinement Subagents, Model Armor, Gemini Models, and MCP Tools on Google Cloud?',
+    requiredElements: ['coordinator agent', 'task-a subagent', 'model armor', 'mcp clients', 'observability'],
+    forbiddenElements: ['unconnected-edges', 'overlapping-cards'],
+    edgeTypes: ['user-request', 'subagent-delegation', 'model-inference', 'mcp-protocol'],
+    iconPolicy: 'authentic-brand',
+    sourceImage: 'canonical_82.png',
+    generatorVersion: '4.0',
+    certificationStatus: 'certified'
+  },
+  '83': {
+    id: '83',
+    grammar: 'L100 Conceptual — The Agentic Workspace (L100 Conceptual Map) - Business Value View',
+    family: 'Understand',
+    level: ['L1'],
+    semanticQuestion: 'How does The Agentic Workspace translate user business prompts into governed enterprise outcomes through Model Armor safety gateways, Enterprise Knowledge Store, Gemini Agent Coordinator, and the Zone 2 Actionable Insights Tool Loop?',
+    requiredElements: ['gemini agent coordinator', 'model armor', 'enterprise knowledge store', 'actionable insights', 'valkey'],
+    forbiddenElements: ['unconnected-edges', 'overlapping-cards'],
+    edgeTypes: ['business-prompt', 'safe-request', 'knowledge-retrieval', 'actionable-tool-loop'],
+    iconPolicy: 'authentic-brand',
+    sourceImage: 'canonical_83.png',
+    generatorVersion: '4.0',
+    certificationStatus: 'certified'
+  },
+  '84': {
+    id: '84',
+    grammar: 'Google Cloud Architecture Center #78 (L400) — Oracle E-Business Suite (EBS R12.2) on Oracle Database@Google Cloud (Exadata X10M)',
+    family: 'Reference Architectures',
+    level: ['L3'],
+    semanticQuestion: 'How does Oracle E-Business Suite R12.2 run on Google Cloud C3 HA WebLogic & Cloud Filestore Enterprise NFSv4.1 (Zone 1) connected over <0.5ms Dual 100GbE ODB Partner Interconnect to Co-Located OCI Child Site Exadata X10M 2-Node RAC & Smart Scan (Zone 2)?',
+    requiredElements: ['ebs r12.2', 'exadata x10M', 'weblogic', 'filestore', 'goldengate'],
+    forbiddenElements: ['unconnected-edges', 'overlapping-cards'],
+    edgeTypes: ['https-ingress', 'odb-interconnect', 'sqlnet-1521', 'rocev2-rdma'],
+    iconPolicy: 'authentic-brand',
+    sourceImage: 'canonical_84.png',
+    generatorVersion: '4.0',
+    certificationStatus: 'certified'
   }
 };
+
 
