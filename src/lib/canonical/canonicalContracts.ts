@@ -1,8 +1,10 @@
 /**
- * Machine-Readable Canonical Architecture Contracts for the 8 Core Production Google Cloud Blueprints (#78, #00, #38, #42, #44, #67, #68, #69)
+ * Machine-Readable Canonical Architecture Contracts for the 23 Production Blueprints
+ * (8 Core Google Cloud Architecture/Flow Blueprints #78, #00, #38, #42, #44, #67, #68, #69 + 15 Infographic Blueprints #52–#66)
  * Enforces strict semantic boundaries, required elements, forbidden antipatterns,
  * exact reference geometry, PNG aspect-ratio locks, and fail-closed QA certification.
  */
+import { INFOGRAPHIC_BLUEPRINTS_LIST } from './infographicBlueprints52to66';
 
 export interface ReferenceGeometryContract {
   pageWidth: number;
@@ -21,7 +23,7 @@ export interface ReferenceGeometryContract {
 export interface CanonicalContract {
   id: string;
   grammar: string;
-  family: 'Understand' | 'Process' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
+  family: 'Infographic' | 'Understand' | 'Process' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: ('L1' | 'L2' | 'L3')[];
   semanticQuestion: string; // What core architecture question does this grammar answer?
   requiredElements: string[];
@@ -188,6 +190,25 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
       domOrderPairs: [['flow_9_embed_request', 'flow_8_ingest_task']]
     }
   },
+  ...Object.fromEntries(
+    INFOGRAPHIC_BLUEPRINTS_LIST.map((ib) => [
+      ib.id,
+      {
+        id: ib.id,
+        grammar: `${ib.shortType} Infographic Blueprint (${ib.name})`,
+        family: 'Infographic' as const,
+        level: ['L1', 'L2'] as ('L1' | 'L2' | 'L3')[],
+        semanticQuestion: ib.subtitle,
+        requiredElements: [`infographic_${ib.id}`, 'mxGraphModel'],
+        forbiddenElements: ['untyped-connectors', 'crossing-lines-over-text'],
+        edgeTypes: ['visual-flow', 'semantic-hierarchy', 'comparison-link'],
+        iconPolicy: 'hybrid' as const,
+        sourceImage: `canonical_${ib.id}.png`,
+        generatorVersion: '3.0',
+        certificationStatus: 'certified' as const,
+      },
+    ])
+  ),
   '78': {
     id: '78',
     grammar: 'Official Google Cloud Architecture Center Hub-and-Spoke Blueprint',

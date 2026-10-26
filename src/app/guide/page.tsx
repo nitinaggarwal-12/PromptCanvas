@@ -100,7 +100,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         stepNumber: 1,
         title: 'Architecture Studio Orientation',
         whereToClick: 'Architecture Studio / Blueprint Catalog',
-        description: 'PromptCanvas provides a streamlined architecture workspace. Access 8 blueprints in the Blueprint Catalog and 17 archetypes in Document Studio, directly from the sidebar.',
+        description: 'PromptCanvas provides a streamlined architecture workspace. Access 23 blueprints in the Blueprint Catalog and 17 archetypes in Document Studio, directly from the sidebar.',
         validationChecklist: [
           'Left Studio is ready for prompt input or blueprint selection',
           'Canvas is set to high-DPI 1600px 16:9 desktop grid'
@@ -116,7 +116,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         stepNumber: 2,
         title: 'Prompt Entry & Architecture Selection',
         whereToClick: 'Architecture Studio -> "ACTIVE USE CASE PROMPT" text area',
-        description: 'Type plain English requirements or select from 8 canonical master blueprints (Official Hub & Spoke #78, Gemini Enterprise #00, Cloud Landing Zone #38, Data Lakehouse #42, Zero-Trust SOC #44, and Operational Flowcharts #67, #68 & #69).',
+        description: 'Type plain English requirements or select from 23 canonical master blueprints (8 Core Architecture/Flow Blueprints #78, #00, #38, #42, #44, #67–#69 + 15 Infographic Blueprints #52–#66).',
         promptRecipe: 'Design an Enterprise Cloud Platform on Google Cloud featuring Cloud Armor WAF, GKE Autopilot microservices with private VPC peering, Cloud SQL high availability, and Pub/Sub event ingestion.',
         validationChecklist: [
           'Active prompt input with concrete cloud infrastructure components',

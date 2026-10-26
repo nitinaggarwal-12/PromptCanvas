@@ -1,4 +1,5 @@
 import { CANONICAL_CONTRACTS, CanonicalContract } from './canonicalContracts';
+import { INFOGRAPHIC_BLUEPRINTS_LIST, generateInfographicBlueprintXmlById } from './infographicBlueprints52to66';
 import { FLOW_DIAGRAM_BLUEPRINTS_67_TO_74, generateFlowDiagramBlueprintXmlById } from './flowDiagramBlueprints67to74';
 import { generateTemplate78OfficialGcpArchCenterHubSpokeXml } from './templateOfficialGcpArchCenterHubSpoke';
 
@@ -24,6 +25,7 @@ export interface CanonicalTemplate {
 export const CANONICAL_FAMILIES = [
   'All',
   'Reference Architectures',
+  'Infographic',
   'Structure',
   'Flow',
   'Infrastructure',
@@ -140,6 +142,18 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     keyComponents: ['Consumption Layer', 'Zero-Trust Access Layer', 'Threat Detection & Response Layer', 'Security Controls Layer', 'Visibility & Telemetry Layer', 'Secure Connectivity Layer', 'Asset & Infrastructure Layer', 'Google Cloud Security Foundation', 'Governance, Risk & Compliance', 'Security Operations (SOC)', 'Platform Operations'],
     generateXml: generateTemplate44ZeroTrustCybersecuritySocPlatformXml
   },
+  ...INFOGRAPHIC_BLUEPRINTS_LIST.map((ib) => ({
+    id: ib.id,
+    name: `${ib.shortType} — ${ib.name.replace(/^Infographic:\s*[^()]+/i, '').replace(/[()]/g, '').trim() || ib.shortType}`,
+    family: 'Infographic' as const,
+    level: 'L1' as const,
+    primaryPurpose: ib.subtitle,
+    examples: `${ib.shortType}, Infographic Blueprint, Executive Brief, Visual Architecture`,
+    defaultDomain: ib.shortType,
+    previewImage: ib.previewImage,
+    keyComponents: ib.keyComponents,
+    generateXml: () => generateInfographicBlueprintXmlById(ib.id)
+  })),
   ...FLOW_DIAGRAM_BLUEPRINTS_67_TO_74.map((fb) => ({
     id: fb.id,
     name: fb.name,
@@ -973,6 +987,21 @@ export const ACTIVE_CANONICAL_BLUEPRINT_IDS: readonly string[] = [
   '67',
   '68',
   '69',
+  '52',
+  '53',
+  '54',
+  '55',
+  '56',
+  '57',
+  '58',
+  '59',
+  '60',
+  '61',
+  '62',
+  '63',
+  '64',
+  '65',
+  '66',
 ] as const;
 
 const LEGACY_TO_MODERN_BLUEPRINT_MAP: Record<string, string> = {
@@ -1024,21 +1053,6 @@ const LEGACY_TO_MODERN_BLUEPRINT_MAP: Record<string, string> = {
   '49': '44',
   '50': '38',
   '51': '00',
-  '52': '00',
-  '53': '78',
-  '54': '78',
-  '55': '78',
-  '56': '78',
-  '57': '78',
-  '58': '00',
-  '59': '78',
-  '60': '78',
-  '61': '78',
-  '62': '78',
-  '63': '78',
-  '64': '38',
-  '65': '42',
-  '66': '44',
   '70': '69',
   '71': '69',
   '72': '69',
@@ -1056,9 +1070,10 @@ const ALL_RAW_CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => 
   const contract = CANONICAL_CONTRACTS[t.id];
   const paddedId = t.id.padStart(2, '0');
   const isFlowBp = Number(t.id) >= 67 && Number(t.id) <= 69;
+  const isInfographicBp = Number(t.id) >= 52 && Number(t.id) <= 66;
   const rawCleanName = t.id === '00'
     ? '2026 Upgraded GCP & Gemini Enterprise Native Architecture'
-    : t.id === '78' || isFlowBp
+    : t.id === '78' || isFlowBp || isInfographicBp
     ? t.name
     : t.name
         .replace(/\bCLAUDE\.md\b/gi, 'AGENTS.md')
@@ -1071,11 +1086,11 @@ const ALL_RAW_CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => 
     primaryPurpose: decodeCanonicalMetadataText(t.primaryPurpose),
     examples: decodeCanonicalMetadataText(t.examples),
     keyComponents: (t.keyComponents || []).map(decodeCanonicalMetadataText),
-    previewImage: isSketchBp ? (t.previewImage || '/templates/canonical_00.png') : `/templates/canonical_${paddedId}.png`,
+    previewImage: isSketchBp || isInfographicBp ? (t.previewImage || `/templates/canonical_${paddedId}.png`) : `/templates/canonical_${paddedId}.png`,
     sourceImageId: isSketchBp ? (t.previewImage || '/templates/canonical_00.png') : `/templates/canonical_${paddedId}.png`,
     generatorVersion: contract ? contract.generatorVersion : "1.0",
-    fidelityScore: isSketchBp || (contract && contract.certificationStatus === "certified") ? 0.98 : 0.90,
-    certificationStatus: isSketchBp ? "certified" : contract ? contract.certificationStatus : "in_review",
+    fidelityScore: isSketchBp || isInfographicBp || (contract && contract.certificationStatus === "certified") ? 0.98 : 0.90,
+    certificationStatus: isSketchBp || isInfographicBp ? "certified" : contract ? contract.certificationStatus : "in_review",
     contract,
     generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => {
       const baseXml = t.generateXml(domainFlavor, theme);

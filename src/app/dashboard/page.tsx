@@ -2471,7 +2471,7 @@ function DashboardContent() {
               onClick={() => setIsNewDiagramModalOpen(true)}
               data-testid="dashboard-new-diagram-btn"
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs transition shadow-md shadow-sky-500/25 cursor-pointer shrink-0 active:scale-95"
-              title="Create New Architecture Diagram (Select Input Method: Prompt AI, 8 Blueprints, Image Decompile, Blank Canvas)"
+              title="Create New Architecture Diagram (Select Input Method: Prompt AI, 23 Blueprints, Image Decompile, Blank Canvas)"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>New Diagram</span>
@@ -2520,10 +2520,10 @@ function DashboardContent() {
                       ? 'bg-teal-600 text-white border-teal-700'
                       : 'bg-teal-600 text-white border-teal-500'
                   }`}
-                  title="Workflow 1: Start from one of 8 certified Google Cloud reference architectures"
+                  title="Workflow 1: Start from one of 23 certified Google Cloud reference & infographic architectures"
                 >
                   <span className="truncate">🏛️ Blueprint</span>
-                  <span className="text-[8.5px] font-medium opacity-90 truncate">8 Certified</span>
+                  <span className="text-[8.5px] font-medium opacity-90 truncate">23 Certified</span>
                 </button>
                 <Link
                   href="/prompt-to-diagram"

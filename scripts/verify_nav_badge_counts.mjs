@@ -79,18 +79,18 @@ if (
   console.log('✅ Obsolete Route Guard: Zero retired studio links or route directories (/workspace, /studio1, /gcp)');
 }
 
-// Legacy & Purged Tier 1/2/3 Template Guard: public/templates must only contain the 8 core Google Cloud blueprints (#78, #00, #38, #42, #44, #67, #68, #69 -> 16 files)
+// Legacy & Purged Tier 1/2/3 Template Guard: public/templates must only contain the 23 active blueprints (8 core Google Cloud blueprints #78, #00, #38, #42, #44, #67, #68, #69 + 15 Infographic blueprints #52–#66 -> 46 files)
 const pubTemplates = fs.readdirSync('public/templates');
 const forbiddenLegacyFiles = pubTemplates.filter((f) =>
-  /^(?:0[1-9]|[12]\d|3[0-79]|4[0135-9]|5\d|6[0-6]|7[0-4])\.png$/.test(f) ||
-  /^canonical_(?:0[1-9]|[12]\d|3[0-79]|4[0135-9]|5\d|6[0-6]|7[0-4])\.png$/.test(f) ||
+  /^(?:0[1-9]|[12]\d|3[0-79]|4[0135-9]|5[01]|7[0-4])\.png$/.test(f) ||
+  /^canonical_(?:0[1-9]|[12]\d|3[0-79]|4[0135-9]|5[01]|7[0-4])\.png$/.test(f) ||
   /^(?:P[1-5]|ARCH|IND|NEW)-/.test(f) ||
   /^infographic_/.test(f) ||
   f === '40.svg' ||
   f === 'ge_equipment_optimization_gemini.png'
 );
-if (forbiddenLegacyFiles.length > 0 || pubTemplates.length !== 16) {
-  console.error(`❌ Legacy Template Purge Guard: Found ${forbiddenLegacyFiles.length} purged legacy files in public/templates/ (total=${pubTemplates.length}, expected 16): ${forbiddenLegacyFiles.join(', ')}`);
+if (forbiddenLegacyFiles.length > 0 || pubTemplates.length !== 46) {
+  console.error(`❌ Legacy Template Purge Guard: Found ${forbiddenLegacyFiles.length} purged legacy files in public/templates/ (total=${pubTemplates.length}, expected 46): ${forbiddenLegacyFiles.join(', ')}`);
   failed++;
 } else {
   console.log(`✅ Legacy Template Purge Guard: 0 purged Tier 1/2/3 or legacy files in public/templates/ (${pubTemplates.length} clean files)`);
@@ -200,7 +200,7 @@ const crossPageTargets = [
   'src/app/guide/page.tsx',
   'src/app/test-status/page.tsx',
 ];
-const staleBlueprintRegex = /\b(?:7|18|19|26|77)\s+(?:Official\s+Google\s+Cloud\s+Reference\s+Blueprints|curated\s+Google\s+Cloud\s+reference\s+blueprints|Production\s+Blueprints|Certified\s+Blueprints|certified\s+reference\s+architectures|Reference\s+Blueprints|Blueprints|blueprints|Canonical\s+Blueprints|canonical\s+master\s+blueprints)\b/;
+const staleBlueprintRegex = /\b(?:7|8|18|19|26|77)\s+(?:Official\s+Google\s+Cloud\s+Reference\s+Blueprints|curated\s+Google\s+Cloud\s+reference\s+blueprints|Production\s+Blueprints|Certified\s+Blueprints|Certified|certified\s+reference\s+architectures|Reference\s+Blueprints|Blueprints|blueprints|Canonical\s+Blueprints|canonical\s+master\s+blueprints)\b/;
 for (const rel of crossPageTargets) {
   const content = read(rel);
   const m = staleBlueprintRegex.exec(content);
