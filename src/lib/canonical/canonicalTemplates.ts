@@ -4,15 +4,12 @@ import { FLOW_DIAGRAM_BLUEPRINTS_67_TO_74, generateFlowDiagramBlueprintXmlById }
 import { generateTemplate78OfficialGcpArchCenterHubSpokeXml } from './templateOfficialGcpArchCenterHubSpoke';
 import {
   generateTemplate79L400MultiTenantHubSpokeNetworkSpecXml,
-  generateTemplate80L400PhysicalNetworkAgenticWorkspaceXml,
   generateTemplate81L400PrincipalSequenceA2aMcpXml,
-  generateTemplate82L200LogicalGcpMultiAgentSystemXml,
-  generateTemplate83L100ConceptualAgenticWorkspaceXml,
   generateTemplate84L400OracleEbsExadataArchCenter78Xml,
 } from './templateL100L400AgenticWorkspaceBlueprints';
 
 export interface CanonicalTemplate {
-  id: string; // e.g. "00", "38" ... "84"
+  id: string; // e.g. "00", "52" ... "84"
   name: string;
   family: 'Infographic' | 'Understand' | 'Process' | 'Whiteboard' | 'Paper' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: 'L1' | 'L2' | 'L3';
@@ -77,9 +74,6 @@ export const ARCHITECTURE_DOCUMENT_BINDINGS: ArchitectureDocumentBinding[] = [
 ];
 
 import { generateTemplate00GcpEnterpriseArchXml } from "./template00GcpEnterpriseArch";
-import { generateTemplate38CloudLandingZoneXml } from "./template38CloudLandingZone";
-import { generateTemplate42ModernDataLakehouseDataMeshXml } from "./template42ModernDataLakehouseDataMesh";
-import { generateTemplate44ZeroTrustCybersecuritySocPlatformXml } from "./template44ZeroTrustCybersecuritySocPlatform";
 
 interface RawCanonicalTemplate {
   id: string;
@@ -107,42 +101,6 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     previewImage: '/templates/gcp_enterprise_architecture.png',
     keyComponents: ['Ingress & Edge', 'Application Core Mesh', 'Real-Time Event Streaming', 'Vertex AI & Intelligence Hub', 'Multi-Region Lakehouse & DB', 'Zero-Trust Security Baseline'],
     generateXml: generateTemplate00GcpEnterpriseArchXml
-  },
-  {
-    id: '38',
-    name: 'Cloud Landing Zone & Enterprise Shared Services',
-    family: 'Infrastructure',
-    level: 'L3',
-    primaryPurpose: 'Organization hierarchy, shared services platform, governance, and FinOps guardrails',
-    examples: 'Multi-tenant landing zone, organizational units, Golden IaC templates, central logging',
-    defaultDomain: 'Enterprise SaaS Multi-Tenant Cloud Platform',
-    previewImage: '/templates/canonical_38.png',
-    keyComponents: ['Enterprise & Business Units', 'Organization Structure & Hierarchy', 'Identity & Access Admin', 'Core Network Foundation', 'Enterprise Shared Services', 'Security & Compliance', 'Data & AI Shared Services', 'Reliability & SRE', 'FinOps & Billing'],
-    generateXml: generateTemplate38CloudLandingZoneXml
-  },
-  {
-    id: '42',
-    name: 'Modern Data Lakehouse & Data Mesh',
-    family: 'Structure',
-    level: 'L2',
-    primaryPurpose: 'Unified, governed, scalable, secure, and AI-ready modern data lakehouse and decentralized data mesh architecture',
-    examples: 'Enterprise data lakehouse, BigLake, Dataplex mesh governance, domain data products, real-time ingestion, BigQuery analytics',
-    defaultDomain: 'Modern Data Lakehouse & Data Mesh Platform',
-    previewImage: '/templates/42.png',
-    keyComponents: ['Data Sources Layer', 'Data Ingestion Layer (Steps 1..7)', 'Data Processing & Compute Layer', 'Lakehouse Storage Layer', 'Data Mesh Governance Layer', 'Data Product Layer', 'Consumption Layer', 'Governance & Data Management', 'Observability & Operations', 'Platform Operations'],
-    generateXml: generateTemplate42ModernDataLakehouseDataMeshXml
-  },
-  {
-    id: '44',
-    name: 'Zero-Trust Cybersecurity & SOC Platform',
-    family: 'Security & Governance',
-    level: 'L3',
-    primaryPurpose: 'Comprehensive enterprise zero-trust cybersecurity and SecOps platform across continuous identity verification, threat detection, security controls, and 24x7 SOC operations',
-    examples: 'Zero-trust architecture, BeyondCorp, Cloud Identity, IAM PDP, Chronicle SIEM, SOAR automation, Cloud Armor, SCC, Mandiant threat intelligence',
-    defaultDomain: 'Zero-Trust Cybersecurity & SOC Operations Platform',
-    previewImage: '/templates/44.png',
-    keyComponents: ['Consumption Layer', 'Zero-Trust Access Layer', 'Threat Detection & Response Layer', 'Security Controls Layer', 'Visibility & Telemetry Layer', 'Secure Connectivity Layer', 'Asset & Infrastructure Layer', 'Google Cloud Security Foundation', 'Governance, Risk & Compliance', 'Security Operations (SOC)', 'Platform Operations'],
-    generateXml: generateTemplate44ZeroTrustCybersecuritySocPlatformXml
   },
   ...INFOGRAPHIC_BLUEPRINTS_LIST.map((ib) => ({
     id: ib.id,
@@ -196,19 +154,6 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate79L400MultiTenantHubSpokeNetworkSpecXml(domainFlavor, theme)
   },
   {
-    id: '80',
-    name: 'L400 Physical Network & Deployment Topology — The Agentic Workspace (Orchestrator V1)',
-    family: 'Infrastructure',
-    level: 'L3',
-    theme: 'light',
-    primaryPurpose: 'Physical L400 deployment topology for The Agentic Workspace (Orchestrator V1) across On-Prem Edge (192.168.1.8/24), Perimeter Subnet (10.10.1.0/24), Intelligence Orchestration Plane (Gemma 2 9B & ADK v1.4), 100 Gbps Partner Interconnect, and Zone 2 Decision Ignition Plane with active-passive multi-region ValKey',
-    examples: 'On-Prem Edge 192.168.1.8/24, Perimeter Subnet 10.10.1.0/24, OIDC & Envoy gRPC Proxy, Gemma 2 9B Serving, ADK v1.4 / LangGraph v0.2.1, Cloud Filestore HA NFSv4.1, 100G Partner Interconnect, ValKey Active-Passive',
-    defaultDomain: 'L400 Physical Network & Multi-Region Agentic Workspace',
-    previewImage: '/templates/canonical_80.png',
-    keyComponents: ['On-Prem Edge (192.168.1.8/24) & WAN Interconnect', 'Perimeter Subnet (10.10.1.0/24 • Cloud Armor, ALB VIP 10.10.1.100, Cloud NAT)', 'OIDC & Envoy Access Proxy (gRPC mTLS 1.3)', 'Gemini Enterprise Agent Platform (Gemma 2 9B & ADK v1.4 / LangGraph v0.2.1)', 'Cloud Filestore Enterprise (Regional HA NFSv4.1)', '100 Gbps Partner Interconnect (BGP ASN 16550 ⇄ 31998)', 'Zone 2 Decision Ignition Plane (DECISION_LOG_STATE, STATE_SNAPSHOT, Active-Passive ValKey)', 'External Action Tools (BigQuery, Vertex AI, KMS/DLP, Security Command Center)'],
-    generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate80L400PhysicalNetworkAgenticWorkspaceXml(domainFlavor, theme)
-  },
-  {
     id: '81',
     name: 'L400 Principal Sequence — OIDC JWT, SPIFFE mTLS, FW & VPC-SC (A2A & MCP)',
     family: 'Flow',
@@ -220,32 +165,6 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     previewImage: '/templates/canonical_81.png',
     keyComponents: ['User / Requestor Lifeline', 'Gemini Enterprise Lifeline', 'Coordinator Agent Lifeline', 'Agent Gateway (Policy, Identity, Delegation Control)', 'Retrieval Specialist & Analytics Specialist Subagents', 'Enterprise Data & Tools (BigQuery, RAG Corpus, APIs)', 'ref: Grounded Retrieval & ref: Governed Analytics Frames', 'alt: HITL Review (Approve / Reject / Revise)'],
     generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate81L400PrincipalSequenceA2aMcpXml(domainFlavor, theme)
-  },
-  {
-    id: '82',
-    name: 'L200 Logical — Google Cloud Multi-Agent System Architecture',
-    family: 'Reference Architectures',
-    level: 'L2',
-    theme: 'light',
-    primaryPurpose: 'Logical L200 Google Cloud multi-agent system architecture showing Application Users, AI Developers, and DevOps Engineers interacting with Cloud Run Frontend, ADK Coordinator Agent, Sequence & Iterative Refinement Subagents, Model Armor, Gemini Models, MCP Clients, and Google Cloud Observability',
-    examples: 'Google Cloud Multi-Agent System, ADK Coordinator Agent, Sequence Pattern (Task-A, Task-A.1), Iterative Refinement (Task-B, Quality Evaluator, Prompt Enhancer), Model Armor, MCP Clients',
-    defaultDomain: 'L200 Logical Google Cloud Multi-Agent Architecture',
-    previewImage: '/templates/canonical_82.png',
-    keyComponents: ['Application Users, AI Developers & Platform Admins', 'Frontend Cloud Run Service', 'ADK Coordinator Agent & Response Generator', 'Sequence Subagents (Task-A, Task-A.1)', 'Iterative Refinement Loop (Task-B, Quality Evaluator, Prompt Enhancer)', 'Model Armor & Gemini Foundation Models', 'MCP Clients, Tools within Google Cloud (Databases/APIs) & External Tools', 'Google Cloud Observability'],
-    generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate82L200LogicalGcpMultiAgentSystemXml(domainFlavor, theme)
-  },
-  {
-    id: '83',
-    name: 'L100 Conceptual — The Agentic Workspace (L100 Conceptual Map) - Business Value View',
-    family: 'Understand',
-    level: 'L1',
-    theme: 'light',
-    primaryPurpose: 'Executive L100 Conceptual Map & Business Value View of The Agentic Workspace illustrating how user business prompts flow through Model Armor safety gateways, Enterprise Knowledge Store, and the central Gemini Agent Coordinator into the Zone 2 Actionable Insights Tool Loop',
-    examples: 'L100 Conceptual Map, Business Value View, User Prompt to Safe Request, Model Armor Safety Gateway, Enterprise Knowledge Store, Gemini Agent Coordinator, Actionable Insights Tool Loop',
-    defaultDomain: 'L100 Conceptual Agentic Workspace Business Value View',
-    previewImage: '/templates/canonical_83.png',
-    keyComponents: ['1. User / Client (Business Prompt Ingress)', '2. Model Armor (Safety Gateway & Input Filtering)', '3. Enterprise Knowledge Store (Vector Embeddings & Long-Term Memory)', 'Intelligence Orchestration Plane & Gemini Agent Coordinator', 'Cloud Filestore (Regional HA NFSv4.1)', 'Dedicated ODB Network (100 Gbps Partner Interconnect)', 'Zone 2: Actionable Insights / Tool Loop (Customer Lookup, Function Execution, Active ValKey)', '4. External Action Tools & Technology Stack'],
-    generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate83L100ConceptualAgenticWorkspaceXml(domainFlavor, theme)
   },
   {
     id: '84',
@@ -1054,7 +973,7 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/GxP/gi, 'SMPTE');
   }
 
-  if (out.includes('id="flow_blueprint_') || out.includes('official_gcp_arch_center') || out.includes('id="bp79_') || out.includes('id="bp80_') || out.includes('id="bp82_') || out.includes('id="bp83_') || out.includes('oracle_exadata_ebs_topology')) {
+  if (out.includes('id="flow_blueprint_') || out.includes('official_gcp_arch_center') || out.includes('id="bp79_') || out.includes('oracle_exadata_ebs_topology')) {
     return out;
   }
   return sanitizeAndHealCanonicalBlueprintXml(out);
@@ -1063,17 +982,10 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
 export const ACTIVE_CANONICAL_BLUEPRINT_IDS: readonly string[] = [
   '78',
   '79',
-  '80',
   '81',
-  '82',
-  '83',
   '84',
   '00',
-  '38',
-  '42',
-  '44',
   '67',
-  '68',
   '69',
   '52',
   '53',
@@ -1093,54 +1005,58 @@ export const ACTIVE_CANONICAL_BLUEPRINT_IDS: readonly string[] = [
 ] as const;
 
 const LEGACY_TO_MODERN_BLUEPRINT_MAP: Record<string, string> = {
-  '01': '83',
+  '01': '00',
   '02': '55',
   '03': '69',
-  '04': '83',
+  '04': '00',
   '05': '56',
-  '06': '42',
-  '07': '42',
+  '06': '62',
+  '07': '62',
   '08': '78',
-  '09': '42',
+  '09': '62',
   '10': '78',
   '11': '81',
-  '12': '68',
+  '12': '67',
   '13': '67',
-  '14': '42',
+  '14': '62',
   '15': '79',
-  '16': '80',
-  '17': '44',
-  '18': '44',
+  '16': '79',
+  '17': '57',
+  '18': '57',
   '19': '84',
-  '20': '38',
-  '21': '38',
+  '20': '79',
+  '21': '79',
   '22': '84',
-  '23': '82',
+  '23': '78',
   '24': '00',
   '25': '78',
   '26': '67',
-  '27': '44',
-  '28': '68',
+  '27': '57',
+  '28': '67',
   '29': '53',
   '30': '61',
-  '31': '42',
+  '31': '62',
   '32': '62',
   '33': '63',
-  '34': '44',
-  '35': '38',
-  '36': '38',
-  '37': '38',
-  '39': '44',
+  '34': '57',
+  '35': '79',
+  '36': '79',
+  '37': '79',
+  '38': '79',
+  '39': '57',
   '40': '00',
   '41': '78',
-  '43': '42',
+  '42': '62',
+  '43': '62',
+  '44': '57',
   '45': '78',
-  '46': '38',
+  '46': '79',
   '47': '78',
-  '48': '44',
-  '49': '44',
-  '50': '38',
+  '48': '57',
+  '49': '57',
+  '50': '79',
   '51': '00',
+  '68': '67',
   '70': '69',
   '71': '69',
   '72': '69',
@@ -1149,6 +1065,9 @@ const LEGACY_TO_MODERN_BLUEPRINT_MAP: Record<string, string> = {
   '75': '00',
   '76': '00',
   '77': '00',
+  '80': '79',
+  '82': '78',
+  '83': '00',
 };
 
 const decodeCanonicalMetadataText = (str: string): string =>

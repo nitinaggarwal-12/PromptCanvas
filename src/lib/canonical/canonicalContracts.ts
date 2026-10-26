@@ -1,6 +1,6 @@
 /**
- * Machine-Readable Canonical Architecture Contracts for the 23 Production Blueprints
- * (8 Core Google Cloud Architecture/Flow Blueprints #78, #00, #38, #42, #44, #67, #68, #69 + 15 Infographic Blueprints #52–#66)
+ * Machine-Readable Canonical Architecture Contracts for the 22 Production Blueprints
+ * (7 Core Google Cloud Architecture/Flow Blueprints #78, #79, #81, #84, #00, #67, #69 + 15 Infographic Blueprints #52–#66)
  * Enforces strict semantic boundaries, required elements, forbidden antipatterns,
  * exact reference geometry, PNG aspect-ratio locks, and fail-closed QA certification.
  */
@@ -51,48 +51,6 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
     generatorVersion: '3.0',
     certificationStatus: 'certified'
   },
-  '38': {
-    id: '38',
-    grammar: 'Cloud Landing Zone & Enterprise Shared Services',
-    family: 'Infrastructure',
-    level: ['L1', 'L2', 'L3'],
-    semanticQuestion: 'How does an enterprise structure multi-tenant cloud organization hierarchy, landing zone networking, shared services, and FinOps guardrails?',
-    requiredElements: ['enterprise-business-units', 'organization-structure-hierarchy', 'identity-access-admin', 'core-landing-zone-network', 'enterprise-shared-services-platform', 'security-risk-compliance', 'data-integration-ai-shared', 'reliability-dr-platform-ops', 'finops-billing-chargeback'],
-    forbiddenElements: ['flat-unstructured-cloud-accounts', 'unbounded-admin-privilege'],
-    edgeTypes: ['private-data-flow', 'control-mgmt-flow', 'public-flow', 'hybrid-flow', 'policy-guardrails'],
-    iconPolicy: 'hybrid',
-    sourceImage: '38.png',
-    generatorVersion: '1.0',
-    certificationStatus: 'certified'
-  },
-  '42': {
-    id: '42',
-    grammar: 'Modern Data Lakehouse & Data Mesh',
-    family: 'Structure',
-    level: ['L1', 'L2', 'L3'],
-    semanticQuestion: 'How is an enterprise modern data lakehouse and decentralized data mesh architected across ingestion, compute, storage, governance, data products, and consumption?',
-    requiredElements: ['data-sources-layer', 'data-ingestion-layer', 'data-processing-compute-layer', 'lakehouse-storage-layer', 'data-mesh-governance-layer', 'data-product-layer', 'consumption-layer', 'governance-data-management', 'observability-operations', 'platform-operations', 'data-flow-legend'],
-    forbiddenElements: ['unmanaged-shadow-data-silos', 'unauthenticated-data-egress'],
-    edgeTypes: ['data-flow', 'metadata-control-flow', 'governance-security'],
-    iconPolicy: 'hybrid',
-    sourceImage: '42.png',
-    generatorVersion: '1.0',
-    certificationStatus: 'certified'
-  },
-  '44': {
-    id: '44',
-    grammar: 'Zero-Trust Cybersecurity & SOC Platform',
-    family: 'Security & Governance',
-    level: ['L1', 'L2', 'L3'],
-    semanticQuestion: 'How is an enterprise zero-trust cybersecurity and SecOps platform architected across consumption, access verification, threat detection, security controls, telemetry, connectivity, infrastructure, and SOC operations?',
-    requiredElements: ['consumption-layer', 'zero-trust-access-layer', 'threat-detection-response-layer', 'security-controls-layer', 'visibility-telemetry-layer', 'secure-connectivity-layer', 'asset-infrastructure-layer', 'google-cloud-security-foundation', 'governance-risk-compliance', 'security-operations-soc', 'platform-operations', 'data-flow-legend', 'zero-trust-principles'],
-    forbiddenElements: ['implicit-trust-zones', 'unencrypted-data-transit'],
-    edgeTypes: ['telemetry-logs-events', 'control-policy-config', 'response-action'],
-    iconPolicy: 'hybrid',
-    sourceImage: '44.png',
-    generatorVersion: '1.0',
-    certificationStatus: 'certified'
-  },
   '67': {
     id: '67',
     grammar: '7-Stage Synchronous & Asynchronous Agentic Request-Response Flow',
@@ -104,30 +62,6 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
     edgeTypes: ['sync-request', 'async-callback', 'policy-gate'],
     iconPolicy: 'authentic-brand',
     sourceImage: 'canonical_67.png',
-    generatorVersion: '3.0',
-    certificationStatus: 'certified',
-    referenceGeometry: {
-      pageWidth: 1640,
-      pageHeight: 1285,
-      aspectRatio: 1640 / 1285,
-      minIconCount: 17,
-      requiredCellIds: ['header_logo', 'tier_1_tab', 'tier_2_tab', 'tier_3_tab', 'tier_4_tab', 'tier_5_tab', 'tier_6_tab', 'tier_7_tab'],
-      forbiddenCellIds: [],
-      requiredSubstrings: ['Google Cloud', 'Vertex AI', 'Gemini 3.1 Pro', 'Cloud Operations Suite (SRE Hub)'],
-      forbiddenSubstrings: ['image=data:image/svg+xml;utf8,']
-    }
-  },
-  '68': {
-    id: '68',
-    grammar: 'Multi-Agent Orchestration, Sub-Agent Routing & Tool Execution Flow',
-    family: 'Process',
-    level: ['L2', 'L3'],
-    semanticQuestion: 'How does a root orchestrator delegate tasks across specialist sub-agents and MCP tool servers?',
-    requiredElements: ['tier_1_tab', 'tier_2_tab', 'tier_3_tab', 'tier_4_tab', 'tier_5_tab', 'tier_6_tab', 'tier_7_tab', 'google cloud', 'gemini'],
-    forbiddenElements: ['funky-neon-colors', 'unconnected-nodes'],
-    edgeTypes: ['agent-delegation', 'mcp-tool-call', 'synthesis-return'],
-    iconPolicy: 'authentic-brand',
-    sourceImage: 'canonical_68.png',
     generatorVersion: '3.0',
     certificationStatus: 'certified',
     referenceGeometry: {
@@ -237,20 +171,6 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
     generatorVersion: '4.0',
     certificationStatus: 'certified'
   },
-  '80': {
-    id: '80',
-    grammar: 'L400 Physical Network & Deployment Topology — The Agentic Workspace (Orchestrator V1)',
-    family: 'Infrastructure',
-    level: ['L3'],
-    semanticQuestion: 'How does the physical L400 network topology connect On-Prem Edge (192.168.1.8/24), Perimeter Subnet (10.10.1.0/24), Intelligence Orchestration Plane (Gemma 2 9B & ADK v1.4), 100G Partner Interconnect, and Zone 2 Decision Ignition Plane with active-passive ValKey?',
-    requiredElements: ['192.168.1.8/24', '10.10.1.0/24', 'orchestrator', 'valkey', 'filestore'],
-    forbiddenElements: ['unconnected-edges', 'overlapping-cards'],
-    edgeTypes: ['wan-interconnect', 'grpc-mtls', 'nfs-mount', 'bgp-peering'],
-    iconPolicy: 'authentic-brand',
-    sourceImage: 'canonical_80.png',
-    generatorVersion: '4.0',
-    certificationStatus: 'certified'
-  },
   '81': {
     id: '81',
     grammar: '[L400 PRINCIPAL SEQUENCE] OIDC JWT, SPIFFE mTLS, FW & VPC-SC (P3-APP-L-10)',
@@ -262,34 +182,6 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
     edgeTypes: ['a2a-delegation', 'mcp-tool-call', 'hitl-approval', 'audit-telemetry'],
     iconPolicy: 'authentic-brand',
     sourceImage: 'canonical_81.png',
-    generatorVersion: '4.0',
-    certificationStatus: 'certified'
-  },
-  '82': {
-    id: '82',
-    grammar: 'L200 Logical — Google Cloud Multi-Agent System Architecture',
-    family: 'Reference Architectures',
-    level: ['L2'],
-    semanticQuestion: 'How do Application Users, AI Developers, and DevOps Engineers interact with Frontend Cloud Run, ADK Coordinator Agent, Sequence & Iterative Refinement Subagents, Model Armor, Gemini Models, and MCP Tools on Google Cloud?',
-    requiredElements: ['coordinator agent', 'task-a subagent', 'model armor', 'mcp clients', 'observability'],
-    forbiddenElements: ['unconnected-edges', 'overlapping-cards'],
-    edgeTypes: ['user-request', 'subagent-delegation', 'model-inference', 'mcp-protocol'],
-    iconPolicy: 'authentic-brand',
-    sourceImage: 'canonical_82.png',
-    generatorVersion: '4.0',
-    certificationStatus: 'certified'
-  },
-  '83': {
-    id: '83',
-    grammar: 'L100 Conceptual — The Agentic Workspace (L100 Conceptual Map) - Business Value View',
-    family: 'Understand',
-    level: ['L1'],
-    semanticQuestion: 'How does The Agentic Workspace translate user business prompts into governed enterprise outcomes through Model Armor safety gateways, Enterprise Knowledge Store, Gemini Agent Coordinator, and the Zone 2 Actionable Insights Tool Loop?',
-    requiredElements: ['gemini agent coordinator', 'model armor', 'enterprise knowledge store', 'actionable insights', 'valkey'],
-    forbiddenElements: ['unconnected-edges', 'overlapping-cards'],
-    edgeTypes: ['business-prompt', 'safe-request', 'knowledge-retrieval', 'actionable-tool-loop'],
-    iconPolicy: 'authentic-brand',
-    sourceImage: 'canonical_83.png',
     generatorVersion: '4.0',
     certificationStatus: 'certified'
   },
@@ -308,5 +200,6 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
     certificationStatus: 'certified'
   }
 };
+
 
 

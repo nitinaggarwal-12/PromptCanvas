@@ -75,7 +75,7 @@ Pass `layoutEngineV2: true` (or `false`) in the `POST /api/generate` request bod
 ## 🧪 Testing & Validation CLI
 
 ### Master Omni 1.1 Architecture Quality Gate (29 Certified Blueprints & Lean 8 Document Studio)
-Executes the comprehensive quality verification gate covering render safety, master catalog quality (29 production Google Cloud blueprints: 14 Core `#78`–`#84`, `#00`, `#38`, `#42`, `#44`, `#67`–`#69` + 15 Infographics `#52`–`#66`), Lean 8 Pharma Regulatory Rigor Document Studio (`DOC 01 • BRD`, `DOC 02 • PRD`, `DOC 03 • SDD`, `DOC 05 • TDD`, `DOC 13 • AI System Card`, `DOC 07 • STRIDE`, `DOC 09 • GRC Package`, `DOC 17 • SRE & Ops Spec`), canvas generator self-healing, hooks schema validation, governance doc sync, and 5-tier model stack verification:
+Executes the comprehensive quality verification gate covering render safety, master catalog quality (22 production Google Cloud blueprints: 7 Core `#78`, `#79`, `#81`, `#84`, `#00`, `#67`, `#69` + 15 Infographics `#52`–`#66`), Lean 8 Pharma Regulatory Rigor Document Studio (`DOC 01 • BRD`, `DOC 02 • PRD`, `DOC 03 • SDD`, `DOC 05 • TDD`, `DOC 13 • AI System Card`, `DOC 07 • STRIDE`, `DOC 09 • GRC Package`, `DOC 17 • SRE & Ops Spec`), canvas generator self-healing, hooks schema validation, governance doc sync, and 5-tier model stack verification:
 ```bash
 npm run quality-gate
 ```
@@ -114,7 +114,7 @@ node scripts/verify_aws_gcp_aiml_parallel_scroll_e2e.mjs
 ## 📚 Architecture Documentation
 
 * **[docs/INTENT_ROUTER.md](docs/INTENT_ROUTER.md)**: **Authoritative 5-Tier Model Selection & Intent Router Specification (`v3.3.0`)**.
-* **[docs/ARCHITECTURE_TAXONOMY_V1.md](docs/ARCHITECTURE_TAXONOMY_V1.md)**: **Canonical Architecture Taxonomy (v1.0)** — Complete 29-Blueprint Google Cloud Catalog (`#78`–`#84`, `#00`, `#38`, `#42`, `#44`, `#67`–`#69` + `#52`–`#66`) and Lean 8 Document Studio Bindings (`DOC 01`, `02`, `03`, `05`, `13`, `07`, `09`, `17`).
+* **[docs/ARCHITECTURE_TAXONOMY_V1.md](docs/ARCHITECTURE_TAXONOMY_V1.md)**: **Canonical Architecture Taxonomy (v1.0)** — Complete 22-Blueprint Google Cloud Catalog (`#78`–`#84`, `#00`, `#38`, `#42`, `#44`, `#67`–`#69` + `#52`–`#66`) and Lean 8 Document Studio Bindings (`DOC 01`, `02`, `03`, `05`, `13`, `07`, `09`, `17`).
 * **[docs/PromptCanvas_Architecture_Taxonomy_v1.0_Consolidated.xlsx](docs/PromptCanvas_Architecture_Taxonomy_v1.0_Consolidated.xlsx)**: Consolidated Excel Workbook.
 * **[docs/ARCHITECTURE_BEFORE.md](docs/ARCHITECTURE_BEFORE.md)**: Codebase map of Legacy Pipeline V1.
 * **[docs/ARCHITECTURE_AFTER.md](docs/ARCHITECTURE_AFTER.md)**: Pipeline V2 Architecture with Mermaid flow diagram.

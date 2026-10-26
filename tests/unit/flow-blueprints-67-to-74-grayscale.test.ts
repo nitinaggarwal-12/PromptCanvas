@@ -48,16 +48,16 @@ const ALLOWED_GOOGLE_BRAND_LIGHT_HEXES = new Set([
   '#B31412',
 ]);
 
-describe('29 Canonical Blueprints (14 Core Architecture/Flow #78–#84, #00, #38, #42, #44, #67–#69 + 15 Infographic #52–#66), Permanent Tier 1/2/3 Purge & 9-Guide Diagram Parity', () => {
-  it('retains strictly the 29 canonical blueprints (14 core architecture/flow + 15 infographic #52–#66) and permanently purges all Tier 1 (except #68/#69), Tier 2, and Tier 3 blueprints', () => {
+describe('22 Canonical Blueprints (7 Core Architecture/Flow #78, #79, #81, #84, #00, #67, #69 + 15 Infographic #52–#66), Permanent Purge of #38, #42, #44, #68, #80, #82, #83 & 9-Guide Diagram Parity', () => {
+  it('retains strictly the 22 canonical blueprints (7 core architecture/flow + 15 infographic #52–#66) and permanently purges #35–#50, #68, #70–#74, #80, #82, #83', () => {
     expect(ACTIVE_CANONICAL_BLUEPRINT_IDS).toEqual([
-      '78', '79', '80', '81', '82', '83', '84',
-      '00', '38', '42', '44', '67', '68', '69',
+      '78', '79', '81', '84',
+      '00', '67', '69',
       '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66',
     ]);
-    expect(CANONICAL_TEMPLATES.length).toBe(29);
+    expect(CANONICAL_TEMPLATES.length).toBe(22);
 
-    for (const id of ['78', '79', '80', '81', '82', '83', '84', '67', '68', '69']) {
+    for (const id of ['78', '79', '81', '84', '67', '69']) {
       expect(ACTIVE_CANONICAL_BLUEPRINT_IDS.includes(id)).toBe(true);
       const bp = CANONICAL_TEMPLATES.find((t) => t.id === id);
       expect(bp).toBeDefined();
@@ -72,15 +72,16 @@ describe('29 Canonical Blueprints (14 Core Architecture/Flow #78–#84, #00, #38
       expect(bp?.family).toBe('Infographic');
     }
 
-    const purgedIds = ['35', '36', '37', '39', '40', '41', '43', '45', '46', '47', '48', '49', '50', '70', '71', '72', '73', '74'];
+    const purgedIds = ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '68', '70', '71', '72', '73', '74', '80', '82', '83'];
     for (const purgedId of purgedIds) {
       expect(ACTIVE_CANONICAL_BLUEPRINT_IDS.includes(purgedId)).toBe(false);
       expect(CANONICAL_TEMPLATES.find((t) => t.id === purgedId)).toBeUndefined();
+      expect(CANONICAL_CONTRACTS[purgedId]).toBeUndefined();
     }
   });
 
-  it('enforces strictly Official Google Cloud Brand Light palette across #67, #68, and #69 with zero funky colors and preserves header_logo through injectDomainFlavorXml', () => {
-    for (const id of ['67', '68', '69']) {
+  it('enforces strictly Official Google Cloud Brand Light palette across #67 and #69 with zero funky colors and preserves header_logo through injectDomainFlavorXml', () => {
+    for (const id of ['67', '69']) {
       const bp = CANONICAL_TEMPLATES.find((t) => t.id === id)!;
       const rawXml = bp.generateXml('biopharma', 'light');
       const xml = injectDomainFlavorXml(rawXml, 'biopharma');
@@ -98,8 +99,8 @@ describe('29 Canonical Blueprints (14 Core Architecture/Flow #78–#84, #00, #38
     }
   });
 
-  it('enforces per-blueprint ReferenceGeometryContract (#67, #68, #69) for exact pageWidth/pageHeight, SVG icon count, required/forbidden mxCell IDs, and DOM painting order', () => {
-    for (const id of ['67', '68', '69']) {
+  it('enforces per-blueprint ReferenceGeometryContract (#67, #69) for exact pageWidth/pageHeight, SVG icon count, required/forbidden mxCell IDs, and DOM painting order', () => {
+    for (const id of ['67', '69']) {
       const bp = CANONICAL_TEMPLATES.find((t) => t.id === id)!;
       const rg = CANONICAL_CONTRACTS[id]?.referenceGeometry!;
       expect(rg, `Missing referenceGeometry contract for #${id}`).toBeDefined();
@@ -172,7 +173,7 @@ describe('29 Canonical Blueprints (14 Core Architecture/Flow #78–#84, #00, #38
       expect(xml).toMatch(/id="e_alb_to_mid_left"[^>]*startArrow=open;startFill=0;startSize=7;endArrow=open;endFill=0;endSize=7/);
 
       // Icon diversity >= 12 distinct service icons per diagram
-      const iconUris = new Set((xml.match(/data:image\/(?:png|svg\+xml);(?:utf8|base64),[^"&]+/g) || []));
+      const iconUris = new Set((xml.match(/data:image\/(?:png|svg\+xml)(?:;(?:utf8|base64))?,[^"&]+/g) || []));
       expect(iconUris.size, `Guide ${guide.docId} (${bp!.id}) has only ${iconUris.size} distinct icons`).toBeGreaterThanOrEqual(12);
 
       // All 18 cards + 2 boundary wrappers documented across 5 component groups (1 + 5 + 3 + 1 + 5 = 15 rows)

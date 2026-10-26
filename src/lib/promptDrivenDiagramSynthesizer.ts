@@ -22,9 +22,6 @@ import {
 import { generateLogicalGcpAgentArchitectureXml } from './canonical/templateLogicalGcpAgentArchitecture';
 import { generateConceptualGcpAgentArchitectureXml } from './canonical/templateConceptualGcpAgentArch';
 import { generateProcessGcpAgentWorkflowXml } from './canonical/templateProcessGcpAgentWorkflow';
-import { generateTemplate38CloudLandingZoneXml } from './canonical/template38CloudLandingZone';
-import { generateTemplate42ModernDataLakehouseDataMeshXml } from './canonical/template42ModernDataLakehouseDataMesh';
-import { generateTemplate44ZeroTrustCybersecuritySocPlatformXml } from './canonical/template44ZeroTrustCybersecuritySocPlatform';
 import {
   generateGoogleCloudL1ExecutiveFlowchartXml,
   generateGoogleCloudL2LogicalFlowchartXml,

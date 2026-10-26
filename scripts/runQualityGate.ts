@@ -27,7 +27,7 @@ const steps: GateStep[] = [
     command: 'tsx scripts/check-blueprint-render-safety.ts'
   },
   {
-    name: 'Canonical 8-Blueprint Production Catalog Certification Gate (#78, #00, #38, #42, #44, #67, #68, #69)',
+    name: 'Canonical 22-Blueprint Production Catalog Certification Gate (#78, #79, #81, #84, #00, #67, #69 + #52–#66)',
     category: 'CATALOG_INTEGRITY',
     command: 'tsx scripts/verify_canonical_certification.ts'
   },
