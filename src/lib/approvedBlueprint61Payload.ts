@@ -5,6 +5,4 @@ import { buildMasterBlueprint61EnterpriseAiDocumentAssistantXml } from './master
 export function getApprovedEnterpriseAiDocumentAssistantBlueprintXml(): string {
   return buildMasterBlueprint61EnterpriseAiDocumentAssistantXml();
 }
-
-export const BLUEPRINT_51_CANONICAL_ID = 'enterprise_ai_document_assistant';
 export const BLUEPRINT_61_CANONICAL_ID = 'enterprise_ai_document_assistant';

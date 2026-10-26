@@ -79,47 +79,47 @@ if (
   console.log('✅ Obsolete Route Guard: Zero retired studio links or route directories (/workspace, /studio1, /gcp)');
 }
 
-// Legacy Template Purge Guard: public/templates must only contain the 26 production Google Cloud blueprints (#78, #00, #35-#50, #67-#74)
+// Legacy & Purged Tier 1/2/3 Template Guard: public/templates must only contain the 8 core Google Cloud blueprints (#78, #00, #38, #42, #44, #67, #68, #69 -> 16 files)
 const pubTemplates = fs.readdirSync('public/templates');
 const forbiddenLegacyFiles = pubTemplates.filter((f) =>
-  /^(?:0[1-9]|[12]\d|3[0-4]|5[1-9]|6[0-6])\.png$/.test(f) ||
-  /^canonical_(?:0[1-9]|[12]\d|3[0-4]|5[1-9]|6[0-6])\.png$/.test(f) ||
+  /^(?:0[1-9]|[12]\d|3[0-79]|4[0135-9]|5\d|6[0-6]|7[0-4])\.png$/.test(f) ||
+  /^canonical_(?:0[1-9]|[12]\d|3[0-79]|4[0135-9]|5\d|6[0-6]|7[0-4])\.png$/.test(f) ||
   /^(?:P[1-5]|ARCH|IND|NEW)-/.test(f) ||
   /^infographic_/.test(f) ||
   f === '40.svg' ||
   f === 'ge_equipment_optimization_gemini.png'
 );
-if (forbiddenLegacyFiles.length > 0 || pubTemplates.length !== 50) {
-  console.error(`❌ Legacy Template Purge Guard: Found ${forbiddenLegacyFiles.length} purged legacy files in public/templates/ (total=${pubTemplates.length}, expected 50): ${forbiddenLegacyFiles.join(', ')}`);
+if (forbiddenLegacyFiles.length > 0 || pubTemplates.length !== 16) {
+  console.error(`❌ Legacy Template Purge Guard: Found ${forbiddenLegacyFiles.length} purged legacy files in public/templates/ (total=${pubTemplates.length}, expected 16): ${forbiddenLegacyFiles.join(', ')}`);
   failed++;
 } else {
-  console.log(`✅ Legacy Template Purge Guard: 0 legacy NOVACURA / P1-P5 / infographic files in public/templates/ (${pubTemplates.length} clean files)`);
+  console.log(`✅ Legacy Template Purge Guard: 0 purged Tier 1/2/3 or legacy files in public/templates/ (${pubTemplates.length} clean files)`);
 }
 
-// Root & Public Images Legacy Purge Guard: images/ and public/images/ must contain only the 17 active canonical reference PNGs (00.png, 35.png..50.png) and 0 legacy 01..34.png or 40.svg files
+// Root & Public Images Legacy Purge Guard: images/ and public/images/ must contain only the 4 active reference PNGs (00.png, 38.png, 42.png, 44.png)
 for (const imgDir of ['images', 'public/images']) {
   if (fs.existsSync(imgDir)) {
     const imgs = fs.readdirSync(imgDir);
     const forbiddenImgs = imgs.filter(
-      (f) => /^(?:0[1-9]|[12]\d|3[0-4])\.png$/.test(f) || f === '40.svg'
+      (f) => /^(?:0[1-9]|[12]\d|3[0-79]|4[0135-9]|50)\.png$/.test(f) || f === '40.svg'
     );
-    if (forbiddenImgs.length > 0 || imgs.length !== 17) {
-      console.error(`❌ Images Legacy Purge Guard (${imgDir}): Found ${forbiddenImgs.length} legacy files in ${imgDir}/ (total=${imgs.length}, expected 17): ${forbiddenImgs.join(', ')}`);
+    if (forbiddenImgs.length > 0 || imgs.length !== 4) {
+      console.error(`❌ Images Legacy Purge Guard (${imgDir}): Found ${forbiddenImgs.length} legacy/purged files in ${imgDir}/ (total=${imgs.length}, expected 4): ${forbiddenImgs.join(', ')}`);
       failed++;
     } else {
-      console.log(`✅ Images Legacy Purge Guard (${imgDir}): 0 legacy 01..34.png or 40.svg files in ${imgDir}/ (${imgs.length} active reference PNGs)`);
+      console.log(`✅ Images Legacy Purge Guard (${imgDir}): 0 purged Tier 1/2/3 or legacy files in ${imgDir}/ (${imgs.length} active reference PNGs)`);
     }
   }
 }
 
-// Canonical Source Purge Guard: src/lib/canonical/ must contain 0 retired template01..34 or template51..52 .ts files
+// Canonical Source Purge Guard: src/lib/canonical/ must contain 0 retired template01..34, purged Tier 1/2/3 (35..37, 39..41, 43, 45..52) .ts files
 const canonFiles = fs.readdirSync('src/lib/canonical');
-const forbiddenCanonTs = canonFiles.filter((f) => /^template(?:0[1-9]|[12]\d|3[0-4]|5[12]).*\.ts$/.test(f));
+const forbiddenCanonTs = canonFiles.filter((f) => /^template(?:0[1-9]|[12]\d|3[0-79]|4[0135-9]|5[0-2]).*\.ts$/.test(f));
 if (forbiddenCanonTs.length > 0) {
-  console.error(`❌ Canonical Source Purge Guard: Found ${forbiddenCanonTs.length} retired template .ts files in src/lib/canonical/: ${forbiddenCanonTs.join(', ')}`);
+  console.error(`❌ Canonical Source Purge Guard: Found ${forbiddenCanonTs.length} retired/purged template .ts files in src/lib/canonical/: ${forbiddenCanonTs.join(', ')}`);
   failed++;
 } else {
-  console.log(`✅ Canonical Source Purge Guard: 0 retired template01..34 / template51..52 .ts files in src/lib/canonical/`);
+  console.log(`✅ Canonical Source Purge Guard: 0 retired or purged Tier 1/2/3 template .ts files in src/lib/canonical/`);
 }
 
 // Public Blueprints Purge Guard: public/blueprints/ must contain strictly the 5 /vision reference assets
@@ -161,6 +161,11 @@ function walkSrcFiles(dir) {
 }
 const allSrcFiles = walkSrcFiles(path.join(ROOT, 'src'));
 const srcViolations = [];
+const multiCloudAllowedFiles = new Set([
+  'src/lib/canonical/infographicBlueprints52to66.ts',
+  'src/lib/awsOfficialSvgAssets.ts',
+  'src/lib/visionPosterToDrawioDecompiler.ts',
+]);
 for (const f of allSrcFiles) {
   const rel = path.relative(ROOT, f);
   const txt = fs.readFileSync(f, 'utf8');
@@ -173,7 +178,7 @@ for (const f of allSrcFiles) {
   if (/window\.(prompt|alert|confirm)\s*\(/.test(txt)) {
     srcViolations.push(`${rel}: contains thread-blocking window.prompt/alert/confirm (violates Law 10 / Rule 25J)`);
   }
-  if (rel !== 'src/lib/canonical/infographicBlueprints52to66.ts' && /\b(Anthropic|Claude|Snowflake)\b/i.test(txt)) {
+  if (!multiCloudAllowedFiles.has(rel) && /\b(Anthropic|Claude|Snowflake)\b/i.test(txt)) {
     srcViolations.push(`${rel}: contains banned Anthropic/Claude/Snowflake vendor reference (violates Rule 53)`);
   }
   if (rel.startsWith('src/lib/masterBuilders/') && /id="old_[^"]+"/.test(txt)) {
@@ -195,7 +200,7 @@ const crossPageTargets = [
   'src/app/guide/page.tsx',
   'src/app/test-status/page.tsx',
 ];
-const staleBlueprintRegex = /\b(?:19|77)\s+(?:Official\s+Google\s+Cloud\s+Reference\s+Blueprints|curated\s+Google\s+Cloud\s+reference\s+blueprints|Production\s+Blueprints|Certified\s+Blueprints|certified\s+reference\s+architectures|Reference\s+Blueprints|Blueprints|blueprints|Canonical\s+Blueprints|canonical\s+master\s+blueprints)\b/;
+const staleBlueprintRegex = /\b(?:7|18|19|26|77)\s+(?:Official\s+Google\s+Cloud\s+Reference\s+Blueprints|curated\s+Google\s+Cloud\s+reference\s+blueprints|Production\s+Blueprints|Certified\s+Blueprints|certified\s+reference\s+architectures|Reference\s+Blueprints|Blueprints|blueprints|Canonical\s+Blueprints|canonical\s+master\s+blueprints)\b/;
 for (const rel of crossPageTargets) {
   const content = read(rel);
   const m = staleBlueprintRegex.exec(content);

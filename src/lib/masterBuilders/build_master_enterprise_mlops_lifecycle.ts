@@ -111,5 +111,3 @@ export function buildMasterEnterpriseMlopsLifecycleXml(): string {
   </diagram>
 </mxfile>`;
 }
-
-export const MASTER_ENTERPRISE_MLOPS_LIFECYCLE_XML = buildMasterEnterpriseMlopsLifecycleXml();

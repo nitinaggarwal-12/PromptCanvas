@@ -117,7 +117,7 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "Cognitive Architecture / Agentic RAG",
     category: "AI & Cognitive Systems",
     whenToUse: "AI Cognitive Architecture with multi-agent orchestration, RAG retrieval, vector search, and LLM reasoning",
-    prompt: "Act as an AI Chief Architect and Cognitive Systems Engineer. Design an advanced Cognitive Architecture featuring Agentic Retrieval-Augmented Generation (RAG). It should include: multi-agent orchestration loops, dynamic tool execution, vector embedding database (pgvector/Pinecone), document chunking & ingestion pipelines, semantic search retrieval, LLM reasoning engine (Gemini 2.5 Flash), and fallback validation guardrails."
+    prompt: "Act as an AI Chief Architect and Cognitive Systems Engineer. Design an advanced Cognitive Architecture featuring Agentic Retrieval-Augmented Generation (RAG). It should include: multi-agent orchestration loops, dynamic tool execution, vector embedding database (pgvector/Pinecone), document chunking & ingestion pipelines, semantic search retrieval, LLM reasoning engine (Gemini 3.8 Flash), and fallback validation guardrails."
   },
   {
     id: "sequence_diagram",
@@ -145,14 +145,14 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "Value Stream Map (VSM) - AI Delivery",
     category: "Executive & Business Strategy",
     whenToUse: "Enterprise AI Architecture & Delivery Value Stream Map (VSM) mapping Lead Time, Process Time (%C/A), Information Plane, Kaizen bursts, and DORA flow efficiency ladder from Prompt Ingestion to Production GitOps.",
-    prompt: "Act as an Enterprise Agile & Lean Value Stream Architect. Design a production-grade Enterprise AI Architecture & Delivery Value Stream Map (VSM). Include: Top Information & Control Plane (Customer Demand, Jira Portfolio Steering, Weekly ARB Committee, SRE Telemetry) -> Core Execution Value Stream Pipeline (Stage 1 Prompt Ingestion, Stage 2 Gemini 2.5 Flash Compilation, Stage 3 AI TRiSM & FinOps, Stage 4 ARB & HITL Sign-Off, Stage 5 GitOps IaC Provisioning) with Queue WIP Triangles and Kaizen Bursts -> Bottom Lead Time & Process Time Ladder with Flow Efficiency Scorecard and VSM Symbology Legend."
+    prompt: "Act as an Enterprise Agile & Lean Value Stream Architect. Design a production-grade Enterprise AI Architecture & Delivery Value Stream Map (VSM). Include: Top Information & Control Plane (Customer Demand, Jira Portfolio Steering, Weekly ARB Committee, SRE Telemetry) -> Core Execution Value Stream Pipeline (Stage 1 Prompt Ingestion, Stage 2 Gemini 3.8 Flash Compilation, Stage 3 AI TRiSM & FinOps, Stage 4 ARB & HITL Sign-Off, Stage 5 GitOps IaC Provisioning) with Queue WIP Triangles and Kaizen Bursts -> Bottom Lead Time & Process Time Ladder with Flow Efficiency Scorecard and VSM Symbology Legend."
   },
   {
     id: "asis_vs_tobe_process_flow",
     name: "As-Is vs. To-Be Process Flow",
     category: "Executive & Business Strategy",
-    whenToUse: "Enterprise Modernization Process Flow comparing fragile on-premises monolithic legacy state against Google Cloud real-time Lakehouse and Gemini 2.5 Flash cognitive architecture with Strangler Fig modernization bridge and ROI transformation scorecard.",
-    prompt: "Act as an Enterprise Cloud Modernization & AI Transformation Principal Architect. Design a production-grade Enterprise As-Is vs. To-Be Process & Architecture Modernization Flow blueprint. Include: Top Zone AS-IS Legacy State (On-Prem VMs/Monolith Ingress, Nightly Informatica Batch ETL, Oracle RDBMS Core, Manual Spreadsheet Review, Static Cognos Reports) -> Center Google Cloud Strangler Fig Modernization Bridge (Apigee API Interceptor & Datastream CDC) -> Bottom Zone TO-BE Target State (Cloud Pub/Sub Ingress, Cloud Dataflow Streaming Pipeline, Gemini 2.5 Flash Reasoning Hub, AI TRiSM & HITL Gate, Cloud Run Serverless Serving, BigQuery Lakehouse, AlloyDB HA, Dataplex ABAC, Cloud KMS) -> Right Panel Executive Transformation Scorecard with 68% OpEx Cut and Year 1 ROI."
+    whenToUse: "Enterprise Modernization Process Flow comparing fragile on-premises monolithic legacy state against Google Cloud real-time Lakehouse and Gemini 3.8 Flash cognitive architecture with Strangler Fig modernization bridge and ROI transformation scorecard.",
+    prompt: "Act as an Enterprise Cloud Modernization & AI Transformation Principal Architect. Design a production-grade Enterprise As-Is vs. To-Be Process & Architecture Modernization Flow blueprint. Include: Top Zone AS-IS Legacy State (On-Prem VMs/Monolith Ingress, Nightly Informatica Batch ETL, Oracle RDBMS Core, Manual Spreadsheet Review, Static Cognos Reports) -> Center Google Cloud Strangler Fig Modernization Bridge (Apigee API Interceptor & Datastream CDC) -> Bottom Zone TO-BE Target State (Cloud Pub/Sub Ingress, Cloud Dataflow Streaming Pipeline, Gemini 3.8 Flash Reasoning Hub, AI TRiSM & HITL Gate, Cloud Run Serverless Serving, BigQuery Lakehouse, AlloyDB HA, Dataplex ABAC, Cloud KMS) -> Right Panel Executive Transformation Scorecard with 68% OpEx Cut and Year 1 ROI."
   },
   {
     id: "governance_state_machine",
@@ -176,7 +176,7 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "Real-Time Streaming Analytics",
     category: "Data & Lakehouse Architecture",
     whenToUse: "Real-time streaming analytics and IoT/Edge telemetry ingestion pipeline on GCP using MQTT field gateways, Cloud Pub/Sub, Dataflow Beam ETL, Vertex AI Feature Store, Cloud Bigtable, and BigQuery",
-    prompt: "Act as a GCP Big Data & Edge IoT Principal Architect. Design a unified GCP Real-Time Streaming Analytics & Telemetry Pipeline combining: Edge device field gateways (MQTT/HTTPS) & Web telemetry ingestion, Cloud Pub/Sub high-throughput topics and subscriptions, streaming ETL processing via Cloud Dataflow (Apache Beam), real-time feature engineering into Vertex AI Feature Store, time-series & analytical warehousing in Cloud Bigtable and BigQuery with partitioned tables, and interactive operational dashboards via Looker Studio / Grafana."
+    prompt: "Act as a GCP Big Data & Edge IoT Principal Architect. Design a unified GCP Real-Time Streaming Analytics & Telemetry Pipeline combining: Edge device field gateways (MQTT/HTTPS) & Web telemetry ingestion, Cloud Pub/Sub high-throughput topics and subscriptions, streaming ETL processing via Cloud Dataflow (Apache Beam), real-time feature engineering into Vertex AI Feature Store, time-series & analytical warehousing in Cloud Bigtable and BigQuery with partitioned tables, and interactive operational dashboards via Looker / Grafana."
   },
   {
     id: "tech_c4_system_context",
@@ -225,7 +225,7 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "Cloud FinOps & Chargeback Model",
     category: "Cloud Infrastructure & Networking",
     whenToUse: "Cloud FinOps & Chargeback Model for unit cost allocation, GenAI Vertex AI token tracking, BigQuery cost data lake, and automated showback/chargeback reporting.",
-    prompt: "Act as an Enterprise FinOps & Cloud Economics Architect. Design a production-grade Cloud FinOps & Chargeback Architecture. Include: Ingestion & Usage Tracking (GKE Kubecost, GCE VMs, GCS, Cloud SQL, BigQuery, Vertex AI Token Tracking) -> Data Aggregation (GCP Billing Exports, Kubecost Costs, Vertex AI Token Cost Calculator, Tagging Policies into Unified BigQuery Cost Data Lake) -> Looker Studio Analytics & FinOps Governance Engine (Tagging Enforcement, Budgets & Alerts, Commitment Manager CUDs/SUDs, Cloud Monitoring) -> Chargeback Generator for Business Units (Engineering, Product, Data Science & GenAI) under Cloud IAM access control and Secret Manager."
+    prompt: "Act as an Enterprise FinOps & Cloud Economics Architect. Design a production-grade Cloud FinOps & Chargeback Architecture. Include: Ingestion & Usage Tracking (GKE Kubecost, GCE VMs, GCS, Cloud SQL, BigQuery, Vertex AI Token Tracking) -> Data Aggregation (GCP Billing Exports, Kubecost Costs, Vertex AI Token Cost Calculator, Tagging Policies into Unified BigQuery Cost Data Lake) -> Looker Analytics & FinOps Governance Engine (Tagging Enforcement, Budgets & Alerts, Commitment Manager CUDs/SUDs, Cloud Monitoring) -> Chargeback Generator for Business Units (Engineering, Product, Data Science & GenAI) under Cloud IAM access control and Secret Manager."
   },
   {
     id: "ai_coe_operating_model",
@@ -239,21 +239,21 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "Model Context Protocol (MCP) Gateway",
     category: "Cloud Infrastructure & Networking",
     whenToUse: "Model Context Protocol Gateway (MCP Context Gateway) with Universal Context Ingestion Adapters, MCP Message Bus & Normalization, and Tool Proxies.",
-    prompt: "Act as an Enterprise AI Platform Architect. Design a production-grade Model Context Protocol (MCP) Gateway Architecture. Include: 5 Ingestion Sources (Database Source Cloud SQL, Object Storage Source Cloud Storage, Vector DB Source Vertex AI Vector Search, Logs Cloud Logging, Legacy Systems) -> Apigee & Looker Studio -> Security & Secret Management (Workload Identity IAM, VPC-SC, Secret Manager) -> Model Context Protocol (MCP) Gateway Node.js/Python (Universal Context Ingestion Adapters, Context Schema Mapping Engine, MCP Message Bus & Normalization with MCP Schemas, SOC 2 Compliance Filtering, IAM Access Control, BigQuery Audit Trail Logging, Tool Proxies & Downstream Integration with Cognitive Arch / Agentic RAG, API Proxy, GCP Service Proxy, Legacy Tool Proxy) -> External API Actionable Tool Systems -> Looker Studio Analytics & Total Unified System View (Enterprise Context / Platform View & Operations Support) -> Legend."
+    prompt: "Act as an Enterprise AI Platform Architect. Design a production-grade Model Context Protocol (MCP) Gateway Architecture. Include: 5 Ingestion Sources (Database Source Cloud SQL, Object Storage Source Cloud Storage, Vector DB Source Vertex AI Vector Search, Logs Cloud Logging, Legacy Systems) -> Apigee & Looker -> Security & Secret Management (Workload Identity IAM, VPC-SC, Secret Manager) -> Model Context Protocol (MCP) Gateway Node.js/Python (Universal Context Ingestion Adapters, Context Schema Mapping Engine, MCP Message Bus & Normalization with MCP Schemas, SOC 2 Compliance Filtering, IAM Access Control, BigQuery Audit Trail Logging, Tool Proxies & Downstream Integration with Cognitive Arch / Agentic RAG, API Proxy, GCP Service Proxy, Legacy Tool Proxy) -> External API Actionable Tool Systems -> Looker Analytics & Total Unified System View (Enterprise Context / Platform View & Operations Support) -> Legend."
   },
   {
     id: "logical_ai_config_tenant",
     name: "Product Plan - Logical AI Config (Tenant Architecture)",
     category: "Cloud Infrastructure & Networking",
     whenToUse: "Product Plan: Multi-tenant Logical AI Config architecture modeling environment segregation across Dev/Test/Prod, Agent Designer topologies, and SOC 2 / GxP compliance within Gemini Enterprise.",
-    prompt: "Act as an Enterprise AI Platform Architect. Design a production-grade Product Plan - Logical AI Config (Tenant Architecture) blueprint. Include: App Owners & Devs -> Logical AI Config Management Console & APIs -> Enterprise IAM -> Development, Testing, and Production Environments with Tenant Boundaries -> Platform Orchestrator -> Gemini Enterprise Engine instances -> Production Workspace A with Logical AI Config (Model Selection Gemini 2.5 Flash, System Instructions, Memory & Context Management, Tool Invocation Definitions) and Agent Designer (Single-Agent, Multi-Agent Chains, Task-Based Sub-Agents) -> Application Logic invocation -> SOC 2 & GxP Compliance Guardrails -> VPC Firewalls, Centralized Audit Logging, and KMS Configuration Encryption -> Legend."
+    prompt: "Act as an Enterprise AI Platform Architect. Design a production-grade Product Plan - Logical AI Config (Tenant Architecture) blueprint. Include: App Owners & Devs -> Logical AI Config Management Console & APIs -> Enterprise IAM -> Development, Testing, and Production Environments with Tenant Boundaries -> Platform Orchestrator -> Gemini Enterprise Engine instances -> Production Workspace A with Logical AI Config (Model Selection Gemini 3.8 Flash, System Instructions, Memory & Context Management, Tool Invocation Definitions) and Agent Designer (Single-Agent, Multi-Agent Chains, Task-Based Sub-Agents) -> Application Logic invocation -> SOC 2 & GxP Compliance Guardrails -> VPC Firewalls, Centralized Audit Logging, and KMS Configuration Encryption -> Legend."
   },
   {
     id: "hub_and_spoke_agent_config",
     name: "Hub-and-Spoke Agent Configuration Map",
     category: "Cloud Infrastructure & Networking",
     whenToUse: "Hub-and-Spoke Multi-Agent Configuration Map with Orchestrator Parent Agent Hub, 3 domain sub-agents (Support, Fulfillment, Knowledge), Logical UI Matrix, HITL Gate, and 21 CFR Part 11 Audit Trail.",
-    prompt: "Act as an Enterprise AI Solutions Architect. Design a production-grade Hub-and-Spoke Agent Configuration Map blueprint. Include: Workspace X (Tenant Y - Production Environment) -> 3 Sub-Agents / Spokes (Customer Support with Zendesk API & BigQuery/Vector Grounding, Fulfillment SA with SAP ERP API & Cloud Storage Grounding, Knowledge Base SA with GCS PDF/Doc Grounding) -> Orchestrator (Parent Agent) Hub (General Config Gemini 2.5 Flash, System Instructions, Context, Memory TTL; Multi-Agent Router / Dispatcher Logic rules; Shared Memory & State; Vertex AI Agent Runtime; 21 CFR Part 11 Compliance Gate) -> Logical UI Configuration Matrix (Prompt editors, Rule editors, Knowledge Source selectors, API Config panels) -> Logical UI Config Management Console -> Human-in-the-Loop (HITL) Gate -> 21 CFR Part 11 Immutable Audit Trail & E-Signature Ledger -> Persona Dashboards (AI Architect, Solutions Arch, Agent Economic & Runtime Metrics) -> Legend."
+    prompt: "Act as an Enterprise AI Solutions Architect. Design a production-grade Hub-and-Spoke Agent Configuration Map blueprint. Include: Workspace X (Tenant Y - Production Environment) -> 3 Sub-Agents / Spokes (Customer Support with Zendesk API & BigQuery/Vector Grounding, Fulfillment SA with SAP ERP API & Cloud Storage Grounding, Knowledge Base SA with GCS PDF/Doc Grounding) -> Orchestrator (Parent Agent) Hub (General Config Gemini 3.8 Flash, System Instructions, Context, Memory TTL; Multi-Agent Router / Dispatcher Logic rules; Shared Memory & State; Vertex AI Agent Runtime; 21 CFR Part 11 Compliance Gate) -> Logical UI Configuration Matrix (Prompt editors, Rule editors, Knowledge Source selectors, API Config panels) -> Logical UI Config Management Console -> Human-in-the-Loop (HITL) Gate -> 21 CFR Part 11 Immutable Audit Trail & E-Signature Ledger -> Persona Dashboards (AI Architect, Solutions Arch, Agent Economic & Runtime Metrics) -> Legend."
   },
   {
     id: "unified_data_governance",
@@ -266,15 +266,15 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     id: "dataops_anomaly_detection",
     name: "DataOps & Anomaly Detection",
     category: "Cloud Infrastructure & Networking",
-    whenToUse: "DataOps & Anomaly Detection Architecture spanning Looker Studio observability, SRE PagerDuty incident alerts, Dataplex SODA/CARLO anomaly engine, and hallucination-free Vertex AI model grounding.",
-    prompt: "Act as a Lead DataOps & Reliability Architect. Design a production-grade DataOps & Anomaly Detection Architecture (To-Be State) blueprint. Include: 5 Horizontal Zones (Top Zone Strategy & Observability Dashboard with Looker Studio 8-metric reporting; Second Zone Incident Management & SRE View with SRE, Cloud Monitoring, PagerDuty, RCA feedback loop; Third Zone The Core Dataplex Integrated DataOps Control Plane with Partner observability, SODA Quality checks, Active Schema Drift Monitoring, Anomaly Detection Engine, CARLO observability, CSV Checkpoints, Reliability Guardrails; Fourth Zone Enforced Pipeline & Consumption with Validated GCS Lakes and Vertex AI Hallucination Prevention; Bottom Zone Unified Modern Data Stack with BigQuery, GCS, Cloud SQL, Dataflow, Dataproc, External SaaS) -> Legend."
+    whenToUse: "DataOps & Anomaly Detection Architecture spanning Looker observability, SRE PagerDuty incident alerts, Dataplex SODA/CARLO anomaly engine, and hallucination-free Vertex AI model grounding.",
+    prompt: "Act as a Lead DataOps & Reliability Architect. Design a production-grade DataOps & Anomaly Detection Architecture (To-Be State) blueprint. Include: 5 Horizontal Zones (Top Zone Strategy & Observability Dashboard with Looker 8-metric reporting; Second Zone Incident Management & SRE View with SRE, Cloud Monitoring, PagerDuty, RCA feedback loop; Third Zone The Core Dataplex Integrated DataOps Control Plane with Partner observability, SODA Quality checks, Active Schema Drift Monitoring, Anomaly Detection Engine, CARLO observability, CSV Checkpoints, Reliability Guardrails; Fourth Zone Enforced Pipeline & Consumption with Validated GCS Lakes and Vertex AI Hallucination Prevention; Bottom Zone Unified Modern Data Stack with BigQuery, GCS, Cloud SQL, Dataflow, Dataproc, External SaaS) -> Legend."
   },
   {
     id: "unified_flowchart",
     name: "Unified End-to-End Operational Flowchart",
     category: "Flowcharts",
     whenToUse: "Complete End-to-End Enterprise Flowchart showing sequential step-by-step operational flow [1] to [15], 7 distinct layer swimlanes, decision gates, official Google Cloud product icons, and zero-collision line routing",
-    prompt: "Act as a Principal Google Cloud Solutions Architect. Design a production-grade Unified End-to-End Enterprise Flowchart Architecture blueprint across 7 horizontal layer swimlanes: Layer 1 Enterprise Agentic Workspace & Developer Studio (Gemini Enterprise App [1], Gemini Notebook [1a], Agent Designer IDE [1b], GSLB & WAF [1c]); Layer 2 API Management & Zero-Trust Policy Gate (Apigee Gateway [2], KMS HSM Vault [2a], SIEM Rejection [2b]); Layer 3 Cognitive Multi-Agent Mesh & ADK 2.0 (ADK 2.0 Orchestrator [3], Deep Research Agent [3a], Vertex AI Gemini 2.5 Flash [3b]); Layer 4 In-Memory Cache, Vector Store & Persistence (Vertex Vector Search [4], Redis MemoryStore [5], Cloud SQL HA [6]); Layer 5 Asynchronous Event Bus & Resilience Queue (Pub/Sub [7], Dead-Letter Queue [7a]); Layer 6 Async Ingestion Agents & Lakehouse (Document Chunking Agent [8], Embedding Worker [9], BigQuery Lakehouse [10]); Layer 7 Enterprise SRE Observability & Telemetry (Cloud Operations Suite [11], PagerDuty SRE Hub [12])."
+    prompt: "Act as a Principal Google Cloud Solutions Architect. Design a production-grade Unified End-to-End Enterprise Flowchart Architecture blueprint across 7 horizontal layer swimlanes: Layer 1 Enterprise Agentic Workspace & Developer Studio (Gemini Enterprise App [1], Gemini Notebook [1a], Agent Designer IDE [1b], GSLB & WAF [1c]); Layer 2 API Management & Zero-Trust Policy Gate (Apigee Gateway [2], KMS HSM Vault [2a], SIEM Rejection [2b]); Layer 3 Cognitive Multi-Agent Mesh & ADK 2.0 (ADK 2.0 Orchestrator [3], Deep Research Agent [3a], Vertex AI Gemini 3.8 Flash [3b]); Layer 4 In-Memory Cache, Vector Store & Persistence (Vertex Vector Search [4], Redis MemoryStore [5], Cloud SQL HA [6]); Layer 5 Asynchronous Event Bus & Resilience Queue (Pub/Sub [7], Dead-Letter Queue [7a]); Layer 6 Async Ingestion Agents & Lakehouse (Document Chunking Agent [8], Embedding Worker [9], BigQuery Lakehouse [10]); Layer 7 Enterprise SRE Observability & Telemetry (Cloud Operations Suite [11], PagerDuty SRE Hub [12])."
   },
   {
     id: "golive_warroom_runbook",
@@ -301,8 +301,8 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     id: "data_residency_sovereign_map",
     name: "Data Residency & Sovereign Cloud Map",
     category: "Cloud Infrastructure & Networking",
-    whenToUse: "Data Residency & Sovereign Cloud Map modeling isolated regional perimeters across EU-West4 (The Netherlands) and US-Central1 (Iowa) with VPC Service Controls, restricted GCP APIs, cross-border GCP VPC-SC bridge, Looker Studio compliance reporting (GDPR, EU AI Act, HIPAA), and async management plane (Dataplex, Cloud Logging).",
-    prompt: "Act as a Principal Security & Sovereign Cloud Architect. Design a production-grade Data Residency & Sovereign Cloud Map (To-Be State, Infra Provisioning Phase) blueprint. Include: Top Title Banner & GDPR/EU AI Act/HIPAA Badges; Left Ingress with End Users (Patient data source), SRE/Legal/CISO Personas, Cloud Load Balancing (Global/Regional) with Verified access control; Center Core Sovereign Cloud container with GCP Region EU-West4 (The Netherlands) VPC-SC perimeter, Restricted GCP APIs, Vertex AI Local Inference & Grounding, Cloud Storage Buckets, Cloud SQL GxP keys, Vertex AI Vector Search, Internal Compliant Data Flow; Center Channel with Cross-Border Data Transfer Path, GCP VPC-SC Bridge, and red alert perimeter tripwires; GCP Region US-Central1 (Iowa) VPC-SC perimeter with symmetric restricted services; Right Top Observability & Compliance Reporting container with Looker Studio Dashboards (Regional Data Compliance Score 99.8%, Cross-Border Transfer Audit Logs, VPC SC Perimeter Alerts, Vertex AI Grounding Lineage), Central logging with BigQuery historical data from prerequisite context; Right Bottom Management Plane (Async Flows) with Cloud Infra Lead, Internal metric collectors, Unified Trace Correlation, Vertex AI Monitoring, Dataplex, Cloud Logging, and Async Flow / Audit Flow connectors; Bottom Left Legend -> Footer Note."
+    whenToUse: "Data Residency & Sovereign Cloud Map modeling isolated regional perimeters across EU-West4 (The Netherlands) and US-Central1 (Iowa) with VPC Service Controls, restricted GCP APIs, cross-border GCP VPC-SC bridge, Looker compliance reporting (GDPR, EU AI Act, HIPAA), and async management plane (Dataplex, Cloud Logging).",
+    prompt: "Act as a Principal Security & Sovereign Cloud Architect. Design a production-grade Data Residency & Sovereign Cloud Map (To-Be State, Infra Provisioning Phase) blueprint. Include: Top Title Banner & GDPR/EU AI Act/HIPAA Badges; Left Ingress with End Users (Patient data source), SRE/Legal/CISO Personas, Cloud Load Balancing (Global/Regional) with Verified access control; Center Core Sovereign Cloud container with GCP Region EU-West4 (The Netherlands) VPC-SC perimeter, Restricted GCP APIs, Vertex AI Local Inference & Grounding, Cloud Storage Buckets, Cloud SQL GxP keys, Vertex AI Vector Search, Internal Compliant Data Flow; Center Channel with Cross-Border Data Transfer Path, GCP VPC-SC Bridge, and red alert perimeter tripwires; GCP Region US-Central1 (Iowa) VPC-SC perimeter with symmetric restricted services; Right Top Observability & Compliance Reporting container with Looker Dashboards (Regional Data Compliance Score 99.8%, Cross-Border Transfer Audit Logs, VPC SC Perimeter Alerts, Vertex AI Grounding Lineage), Central logging with BigQuery historical data from prerequisite context; Right Bottom Management Plane (Async Flows) with Cloud Infra Lead, Internal metric collectors, Unified Trace Correlation, Vertex AI Monitoring, Dataplex, Cloud Logging, and Async Flow / Audit Flow connectors; Bottom Left Legend -> Footer Note."
   },
   {
     id: "federated_iam_sso",
@@ -316,7 +316,7 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "AI TRiSM Security Guardrail Pipeline",
     category: "Cloud Infrastructure & Networking",
     whenToUse: "AI TRiSM (Trust, Risk & Security Management) Guardrail Pipeline for LLM prompt injection defense, PII masking, toxic content filtration, model watermarking, and continuous compliance audit.",
-    prompt: "Act as an AI Security & TRiSM Architect. Design a production-grade AI TRiSM Security Guardrail Pipeline (To-Be State) blueprint. Include: Ingress Gateway with User / Client Request -> AI TRiSM Pre-Inference Inspection (Prompt Injection Defense, PII Tokenization & Masking, Jailbreak Detection) -> Model Inference Tier with Gemini Pro / Gemini 2.5 Pro 3.5 -> Post-Inference Evaluation (Hallucination Checker, Toxicity Scoring, Policy & Legal Filter, Cryptographic Model Watermarking) -> Actionable Egress & Centralized Audit Trail Log."
+    prompt: "Act as an AI Security & TRiSM Architect. Design a production-grade AI TRiSM Security Guardrail Pipeline (To-Be State) blueprint. Include: Ingress Gateway with User / Client Request -> AI TRiSM Pre-Inference Inspection (Prompt Injection Defense, PII Tokenization & Masking, Jailbreak Detection) -> Model Inference Tier with Gemini 3.1 Pro / Gemini 3.8 Flash -> Post-Inference Evaluation (Hallucination Checker, Toxicity Scoring, Policy & Legal Filter, Cryptographic Model Watermarking) -> Actionable Egress & Centralized Audit Trail Log."
   },
   {
     id: "tech_micro_frontends",
@@ -337,14 +337,14 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "Agentic Multi-Modal Ingestion Flow",
     category: "Data & Lakehouse Architecture",
     whenToUse: "Google Cloud End-to-End Architecture: Agentic Multi-Modal Ingestion Flow powered by Gemini Platform and Enterprise Client Applications: Custom Clients, multi-modal capture (Text/Docs, Voice/Audio, Image/Video, Geo-Spatial), GCP Services (GCS, STT API, Vision/Video Intelligence, Maps APIs), Gemini-Powered Agentic Orchestrator (Orchestration Agent, Embedding API, Vector Search, Semantic Search, Reasoning Engine), and Knowledge Representation & Actions (BigQuery Knowledge Base, Knowledge Graph, Automated Insights, Alerting Cloud Functions, Visualizations).",
-    prompt: "Act as a Principal Multimodal AI & Data Solutions Architect. Design a production-grade Google Cloud End-to-End Architecture: Agentic Multi-Modal Ingestion Flow blueprint. Include: Left Platform Governance & Monitoring rotated strip; Column 1 Multi-Modal Input Sources & User Applications (User Application Custom Client, Enterprise Mobile App, 4 channels: Text/Docs, Voice/Audio, Image/Video, Geo-Spatial); Column 2 Capture & Multi-Modal Processing GCP Services (Cloud Storage GCS, Speech-to-Text API, Vertex AI Vision API & Video Intelligence API, Google Maps Platform APIs); Column 3 Gemini-Powered Agentic Orchestrator Vertex AI (Orchestration Agent powered by Gemini 2.5 Flash, Agentic Planning & Reasoning, Function Calling Tooling, Vertex AI Embedding API, Vertex AI Vector Search, Multimodal Semantic Search, Multimodal Gemini Reasoning Engine, agent context feedback); Column 4 Knowledge Representation & Actions (BigQuery Knowledge Base, Knowledge Graph Storage, Automated Insights & Reports, Alerting & Notifications Cloud Functions, Map Annotations & Visualizations); Bottom Platform Governance & Monitoring (IAM, Vertex AI Model Monitoring, Cloud Logging)."
+    prompt: "Act as a Principal Multimodal AI & Data Solutions Architect. Design a production-grade Google Cloud End-to-End Architecture: Agentic Multi-Modal Ingestion Flow blueprint. Include: Left Platform Governance & Monitoring rotated strip; Column 1 Multi-Modal Input Sources & User Applications (User Application Custom Client, Enterprise Mobile App, 4 channels: Text/Docs, Voice/Audio, Image/Video, Geo-Spatial); Column 2 Capture & Multi-Modal Processing GCP Services (Cloud Storage GCS, Speech-to-Text API, Vertex AI Vision API & Video Intelligence API, Google Maps Platform APIs); Column 3 Gemini-Powered Agentic Orchestrator Vertex AI (Orchestration Agent powered by Gemini 3.8 Flash, Agentic Planning & Reasoning, Function Calling Tooling, Vertex AI Embedding API, Vertex AI Vector Search, Multimodal Semantic Search, Multimodal Gemini Reasoning Engine, agent context feedback); Column 4 Knowledge Representation & Actions (BigQuery Knowledge Base, Knowledge Graph Storage, Automated Insights & Reports, Alerting & Notifications Cloud Functions, Map Annotations & Visualizations); Bottom Platform Governance & Monitoring (IAM, Vertex AI Model Monitoring, Cloud Logging)."
   },
   {
     id: "tech_genomics_clinical",
     name: "Pharma-Specific Genomics & Drug Discovery Pipeline with Agentic AI",
     category: "Industry Specialized Solutions",
     whenToUse: "Industry-Specific Google Native Pharma Genomics & Drug Discovery Pipeline featuring AlphaFold Pro Differentiable Protein Design, GKE Spot & TPU Clusters, Gemini Drug-Discovery Specialized Models, and transitive PSC connectivity.",
-    prompt: "Act as a Lead BioInformatics & AI Pharma Architect. Design a production-grade Pharma-Specific Genomics & Drug Discovery Pipeline blueprint. Include: On-Prem Sequencers & FASTQ -> Gemini Data Prep -> AlphaFold Pro Differentiable Protein Design -> GKE TPU Cluster & CMEK Lakehouse -> Gemini Drug-Discovery Models -> PSC Transitive Routing -> Google Cloud Managed Services (BigQuery, Vertex AI, Genomics AI, Looker Studio)."
+    prompt: "Act as a Lead BioInformatics & AI Pharma Architect. Design a production-grade Pharma-Specific Genomics & Drug Discovery Pipeline blueprint. Include: On-Prem Sequencers & FASTQ -> Gemini Data Prep -> AlphaFold Pro Differentiable Protein Design -> GKE TPU Cluster & CMEK Lakehouse -> Gemini Drug-Discovery Models -> PSC Transitive Routing -> Google Cloud Managed Services (BigQuery, Vertex AI, Genomics AI, Looker)."
   },
   {
     id: "tech_supply_chain",
@@ -372,84 +372,84 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     name: "Google Cloud Discovery & Assessment: Legacy Silos to Modern Migration Waves (P1-APP-L-01)",
     category: "Migration & Modernization",
     whenToUse: "Visualizes on-prem legacy silos (Mainframe, Oracle RAC, SAP ECC, Shadow DBs), spaghetti integration matrix, StratoZone Discovery Appliance, Sensitive Data Protection (DLP), and 4-wave cloud migration roadmap.",
-    prompt: "Act as a Principal Google Cloud Migration & Discovery Architect. Design a production-grade Discovery & Assessment blueprint featuring on-prem legacy silos, spaghetti integration matrix, StratoZone Discovery Appliance, Migration Center, DLP scanning, and 4-wave modernization plan powered by Gemini 2.5 Flash."
+    prompt: "Act as a Principal Google Cloud Migration & Discovery Architect. Design a production-grade Discovery & Assessment blueprint featuring on-prem legacy silos, spaghetti integration matrix, StratoZone Discovery Appliance, Migration Center, DLP scanning, and 4-wave modernization plan powered by Gemini 3.8 Flash."
   },
   {
     id: "gcp_landing_zone_vpc",
     name: "Google Cloud Infrastructure: Landing Zone & Shared VPC Topology (P4-SEC-P-02)",
     category: "Cloud Infrastructure & Networking",
     whenToUse: "Physical zero-trust network fabric with 100G Dedicated Interconnect, Cloud Router BGP, Hub-and-Spoke Shared VPC, PSC Hub 10.100.0.0/24, GKE Autopilot, Serverless Direct VPC, PSA, VPC-SC perimeter, and Cloud Asset Inventory.",
-    prompt: "Act as a Principal Google Cloud Network & Security Architect. Design a production-grade GCP Landing Zone & Hub-and-Spoke Shared VPC Topology blueprint featuring 100G Interconnect, Cloud Router BGP, PSC Hub, GKE Autopilot, VPC-SC perimeter, and Cloud Asset Inventory powered by Gemini 2.5 Flash."
+    prompt: "Act as a Principal Google Cloud Network & Security Architect. Design a production-grade GCP Landing Zone & Hub-and-Spoke Shared VPC Topology blueprint featuring 100G Interconnect, Cloud Router BGP, PSC Hub, GKE Autopilot, VPC-SC perimeter, and Cloud Asset Inventory powered by Gemini 3.8 Flash."
   },
   {
     id: "enterprise_agent_runtime",
     name: "Enterprise Agent Runtime Platform (P4-AI-P-03)",
     category: "AI & Cognitive Systems",
     whenToUse: "Physical sandboxed compute runtime on GKE Autopilot with Agent Gateway, MCP tool worker pods, Model Armor real-time prompt interceptor, and Vertex AI TPU v5e serving.",
-    prompt: "Act as a Principal Google Cloud & Gemini AI Systems Architect. Design a production-grade Enterprise Agent Runtime Platform blueprint featuring GKE Autopilot sandboxed compute, Agent Gateway, MCP Tool Worker Pods, Model Armor Interceptor, and Vertex AI TPU v5e serving powered by Gemini 2.5 Flash."
+    prompt: "Act as a Principal Google Cloud & Gemini AI Systems Architect. Design a production-grade Enterprise Agent Runtime Platform blueprint featuring GKE Autopilot sandboxed compute, Agent Gateway, MCP Tool Worker Pods, Model Armor Interceptor, and Vertex AI TPU v5e serving powered by Gemini 3.8 Flash."
   },
   {
     id: "ai_agent_approval_workflow",
     name: "AI Agent Approval Workflow & Human-in-the-Loop Governance (P4-GOV-L-05)",
     category: "Security, Governance & Risk",
     whenToUse: "Multi-stage AI agent review, automated red-teaming, Legal/AppSec human approval gates, Binary Authorization KMS attestation, and signed production serving.",
-    prompt: "Act as a Principal AI Governance & SecOps Architect. Design a production-grade AI Agent Approval Workflow & Governance Gatekeeper blueprint featuring developer IDE agent submission, automated red-teaming, Legal/AppSec approvals, Binary Authorization KMS attestation, and signed GKE serving powered by Gemini 2.5 Flash."
+    prompt: "Act as a Principal AI Governance & SecOps Architect. Design a production-grade AI Agent Approval Workflow & Governance Gatekeeper blueprint featuring developer IDE agent submission, automated red-teaming, Legal/AppSec approvals, Binary Authorization KMS attestation, and signed GKE serving powered by Gemini 3.8 Flash."
   },
   {
     id: "incident_triage_swimlane",
     name: "Incident Triage & Escalation Swimlane (P5-GOV-L-04)",
     category: "Security, Governance & Risk",
     whenToUse: "Multi-tier SRE incident triage swimlane: L1 Automated Alerting & Gemini Cloud Assist RCA, L2 Auto-Remediation Runbooks, and L3 Incident Commander War Room bridge.",
-    prompt: "Act as a Principal Google Cloud SRE & Incident Response Architect. Design a production-grade 3-tier SRE Incident Triage Swimlane blueprint featuring L1 Alerting & Gemini Assist RCA, L2 Auto-Remediation Runbooks, and L3 Incident Commander War Room bridge powered by Gemini 2.5 Flash."
+    prompt: "Act as a Principal Google Cloud SRE & Incident Response Architect. Design a production-grade 3-tier SRE Incident Triage Swimlane blueprint featuring L1 Alerting & Gemini Assist RCA, L2 Auto-Remediation Runbooks, and L3 Incident Commander War Room bridge powered by Gemini 3.8 Flash."
   },
   {
     id: "ecommerce_retail",
     name: "OmniChannel Intelligent E-Commerce Platform (IND-RETAIL-04)",
     category: "Industry Specialized Solutions",
     whenToUse: "Enterprise retail platform featuring Vertex AI Search for Retail, AlloyDB pgvector product catalog, Cloud Spanner multi-region cart, and BigQuery Lakehouse.",
-    prompt: "Act as a Principal Google Cloud Retail Architect. Design a production-grade OmniChannel Intelligent E-Commerce Platform blueprint featuring Vertex AI Search for Retail, AlloyDB pgvector Discovery, Cloud Spanner Global Cart, and BigQuery Lakehouse powered by Gemini 2.5 Flash."
+    prompt: "Act as a Principal Google Cloud Retail Architect. Design a production-grade OmniChannel Intelligent E-Commerce Platform blueprint featuring Vertex AI Search for Retail, AlloyDB pgvector Discovery, Cloud Spanner Global Cart, and BigQuery Lakehouse powered by Gemini 3.8 Flash."
   },
   {
     id: "hr_talent_ai",
     name: "WorkforceAI HR Talent & People Intelligence (IND-HR-06)",
     category: "Industry Specialized Solutions",
-    whenToUse: "Enterprise human capital AI platform featuring Document AI resume parsing, AlloyDB pgvector skills graph, Gemini 2.5 Flash candidate matching, and bias-free audits.",
-    prompt: "Act as a Principal Google Cloud AI Architect for HR & People Systems. Design a production-grade WorkforceAI HR Talent & People Intelligence blueprint featuring Document AI resume parser, AlloyDB pgvector skills graph, Gemini 2.5 Flash candidate matching, and Looker Recruiter Cockpit."
+    whenToUse: "Enterprise human capital AI platform featuring Document AI resume parsing, AlloyDB pgvector skills graph, Gemini 3.8 Flash candidate matching, and bias-free audits.",
+    prompt: "Act as a Principal Google Cloud AI Architect for HR & People Systems. Design a production-grade WorkforceAI HR Talent & People Intelligence blueprint featuring Document AI resume parser, AlloyDB pgvector skills graph, Gemini 3.8 Flash candidate matching, and Looker Recruiter Cockpit."
   },
   {
     id: "smart_factory_iot",
     name: "Smart Factory Industry 4.0 IoT & Predictive Maintenance (IND-MFG-05)",
     category: "Industry Specialized Solutions",
     whenToUse: "Industrial edge-to-cloud platform with Google Distributed Cloud (GDC) Edge gateway, Cloud Dataflow streaming, Bigtable time-series store, Vertex AI anomaly detection, and Looker OEE cockpit.",
-    prompt: "Act as a Principal Google Cloud Industrial IoT Architect. Design a production-grade Smart Factory Industry 4.0 IoT & Predictive Maintenance blueprint featuring GDC Edge Gateway, Cloud Dataflow streaming, Bigtable time-series, Vertex AI Anomaly Fuser, and Looker OEE Cockpit powered by Gemini 2.5 Flash."
+    prompt: "Act as a Principal Google Cloud Industrial IoT Architect. Design a production-grade Smart Factory Industry 4.0 IoT & Predictive Maintenance blueprint featuring GDC Edge Gateway, Cloud Dataflow streaming, Bigtable time-series, Vertex AI Anomaly Fuser, and Looker OEE Cockpit powered by Gemini 3.8 Flash."
   },
   {
     id: "c4_component_lld",
     name: "C4 Level 3 Component Diagram & Microservice LLD (ARCH-C4-03)",
     category: "Software & Application Architecture",
     whenToUse: "Detailed container internal architecture: REST controllers, JWT auth interceptors, SAGA domain services, repositories, Redis cache, outbox poller, and external cloud infrastructure.",
-    prompt: "Act as a Principal Software & Microservice Architect. Design a production-grade C4 Level 3 Component Diagram & Microservice Low-Level Design (LLD) blueprint featuring Ingress Controllers, Auth Interceptors, Domain Services, Repositories, Redis Cache, and Cloud DBs powered by Gemini 2.5 Flash."
+    prompt: "Act as a Principal Software & Microservice Architect. Design a production-grade C4 Level 3 Component Diagram & Microservice Low-Level Design (LLD) blueprint featuring Ingress Controllers, Auth Interceptors, Domain Services, Repositories, Redis Cache, and Cloud DBs powered by Gemini 3.8 Flash."
   },
   {
     id: "bpmn_process_workflow",
     name: "BPMN 2.0 Business Process & Autonomous Workflow (ARCH-BPMN-01)",
     category: "Business Strategy & Alignment",
-    whenToUse: "BPMN 2.0 standard process map featuring customer start/end events, user tasks, Gemini 2.5 Flash service tasks, XOR branching gateways, and ERP backend posting.",
-    prompt: "Act as a Principal Business Process & BPMN 2.0 Enterprise Architect. Design a production-grade BPMN 2.0 Business Process & Autonomous Workflow blueprint featuring Start Events, User Tasks, Gemini 2.5 Flash Service Tasks, XOR Gateways, and ERP systems."
+    whenToUse: "BPMN 2.0 standard process map featuring customer start/end events, user tasks, Gemini 3.8 Flash service tasks, XOR branching gateways, and ERP backend posting.",
+    prompt: "Act as a Principal Business Process & BPMN 2.0 Enterprise Architect. Design a production-grade BPMN 2.0 Business Process & Autonomous Workflow blueprint featuring Start Events, User Tasks, Gemini 3.8 Flash Service Tasks, XOR Gateways, and ERP systems."
   },
   {
     id: "threat_modeling_stride",
     name: "STRIDE Zero-Trust Threat Model & Boundary Map (ARCH-SEC-01)",
     category: "Security, Governance & Risk",
     whenToUse: "STRIDE security analysis mapping threat vectors (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege) to Google Cloud defenses (Cloud Armor, Model Armor, IAP, GKE gVisor, Workload Identity, VPC-SC, Cloud KMS HSM).",
-    prompt: "Act as a Principal Google Cloud Chief Information Security Officer (CISO) & Threat Modeler. Design a production-grade STRIDE Threat Model & Attack Vector Boundary Map blueprint featuring STRIDE attack vectors and Google Cloud defenses powered by Gemini 2.5 Flash."
+    prompt: "Act as a Principal Google Cloud Chief Information Security Officer (CISO) & Threat Modeler. Design a production-grade STRIDE Threat Model & Attack Vector Boundary Map blueprint featuring STRIDE attack vectors and Google Cloud defenses powered by Gemini 3.8 Flash."
   },
   {
     id: "data_lineage_provenance",
     name: "Column-Level Data Lineage & Provenance Graph (ARCH-DAT-01)",
     category: "Data Pipelines & Governance",
-    whenToUse: "End-to-end data lineage tracing from raw bronze tables through Dataform / dbt silver models to curated gold fact/dimension marts, Looker BI metrics, and Gemini 2.5 Flash RAG grounding.",
-    prompt: "Act as a Principal Google Cloud Data Governance & Lineage Architect. Design a production-grade Column-Level Data Lineage & Provenance Graph blueprint featuring Raw Bronze Tables, Dataform Silver Cleaning, Curated Gold Marts, and Looker Metrics powered by Gemini 2.5 Flash."
+    whenToUse: "End-to-end data lineage tracing from raw bronze tables through Dataform / dbt silver models to curated gold fact/dimension marts, Looker BI metrics, and Gemini 3.8 Flash RAG grounding.",
+    prompt: "Act as a Principal Google Cloud Data Governance & Lineage Architect. Design a production-grade Column-Level Data Lineage & Provenance Graph blueprint featuring Raw Bronze Tables, Dataform Silver Cleaning, Curated Gold Marts, and Looker Metrics powered by Gemini 3.8 Flash."
   },
   {
     id: "enterprise_api_management",
@@ -504,8 +504,8 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     id: "graphrag_knowledge_graph",
     name: "GraphRAG & Enterprise Knowledge Graph Architecture (NEW-AI-08)",
     category: "AI & Cognitive Systems",
-    whenToUse: "Hybrid GraphRAG architecture combining Cloud Spanner Graph ISO GQL traversals with Vertex AI Vector Search and Gemini 2.5 grounded reasoning.",
-    prompt: "Act as a Principal AI & Knowledge Graph Architect. Design a production-grade GraphRAG & Enterprise Knowledge Graph Architecture blueprint featuring Spanner Graph, Vertex Vector Search, and Gemini 2.5 Grounded Synthesis."
+    whenToUse: "Hybrid GraphRAG architecture combining Cloud Spanner Graph ISO GQL traversals with Vertex AI Vector Search and Gemini 3.1 Pro grounded reasoning.",
+    prompt: "Act as a Principal AI & Knowledge Graph Architect. Design a production-grade GraphRAG & Enterprise Knowledge Graph Architecture blueprint featuring Spanner Graph, Vertex Vector Search, and Gemini 3.1 Pro Grounded Synthesis."
   },
   {
     id: "saas_multi_tenant",
@@ -518,15 +518,15 @@ export const TECHNICAL_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     id: "intelligent_document_processing",
     name: "Intelligent Document Processing (IDP) Platform (NEW-AI-10)",
     category: "AI & Cognitive Systems",
-    whenToUse: "Automated document processing with Document AI extraction, Gemini 2.5 multimodal validation, confidence-gated HITL review cockpit, and BigQuery export.",
-    prompt: "Act as a Principal AI & Automation Architect. Design a production-grade Intelligent Document Processing (IDP) Platform blueprint featuring Document AI, Gemini 2.5 Flash Validation, Confidence-Gated HITL Cockpit, and BigQuery Lakehouse."
+    whenToUse: "Automated document processing with Document AI extraction, Gemini 3.1 Pro multimodal validation, confidence-gated HITL review cockpit, and BigQuery export.",
+    prompt: "Act as a Principal AI & Automation Architect. Design a production-grade Intelligent Document Processing (IDP) Platform blueprint featuring Document AI, Gemini 3.8 Flash Validation, Confidence-Gated HITL Cockpit, and BigQuery Lakehouse."
   },
   {
     id: "healthcare_fhir_hl7",
     name: "Google Cloud Healthcare & Life Sciences FHIR / HL7 Pipeline (IND-HEALTH-01)",
     category: "Industry Specialized Solutions",
-    whenToUse: "Enterprise healthcare interoperability platform featuring Cloud Healthcare API (HL7v2/FHIR R4/DICOM), DLP PHI de-identification, OMOP BigQuery lakehouse, and Gemini 2.5 Flash clinical insights.",
-    prompt: "Act as a Principal Google Cloud Healthcare & Life Sciences Architect. Design a production-grade Healthcare FHIR R4 & HL7 Pipeline blueprint featuring Cloud Healthcare API, DLP PHI De-Identification, BigQuery Health Marts, and Gemini 2.5 Flash Clinical Reasoner."
+    whenToUse: "Enterprise healthcare interoperability platform featuring Cloud Healthcare API (HL7v2/FHIR R4/DICOM), DLP PHI de-identification, OMOP BigQuery lakehouse, and Gemini 3.8 Flash clinical insights.",
+    prompt: "Act as a Principal Google Cloud Healthcare & Life Sciences Architect. Design a production-grade Healthcare FHIR R4 & HL7 Pipeline blueprint featuring Cloud Healthcare API, DLP PHI De-Identification, BigQuery Health Marts, and Gemini 3.8 Flash Clinical Reasoner."
   }
 ];
 

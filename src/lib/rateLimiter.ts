@@ -6,7 +6,7 @@ interface RateLimitRecord {
 
 const rateLimitStore = new Map<string, RateLimitRecord>();
 
-export interface RateLimitResult {
+interface RateLimitResult {
   allowed: boolean;
   remainingAttempts: number;
   retryAfterSec: number;

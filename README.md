@@ -99,6 +99,16 @@ Validate any Draw.io mxGraph XML file against geometric bounds, container rules,
 npm run validate path/to/diagram.xml
 ```
 
+### Parallel Prompt-to-Diagram Studio (`/prompt-to-diagram`), Official AWS & GCP Vector SVGs, 6-Gate Deterministic 2D AABB + Union-Find Auditor & Cross-Model Pro Judge
+- **5-Step Parallel Execution Pipeline (`src/app/api/prompt-to-diagram/route.ts` & `src/app/prompt-to-diagram/page.tsx`)**:
+  - **Step 1 (`step1_spec`)**: Generates a spelling-verified 4-Tier Canonical Architecture Spec via `gemini-3.8-flash` (with deterministic AWS-to-GCP AI/ML Migration seed topology when requested).
+  - **Branch A (`step2_poster`, Parallel)**: Generates the 16:9 visual reference poster via Nano Banana (`gemini-2.5-flash-image`).
+  - **Branch B (`step3_compile_and_audit` $\rightarrow$ `step4_judge` $\rightarrow$ `step5_autofix`, Parallel)**: Compiles the 100% vector-editable Draw.io `mxGraphModel` XML with verbatim official AWS (`src/lib/awsOfficialSvgAssets.ts`, 36 `aws-icons@3.2.0` SVGs) and Google Cloud (`src/lib/gcpOfficialSvgAssets.ts`, `GOOGLE_CLOUD_OFFICIAL_SVG`) vector icons (`Title-First Icon Purity` via `resolveVendorIconIdForNode`), runs the `<5ms` 6-Gate Deterministic Mathematical Auditor (`auditVisionPosterDrawioXml`: 2D AABB Zero Overlap, Adaptive Swimlane Containment, Union-Find Connected Components, Zero Stub/Prompt-Echo, `100%` Official Vendor Icon Parity, and `mxGraphModel` Vector Parity), evaluates via the orthogonal Cross-Model Pro Judge (`gemini-3.1-pro-preview` / `gemini-2.5-pro`), and executes closed-loop `Auto-Fix` (`fixVisionPosterDiagramWithJudgeFeedback`) with whole-word protocol edge label compaction (`compactArchitecturalEdgeLabel`).
+  - **Live Progress Telemetry & Always-Visible H+V Scrollbars**: Displays real-time step status (`queued`/`running`/`completed`/`failed`), `% Complete`, `Elapsed`, `Est. Remaining`, and `.pc-always-scrollbars` (`overflow-x: scroll; overflow-y: scroll;`) across the prompt input, Nano Banana container, and Draw.io vector canvas:
+```bash
+node scripts/verify_aws_gcp_aiml_parallel_scroll_e2e.mjs
+```
+
 ---
 
 ## 📚 Architecture Documentation

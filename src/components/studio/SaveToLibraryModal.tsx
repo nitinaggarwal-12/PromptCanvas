@@ -21,7 +21,7 @@ import {
 import { ArchitectureAst } from '@/lib/ast/architectureAst';
 import { StudioVersionSnapshot, StudioChatMessage } from '@/app/studio/page';
 
-export interface SaveToLibraryModalProps {
+interface SaveToLibraryModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSaveSuccess: (savedProject: { id: string; name: string; domain: string }) => void;

@@ -40,28 +40,6 @@ interface DocGenHistoryModalProps {
   isLight: boolean;
 }
 
-export function clearAllHistoricalProjects(): void {
-  if (typeof window === 'undefined') return;
-  try {
-    const keysToRemove: string[] = [];
-    for (let i = 0; i < window.localStorage.length; i++) {
-      const key = window.localStorage.key(i);
-      if (
-        key &&
-        (key.startsWith('promptcanvas_docgen_versions_') ||
-          key.startsWith('promptcanvas_docgen_chat_') ||
-          key.startsWith('promptcanvas_docgen_project_'))
-      ) {
-        keysToRemove.push(key);
-      }
-    }
-    keysToRemove.forEach((k) => window.localStorage.removeItem(k));
-    window.localStorage.setItem('promptcanvas_history_cleared', 'true');
-  } catch (err) {
-    console.warn('Failed to clear historical projects:', err);
-  }
-}
-
 export function loadAllHistoricalProjects(): HistoricalProjectItem[] {
   if (typeof window === 'undefined') return [];
 
@@ -118,8 +96,8 @@ export function loadAllHistoricalProjects(): HistoricalProjectItem[] {
           scopeSummary: 'Autonomous telemetry, FAA Part 135 UTM airspace routing, and Spanner state mesh.',
         },
         {
-          id: 'proj_voltgrid_774',
-          title: 'VoltGrid Smart EV & Battery Storage (BESS / V2G)',
+          id: 'proj_smartgrid_774',
+          title: 'SmartGrid Autonomous EV & Battery Storage (BESS / V2G)',
           archetypeId: 'tdd',
           domainId: 'energy',
           docVersion: 'v1.0',

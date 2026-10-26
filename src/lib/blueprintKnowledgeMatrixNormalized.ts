@@ -35,11 +35,11 @@ const GLOBAL_TEXT_REPLACEMENTS: Array<[RegExp, string]> = [
   [/Vertex AI AlphaFold/g, 'AlphaFold workload on Google Cloud'],
   [/AlphaFold Pro/g, 'AlphaFold workload'],
   [/Vertex AI Predictive Maintenance/g, 'Vertex AI predictive maintenance model'],
-  [/Gemini 3\.7 Flash \/ Pro/g, 'Gemini (approved model)'],
-  [/Gemini 3\.7 Pro Vision/g, 'Gemini multimodal model'],
-  [/Gemini 3\.7 Pro/g, 'Gemini (approved model)'],
-  [/Gemini 3\.7 Flash/g, 'Gemini (approved model)'],
-  [/Gemini 3\.7/g, 'Gemini'],
+  [/Gemini (?:2\.5|3\.7) Flash \/ Pro/g, 'Gemini (approved model)'],
+  [/Gemini (?:2\.5|3\.7) Pro Vision/g, 'Gemini multimodal model'],
+  [/Gemini (?:2\.5|3\.7) Pro(?:\s+3\.5)?/g, 'Gemini (approved model)'],
+  [/Gemini (?:2\.5|3\.7) Flash/g, 'Gemini (approved model)'],
+  [/Gemini (?:2\.5|3\.7)/g, 'Gemini'],
 ];
 
 function normalizeText(value: string): string {

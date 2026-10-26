@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   if (!guard.allowed) return guard.errorResponse!;
 
   try {
-    const user = await getAuthenticatedUser();
+    const user = await getAuthenticatedUser().catch(() => null);
     const body = await req.json();
     const { imageBase64, mimeType, projectName, useCaseName, userApiKey } = body;
 
@@ -32,9 +32,16 @@ export async function POST(req: NextRequest) {
     });
 
     let persistedId: string | undefined;
+    const isGenericClipName = /^(clipboard_diagram|screenshot|pasted_image|image_|decompiled architecture)/i.test(
+      resolvedName.trim()
+    );
+    const persistedTitle =
+      isGenericClipName && result.detectedTitle
+        ? result.detectedTitle
+        : result.detectedTitle || resolvedName;
     try {
       const saved = await createDiagram(
-        resolvedName,
+        persistedTitle,
         result.xml,
         `Vision Decompiled: ${result.summary}`,
         resolvedUseCase,

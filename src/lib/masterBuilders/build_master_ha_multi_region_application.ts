@@ -119,5 +119,3 @@ export function buildMasterHaMultiRegionAppXml(): string {
   </diagram>
 </mxfile>`;
 }
-
-export const MASTER_HA_MULTI_REGION_APP_XML = buildMasterHaMultiRegionAppXml();

@@ -32,7 +32,7 @@ export const TERRAFORM_PINS = {
   postgresVersion: 'POSTGRES_16',
 } as const;
 
-export type TerraformGroundingSource = 'canvas-xml' | 'baseline-template';
+type TerraformGroundingSource = 'canvas-xml' | 'baseline-template';
 
 export interface TerraformFileBundle {
   mainTf: string;

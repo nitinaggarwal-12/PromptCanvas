@@ -15,7 +15,7 @@ export default function PrivacyPolicyPage() {
       <LegalPageHeader />
 
       {/* Main Content */}
-      <main className="w-full max-w-7xl mx-auto px-6 md:px-12 py-8">
+      <main className="w-full max-w-none px-6 md:px-10 py-8">
         <div className={`p-8 md:p-10 rounded-2xl border shadow-sm ${
           isLight ? 'bg-white border-slate-200' : 'bg-slate-900/60 border-slate-800'
         }`}>

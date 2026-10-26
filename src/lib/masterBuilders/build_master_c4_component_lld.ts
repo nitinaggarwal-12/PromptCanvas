@@ -1,16 +1,12 @@
 export function buildC4ComponentLldXml(): string {
-  return buildOldC4ComponentLldXml();
-}
-
-export function buildOldC4ComponentLldXml(): string {
   return `<mxfile host="embed.diagrams.net">
-  <diagram id="old_c4_component_lld" name="C4 Component LLD">
+  <diagram id="master_c4_component_lld" name="C4 Component LLD">
     <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
         <!-- ==================== HEADER BANNER ==================== -->
-        <mxCell id="top_logo" value="&lt;span style=&quot;font-size:24px;&quot;&gt;📦&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="top_logo" value="&lt;span style=&quot;font-size:14px;font-weight:800;color:#1D4ED8;&quot;&gt;C4&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="25" y="10" width="35" height="35" as="geometry"/>
         </mxCell>
         <mxCell id="main_title" value="&lt;b style=&quot;font-size:17px;color:#0F172A;letter-spacing:-0.2px;&quot;&gt;C4 MODEL LEVEL 3.5: GKE MICROSERVICES LLD &amp;amp; GEMINI AI DEEP DIVE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
@@ -21,7 +17,7 @@ export function buildOldC4ComponentLldXml(): string {
         </mxCell>
         
         <!-- Gemini 3.8 Flash Badge (Dark HUD Glassmorphic Pill) -->
-        <mxCell id="top_gemini_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#38BDF8;&quot;&gt;✨ Gemini 3.8 Flash&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#94A3B8;font-weight:600;&quot;&gt;Software Arch Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+        <mxCell id="top_gemini_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#38BDF8;&quot;&gt;Gemini 3.8 Flash&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#94A3B8;font-weight:600;&quot;&gt;Software Arch Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="1400" y="8" width="175" height="42" as="geometry"/>
         </mxCell>
 
@@ -41,7 +37,7 @@ export function buildOldC4ComponentLldXml(): string {
         <mxCell id="col1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFF5F5;strokeColor=#F87171;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="35" y="90" width="280" height="660" as="geometry"/>
         </mxCell>
-        <mxCell id="col1_title" value="&lt;b style=&quot;font-size:10px;color:#991B1B;&quot;&gt;API INGRESS &amp;amp; SECURITY TIER (Re-Labeled)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="col1_title" value="&lt;b style=&quot;font-size:10px;color:#991B1B;&quot;&gt;API INGRESS &amp;amp; SECURITY TIER&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="45" y="96" width="260" height="18" as="geometry"/>
         </mxCell>
 

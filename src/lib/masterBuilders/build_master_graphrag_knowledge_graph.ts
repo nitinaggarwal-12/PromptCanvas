@@ -64,7 +64,7 @@ export function buildMasterGraphragKnowledgeGraphXml(): string {
 
     // Lane 2: Semantic Extraction & Graph Construction Tier
     lane('extract', 2, 'SEMANTIC EXTRACTION & KNOWLEDGE GRAPH BUILDER', 'LLM-driven entity/relationship extraction & embedding generation', 20, 180, 1540, 150, '#4C1D95', '#FFFFFF'),
-    card('ext_gemini', 'Vertex AI Gemini 2.5 (Entity Extractor)', 'Zero-shot entity (Subject-Predicate-Object) triple extraction', ICON.gemini, 45, 235, 450, 75, '#7C3AED'),
+    card('ext_gemini', 'Vertex AI Gemini 3.1 Pro (Entity Extractor)', 'Zero-shot entity (Subject-Predicate-Object) triple extraction', ICON.gemini, 45, 235, 450, 75, '#7C3AED'),
     card('ext_embed', 'Vertex AI Text Embeddings (768-dim)', 'Dense semantic vector embeddings for chunk & entity nodes', ICON.embed, 525, 235, 450, 75, '#2563EB'),
     card('ext_schema', 'Ontology & Graph Schema Validator', 'Enforces strict enterprise ontology & domain taxonomy', ICON.shield, 1005, 235, 530, 75, '#059669'),
 
@@ -82,7 +82,7 @@ export function buildMasterGraphragKnowledgeGraphXml(): string {
 
     // Lane 5: Grounded Synthesis & Interactive Citation Interface
     lane('synthesis', 5, 'GROUNDED REASONING & INTERACTIVE CITATIONS', 'Hallucination-free generative responses with clickable entity provenance', 20, 690, 1540, 140, '#D97706', '#FFFFFF'),
-    card('syn_gemini', 'Vertex AI Gemini 2.5 Pro Reasoner', 'Synthesizes answer grounded strictly in verified subgraph facts', ICON.gemini, 45, 745, 460, 70, '#7C3AED'),
+    card('syn_gemini', 'Vertex AI Gemini 3.1 Pro Reasoner', 'Synthesizes answer grounded strictly in verified subgraph facts', ICON.gemini, 45, 745, 460, 70, '#7C3AED'),
     card('syn_guard', 'Model Armor & Grounding Gate', 'Validates citation grounding & masks sensitive PII entities', ICON.shield, 545, 745, 450, 70, '#059669'),
     card('syn_ui', 'Enterprise Knowledge Assistant UI', 'Streaming response with interactive knowledge graph visualizer', ICON.copilot, 1035, 745, 500, 70, '#2563EB'),
 
@@ -112,5 +112,3 @@ export function buildMasterGraphragKnowledgeGraphXml(): string {
   </diagram>
 </mxfile>`;
 }
-
-export const MASTER_GRAPHRAG_KNOWLEDGE_GRAPH_XML = buildMasterGraphragKnowledgeGraphXml();

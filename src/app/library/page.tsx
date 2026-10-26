@@ -460,14 +460,14 @@ function ArchitectureLibraryContent() {
         (s || '').replace(/\s*\(v\d+\.\d+(?:\.\d+)?\)\s*$/i, '').toLowerCase().trim();
       const draftIdSet = new Set(autoDraftItems.map((d) => d.id.toUpperCase()));
       const draftNameSet = new Set(autoDraftItems.map((d) => normalizeDiagramTitle(d.name)));
+      const isPurgedLegacyItem = (d: { id?: string; name?: string; latest_prompt?: string }) =>
+        /novacura|omnicommerce|voltgrid|nexusfin|^add\s+\d+\s+more\s+components|clinical\s+ai\s+-|vis-9745|vis-agentic-01|^custom\s+diagram\s+#|^unified\s+cloud\s+architecture\s+#/i.test(
+          `${d.id || ''} ${d.name || ''} ${d.latest_prompt || ''}`
+        );
       const filteredDbList = dbList.filter((d) => {
         if (draftIdSet.has(d.id.toUpperCase())) return false;
         if (draftNameSet.has(normalizeDiagramTitle(d.name))) return false;
-        const isPurgedLegacy =
-          /novacura|^add\s+\d+\s+more\s+components|clinical\s+ai\s+-|vis-9745|vis-agentic-01/i.test(
-            `${d.id || ''} ${d.name || ''} ${d.latest_prompt || ''}`
-          );
-        return !isPurgedLegacy;
+        return !isPurgedLegacyItem(d);
       });
       const existingIds = new Set([...filteredDbList.map(d => d.id.toUpperCase()), ...Array.from(draftIdSet)]);
       const existingNames = new Set([
@@ -475,18 +475,26 @@ function ArchitectureLibraryContent() {
         ...Array.from(draftNameSet),
       ]);
       const uniqueLocalSaved = localSavedItems.filter(
-        l => !existingIds.has(l.id.toUpperCase()) && !existingNames.has(normalizeDiagramTitle(l.name))
+        l =>
+          !existingIds.has(l.id.toUpperCase()) &&
+          !existingNames.has(normalizeDiagramTitle(l.name)) &&
+          !isPurgedLegacyItem(l)
       );
 
       const merged = [
-        ...autoDraftItems,
+        ...autoDraftItems.filter(d => !isPurgedLegacyItem(d)),
         ...uniqueLocalSaved,
         ...filteredDbList,
-        ...visionSavedItems.filter(v => !existingIds.has(v.id.toUpperCase())),
+        ...visionSavedItems.filter(v => !existingIds.has(v.id.toUpperCase()) && !isPurgedLegacyItem(v)),
       ];
+      const deletedVisionOrDraftSet = new Set(
+        [...getDeletedVisionBlueprintIds(), ...(typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('promptcanvas_deleted_draft_ids') || '[]') : [])].map((id: string) =>
+          String(id || '').toUpperCase()
+        )
+      );
       const mergedIds = new Set(merged.map(d => d.id.toUpperCase()));
       for (const c of canonicalFallbackItems) {
-        if (!mergedIds.has(c.id.toUpperCase())) {
+        if (!mergedIds.has(c.id.toUpperCase()) && !deletedVisionOrDraftSet.has(c.id.toUpperCase())) {
           merged.push(c);
           mergedIds.add(c.id.toUpperCase());
         }
@@ -894,21 +902,21 @@ function ArchitectureLibraryContent() {
       return '/templates/canonical_78.png';
     }
     if (idStr.includes('9745') || combined.includes('landing zone')) {
-      return '/templates/canonical_35.png';
+      return '/templates/canonical_38.png';
     }
     if (idStr.includes('AGENTIC') || combined.includes('agentic')) {
-      return '/templates/canonical_39.png';
+      return '/templates/canonical_67.png';
     }
     if (combined.includes('rag')) return '/templates/canonical_38.png';
-    if (combined.includes('lakehouse') || combined.includes('medallion')) return '/templates/canonical_41.png';
+    if (combined.includes('lakehouse') || combined.includes('medallion')) return '/templates/canonical_42.png';
     if (combined.includes('erd') || combined.includes('schema')) return '/templates/canonical_42.png';
-    if (combined.includes('sequence')) return '/templates/canonical_71.png';
-    if (combined.includes('swimlane')) return '/templates/canonical_70.png';
-    if (combined.includes('security') || combined.includes('threat') || combined.includes('zero-trust')) return '/templates/canonical_45.png';
-    if (combined.includes('finops')) return '/templates/canonical_48.png';
+    if (combined.includes('sequence')) return '/templates/canonical_68.png';
+    if (combined.includes('swimlane')) return '/templates/canonical_67.png';
+    if (combined.includes('security') || combined.includes('threat') || combined.includes('zero-trust')) return '/templates/canonical_44.png';
+    if (combined.includes('finops')) return '/templates/canonical_44.png';
 
     // Deterministic hash fallback across active canonical thumbnails so every custom tile gets a rich diagram preview
-    const activeNums = ['00', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '67', '68', '69', '70', '71', '72', '73', '74', '78'];
+    const activeNums = ['00', '38', '42', '44', '67', '68', '78'];
     let hash = 0;
     const seed = `${idStr}:${nameStr}`;
     for (let i = 0; i < seed.length; i++) {
@@ -1154,28 +1162,13 @@ function ArchitectureLibraryContent() {
               <span>{isSelectMode ? 'Exit Selection' : 'Select Canvases'}</span>
             </button>
 
-            <ThemeToggleBtn id="library-theme-toggle-btn" />
-
-            <Link
-              href="/canonical"
-              className={`px-3 py-1.5 border font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
-                isLight
-                  ? 'bg-sky-50 hover:bg-sky-100 text-sky-800 border-sky-200'
-                  : 'bg-slate-800 hover:bg-slate-700 text-sky-300 border-slate-700'
-              }`}
-              title={`Open Full-Width ${CANONICAL_TEMPLATES.length} Blueprint Catalog View`}
-            >
-              <LayoutGrid className={`w-3.5 h-3.5 ${isLight ? 'text-sky-600' : 'text-sky-400'}`} />
-              <span>Blueprint Catalog ({CANONICAL_TEMPLATES.length})</span>
-            </Link>
-
             <Link
               href="/dashboard"
               className="px-3.5 py-1.5 bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-black text-xs rounded-xl shadow-md transition-all hover:scale-[1.02] flex items-center gap-1.5 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
-              title="Open in Home Dashboard"
+              title="Open Home Dashboard"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Open in Dashboard</span>
+              <span>Home Dashboard</span>
             </Link>
           </div>
         </AppHeader>
@@ -1416,7 +1409,7 @@ function ArchitectureLibraryContent() {
                   <span className="text-sm font-bold">Loading full-screen architecture canvas...</span>
                 </div>
               ) : activeVersion ? (
-                <div className="w-full h-full max-w-[1440px] mx-auto bg-white rounded-2xl overflow-hidden shadow-xl border border-slate-200">
+                <div className="w-full h-full max-w-none mx-auto bg-white rounded-2xl overflow-hidden shadow-xl border border-slate-200">
                   <DiagramViewer
                     xml={activeVersion.xml_content}
                     diagramId={activeModalCanvas.id}
@@ -1539,7 +1532,7 @@ function ArchitectureLibraryContent() {
                 { id: 'studio', label: '💎 My Created & Saved (Studio)', count: studioCounts.studio, color: 'indigo' },
                 { id: 'vision', label: '👁️ Vision Decompiled & Upgraded', count: studioCounts.vision, color: 'teal' },
                 { id: 'studio1', label: '🧭 Guided Matrix & Lab', count: studioCounts.studio1, color: 'emerald' },
-                { id: 'canonical', label: `📚 Official Canonical (${CANONICAL_TEMPLATES.length})`, count: studioCounts.canonical, color: 'sky' }
+                { id: 'canonical', label: '📚 Official Canonical', count: studioCounts.canonical, color: 'sky' }
               ].map((tab) => {
                 const isActive = activeStudioTab === tab.id;
                 return (
@@ -1674,7 +1667,7 @@ function ArchitectureLibraryContent() {
                     <option value="gemini_enterprise">✨ VIS-1787 / VIS-3093 Gemini Enterprise Agent Platform</option>
                     <option value="studio_pro">💎 Architecture Studio (Pro)</option>
                     <option value="studio1_lab">🧪 Prompt Lab (Studio 1)</option>
-                    <option value="canonical_50">📚 Canonical Reference Blueprints (26)</option>
+                    <option value="canonical_50">📚 Canonical Reference Blueprints (7)</option>
                   </select>
 
                   {/* Sort By Dropdown */}
@@ -1962,14 +1955,14 @@ function ArchitectureLibraryContent() {
                           </div>
 
                           {/* Canvas Title */}
-                          <h2 className={`text-base md:text-lg font-bold transition-colors line-clamp-2 mb-2 ${
+                          <h2 className={`text-base md:text-lg font-bold transition-colors line-clamp-2 min-h-[2.75rem] mb-2 ${
                             isLight ? 'text-slate-900 group-hover:text-teal-700' : 'text-white group-hover:text-teal-300'
                           }`}>
                             {diagram.name}
                           </h2>
 
                           {/* Prompt / Description Snippet */}
-                          <p className={`text-xs line-clamp-2 mb-4 italic ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                          <p className={`text-xs line-clamp-2 min-h-[2rem] mb-4 italic ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                             &quot;{diagram.latest_prompt || archMeta?.whenToUse || 'Pristine architectural canvas with continuous version history.'}&quot;
                           </p>
 
@@ -2048,7 +2041,11 @@ function ArchitectureLibraryContent() {
                                 );
                               }}
                               aria-label={`Open ${diagram.name} in Google Slides`}
-                              className="py-2 px-2.5 rounded-xl bg-[#202124] hover:bg-[#303134] text-white border border-white/15 text-xs font-extrabold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                              className={`py-2 px-2.5 rounded-xl border text-xs font-extrabold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs ${
+                                isLight
+                                  ? 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300'
+                                  : 'bg-[#202124] hover:bg-[#303134] text-white border-white/15'
+                              }`}
                               title="Open directly in Google Slides (nitinagga@google.com) via Server-Side Drive Conversion Bridge"
                             >
                               <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#fbbc04] text-[#202124] font-black text-[10px]">
@@ -2281,11 +2278,11 @@ function ArchitectureLibraryContent() {
       </div>
 
       {/* ========================================================================= */}
-      {/* BATCH DELETE CONFIRMATION MODAL */}
+      {/* BATCH DELETE CONFIRMATION DRAWER (RULE 25F) */}
       {/* ========================================================================= */}
       {showBatchDeleteModal && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in"
+          className="fixed inset-0 z-50 bg-slate-900/45 backdrop-blur-xs flex items-stretch justify-end animate-in fade-in"
           onClick={() => setShowBatchDeleteModal(false)}
         >
           <div
@@ -2294,28 +2291,34 @@ function ArchitectureLibraryContent() {
             aria-labelledby="batch-delete-modal-title"
             aria-describedby="batch-delete-modal-desc"
             onClick={(e) => e.stopPropagation()}
-            className="bg-[#0B111E] border border-red-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl text-white"
+            className={`border-l max-w-md w-full h-full p-6 space-y-4 shadow-2xl flex flex-col justify-between ${
+              isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-[#0B111E] border-red-500/40 text-white'
+            }`}
           >
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-2xl bg-red-500/20 text-red-400 border border-red-500/30">
-                <AlertTriangle className="w-6 h-6" aria-hidden="true" />
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-2xl bg-red-500/15 text-red-600 dark:text-red-400 border border-red-500/30">
+                  <AlertTriangle className="w-6 h-6" aria-hidden="true" />
+                </div>
+                <div>
+                  <h2 id="batch-delete-modal-title" className="text-lg font-black">Confirm Batch Deletion</h2>
+                  <p className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-300'}`}>This action permanently deletes diagrams from database</p>
+                </div>
               </div>
-              <div>
-                <h2 id="batch-delete-modal-title" className="text-lg font-black">Confirm Batch Deletion</h2>
-                <p className="text-xs text-slate-300">This action permanently deletes diagrams from database</p>
-              </div>
+
+              <p id="batch-delete-modal-desc" className={`text-xs leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
+                Are you sure you want to permanently delete <strong className={`font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>{selectedDiagramIds.size}</strong> selected architecture canvas{selectedDiagramIds.size > 1 ? 'es' : ''}? All version snapshots and XML models will be removed.
+              </p>
             </div>
 
-            <p id="batch-delete-modal-desc" className="text-xs text-slate-300 leading-relaxed">
-              Are you sure you want to permanently delete <strong className="text-white font-bold">{selectedDiagramIds.size}</strong> selected architecture canvas{selectedDiagramIds.size > 1 ? 'es' : ''}? All version snapshots and XML models will be removed.
-            </p>
-
-            <div className="pt-2 flex items-center justify-end gap-3">
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3">
               <button
                 type="button"
                 onClick={() => setShowBatchDeleteModal(false)}
                 disabled={isBatchDeleting}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 transition cursor-pointer"
+                className={`px-4 py-2 rounded-xl text-xs font-bold border transition cursor-pointer ${
+                  isLight ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300' : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                }`}
               >
                 Cancel
               </button>

@@ -74,10 +74,6 @@ export const componentDescriptionsMapper: DerivationMapperFn = (model, sectionId
   };
 };
 
-function topCompsLength(arr: string[]): number {
-  return arr.length;
-}
-
 export const interfaceInventoryMapper: DerivationMapperFn = (model, sectionId = 'interfaces') => {
   // Select top 6 representative inter-service contracts instead of dumping 80 raw rows
   const representativeFlows = model.flows.slice(0, 6);
@@ -112,7 +108,7 @@ export const interfaceInventoryMapper: DerivationMapperFn = (model, sectionId = 
   };
 };
 
-export const userStoriesMapper: DerivationMapperFn = (model, sectionId = 'functional_flows') => {
+const userStoriesMapper: DerivationMapperFn = (model, sectionId = 'functional_flows') => {
   const bullets: ProvenanceText[] = [];
 
   if (model.actors.length > 0) {
@@ -189,7 +185,7 @@ export const acceptanceCriteriaMapper: DerivationMapperFn = (model, sectionId = 
   };
 };
 
-export const epicsFromStagesMapper: DerivationMapperFn = (model, sectionId = 'epics') => {
+const epicsFromStagesMapper: DerivationMapperFn = (model, sectionId = 'epics') => {
   const bullets: ProvenanceText[] = [];
   const stages = model.tiers.filter((t) => t.kind === 'stage' || t.label.toLowerCase().includes('phase'));
   const targetTiers = stages.length > 0 ? stages : model.tiers;
@@ -215,7 +211,7 @@ export const epicsFromStagesMapper: DerivationMapperFn = (model, sectionId = 'ep
   };
 };
 
-export const personasFromActorsMapper: DerivationMapperFn = (model, sectionId = 'personas') => {
+const personasFromActorsMapper: DerivationMapperFn = (model, sectionId = 'personas') => {
   const bullets: ProvenanceText[] = [];
   for (const actor of model.actors) {
     bullets.push({

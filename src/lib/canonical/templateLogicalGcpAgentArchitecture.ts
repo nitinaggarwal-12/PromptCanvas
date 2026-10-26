@@ -41,7 +41,7 @@ const ICONS = {
   files: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" stroke="#1E293B" stroke-width="2"/><path d="M14 2V8H20" stroke="#1E293B" stroke-width="2"/></svg>`,
 };
 
-export interface LogicalGcpAgentArchOptions {
+interface LogicalGcpAgentArchOptions {
   projectTitle?: string;
   projectName?: string;
   useCaseName?: string;

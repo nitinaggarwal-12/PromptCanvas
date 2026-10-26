@@ -140,13 +140,13 @@ export const DIAGRAM_FAMILY_PRESETS = [
 
 export const FAMILY_TO_TEMPLATE_IDS: Record<string, string[]> = {
   all: CANONICAL_TEMPLATES.map(t => t.id),
-  structure: CANONICAL_TEMPLATES.filter(t => t.family === 'Structure' || ['06', '07', '08', '12', '14', '46'].includes(t.id)).map(t => t.id),
-  flow: CANONICAL_TEMPLATES.filter(t => t.family === 'Flow' || t.family === 'Process' || ['03', '05', '09', '10', '11', '13', '20', '28', '43'].includes(t.id)).map(t => t.id),
-  infrastructure: CANONICAL_TEMPLATES.filter(t => t.family === 'Infrastructure' || t.family === 'Delivery & Operations' || ['15', '16', '19', '21', '22', '34', '37', '38', '45', '48'].includes(t.id)).map(t => t.id),
-  data: CANONICAL_TEMPLATES.filter(t => ['09', '14', '29', '42', '43', '51', '54', '57', '69', '70', '71', '72'].includes(t.id)).map(t => t.id),
-  ai: CANONICAL_TEMPLATES.filter(t => t.family === 'Whiteboard' || t.family === 'Paper' || ['23', '24', '25', '26', '40', '41', '47', '51', '52', '53', '55', '56', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '73', '74', '75', '76', '77'].includes(t.id)).map(t => t.id),
-  security: CANONICAL_TEMPLATES.filter(t => t.family === 'Security & Governance' || ['17', '18', '27', '39', '44', '59', '60'].includes(t.id)).map(t => t.id),
-  business: CANONICAL_TEMPLATES.filter(t => t.family === 'Understand' || t.family === 'Analysis & Planning' || t.family === 'Infographic' || ['01', '02', '04', '30', '31', '32', '33', '35', '36', '49', '50'].includes(t.id)).map(t => t.id),
+  structure: CANONICAL_TEMPLATES.filter(t => t.family === 'Structure' || ['78', '00', '35', '36', '46'].includes(t.id)).map(t => t.id),
+  flow: CANONICAL_TEMPLATES.filter(t => t.family === 'Flow' || t.family === 'Process' || ['43', '67', '68', '69', '70', '71', '72', '73', '74'].includes(t.id)).map(t => t.id),
+  infrastructure: CANONICAL_TEMPLATES.filter(t => t.family === 'Infrastructure' || t.family === 'Delivery & Operations' || ['78', '00', '37', '38', '45', '48'].includes(t.id)).map(t => t.id),
+  data: CANONICAL_TEMPLATES.filter(t => ['42', '43', '69', '70', '71', '72'].includes(t.id)).map(t => t.id),
+  ai: CANONICAL_TEMPLATES.filter(t => t.family === 'Whiteboard' || t.family === 'Paper' || ['78', '00', '40', '41', '47', '67', '68', '73', '74'].includes(t.id)).map(t => t.id),
+  security: CANONICAL_TEMPLATES.filter(t => t.family === 'Security & Governance' || ['78', '39', '44', '73'].includes(t.id)).map(t => t.id),
+  business: CANONICAL_TEMPLATES.filter(t => t.family === 'Understand' || t.family === 'Analysis & Planning' || t.family === 'Infographic' || ['35', '36', '49', '50'].includes(t.id)).map(t => t.id),
 };
 
 export function getTemplatesForFamily(familyId: string): CanonicalTemplate[] {
@@ -255,7 +255,7 @@ function InlineDiagramFigure({
     setTimeout(() => setCopiedXml(false), 2000);
   };
 
-  const imageSrc = canonicalTpl?.previewImage || `/images/${templateId}.png`;
+  const imageSrc = canonicalTpl?.previewImage || `/templates/${templateId || '00'}.png`;
 
   return (
     <div
@@ -275,7 +275,7 @@ function InlineDiagramFigure({
       >
         <div className="flex items-center gap-3">
           <span className="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-500 font-mono font-black text-xs flex items-center justify-center border border-sky-500/20">
-            {templateId || '01'}
+            {templateId || '00'}
           </span>
           <div>
             <span className="text-[10px] font-mono uppercase text-sky-500 font-bold tracking-wider">
@@ -387,7 +387,7 @@ function InlineDiagramFigure({
               className="w-full max-h-[700px] object-contain rounded-xl mx-auto"
               onError={(e) => {
                 if (canonicalTpl) {
-                  (e.target as HTMLImageElement).src = `/images/${canonicalTpl.id}.png`;
+                  (e.target as HTMLImageElement).src = `/templates/${canonicalTpl.id}.png`;
                 }
               }}
             />
@@ -947,9 +947,7 @@ function DocGenContent() {
     if (studioMode === 'diagrams') {
       try {
         setGenerationStep(1);
-        await new Promise((r) => setTimeout(r, 250));
         setGenerationStep(2);
-        await new Promise((r) => setTimeout(r, 250));
 
         setGeneratedDocContent('DIAGRAMS_MODE_ACTIVE');
         setActiveTab('studio');
@@ -969,11 +967,9 @@ function DocGenContent() {
     try {
       // Step 1: Synthesizing Multi-Blueprint System Graph
       setGenerationStep(1);
-      await new Promise((r) => setTimeout(r, 300));
       
       // Step 2: Mapping AST Component Inventories & Slot Attachments
       setGenerationStep(2);
-      await new Promise((r) => setTimeout(r, 300));
 
       // Step 3: Invoking Gemini AI Model to synthesize custom architectural specification
       setGenerationStep(3);
@@ -1010,7 +1006,6 @@ function DocGenContent() {
       }
 
       setGenerationStep(4);
-      await new Promise((r) => setTimeout(r, 200));
 
       setGeneratedDocContent(finalDoc);
       setActiveTab('studio');
@@ -2053,10 +2048,16 @@ function DocGenContent() {
               </button>
 
               <div className="flex items-center gap-2 text-xs font-semibold" role="tablist" aria-label="Document Specification Views">
-                <Link href="/" className="text-slate-300 hover:text-white transition-colors" title="Home">
+                <Link
+                  href="/"
+                  className={`transition-colors ${
+                    isLight ? 'text-slate-700 hover:text-sky-600' : 'text-slate-300 hover:text-white'
+                  }`}
+                  title="Home"
+                >
                   PromptCanvas
                 </Link>
-                <span className="text-slate-500" aria-hidden="true">/</span>
+                <span className={isLight ? 'text-slate-400' : 'text-slate-500'} aria-hidden="true">/</span>
                 <button
                   type="button"
                   role="tab"
@@ -2064,12 +2065,16 @@ function DocGenContent() {
                   onClick={() => setActiveTab('catalog')}
                   className={`font-bold flex items-center gap-1.5 truncate cursor-pointer transition-all px-2.5 py-1 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                     activeTab === 'catalog'
-                      ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40'
+                      ? isLight
+                        ? 'bg-sky-50 text-sky-700 border border-sky-200'
+                        : 'bg-sky-500/20 text-sky-300 border border-sky-500/40'
+                      : isLight
+                      ? 'text-slate-700 hover:text-sky-700'
                       : 'text-slate-300 hover:text-white'
                   }`}
                   title="17 Document Archetypes Catalog"
                 >
-                  <FileText className="w-3.5 h-3.5 text-sky-400 shrink-0" aria-hidden="true" />
+                  <FileText className={`w-3.5 h-3.5 shrink-0 ${isLight ? 'text-sky-600' : 'text-sky-400'}`} aria-hidden="true" />
                   <span>17 Document Archetypes</span>
                 </button>
 
@@ -2080,13 +2085,17 @@ function DocGenContent() {
                   onClick={() => setActiveTab('studio')}
                   className={`font-bold flex items-center gap-1.5 truncate cursor-pointer transition-all px-2.5 py-1 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
                     activeTab === 'studio'
-                      ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40'
+                      ? isLight
+                        ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                        : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40'
+                      : isLight
+                      ? 'text-slate-700 hover:text-indigo-700'
                       : 'text-slate-300 hover:text-white'
                   }`}
-                  title="Interactive Document Studio"
+                  title="Interactive Specification Synthesizer"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-indigo-400 shrink-0" aria-hidden="true" />
-                  <span>Studio</span>
+                  <Sparkles className={`w-3.5 h-3.5 shrink-0 ${isLight ? 'text-indigo-600' : 'text-indigo-400'}`} aria-hidden="true" />
+                  <span>Specification Studio</span>
                 </button>
               </div>
             </div>
@@ -2094,58 +2103,37 @@ function DocGenContent() {
             {/* Right: Controls & Canonical Blueprints Quick Links */}
             <div className="flex items-center gap-2 shrink-0">
               {/* Domain Preset Selector */}
-              <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-xs font-medium bg-slate-900 border-slate-700 text-slate-200">
-                <Sliders className="w-3.5 h-3.5 text-sky-400 shrink-0" aria-hidden="true" />
-                <label htmlFor="docgen-header-domain-select" className="text-slate-300 hidden xl:inline text-[11px]">Domain:</label>
+              <div className={`hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-xs font-medium ${
+                isLight ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-slate-900 border-slate-700 text-slate-200'
+              }`}>
+                <Sliders className={`w-3.5 h-3.5 shrink-0 ${isLight ? 'text-sky-600' : 'text-sky-400'}`} aria-hidden="true" />
+                <label htmlFor="docgen-header-domain-select" className={`hidden xl:inline text-[11px] ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>Domain:</label>
                 <select
                   id="docgen-header-domain-select"
                   aria-label="Select Enterprise Domain Preset"
                   value={selectedDomain}
                   onChange={(e) => setSelectedDomain(e.target.value)}
-                  className="bg-transparent font-semibold text-sky-400 outline-none cursor-pointer text-xs max-w-[170px] truncate"
+                  className={`bg-transparent font-semibold outline-none cursor-pointer text-xs max-w-[170px] truncate ${
+                    isLight ? 'text-sky-700' : 'text-sky-400'
+                  }`}
                 >
                   {DOMAIN_PRESETS.map((d) => (
-                    <option key={d.id} value={d.id} className="bg-slate-900 text-slate-100">
+                    <option key={d.id} value={d.id} className={isLight ? 'bg-white text-slate-900' : 'bg-slate-900 text-slate-100'}>
                       {d.name}
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* Quick Links & Studio CTA */}
+              {/* Standardized Home Dashboard CTA */}
               <Link
-                href="/studio"
+                href="/dashboard"
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-md shadow-sky-500/20 transition-all cursor-pointer shrink-0"
-                title="Launch Studio"
+                title="Open Home Dashboard"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Open in Studio</span>
+                <span>Home Dashboard</span>
               </Link>
-
-              {/* Technical Blog Studio Link */}
-              <Link
-                href={`/blogs?domain=${encodeURIComponent(selectedDomain)}`}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 border border-indigo-500/30 transition-all shadow-xs shrink-0"
-                title="Generate Technical Blogs based on Use Cases"
-              >
-                <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
-                <span className="hidden sm:inline">Use-Case Blogs</span>
-                <span className="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 font-mono font-bold text-indigo-300">3</span>
-              </Link>
-
-              {/* Canonical Blueprints Link */}
-              <Link
-                href="/canonical"
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all shadow-xs shrink-0"
-                title="Canonical Blueprints Master Catalog"
-              >
-                <Zap className="w-3.5 h-3.5 text-sky-400" />
-                <span className="hidden sm:inline">Canonical Blueprints</span>
-                <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 font-mono font-bold text-sky-300">{CANONICAL_TEMPLATES.length}</span>
-              </Link>
-
-              {/* Standardized Theme Toggle */}
-              <ThemeToggleBtn id="docgen-theme-toggle-btn" />
             </div>
           </div>
         </AppHeader>
@@ -2211,17 +2199,17 @@ function DocGenContent() {
                 }`}>
                   <div className="flex items-center gap-1">
                     <span className="font-extrabold text-teal-600 dark:text-teal-400">17</span>
-                    <span className="text-[10px] text-slate-400 uppercase font-bold">Specs</span>
+                    <span className="text-[10px] text-slate-500 uppercase font-bold">Specs</span>
                   </div>
                   <span className="text-slate-300 dark:text-slate-700">|</span>
                   <div className="flex items-center gap-1">
-                    <span className="font-extrabold text-sky-600 dark:text-sky-400">50</span>
-                    <span className="text-[10px] text-slate-400 uppercase font-bold">Blueprints</span>
+                    <span className="font-extrabold text-sky-600 dark:text-sky-400">{CANONICAL_TEMPLATES.length}</span>
+                    <span className="text-[10px] text-slate-500 uppercase font-bold">Blueprints</span>
                   </div>
                   <span className="text-slate-300 dark:text-slate-700">|</span>
                   <div className="flex items-center gap-1">
                     <span className="font-extrabold text-emerald-600 dark:text-emerald-400">100%</span>
-                    <span className="text-[10px] text-slate-400 uppercase font-bold">Word</span>
+                    <span className="text-[10px] text-slate-500 uppercase font-bold">Word</span>
                   </div>
                 </div>
 
@@ -2234,7 +2222,7 @@ function DocGenContent() {
                   className="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 text-white shadow-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                  <span>Open in Studio</span>
+                  <span>Launch Spec Synthesizer</span>
                 </button>
               </div>
             </div>
@@ -3307,7 +3295,7 @@ function DocGenContent() {
                                   </div>
                                   <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
                                     <span>Vector Indexing</span>
-                                    <span>Vertex text-embedding-004</span>
+                                    <span>Vertex gemini-embedding-001</span>
                                     <span className="text-sky-600 font-bold">768-dim &lt; 20ms</span>
                                   </div>
                                   <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
@@ -3875,15 +3863,15 @@ function DocGenContent() {
         )}
       </main>
 
-      {/* FULL-FEATURED MASTER SPECIFICATION PREVIEW MODAL */}
+      {/* FULL-FEATURED MASTER SPECIFICATION PREVIEW DRAWER (RULE 25F) */}
       {previewModalDoc && (
         <div
           onClick={() => setPreviewModalDoc(null)}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-2 md:p-6 cursor-pointer"
+          className="fixed inset-0 z-50 flex items-stretch justify-end bg-slate-900/45 backdrop-blur-xs cursor-pointer"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className={`relative w-full max-w-[1400px] h-[92vh] rounded-3xl border shadow-2xl flex flex-col overflow-hidden cursor-default ${
+            className={`relative w-full max-w-[1280px] h-full border-l shadow-2xl flex flex-col overflow-hidden cursor-default ${
               isLight ? 'bg-white border-slate-200' : 'bg-[#0F172A] border-slate-800'
             }`}
           >

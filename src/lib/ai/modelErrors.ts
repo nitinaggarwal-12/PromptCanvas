@@ -29,7 +29,7 @@ const TRANSIENT_MESSAGE_PATTERNS = [
   'terminated',
 ];
 
-export interface UpstreamErrorInfo {
+interface UpstreamErrorInfo {
   /** HTTP status if determinable, else 0. */
   httpStatus: number;
   /** Canonical upstream status string, e.g. 'UNAVAILABLE', 'RESOURCE_EXHAUSTED'. */

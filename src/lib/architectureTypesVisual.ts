@@ -20,11 +20,11 @@ export type ArchitectureTypeOption = RawArchitectureTypeOption;
 const ENTERPRISE_REFERENCE_ID = 'unified_system_view';
 
 const OPTION_TEXT_REPLACEMENTS: Array<[RegExp, string]> = [
-  [/Gemini 3\.7 Flash \/ Pro/g, 'Gemini (approved model)'],
-  [/Gemini 3\.7 Pro Vision/g, 'Gemini multimodal model'],
-  [/Gemini 3\.7 Flash/g, 'Gemini (approved model)'],
-  [/Gemini 3\.7 Pro/g, 'Gemini (approved model)'],
-  [/Gemini 3\.7/g, 'Gemini'],
+  [/Gemini (?:2\.5|3\.7) Flash \/ Pro/g, 'Gemini (approved model)'],
+  [/Gemini (?:2\.5|3\.7) Pro Vision/g, 'Gemini multimodal model'],
+  [/Gemini (?:2\.5|3\.7) Flash/g, 'Gemini (approved model)'],
+  [/Gemini (?:2\.5|3\.7) Pro(?:\s+3\.5)?/g, 'Gemini (approved model)'],
+  [/Gemini (?:2\.5|3\.7)/g, 'Gemini'],
   [/Cloud Source Repositories/g, 'Secure Source Manager'],
   [/Cloud Source Repos/g, 'Secure Source Manager'],
   [/Dataplex Universal Catalog/g, 'Knowledge Catalog'],

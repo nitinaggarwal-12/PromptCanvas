@@ -39,22 +39,8 @@ import {
  * `useLayoutEffect` warns when executed during server rendering.
  * Fall back to `useEffect` on the server (where it is a no-op anyway).
  */
-export const useIsomorphicLayoutEffect =
+const useIsomorphicLayoutEffect =
   typeof window !== 'undefined' ? useLayoutEffect : useEffect;
-
-/**
- * Returns `false` during SSR and the hydration render, then `true` afterwards.
- *
- * Use this to gate rendering of inherently client-only output (relative
- * timestamps, locale-formatted dates, random IDs, etc.).
- */
-export function useIsHydrated(): boolean {
-  const [isHydrated, setIsHydrated] = useState(false);
-  useIsomorphicLayoutEffect(() => {
-    setIsHydrated(true);
-  }, []);
-  return isHydrated;
-}
 
 /**
  * Drop-in replacement for `useState(() => <ssr-unsafe expression>)`.

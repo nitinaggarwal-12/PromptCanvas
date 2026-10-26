@@ -65,39 +65,6 @@ export function generateTemplate00GcpEnterpriseArchXml(
   });
 }
 
-export function generateTemplate00LogicalXml(
-  domainFlavor?: string,
-  theme: "light" | "dark" = "light"
-): string {
-  return generateLogicalGcpAgentArchitectureXml({
-    domain: domainFlavor || "GCP ENTERPRISE",
-    theme,
-    projectTitle: "Google Cloud Multi-Agent Logical Architecture",
-  });
-}
-
-export function generateTemplate00ConceptualXml(
-  domainFlavor?: string,
-  theme: "light" | "dark" = "light"
-): string {
-  return generateConceptualGcpAgentArchitectureXml({
-    domain: domainFlavor || "GCP ENTERPRISE",
-    theme,
-    projectTitle: "Enterprise Multi-Agent Conceptual Architecture",
-  });
-}
-
-export function generateTemplate00ProcessXml(
-  domainFlavor?: string,
-  theme: "light" | "dark" = "light"
-): string {
-  return generateProcessGcpAgentWorkflowXml({
-    domain: domainFlavor || "GCP ENTERPRISE",
-    theme,
-    projectTitle: "Multi-Agent Request Processing & Banking Workflow",
-  });
-}
-
 export {
   generateLogicalGcpAgentArchitectureXml,
   generateConceptualGcpAgentArchitectureXml,

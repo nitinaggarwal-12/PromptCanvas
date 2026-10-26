@@ -37,7 +37,7 @@ type HandoffPhase =
   | 'redirecting'
   | 'error';
 
-export interface GoogleWorkspaceDriveHandoffProps {
+interface GoogleWorkspaceDriveHandoffProps {
   kind: GoogleWorkspaceKind;
   title: string;
   blueprintId: string;

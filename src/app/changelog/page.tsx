@@ -26,8 +26,8 @@ import {
   Menu,
 } from 'lucide-react';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
-import ByokHeaderButton from '@/components/ByokHeaderButton';
-import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
+import { AppHeader } from '@/components/AppHeader';
+import { useTheme } from '@/lib/themeContext';
 
 interface ChangelogEntry {
   id: string;
@@ -112,6 +112,8 @@ const STATUS_OPTIONS = [
 ];
 
 export default function ChangelogAndSheetSyncPage() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const [changelog, setChangelog] = useState<ChangelogEntry[]>([]);
   const [trackerItems, setTrackerItems] = useState<GovernanceTrackerItem[]>([]);
   const [comments, setComments] = useState<GovernanceComment[]>([]);
@@ -142,7 +144,7 @@ export default function ChangelogAndSheetSyncPage() {
 
   // Quick Mutation Form States (UI Originated OR Google Sheet Simulated)
   const [actorName, setActorName] = useState<string>('Nitin Aggarwal');
-  const [actorEmail, setActorEmail] = useState<string>('nitin.aggarwal@enterprise-arch.io');
+  const [actorEmail, setActorEmail] = useState<string>('nitinagga@google.com');
 
   // 1. Status Change Form
   const [selectedBpForStatus, setSelectedBpForStatus] = useState<string>('BP-03');
@@ -161,8 +163,8 @@ export default function ChangelogAndSheetSyncPage() {
   // Google Sheet Inline Edits State (for 2-Way Google Sheet -> UI sync verification)
   const [sheetDraftEdits, setSheetDraftEdits] = useState<Record<string, { status: string; latest_comment: string }>>({});
   const [sheetNewUserRow, setSheetNewUserRow] = useState({ name: '', email: '', role: 'Author' as 'Super-Admin' | 'Author' | 'Member' });
-  const [sheetEditorName, setSheetEditorName] = useState<string>('Marcus Vance');
-  const [sheetEditorEmail, setSheetEditorEmail] = useState<string>('marcus.vance@enterprise-arch.io');
+  const [sheetEditorName, setSheetEditorName] = useState<string>('Cloud Architecture Review Board');
+  const [sheetEditorEmail, setSheetEditorEmail] = useState<string>('nitinagga@google.com');
   const [sheetUrlInput, setSheetUrlInput] = useState<string>('');
   const [copiedScript, setCopiedScript] = useState<boolean>(false);
 
@@ -451,64 +453,70 @@ export default function ChangelogAndSheetSyncPage() {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Dark Application Top Header */}
-        <header className="dark sticky top-0 z-30 w-full bg-[#0B111E] border-b border-slate-800 text-white px-6 md:px-10 py-4">
-          <div className="w-full max-w-none flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3.5">
-              <button
-                type="button"
-                onClick={() => window.dispatchEvent(new CustomEvent('promptcanvas_toggle_sidebar'))}
-                className="lg:hidden p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition cursor-pointer"
-                aria-label="Toggle navigation sidebar"
-              >
-                <Menu className="w-5 h-5" />
-              </button>
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
-                <ArrowLeftRight className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2.5">
-                  <h1 className="text-xl md:text-2xl font-bold tracking-tight text-white">
-                    Unified Governance Changelog &amp; 2-Way Google Sheets Sync
-                  </h1>
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    2-WAY LIVE SYNC ACTIVE
-                  </span>
-                </div>
-                <p className="text-xs md:text-sm text-slate-300 mt-0.5">
-                  Every user addition, role update, review comment, and blueprint status change is attributed and synchronized bidirectionally between PromptCanvas UI and Google Sheets.
-                </p>
+        {/* Application Top Header (Rule 58 Universal Feedback Header via AppHeader) */}
+        <AppHeader>
+          <div className="w-full max-w-none flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold truncate">
+                <Link
+                  href="/"
+                  className={`transition-colors shrink-0 ${
+                    isLight ? 'text-slate-700 hover:text-indigo-600' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  PromptCanvas
+                </Link>
+                <span className={isLight ? 'text-slate-400' : 'text-slate-600'}>/</span>
+                <span className={`font-bold flex items-center gap-1.5 truncate ${isLight ? 'text-indigo-700' : 'text-indigo-400'}`}>
+                  <ArrowLeftRight className="w-4 h-4 shrink-0" />
+                  <span className="inline-block max-w-full truncate">Governance Changelog &amp; 2-Way Sheet Sync</span>
+                </span>
+                <span className={`hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold border shrink-0 ${
+                  isLight ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                }`}>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  2-WAY LIVE SYNC ACTIVE
+                </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <ThemeToggleBtn />
+            <div className="flex items-center gap-2 shrink-0">
               <a
                 href="/api/changelog/sheet-sync?format=csv"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs md:text-sm font-semibold bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 transition"
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
+                  isLight ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300' : 'bg-slate-800 hover:bg-slate-700 text-slate-100 border-slate-700'
+                }`}
               >
-                <Download className="w-4 h-4 text-emerald-400" />
-                Export Sheet (.CSV)
+                <Download className={`w-3.5 h-3.5 ${isLight ? 'text-emerald-600' : 'text-emerald-400'}`} />
+                <span>Export Sheet (.CSV)</span>
               </a>
               <button
                 onClick={() => handleTwoWaySheetSync(false)}
                 disabled={syncing}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs md:text-sm font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition cursor-pointer disabled:opacity-50"
               >
-                <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
-                {syncing ? 'Syncing UI ⇄ Google Sheet...' : 'Sync Now (2-Way UI ⇄ Sheet)'}
+                <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} />
+                <span>{syncing ? 'Syncing UI ⇄ Sheet...' : 'Sync Now (2-Way UI ⇄ Sheet)'}</span>
               </button>
               <Link
                 href="/admin"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs md:text-sm font-semibold bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 transition"
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
+                  isLight ? 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200' : 'bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border-indigo-500/30'
+                }`}
               >
-                <ShieldCheck className="w-4 h-4" />
-                Admin Console
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Admin Console</span>
+              </Link>
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-indigo-600 to-teal-600 hover:from-indigo-500 hover:to-teal-500 text-white shadow-xs transition"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Home Dashboard</span>
               </Link>
             </div>
           </div>
-        </header>
+        </AppHeader>
 
         {/* Workspace Container (Strictly Light Mode, Full Width w-full max-w-none) */}
         <main className="w-full max-w-none px-6 md:px-10 py-6 space-y-6">
@@ -721,7 +729,7 @@ export default function ChangelogAndSheetSyncPage() {
                       type="text"
                       value={newUserName}
                       onChange={(e) => setNewUserName(e.target.value)}
-                      placeholder="e.g. Dr. Raj Patel"
+                      placeholder="e.g. Cloud Security Review Board"
                       className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs text-slate-900 bg-slate-50 focus:bg-white"
                       required
                     />
@@ -744,7 +752,7 @@ export default function ChangelogAndSheetSyncPage() {
                     type="email"
                     value={newUserEmail}
                     onChange={(e) => setNewUserEmail(e.target.value)}
-                    placeholder="raj.patel@enterprise-arch.io"
+                    placeholder="cloud-security-review@google.com"
                     className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs text-slate-900 bg-slate-50 focus:bg-white"
                     required
                   />

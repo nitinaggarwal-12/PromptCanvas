@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
-export const CloudEnumSchema = z.enum(['gcp', 'aws', 'azure', 'hybrid', 'generic']);
+const CloudEnumSchema = z.enum(['gcp', 'aws', 'azure', 'hybrid', 'generic']);
 export type CloudEnum = z.infer<typeof CloudEnumSchema>;
 
-export const NodeTypeEnumSchema = z.enum([
+const NodeTypeEnumSchema = z.enum([
   'compute',
   'database',
   'storage',
@@ -19,10 +19,9 @@ export const NodeTypeEnumSchema = z.enum([
 ]);
 export type NodeTypeEnum = z.infer<typeof NodeTypeEnumSchema>;
 
-export const EdgeStyleEnumSchema = z.enum(['solid', 'dashed']);
-export type EdgeStyleEnum = z.infer<typeof EdgeStyleEnumSchema>;
+const EdgeStyleEnumSchema = z.enum(['solid', 'dashed']);
 
-export const GraphTierSchema = z.object({
+const GraphTierSchema = z.object({
   id: z.string().min(1),
   label: z.string().min(1),
   order: z.number().int().min(1).max(8),
@@ -33,7 +32,7 @@ export const GraphTierSchema = z.object({
 });
 export type GraphTier = z.infer<typeof GraphTierSchema>;
 
-export const GraphNodeSchema = z.object({
+const GraphNodeSchema = z.object({
   id: z.string().min(1),
   label: z.string().min(1),
   subtitle: z.string().optional(),
@@ -48,7 +47,7 @@ export const GraphNodeSchema = z.object({
 });
 export type GraphNode = z.infer<typeof GraphNodeSchema>;
 
-export const GraphEdgeSchema = z.object({
+const GraphEdgeSchema = z.object({
   id: z.string().min(1),
   source: z.string().min(1),
   target: z.string().min(1),
@@ -59,14 +58,14 @@ export const GraphEdgeSchema = z.object({
 });
 export type GraphEdge = z.infer<typeof GraphEdgeSchema>;
 
-export const NarrativeSchema = z.object({
+const NarrativeSchema = z.object({
   reasoning: z.string(),
   businessUsecase: z.string(),
   technicalUsecase: z.string(),
 });
-export type Narrative = z.infer<typeof NarrativeSchema>;
+type Narrative = z.infer<typeof NarrativeSchema>;
 
-export const ArchitectureGraphSchema = z.object({
+const ArchitectureGraphSchema = z.object({
   title: z.string().min(1),
   cloud: CloudEnumSchema,
   tiers: z.array(GraphTierSchema).min(1).max(8),

@@ -23,7 +23,7 @@
 // ============================================================================
 // 1. A/B & MULTIVARIATE TESTING ENGINE
 // ============================================================================
-export interface ABExperiment {
+interface ABExperiment {
   experimentId: string;
   variants: Array<{ id: string; weight: number }>; // weights sum to 100
 }
@@ -44,20 +44,6 @@ export function assignABVariant(userId: string, experiment: ABExperiment): strin
   return experiment.variants[0].id;
 }
 
-// ============================================================================
-// 2. PAYMENT & SUBSCRIPTION LIFECYCLE ENGINE
-// ============================================================================
-export type SubscriptionStatus = 'trialing' | 'active' | 'past_due' | 'canceled' | 'paused';
-
-export interface SubscriptionState {
-  subscriptionId: string;
-  userId: string;
-  status: SubscriptionStatus;
-  planTier: 'free' | 'pro' | 'enterprise';
-  currentPeriodEnd: string;
-  cancelAtPeriodEnd: boolean;
-}
-
 export function calculateProrationRefund(
   currentPlanAmountCents: number,
   newPlanAmountCents: number,
@@ -73,7 +59,7 @@ export function calculateProrationRefund(
 // ============================================================================
 // 3. FUNNEL & ATTRIBUTION TRACKER
 // ============================================================================
-export interface UTMParameters {
+interface UTMParameters {
   utm_source?: string;
   utm_medium?: string;
   utm_campaign?: string;
@@ -95,7 +81,7 @@ export function parseAndPersistUTM(queryString: string): UTMParameters {
 // ============================================================================
 // 4. GDPR / CCPA CONSENT GATEKEEPER
 // ============================================================================
-export interface CookieConsentState {
+interface CookieConsentState {
   necessary: boolean; // Always true
   analytics: boolean;
   marketing: boolean;
@@ -105,18 +91,6 @@ export interface CookieConsentState {
 export function isTelemetryAllowed(consent: CookieConsentState | null): boolean {
   if (!consent) return false; // Strict GDPR default: block until explicit opt-in
   return consent.analytics === true;
-}
-
-// ============================================================================
-// 5. MULTI-CHANNEL NOTIFICATION MATRIX
-// ============================================================================
-export type NotificationChannel = 'in_app' | 'email' | 'webhook' | 'sms';
-
-export interface NotificationPayload {
-  recipientId: string;
-  channel: NotificationChannel;
-  templateName: string;
-  variables: Record<string, string>;
 }
 
 export function renderNotificationMessage(template: string, vars: Record<string, string>): string {
@@ -130,7 +104,7 @@ export function renderNotificationMessage(template: string, vars: Record<string,
 // ============================================================================
 // 6. OFFBOARDING & DATA RETENTION MANAGER
 // ============================================================================
-export interface AccountDeactivationRecord {
+interface AccountDeactivationRecord {
   userId: string;
   deactivationDate: string;
   purgeScheduledDate: string; // 30 days retention grace period
@@ -215,7 +189,7 @@ export function executeWithCircuitBreaker<T>(
 // ============================================================================
 // 10. ENDURANCE & CONNECTION POOL MONITOR
 // ============================================================================
-export interface ConnectionPoolMetrics {
+interface ConnectionPoolMetrics {
   activeConnections: number;
   idleConnections: number;
   maxConnections: number;
@@ -247,7 +221,7 @@ export const PWA_OFFLINE_CACHE_ENTRIES = [
 // ============================================================================
 // 12. DISASTER RECOVERY & RTO/RPO SIMULATOR
 // ============================================================================
-export interface DisasterRecoveryTarget {
+interface DisasterRecoveryTarget {
   primaryRegion: string;
   secondaryRegion: string;
   targetRtoMinutes: number; // e.g. 15 mins
@@ -278,7 +252,7 @@ export function simulateChaosFault<T>(faultType: 'LATENCY' | 'RATE_LIMIT' | 'NON
 // ============================================================================
 // 14. PAGERDUTY / OPSGENIE INCIDENT ROUTER
 // ============================================================================
-export interface IncidentAlert {
+interface IncidentAlert {
   severity: 'P1_CRITICAL' | 'P2_MAJOR' | 'P3_MINOR';
   summary: string;
   component: string;

@@ -293,7 +293,7 @@ function normalizeSvgDimensions(svgStr: string, widthPx: number, heightPx: numbe
  * Renders an inline <svg> string OR data:image URL into a high-resolution transparent PNG data URL
  * so PowerPoint / Google Slides can display crisp vector icons on every card.
  */
-export async function renderInlineSvgToPngDataUrl(
+async function renderInlineSvgToPngDataUrl(
   svgOrDataUrl: string,
   widthPx: number = 128,
   heightPx: number = 128
@@ -725,7 +725,7 @@ export const CIRCLED_STEP_DIGITS: Record<string, string> = {
   '10': '➓',
 };
 
-export interface StructuredIconRow {
+interface StructuredIconRow {
   iconSvg?: string;
   title: string;
   subtitle?: string;
@@ -733,7 +733,7 @@ export interface StructuredIconRow {
   subtitleColor?: string;
 }
 
-export interface StructuredInlineSpan {
+interface StructuredInlineSpan {
   text: string;
   color?: string;
   bold?: boolean;
@@ -1021,7 +1021,7 @@ export function resolveDocGuideForSlideDeck(
  * so non-blog diagrams (such as NASA Closed-Loop Mission Control or Blueprints #00..#74)
  * never cross-wire or fall back to unrelated `DOC-MT-01` multi-tenant blog text.
  */
-export function buildDynamicDocGuideFromDiagramXml(
+function buildDynamicDocGuideFromDiagramXml(
   xmlContent: string,
   diagramName: string,
   blueprintId?: string
@@ -1044,9 +1044,13 @@ export function buildDynamicDocGuideFromDiagramXml(
       `${cleanTitle} ${blueprintId || ''} ${xmlContent}`
     );
 
-  const rawBp = String(blueprintId || '')
+  const rawBpInput = String(blueprintId || '')
     .replace(/^#/, '')
     .trim();
+  const isInternalSessionHash =
+    /^(?:fork_bp|draft_|sess_|custom[-_]|ver_)/i.test(rawBpInput) ||
+    /_sess_[a-z0-9]+_\d+/i.test(rawBpInput);
+  const rawBp = isInternalSessionHash ? '' : rawBpInput;
   const derivedDocId = isOracleExadataEbs
     ? 'ARCH-ORA-EBS-01'
     : isNasaClosedLoop
@@ -1072,33 +1076,74 @@ export function buildDynamicDocGuideFromDiagramXml(
       c.id !== 'bg' &&
       !c.id.startsWith('hdr_') &&
       c.id !== 'title_bar' &&
+      c.id !== 'title_banner' &&
       c.width >= 60 &&
       c.height >= 28
   );
 
   const containerZones = vertices
-    .filter((c) => c.width >= 420 && c.height >= 95)
+    .filter(
+      (c) =>
+        (c.width >= 480 && c.height >= 180) ||
+        (c.width >= 300 && c.height >= 400) ||
+        /_tier_|_zone|_subnet|_stage|_loop|_cluster_box/i.test(c.id)
+    )
     .map((c) => {
       const parsed = cleanHtmlToPlainText(c.value);
       return {
         id: c.id,
         title: parsed.title || parsed.subtitle || 'Architecture Zone',
         subtitle: parsed.subtitle || '',
+        x: c.absX,
         y: c.absY,
+        w: c.width,
+        h: c.height,
       };
     })
     .filter((z) => z.title.length > 2 && !/^figure\s*\d/i.test(z.title))
-    .sort((a, b) => a.y - b.y);
+    .sort((a, b) => (Math.abs(a.y - b.y) > 40 ? a.y - b.y : a.x - b.x));
+
+  const containerIdSet = new Set(containerZones.map((z) => z.id));
 
   const componentCards = vertices
-    .filter((c) => c.width >= 90 && c.width <= 560 && c.height >= 36 && c.height <= 230)
+    .filter(
+      (c) =>
+        !containerIdSet.has(c.id) &&
+        c.width >= 90 &&
+        c.width <= 560 &&
+        c.height >= 36 &&
+        c.height <= 360
+    )
     .map((c) => {
       const parsed = cleanHtmlToPlainText(c.value);
-      const bodySummary = parsed.lines.slice(1).join(' • ');
-      const fullSub = [parsed.subtitle, bodySummary].filter(Boolean).join(' — ');
+      const line0 = (parsed.lines[0] || '').trim();
+      const line1 = (parsed.lines[1] || '').trim();
+      const isLine0AllCapsBadge =
+        parsed.lines.length >= 2 &&
+        line0.length > 0 &&
+        line0 === line0.toUpperCase() &&
+        /[A-Z]/.test(line0) &&
+        /[a-z]/.test(line1);
+
+      const primaryTitle = isLine0AllCapsBadge ? line1 : line0 || parsed.title || '';
+      const remainingLines = isLine0AllCapsBadge
+        ? [line0, ...parsed.lines.slice(2)].filter(Boolean)
+        : parsed.lines.slice(1).filter(Boolean);
+      const deduplicatedLines: string[] = [];
+      for (const l of remainingLines) {
+        const norm = l.replace(/\s+/g, ' ').trim();
+        if (
+          norm &&
+          norm.toLowerCase() !== primaryTitle.toLowerCase() &&
+          !deduplicatedLines.some((prev) => prev.toLowerCase() === norm.toLowerCase())
+        ) {
+          deduplicatedLines.push(norm);
+        }
+      }
+      const fullSub = deduplicatedLines.join(' — ');
       return {
         id: c.id,
-        title: (parsed.title || '').replace(/\s+/g, ' ').trim(),
+        title: primaryTitle.replace(/\s+/g, ' ').trim(),
         subtitle: (fullSub || 'Enterprise architecture component with telemetry and policy enforcement').trim(),
         x: c.absX,
         y: c.absY,
@@ -1113,7 +1158,7 @@ export function buildDynamicDocGuideFromDiagramXml(
         !c.title.startsWith('Legend') &&
         c.title !== cleanTitle
     )
-    .sort((a, b) => (Math.abs(a.y - b.y) > 35 ? a.y - b.y : a.x - b.x));
+    .sort((a, b) => (Math.abs(a.x - b.x) > 120 ? a.x - b.x : a.y - b.y));
 
   // Deduplicate component cards by title
   const seenTitles = new Set<string>();
@@ -1126,10 +1171,22 @@ export function buildDynamicDocGuideFromDiagramXml(
 
   const edges = cells.filter((c) => c.edge);
 
-  const assignZoneLabel = (cardY: number): string => {
+  const assignZoneLabel = (cardX: number, cardY: number): string => {
+    // 1. Exact 2D bounding-box containment (handles both vertical columns and horizontal tier swimlanes)
+    for (const z of containerZones) {
+      if (
+        cardX >= z.x - 20 &&
+        cardX <= z.x + z.w + 20 &&
+        cardY >= z.y - 20 &&
+        cardY <= z.y + z.h + 20
+      ) {
+        return z.title.replace(/^ZONE\s*\d+\s*[:—-]\s*/i, '').slice(0, 54);
+      }
+    }
+    // 2. Fallback to Y-band matching against container zones
     for (const z of containerZones) {
       if (cardY >= z.y - 10 && cardY <= z.y + 260) {
-        return z.title.replace(/^ZONE\s*\d+\s*[:—-]\s*/i, '').slice(0, 46);
+        return z.title.replace(/^ZONE\s*\d+\s*[:—-]\s*/i, '').slice(0, 54);
       }
     }
     if (cardY < 220) return '1. Ingress, Directives & Safety Gate';
@@ -1194,7 +1251,7 @@ export function buildDynamicDocGuideFromDiagramXml(
   )
     .slice(0, 18)
     .map((card) => ({
-      groupName: assignZoneLabel(card.y),
+      groupName: assignZoneLabel(card.x, card.y),
       serviceName: card.title.replace(/^[❶❷❸❹❺❻❼❽❾❿]\s*/, ''),
       description: card.subtitle,
     }));
@@ -1240,7 +1297,7 @@ export function buildDynamicDocGuideFromDiagramXml(
           step: 'Active Data Guard Far Sync & Secondary Exadata X10M Standby enforce RPO=0 synchronous redo transport, while Recovery Service & Cloud Storage Immutable Backups satisfy SOX 404 retention.',
         },
         {
-          step: 'Oracle GoldenGate 23ai CDC streams real-time redo-log changes into BigQuery Cortex for Oracle EBS, Vertex AI Gemini 2.5 Agents, and Cloud Monitoring / Cloud KMS CMEK.',
+          step: 'Oracle GoldenGate 23ai CDC streams real-time redo-log changes into BigQuery Cortex for Oracle EBS, Vertex AI Gemini 3.1 Pro Agents, and Cloud Monitoring / Cloud KMS CMEK.',
         },
       ]
     : isNasaClosedLoop
@@ -1294,7 +1351,7 @@ export function buildDynamicDocGuideFromDiagramXml(
     ? [
         `${cleanTitle} defines the official Google Cloud production reference architecture for running Oracle E-Business Suite (EBS R12.2) on Google Cloud Compute Engine (C3 VMs) paired with Oracle Database@Google Cloud (Exadata X10M). User and B2B EDI workflows enter through Google Cloud Armor WAF, Identity-Aware Proxy (IAP), and an Internal Application Load Balancer into the Customer Google Cloud VPC.`,
         `The EBS R12.2 application tier runs Active-Active Oracle WebLogic 12c & Forms/OAF Managed Servers alongside a Parallel Concurrent Processing (PCP) Batch & Workflow Mailer cluster. All application nodes mount a shared APPL_TOP / COMMON_TOP / INST_TOP filesystem via Cloud Filestore Enterprise (Regional HA NFSv4.1) to support zero-downtime ADOP Online Patching (Run & Patch Editions).`,
-        `Database traffic crosses a dedicated <0.5ms ODB Network Partner Interconnect (Dual 100GbE VLAN attachments) into the co-located OCI Child Site hosting Oracle Exadata X10M Quarter/Half Rack (2x DB Nodes + 3x Storage Cells, 100GbE RoCEv2 RDMA, Smart Scan, and Storage Indexes) with Active Data Guard Far Sync for RPO=0 disaster recovery. Real-time redo-log changes stream via Oracle GoldenGate 23ai CDC into BigQuery Cortex for Oracle EBS and Vertex AI Gemini 2.5 Agents.`,
+        `Database traffic crosses a dedicated <0.5ms ODB Network Partner Interconnect (Dual 100GbE VLAN attachments) into the co-located OCI Child Site hosting Oracle Exadata X10M Quarter/Half Rack (2x DB Nodes + 3x Storage Cells, 100GbE RoCEv2 RDMA, Smart Scan, and Storage Indexes) with Active Data Guard Far Sync for RPO=0 disaster recovery. Real-time redo-log changes stream via Oracle GoldenGate 23ai CDC into BigQuery Cortex for Oracle EBS and Vertex AI Gemini 3.1 Pro Agents.`,
       ]
     : isNasaClosedLoop
       ? [
@@ -1333,7 +1390,7 @@ export function buildDynamicDocGuideFromDiagramXml(
         {
           title: 'Real-Time GoldenGate 23ai CDC to BigQuery Cortex & Vertex AI Agents',
           detail:
-            'Streams non-intrusive redo-log CDC over Private Service Connect into BigQuery Cortex for Oracle EBS and Vertex AI Gemini 2.5 ERP Agents with zero OLTP lock contention.',
+            'Streams non-intrusive redo-log CDC over Private Service Connect into BigQuery Cortex for Oracle EBS and Vertex AI Gemini 3.1 Pro ERP Agents with zero OLTP lock contention.',
         },
       ]
     : isNasaClosedLoop
@@ -1971,7 +2028,7 @@ function renderArchitectureCenterDiagramSidebar(
       colorHex: 'FEEFC3',
       borderHex: 'B06000',
       name: 'Left Spoke (#feefc3) — Agent Runtime & Model Armor',
-      role: 'Vertex AI Agent Engine (ADK), Model Armor prompt/output screening (4/6) & Gemini 2.5 Pro 90% shared prefix cache (5).',
+      role: 'Vertex AI Agent Engine (ADK), Model Armor prompt/output screening (4/6) & Gemini 3.1 Pro 90% shared prefix cache (5).',
     },
     {
       zoneId: 'Zone 4',
@@ -2068,7 +2125,7 @@ function renderArchitectureCenterDiagramSidebar(
           'IAP & IAM STS verify OIDC claims and mint tenant-scoped OBO + DPoP token.',
           'Cloud Run Tier Router dispatches request to Pooled (3a) or Silo (3b) Spoke.',
           'Vertex AI Model Armor screens incoming prompt & masks sensitive PII (4a–4d).',
-          'Gemini 2.5 Pro executes reasoning with 90% shared system prefix cache.',
+          'Gemini 3.1 Pro executes reasoning with 90% shared system prefix cache.',
           'Model Armor screens response; AlloyDB FORCE RLS & scoped MCP tools execute.',
           'Sanitized response returns to caller; BigQuery logs zero-PII OTel FinOps.',
         ];
@@ -2185,8 +2242,6 @@ async function postProcessPptxCompactArrowsBase64(rawBase64: string): Promise<st
     return rawBase64;
   }
 }
-
-export const shrinkPptxArrowheadsInBase64 = postProcessPptxCompactArrowsBase64;
 
 /**
  * Compiles Draw.io XML into a 100% Native Editable PowerPoint (.pptx) & Google Slides deck:

@@ -3,7 +3,7 @@
  *
  * Eradicates the generic template string-interpolation blindspot (Rule 42).
  * Before generating a diagram for ANY brand-new domain or topic, this engine
- * invokes Google Omni 1.1 + Gemini 3.1 Pro (`gemini-3.1-pro-preview` / `gemini-2.5-flash`)
+ * invokes Google Omni 1.1 + Gemini 3.1 Pro (`gemini-3.1-pro-preview` / `gemini-3.8-flash`)
  * to research and ground 6 mandatory architectural dimensions:
  *   1. True Domain Ontology & Canonical 4-Stage Lifecycle Spine (01..04)
  *   2. Authentic Wire Protocols, RFCs, File Formats & Regulatory Standards
@@ -27,7 +27,7 @@ import {
   renderInfographicSpecToXml
 } from '../canonical/dynamicTieredInfographic';
 
-export interface SixDimensionResearchDossier {
+interface SixDimensionResearchDossier {
   domainTopic: string;
   canonicalLifecycleSummary: string;
   standardsAndProtocols: string[];
@@ -40,7 +40,7 @@ export interface SixDimensionResearchDossier {
   concreteEnginesAndSkus: string[];
 }
 
-export interface DeepResearchInfographicResult {
+interface DeepResearchInfographicResult {
   xml: string;
   spec: InfographicSpec;
   dossier: SixDimensionResearchDossier;
@@ -54,7 +54,7 @@ export interface DeepResearchInfographicResult {
  * Normalizes deprecated or legacy Google Cloud, Gemini, and DeepMind product/model names
  * to their latest authoritative 2026 nomenclature so diagrams and documentation never emit stale SKUs.
  */
-export function normalizeLatestGoogleAndCloudNomenclature(text: string): string {
+function normalizeLatestGoogleAndCloudNomenclature(text: string): string {
   if (!text) return text;
   return text
     .replace(/\bCloud DLP\b/gi, 'Sensitive Data Protection')
@@ -75,7 +75,7 @@ export function normalizeLatestGoogleAndCloudNomenclature(text: string): string 
  * to retrieve the latest product release notes, capabilities, wire protocols, or bug-fix advisories
  * before structured JSON schema compilation. Gracefully returns empty string when offline or unsupported.
  */
-export async function fetchLiveGoogleSearchGroundingBrief(
+async function fetchLiveGoogleSearchGroundingBrief(
   ai: GoogleGenAI,
   prompt: string,
   modelId: string = GEMINI_FLASH_MODEL_ID

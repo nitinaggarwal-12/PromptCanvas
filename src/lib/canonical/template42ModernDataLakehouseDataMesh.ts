@@ -47,11 +47,6 @@ const SVG = {
   settings: `<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>`
 };
 
-const gcpCloudLogo = `<svg width="24" height="20" viewBox="0 0 192 154" fill="none">
-  <path d="M152 76.8c0-21.2-17.2-38.4-38.4-38.4-3.7 0-7.3.5-10.7 1.5C97.1 22.8 80.1 11.5 60.8 11.5c-27.4 0-49.6 22.2-49.6 49.6 0 1.9.1 3.7.4 5.5C4.8 71.3 0 79.9 0 89.6c0 14.1 11.5 25.6 25.6 25.6h126.4c22.1 0 40-17.9 40-40 0-21.3-16.7-38.7-37.8-39.9-.7.7-1.5 1.1-2.2 1.5z" fill="#4285F4"/>
-  <path d="M60.8 11.5c19.3 0 36.3 11.3 42.1 28.4 3.4-1 7-1.5 10.7-1.5 21.2 0 38.4 17.2 38.4 38.4 0 1.2-.1 2.3-.2 3.5 2.8-.7 5.7-1.1 8.6-1.1 22.1 0 40 17.9 40 40 0 2.1-.2 4.1-.5 6.1C200.7 122.9 201 120 201 117c0-22.1-17.9-40-40-40-2.9 0-5.8.4-8.6 1.1.1-1.2.2-2.3.2-3.5 0-21.2-17.2-38.4-38.4-38.4-3.7 0-7.3.5-10.7 1.5C97.1 20.8 80.1 9.5 60.8 9.5c-27.4 0-49.6 22.2-49.6 49.6 0 1.9.1 3.7.4 5.5C4.8 69.3 0 77.9 0 87.6c0 14.1 11.5 25.6 25.6 25.6h126.4c22.1 0 40-17.9 40-40z" fill="#EA4335" opacity="0.15"/>
-</svg>`;
-
 const svgIcon = (iconName: keyof typeof SVG, strokeColor = "#1D4ED8", size = 16) =>
   `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${strokeColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${SVG[iconName] || SVG.database}</svg>`;
 
@@ -105,8 +100,8 @@ export function generateTemplate42ModernDataLakehouseDataMeshXml(
   cell("t7_lbl", "<b style=\"font-size:9.5px;color:#1D4ED8;\">CONSUMPTION LAYER</b><br/><span style=\"font-size:7.5px;color:#64748B;\">Data Products<br/>&amp; Experiences</span>", 50, 74, 95, 34, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const t7Cards = [
-    { t: "BI &amp; Reporting", sub: "Looker • Looker Studio", icon: "chart" },
-    { t: "Dashboards", sub: "Connected Sheets • Looker Studio Pro", icon: "chart" },
+    { t: "BI &amp; Reporting", sub: "Looker • Looker", icon: "chart" },
+    { t: "Dashboards", sub: "Connected Sheets • Looker", icon: "chart" },
     { t: "Self-Service Analytics", sub: "Vertex AI Notebooks • BigQuery Studio", icon: "search" },
     { t: "AI / ML Applications", sub: "Vertex AI Apps", icon: "sparkles" },
     { t: "Operational Applications", sub: "Business Applications • Data Apps", icon: "layers" },

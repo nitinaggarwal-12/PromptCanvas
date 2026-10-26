@@ -370,7 +370,7 @@ export function renderGcpIconHtml(iconKey: keyof typeof GCP_OFFICIAL_ICONS | str
 /**
  * Returns clean SVG string for embedding directly in XML templates.
  */
-export function getGcpSvg(iconKey: keyof typeof GCP_OFFICIAL_ICONS | string): string {
+function getGcpSvg(iconKey: keyof typeof GCP_OFFICIAL_ICONS | string): string {
   const cleanKey = String(iconKey || '').trim().toLowerCase();
   return GOOGLE_CLOUD_OFFICIAL_SVG[cleanKey] || GCP_OFFICIAL_ICONS[cleanKey]?.svg || GCP_OFFICIAL_ICONS['gemini'].svg;
 }

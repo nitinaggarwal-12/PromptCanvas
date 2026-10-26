@@ -28,7 +28,7 @@ import {
 import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
 import { ENTERPRISE_GOOGLE_GE_ESCALATION_XML } from '@/lib/merckEscalationXmlClient';
 
-export interface InsertDiagramModalProps {
+interface InsertDiagramModalProps {
   isOpen: boolean;
   onClose: () => void;
   onInsertDiagram: (diagram: {

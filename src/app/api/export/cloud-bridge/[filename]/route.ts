@@ -6,7 +6,6 @@ import {
   CloudBridgeEntry,
   CURRENT_BRIDGE_SCHEMA_VERSION,
 } from '../route';
-import { generateAzureLandingZoneArchitectureXml } from '@/lib/masterBuilders/build_master_azure_landing_zone';
 import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 import { exportDrawioToEditablePptx } from '@/lib/export/editablePptxCompiler';
 import { exportDrawioToEditableDocx } from '@/lib/export/editableDocxCompiler';
@@ -62,36 +61,16 @@ async function resolveOrHealEntryByFilename(filename: string): Promise<CloudBrid
     ? CANONICAL_TEMPLATES.find((t) => t.id === canonicalMatch[1])
     : null;
 
-  const isAzureBlueprint =
-    !matchedCanonicalTemplate &&
-    (cleanId.toLowerCase().includes('vis9745') ||
-      cleanId.toLowerCase().includes('vis_9745') ||
-      cleanId.toLowerCase().includes('vis5965') ||
-      cleanId.toLowerCase().includes('vis_5965') ||
-      cleanId.toLowerCase().includes('azure') ||
-      cleanId.toLowerCase().includes('vis'));
-
-  // Self-heal on demand if missing or outdated
-  if (!entry && (matchedCanonicalTemplate || isAzureBlueprint)) {
+  // Self-heal on demand if missing or outdated for canonical blueprints
+  if (!entry && matchedCanonicalTemplate) {
     try {
-      const xmlContent = matchedCanonicalTemplate
-        ? matchedCanonicalTemplate.generateXml('enterprise', 'light')
-        : generateAzureLandingZoneArchitectureXml();
-      const blueprintTitle = matchedCanonicalTemplate
-        ? matchedCanonicalTemplate.name
-        : cleanId.toLowerCase().includes('5965')
-        ? 'Azure Application Landing Zone (VIS-5965)'
-        : 'Microsoft Azure Application Landing Zone';
-      const blueprintCode = matchedCanonicalTemplate
-        ? `#${matchedCanonicalTemplate.id}`
-        : cleanId.toLowerCase().includes('5965')
-        ? 'VIS-5965'
-        : 'VIS-9745';
-      const masterImgSrc = matchedCanonicalTemplate
-        ? Number(matchedCanonicalTemplate.id) <= 74
+      const xmlContent = matchedCanonicalTemplate.generateXml('enterprise', 'light');
+      const blueprintTitle = matchedCanonicalTemplate.name;
+      const blueprintCode = `#${matchedCanonicalTemplate.id}`;
+      const masterImgSrc =
+        Number(matchedCanonicalTemplate.id) <= 74
           ? `/templates/canonical_${matchedCanonicalTemplate.id.padStart(2, '0')}.png`
-          : undefined
-        : '/blueprints/azure_application_landing_zone.png';
+          : undefined;
 
       if (requestedFormat === 'drawio') {
         const healedEntry: CloudBridgeEntry = {

@@ -85,7 +85,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: 'Library & Blueprints',
     items: [
       { id: 'library', name: 'Saved Architectures', icon: LayoutGrid, href: '/library', badge: 'SAVED', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
-      { id: 'canonical', name: 'Blueprint Catalog', icon: Network, href: '/canonical', badge: '26' },
+      { id: 'canonical', name: 'Blueprint Catalog', icon: Network, href: '/canonical', badge: '8' },
     ],
   },
   {
@@ -102,7 +102,7 @@ const NAV_GROUPS: NavGroup[] = [
 /** Flat view, for active-state resolution. */
 const ALL_NAV_ITEMS: NavItem[] = NAV_GROUPS.flatMap((g) => g.items);
 
-export interface UnifiedAppSidebarProps {
+interface UnifiedAppSidebarProps {
   isCollapsed?: boolean;
   onToggle?: () => void;
   className?: string;
@@ -116,7 +116,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
 
   const isItemActive = (href: string) => {
     const [targetPath, targetQuery] = href.split('?');
-    if (targetPath === '/dashboard' && (pathname === '/dashboard' || pathname === '/studio' || pathname === '/studio1' || pathname === '/gcp')) {
+    if (targetPath === '/dashboard' && (pathname === '/dashboard' || pathname === '/studio')) {
       return true;
     }
     if (targetPath === '/library' && pathname === '/library') {
@@ -286,29 +286,27 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
 
           {/* UX-01 & UX-17: Semantic <nav aria-label="Primary Navigation"> with sr-only labels when collapsed */}
           <nav id="unified-primary-nav" aria-label="Primary Navigation" className="p-3 space-y-1">
-            {/* 1-Click New Diagram Input Selection Action Button */}
-            <div className="mb-2">
-              <button
-                type="button"
-                onClick={() => {
-                  if (typeof window !== 'undefined') {
-                    if (pathname === '/dashboard') {
-                      window.dispatchEvent(new CustomEvent('promptcanvas_open_new_diagram'));
-                    } else {
+            {/* 1-Click New Diagram Input Selection Action Button (Shown on non-dashboard pages; /dashboard has primary CTA in AppHeader per Rule 25A) */}
+            {pathname !== '/dashboard' && (
+              <div className="mb-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (typeof window !== 'undefined') {
                       window.location.href = '/dashboard?new=true';
                     }
-                  }
-                }}
-                className={`w-full flex items-center ${
-                  isSidebarOpen ? 'justify-start gap-2.5 px-3 py-2.5' : 'justify-center p-2.5'
-                } rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs shadow-md shadow-sky-500/20 transition-all cursor-pointer active:scale-95`}
-                title="Create New Architecture Diagram"
-                aria-label="Create New Architecture Diagram"
-              >
-                <Plus className="w-4 h-4 shrink-0 stroke-[2.5]" />
-                {isSidebarOpen ? <span>New Diagram</span> : <span className="sr-only">New Diagram</span>}
-              </button>
-            </div>
+                  }}
+                  className={`w-full flex items-center ${
+                    isSidebarOpen ? 'justify-start gap-2.5 px-3 py-2.5' : 'justify-center p-2.5'
+                  } rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs shadow-md shadow-sky-500/20 transition-all cursor-pointer active:scale-95`}
+                  title="Create New Architecture Diagram"
+                  aria-label="Create New Architecture Diagram"
+                >
+                  <Plus className="w-4 h-4 shrink-0 stroke-[2.5]" />
+                  {isSidebarOpen ? <span>New Diagram</span> : <span className="sr-only">New Diagram</span>}
+                </button>
+              </div>
+            )}
 
             {NAV_GROUPS.map((group, groupIndex) => (
               <div key={group.id} role="group" aria-label={group.label}>
@@ -362,7 +360,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                                 isActive ? 'text-white' : isLight ? 'text-slate-500' : 'text-slate-300'
                               }`}
                             />
-                            <span className={isSidebarOpen ? 'truncate' : 'sr-only'}>{item.name}</span>
+                            <span className={isSidebarOpen ? 'inline-block max-w-full truncate' : 'sr-only'}>{item.name}</span>
                           </div>
                           {isSidebarOpen && item.badge && (
                             <span
@@ -412,7 +410,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                 >
                   <div className={`flex items-center ${isSidebarOpen ? 'gap-3 min-w-0' : 'justify-center'} shrink-0`}>
                     <Settings aria-hidden="true" className={`w-4 h-4 shrink-0 ${isProfileModalOpen ? 'text-white' : isLight ? 'text-slate-500' : 'text-slate-300'}`} />
-                    <span className={isSidebarOpen ? 'truncate' : 'sr-only'}>Settings &amp; AI Tier</span>
+                    <span className={isSidebarOpen ? 'inline-block max-w-full truncate' : 'sr-only'}>Settings &amp; AI Tier</span>
                   </div>
                 </div>
               </button>
@@ -422,22 +420,8 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
 
         {/* Bottom Sidebar: Theme & Profile */}
         <div className={`p-3 border-t space-y-2 ${isLight ? 'border-slate-200 bg-slate-50' : 'border-slate-800/60 bg-slate-950/40'}`}>
-          <div className={`flex items-center ${isSidebarOpen ? 'justify-between' : 'flex-col gap-2'}`}>
+          <div className={`flex items-center ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
             <ThemeToggleBtn iconOnly={!isSidebarOpen} />
-            {!isSidebarOpen && (
-              <button
-                type="button"
-                onClick={toggleSidebar}
-                aria-label="Expand Left Navigation Sidebar"
-                aria-expanded={isSidebarOpen}
-                className={`min-w-[40px] min-h-[40px] p-2 rounded-lg cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95 ${
-                  isLight ? 'hover:bg-slate-200 text-slate-600 hover:text-slate-900' : 'hover:bg-slate-800 text-slate-300 hover:text-white'
-                }`}
-                title="Expand Sidebar"
-              >
-                <ChevronRight className="w-4 h-4" aria-hidden="true" />
-              </button>
-            )}
           </div>
 
           {isSidebarOpen ? (
@@ -502,18 +486,6 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
           )}
         </div>
       </aside>
-
-      {/* 2. MOBILE FLOATING TRIGGER BUTTON */}
-      <button
-        type="button"
-        onClick={() => setIsMobileMenuOpen(true)}
-        aria-label="Open Mobile Navigation Menu"
-        aria-expanded={isMobileMenuOpen}
-        className="lg:hidden fixed bottom-4 left-4 z-40 min-w-[44px] min-h-[44px] p-3 rounded-2xl bg-sky-600 text-white shadow-xl shadow-sky-500/30 flex items-center justify-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
-        title="Open Navigation Menu"
-      >
-        <Menu className="w-5 h-5" aria-hidden="true" />
-      </button>
 
       {/* 3. MOBILE SLIDE-OUT DRAWER */}
       {isMobileMenuOpen && (

@@ -3,20 +3,20 @@ import {
   type OfficialArchCenterBlueprintConfig,
 } from '../canonical/templateOfficialGcpArchCenterHubSpoke';
 
-export interface DocInlineTable {
+interface DocInlineTable {
   caption: string;
   headers: string[];
   rows: string[][];
 }
 
-export interface DocCodeSnippet {
+interface DocCodeSnippet {
   title: string;
   language: 'python' | 'sql' | 'hcl' | 'bash' | 'json';
   filename: string;
   code: string;
 }
 
-export interface DocInlineDiagram {
+interface DocInlineDiagram {
   figureNumber: string;
   title: string;
   caption: string;
@@ -24,7 +24,7 @@ export interface DocInlineDiagram {
   workflowTab?: 'high-level' | 'ingestion' | 'search';
 }
 
-export interface ArchCenterComponentGroupRow {
+interface ArchCenterComponentGroupRow {
   groupTitle: string;
   groupLead: string;
   items: {
@@ -33,18 +33,18 @@ export interface ArchCenterComponentGroupRow {
   }[];
 }
 
-export interface ArchCenterAgenticFlowStep {
+interface ArchCenterAgenticFlowStep {
   step: string;
   subSteps?: string[];
 }
 
-export interface ArchCenterProductItem {
+interface ArchCenterProductItem {
   name: string;
   url: string;
   description: string;
 }
 
-export interface ArchCenterDesignAltSubSection {
+interface ArchCenterDesignAltSubSection {
   id: string;
   heading: string;
   leadParagraphs: string[];
@@ -55,7 +55,7 @@ export interface ArchCenterDesignAltSubSection {
   }[];
 }
 
-export interface ArchCenterDesignConsiderationSubSection {
+interface ArchCenterDesignConsiderationSubSection {
   id: string;
   heading: string;
   leadParagraph: string;
@@ -1373,7 +1373,7 @@ inventory_mcp_tools = MCPToolset(
 
 order_agent = LlmAgent(
     name="order_inventory_agent",
-    model="gemini-2.5-pro",
+    model="gemini-3.1-pro-preview",
     instruction="Check regional BigQuery warehouse stock via MCP and reserve safety stock.",
     tools=[inventory_mcp_tools],
 )`,

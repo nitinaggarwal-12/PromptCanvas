@@ -151,178 +151,207 @@ export default function CanonicalTemplateDetailPage() {
         {/* TOP NAVIGATION BAR */}
         {!isFullScreen && (
           <AppHeader>
-            <div className="w-full max-w-none flex items-center justify-between gap-3 min-w-0">
+            <div className="w-full max-w-none flex items-center justify-between gap-2.5 min-w-0">
               {/* Left: Back to Catalog & Template Title */}
-              <div className="flex items-center gap-2.5 min-w-0 shrink">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
                 <Link
                   href="/canonical"
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-100 transition-colors text-xs font-extrabold shrink-0 shadow-xs"
+                  className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border transition-colors text-xs font-extrabold shrink-0 shadow-2xs ${
+                    isDark
+                      ? 'border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-100'
+                      : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-800'
+                  }`}
+                  title="Back to Blueprint Catalog"
                 >
-                  <ArrowLeft className="w-4 h-4 text-sky-400" />
-                  <span>Back to Blueprint Catalog</span>
+                  <ArrowLeft className={`w-3.5 h-3.5 ${isDark ? 'text-sky-400' : 'text-blue-600'}`} />
+                  <span>Catalog</span>
                 </Link>
 
-              <div className="h-6 w-px bg-slate-800 shrink-0" />
+                <div className={`h-5 w-px shrink-0 ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
 
-              <div className="flex items-center gap-2 min-w-0 truncate">
-                <span className="w-7 h-7 rounded-lg bg-sky-500 text-white font-black text-xs flex items-center justify-center shadow-sm shrink-0">
-                  {activeTemplate.id}
-                </span>
-                <div className="min-w-0 truncate">
-                  <div className="flex items-center gap-1.5 truncate">
-                    <h1 className="text-sm md:text-base font-extrabold tracking-tight truncate text-white">
-                      {activeTemplate.name}
-                    </h1>
-                    <span className="hidden xl:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 shrink-0">
-                      {activeTemplate.level === 'L1' ? 'L1 Conceptual' :
-                       activeTemplate.level === 'L2' ? 'L2 Logical' :
-                       activeTemplate.level === 'L3' ? 'L3 Physical / Technical' :
-                       activeTemplate.level}
-                    </span>
-                    <span className="hidden xl:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
-                      Master
-                    </span>
-                  </div>
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <span className="w-7 h-7 rounded-lg bg-blue-600 text-white font-black text-xs flex items-center justify-center shadow-sm shrink-0">
+                    #{activeTemplate.id}
+                  </span>
+                  <h1 className={`text-sm md:text-base font-extrabold tracking-tight truncate min-w-[180px] ${
+                    isDark ? 'text-white' : 'text-slate-900'
+                  }`}>
+                    {activeTemplate.name}
+                  </h1>
+                  <span className={`hidden 2xl:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded border shrink-0 ${
+                    isDark
+                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                      : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                  }`}>
+                    Certified
+                  </span>
                 </div>
               </div>
-            </div>
 
-            {/* Center: Prev / Next Navigation Arrows */}
-            <div className="flex items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-700 shrink-0">
-              <button
-                disabled={!prevTemplate}
-                onClick={() => prevTemplate && router.push(`/canonical/${prevTemplate.id}`)}
-                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold transition-all ${
-                  prevTemplate
-                    ? 'hover:bg-slate-800 text-slate-200 shadow-sm cursor-pointer'
-                    : 'opacity-30 cursor-not-allowed text-slate-500'
-                }`}
-                title={prevTemplate ? `Previous: ${prevTemplate.id} - ${prevTemplate.name}` : 'No previous template'}
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">Prev</span>
-              </button>
-
-              <span className="text-[11px] font-mono font-bold px-1.5 text-slate-400">
-                {currentIndex + 1} / {CANONICAL_TEMPLATES.length}
-              </span>
-
-              <button
-                disabled={!nextTemplate}
-                onClick={() => nextTemplate && router.push(`/canonical/${nextTemplate.id}`)}
-                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold transition-all ${
-                  nextTemplate
-                    ? 'hover:bg-slate-800 text-slate-200 shadow-sm cursor-pointer'
-                    : 'opacity-30 cursor-not-allowed text-slate-500'
-                }`}
-                title={nextTemplate ? `Next: ${nextTemplate.id} - ${nextTemplate.name}` : 'No next template'}
-              >
-                <span className="hidden md:inline">Next</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {/* Right: Actions, Domain Selector & Theme */}
-            <div className="flex items-center gap-2 shrink-0">
-              {/* Domain Preset Selector */}
-              <div className="hidden lg:flex items-center gap-1.5 px-2 py-1 rounded-xl border text-xs font-medium bg-slate-900 border-slate-700 text-slate-200">
-                <Sliders className="w-3.5 h-3.5 text-sky-400" />
-                <select
-                  value={selectedDomain}
-                  onChange={(e) => setSelectedDomain(e.target.value)}
-                  className="bg-transparent font-semibold text-sky-400 outline-none cursor-pointer text-xs max-w-[180px] truncate"
-                >
-                  {DOMAIN_PRESETS.map((d) => (
-                    <option key={d.id} value={d.id} className="bg-slate-900 text-slate-100">
-                      {d.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Open in Home Dashboard */}
-              <Link
-                href={`/dashboard?blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-500 hover:bg-teal-400 text-slate-950 shadow-sm shadow-teal-500/20 transition-all hover:scale-[1.02] shrink-0"
-                title="Open in Home Dashboard"
-              >
-                <Sparkles className="w-3.5 h-3.5 fill-current" />
-                <span className="hidden sm:inline">Open in Dashboard</span>
-                <span className="sm:hidden">Dashboard</span>
-              </Link>
-
-              {/* Generate Docs Button */}
-              <button
-                onClick={() => setIsComposeOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sm shadow-sky-500/20 transition-all hover:scale-[1.02] shrink-0"
-                title="Generate BRD, PRD, SDD (HLD), FDD, TDD (LLD) from this diagram"
-              >
-                <FileText className="w-3.5 h-3.5" />
-                <span>Generate Docs</span>
-              </button>
-
-              {/* Secondary Actions Cluster */}
-              <div className="flex items-center p-0.5 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold">
-                {/* Share URL */}
+              {/* Center: Prev / Next Navigation Arrows */}
+              <div className={`flex items-center gap-1 p-1 rounded-xl border shrink-0 ${
+                isDark ? 'bg-slate-900 border-slate-700' : 'bg-slate-100 border-slate-200'
+              }`}>
                 <button
-                  onClick={handleCopyShareUrl}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-slate-800 transition-colors text-slate-200"
-                  title="Copy Direct Shareable Link"
-                >
-                  {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 text-sky-400" />}
-                  <span className="hidden xl:inline">{copiedUrl ? 'Copied' : 'Share'}</span>
-                </button>
-
-                {/* Copy XML */}
-                <button
-                  onClick={handleCopyXml}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-slate-800 transition-colors text-slate-200"
-                  title="Copy Raw Draw.io XML"
-                >
-                  {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
-                  <span className="hidden xl:inline">{copiedXml ? 'Copied' : 'XML'}</span>
-                </button>
-
-                {/* Download */}
-                <button
-                  onClick={handleDownloadXml}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-slate-800 transition-colors text-slate-200"
-                  title="Download .drawio file"
-                >
-                  <Download className="w-3.5 h-3.5 text-slate-400" />
-                  <span className="hidden xl:inline">Download</span>
-                </button>
-
-                {/* Side-by-Side PNG + XML Toggle */}
-                <button
-                  id="canonical-sbs-toggle-btn"
-                  onClick={() => setIsSideBySide(!isSideBySide)}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
-                    isSideBySide
-                      ? 'bg-indigo-600 text-white'
-                      : 'hover:bg-slate-800 text-indigo-300'
+                  disabled={!prevTemplate}
+                  onClick={() => prevTemplate && router.push(`/canonical/${prevTemplate.id}${isSideBySide ? '?sbs=1' : ''}`)}
+                  className={`flex items-center gap-0.5 px-2 py-1 rounded-lg text-xs font-bold transition-all ${
+                    prevTemplate
+                      ? isDark
+                        ? 'hover:bg-slate-800 text-slate-200 shadow-sm cursor-pointer'
+                        : 'hover:bg-white text-slate-700 shadow-2xs cursor-pointer'
+                      : 'opacity-40 cursor-not-allowed text-slate-400'
                   }`}
-                  title="Compare Reference PNG and Editable Draw.io XML Side-by-Side"
+                  title={prevTemplate ? `Previous: ${prevTemplate.id} - ${prevTemplate.name}` : 'No previous template'}
                 >
-                  <span>{isSideBySide ? '✓ PNG + XML' : '🖼️ PNG + XML'}</span>
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span className="hidden 2xl:inline">Prev</span>
                 </button>
 
-                {/* Fullscreen Toggle */}
+                <span className={`text-[11px] font-mono font-bold px-1.5 ${isDark ? 'text-slate-400' : 'text-slate-700'}`}>
+                  {currentIndex + 1}/{CANONICAL_TEMPLATES.length}
+                </span>
+
                 <button
-                  onClick={() => setIsFullScreen(!isFullScreen)}
-                  className="p-1 rounded-lg hover:bg-slate-800 transition-colors text-slate-300"
-                  title={isFullScreen ? 'Exit Full Screen' : 'Enter Full Screen'}
+                  disabled={!nextTemplate}
+                  onClick={() => nextTemplate && router.push(`/canonical/${nextTemplate.id}${isSideBySide ? '?sbs=1' : ''}`)}
+                  className={`flex items-center gap-0.5 px-2 py-1 rounded-lg text-xs font-bold transition-all ${
+                    nextTemplate
+                      ? isDark
+                        ? 'hover:bg-slate-800 text-slate-200 shadow-sm cursor-pointer'
+                        : 'hover:bg-white text-slate-700 shadow-2xs cursor-pointer'
+                      : 'opacity-40 cursor-not-allowed text-slate-400'
+                  }`}
+                  title={nextTemplate ? `Next: ${nextTemplate.id} - ${nextTemplate.name}` : 'No next template'}
                 >
-                  {isFullScreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+                  <span className="hidden 2xl:inline">Next</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               </div>
 
-              {/* Theme Toggle */}
-              <ThemeToggleBtn id="canonical-detail-theme-toggle-btn" />
+              {/* Right: Actions, Domain Selector & Theme */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                {/* Domain Preset Selector */}
+                <div className={`hidden xl:flex items-center gap-1.5 px-2 py-1 rounded-xl border text-xs font-medium ${
+                  isDark
+                    ? 'bg-slate-900 border-slate-700 text-slate-200'
+                    : 'bg-white border-slate-200 text-slate-700 shadow-2xs'
+                }`}>
+                  <Sliders className={`w-3.5 h-3.5 ${isDark ? 'text-sky-400' : 'text-blue-600'}`} />
+                  <select
+                    aria-label="Select Industry Domain Flavor"
+                    value={selectedDomain}
+                    onChange={(e) => setSelectedDomain(e.target.value)}
+                    className={`bg-transparent font-semibold outline-none cursor-pointer text-xs max-w-[135px] truncate ${
+                      isDark ? 'text-sky-400' : 'text-blue-700'
+                    }`}
+                  >
+                    {DOMAIN_PRESETS.map((d) => (
+                      <option
+                        key={d.id}
+                        value={d.id}
+                        className={isDark ? 'bg-slate-900 text-slate-100' : 'bg-white text-slate-900'}
+                      >
+                        {d.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Open in Home Dashboard */}
+                <Link
+                  href={`/dashboard?blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-sm shadow-teal-500/20 transition-all shrink-0"
+                  title="Open in Home Dashboard"
+                >
+                  <Sparkles className="w-3.5 h-3.5 fill-current" />
+                  <span>Studio</span>
+                </Link>
+
+                {/* Generate Docs Button */}
+                <button
+                  onClick={() => setIsComposeOpen(true)}
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sm shadow-sky-500/20 transition-all shrink-0 cursor-pointer"
+                  title="Generate BRD, PRD, SDD (HLD), FDD, TDD (LLD) from this diagram"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>Docs</span>
+                </button>
+
+                {/* Secondary Actions Cluster */}
+                <div className={`flex items-center p-0.5 rounded-xl border text-xs font-bold ${
+                  isDark ? 'bg-slate-900 border-slate-700' : 'bg-slate-100 border-slate-200'
+                }`}>
+                  {/* Share URL */}
+                  <button
+                    onClick={handleCopyShareUrl}
+                    className={`flex items-center gap-1 px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                      isDark ? 'hover:bg-slate-800 text-slate-200' : 'hover:bg-white text-slate-700'
+                    }`}
+                    title="Copy Direct Shareable Link"
+                  >
+                    {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Share2 className={`w-3.5 h-3.5 ${isDark ? 'text-sky-400' : 'text-blue-600'}`} />}
+                    <span className="hidden 2xl:inline">{copiedUrl ? 'Copied' : 'Share'}</span>
+                  </button>
+
+                  {/* Copy XML */}
+                  <button
+                    onClick={handleCopyXml}
+                    className={`flex items-center gap-1 px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                      isDark ? 'hover:bg-slate-800 text-slate-200' : 'hover:bg-white text-slate-700'
+                    }`}
+                    title="Copy Raw Draw.io XML"
+                  >
+                    {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
+                    <span className="hidden 2xl:inline">{copiedXml ? 'Copied' : 'XML'}</span>
+                  </button>
+
+                  {/* Download */}
+                  <button
+                    onClick={handleDownloadXml}
+                    className={`flex items-center gap-1 px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                      isDark ? 'hover:bg-slate-800 text-slate-200' : 'hover:bg-white text-slate-700'
+                    }`}
+                    title="Download .drawio file"
+                  >
+                    <Download className="w-3.5 h-3.5 text-slate-500" />
+                    <span className="hidden 2xl:inline">Download</span>
+                  </button>
+
+                  {/* Side-by-Side PNG + XML Toggle */}
+                  <button
+                    id="canonical-sbs-toggle-btn"
+                    onClick={() => setIsSideBySide(!isSideBySide)}
+                    className={`flex items-center gap-1 px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                      isSideBySide
+                        ? 'bg-indigo-600 text-white shadow-2xs'
+                        : isDark
+                        ? 'hover:bg-slate-800 text-indigo-300'
+                        : 'hover:bg-white text-indigo-700'
+                    }`}
+                    title="Compare Reference PNG and Editable Draw.io XML Side-by-Side"
+                  >
+                    <span>{isSideBySide ? '✓ PNG + XML' : '🖼️ PNG + XML'}</span>
+                  </button>
+
+                  {/* Fullscreen Toggle */}
+                  <button
+                    onClick={() => setIsFullScreen(!isFullScreen)}
+                    className={`p-1 rounded-lg transition-colors cursor-pointer ${
+                      isDark ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-white text-slate-600'
+                    }`}
+                    title={isFullScreen ? 'Exit Full Screen' : 'Enter Full Screen'}
+                  >
+                    {isFullScreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+
+                {/* Theme Toggle */}
+                <ThemeToggleBtn id="canonical-detail-theme-toggle-btn" />
+              </div>
             </div>
-          </div>
-        </AppHeader>
-      )}
+          </AppHeader>
+        )}
 
       {/* FULL PAGE DIAGRAM VIEWPORT */}
       <main className="flex-1 w-full relative flex flex-col p-2 md:p-6">
@@ -360,28 +389,29 @@ export default function CanonicalTemplateDetailPage() {
         {/* Viewport Frame */}
         {isSideBySide ? (
           <div className="flex-1 w-full h-[calc(100vh-90px)] flex flex-col gap-3 overflow-hidden">
-            {/* Quick Infographic Blueprint Switcher (#52–#66) */}
+            {/* Quick 8 Certified Production Blueprint Switcher (#78, #00, #38, #42, #44, #67, #68, #69) */}
             <div className="bg-white rounded-2xl border border-slate-200 px-4 py-2 shadow-sm flex items-center justify-between gap-3 overflow-x-auto shrink-0">
               <div className="flex items-center gap-2 shrink-0">
                 <span className="px-2.5 py-0.5 rounded-md bg-indigo-600 text-white font-mono text-[10px] font-extrabold uppercase tracking-wider">
                   Side-by-Side Comparison
                 </span>
                 <span className="text-xs font-extrabold text-slate-800">
-                  Infographic Blueprints (#52–#66):
+                  8 Certified Blueprints:
                 </span>
               </div>
               <div className="flex items-center gap-1 overflow-x-auto py-0.5">
-                {['52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66'].map((infId) => (
+                {CANONICAL_TEMPLATES.map((tpl) => (
                   <Link
-                    key={infId}
-                    href={`/canonical/${infId}?sbs=1`}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-mono font-extrabold transition shrink-0 border ${
-                      activeTemplate.id === infId
-                        ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                    key={tpl.id}
+                    href={`/canonical/${tpl.id}?sbs=1`}
+                    className={`px-2 py-1 rounded-lg text-[11px] font-mono font-extrabold transition shrink-0 border ${
+                      activeTemplate.id === tpl.id
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                         : 'bg-slate-50 hover:bg-indigo-50 text-slate-700 border-slate-200'
                     }`}
+                    title={`#${tpl.id} — ${tpl.name}`}
                   >
-                    #{infId}
+                    #{tpl.id}
                   </Link>
                 ))}
               </div>

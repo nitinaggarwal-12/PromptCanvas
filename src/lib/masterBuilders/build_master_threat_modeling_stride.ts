@@ -18,7 +18,7 @@ export function buildThreatModelingStrideXml(): string {
         </mxCell>
         
         <!-- Gemini Security Analyst Badge (Dark HUD Glassmorphic Pill) -->
-        <mxCell id="top_gemini_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#38BDF8;&quot;&gt;✨ Gemini 2.5 Flash&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#94A3B8;font-weight:600;&quot;&gt;Security Analyst&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+        <mxCell id="top_gemini_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#38BDF8;&quot;&gt;✨ Gemini 3.8 Flash&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#94A3B8;font-weight:600;&quot;&gt;Security Analyst&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="1425" y="8" width="150" height="42" as="geometry"/>
         </mxCell>
 
@@ -308,11 +308,11 @@ export function buildThreatModelingStrideXml(): string {
         <mxCell id="box_scc_enterprise" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D8B4FE;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="1165" y="360" width="400" height="158" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_scc_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Security Command Center&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;Gemini (mock) continuously synced dashboard widgets&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=top;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="lbl_scc_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#0F172A;&quot;&gt;Security Command Center&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;SCC Enterprise • Continuous Posture &amp;amp; Threat Telemetry&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=top;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="1170" y="364" width="390" height="28" as="geometry"/>
         </mxCell>
 
-        <!-- Mock Dashboard Card -->
+        <!-- Security Command Center Posture Card -->
         <mxCell id="card_scc_mock_dashboard" value="&lt;table style=&quot;width:100%;color:#FFFFFF;font-family:sans-serif;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:20px;font-weight:bold;color:#38BDF8;&quot;&gt;293&lt;/td&gt;&lt;td style=&quot;font-size:8px;text-align:right;color:#94A3B8;&quot;&gt;🟢 Clean &amp;nbsp; 🟠 2 High &amp;nbsp; 🔴 0 Crit&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;font-size:7px;color:#CBD5E1;border-top:1px solid #334155;padding-top:4px;&quot;&gt;• VPC-SC Perimeter Status: Active (0 Violations)&lt;br&gt;• Cloud Armor DDoS Mitigation: 100% Gated&lt;br&gt;• Model Armor Jailbreak Block Rate: 99.8%&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1;padding=6;" vertex="1" parent="1">
           <mxGeometry x="1175" y="394" width="225" height="114" as="geometry"/>
         </mxCell>

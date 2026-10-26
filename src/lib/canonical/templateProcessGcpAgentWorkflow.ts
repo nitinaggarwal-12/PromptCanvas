@@ -9,7 +9,7 @@
  * - Swimlane 5: Backend Core Banking (Optional integration parallel | Fetch Core Data & Transaction Status)
  */
 
-export interface ProcessGcpAgentWorkflowOptions {
+interface ProcessGcpAgentWorkflowOptions {
   projectTitle?: string;
   projectName?: string;
   useCaseName?: string;

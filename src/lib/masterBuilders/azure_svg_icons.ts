@@ -391,6 +391,3 @@ export const AZURE_RAW_SVGS = {
     </svg>
   `),
 };
-
-export const AZURE_ICONS = AZURE_RAW_SVGS;
-

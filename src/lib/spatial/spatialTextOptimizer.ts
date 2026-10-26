@@ -40,7 +40,7 @@ const TECH_ABBREVIATIONS: [RegExp, string][] = [
  * Calculates max characters that can fit into a given pixel width for a given font size.
  * Average proportional width for Apple System / Sans-Serif font is ~0.56 * fontSize.
  */
-export function calculateMaxCharsForWidth(pixelWidth: number, fontSize = 8, isBold = false): number {
+function calculateMaxCharsForWidth(pixelWidth: number, fontSize = 8, isBold = false): number {
   const avgCharWidth = fontSize * (isBold ? 0.62 : 0.54);
   return Math.max(10, Math.floor(pixelWidth / avgCharWidth));
 }

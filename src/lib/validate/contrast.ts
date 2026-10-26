@@ -3,7 +3,7 @@
  * vertex instead of asserting a hardcoded "WCAG AAA" badge.
  */
 
-export interface ContrastPair {
+interface ContrastPair {
   cellId: string;
   label: string;
   fill: string;
@@ -13,7 +13,7 @@ export interface ContrastPair {
 
 export type ContrastGrade = 'AAA' | 'AA' | 'AA Large' | 'Fail' | 'N/A';
 
-export interface ContrastAudit {
+interface ContrastAudit {
   pairsEvaluated: number;
   minRatio: number | null;
   grade: ContrastGrade;
@@ -38,7 +38,7 @@ function channel(c: number): number {
   return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
 }
 
-export function relativeLuminance(hex: string): number {
+function relativeLuminance(hex: string): number {
   const h = normalizeHex(hex) || '#ffffff';
   const r = parseInt(h.slice(1, 3), 16);
   const g = parseInt(h.slice(3, 5), 16);
@@ -46,7 +46,7 @@ export function relativeLuminance(hex: string): number {
   return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
 }
 
-export function contrastRatio(a: string, b: string): number {
+function contrastRatio(a: string, b: string): number {
   const l1 = relativeLuminance(a);
   const l2 = relativeLuminance(b);
   const light = Math.max(l1, l2);
@@ -54,7 +54,7 @@ export function contrastRatio(a: string, b: string): number {
   return Math.round(((light + 0.05) / (dark + 0.05)) * 100) / 100;
 }
 
-export function gradeForRatio(ratio: number | null): ContrastGrade {
+function gradeForRatio(ratio: number | null): ContrastGrade {
   if (ratio === null) return 'N/A';
   if (ratio >= 7) return 'AAA';
   if (ratio >= 4.5) return 'AA';

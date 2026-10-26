@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
-import { analyzePromptWithGeminiArchitect } from '@/lib/geminiArchitecturalDecisionEngine';
+import {
+  analyzePromptWithGeminiArchitect,
+  synthesizeLiveGeminiCopilotModification,
+} from '@/lib/geminiArchitecturalDecisionEngine';
 import { runTruthfulnessAndGroundingCertification } from '@/lib/truthfulnessGroundingEngine';
 
 export async function POST(request: Request) {
@@ -12,8 +15,12 @@ export async function POST(request: Request) {
     const prompt = typeof body.prompt === 'string' ? body.prompt.trim() : '';
     const blueprintId = typeof body.blueprintId === 'string' ? body.blueprintId : '00';
     const xmlContent = typeof body.xmlContent === 'string' ? body.xmlContent : '';
+    const currentTitle =
+      typeof body.currentTitle === 'string' && body.currentTitle.trim().length > 0
+        ? body.currentTitle.trim()
+        : 'Enterprise Cloud Architecture';
 
-    const [decision, truthfulnessDossier] = await Promise.all([
+    const [decision, truthfulnessDossier, copilotModification] = await Promise.all([
       analyzePromptWithGeminiArchitect(prompt, guard.effectiveApiKey),
       runTruthfulnessAndGroundingCertification({
         prompt,
@@ -21,12 +28,14 @@ export async function POST(request: Request) {
         blueprintId,
         explicitApiKey: guard.effectiveApiKey,
       }),
+      synthesizeLiveGeminiCopilotModification(prompt, currentTitle, guard.effectiveApiKey),
     ]);
 
     return NextResponse.json({
       success: true,
       decision,
       truthfulnessDossier,
+      copilotModification,
     });
   } catch (error) {
     console.error('[/api/architect-decision] Error:', error);
@@ -39,4 +48,5 @@ export async function POST(request: Request) {
     );
   }
 }
+
 

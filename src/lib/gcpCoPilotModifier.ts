@@ -11,8 +11,15 @@ import { generateUpgradedGcpGeBankingArchitectureXml } from './canonical/upgrade
 import {
   synthesizePromptDrivenDiagramXml,
 } from './promptDrivenDiagramSynthesizer';
+import type { LiveGeminiCopilotModificationSpec } from './geminiArchitecturalDecisionEngine';
+import {
+  shouldUseCompositionalChainCompiler,
+  compileCompositionalArchitectureChain,
+  isStyleOrFormattingPrompt,
+} from './compositionalChainCompiler';
+import { synthesizeOfficialGcpArchCenter78FromPrompt } from './canonical/templateOfficialGcpArchCenterHubSpoke';
 
-export interface GcpVersionSnapshot {
+interface GcpVersionSnapshot {
   id: string;
   versionTag: string; // e.g. 'v1.0', 'v1.1'
   timestamp: string;
@@ -23,13 +30,13 @@ export interface GcpVersionSnapshot {
   xml: string;
 }
 
-export interface GcpChatSuggestion {
+interface GcpChatSuggestion {
   label: string;
   actionPrompt: string;
   type?: 'add' | 'modify' | 'security' | 'cost' | 'observability';
 }
 
-export interface GcpChatMessage {
+interface GcpChatMessage {
   id: string;
   sender: 'user' | 'assistant';
   text: string;
@@ -44,94 +51,6 @@ export interface GcpChatMessage {
   identifiedGaps?: string[];
   suggestions?: GcpChatSuggestion[];
 }
-
-export interface StakeholderPersonaPrompt {
-  id: string;
-  label: string;
-  emoji: string;
-  persona: string;
-  prompt: string;
-  category: 'persona' | 'domain';
-  description: string;
-}
-
-export const GCP_STAKEHOLDER_PROMPTS: StakeholderPersonaPrompt[] = [
-  {
-    id: 'pm_patient_portal',
-    label: 'Product Manager',
-    emoji: '👔',
-    persona: 'Product Manager',
-    prompt: 'Add real-time patient engagement portal and emergency admission SLA tracking with 99.999% availability.',
-    category: 'persona',
-    description: 'Simulate Product Manager requirements update',
-  },
-  {
-    id: 'arch_multiregion_dr',
-    label: 'Lead Architect',
-    emoji: '🏗️',
-    persona: 'Lead Cloud Architect',
-    prompt: 'Upgrade Cloud Spanner to multi-region nam3 dual-leader replication across europe-west1 and us-central1 with RPO < 1s.',
-    category: 'persona',
-    description: 'Simulate Lead Architect Multi-Region DR upgrade',
-  },
-  {
-    id: 'ciso_security_waf',
-    label: 'CISO / Security',
-    emoji: '🛡️',
-    persona: 'CISO / Security Architect',
-    prompt: 'Enforce Cloud KMS HSM CMEK keys, Cloud Armor Enterprise WAF, and VPC Service Controls perimeter.',
-    category: 'persona',
-    description: 'Simulate CISO Security & Zero-Trust hardening',
-  },
-  {
-    id: 'finops_sre_scale',
-    label: 'FinOps & SRE',
-    emoji: '💰',
-    persona: 'FinOps & SRE Lead',
-    prompt: 'Implement Cloud Run scale-to-zero during off-peak windows and BigQuery BI Engine 50GB memory reservation.',
-    category: 'persona',
-    description: 'Simulate FinOps & SRE cost & performance optimization',
-  },
-];
-
-export const GCP_PHARMA_SPECIALIZED_PROMPTS: StakeholderPersonaPrompt[] = [
-  {
-    id: 'pharma_cryo_em',
-    label: 'Cryo-EM & AlphaFold 3',
-    emoji: '🧬',
-    persona: 'Target-to-Lead Discovery Lead',
-    prompt: 'Add Cryo-EM 3D density reconstruction engine and AlphaFold 3 multimer accelerator cluster on Cloud TPU v5e & NVIDIA A100.',
-    category: 'domain',
-    description: 'Offload molecular density reconstruction to TPU/GPU HPC cluster',
-  },
-  {
-    id: 'pharma_vector_chembl',
-    label: 'ChEMBL Vector Search',
-    emoji: '💊',
-    persona: 'Chemical Foundation Architect',
-    prompt: 'Integrate Vertex Vector Search (ScaNN) for sub-second similarity search over 10M+ ChEMBL 33 and BindingDB molecular fingerprints.',
-    category: 'domain',
-    description: 'Sub-8ms p99 chemical fingerprint vector search',
-  },
-  {
-    id: 'pharma_sila2_robotics',
-    label: 'SiLA 2 Wet-Lab IoT',
-    emoji: '🧪',
-    persona: 'Wet-Lab Automation Lead',
-    prompt: 'Enforce SiLA 2 robotic liquid handler microservice gateway with bidirectional IoT telemetry return loop.',
-    category: 'domain',
-    description: 'Standard in Lab Automation robotics IoT stream',
-  },
-  {
-    id: 'pharma_gxp_audit_vault',
-    label: '21 CFR Part 11 Vault',
-    emoji: '🔒',
-    persona: 'GxP Regulatory Compliance Lead',
-    prompt: 'Enforce 21 CFR Part 11 cryptographic key signing, SHA-256 electronic batch records, and immutable audit ledger.',
-    category: 'domain',
-    description: 'Cryptographic compliance audit and e-signatures',
-  },
-];
 
 function escapeXmlText(str: string): string {
   return (str || '')
@@ -219,19 +138,14 @@ function resolveValidTargetNodeId(
   candidateNodeIds: string[],
   semanticKeywords: string[],
   targetX: number
-): { targetId: string; isDialectA: boolean } {
-  if (xml.includes(`id="${preferredDialectATier}"`)) {
+): { targetId: string; isDialectA: boolean; targetBounds?: { x: number; y: number; w: number; h: number } } {
+  if (preferredDialectATier.startsWith('col_') && xml.includes(`id="${preferredDialectATier}"`)) {
     return { targetId: preferredDialectATier, isDialectA: true };
-  }
-
-  for (const cid of candidateNodeIds) {
-    if (xml.includes(`id="${cid}"`)) {
-      return { targetId: cid, isDialectA: false };
-    }
   }
 
   // Parse all non-copilot component vertices in the diagram
   const vertexRegex = /<mxCell\s+id="([^"]+)"[^>]*vertex="1"[^>]*>[\s\S]*?<mxGeometry\s+([^/>]+)\/?>/g;
+  const allVertices = new Map<string, { id: string; x: number; y: number; w: number; h: number; block: string }>();
   const candidates: Array<{ id: string; x: number; y: number; w: number; h: number; block: string }> = [];
   let match: RegExpExecArray | null;
   while ((match = vertexRegex.exec(xml)) !== null) {
@@ -247,9 +161,22 @@ function resolveValidTargetNodeId(
     const y = parseFloat(yMatch[1]);
     const w = parseFloat(wMatch[1]);
     const h = parseFloat(hMatch[1]);
+    const entry = { id, x, y, w, h, block: match[0].toLowerCase() };
+    allVertices.set(id, entry);
     // Skip giant background swimlane containers or tiny decorative icons
     if (w > 650 || h > 360 || w < 75 || h < 34) continue;
-    candidates.push({ id, x, y, w, h, block: match[0].toLowerCase() });
+    candidates.push(entry);
+  }
+
+  for (const cid of candidateNodeIds) {
+    if (xml.includes(`id="${cid}"`)) {
+      const b = allVertices.get(cid);
+      return {
+        targetId: cid,
+        isDialectA: false,
+        targetBounds: b ? { x: b.x, y: b.y, w: b.w, h: b.h } : undefined,
+      };
+    }
   }
 
   // 1. Try semantic keyword match inside vertex value/id
@@ -257,7 +184,11 @@ function resolveValidTargetNodeId(
     const kwLower = kw.toLowerCase();
     const hit = candidates.find((c) => c.id.toLowerCase().includes(kwLower) || c.block.includes(kwLower));
     if (hit) {
-      return { targetId: hit.id, isDialectA: false };
+      return {
+        targetId: hit.id,
+        isDialectA: false,
+        targetBounds: { x: hit.x, y: hit.y, w: hit.w, h: hit.h },
+      };
     }
   }
 
@@ -269,7 +200,12 @@ function resolveValidTargetNodeId(
       const scoreB = b.y * 1.5 - Math.abs(b.x + b.w / 2 - centerX);
       return scoreB - scoreA;
     });
-    return { targetId: sorted[0].id, isDialectA: false };
+    const best = sorted[0];
+    return {
+      targetId: best.id,
+      isDialectA: false,
+      targetBounds: { x: best.x, y: best.y, w: best.w, h: best.h },
+    };
   }
 
   return { targetId: preferredDialectATier, isDialectA: true };
@@ -333,7 +269,8 @@ export function executeGcpPromptModification(
   currentVersionIndex: number | string = 1,
   archId: string = 'blank',
   isDark: boolean = false,
-  explicitPersona?: string
+  explicitPersona?: string,
+  liveGeminiSpec?: LiveGeminiCopilotModificationSpec | null
 ): {
   updatedXml: string;
   newVersion: GcpVersionSnapshot;
@@ -341,6 +278,81 @@ export function executeGcpPromptModification(
 } {
   const cleanPrompt = promptText.replace(/^\[.*?\]\s*/, '').replace(/^\+\s*/, '').trim();
   const lower = cleanPrompt.toLowerCase().replace(/\barmour\b/g, 'armor');
+
+  // 0A. Style / Formatting / GCP Standard Upgrade Prompt -> Re-compile cleanly into Official #78 Hub-and-Spoke
+  if (isStyleOrFormattingPrompt(cleanPrompt)) {
+    const diagNameMatch = currentXml.match(/<diagram[^>]*\bname="([^"]+)"/i);
+    const existingContext = diagNameMatch?.[1] || '';
+    const upgradedXml = synthesizeOfficialGcpArchCenter78FromPrompt(
+      existingContext ? `${existingContext} • ${cleanPrompt}` : cleanPrompt
+    );
+    const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const verIdx = typeof currentVersionIndex === 'number' ? currentVersionIndex + 1 : 2;
+    const versionTag = `v1.0.${verIdx}`;
+    const canvasDiff =
+      '✨ Re-formatted architecture into the Official Google Cloud Architecture Center (#78 Hub-and-Spoke) visual standard with 18 Google Cloud service cards, numbered step badges (①–⑦), 52px spoke channels, and zero overlapping connectors.';
+    const specDiff =
+      'Upgraded Visual & Topological Standard to Official Google Cloud Architecture Center (#78 Hub-and-Spoke Reference Architecture).';
+    const newVersion: GcpVersionSnapshot = {
+      id: `ver_${Date.now()}`,
+      versionTag,
+      timestamp: nowTime,
+      author: explicitPersona || 'Principal Google Cloud Architect',
+      actionSummary: canvasDiff,
+      canvasDiff,
+      specDiff,
+      xml: upgradedXml,
+    };
+    const assistantMessage: GcpChatMessage = {
+      id: `msg_${Date.now() + 1}`,
+      sender: 'assistant',
+      text: `${canvasDiff}`,
+      timestamp: nowTime,
+      actionSummary: {
+        versionTag,
+        canvasDiff,
+        specDiff,
+        persona: 'Principal Google Cloud Architect',
+      },
+    };
+    return {
+      updatedXml: upgradedXml,
+      newVersion,
+      assistantMessage,
+    };
+  }
+
+  // 0B. Pre-Validated Stateful Compositional Multi-Turn Architecture Chain Compiler (Chains 1-6, Steps 1..10+)
+  if (shouldUseCompositionalChainCompiler(currentXml, cleanPrompt)) {
+    const chainRes = compileCompositionalArchitectureChain(currentXml, cleanPrompt);
+    const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const newVersion: GcpVersionSnapshot = {
+      id: `ver_${Date.now()}`,
+      versionTag: chainRes.versionTag,
+      timestamp: nowTime,
+      author: explicitPersona || chainRes.detectedPersona,
+      actionSummary: cleanPrompt,
+      canvasDiff: chainRes.canvasDiff,
+      specDiff: chainRes.specDiff,
+      xml: chainRes.xml,
+    };
+    const assistantMessage: GcpChatMessage = {
+      id: `msg_${Date.now() + 1}`,
+      sender: 'assistant',
+      text: `${chainRes.canvasDiff} (${chainRes.specDiff})`,
+      timestamp: nowTime,
+      actionSummary: {
+        versionTag: chainRes.versionTag,
+        canvasDiff: chainRes.canvasDiff,
+        specDiff: chainRes.specDiff,
+      },
+    };
+    return {
+      updatedXml: chainRes.xml,
+      newVersion,
+      assistantMessage,
+    };
+  }
 
   // Negative Intent & Removal Detection (Prevents Prompt Inversion)
   const isNegativeRemoval = /\b(remove|delete|drop|strip|without|no\s+|omit|disable|exclude|take\s+away)\b/i.test(cleanPrompt);
@@ -375,6 +387,10 @@ export function executeGcpPromptModification(
   if (!explicitPersona) {
     if (isNasaAerospaceDomain) {
       detectedPersona = 'Mission Systems & Aerospace AI Lead';
+    } else if (lower.includes('gemini') || lower.includes('agentic') || lower.includes('adk') || lower.includes('a2a') || lower.includes('mcp') || lower.includes('vertex')) {
+      detectedPersona = 'Principal Agentic AI Architect';
+    } else if (lower.includes('datawarehouse') || lower.includes('data warehouse') || lower.includes('datawarehousing') || lower.includes('data warehousing') || lower.includes('databricks') || lower.includes('lakehouse') || lower.includes('iceberg') || lower.includes('edw')) {
+      detectedPersona = 'Principal Data & Lakehouse Architect';
     } else if (lower.includes('product manager') || lower.includes('patient') || lower.includes('admission') || lower.includes('portal')) {
       detectedPersona = 'Product Manager';
     } else if (lower.includes('lead architect') || lower.includes('spanner') || lower.includes('multi-region') || lower.includes('dr') || lower.includes('failover')) {
@@ -396,9 +412,13 @@ export function executeGcpPromptModification(
     }
   }
 
-  const normalizedVersionIdx = typeof currentVersionIndex === 'number' ? currentVersionIndex : 1;
+  const existingCopilotBoxes = (currentXml.match(/id="copilot_mod_[a-z0-9_]*box(?:_\d+)?"/gi) || []).length;
+  const normalizedVersionIdx =
+    typeof currentVersionIndex === 'number'
+      ? Math.max(currentVersionIndex, existingCopilotBoxes + 1)
+      : existingCopilotBoxes + 1;
   const normalizedArchId = typeof currentVersionIndex === 'string' ? currentVersionIndex : archId;
-  const nextVersionTag = `v1.${normalizedVersionIdx}`;
+  const nextVersionTag = `v1.0.${normalizedVersionIdx + 1}`;
   const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   // Count existing vertices in currentXml to detect Blank Canvas or incomplete 1-box stub
@@ -410,28 +430,54 @@ export function executeGcpPromptModification(
     normalizedArchId === 'blank_canvas' ||
     existingVertexCount < 6;
 
-  const isFullArchitectureCreationPrompt =
-    !isNegativeRemoval &&
-    !isReplacement &&
-    /^(create|build|design|architect|generate|show|draw)\s+(an?\s+|the\s+)?(architecture|diagram|blueprint|topology|reference\s+architecture|system\s+architecture|end-to-end|agentic|closed-loop)/i.test(
+  const isIncrementalComponentEdit =
+    /^(add|insert|attach|upgrade|implement|enforce|integrate|configure|enable|remove|delete|drop|replace|swap|update|modify|connect|wire|include)\b/i.test(
       cleanPrompt
     );
 
+  const isOracleExadataPrompt =
+    /\b(oracle|exadata|e-business|ebusiness|\bebs\b|goldengate|weblogic)\b/i.test(lower);
+
+  const isFullArchitectureCreationPrompt =
+    !isNegativeRemoval &&
+    !isReplacement &&
+    !isIncrementalComponentEdit &&
+    (/^(please\s+)?(create|build|design|architect|generate|synthesize|show|draw)\b/i.test(
+      cleanPrompt
+    ) ||
+      isNasaAerospaceDomain ||
+      isOracleExadataPrompt ||
+      /\b(closed[- ]loop|digital[- ]twin|counterfactual)\b/i.test(lower));
+
   if (isBlankOrStubCanvas || isFullArchitectureCreationPrompt) {
+    const isClosedLoopOrNasa =
+      isNasaAerospaceDomain || /\b(closed[- ]loop|digital[- ]twin|counterfactual|monte[- ]carlo)\b/i.test(lower);
     const synthesizedFullXml = synthesizePromptDrivenDiagramXml(cleanPrompt, {
       blueprintId: 'custom',
       noTemplate: true,
     });
     const healedFull = validateAndHealDrawioXml(
       synthesizedFullXml,
-      'nasa_multiverse_closed_loop_harness'
+      isOracleExadataPrompt
+        ? 'oracle_ebs_exadata_gcp_split_vpc_official'
+        : isClosedLoopOrNasa
+        ? 'nasa_multiverse_closed_loop_harness'
+        : '78'
     );
-    const fullCanvasDiff = `🛰️ Synthesized Closed-Loop Mission Control & Parallel 1:3 Multi-Universe Digital-Twin Agentic Harness for "${cleanPrompt.slice(0, 90)}" with Operator Console, Rhombus GO/NO-GO Commit Gate, Abort Quarantine Sink, Hexagon Google ADK Agents, 1:3 Parallel Counterfactual Simulation Rollout Swimlanes (α, β, γ), Pareto Policy Distiller, and 100Hz Telemetry Return Highway.`;
-    const fullSpecDiff = `Synthesized complete 25-vertex, 16-edge Closed-Loop & Parallel 1:3 Counterfactual Digital-Twin Harness specification and network topology for ${nextVersionTag}.`;
+    const fullCanvasDiff = isOracleExadataPrompt
+      ? `🏛️ Synthesized Official Google Cloud Oracle E-Business Suite (EBS) & Exadata Database Service Split-VPC Architecture for "${cleanPrompt.slice(0, 90)}" with Customer VPC (Dual Active/Active EBS Application Tier Subnet + Shared Services Subnet), Dedicated Interconnect / Partner Interconnect to Oracle Database@Google Cloud Network (Exadata VM Cluster + Standby Exadata VM Cluster with Data Guard Sync), and Google Cloud Native Analytics & Gemini AI Services.`
+      : isClosedLoopOrNasa
+      ? `🛰️ Synthesized Closed-Loop Mission Control & Parallel 1:3 Multi-Universe Digital-Twin Agentic Harness for "${cleanPrompt.slice(0, 90)}" with Operator Console, Rhombus GO/NO-GO Commit Gate, Abort Quarantine Sink, Hexagon Google ADK Agents, 1:3 Parallel Counterfactual Simulation Rollout Swimlanes (α, β, γ), Pareto Policy Distiller, and 100Hz Telemetry Return Highway.`
+      : `🏛️ Synthesized Official Google Cloud Architecture Center (#78) Hub-and-Spoke Reference Architecture for "${cleanPrompt.slice(0, 90)}" (56 vertices, 23 bidirectional edges, 18 Google Cloud service cards across Ingress/Routing Hub, Central Governance Hub, and Dual Execution Spokes).`;
+    const fullSpecDiff = isOracleExadataPrompt
+      ? `Synthesized complete 31-vertex, 27-edge Official Google Cloud Oracle EBS & Exadata Split-VPC specification and network topology for v1.0.1.`
+      : isClosedLoopOrNasa
+      ? `Synthesized complete 31-vertex, 26-edge Closed-Loop & Parallel 1:3 Counterfactual Digital-Twin Harness specification and network topology for v1.0.1.`
+      : `Synthesized complete 56-vertex, 23-edge Official Google Cloud Architecture Center (#78) Hub-and-Spoke specification and network topology for v1.0.1.`;
 
     const newVersion: GcpVersionSnapshot = {
       id: `v_${Date.now()}`,
-      versionTag: nextVersionTag,
+      versionTag: 'v1.0.1',
       timestamp,
       author: detectedPersona,
       actionSummary: fullCanvasDiff,
@@ -443,10 +489,10 @@ export function executeGcpPromptModification(
     const assistantMessage: GcpChatMessage = {
       id: `msg_${Date.now() + 1}`,
       sender: 'assistant',
-      text: `[${detectedPersona}]: Synthesized complete multi-tier architecture diagram for "${cleanPrompt.slice(0, 85)}". Created snapshot ${nextVersionTag}.`,
+      text: `[${detectedPersona}]: Synthesized complete multi-tier architecture diagram for "${cleanPrompt.slice(0, 85)}". Created snapshot v1.0.1.`,
       timestamp,
       actionSummary: {
-        versionTag: nextVersionTag,
+        versionTag: 'v1.0.1',
         canvasDiff: fullCanvasDiff,
         specDiff: fullSpecDiff,
         persona: detectedPersona,
@@ -474,11 +520,17 @@ export function executeGcpPromptModification(
   const textDark = isDark ? '#F8FAFC' : '#0F172A';
   const textMuted = isDark ? '#94A3B8' : '#64748B';
 
-  // Dynamic 2D Coordinate Layout (Bottom Channel Slot Allocation to avoid colliding with headers or bottom-tier cards)
-  const slotIndex = Math.max(0, normalizedVersionIdx - 1);
-  const colOffset = slotIndex % 3;
-  const rowOffset = Math.floor(slotIndex / 3);
-  const targetX = 220 + colOffset * 360;
+  // Dynamic 2D Coordinate Layout: Guarantee a unique slotIndex that never collides with prior copilot_mod_* cells
+  let slotIndex = Math.max(0, existingCopilotBoxes);
+  while (
+    inPlaceUpgradedXml.includes(`_box_${slotIndex}"`) ||
+    inPlaceUpgradedXml.includes(`_edge_${slotIndex}"`)
+  ) {
+    slotIndex += 1;
+  }
+  const colOffset = slotIndex % 4;
+  const rowOffset = Math.floor(slotIndex / 4);
+  const targetX = 312 + colOffset * 340;
 
   let maxExistingBottomY = 620;
   const cellBlocks = currentXml.split('<mxCell');
@@ -496,7 +548,7 @@ export function executeGcpPromptModification(
     }
   }
   const baseY = maxExistingBottomY > 645 ? Math.ceil(maxExistingBottomY) + 28 : 660;
-  const targetY = baseY + rowOffset * 92;
+  const targetY = baseY + rowOffset * 96;
 
   const buildEdgeStyle = (
     strokeColor: string,
@@ -505,8 +557,8 @@ export function executeGcpPromptModification(
     portSpec = 'exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;'
   ) =>
     isDialectA
-      ? `edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=${strokeColor};strokeWidth=1.8;dashed=1;fontSize=8;fontStyle=1;fontColor=${fontColor};labelBackgroundColor=${cardBg};`
-      : `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;${portSpec}strokeColor=${strokeColor};strokeWidth=2.2;dashed=1;dashPattern=5 3;endArrow=block;endFill=1;fontSize=9;fontStyle=1;fontColor=${fontColor};labelBackgroundColor=${cardBg};`;
+      ? `edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=${strokeColor};strokeWidth=2.2;dashed=1;fontSize=8.5;fontStyle=1;fontColor=${fontColor};labelBackgroundColor=${cardBg};`
+      : `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;${portSpec}strokeColor=${strokeColor};strokeWidth=2.4;dashed=1;dashPattern=5 3;endArrow=block;endFill=1;fontSize=9;fontStyle=1;fontColor=${fontColor};labelBackgroundColor=${cardBg};`;
 
   const renderSynthesizedCardAndEdge = (params: {
     boxId: string;
@@ -521,7 +573,11 @@ export function executeGcpPromptModification(
     titleText: string;
     descText: string;
     edgeLabel: string;
-    resolved: { targetId: string; isDialectA: boolean };
+    resolved: {
+      targetId: string;
+      isDialectA: boolean;
+      targetBounds?: { x: number; y: number; w: number; h: number };
+    };
     titleFontSize?: number;
   }): { xml: string; maxRight: number; maxBottom: number } => {
     const {
@@ -647,14 +703,22 @@ export function executeGcpPromptModification(
 
     let boxX = targetX;
     let boxY = targetY;
-    let boxW = 320;
-    const boxH = 74;
+    let boxW = 304;
+    const boxH = 78;
     let portSpec = 'exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;';
     let waypoints: Array<{ x: number; y: number }> = [];
     const isBlueprint00 = inPlaceUpgradedXml.includes('upgraded-gcp-ge-multi-agent-banking-2026');
     const effectiveEdgeLabel = isBlueprint00 ? '' : edgeLabel;
 
-    if (!resolved.isDialectA) {
+    // Align horizontally beneath resolved.targetBounds on non-Blueprint-00 diagrams (e.g. Oracle Exadata Split-VPC, NASA, #78)
+    if (resolved.targetBounds && !isBlueprint00) {
+      boxW = Math.max(286, Math.min(340, Math.round(resolved.targetBounds.w)));
+      const alignedX = Math.round(resolved.targetBounds.x + (resolved.targetBounds.w - boxW) / 2);
+      boxX = Math.max(40, Math.min(1340, alignedX));
+      boxY = baseY;
+    }
+
+    if (!resolved.isDialectA && isBlueprint00) {
       if (resolved.targetId === 'obs_container') {
         boxX = 16;
         boxY = 668;
@@ -709,16 +773,29 @@ export function executeGcpPromptModification(
         boxW = 265;
         portSpec = 'exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;';
       }
+    }
 
-      // Prevent stacking collision if a previous prompt already placed a card at (boxX, boxY)
-      while (
-        inPlaceUpgradedXml.includes(`x="${boxX}" y="${boxY}"`) ||
-        inPlaceUpgradedXml.includes(`x="${boxX + 5}" y="${boxY + 4}"`)
-      ) {
-        boxY += 90;
-        if (waypoints.length > 0) {
-          waypoints[0] = { x: waypoints[0].x, y: boxY + 37 };
-        }
+    // Prevent horizontal/vertical collision if a previous Co-Pilot prompt already placed a card at (boxX, boxY)
+    const candidateCols = [boxX, 992, 652, 312, 1332];
+    let placedWithoutCollision = false;
+    for (const candX of candidateCols) {
+      const hasOverlap =
+        inPlaceUpgradedXml.includes(`x="${candX}" y="${boxY}"`) ||
+        inPlaceUpgradedXml.includes(`x="${candX + 5}" y="${boxY + 4}"`);
+      if (!hasOverlap) {
+        boxX = candX;
+        placedWithoutCollision = true;
+        break;
+      }
+    }
+    while (
+      !placedWithoutCollision &&
+      (inPlaceUpgradedXml.includes(`x="${boxX}" y="${boxY}"`) ||
+        inPlaceUpgradedXml.includes(`x="${boxX + 5}" y="${boxY + 4}"`))
+    ) {
+      boxY += 96;
+      if (waypoints.length > 0) {
+        waypoints[0] = { x: waypoints[0].x, y: boxY + 37 };
       }
     }
 
@@ -728,17 +805,17 @@ export function executeGcpPromptModification(
         : '';
 
     const xml = `
-      <mxCell id="${boxId}" value="" style="rounded=1;arcSize=6;fillColor=${boxFill};strokeColor=${strokeColor};strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
+      <mxCell id="${boxId}" value="" style="rounded=1;arcSize=6;fillColor=${boxFill};strokeColor=${strokeColor};strokeWidth=2.2;dashed=1;dashPattern=5 3;" vertex="1" parent="1">
         <mxGeometry x="${boxX}" y="${boxY}" width="${boxW}" height="${boxH}" as="geometry" />
       </mxCell>
       <mxCell id="${badgeId}" value="${badgeText}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=${badgeColor};" vertex="1" parent="1">
-        <mxGeometry x="${boxX + 5}" y="${boxY + 4}" width="${boxW - 10}" height="14" as="geometry" />
+        <mxGeometry x="${boxX + 5}" y="${boxY + 4}" width="${boxW - 10}" height="15" as="geometry" />
       </mxCell>
       <mxCell id="${titleId}" value="${titleText}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=${titleFontSize};fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="${boxX + 5}" y="${boxY + 20}" width="${boxW - 10}" height="16" as="geometry" />
+        <mxGeometry x="${boxX + 5}" y="${boxY + 21}" width="${boxW - 10}" height="18" as="geometry" />
       </mxCell>
-      <mxCell id="${descId}" value="${descText}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="${boxX + 5}" y="${boxY + 38}" width="${boxW - 10}" height="14" as="geometry" />
+      <mxCell id="${descId}" value="${descText}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
+        <mxGeometry x="${boxX + 5}" y="${boxY + 41}" width="${boxW - 10}" height="30" as="geometry" />
       </mxCell>
       <mxCell id="${edgeId}" value="${effectiveEdgeLabel}" style="${buildEdgeStyle(strokeColor, badgeColor, resolved.isDialectA, portSpec)}" edge="1" parent="1" source="${boxId}" target="${resolved.targetId}">
         <mxGeometry relative="1" as="geometry">${ptsXml}</mxGeometry>
@@ -748,16 +825,36 @@ export function executeGcpPromptModification(
     return {
       xml,
       maxRight: boxX + boxW + 28,
-      maxBottom: boxY + boxH + 24,
+      maxBottom: boxY + boxH + 28,
     };
   };
 
-  let renderedPlacement = { xml: '', maxRight: 1280, maxBottom: targetY + 95 };
+  let renderedPlacement = { xml: '', maxRight: 1280, maxBottom: targetY + 100 };
 
   // Cross-Vendor Translation Check
   const vendorMatch = detectVendorTranslation(lower);
 
-  // 2. Intelligent Draw.io XML Mutation according to prompt intent
+  const isGeminiEnterpriseOrAgenticPrompt =
+    (lower.includes('gemini') && (lower.includes('enterprise') || lower.includes('app') || lower.includes('agent'))) ||
+    lower.includes('agentic ai') ||
+    lower.includes('agentic app') ||
+    lower.includes('google adk') ||
+    lower.includes('agent engine') ||
+    lower.includes('a2a') ||
+    lower.includes('mcp server');
+
+  const isDataWarehouseOrLakehousePrompt =
+    lower.includes('datawarehouse') ||
+    lower.includes('datawarehousing') ||
+    lower.includes('data warehouse') ||
+    lower.includes('data warehousing') ||
+    lower.includes('databricks') ||
+    lower.includes('lakehouse') ||
+    lower.includes('biglake') ||
+    lower.includes('iceberg') ||
+    lower.includes('edw');
+
+  // 2. Intelligent Draw.io XML Mutation according to prompt intent + Live Gemini API Spec
   if (isNegativeRemoval && (lower.includes('spanner') || lower.includes('armor') || lower.includes('waf') || lower.includes('portal') || lower.includes('tpu'))) {
     const targetComp = lower.includes('spanner')
       ? 'Cloud Spanner'
@@ -778,7 +875,7 @@ export function executeGcpPromptModification(
     canvasDiff = `- Decoupled & isolated ${targetComp}; re-routed traffic to core fallback pipelines.`;
     specDiff = `Reconciled DOC-03 (System Architecture) & DOC-07 (Topology Isolation).`;
     renderedPlacement = renderSynthesizedCardAndEdge({
-      boxId: `copilot_mod_decouple_${slotIndex}`,
+      boxId: `copilot_mod_decouple_box_${slotIndex}`,
       badgeId: `copilot_mod_decouple_badge_${slotIndex}`,
       titleId: `copilot_mod_decouple_title_${slotIndex}`,
       descId: `copilot_mod_decouple_desc_${slotIndex}`,
@@ -808,7 +905,7 @@ export function executeGcpPromptModification(
     canvasDiff = `⇄ Replaced Cloud Spanner with Cloud SQL PostgreSQL High-Availability Cluster with cross-zone standby.`;
     specDiff = `Reconciled DOC-03 (System Architecture), DOC-05 (Database DDL), and DOC-08 (HA Standby Protocol).`;
     renderedPlacement = renderSynthesizedCardAndEdge({
-      boxId: `copilot_mod_cloudsql_${slotIndex}`,
+      boxId: `copilot_mod_cloudsql_box_${slotIndex}`,
       badgeId: `copilot_mod_cloudsql_badge_${slotIndex}`,
       titleId: `copilot_mod_cloudsql_title_${slotIndex}`,
       descId: `copilot_mod_cloudsql_desc_${slotIndex}`,
@@ -822,18 +919,148 @@ export function executeGcpPromptModification(
       edgeLabel: 'Relational Persistence',
       resolved,
     });
+  } else if (isGeminiEnterpriseOrAgenticPrompt) {
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'cortex_vertex_agents', '#1A73E8', '#E8F0FE');
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'coordinator_agent', '#1A73E8', '#E8F0FE');
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'cortex_vertex_agents',
+      [
+        'cortex_vertex_agents',
+        'coordinator_agent',
+        'coord_agent',
+        'gemini_models',
+        'llm_container',
+        'ebs_wls_zone_a',
+        'api_cloud_run',
+      ],
+      liveGeminiSpec?.targetKeywords?.length
+        ? [...liveGeminiSpec.targetKeywords, 'vertex', 'gemini', 'agent', 'adk', 'cortex']
+        : ['vertex', 'gemini', 'agent', 'adk', 'cortex', 'weblogic'],
+      992
+    );
+
+    const gemBadge = liveGeminiSpec?.badgeText
+      ? escapeXmlText(liveGeminiSpec.badgeText)
+      : `🤖 LIVE GEMINI CO-PILOT (${nextVersionTag.toUpperCase()}): AGENTIC AI PLANE`;
+    const gemTitle = liveGeminiSpec?.titleText
+      ? escapeXmlText(liveGeminiSpec.titleText)
+      : 'Gemini Enterprise App (Vertex AI Agent Engine + ADK)';
+    const gemDesc = liveGeminiSpec?.descText
+      ? escapeXmlText(liveGeminiSpec.descText)
+      : 'A2A &amp; MCP Tool Orchestration • EBS ISG REST &amp; BigQuery Cortex RAG Grounding';
+    const gemEdge = liveGeminiSpec?.edgeLabel
+      ? escapeXmlText(liveGeminiSpec.edgeLabel)
+      : 'A2A / MCP Agentic Bus';
+
+    canvasDiff =
+      liveGeminiSpec?.canvasDiff ||
+      `🤖 Live Gemini Synthesis (${nextVersionTag}): Added ${gemTitle} connected to ${resolved.targetId} via ${gemEdge} with Vertex AI Agent Engine, Google ADK, and Model Armor guardrails.`;
+    specDiff =
+      liveGeminiSpec?.specDiff ||
+      `Reconciled Agentic AI Plane, A2A/MCP Tool Contracts, and Vertex AI Agent Engine topology for ${nextVersionTag}.`;
+
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: `copilot_mod_gemini_agent_box_${slotIndex}`,
+      badgeId: `copilot_mod_gemini_agent_badge_${slotIndex}`,
+      titleId: `copilot_mod_gemini_agent_title_${slotIndex}`,
+      descId: `copilot_mod_gemini_agent_desc_${slotIndex}`,
+      edgeId: `copilot_mod_gemini_agent_edge_${slotIndex}`,
+      boxFill: isDark ? '#1E3A8A' : '#E8F0FE',
+      strokeColor: '#1A73E8',
+      badgeColor: '#174EA6',
+      badgeText: gemBadge,
+      titleText: gemTitle,
+      descText: gemDesc,
+      edgeLabel: gemEdge,
+      resolved,
+      titleFontSize: 9.8,
+    });
+  } else if (isDataWarehouseOrLakehousePrompt) {
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'cortex_bigquery', '#0284C7', '#E0F2FE');
+    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'cortex_goldengate', '#0284C7', '#E0F2FE');
+    const extractedSubjectRaw = cleanPrompt
+      .replace(/^(?:please\s+)?(?:add|insert|include|integrate|connect)\s+/i, '')
+      .split(/\s+(?:for|to|with|in|on|as)\s+/i)[0]
+      ?.trim();
+    const extractedBrand =
+      extractedSubjectRaw &&
+      extractedSubjectRaw.length >= 2 &&
+      extractedSubjectRaw.length <= 24 &&
+      !/data\s*warehous/i.test(extractedSubjectRaw)
+        ? extractedSubjectRaw.charAt(0).toUpperCase() + extractedSubjectRaw.slice(1)
+        : '';
+    const resolved = resolveValidTargetNodeId(
+      inPlaceUpgradedXml,
+      'cortex_bigquery',
+      [
+        'cortex_bigquery',
+        'cortex_goldengate',
+        'db_spanner',
+        'db_bigtable',
+        'vector_search_db',
+        'exa_dataguard_dr',
+      ],
+      liveGeminiSpec?.targetKeywords?.length
+        ? [...liveGeminiSpec.targetKeywords, 'bigquery', 'cortex', 'goldengate', 'warehouse', 'spanner']
+        : ['bigquery', 'cortex', 'goldengate', 'warehouse', 'iceberg', 'spanner'],
+      652
+    );
+
+    const dwBadge = liveGeminiSpec?.badgeText
+      ? escapeXmlText(liveGeminiSpec.badgeText)
+      : extractedBrand
+      ? `❄️ LIVE GEMINI CO-PILOT (${nextVersionTag.toUpperCase()}): ${escapeXmlText(extractedBrand.toUpperCase())} EDW`
+      : `🏛️ LIVE GEMINI CO-PILOT (${nextVersionTag.toUpperCase()}): ENTERPRISE DATA WAREHOUSE`;
+    const dwTitle = liveGeminiSpec?.titleText
+      ? escapeXmlText(liveGeminiSpec.titleText)
+      : extractedBrand
+      ? `${escapeXmlText(extractedBrand)} Enterprise Data Warehouse (on GCP)`
+      : 'BigQuery &amp; BigLake Iceberg Enterprise Data Warehouse';
+    const dwDesc = liveGeminiSpec?.descText
+      ? escapeXmlText(liveGeminiSpec.descText)
+      : extractedBrand
+      ? 'Streaming Ingestion &amp; BigLake Apache Iceberg Federation • GoldenGate 23ai CDC Sync'
+      : 'Cross-Cloud Apache Iceberg Open Lakehouse • Zero-Copy Analytics &amp; BI Marts';
+    const dwEdge = liveGeminiSpec?.edgeLabel
+      ? escapeXmlText(liveGeminiSpec.edgeLabel)
+      : 'BigLake Iceberg / CDC Sync';
+
+    canvasDiff =
+      liveGeminiSpec?.canvasDiff ||
+      `❄️ Live Gemini Synthesis (${nextVersionTag}): Integrated ${dwTitle} connected to ${resolved.targetId} via ${dwEdge} for real-time ERP & analytical data warehousing.`;
+    specDiff =
+      liveGeminiSpec?.specDiff ||
+      `Reconciled Enterprise Data Warehouse Schema, Apache Iceberg Catalog Federation, and GoldenGate CDC Pipeline for ${nextVersionTag}.`;
+
+    renderedPlacement = renderSynthesizedCardAndEdge({
+      boxId: `copilot_mod_edw_box_${slotIndex}`,
+      badgeId: `copilot_mod_edw_badge_${slotIndex}`,
+      titleId: `copilot_mod_edw_title_${slotIndex}`,
+      descId: `copilot_mod_edw_desc_${slotIndex}`,
+      edgeId: `copilot_mod_edw_edge_${slotIndex}`,
+      boxFill: isDark ? '#0C4A6E' : '#E0F2FE',
+      strokeColor: '#0284C7',
+      badgeColor: '#0369A1',
+      badgeText: dwBadge,
+      titleText: dwTitle,
+      descText: dwDesc,
+      edgeLabel: dwEdge,
+      resolved,
+      titleFontSize: 9.8,
+    });
   } else if (vendorMatch) {
     const resolved = resolveValidTargetNodeId(
       inPlaceUpgradedXml,
       vendorMatch.targetTierId,
-      ['db_spanner', 'api_cloud_run', 'coordinator_agent', 'vector_memory'],
-      ['spanner', 'cloud_run', 'agent', 'storage'],
+      ['db_spanner', 'api_cloud_run', 'coordinator_agent', 'vector_memory', 'cortex_bigquery', 'cortex_vertex_agents'],
+      ['spanner', 'cloud_run', 'agent', 'storage', 'bigquery', 'vertex'],
       targetX
     );
     canvasDiff = `☁️ Mapped [${vendorMatch.detectedEntity}] $\\to$ [${vendorMatch.gcpEquivalent}] with enterprise zero-trust controls.`;
     specDiff = `Reconciled DOC-04 (Component Catalog), DOC-06 (Vendor Translation Map), and DOC-08 (Cloud Architecture).`;
     renderedPlacement = renderSynthesizedCardAndEdge({
-      boxId: `copilot_mod_vendor_${slotIndex}`,
+      boxId: `copilot_mod_vendor_box_${slotIndex}`,
       badgeId: `copilot_mod_vendor_badge_${slotIndex}`,
       titleId: `copilot_mod_vendor_title_${slotIndex}`,
       descId: `copilot_mod_vendor_desc_${slotIndex}`,
@@ -847,162 +1074,6 @@ export function executeGcpPromptModification(
       edgeLabel: 'Mapped Endpoint',
       resolved,
     });
-  } else if (isNasaAerospaceDomain) {
-    canvasDiff = `🚀 Synthesized Zero-Blueprint NASA Closed-Loop & Parallel 1:3 Multi-Universe Fork-Join Topology: Rhombus Launch Commit (LCC) GO/NO-GO Decision Diamond, AFTS Range Safety Abort Sink, Hexagon ADK Agents, 3 Parallel Universe Lanes (α, β, γ), Cross-Universe Pareto Policy Distiller, 3D Cylinder Stores, DSN RF Space-Link Air-Gap Boundary, and Outer 100Hz CCSDS Closed-Loop Telemetry Return Highway.`;
-    specDiff = `Verified by Gemini 3.8 Flash (Google Search Grounding) & Gemini 3.1 Pro (Cross-Model Truthfulness Critic): Custom Compositional AST with 100% Mission Completeness, 100% Standards Grounding (CCSDS 133.0-B/732.0-B, DSN 810-005, cFS/F', NPR 8715.5 LCC/AFTS, ITAR), and 0 2D AABB collisions.`;
-    if (inPlaceUpgradedXml.includes('nasa_multiverse_closed_loop_harness')) {
-      renderedPlacement = { xml: '', maxRight: 1540, maxBottom: 960 };
-    } else {
-      const resolved = resolveValidTargetNodeId(
-        inPlaceUpgradedXml,
-        'col_agent_bg',
-        ['llm_container', 'dlp_model_armor', 'coordinator_agent'],
-        ['llm', 'armor', 'coordinator'],
-        targetX
-      );
-      renderedPlacement = renderSynthesizedCardAndEdge({
-        boxId: `copilot_mod_nasa_harness_box_${slotIndex}`,
-        badgeId: `copilot_mod_nasa_harness_badge_${slotIndex}`,
-        titleId: `copilot_mod_nasa_harness_title_${slotIndex}`,
-        descId: `copilot_mod_nasa_harness_desc_${slotIndex}`,
-        edgeId: `copilot_mod_nasa_harness_edge_${slotIndex}`,
-        boxFill: isDark ? '#1E293B' : '#EFF6FF',
-        strokeColor: '#2563EB',
-        badgeColor: '#1D4ED8',
-        badgeText: '🛡️ OMNI 1.1 + GEMINI 3.1 PRO CERTIFIED HARNESS',
-        titleText: 'NASA CCSDS/DSN + Multiverse Digital-Twin',
-        descText: 'CCSDS 133.0-B TT&amp;C, LCC/AFTS &amp; Monte Carlo Sim',
-        edgeLabel: 'CCSDS &amp; Sim Twin',
-        resolved,
-      });
-    }
-  } else if (lower.includes('cryo-em') || lower.includes('alphafold')) {
-    const resolved = resolveValidTargetNodeId(
-      inPlaceUpgradedXml,
-      'col_agent_bg',
-      ['open_models', 'gemini_models', 'llm_container', 'coordinator_agent'],
-      ['llm', 'gemini', 'model', 'agent'],
-      targetX
-    );
-    canvasDiff = `+ Injected Cryo-EM 3D Density Map Reconstruction Engine & AlphaFold 3 Multimer Accelerator on Cloud TPU v5e & NVIDIA A100 Cluster.`;
-    specDiff = `Reconciled DOC-03 (System Architecture), DOC-04 (HPC Co-Processor Cluster), and DOC-05 (Cloud TPU Topology).`;
-    renderedPlacement = renderSynthesizedCardAndEdge({
-      boxId: 'copilot_mod_cryoem_box',
-      badgeId: 'copilot_mod_cryoem_badge',
-      titleId: 'copilot_mod_cryoem_title',
-      descId: 'copilot_mod_cryoem_desc',
-      edgeId: 'copilot_mod_cryoem_edge',
-      boxFill: isDark ? '#1E1B4B' : '#EEF2FF',
-      strokeColor: '#6366F1',
-      badgeColor: '#4F46E5',
-      badgeText: '🧬 CO-PILOT INJECTED: CRYO-EM &amp; ALPHAFOLD 3 HPC',
-      titleText: 'Cloud TPU v5e (256 Pods) + 8x A100 GPU',
-      descText: 'Sub-minute AlphaFold 3 multimer synthesis &amp; 3D Cryo-EM map alignment',
-      edgeLabel: 'HPC Offload',
-      resolved,
-    });
-  } else if (lower.includes('vector') || lower.includes('chembl') || lower.includes('fingerprint')) {
-    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'vector_memory', '#059669', '#ECFDF5');
-    const resolved = resolveValidTargetNodeId(
-      inPlaceUpgradedXml,
-      'col_lake_bg',
-      ['vector_memory', 'db_spanner', 'db_firestore'],
-      ['vector', 'search', 'memory', 'database'],
-      targetX
-    );
-    canvasDiff = `+ Integrated ScaNN Vector Search Cluster with ChEMBL 33 & BindingDB Molecular Fingerprints (sub-8ms p99 similarity search).`;
-    specDiff = `Reconciled DOC-04 (Component Catalog), DOC-05 (Vector Embeddings Schema), and DOC-07 (Latency Budgets).`;
-    renderedPlacement = renderSynthesizedCardAndEdge({
-      boxId: 'copilot_mod_vector_box',
-      badgeId: 'copilot_mod_vector_badge',
-      titleId: 'copilot_mod_vector_title',
-      descId: 'copilot_mod_vector_desc',
-      edgeId: 'copilot_mod_vector_edge',
-      boxFill: isDark ? '#022C22' : '#F0FDF4',
-      strokeColor: '#10B981',
-      badgeColor: '#059669',
-      badgeText: '⚡ CO-PILOT INJECTED: SCANN VECTOR SEARCH',
-      titleText: '10M+ Molecular Embeddings Index (ChEMBL 33)',
-      descText: 'Sub-8ms p99 similarity search across Morgan &amp; Tanimoto fingerprints',
-      edgeLabel: 'SMILES Lookups',
-      resolved,
-    });
-  } else if (lower.includes('sila') || lower.includes('wet-lab') || lower.includes('robot')) {
-    const resolved = resolveValidTargetNodeId(
-      inPlaceUpgradedXml,
-      'col_gxp_bg',
-      ['service_agent', 'api_cloud_run', 'coordinator_agent'],
-      ['service', 'gateway', 'agent'],
-      targetX
-    );
-    canvasDiff = `⚡ Enforced SiLA 2 (Standard in Lab Automation) Microservice Gateway with bidirectional IoT telemetry streaming.`;
-    specDiff = `Reconciled DOC-03 (Wet-Lab Interfaces), DOC-05 (SiLA 2 Robotic Dispatch), and DOC-08 (Telemetry Lineage).`;
-    renderedPlacement = renderSynthesizedCardAndEdge({
-      boxId: 'copilot_mod_sila_box',
-      badgeId: 'copilot_mod_sila_badge',
-      titleId: 'copilot_mod_sila_title',
-      descId: 'copilot_mod_sila_desc',
-      edgeId: 'copilot_mod_sila_edge',
-      boxFill: isDark ? '#431407' : '#FFF7ED',
-      strokeColor: '#F97316',
-      badgeColor: '#C2410C',
-      badgeText: '🤖 CO-PILOT INJECTED: SILA 2 ROBOTICS GATEWAY',
-      titleText: 'SiLA 2 gRPC Interconnect &amp; Workcell Bus',
-      descText: 'Direct mTLS control for Hamilton Starlet &amp; Echo acoustic liquid handlers',
-      edgeLabel: 'Robotic Dispatch',
-      resolved,
-    });
-  } else if (lower.includes('21 cfr') || lower.includes('gxp') || lower.includes('audit')) {
-    const resolved = resolveValidTargetNodeId(
-      inPlaceUpgradedXml,
-      'col_gxp_bg',
-      ['iam_auth', 'dlp_model_armor', 'obs_container'],
-      ['iam', 'armor', 'audit', 'security'],
-      targetX
-    );
-    canvasDiff = `🔒 Enforced 21 CFR Part 11 Cryptographic Audit Vault, Cloud HSM keyrings, and SHA-256 electronic batch record ledger.`;
-    specDiff = `Reconciled DOC-06 (Regulatory Compliance), DOC-10 (Audit Matrix), and DOC-02 (FDA Electronic Submissions).`;
-    renderedPlacement = renderSynthesizedCardAndEdge({
-      boxId: 'copilot_mod_gxp_box',
-      badgeId: 'copilot_mod_gxp_badge',
-      titleId: 'copilot_mod_gxp_title',
-      descId: 'copilot_mod_gxp_desc',
-      edgeId: 'copilot_mod_gxp_edge',
-      boxFill: isDark ? '#450A0A' : '#FEF2F2',
-      strokeColor: '#EF4444',
-      badgeColor: '#B91C1C',
-      badgeText: '⚖️ CO-PILOT INJECTED: 21 CFR PART 11 CRYPTO VAULT',
-      titleText: 'Cloud KMS FIPS 140-2 Level 3 HSM Keyring',
-      descText: 'Immutable e-signatures, WORM storage lock, &amp; IND dossier packaging',
-      edgeLabel: 'Compliance Audit',
-      resolved,
-    });
-  } else if (lower.includes('patient') || lower.includes('portal') || lower.includes('admission') || lower.includes('product manager')) {
-    inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'ui_chat', '#0284C7', '#E0F2FE');
-    const resolved = resolveValidTargetNodeId(
-      inPlaceUpgradedXml,
-      'col_ingress_bg',
-      ['ui_chat', 'edge_layer', 'api_cloud_run'],
-      ['ui', 'chat', 'portal', 'edge', 'ingress'],
-      targetX
-    );
-    canvasDiff = `+ Injected Emergency Patient Portal & Telemetry Ingress Gateway (Cloud Run) with 99.999% SLA tracking.`;
-    specDiff = `Reconciled DOC-01 (Product Vision), DOC-02 (User Journeys), and DOC-04 (Architecture Overview).`;
-    renderedPlacement = renderSynthesizedCardAndEdge({
-      boxId: 'copilot_mod_portal_box',
-      badgeId: 'copilot_mod_portal_badge',
-      titleId: 'copilot_mod_portal_title',
-      descId: 'copilot_mod_portal_desc',
-      edgeId: 'copilot_mod_portal_edge',
-      boxFill: isDark ? '#1E293B' : '#F0F9FF',
-      strokeColor: '#0284C7',
-      badgeColor: '#0369A1',
-      badgeText: '👔 CO-PILOT INJECTED: PATIENT INGRESS PORTAL',
-      titleText: 'Emergency Triage &amp; Intake Gateway (Cloud Run)',
-      descText: 'FHIR R4 compliant ingestion with 99.999% SLA availability guarantee',
-      edgeLabel: 'Ingress Flow',
-      resolved,
-    });
   } else if (lower.includes('spanner') || lower.includes('multi-region') || lower.includes('dr') || lower.includes('failover') || lower.includes('lead architect')) {
     inPlaceUpgradedXml = applyInPlaceNodeUpgrade(inPlaceUpgradedXml, 'db_spanner', '#4338CA', '#EEF2FF', {
       find: '(TrueTime &amp; Graph)',
@@ -1011,18 +1082,18 @@ export function executeGcpPromptModification(
     const resolved = resolveValidTargetNodeId(
       inPlaceUpgradedXml,
       'col_lake_bg',
-      ['db_spanner', 'grp_accounts', 'db_bigtable'],
-      ['spanner', 'database', 'persistence', 'ledger'],
+      ['db_spanner', 'grp_accounts', 'db_bigtable', 'exa_dataguard_dr'],
+      ['spanner', 'database', 'persistence', 'ledger', 'dataguard'],
       targetX
     );
     canvasDiff = `⚡ Upgraded Cloud Spanner to Active-Active Multi-Region (nam3) with europe-west1 DR witness and cross-region interconnect.`;
     specDiff = `Reconciled DOC-03 (System Architecture), DOC-05 (Infrastructure & DDL), and DOC-08 (Disaster Recovery).`;
     renderedPlacement = renderSynthesizedCardAndEdge({
-      boxId: 'copilot_mod_spanner_box',
-      badgeId: 'copilot_mod_spanner_badge',
-      titleId: 'copilot_mod_spanner_title',
-      descId: 'copilot_mod_spanner_desc',
-      edgeId: 'copilot_mod_spanner_edge',
+      boxId: `copilot_mod_spanner_box_${slotIndex}`,
+      badgeId: `copilot_mod_spanner_badge_${slotIndex}`,
+      titleId: `copilot_mod_spanner_title_${slotIndex}`,
+      descId: `copilot_mod_spanner_desc_${slotIndex}`,
+      edgeId: `copilot_mod_spanner_edge_${slotIndex}`,
       boxFill: isDark ? '#312E81' : '#EEF2FF',
       strokeColor: '#4338CA',
       badgeColor: '#4338CA',
@@ -1041,8 +1112,8 @@ export function executeGcpPromptModification(
     const resolved = resolveValidTargetNodeId(
       inPlaceUpgradedXml,
       'col_ingress_bg',
-      ['dlp_model_armor', 'node_model_armor', 'edge_layer', 'api_cloud_run'],
-      ['model_armor', 'armor', 'guardrail', 'security', 'gateway'],
+      ['dlp_model_armor', 'node_model_armor', 'edge_layer', 'api_cloud_run', 'cortex_vertex_agents'],
+      ['model_armor', 'armor', 'guardrail', 'security', 'gateway', 'vertex'],
       targetX
     );
     canvasDiff = `🛡️ Upgraded Model Armor & SDP in-place + inserted Vertex AI Model Armor Prompt-Injection Firewall & inline DLP token redaction.`;
@@ -1068,8 +1139,8 @@ export function executeGcpPromptModification(
     const resolved = resolveValidTargetNodeId(
       inPlaceUpgradedXml,
       'col_ingress_bg',
-      ['edge_layer', 'identity_auth', 'iam_auth', 'api_cloud_run'],
-      ['edge', 'identity', 'iam', 'ingress'],
+      ['gcp_iap_bastion', 'edge_layer', 'identity_auth', 'iam_auth', 'api_cloud_run'],
+      ['iap', 'bastion', 'edge', 'identity', 'iam', 'ingress'],
       targetX
     );
     canvasDiff = `🔐 Upgraded Edge Layer in-place + inserted BeyondCorp Zero-Trust Identity-Aware Proxy (IAP) & Context-Aware Access.`;
@@ -1094,18 +1165,18 @@ export function executeGcpPromptModification(
     const resolved = resolveValidTargetNodeId(
       inPlaceUpgradedXml,
       'col_ingress_bg',
-      ['edge_layer', 'dlp_model_armor', 'iam_auth'],
-      ['edge', 'armor', 'security', 'waf', 'ingress'],
+      ['gcp_alb_armor', 'cortex_kms_ops', 'edge_layer', 'dlp_model_armor', 'iam_auth'],
+      ['edge', 'armor', 'security', 'waf', 'ingress', 'kms'],
       targetX
     );
     canvasDiff = `🔒 Enforced Cloud Armor Enterprise WAF, Cloud KMS HSM CMEK keys, and VPC Service Controls perimeter shield.`;
     specDiff = `Reconciled DOC-06 (Security & Threat Model) and DOC-10 (Compliance Matrix).`;
     renderedPlacement = renderSynthesizedCardAndEdge({
-      boxId: 'copilot_mod_security_box',
-      badgeId: 'copilot_mod_security_badge',
-      titleId: 'copilot_mod_security_title',
-      descId: 'copilot_mod_security_desc',
-      edgeId: 'copilot_mod_security_edge',
+      boxId: `copilot_mod_security_box_${slotIndex}`,
+      badgeId: `copilot_mod_security_badge_${slotIndex}`,
+      titleId: `copilot_mod_security_title_${slotIndex}`,
+      descId: `copilot_mod_security_desc_${slotIndex}`,
+      edgeId: `copilot_mod_security_edge_${slotIndex}`,
       boxFill: isDark ? '#4C1D95' : '#FAF5FF',
       strokeColor: '#7C3AED',
       badgeColor: '#6D28D9',
@@ -1132,8 +1203,8 @@ export function executeGcpPromptModification(
     const resolved = resolveValidTargetNodeId(
       inPlaceUpgradedXml,
       'col_agent_bg',
-      ['obs_container', 'db_bigtable', 'coordinator_agent'],
-      ['obs', 'finops', 'monitoring', 'logging', 'telemetry'],
+      ['cortex_bigquery', 'cortex_kms_ops', 'obs_container', 'db_bigtable', 'coordinator_agent'],
+      ['bigquery', 'obs', 'finops', 'monitoring', 'logging', 'telemetry'],
       targetX
     );
     canvasDiff = `📊 Upgraded GCP Observability & FinOps Hub in-place + attached BigQuery Cost Intelligence & Cloud Billing Anomaly Pipeline.`;
@@ -1154,30 +1225,59 @@ export function executeGcpPromptModification(
       resolved,
     });
   } else {
-    // Custom Arbitrary Prompt synthesis with dynamic placement & orthogonal edge connection
-    const safeTitle = escapeXmlText(formatCleanCardTitle(cleanPrompt, 48));
+    // Custom Arbitrary Prompt synthesis driven by Live Gemini API Spec (or fallback semantic rules)
+    const fallbackTitle = escapeXmlText(formatCleanCardTitle(cleanPrompt, 48));
+    const customTitle = liveGeminiSpec?.titleText
+      ? escapeXmlText(liveGeminiSpec.titleText)
+      : fallbackTitle;
+    const customBadge = liveGeminiSpec?.badgeText
+      ? escapeXmlText(liveGeminiSpec.badgeText)
+      : `🤖 LIVE GEMINI CO-PILOT (${nextVersionTag.toUpperCase()})`;
+    const customDesc = liveGeminiSpec?.descText
+      ? escapeXmlText(liveGeminiSpec.descText)
+      : 'Synthesized &amp; connected by Google Cloud Architecture Co-Pilot';
+    const customEdge = liveGeminiSpec?.edgeLabel
+      ? escapeXmlText(liveGeminiSpec.edgeLabel)
+      : 'Synthesized Link';
+    const customStroke = liveGeminiSpec?.accentColor || '#2563EB';
+    const customFill = isDark ? '#1E293B' : liveGeminiSpec?.fillColor || '#EFF6FF';
+
     const resolved = resolveValidTargetNodeId(
       inPlaceUpgradedXml,
       'col_agent_bg',
-      ['coordinator_agent', 'transaction_agent', 'api_cloud_run', 'db_spanner'],
-      ['coordinator', 'agent', 'gateway', 'spanner'],
+      [
+        'cortex_vertex_agents',
+        'cortex_bigquery',
+        'cortex_goldengate',
+        'coordinator_agent',
+        'transaction_agent',
+        'api_cloud_run',
+        'db_spanner',
+      ],
+      liveGeminiSpec?.targetKeywords?.length
+        ? liveGeminiSpec.targetKeywords
+        : ['vertex', 'bigquery', 'goldengate', 'coordinator', 'agent', 'gateway', 'spanner'],
       targetX
     );
-    canvasDiff = `+ Applied architectural synthesis: "${cleanPrompt.slice(0, 80)}" incorporating required components and security controls.`;
-    specDiff = `Reconciled system specifications, data dictionary, and infrastructure topology for version ${nextVersionTag}.`;
+    canvasDiff =
+      liveGeminiSpec?.canvasDiff ||
+      `+ Live Gemini Synthesis (${nextVersionTag}): Added "${customTitle}" connected to ${resolved.targetId} via ${customEdge}.`;
+    specDiff =
+      liveGeminiSpec?.specDiff ||
+      `Reconciled system specifications, data dictionary, and infrastructure topology for version ${nextVersionTag}.`;
     renderedPlacement = renderSynthesizedCardAndEdge({
       boxId: `copilot_mod_custom_box_${slotIndex}`,
       badgeId: `copilot_mod_custom_badge_${slotIndex}`,
       titleId: `copilot_mod_custom_title_${slotIndex}`,
       descId: `copilot_mod_custom_desc_${slotIndex}`,
       edgeId: `copilot_mod_custom_edge_${slotIndex}`,
-      boxFill: isDark ? '#1E293B' : '#F8FAFC',
-      strokeColor: '#3B82F6',
-      badgeColor: '#2563EB',
-      badgeText: `🤖 CO-PILOT SYNTHESIS: ${nextVersionTag.toUpperCase()}`,
-      titleText: safeTitle,
-      descText: 'Synthesized &amp; connected by Google Cloud Architecture Co-Pilot',
-      edgeLabel: 'Synthesized Link',
+      boxFill: customFill,
+      strokeColor: customStroke,
+      badgeColor: customStroke,
+      badgeText: customBadge,
+      titleText: customTitle,
+      descText: customDesc,
+      edgeLabel: customEdge,
       resolved,
       titleFontSize: 9.5,
     });

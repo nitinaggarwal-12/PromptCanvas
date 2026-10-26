@@ -15,7 +15,7 @@
  * - 4 database cylinders + 6 bottom banking capability cards drawn in dark ballpoint ink on graph paper
  */
 
-export interface PaperGcpArchitectureParams {
+interface PaperGcpArchitectureParams {
   projectTitle?: string;
   domain?: string;
   theme?: 'light' | 'dark';

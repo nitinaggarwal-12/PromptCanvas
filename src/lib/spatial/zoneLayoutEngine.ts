@@ -13,7 +13,7 @@ export interface ZoneGeometry {
   height: number;
 }
 
-export interface NodePlacement {
+interface NodePlacement {
   id: string;
   x: number;
   y: number;
@@ -23,7 +23,7 @@ export interface NodePlacement {
   row: number;
 }
 
-export interface ZoneLayoutSolution {
+interface ZoneLayoutSolution {
   zoneGeometry: ZoneGeometry;
   placements: NodePlacement[];
   strategy: 'VERTICAL_STACK' | 'POD_GRID_2COL' | 'ELASTIC_EXPANSION';

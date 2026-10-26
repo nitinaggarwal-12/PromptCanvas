@@ -30,7 +30,7 @@ export {
  * Blueprint 61 is intentionally appended after the certified 1-60 catalog so its visible
  * number is deterministic and can never collide with the independently-built 51-60 series.
  */
-export const BLUEPRINT_61_ENTERPRISE_AI_DOCUMENT_ASSISTANT: BlueprintKnowledgeItem = {
+const BLUEPRINT_61_ENTERPRISE_AI_DOCUMENT_ASSISTANT: BlueprintKnowledgeItem = {
   combinedId: 'enterprise_ai_document_assistant',
   diagramName: 'Blueprint 61 — Enterprise AI Document Assistant Platform — Detailed Architecture & Flowchart',
   intentKeywords: 'blueprint 61, enterprise document assistant, document q&a, rag, multimodal document ingestion, document ai, ocr, embeddings, vector search, reranking, vertex ai gemini, model armor, grounding, confidence gate, human in the loop, hitl, sharepoint, salesforce, servicenow, google drive, api gateway, cloud armor, sso, pubsub, eventarc, observability, audit',

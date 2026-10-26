@@ -16,7 +16,7 @@
 import { renderGcpIconHtml, GCP_OFFICIAL_ICONS } from './gcpIcons';
 import { compileArchitectureFromPrompt } from './dynamicArchitectureCompiler';
 
-export interface GCPFunctionalFlowchartOptions {
+interface GCPFunctionalFlowchartOptions {
   projectName?: string;
   useCaseName?: string;
   projectTitle?: string;
@@ -707,5 +707,3 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   </diagram>
 </mxfile>`;
 }
-
-export const generateGcpFunctionalFlowchartXml = generateGCPFunctionalFlowchart;

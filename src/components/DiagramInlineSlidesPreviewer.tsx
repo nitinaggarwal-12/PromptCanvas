@@ -11,7 +11,7 @@ import {
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import cloudViewerManifestData from '@/data/cloud_viewer_manifest.json';
 
-export interface CloudSlidesEntryClient {
+interface CloudSlidesEntryClient {
   key?: string;
   title?: string;
   googleSlidesId: string;
@@ -21,7 +21,7 @@ export interface CloudSlidesEntryClient {
   googleSlidesPdfUrl: string;
 }
 
-export interface CloudDocsEntryClient {
+interface CloudDocsEntryClient {
   key?: string;
   title?: string;
   googleDocsId: string;
@@ -30,7 +30,7 @@ export interface CloudDocsEntryClient {
   googleDocsPdfUrl: string;
 }
 
-export interface CloudViewerManifestClient {
+interface CloudViewerManifestClient {
   accountEmail?: string;
   slides: Record<string, CloudSlidesEntryClient>;
   docs: Record<string, CloudDocsEntryClient>;
@@ -104,6 +104,20 @@ export function normalizeClientManifestKey(rawKey: string, titleHint?: string): 
   const wsPrefixMatch = clean.match(/^(?:uc-geap-)?ws([1-5])(?:$|[-_.])/i);
   if (wsPrefixMatch) return `WS${wsPrefixMatch[1]}`;
 
+  // If rawKey is an ephemeral session fork ID (fork_bp00_technical_sess_...) or #00/#01 with a custom title, derive a clean slug from titleHint
+  if (/^(?:fork_bp|sess_|ver_|custom_sess)/i.test(clean) && titleClean) {
+    const slug = titleClean
+      .replace(/\s*—\s*Blueprint.*$/i, '')
+      .replace(/\s*\(#?\d+\)\s*$/i, '')
+      .replace(/[^A-Za-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '')
+      .toUpperCase()
+      .slice(0, 42);
+    if (slug) {
+      return `CUSTOM_${slug}`;
+    }
+  }
+
   // If rawKey is #00 / BP-00 or #01 / BP-01, verify that titleHint isn't a custom diagram title
   const numMatch = clean.match(/^#?(\d{1,2})$/);
   const bpMatch = clean.match(/^BP[-_]?(\d{1,2})$/i);
@@ -160,7 +174,7 @@ export function openDrawioInNewTab(xml: string, title: string): void {
   window.open('/drawio-editor', '_blank');
 }
 
-export interface InteractiveDrawioInlineEditorProps {
+interface InteractiveDrawioInlineEditorProps {
   xml: string;
   title?: string;
   height?: number;
@@ -333,7 +347,7 @@ export async function fetchCloudViewerManifest(): Promise<CloudViewerManifestCli
  *    calls `POST /api/google-workspace/open` (server-side refresh token conversion), and redirects the tab to the
  *    real `https://docs.google.com/presentation/d/<id>/edit?authuser=nitinagga%40google.com` URL.
  */
-export interface OpenDiagramWorkspaceParams {
+interface OpenDiagramWorkspaceParams {
   key: string;
   title: string;
   mode: 'slides' | 'docs' | 'pdf';
@@ -471,14 +485,14 @@ export async function openDiagramInGoogleWorkspace(
   return null;
 }
 
-export interface DiagramFigureItem {
+interface DiagramFigureItem {
   id: string;
   label: string;
   xmlContent: string;
   svgContent?: string;
 }
 
-export interface DiagramInlineSlidesPreviewerProps {
+interface DiagramInlineSlidesPreviewerProps {
   diagramKey?: string;
   manifestKey?: string;
   badgeText?: string;
@@ -628,13 +642,35 @@ export default function DiagramInlineSlidesPreviewer({
     }
   }, [xmlContent]);
 
-  const shapeCount = Math.max(parsedGraph.vertices.length, 56);
-  const connectorCount = Math.max(parsedGraph.edges.length, 23);
+  const isOfficial78Guide = useMemo(
+    () =>
+      STATIC_BLOG_AND_WS_KEYS.has(normKey) ||
+      /^BP-78$/i.test(normKey) ||
+      xmlContent.includes('arch_center_78') ||
+      xmlContent.includes('hub_and_spoke_78'),
+    [normKey, xmlContent]
+  );
+
+  const shapeCount = isOfficial78Guide
+    ? Math.max(parsedGraph.vertices.length, 56)
+    : Math.max(parsedGraph.vertices.length, 1);
+  const connectorCount = isOfficial78Guide
+    ? Math.max(parsedGraph.edges.length, 23)
+    : Math.max(parsedGraph.edges.length, 1);
 
   const activeDocGuide = useMemo(
     () => resolveOrSynthesizeDocGuideForDiagram(xmlContent, title, normKey, markdownContent, normKey),
     [xmlContent, title, normKey, markdownContent]
   );
+
+  const cleanFileSlug = useMemo(() => {
+    const base = (activeDocGuide.title || title || normKey)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 48);
+    return base || normKey.toLowerCase();
+  }, [activeDocGuide.title, title, normKey]);
 
   const slides: SlideDescriptor[] = useMemo(
     () => [
@@ -649,7 +685,7 @@ export default function DiagramInlineSlidesPreviewer({
         num: 2,
         label: '2. ★ Figure 1 (Editable Diagram)',
         editable: true,
-        desc: `★ Slide 2 of 6 — Figure 1: 100% Native Editable Architecture Topology (#78) (${shapeCount} Shapes • ${connectorCount} Connectors)`,
+        desc: `★ Slide 2 of 6 — Figure 1: 100% Native Editable Architecture Topology${isOfficial78Guide ? ' (#78)' : ''} (${shapeCount} Shapes • ${connectorCount} Connectors)`,
         kind: 'decomposed-split',
       },
       {
@@ -681,7 +717,7 @@ export default function DiagramInlineSlidesPreviewer({
         kind: 'spec-table',
       },
     ],
-    [activeDocGuide.docId, shapeCount, connectorCount]
+    [activeDocGuide.docId, isOfficial78Guide, shapeCount, connectorCount]
   );
 
   const activeSlide = slides[activeSlideIdx] || slides[0];
@@ -869,8 +905,9 @@ export default function DiagramInlineSlidesPreviewer({
       </div>
     );
 
-    // Slide 1 / 6: 1:1 Overview & Architecture Introduction (Matches Image 1 verbatim)
+    // Slide 1 / 6: 1:1 Overview & Architecture Introduction (with Tier & Component Matrix for zero dead whitespace)
     if (slide.num === 1) {
+      const compGroups = archSec?.componentGroupsTable || [];
       return (
         <div className="w-full aspect-video bg-[#F8FAFC] p-2.5 text-[#202124] flex flex-col overflow-hidden select-none">
           <div className="w-full h-full bg-white rounded-xl border border-[#DADCE0] px-6 py-4 flex flex-col justify-between overflow-hidden shadow-2xs">
@@ -879,17 +916,49 @@ export default function DiagramInlineSlidesPreviewer({
               <h1 className="text-lg font-normal text-[#202124] leading-snug mt-1">
                 {activeDocGuide.title}
               </h1>
-              <div className="w-full h-px bg-[#DADCE0] my-2.5" />
-              <div className="space-y-2 text-[10px] text-[#3C4043] leading-relaxed">
+              <div className="w-full h-px bg-[#DADCE0] my-2" />
+              <div className="space-y-1.5 text-[9.5px] text-[#3C4043] leading-relaxed">
                 {activeDocGuide.overviewParagraphs.slice(0, 3).map((p, i) => (
                   <p key={i}>{p}</p>
                 ))}
               </div>
             </div>
+
+            {compGroups.length > 0 && (
+              <div className="my-1.5">
+                <div className="grid grid-cols-3 gap-2">
+                  {compGroups.slice(0, 3).map((grp, idx) => {
+                    const accentColors = [
+                      { border: 'border-[#2563EB]/30', bg: 'bg-[#EFF6FF]/60', header: 'text-[#1D4ED8]' },
+                      { border: 'border-[#16A34A]/30', bg: 'bg-[#F0FDF4]/60', header: 'text-[#15803D]' },
+                      { border: 'border-[#7C3AED]/30', bg: 'bg-[#FAF5FF]/60', header: 'text-[#6D28D9]' },
+                    ][idx % 3];
+                    return (
+                      <div
+                        key={idx}
+                        className={`rounded-lg border ${accentColors.border} ${accentColors.bg} px-2.5 py-2 flex flex-col justify-between`}
+                      >
+                        <div className={`text-[9px] font-bold uppercase tracking-wide ${accentColors.header} truncate`}>
+                          {grp.groupTitle}
+                        </div>
+                        <ul className="mt-1 space-y-0.5 text-[8.5px] text-[#3C4043] leading-tight">
+                          {grp.items.slice(0, 5).map((it, j) => (
+                            <li key={j} className="truncate">
+                              <strong className="text-[#202124]">{it.name}:</strong> {it.description}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             <div>
-              <div className="w-full h-px bg-[#DADCE0] my-2.5" />
-              <h2 className="text-sm font-normal text-[#202124] mb-1.5">Architecture</h2>
-              <div className="space-y-1.5 text-[10px] text-[#3C4043] leading-relaxed">
+              <div className="w-full h-px bg-[#DADCE0] my-2" />
+              <h2 className="text-sm font-normal text-[#202124] mb-1">Architecture</h2>
+              <div className="space-y-1 text-[9.5px] text-[#3C4043] leading-relaxed">
                 {(archSec?.leadParagraphs || []).slice(0, 2).map((p, i) => (
                   <p key={i}>{p}</p>
                 ))}
@@ -1433,7 +1502,7 @@ export default function DiagramInlineSlidesPreviewer({
               <div>
                 <div className="flex items-center gap-2">
                   <strong className="text-sm text-white">
-                    {normKey.toLowerCase()}-editable-slides.pptx
+                    {cleanFileSlug}-editable-slides.pptx
                   </strong>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
                     Google Slides &amp; Docs Synced ✓

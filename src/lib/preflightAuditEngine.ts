@@ -114,7 +114,6 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   ) || (
     xmlInput && (
       xmlInput.includes('canonical') ||
-      xmlInput.includes('NOVACURA') ||
       xmlInput.includes('template_0') ||
       xmlInput.includes('Reference Architecture v2.0') ||
       xmlInput.includes('id="hdr_num"') ||
@@ -141,7 +140,10 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
       xmlInput.includes('id="c4_system_context"') ||
       xmlInput.includes('id="pharma_genomics_pipeline"') ||
       xmlInput.includes('GCP ACTIVE-PASSIVE MULTI-REGION DR') ||
-      xmlInput.includes('PromptCanvas-LayoutEngineV2')
+      xmlInput.includes('PromptCanvas-LayoutEngineV2') ||
+      xmlInput.includes('compositional_chain_architecture') ||
+      xmlInput.includes('data-compositional-chain="true"') ||
+      xmlInput.includes('PromptCanvas-CompositionalChainCompiler')
     )
   );
 
@@ -431,7 +433,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   return xml;
 }
 
-export function heal2DSameTierNodeCollisions(xml: string): string {
+function heal2DSameTierNodeCollisions(xml: string): string {
   interface NodeItem {
     fullTag: string;
     id: string;
@@ -505,7 +507,7 @@ export function heal2DSameTierNodeCollisions(xml: string): string {
   return xml;
 }
 
-export function heal2DBoundingBoxLineCollisions(xml: string): string {
+function heal2DBoundingBoxLineCollisions(xml: string): string {
   interface Box {
     id: string;
     x: number;
@@ -654,7 +656,7 @@ export function heal2DBoundingBoxLineCollisions(xml: string): string {
  * Ensures 100% text accuracy, domain relevance, technical stack precision,
  * and prominently displays the Canvas Title and Use-Case Name on the diagram canvas.
  */
-export function runZeroDefectTextAndTechnicalAccuracyPreflight(
+function runZeroDefectTextAndTechnicalAccuracyPreflight(
   xml: string, 
   archType: string,
   useCaseName?: string

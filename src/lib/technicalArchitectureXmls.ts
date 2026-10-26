@@ -64,142 +64,6 @@ import {
   getExactIntelligentDocProcessingXml
 } from './newEnterpriseReferenceXmls';
 
-// 1. GCP Serverless Web Application Architecture
-const TECH_XML_SERVERLESS_GCP = getExactServerlessGcpReferenceXml();
-
-// 1.1 GCP Multi-Region Active-Passive Disaster Recovery Topology
-const TECH_XML_MULTI_REGION_DR = getExactMultiRegionDrReferenceXml();
-
-// 1.3 6Rs Migration Disposition Matrix (Assessment Phase)
-const TECH_XML_SIX_RS_MIGRATION_MATRIX = getExactSixRsMigrationMatrixXml();
-
-// 1.4 Hybrid / Strangler Fig Transition Architecture (Assessment Phase)
-const TECH_XML_HYBRID_STRANGLER_TRANSITION = getExactHybridStranglerTransitionXml();
-
-// 1.5 Cloud FinOps & Chargeback Model (FinOps & Economics Category)
-const TECH_XML_CLOUD_FINOPS_CHARGEBACK = getExactCloudFinopsChargebackXml();
-
-// 1.6 AI Center of Excellence (CoE) Operating Model (Operational Excellence Category)
-const TECH_XML_AI_COE_OPERATING_MODEL = getExactAiCoeOperatingModelXml();
-
-// 1.7 Model Context Protocol (MCP) Gateway (To-Be / Operational Excellence Category)
-const TECH_XML_MCP_CONTEXT_GATEWAY = getExactMcpContextGatewayXml();
-
-// 1.8 Product Plan - Logical AI Config (Tenant Architecture) (Logical AI Config | To-Be)
-const TECH_XML_LOGICAL_AI_CONFIG_TENANT = getExactLogicalAiConfigTenantXml();
-
-// 1.9 Hub-and-Spoke Agent Configuration Map (Logical AI Config Category)
-const TECH_XML_HUB_AND_SPOKE_AGENT_CONFIG = getExactHubAndSpokeAgentConfigXml();
-
-// 1.10 Unified Data Governance & Access Control Architecture (To-Be State)
-const TECH_XML_UNIFIED_DATA_GOVERNANCE = getExactUnifiedDataGovernanceXml();
-
-// 1.11 DataOps & Anomaly Detection Architecture (To-Be State)
-const TECH_XML_DATAOPS_ANOMALY_DETECTION = getExactDataOpsAnomalyDetectionXml();
-
-// 1.12 Go-Live Cutover & War Room Runbook (Day-1 Cutover Phase / To-Be State)
-const TECH_XML_GOLIVE_WARROOM_RUNBOOK = getExactGoLiveWarRoomRunbookXml();
-
-// 1.13 Enterprise SRE & Observability Architecture (Day-2 Operations / To-Be State)
-const TECH_XML_ENTERPRISE_SRE_OBSERVABILITY = getExactEnterpriseSreObservabilityXml();
-
-// 1.14 Data Residency & Sovereign Cloud Map (To-Be State, Infra Provisioning Phase)
-const TECH_XML_DATA_RESIDENCY_SOVEREIGN_MAP = getExactDataResidencySovereignMapXml();
-
-// 1.15 Federated IAM & SSO Architecture (To-Be State)
-const TECH_XML_FEDERATED_IAM_SSO = getExactFederatedIamSsoXml();
-
-// 1.16 AI TRiSM Security Guardrail Pipeline System (Bespoke Security Solution)
-const TECH_XML_AI_TRISM_GUARDRAILS = getExactAiTrismGuardrailsXml();
-
-// 1.17 Micro-Frontend & UI Architecture (Client Implementation - To-Be State)
-const TECH_XML_MICRO_FRONTENDS = getExactMicroFrontendsXml();
-
-
-
-
-
-
-
-
-// 2. GCP Real-Time Streaming Analytics & Telemetry Pipeline (Authentic Master Architecture)
-const TECH_XML_STREAMING_ANALYTICS = getExactStreamingAnalyticsXml();
-
-// 3. AWS Production Kubernetes & Zero-Trust VPC Infrastructure
-const TECH_XML_MICROSERVICES_AWS = `<mxfile host="embed.diagrams.net">
-  <diagram id="aws_enterprise_arch" name="AWS Production Kubernetes &amp; Zero-Trust VPC Infrastructure (10.0.0.0/16)">
-    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="0" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="node_waf" value="🛡️ &lt;b&gt;[1] Route 53 DNS &amp; AWS WAF + Shield&lt;/b&gt;&lt;br&gt;&lt;i&gt;Edge DDoS Inspection &amp; Web Security&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FFFFFF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="100" y="100" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_alb" value="⚖️ &lt;b&gt;[2] Application Load Balancer (Public Subnet)&lt;/b&gt;&lt;br&gt;&lt;i&gt;ALB Ingress Controller (10.0.1.0/24, 10.0.2.0/24)&lt;/i&gt;" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="100" y="270" width="280" height="95" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_nat" value="🚪 &lt;b&gt;[3] NAT Gateway &amp; Transit Gateway&lt;/b&gt;&lt;br&gt;&lt;i&gt;Multi-AZ Outbound Egress &amp; VPC Peering&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#FAF5FF;strokeColor=#7C3AED;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="100" y="460" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_ecs" value="🐳 &lt;b&gt;[4] AWS EKS Kubernetes Cluster (Private App Subnet)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Istio mTLS Service Mesh (10.0.10.0/24 Multi-AZ)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="560" y="100" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_lambda" value="⚡ &lt;b&gt;[5] AWS Lambda Async Worker Pool&lt;/b&gt;&lt;br&gt;&lt;i&gt;VPC Lambda Functions for Event Processing&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="560" y="280" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_opensearch" value="🔍 &lt;b&gt;[8] Amazon OpenSearch Vector Index&lt;/b&gt;&lt;br&gt;&lt;i&gt;PrivateLink VPC Endpoint ANN Search&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;strokeWidth=2;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="560" y="460" width="280" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_aurora" value="🛢️ &lt;b&gt;[7] Amazon Aurora PostgreSQL (Private Data Subnet)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Multi-AZ Read Replicas (10.0.20.0/24 Isolated)&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="100" width="280" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_dynamodb" value="⚡ &lt;b&gt;[6] Amazon DynamoDB Global Tables&lt;/b&gt;&lt;br&gt;&lt;i&gt;Gateway VPC Endpoint Access (Zero Internet)&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="280" width="280" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="node_s3" value="🪣 &lt;b&gt;[9] Amazon S3 Encrypted Data Lake&lt;/b&gt;&lt;br&gt;&lt;i&gt;KMS CMEK Buckets via Gateway VPC Endpoint&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;strokeWidth=2;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="460" width="280" height="75" as="geometry"/>
-        </mxCell>
-        <mxCell id="edge_waf_alb" value="1. Protected Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node_waf" target="node_alb">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="edge_alb_ecs" value="2. ALB -&gt; Pod mTLS Ingress" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node_alb" target="node_ecs">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="240" y="225"/>
-              <mxPoint x="480" y="225"/>
-              <mxPoint x="480" y="135"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="edge_ecs_aurora" value="3. Private Subnet SQL (10.0.20.0/24)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node_ecs" target="node_aurora">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="edge_ecs_dynamodb" value="4. Gateway VPC Endpoint Call" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node_ecs" target="node_dynamodb">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="940" y="135"/>
-              <mxPoint x="940" y="317"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="edge_lambda_opensearch" value="5. PrivateLink Vector Query" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#16A34A;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node_lambda" target="node_opensearch">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="edge_aurora_s3" value="6. Parquet Snapshot Export" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#0284C7;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;fontColor=#0F172A;fontStyle=1;fontSize=11;" edge="1" parent="1" source="node_aurora" target="node_s3">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
-
-// 4. AWS Data Lakehouse Architecture (Authentic Master Architecture)
-const TECH_XML_DATA_LAKEHOUSE = getExactGcpDataLakehouseWbsXml();
-
-// 5. Enterprise Agentic RAG Platform Architecture
-const TECH_XML_RAG_GCP = getExactAgenticRagWidescreenXml();
-
-// 6. GCP Enterprise DevSecOps CI/CD & Artifact Registry
 const TECH_XML_DEVSECOPS_GCP = `<mxfile host="embed.diagrams.net">
   <diagram id="gcp_devsecops" name="GCP Enterprise DevSecOps CI/CD &amp; Binary Authorization Architecture">
     <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageEnabled="0" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
@@ -245,13 +109,10 @@ const TECH_XML_DEVSECOPS_GCP = `<mxfile host="embed.diagrams.net">
 </mxfile>`;
 
 // 7. GCP FinTech PCI-DSS High-Availability Payment Ledger (Authentic Master Architecture)
-const TECH_XML_FINTECH_PAYMENTS_GCP = getExactFintechPaymentsXml();
 
 // 8. GCP Genomics & HIPAA Clinical Bioinformatics Pipeline (Authentic Master Architecture)
-const TECH_XML_GENOMICS_CLINICAL_GCP = getExactGenomicsClinicalXml();
 
 // 9. GCP Global Supply Chain Real-Time Logistics & Digital Twin (Authentic Master Architecture)
-const TECH_XML_SUPPLY_CHAIN_GCP = getExactSupplyChainXml();
 
 // 10. Flagship Stateful Multi-Agent Orchestration Engine (LangGraph DAG)
 const TECH_XML_MULTI_AGENT_LANGGRAPH = `<mxfile host="embed.diagrams.net">
@@ -299,10 +160,8 @@ const TECH_XML_MULTI_AGENT_LANGGRAPH = `<mxfile host="embed.diagrams.net">
 </mxfile>`;
 
 // 11. GCP Enterprise AI Safety, NLI Claim Benchmarking & Red-Teaming Flow (Authentic Master Architecture)
-const TECH_XML_EVAL_SAFETY_GCP = getExactEvalSafetyXml();
 
 // 12. GCP Enterprise Agentic Service Mesh & Multi-Cloud Interconnect (Authentic Master Architecture)
-const TECH_XML_AGENTIC_MESH_GCP = getExactAgenticMeshXml();
 
 // 13. C4 Architecture Level 1 & Level 2 Enterprise Context & Container Model (MULTI-PAGE BOARDROOM BLUEPRINT: Page 1 Blueprint + Page 2 Strategic Playbook)
 const TECH_XML_C4_SYSTEM_CONTEXT = `<mxfile host="embed.diagrams.net">
@@ -620,7 +479,7 @@ const TECH_XML_MODERN_DATA_STACK = `<mxfile host="embed.diagrams.net">
         </mxCell>
 
         <!-- [3.3] Activated Operational SaaS & CRM Core -->
-        <mxCell id="mn3_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[3.3] Activated Operational SaaS &amp;amp; CRM Core&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;Salesforce, Looker Studio &amp;amp; Zendesk&lt;/b&gt; acting&lt;br&gt;on real-time customer LTV and churn risk&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:17px;&quot;&gt;☁️ &amp;nbsp;📊 &amp;nbsp;💬 &amp;nbsp;⚙️&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#1E293B;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
+        <mxCell id="mn3_3" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[3.3] Activated Operational SaaS &amp;amp; CRM Core&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;Salesforce, Looker &amp;amp; Zendesk&lt;/b&gt; acting&lt;br&gt;on real-time customer LTV and churn risk&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-size:17px;&quot;&gt;☁️ &amp;nbsp;📊 &amp;nbsp;💬 &amp;nbsp;⚙️&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#1E293B;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
           <mxGeometry x="935" y="480" width="410" height="125" as="geometry" />
         </mxCell>
 
@@ -1072,7 +931,7 @@ export function getTechnicalArchitectureXml(archType?: string): string {
   if (id.includes('ai_coe') || id.includes('operating_model') || id.includes('p5-ai-l-06')) return getExactAiCoeOperatingModelXml();
   if (id.includes('llmops_lifecycle') || id.includes('llmops') || id.includes('p5-ai-p-07')) return getExactLlmopsLifecycleXml();
   if (id.includes('dataops_anomaly') || id.includes('p5-dat-p-08')) return getExactDataOpsAnomalyDetectionXml();
-  if (id.includes('bcdr_multi_region') || id.includes('multi_region_dr') || id.includes('p5-gov-p-09')) return TECH_XML_MULTI_REGION_DR;
+  if (id.includes('bcdr_multi_region') || id.includes('multi_region_dr') || id.includes('p5-gov-p-09')) return getExactMultiRegionDrReferenceXml();
   if (id.includes('fintech') || id.includes('ind-fintech-01')) return getExactFintechPaymentsXml();
   if (id.includes('equipment_optimization') || id.includes('supply_chain') || id.includes('ind-mfg-02')) return getExactSupplyChainXml();
   if (id.includes('genomics') || id.includes('clinical') || id.includes('ind-pharma-03')) return getExactGenomicsClinicalXml();
@@ -1101,41 +960,3 @@ export function getTechnicalArchitectureXml(archType?: string): string {
 
   return getExactServerlessGcpReferenceXml();
 }
-
-export const TECH_XML_AGENT_HARNESS_RUNTIME = '';
-
-export {
-  TECH_XML_SERVERLESS_GCP,
-  TECH_XML_MULTI_REGION_DR,
-  TECH_XML_SIX_RS_MIGRATION_MATRIX,
-  TECH_XML_HYBRID_STRANGLER_TRANSITION,
-  TECH_XML_CLOUD_FINOPS_CHARGEBACK,
-  TECH_XML_AI_COE_OPERATING_MODEL,
-  TECH_XML_MCP_CONTEXT_GATEWAY,
-  TECH_XML_LOGICAL_AI_CONFIG_TENANT,
-  TECH_XML_HUB_AND_SPOKE_AGENT_CONFIG,
-  TECH_XML_UNIFIED_DATA_GOVERNANCE,
-  TECH_XML_DATAOPS_ANOMALY_DETECTION,
-  TECH_XML_GOLIVE_WARROOM_RUNBOOK,
-  TECH_XML_ENTERPRISE_SRE_OBSERVABILITY,
-  TECH_XML_DATA_RESIDENCY_SOVEREIGN_MAP,
-  TECH_XML_FEDERATED_IAM_SSO,
-  TECH_XML_AI_TRISM_GUARDRAILS,
-  TECH_XML_MICRO_FRONTENDS,
-  TECH_XML_STREAMING_ANALYTICS,
-  TECH_XML_MICROSERVICES_AWS,
-  TECH_XML_DATA_LAKEHOUSE,
-  TECH_XML_RAG_GCP,
-  TECH_XML_DEVSECOPS_GCP,
-  TECH_XML_FINTECH_PAYMENTS_GCP,
-  TECH_XML_GENOMICS_CLINICAL_GCP,
-  TECH_XML_SUPPLY_CHAIN_GCP,
-  TECH_XML_MULTI_AGENT_LANGGRAPH,
-  TECH_XML_EVAL_SAFETY_GCP,
-  TECH_XML_AGENTIC_MESH_GCP,
-  TECH_XML_C4_SYSTEM_CONTEXT,
-  TECH_XML_MODERN_DATA_STACK,
-  TECH_XML_EVENT_DRIVEN_EDA
-};
-
-

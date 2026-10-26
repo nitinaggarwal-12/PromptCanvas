@@ -122,5 +122,3 @@ export function buildMasterGkeEnterprisePlatformXml(): string {
   </diagram>
 </mxfile>`;
 }
-
-export const MASTER_GKE_ENTERPRISE_PLATFORM_XML = buildMasterGkeEnterprisePlatformXml();

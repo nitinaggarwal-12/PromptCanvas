@@ -98,6 +98,7 @@ import {
 } from '@/lib/preflightAuditEngine';
 import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
 import { executeGcpPromptModification } from '@/lib/gcpCoPilotModifier';
+import { synthesizePromptDrivenDiagramXml } from '@/lib/promptDrivenDiagramSynthesizer';
 import {
   TruthfulnessGroundingDossier,
   runTruthfulnessAndGroundingCertification
@@ -113,7 +114,7 @@ const DEFAULT_DASHBOARD_PROMPT =
   'Design a GCP native technical architecture with Gemini Enterprise, Google ADK, A2A, MCP, Model Armor, Vector Search 2.0, and Cloud Spanner';
 
 // Category Definitions
-export interface CategoryGroup {
+interface CategoryGroup {
   id: string;
   name: string;
   icon: string;
@@ -141,7 +142,7 @@ const DETAIL_LEVELS: { id: AbstractionDetailLevel; name: string; title: string; 
 ];
 
 // Version Lineage Entry Interface
-export interface DashboardVersionEntry {
+interface DashboardVersionEntry {
   id: string;
   versionTag: string;
   major: number;
@@ -168,7 +169,7 @@ export interface DashboardVersionEntry {
 
 
 // Audit Result Interface
-export interface AuditDimensionResult {
+interface AuditDimensionResult {
   category: string;
   name: string;
   score: number;
@@ -178,7 +179,7 @@ export interface AuditDimensionResult {
 }
 
 // Pending Navigation / Switch Action when Unsaved Session Copy Exists
-export type PendingLeaveAction =
+type PendingLeaveAction =
   | { type: 'route'; href: string; label?: string }
   | { type: 'category'; categoryId: string }
   | { type: 'blueprint'; blueprint: CanonicalTemplate }
@@ -364,7 +365,7 @@ function DashboardContent() {
       source: 'initial_load',
       sourceLabel: 'Canonical Baseline',
       diffSummary: 'Canonical Master Blueprint #00 loaded across 5 Deterministic Zones (Immutable Baseline).',
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      timestamp: 'Baseline',
       xml: initialBaseXml,
       blueprintId: '00',
       level: 'L3',
@@ -493,6 +494,40 @@ function DashboardContent() {
           }
         }
 
+        if (
+          bpParam?.toLowerCase() === 'blank' ||
+          params.get('mode')?.toLowerCase() === 'blank'
+        ) {
+          const blankTitle = 'Blank Architecture Canvas';
+          const blankXml = `<mxGraphModel data-blank-canvas="true" dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel>`;
+          setCanvasTitle(blankTitle);
+          setLoadedBlueprintId('blank');
+          setIsSessionForked(true);
+          setHasUnsavedSessionChanges(false);
+          setVersionHistory([
+            {
+              id: `ver_blank_${Date.now()}`,
+              versionTag: 'v1.0 (Blank Scratchpad)',
+              major: 1,
+              minor: 0,
+              title: blankTitle,
+              prompt: 'Blank Canvas Initialization',
+              source: 'initial_load',
+              sourceLabel: 'Clean Scratchpad',
+              diffSummary: 'Clean canvas initialized with 0 components.',
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              xml: blankXml,
+              blueprintId: 'blank',
+              level: 'L2',
+              perspective: 'Technical',
+              status: 'draft',
+              perspectiveXmlMap: { Technical: blankXml },
+            },
+          ]);
+          setActiveVersionIndex(0);
+          return;
+        }
+
         if (bpParam) {
           const cleanBpId = bpParam.replace(/^#/, '').padStart(2, '0');
           const foundBp = CANONICAL_TEMPLATES.find((t) => t.id === cleanBpId || t.id === bpParam);
@@ -576,57 +611,88 @@ function DashboardContent() {
     return currentVersion.xml;
   }, [isSessionForked, currentVersion, loadedBlueprintId, canvasPerspective, isLight]);
 
-  // 7. DYNAMIC CONTEXTUAL 3 TOP NEXT-UPDATE SUGGESTIONS (Rotates as user applies prompts!)
+  // 7. DYNAMIC CONTEXTUAL 3 TOP NEXT-UPDATE SUGGESTIONS (Rotates as user applies prompts & matches active domain!)
   const contextualSuggestions = useMemo(() => {
     const xmlLower = (currentVersion.xml || '').toLowerCase();
     const appliedPrompts = versionHistory
       .filter((v) => v.source !== 'initial_load')
       .map((v) => v.prompt.toLowerCase());
 
-    const suggestionPool = [
-      {
-        key: 'spanner ha',
-        text: xmlLower.includes('spanner')
-          ? '+ Upgrade Cloud Spanner to Multi-Region Dual-Zone HA'
-          : '+ Add Multi-Region Cloud Spanner HA Persistence Tier'
-      },
-      {
-        key: 'model armor',
-        text: xmlLower.includes('beyondcorp') || xmlLower.includes('model armor')
-          ? '+ Insert Vertex AI Model Armor Prompt-Injection Firewall'
-          : '+ Insert BeyondCorp Zero-Trust Identity-Aware Proxy & WAF'
-      },
-      {
-        key: 'cost intelligence',
-        text: xmlLower.includes('finops')
-          ? '+ Attach BigQuery Cost Intelligence & Cloud Billing Anomaly Pipeline'
-          : '+ Add Cloud Monitoring, Distributed Trace & FinOps Telemetry Collector'
-      },
-      {
-        key: 'beyondcorp',
-        text: '+ Enforce BeyondCorp Enterprise IAP & Context-Aware Zero-Trust Access'
-      },
-      {
-        key: 'vector search',
-        text: '+ Integrate Vertex Vector Search (ScaNN) Sub-8ms p99 Embeddings Index'
-      },
-      {
-        key: 'cloud armor waf',
-        text: '+ Enforce Cloud Armor Enterprise WAF & Cloud KMS FIPS 140-2 Level 3 CMEK'
-      },
-      {
-        key: 'cloud sql',
-        text: '+ Replace Spanner with Cloud SQL PostgreSQL High-Availability Cluster'
-      },
-      {
-        key: 'tpu v5e',
-        text: '+ Add Cloud TPU v5e & NVIDIA A100 GPU Accelerator Offload Cluster'
-      },
-      {
-        key: '21 cfr',
-        text: '+ Enforce 21 CFR Part 11 Cryptographic Audit Vault & Immutable Ledger'
-      }
-    ];
+    const isCloudNativeWebDomain =
+      xmlLower.includes('data-chain-domain="cloud_native_web"') ||
+      (xmlLower.includes('react') && xmlLower.includes('node.js') && xmlLower.includes('postgresql'));
+
+    const suggestionPool = isCloudNativeWebDomain
+      ? [
+          {
+            key: 'redis caching',
+            text: '+ Add a Redis caching layer between the Node.js API and PostgreSQL to cache frequent queries.'
+          },
+          {
+            key: 'load balancer cdn',
+            text: '+ Add an Application Load Balancer and a CDN in front of the React frontend and Node.js backend.'
+          },
+          {
+            key: 'auth service',
+            text: '+ Split the Node.js backend into an Auth Service and a Core API Service deployed on a Kubernetes cluster.'
+          },
+          {
+            key: 'kafka event bus',
+            text: '+ Add a Kafka event bus and an asynchronous Background Worker service for processing heavy jobs.'
+          },
+          {
+            key: 's3 object storage',
+            text: '+ Add an S3-compatible Object Storage bucket connected to the Worker service and CDN.'
+          },
+          {
+            key: 'prometheus grafana',
+            text: '+ Add an Observability stack with Prometheus, Grafana, and OpenTelemetry collecting metrics from all services.'
+          }
+        ]
+      : [
+          {
+            key: 'spanner ha',
+            text: xmlLower.includes('spanner')
+              ? '+ Upgrade Cloud Spanner to Multi-Region Dual-Zone HA'
+              : '+ Add Multi-Region Cloud Spanner HA Persistence Tier'
+          },
+          {
+            key: 'model armor',
+            text: xmlLower.includes('beyondcorp') || xmlLower.includes('model armor')
+              ? '+ Insert Vertex AI Model Armor Prompt-Injection Firewall'
+              : '+ Insert BeyondCorp Zero-Trust Identity-Aware Proxy & WAF'
+          },
+          {
+            key: 'cost intelligence',
+            text: xmlLower.includes('finops')
+              ? '+ Attach BigQuery Cost Intelligence & Cloud Billing Anomaly Pipeline'
+              : '+ Add Cloud Monitoring, Distributed Trace & FinOps Telemetry Collector'
+          },
+          {
+            key: 'beyondcorp',
+            text: '+ Enforce BeyondCorp Enterprise IAP & Context-Aware Zero-Trust Access'
+          },
+          {
+            key: 'vector search',
+            text: '+ Integrate Vertex Vector Search (ScaNN) Sub-8ms p99 Embeddings Index'
+          },
+          {
+            key: 'cloud armor waf',
+            text: '+ Enforce Cloud Armor Enterprise WAF & Cloud KMS FIPS 140-2 Level 3 CMEK'
+          },
+          {
+            key: 'cloud sql',
+            text: '+ Replace Spanner with Cloud SQL PostgreSQL High-Availability Cluster'
+          },
+          {
+            key: 'tpu v5e',
+            text: '+ Add Cloud TPU v5e & NVIDIA A100 GPU Accelerator Offload Cluster'
+          },
+          {
+            key: '21 cfr',
+            text: '+ Enforce 21 CFR Part 11 Cryptographic Audit Vault & Immutable Ledger'
+          }
+        ];
 
     const unapplied = suggestionPool.filter(
       (item) =>
@@ -783,7 +849,12 @@ function DashboardContent() {
         block.includes('fillColor=none') ||
         block.includes('dashed=1') ||
         block.includes('swimlane') ||
-        block.includes('id="audit_remediated_security_bar"')
+        block.includes('id="audit_remediated_security_bar"') ||
+        id === 'hdr_title' ||
+        id === 'title_bar' ||
+        id === 'title_banner' ||
+        id.startsWith('hdr_') ||
+        /_tier_|_zone|_subnet|_stage|_loop|_cluster_box/i.test(id)
       ) {
         continue;
       }
@@ -794,8 +865,8 @@ function DashboardContent() {
       if (!parentMatch || !geoMatch) continue;
       const w = parseFloat(geoMatch[3]);
       const h = parseFloat(geoMatch[4]);
-      // Only check true leaf component cards (exclude small step badges <48x34 and outer containers >360x160)
-      if (w >= 48 && w <= 360 && h >= 34 && h <= 160) {
+      // Only check true leaf component cards (exclude small step badges <48x34 and outer containers >470x180)
+      if (w >= 48 && w <= 470 && h >= 34 && h <= 180) {
         boxes.push({
           id,
           parent: parentMatch[1],
@@ -810,6 +881,7 @@ function DashboardContent() {
     const edgeCount = (activeCanvasXml.match(/edge="1"/g) || []).length;
     const isSingleBoxOrStub =
       totalNonTextVertices < 6 ||
+      boxes.length < 4 ||
       edgeCount < 3 ||
       (activeCanvasXml.includes('copilot_mod_custom_box_') && boxes.length <= 2);
 
@@ -1166,7 +1238,7 @@ function DashboardContent() {
         major: 1,
         minor: 1,
         title: newTitle,
-        prompt: 'Decompiled via Gemini 2.5 Pro Vision AI',
+        prompt: 'Decompiled via Gemini 3.1 Pro Vision AI',
         source: 'manual_drawio',
         sourceLabel: 'Gemini Vision AI',
         diffSummary: 'Decompiled architectural vectors and components from image.',
@@ -1333,26 +1405,30 @@ function DashboardContent() {
       aiReasoning?: string;
       plannedSteps?: string[];
       truthfulnessDossier?: TruthfulnessGroundingDossier;
+      resetSessionForNewSynthesis?: boolean;
     }
   ) => {
+    const isReset = Boolean(aiMeta?.resetSessionForNewSynthesis);
     const prevVer = currentVersion;
     const {
       major: nextMajor,
       minor: nextMinor,
       micro: nextMicro,
       versionTag: nextTag
-    } = computeNextMicroVersion(
-      prevVer.major ?? 1,
-      prevVer.minor ?? 0,
-      prevVer.micro ?? 0,
-      prevVer.versionTag
-    );
+    } = isReset
+      ? { major: 1, minor: 0, micro: 1, versionTag: 'v1.0.1' }
+      : computeNextMicroVersion(
+          prevVer.major ?? 1,
+          prevVer.minor ?? 0,
+          prevVer.micro ?? 0,
+          prevVer.versionTag
+        );
 
     // Compute AST Diff between previous and new XML
     const diffResult: ArchitectureDiffResult = computeArchitectureDiff(
-      prevVer.xml,
+      isReset ? '' : prevVer.xml,
       newXml,
-      prevVer.versionTag,
+      isReset ? 'v1.0' : prevVer.versionTag,
       nextTag
     );
 
@@ -1362,7 +1438,9 @@ function DashboardContent() {
         : `Applied architectural modifications: "${promptText.slice(0, 45)}..."`
     );
 
-    const forkId = sessionCopyId || `fork_bp${loadedBlueprintId}_${canvasPerspective.toLowerCase()}_${sessionUserId}`;
+    const forkId = isReset
+      ? `fork_bp${loadedBlueprintId}_${canvasPerspective.toLowerCase()}_${sessionUserId}_${Date.now()}`
+      : sessionCopyId || `fork_bp${loadedBlueprintId}_${canvasPerspective.toLowerCase()}_${sessionUserId}`;
     setIsSessionForked(true);
     setHasUnsavedSessionChanges(true);
     setSessionCopyId(forkId);
@@ -1392,13 +1470,13 @@ function DashboardContent() {
       plannedSteps: aiMeta?.plannedSteps,
       truthfulnessDossier: aiMeta?.truthfulnessDossier,
       perspectiveXmlMap: {
-        ...(prevVer.perspectiveXmlMap || {}),
+        ...(isReset ? {} : prevVer.perspectiveXmlMap || {}),
         [canvasPerspective]: newXml
       }
     };
 
     setVersionHistory((prev) => {
-      const nextHistory = [newEntry, ...prev];
+      const nextHistory = isReset ? [newEntry] : [newEntry, ...prev];
       if (typeof window !== 'undefined') {
         try {
           sessionStorage.setItem(
@@ -1413,6 +1491,8 @@ function DashboardContent() {
           autoSaveGeneratedDiagramAsDraft({
             id: /nasa|satellite|satellight|multiverse|multi-universe/i.test(`${effectiveTitle} ${promptText}`)
               ? 'DRAFT-NASA-MULTIVERSE-V1-0-1'
+              : /\b(oracle|exadata|e-business|ebusiness|\bebs\b|goldengate|weblogic)\b/i.test(`${effectiveTitle} ${promptText}`)
+              ? 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1'
               : `draft_${forkId}`,
             title: effectiveTitle,
             xml: newXml,
@@ -1536,37 +1616,52 @@ function DashboardContent() {
     setConversationalReply(null);
     setIsProcessingAi(true);
     setAiPlanningStatus('Stage 1/4: Grounding Standards & Reality Check (gemini-3.8-flash + googleSearch / deep-research-max-preview-04-2026)...');
-    showToast(`🧠 Running 4-Stage Multi-Model Grounding, Synthesis & Cross-Model Truthfulness Audit...`);
+    showToast(`🧠 Running Live Gemini Co-Pilot Synthesis & 4-Stage Multi-Model Truthfulness Audit...`);
 
     try {
-      const nextMinorStep = currentVersion.minor + 1;
+      const currentVertexCount = forceNewSynthesis
+        ? 0
+        : (currentVersion.xml.match(/vertex="1"/g) || []).length;
+      const existingCopilotBoxes = forceNewSynthesis
+        ? 0
+        : (currentVersion.xml.match(/id="copilot_mod_[a-z0-9_]*box(?:_\d+)?"/gi) || []).length;
+      const nextModStep = forceNewSynthesis
+        ? 1
+        : Math.max((currentVersion.micro ?? 0) + 1, existingCopilotBoxes + 1);
       const isCurrentlyBlank =
         forceNewSynthesis ||
-        loadedBlueprintId === 'blank' ||
-        currentVersion.blueprintId === 'blank' ||
-        currentVersion.xml.includes('data-blank-canvas="true"');
+        currentVersion.xml.includes('data-blank-canvas="true"') ||
+        currentVertexCount < 6;
+      const effectiveArchId =
+        loadedBlueprintId && loadedBlueprintId !== 'blank'
+          ? `canonical_${loadedBlueprintId}`
+          : 'custom_synthesized';
 
-      const modResult = executeGcpPromptModification(
+      // Preliminary synthesis pass (used immediately for blank-canvas creation or as AST baseline for follow-up modifications)
+      let modResult = executeGcpPromptModification(
         isCurrentlyBlank ? '' : currentVersion.xml,
         query,
-        nextMinorStep,
-        isCurrentlyBlank ? 'blank' : `canonical_${loadedBlueprintId}`,
+        nextModStep,
+        isCurrentlyBlank ? 'blank' : effectiveArchId,
         !isLight
       );
 
-      setAiPlanningStatus('Stage 2/4: Synthesizing Grounded Multi-Tier Topology (gemini-3.8-flash) & Healing 2D Geometry (google-omni-1.1)...');
+      setAiPlanningStatus('Stage 2/4: Calling Live Gemini Architecture Co-Pilot & Synthesizing Grounded Multi-Tier Topology...');
 
-      const healedXml = preflightVerifyAndHealXmlAcrossAll6Audits(
+      let healedXml = preflightVerifyAndHealXmlAcrossAll6Audits(
         modResult.updatedXml,
-        isCurrentlyBlank ? 'custom_synthesized' : `canonical_${loadedBlueprintId}`
+        isCurrentlyBlank ? 'custom_synthesized' : effectiveArchId
       );
 
-      setAiPlanningStatus('Stage 3/4: Running Cross-Model Truthfulness & Completeness Critic (gemini-3.1-pro-preview judging gemini-3.8-flash)...');
+      const isCompositionalChainXml = healedXml.includes('data-compositional-chain="true"');
+
+      setAiPlanningStatus('Stage 3/4: Running Live Gemini Synthesis + Cross-Model Truthfulness Critic (gemini-3.8-flash + gemini-3.1-pro-preview)...');
 
       let apiDecision: GeminiArchitecturalDecision | null = null;
       let truthfulnessDossier: TruthfulnessGroundingDossier | null = null;
+      let liveCopilotModification: any = null;
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 9500);
+      const timeoutId = setTimeout(() => controller.abort(), isCompositionalChainXml ? 5000 : 25000);
       try {
         const res = await fetch('/api/architect-decision', {
           method: 'POST',
@@ -1574,6 +1669,7 @@ function DashboardContent() {
           body: JSON.stringify({
             prompt: query,
             blueprintId: loadedBlueprintId,
+            currentTitle: canvasTitle,
             currentPerspective: canvasPerspective,
             currentLevel: selectedLevel,
             xmlContent: healedXml
@@ -1589,22 +1685,46 @@ function DashboardContent() {
           if (data?.truthfulnessDossier) {
             truthfulnessDossier = data.truthfulnessDossier;
           }
+          if (data?.copilotModification) {
+            liveCopilotModification = data.copilotModification;
+          }
         }
       } catch (apiErr) {
         clearTimeout(timeoutId);
         console.warn('Gemini Architect API fast-path synthesis:', apiErr);
       }
 
+      // If this is a follow-up modification on a non-chain existing diagram and the live Gemini API returned a tailored component spec,
+      // re-apply executeGcpPromptModification with liveCopilotModification so the live Gemini output drives the rendered XML!
+      if (!isCurrentlyBlank && !isCompositionalChainXml && liveCopilotModification) {
+        modResult = executeGcpPromptModification(
+          currentVersion.xml,
+          query,
+          nextModStep,
+          effectiveArchId,
+          !isLight,
+          undefined,
+          liveCopilotModification
+        );
+        healedXml = preflightVerifyAndHealXmlAcrossAll6Audits(
+          modResult.updatedXml,
+          effectiveArchId
+        );
+      }
+
       if (!truthfulnessDossier) {
         truthfulnessDossier = await runTruthfulnessAndGroundingCertification({
           prompt: query,
           xmlContent: healedXml,
-          blueprintId: loadedBlueprintId
+          blueprintId: loadedBlueprintId,
         });
       }
 
       const persona = modResult.newVersion.author || 'Lead Cloud Architect';
-      const modelUsed = `gemini-3.8-flash → judged by gemini-3.1-pro-preview (${truthfulnessDossier.scores.overallCompositeScore}% Certified)`;
+      const liveBadge = liveCopilotModification?.isLiveGeminiModification
+        ? `Live ${liveCopilotModification.modelUsed || 'gemini-3.8-flash'}`
+        : 'gemini-3.8-flash';
+      const modelUsed = `${liveBadge} → judged by gemini-3.1-pro-preview (${truthfulnessDossier.scores.overallCompositeScore}% Certified)`;
       const aiReasoning =
         `${modResult.newVersion.canvasDiff} ${modResult.newVersion.specDiff} ` +
         `[Truthfulness=${truthfulnessDossier.scores.truthfulnessAndReality}%, Standards Grounding=${truthfulnessDossier.scores.externalStandardsGrounding}%, Completeness=${truthfulnessDossier.scores.logicalMissionCompleteness}%]`;
@@ -1615,24 +1735,34 @@ function DashboardContent() {
       );
 
       const qLower = query.toLowerCase();
+      const isIncrementalEdit =
+        /^(add|insert|attach|upgrade|implement|enforce|integrate|configure|enable|remove|delete|drop|replace|swap|update|modify|connect|wire|include)\b/i.test(
+          query.trim()
+        );
+      const isFullCreationPrompt =
+        !isIncrementalEdit &&
+        (/^(please\s+)?(create|build|design|architect|generate|synthesize|show|draw)\b/i.test(query) ||
+          /\b(closed[- ]loop|digital[- ]twin|counterfactual)\b/i.test(qLower));
+
       let effectiveTitle = canvasTitle;
-      if (
-        qLower.includes('nasa') ||
-        qLower.includes('satellite') ||
-        qLower.includes('satellight') ||
-        qLower.includes('universe') ||
-        qLower.includes('multiverse')
-      ) {
-        effectiveTitle = "NASA Satellite Launch & Multi-Universe Digital-Twin Harness (CCSDS • DSN • cFS/F' • ITAR)";
-        setCanvasTitle(effectiveTitle);
-      } else if (isCurrentlyBlank || canvasTitle === 'Blank Architecture Canvas') {
+      if (isCurrentlyBlank || (isFullCreationPrompt && !currentVersion.xml.includes('data-compositional-chain="true"')) || canvasTitle === 'Blank Architecture Canvas') {
+        const xmlDiagramNameMatch = healedXml.match(/<diagram\b[^>]*\bname="([^"]+)"/i);
+        const xmlDiagramTitle = xmlDiagramNameMatch?.[1]
+          ? xmlDiagramNameMatch[1].replace(/\s*\(v\d+\.\d+\.\d+\)\s*$/i, '').trim()
+          : '';
         const cleanedQueryTitle = query
-          .replace(/^(create|build|design|architect|generate|show|draw)\s+(an?\s+|the\s+)?(architecture\s+diagram|diagram|architecture|blueprint|topology)\s*(showing|for|of|with)?\s*/i, '')
+          .replace(/^(please\s+)?(create|build|design|architect|generate|synthesize|show|draw)\s+(an?\s+|the\s+)?(architecture\s+diagram|diagram|architecture|blueprint|topology)?\s*(showing|for|of|with)?\s*/i, '')
+          .replace(/[.;]+$/, '')
           .trim();
+        const wordSafeQueryTitle =
+          cleanedQueryTitle.length <= 84
+            ? cleanedQueryTitle
+            : cleanedQueryTitle.slice(0, 84).replace(/\s+\S*$/, '');
         effectiveTitle =
           apiDecision?.tailoredSpec?.diagramTitle ||
-          (cleanedQueryTitle.length > 4
-            ? `${cleanedQueryTitle.charAt(0).toUpperCase()}${cleanedQueryTitle.slice(1, 78)}`
+          xmlDiagramTitle ||
+          (wordSafeQueryTitle.length > 4
+            ? `${wordSafeQueryTitle.charAt(0).toUpperCase()}${wordSafeQueryTitle.slice(1)}`
             : 'Custom Enterprise Cloud Architecture');
         setCanvasTitle(effectiveTitle);
       }
@@ -1642,7 +1772,7 @@ function DashboardContent() {
         healedXml,
         query,
         isFromChip ? 'suggestion_chip' : 'ai_copilot',
-        isFromChip ? 'Context Suggestion' : 'Gemini 3.8 Flash + 3.1 Pro Critic',
+        isFromChip ? 'Context Suggestion' : 'Live Gemini Co-Pilot + 3.1 Pro Critic',
         effectiveTitle,
         modResult.newVersion.canvasDiff || `+ Integrated "${query}" into isolated session copy.`,
         {
@@ -1650,7 +1780,8 @@ function DashboardContent() {
           modelUsed,
           aiReasoning,
           plannedSteps,
-          truthfulnessDossier
+          truthfulnessDossier,
+          resetSessionForNewSynthesis: forceNewSynthesis
         }
       );
     } catch (err) {
@@ -2204,7 +2335,7 @@ function DashboardContent() {
                   isLight ? 'text-slate-900' : 'text-white'
                 }`}
               >
-                <span className="shrink-0">PromptCanvas &mdash; Architecture Dashboard</span>
+                <span className="shrink-0">PromptCanvas &mdash; AI Architecture Studio</span>
                 <span
                   className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border shrink-0 ${
                     isLight
@@ -2238,15 +2369,15 @@ function DashboardContent() {
                         : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
                     }`}
                   >
-                    <Lock className={`w-2.5 h-2.5 ${isLight ? 'text-emerald-600' : 'text-emerald-400'}`} />
-                    <span>Immutable Canonical Baseline</span>
+                    <CheckCircle2 className={`w-2.5 h-2.5 ${isLight ? 'text-emerald-600' : 'text-emerald-400'}`} />
+                    <span>Certified v1.0 Baseline</span>
                   </span>
                 )}
               </h1>
-              <p className={`text-[10.5px] font-medium truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+              <p className={`text-[10.5px] font-semibold truncate ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 {isSessionForked
-                  ? `Auto-saved Micro-Version Draft (${currentVersion.versionTag}) under Library → Drafts • Blueprint #${loadedBlueprintId} remains untouched`
-                  : 'Canonical Blueprints never change globally • Any prompt edit auto-saves a micro-version draft (v1.0.1) under Library → Drafts'}
+                  ? `Active Draft (${currentVersion.versionTag}) saved under Library → Drafts • Baseline #${loadedBlueprintId} remains untouched`
+                  : `Workflow: ① Pick Blueprint or Upload Image  →  ② Customize with Gemini AI or Draw.io  →  ③ Audit & Export to Google Slides / Docs`}
               </p>
             </div>
           </div>
@@ -2340,10 +2471,10 @@ function DashboardContent() {
               onClick={() => setIsNewDiagramModalOpen(true)}
               data-testid="dashboard-new-diagram-btn"
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs transition shadow-md shadow-sky-500/25 cursor-pointer shrink-0 active:scale-95"
-              title="Create New Architecture Diagram (Select Input Method: Prompt AI, 77 Blueprints, Image Decompile, Blank Canvas)"
+              title="Create New Architecture Diagram (Select Input Method: Prompt AI, 8 Blueprints, Image Decompile, Blank Canvas)"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-              <span>+ New Diagram</span>
+              <span>New Diagram</span>
             </button>
           </div>
         </AppHeader>
@@ -2352,40 +2483,116 @@ function DashboardContent() {
         <div className="flex-1 flex overflow-hidden p-3 lg:p-4 gap-3.5">
           
           {/* ========================================================================= */}
-          {/* 2. LEFT 32% COMPOSER & UNIFIED HISTORY LOG STREAM                         */}
+          {/* 2. LEFT 32% GUIDED 3-STEP WORKFLOW CO-PILOT & DELIVERABLES STUDIO          */}
           {/* ========================================================================= */}
           <div
             className={`w-full lg:w-[34%] xl:w-[32%] border rounded-3xl flex flex-col h-full shrink-0 shadow-sm overflow-hidden transition-colors ${
               isLight ? 'bg-white border-slate-200' : 'bg-[#0F1626] border-slate-800'
             }`}
           >
-            
-            {/* TOP CONTROLS: COMPACT BLUEPRINT SELECTOR BAR */}
+            {/* WORKFLOW LAUNCHER STRIP: 4 CLEAR WAYS TO USE PROMPTCANVAS */}
             <div
-              className={`p-3 border-b space-y-2 ${
-                isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/70 border-slate-800'
+              data-testid="dashboard-workflow-launcher"
+              className={`px-3 py-2 border-b space-y-1.5 shrink-0 ${
+                isLight ? 'bg-slate-100/80 border-slate-200' : 'bg-slate-900 border-slate-800'
               }`}
             >
               <div className="flex items-center justify-between">
-                <span
-                  className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border flex items-center gap-1 ${
-                    isLight
-                      ? 'text-teal-700 bg-teal-50 border-teal-200'
-                      : 'text-teal-300 bg-teal-500/15 border-teal-500/30'
+                <span className={`text-[9.5px] font-black uppercase tracking-wider ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
+                  Choose Your Starting Workflow
+                </span>
+                <Link
+                  href="/guide"
+                  className={`text-[9.5px] font-bold hover:underline flex items-center gap-0.5 ${
+                    isLight ? 'text-teal-700' : 'text-teal-400'
                   }`}
                 >
-                  <Lock className={`w-2.5 h-2.5 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
-                  <span>Canonical Baseline (Read-Only)</span>
-                </span>
-                <div className="flex items-center gap-1.5">
-                  <span className={`text-[10px] font-mono font-bold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                    {filteredTemplates.length} Blueprints
+                  <span>How it works</span>
+                  <ArrowUpRight className="w-2.5 h-2.5" />
+                </Link>
+              </div>
+              <div className="grid grid-cols-4 gap-1">
+                <button
+                  type="button"
+                  onClick={() => setOpenBlueprintDropdown(true)}
+                  className={`px-1.5 py-1.5 rounded-xl border text-[10px] font-extrabold flex flex-col items-center justify-center gap-0.5 transition cursor-pointer shadow-2xs ${
+                    isLight
+                      ? 'bg-teal-600 text-white border-teal-700'
+                      : 'bg-teal-600 text-white border-teal-500'
+                  }`}
+                  title="Workflow 1: Start from one of 8 certified Google Cloud reference architectures"
+                >
+                  <span className="truncate">🏛️ Blueprint</span>
+                  <span className="text-[8.5px] font-medium opacity-90 truncate">8 Certified</span>
+                </button>
+                <Link
+                  href="/prompt-to-diagram"
+                  data-testid="workflow-link-prompt-to-diagram"
+                  className={`px-1.5 py-1.5 rounded-xl border text-[10px] font-bold flex flex-col items-center justify-center gap-0.5 transition cursor-pointer ${
+                    isLight
+                      ? 'bg-blue-50 hover:bg-blue-100 text-blue-900 border-blue-200 hover:border-blue-300'
+                      : 'bg-slate-950 hover:bg-slate-800 text-slate-200 border-slate-800'
+                  }`}
+                  title="Workflow 2: Freeform Prompt → Nano Banana Image → Editable Draw.io XML + Cross-Model LLM Judge"
+                >
+                  <span className="truncate">🍌 Prompt Lab</span>
+                  <span className={`text-[8.5px] font-medium truncate ${isLight ? 'text-blue-700' : 'text-slate-400'}`}>Nano → Draw.io</span>
+                </Link>
+                <Link
+                  href="/vision"
+                  className={`px-1.5 py-1.5 rounded-xl border text-[10px] font-bold flex flex-col items-center justify-center gap-0.5 transition cursor-pointer ${
+                    isLight
+                      ? 'bg-white hover:bg-teal-50 text-slate-800 border-slate-200/90 hover:border-teal-300'
+                      : 'bg-slate-950 hover:bg-slate-800 text-slate-200 border-slate-800'
+                  }`}
+                  title="Workflow 3: Upload a screenshot, whiteboard sketch, or AWS/Oracle diagram to convert into editable Draw.io & Slides"
+                >
+                  <span className="truncate">🖼️ Image AI</span>
+                  <span className={`text-[8.5px] font-medium truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Photo → Edit</span>
+                </Link>
+                <Link
+                  href="/docgen"
+                  className={`px-1.5 py-1.5 rounded-xl border text-[10px] font-bold flex flex-col items-center justify-center gap-0.5 transition cursor-pointer ${
+                    isLight
+                      ? 'bg-white hover:bg-teal-50 text-slate-800 border-slate-200/90 hover:border-teal-300'
+                      : 'bg-slate-950 hover:bg-slate-800 text-slate-200 border-slate-800'
+                  }`}
+                  title="Workflow 4: Generate 17-archetype RFCs, PRDs, and Executive Spec Docs from your architecture"
+                >
+                  <span className="truncate">📄 Spec Docs</span>
+                  <span className={`text-[8.5px] font-medium truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>17 RFC/PRDs</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* STEP 1: CHOOSE STARTING BLUEPRINT */}
+            <div
+              className={`px-3 py-2.5 border-b space-y-1.5 shrink-0 ${
+                isLight ? 'bg-slate-50/70 border-slate-200' : 'bg-slate-900/70 border-slate-800'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="px-1.5 py-0.5 rounded-md bg-teal-600 text-white font-mono font-black text-[9px] shrink-0">
+                    STEP 1
+                  </span>
+                  <span className={`text-[11px] font-extrabold truncate ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
+                    Pick Starting Reference Architecture
                   </span>
                 </div>
+                <Link
+                  href="/canonical"
+                  className={`text-[10px] font-bold hover:underline flex items-center gap-0.5 shrink-0 ${
+                    isLight ? 'text-teal-700' : 'text-teal-400'
+                  }`}
+                >
+                  <span>Browse All {CANONICAL_TEMPLATES.length}</span>
+                  <ArrowRight className="w-2.5 h-2.5" />
+                </Link>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                {/* STEP 1: CATEGORY DROPDOWN */}
+              <div className="grid grid-cols-[106px_minmax(0,1fr)] gap-1.5">
+                {/* CATEGORY DROPDOWN */}
                 <div className="relative category-dropdown-container">
                   <button
                     type="button"
@@ -2394,22 +2601,24 @@ function DashboardContent() {
                       setOpenBlueprintDropdown(false);
                       setOpenLevelDropdown(false);
                     }}
-                    className={`w-full border hover:border-teal-500 rounded-xl px-2.5 py-1.5 text-xs font-bold flex items-center justify-between shadow-2xs transition-all text-left cursor-pointer ${
+                    className={`w-full border hover:border-teal-500 rounded-xl px-2 py-1.5 text-xs font-bold flex items-center justify-between shadow-2xs transition-all text-left cursor-pointer ${
                       isLight
                         ? 'bg-white border-slate-300 text-slate-800'
                         : 'bg-slate-950 border-slate-700 text-slate-100'
                     }`}
                   >
-                    <span className="truncate flex items-center gap-1.5">
+                    <span className="truncate flex items-center gap-1">
                       <span>{selectedCategoryObj.icon}</span>
-                      <span className="truncate">{selectedCategoryObj.name}</span>
+                      <span className="truncate">
+                        {selectedCategoryObj.id === 'all' ? `All (${CANONICAL_TEMPLATES.length})` : selectedCategoryObj.name}
+                      </span>
                     </span>
                     <ChevronDown className="w-3 h-3 text-slate-400 shrink-0" />
                   </button>
 
                   {openCategoryDropdown && (
                     <div
-                      className={`absolute left-0 right-0 top-full mt-1 border rounded-2xl shadow-xl z-50 p-2 space-y-1 ${
+                      className={`absolute left-0 w-56 top-full mt-1 border rounded-2xl shadow-xl z-50 p-2 space-y-1 ${
                         isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-700'
                       }`}
                     >
@@ -2454,7 +2663,7 @@ function DashboardContent() {
                   )}
                 </div>
 
-                {/* STEP 2: BLUEPRINT DROPDOWN */}
+                {/* BLUEPRINT DROPDOWN */}
                 <div className="relative blueprint-combobox-container">
                   <button
                     type="button"
@@ -2556,38 +2765,43 @@ function DashboardContent() {
               )}
             </div>
 
-            {/* CENTER SECTION: SINGLE CENTRAL PROMPT COMPOSER & 3 CONTEXTUAL SUGGESTION CHIPS */}
+            {/* STEP 2: CUSTOMIZE WITH GEMINI AI OR 1-CLICK UPGRADES */}
             <div
-              className={`p-3 border-b space-y-2 ${
+              className={`px-3 py-2.5 border-b space-y-2 shrink-0 ${
                 isLight
                   ? 'bg-gradient-to-b from-white to-slate-50/80 border-slate-200'
                   : 'bg-gradient-to-b from-[#0F1626] to-slate-900/80 border-slate-800'
               }`}
             >
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Sparkles className={`w-3.5 h-3.5 animate-pulse ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
-                  <span className={`text-xs font-black ${isLight ? 'text-slate-800' : 'text-slate-100'}`}>
-                    Architecture Prompt Composer
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="px-1.5 py-0.5 rounded-md bg-indigo-600 text-white font-mono font-black text-[9px] shrink-0">
+                    STEP 2
+                  </span>
+                  <span className={`text-[11px] font-extrabold truncate ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
+                    Customize with Gemini AI Co-Pilot
                   </span>
                 </div>
                 <span
-                  className={`text-[9px] font-mono font-semibold px-2 py-0.5 rounded border ${
+                  className={`text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded border whitespace-nowrap shrink-0 ${
                     isLight
                       ? 'bg-slate-100 text-slate-600 border-slate-200'
                       : 'bg-slate-800 text-slate-300 border-slate-700'
                   }`}
                 >
                   {isSessionForked
-                    ? `Auto-Saves Draft: ${currentVersion.versionTag} → v${currentVersion.major}.${currentVersion.minor}.${(currentVersion.micro ?? 0) + 1}`
-                    : `Auto-Saves Draft: v1.0 → v1.0.1`}
+                    ? `Draft ${currentVersion.versionTag} → v${currentVersion.major}.${currentVersion.minor}.${(currentVersion.micro ?? 0) + 1}`
+                    : `Saves as Private Draft`}
                 </span>
               </div>
 
+              <p className={`text-[10px] leading-snug ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                Describe components to add, change regions, or build a new system from scratch:
+              </p>
+
               {/* Central Single Prompt Composer Input */}
               <div
-                className={`relative rounded-2xl border-2 border-teal-500/40 focus-within:border-teal-500 focus-within:ring-2 focus-within:ring-teal-500/20 shadow-xs p-2.5 transition-all ${
+                className={`relative rounded-2xl border-2 border-teal-500/40 focus-within:border-teal-500 focus-within:ring-2 focus-within:ring-teal-500/20 shadow-xs p-2 transition-all ${
                   isLight ? 'bg-white' : 'bg-slate-950'
                 }`}
               >
@@ -2602,20 +2816,20 @@ function DashboardContent() {
                       handleExecutePrompt();
                     }
                   }}
-                  placeholder="Ask Gemini to modify architecture (automatically forks a private session copy)..."
+                  placeholder="e.g., Add Cloud Armor WAF, Vertex AI Search, and multi-region AlloyDB failover..."
                   className={`w-full bg-transparent text-xs focus:outline-none resize-none font-medium leading-relaxed ${
                     isLight ? 'text-slate-800 placeholder-slate-400' : 'text-slate-100 placeholder-slate-500'
                   }`}
                 />
 
                 <div
-                  className={`flex items-center justify-between pt-2 border-t mt-1 ${
+                  className={`flex items-center justify-between gap-2 pt-1.5 border-t mt-1 ${
                     isLight ? 'border-slate-100' : 'border-slate-800'
                   }`}
                 >
-                  <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono">
-                    <Zap className="w-3 h-3 text-amber-500" />
-                    <span>Enter to synthesize in session copy</span>
+                  <div className="flex items-center gap-1 text-[10px] text-slate-500 font-mono min-w-0">
+                    <Zap className="w-3 h-3 text-amber-500 shrink-0" />
+                    <span className="truncate">Press Enter to apply</span>
                   </div>
 
                   <button
@@ -2623,11 +2837,11 @@ function DashboardContent() {
                     type="button"
                     onClick={() => handleExecutePrompt()}
                     disabled={!activeComposerPrompt.trim() || isProcessingAi}
-                    className={`px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-sm ${
+                    className={`px-3 py-1 rounded-xl font-bold text-[11px] flex items-center gap-1.5 transition-all cursor-pointer shadow-sm shrink-0 whitespace-nowrap ${
                       activeComposerPrompt.trim() && !isProcessingAi
                         ? 'bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-600 hover:to-indigo-700 text-white shadow-teal-500/25'
                         : isLight
-                        ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                        ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
                         : 'bg-slate-800 text-slate-500 cursor-not-allowed'
                     }`}
                   >
@@ -2639,7 +2853,7 @@ function DashboardContent() {
                     ) : (
                       <>
                         <Sparkles className="w-3 h-3" />
-                        <span>Generate Modification &rarr;</span>
+                        <span>Apply AI Changes &rarr;</span>
                       </>
                     )}
                   </button>
@@ -2695,76 +2909,157 @@ function DashboardContent() {
                 </div>
               )}
 
-              {/* Compact 1-Row Quick Suggestion Chips */}
+              {/* Compact Quick Suggestion Chips (Zero mid-word truncation) */}
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className={`text-[9.5px] font-black uppercase tracking-wider ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                    Quick Upgrades
+                  <span className={`text-[9.5px] font-black uppercase tracking-wider ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                    Or Apply a 1-Click Preset Upgrade
                   </span>
-                  <span className={`text-[9px] font-medium ${isLight ? 'text-teal-600' : 'text-teal-400'}`}>
-                    1-Click Apply
+                  <span className={`text-[9px] font-semibold ${isLight ? 'text-teal-700' : 'text-teal-400'}`}>
+                    Instant Canvas Update
                   </span>
                 </div>
 
-                <div className="grid grid-cols-3 gap-1.5">
-                  {contextualSuggestions.map((suggestion, idx) => (
-                    <button
-                      key={idx}
-                      id={`dashboard-suggestion-chip-${idx}`}
-                      type="button"
-                      onClick={() => handleExecutePrompt(suggestion)}
-                      disabled={isProcessingAi}
-                      title={suggestion}
-                      className={`text-left px-2 py-1 rounded-lg border text-[10px] font-semibold transition-all flex items-center justify-between group cursor-pointer shadow-2xs ${
-                        isLight
-                          ? 'bg-teal-50/60 hover:bg-teal-100/80 text-teal-900 border-teal-200/80'
-                          : 'bg-teal-500/10 hover:bg-teal-500/20 text-teal-200 border-teal-500/25'
-                      }`}
-                    >
-                      <span className="truncate pr-1">{suggestion.replace(/^\+\s*Add\s+/i, '+ ')}</span>
-                      <ArrowRight className={`w-2.5 h-2.5 shrink-0 opacity-60 group-hover:opacity-100 transition-all ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
-                    </button>
-                  ))}
+                <div className="flex flex-wrap gap-1.5">
+                  {contextualSuggestions.map((suggestion, idx) => {
+                    const conciseLabel = suggestion
+                      .replace(/^\+\s*(Add|Upgrade|Insert|Attach)\s+/i, '+ ')
+                      .split(/\s+(with|for|and|across|to\s+dual)/i)[0]
+                      .trim();
+                    return (
+                      <button
+                        key={idx}
+                        id={`dashboard-suggestion-chip-${idx}`}
+                        type="button"
+                        onClick={() => handleExecutePrompt(suggestion)}
+                        disabled={isProcessingAi}
+                        title={suggestion}
+                        className={`text-left px-2 py-1 rounded-lg border text-[10px] font-semibold transition-all flex items-center gap-1 group cursor-pointer shadow-2xs ${
+                          isLight
+                            ? 'bg-teal-50/70 hover:bg-teal-100 text-teal-900 border-teal-200'
+                            : 'bg-teal-500/10 hover:bg-teal-500/20 text-teal-200 border-teal-500/25'
+                        }`}
+                      >
+                        <span>{conciseLabel}</span>
+                        <ArrowRight className={`w-2.5 h-2.5 shrink-0 opacity-60 group-hover:opacity-100 transition-all ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
-
             </div>
 
-            {/* BOTTOM SECTION: DUAL CHANGE HISTORY & SNAPSHOT ROLLBACK LOG STREAM */}
+            {/* STEP 3: CERTIFY, EXPORT DELIVERABLES & VERSION LINEAGE */}
             <div
-              className={`flex-1 flex flex-col justify-between min-h-0 overflow-hidden ${
+              className={`flex-1 flex flex-col min-h-0 overflow-hidden ${
                 isLight ? 'bg-slate-50/50' : 'bg-slate-950/40'
               }`}
             >
+              {/* Step 3 Deliverables Action Strip */}
               <div
-                className={`px-3.5 py-2 border-b flex items-center justify-between shrink-0 ${
-                  isLight ? 'bg-white border-slate-200' : 'bg-slate-900/80 border-slate-800'
+                className={`px-3 py-2 border-b space-y-1.5 shrink-0 ${
+                  isLight ? 'bg-white border-slate-200' : 'bg-slate-900/90 border-slate-800'
                 }`}
               >
-                <div className="flex items-center gap-2">
-                  <History className={`w-3.5 h-3.5 ${isLight ? 'text-indigo-600' : 'text-indigo-400'}`} />
-                  <span className={`text-xs font-bold ${isLight ? 'text-slate-800' : 'text-slate-100'}`}>
-                    Version Lineage &amp; History Log
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="px-1.5 py-0.5 rounded-md bg-emerald-600 text-white font-mono font-black text-[9px] shrink-0">
+                      STEP 3
+                    </span>
+                    <span className={`text-[11px] font-extrabold ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
+                      Certify, Edit &amp; Export Deliverables
+                    </span>
+                  </div>
+                  <span className={`text-[9px] font-mono font-bold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                    1-Click Output
                   </span>
                 </div>
-                <span className="text-[10px] text-slate-400 font-mono font-bold">
+
+                <div className="grid grid-cols-4 gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setIsInlineEditOpen(true)}
+                    className={`px-1.5 py-1 rounded-lg border text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer ${
+                      isLight
+                        ? 'bg-slate-50 hover:bg-teal-50 text-slate-800 border-slate-200 hover:border-teal-300'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                    }`}
+                    title="Open interactive Draw.io diagram editor"
+                  >
+                    <Edit3 className="w-3 h-3 text-teal-600 shrink-0" />
+                    <span className="truncate">Draw.io</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsAuditModalOpen(true)}
+                    className={`px-1.5 py-1 rounded-lg border text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer ${
+                      isLight
+                        ? 'bg-slate-50 hover:bg-emerald-50 text-slate-800 border-slate-200 hover:border-emerald-300'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                    }`}
+                    title="Inspect 6-dimension security & geometry audit score"
+                  >
+                    <ShieldCheck className="w-3 h-3 text-emerald-600 shrink-0" />
+                    <span className="truncate">Audit</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCloudViewerModalMode('slides')}
+                    className={`px-1.5 py-1 rounded-lg border text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer ${
+                      isLight
+                        ? 'bg-amber-50/80 hover:bg-amber-100 text-amber-900 border-amber-200'
+                        : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-200 border-amber-500/30'
+                    }`}
+                    title="Preview or export editable Google Slides deck"
+                  >
+                    <Presentation className="w-3 h-3 text-amber-600 shrink-0" />
+                    <span className="truncate">Slides</span>
+                  </button>
+                  <Link
+                    href={`/docgen?blueprint=${encodeURIComponent(loadedBlueprintId)}`}
+                    className={`px-1.5 py-1 rounded-lg border text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer ${
+                      isLight
+                        ? 'bg-indigo-50/80 hover:bg-indigo-100 text-indigo-900 border-indigo-200'
+                        : 'bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-200 border-indigo-500/30'
+                    }`}
+                    title="Generate an Architecture RFC, PRD, or Executive Dossier"
+                  >
+                    <FileText className="w-3 h-3 text-indigo-600 shrink-0" />
+                    <span className="truncate">RFC Doc</span>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Version History Subheader */}
+              <div
+                className={`px-3 py-1.5 border-b flex items-center justify-between shrink-0 ${
+                  isLight ? 'bg-slate-100/70 border-slate-200' : 'bg-slate-900/60 border-slate-800'
+                }`}
+              >
+                <div className="flex items-center gap-1.5">
+                  <History className={`w-3 h-3 ${isLight ? 'text-indigo-600' : 'text-indigo-400'}`} />
+                  <span className={`text-[10.5px] font-bold ${isLight ? 'text-slate-700' : 'text-slate-200'}`}>
+                    Version History &amp; Rollback
+                  </span>
+                </div>
+                <span className={`text-[9.5px] font-mono font-bold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                   {versionHistory.length} {versionHistory.length === 1 ? 'Snapshot' : 'Snapshots'}
                 </span>
               </div>
 
               {/* Version History Stream Scrollable */}
-              <div className="flex-1 p-3 overflow-y-auto space-y-2 text-xs">
+              <div className="flex-1 p-2.5 overflow-y-auto space-y-2 text-xs">
                 {versionHistory.map((ver, idx) => {
                   const isActive = idx === activeVersionIndex;
                   return (
                     <div
                       key={ver.id}
                       onClick={() => setActiveVersionIndex(idx)}
-                      className={`p-3 rounded-2xl border transition-all cursor-pointer space-y-1.5 shadow-2xs ${
+                      className={`p-2.5 rounded-2xl border transition-all cursor-pointer space-y-1 shadow-2xs ${
                         isActive
                           ? isLight
-                            ? 'bg-white border-teal-500 ring-2 ring-teal-500/20 shadow-md'
-                            : 'bg-slate-900 border-teal-500 ring-2 ring-teal-500/20 shadow-md'
+                            ? 'bg-white border-teal-500 ring-2 ring-teal-500/20 shadow-sm'
+                            : 'bg-slate-900 border-teal-500 ring-2 ring-teal-500/20 shadow-sm'
                           : isLight
                           ? 'bg-white/80 hover:bg-white border-slate-200 hover:border-slate-300'
                           : 'bg-slate-900/50 hover:bg-slate-900 border-slate-800 hover:border-slate-700'
@@ -2773,7 +3068,7 @@ function DashboardContent() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5 min-w-0">
                           <span
-                            className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-black shrink-0 ${
+                            className={`px-1.5 py-0.5 rounded-md text-[9.5px] font-mono font-black shrink-0 ${
                               isActive
                                 ? 'bg-teal-600 text-white'
                                 : isLight
@@ -2801,11 +3096,11 @@ function DashboardContent() {
                           >
                             {ver.versionTag === 'v1.0' && ver.source === 'initial_load' ? 'Canonical' : 'Session Copy'}
                           </span>
-                          <span className="text-[9px] text-slate-400 font-mono">{ver.timestamp}</span>
+                          <span className="text-[9px] text-slate-500 font-mono">{ver.timestamp}</span>
                         </div>
                       </div>
 
-                      <p className={`text-[11px] font-semibold line-clamp-2 leading-relaxed ${isLight ? 'text-slate-700' : 'text-slate-200'}`}>
+                      <p className={`text-[10.5px] font-semibold line-clamp-1 leading-snug ${isLight ? 'text-slate-700' : 'text-slate-200'}`}>
                         {ver.prompt}
                       </p>
 
@@ -2838,8 +3133,8 @@ function DashboardContent() {
                         </div>
                       )}
 
-                      <div className={`pt-1.5 flex items-start justify-between gap-2 border-t text-[10px] ${isLight ? 'border-slate-100' : 'border-slate-800'}`}>
-                        <span className={`font-medium line-clamp-2 leading-snug ${isLight ? 'text-teal-700' : 'text-teal-400'}`} title={ver.diffSummary}>
+                      <div className={`pt-1 flex items-center justify-between gap-2 border-t text-[9.5px] ${isLight ? 'border-slate-100' : 'border-slate-800'}`}>
+                        <span className={`font-medium line-clamp-1 leading-snug ${isLight ? 'text-teal-700' : 'text-teal-400'}`} title={ver.diffSummary}>
                           {ver.diffSummary}
                         </span>
                         {isActive ? (
@@ -2848,9 +3143,9 @@ function DashboardContent() {
                             <span>Active</span>
                           </span>
                         ) : (
-                          <span className="text-slate-400 hover:text-indigo-500 font-semibold flex items-center gap-0.5 shrink-0">
+                          <span className="text-slate-500 hover:text-indigo-600 font-semibold flex items-center gap-0.5 shrink-0">
                             <RotateCcw className="w-2.5 h-2.5" />
-                            <span>View / Restore</span>
+                            <span>Restore</span>
                           </span>
                         )}
                       </div>
@@ -2872,14 +3167,17 @@ function DashboardContent() {
             }`}
           >
             
-            {/* Streamlined Single-Row Canvas Header Control Strip */}
+            {/* Streamlined Single-Row Canvas Header Control Strip with Workflow Labels */}
             <div
               className={`flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b mb-2 ${
                 isLight ? 'border-slate-300/80' : 'border-slate-800'
               }`}
             >
-              {/* Left: Perspective Switcher + Zoom Controls */}
+              {/* Left: Labeled Perspective Switcher + Zoom Controls */}
               <div className="flex items-center gap-2 shrink-0">
+                <span className={`text-[9.5px] font-black uppercase tracking-wider hidden xl:inline ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                  View Mode:
+                </span>
                 <div
                   className={`flex items-center p-0.5 rounded-xl border text-xs shadow-2xs ${
                     isLight ? 'bg-white border-slate-300' : 'bg-slate-900 border-slate-700'
@@ -2945,120 +3243,125 @@ function DashboardContent() {
                 </div>
               </div>
 
-              {/* Right: Canvas Actions (Edit Inline, Cloud Viewer, Audit, Auto-Fix) */}
-              <div
-                className={`flex items-center gap-1.5 backdrop-blur-xs p-1 rounded-2xl border shadow-2xs ${
-                  isLight ? 'bg-white/80 border-slate-300/80' : 'bg-slate-900/80 border-slate-700'
-                }`}
-              >
-                {isSessionForked && (
-                  <button
-                    id="toolbar-save-session-project-btn"
-                    type="button"
-                    onClick={() => openSaveOrDiscardModal({ type: 'manual_save' })}
-                    className="px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] flex items-center gap-1 transition cursor-pointer shadow-2xs"
-                  >
-                    <Bookmark className="w-3.5 h-3.5" />
-                    <span>Save as Project</span>
-                  </button>
-                )}
-
-                {/* 1. Edit Inline */}
-                <button
-                  type="button"
-                  onClick={() => setIsInlineEditOpen(true)}
-                  title="Edit Inline with Draw.io"
-                  className={`px-2.5 py-1 rounded-xl font-bold text-[11px] flex items-center gap-1 transition cursor-pointer ${
-                    isLight
-                      ? 'bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700'
-                      : 'bg-slate-800 hover:bg-teal-500/20 hover:text-teal-300 text-slate-200'
+              {/* Right: Labeled Canvas Actions (Edit Inline, Audit, Auto-Fix) */}
+              <div className="flex items-center gap-2">
+                <span className={`text-[9.5px] font-black uppercase tracking-wider hidden 2xl:inline ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                  Refine &amp; Certify:
+                </span>
+                <div
+                  className={`flex items-center gap-1.5 backdrop-blur-xs p-1 rounded-2xl border shadow-2xs ${
+                    isLight ? 'bg-white/90 border-slate-300/80' : 'bg-slate-900/80 border-slate-700'
                   }`}
                 >
-                  <Edit3 className={`w-3.5 h-3.5 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
-                  <span>Edit Inline</span>
-                </button>
-
-                {/* 3. Audit Button */}
-                {(() => {
-                  const toolbarVertices = (activeCanvasXml.match(/vertex="1"/g) || []).length;
-                  const isBlankToolbar =
-                    activeCanvasXml.includes('data-blank-canvas="true"') ||
-                    (loadedBlueprintId === 'blank' && toolbarVertices === 0);
-                  const isStubToolbar = !isBlankToolbar && toolbarVertices < 6;
-                  const isCertToolbar =
-                    !isBlankToolbar &&
-                    !isStubToolbar &&
-                    (activeCanvasXml.includes('data-omni-autofix-certified="true"') ||
-                      (auditScores.length > 0 &&
-                        auditScores.every((d) => d.score === 100 && d.recommendations.length === 0)));
-                  const toolbarScore = isBlankToolbar
-                    ? 0
-                    : isCertToolbar
-                    ? 100
-                    : currentVersion.truthfulnessDossier?.scores.overallCompositeScore ??
-                      (auditScores.length > 0
-                        ? Math.round(auditScores.reduce((s, d) => s + d.score, 0) / auditScores.length)
-                        : 98);
-                  const isFailedToolbar = isBlankToolbar || isStubToolbar || toolbarScore < 60;
-
-                  return (
+                  {isSessionForked && (
                     <button
-                      id="toolbar-audit-btn"
+                      id="toolbar-save-session-project-btn"
                       type="button"
-                      onClick={() => setIsAuditModalOpen(true)}
-                      title="Run Omni Sanity Audit"
-                      className={`px-2.5 py-1 rounded-xl border font-bold text-[11px] flex items-center gap-1 transition cursor-pointer ${
-                        isFailedToolbar
-                          ? isLight
-                            ? 'bg-rose-50 hover:bg-rose-100 text-rose-800 border-rose-300'
-                            : 'bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border-rose-500/30'
-                          : isCertToolbar
-                          ? isLight
-                            ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
-                            : 'bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border-emerald-500/30'
-                          : isLight
-                          ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
-                          : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/30'
-                      }`}
+                      onClick={() => openSaveOrDiscardModal({ type: 'manual_save' })}
+                      className="px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] flex items-center gap-1 transition cursor-pointer shadow-2xs"
                     >
-                      {isCertToolbar ? (
-                        <ShieldCheck className={`w-3.5 h-3.5 ${isLight ? 'text-emerald-600' : 'text-emerald-400'}`} />
-                      ) : (
-                        <ShieldAlert
-                          className={`w-3.5 h-3.5 ${
-                            isFailedToolbar
-                              ? isLight
-                                ? 'text-rose-600'
-                                : 'text-rose-400'
-                              : isLight
-                              ? 'text-amber-600'
-                              : 'text-amber-400'
-                          }`}
-                        />
-                      )}
-                      <span>
-                        {isBlankToolbar
-                          ? 'Audit 0%'
-                          : isCertToolbar
-                          ? 'Audit 100%'
-                          : `Audit ${toolbarScore}%`}
-                      </span>
+                      <Bookmark className="w-3.5 h-3.5" />
+                      <span>Save as Project</span>
                     </button>
-                  );
-                })()}
+                  )}
 
-                {/* 4. Auto-Fix Button (Gemini Fix) */}
-                <button
-                  id="toolbar-autofix-btn"
-                  type="button"
-                  onClick={handleAutoFixWithGemini}
-                  disabled={isProcessingAi}
-                  title="Auto-Fix with Gemini"
-                  className="px-3 py-1 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-600 hover:to-indigo-700 text-white font-extrabold text-[11px] flex items-center gap-1 transition cursor-pointer shadow-xs"
-                >
-                  {isProcessingAi ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Wrench className="w-3.5 h-3.5 text-white" />}
-                  <span>Auto-Fix</span>
-                </button>
+                  {/* 1. Edit Inline */}
+                  <button
+                    type="button"
+                    onClick={() => setIsInlineEditOpen(true)}
+                    title="Edit diagram visually in embedded Draw.io editor"
+                    className={`px-2.5 py-1 rounded-xl font-bold text-[11px] flex items-center gap-1 transition cursor-pointer ${
+                      isLight
+                        ? 'bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700'
+                        : 'bg-slate-800 hover:bg-teal-500/20 hover:text-teal-300 text-slate-200'
+                    }`}
+                  >
+                    <Edit3 className={`w-3.5 h-3.5 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
+                    <span>Edit in Draw.io</span>
+                  </button>
+
+                  {/* 3. Audit Button */}
+                  {(() => {
+                    const toolbarVertices = (activeCanvasXml.match(/vertex="1"/g) || []).length;
+                    const isBlankToolbar =
+                      activeCanvasXml.includes('data-blank-canvas="true"') ||
+                      (loadedBlueprintId === 'blank' && toolbarVertices === 0);
+                    const isStubToolbar = !isBlankToolbar && toolbarVertices < 6;
+                    const isCertToolbar =
+                      !isBlankToolbar &&
+                      !isStubToolbar &&
+                      (activeCanvasXml.includes('data-omni-autofix-certified="true"') ||
+                        (auditScores.length > 0 &&
+                          auditScores.every((d) => d.score === 100 && d.recommendations.length === 0)));
+                    const toolbarScore = isBlankToolbar
+                      ? 0
+                      : isCertToolbar
+                      ? 100
+                      : currentVersion.truthfulnessDossier?.scores.overallCompositeScore ??
+                        (auditScores.length > 0
+                          ? Math.round(auditScores.reduce((s, d) => s + d.score, 0) / auditScores.length)
+                          : 98);
+                    const isFailedToolbar = isBlankToolbar || isStubToolbar || toolbarScore < 60;
+
+                    return (
+                      <button
+                        id="toolbar-audit-btn"
+                        type="button"
+                        onClick={() => setIsAuditModalOpen(true)}
+                        title="Inspect 6-Dimension Security, Grounding & Geometry Audit"
+                        className={`px-2.5 py-1 rounded-xl border font-bold text-[11px] flex items-center gap-1 transition cursor-pointer ${
+                          isFailedToolbar
+                            ? isLight
+                              ? 'bg-rose-50 hover:bg-rose-100 text-rose-800 border-rose-300'
+                              : 'bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border-rose-500/30'
+                            : isCertToolbar
+                            ? isLight
+                              ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
+                              : 'bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border-emerald-500/30'
+                            : isLight
+                            ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
+                            : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/30'
+                        }`}
+                      >
+                        {isCertToolbar ? (
+                          <ShieldCheck className={`w-3.5 h-3.5 ${isLight ? 'text-emerald-600' : 'text-emerald-400'}`} />
+                        ) : (
+                          <ShieldAlert
+                            className={`w-3.5 h-3.5 ${
+                              isFailedToolbar
+                                ? isLight
+                                  ? 'text-rose-600'
+                                  : 'text-rose-400'
+                                : isLight
+                                ? 'text-amber-600'
+                                : 'text-amber-400'
+                            }`}
+                          />
+                        )}
+                        <span>
+                          {isBlankToolbar
+                            ? 'Audit 0%'
+                            : isCertToolbar
+                            ? 'Audit 100%'
+                            : `Audit ${toolbarScore}%`}
+                        </span>
+                      </button>
+                    );
+                  })()}
+
+                  {/* 4. Auto-Fix Button (Gemini Fix) */}
+                  <button
+                    id="toolbar-autofix-btn"
+                    type="button"
+                    onClick={handleAutoFixWithGemini}
+                    disabled={isProcessingAi}
+                    title="Auto-remediate security & geometry warnings to 100% Certified"
+                    className="px-3 py-1 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-600 hover:to-indigo-700 text-white font-extrabold text-[11px] flex items-center gap-1 transition cursor-pointer shadow-xs"
+                  >
+                    {isProcessingAi ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Wrench className="w-3.5 h-3.5 text-white" />}
+                    <span>Auto-Fix to 100%</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -3068,7 +3371,7 @@ function DashboardContent() {
                 style={{ transform: `scale(${zoomScale})`, transformOrigin: 'center center' }}
                 className="w-full h-full transition-transform duration-200 flex items-center justify-center"
               >
-                <div className="w-full h-full max-w-[1440px]">
+                <div className="w-full h-full max-w-none">
                   <DiagramViewerRenderSafe
                     key={`${loadedBlueprintId}_${canvasPerspective}_${isLight ? 'light' : 'dark'}_${currentVersion.versionTag}_${currentVersion.id}`}
                     xml={activeCanvasXml}
@@ -3087,90 +3390,92 @@ function DashboardContent() {
       </main>
 
       {/* ========================================================================= */}
-      {/* 4. LEAVE / SWITCH INTERCEPT MODAL: "SAVE SESSION COPY AS YOUR PROJECT?"   */}
+      {/* 4. LEAVE / SWITCH INTERCEPT DRAWER: "SAVE SESSION COPY AS YOUR PROJECT?"   */}
       {/* ========================================================================= */}
       {leaveModalOpen && (
         <div
           id="save-session-copy-modal"
-          className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150"
+          className="fixed inset-0 z-50 bg-slate-900/45 backdrop-blur-xs flex items-stretch justify-end animate-in fade-in duration-150"
         >
-          <div className="bg-white text-slate-900 w-full max-w-xl rounded-3xl border border-slate-200 shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-150">
-            {/* Modal Header */}
-            <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 border border-amber-300 flex items-center justify-center shadow-2xs">
-                  <GitFork className="w-5 h-5 text-amber-700" />
-                </div>
-                <div>
-                  <h3 className="font-extrabold text-base text-slate-900">
-                    Save Session Copy as Your Project?
-                  </h3>
-                  <p className="text-xs text-slate-500 font-medium">
-                    Dashboard Canonical Blueprints never change &bull; Save your custom session work before leaving
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={handleCancelLeaveModal}
-                className="p-1.5 rounded-xl hover:bg-slate-200 text-slate-400 hover:text-slate-700 transition cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Modal Body */}
-            <div className="p-6 space-y-4 text-xs">
-              <div className="p-3.5 rounded-2xl bg-amber-50/90 border border-amber-200 text-amber-950 space-y-1">
-                <div className="font-extrabold text-xs flex items-center gap-1.5 text-amber-900">
-                  <Lock className="w-3.5 h-3.5 text-amber-700" />
-                  <span>Canonical Blueprint #{loadedBlueprintId} is Protected &amp; Immutable</span>
-                </div>
-                <p className="text-[11px] text-amber-800 leading-relaxed">
-                  You made changes (<span className="font-mono font-bold">{currentVersion.versionTag}</span>) in an isolated copy for your user session (<span className="font-mono">{sessionCopyId}</span>) without impacting other users. Would you like to accept and save these changes as your own project, or discard them?
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-600 mb-1">
-                    Project Name (Saved to Your Projects Library)
-                  </label>
-                  <input
-                    id="save-session-project-name-input"
-                    type="text"
-                    value={saveProjectName}
-                    onChange={(e) => setSaveProjectName(e.target.value)}
-                    placeholder="Enter your custom project name..."
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-teal-600 focus:outline-none text-xs font-bold text-slate-900 bg-white"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-600 mb-1">
-                      Domain / Track
-                    </label>
-                    <input
-                      type="text"
-                      value={saveProjectDomain}
-                      onChange={(e) => setSaveProjectDomain(e.target.value)}
-                      className="w-full px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700"
-                    />
+          <div className="bg-white text-slate-900 w-full max-w-xl h-full border-l border-slate-200 shadow-2xl overflow-y-auto flex flex-col justify-between animate-in slide-in-from-right duration-150">
+            <div>
+              {/* Drawer Header */}
+              <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 border border-amber-300 flex items-center justify-center shadow-2xs">
+                    <GitFork className="w-5 h-5 text-amber-700" />
                   </div>
                   <div>
+                    <h3 className="font-extrabold text-base text-slate-900">
+                      Save Session Copy as Your Project?
+                    </h3>
+                    <p className="text-xs text-slate-500 font-medium">
+                      Dashboard Canonical Blueprints never change &bull; Save your custom session work before leaving
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleCancelLeaveModal}
+                  className="p-1.5 rounded-xl hover:bg-slate-200 text-slate-400 hover:text-slate-700 transition cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Drawer Body */}
+              <div className="p-6 space-y-4 text-xs">
+                <div className="p-3.5 rounded-2xl bg-amber-50/90 border border-amber-200 text-amber-950 space-y-1">
+                  <div className="font-extrabold text-xs flex items-center gap-1.5 text-amber-900">
+                    <Lock className="w-3.5 h-3.5 text-amber-700" />
+                    <span>Canonical Blueprint #{loadedBlueprintId} is Protected &amp; Immutable</span>
+                  </div>
+                  <p className="text-[11px] text-amber-800 leading-relaxed">
+                    You made changes (<span className="font-mono font-bold">{currentVersion.versionTag}</span>) in an isolated copy for your user session (<span className="font-mono">{sessionCopyId}</span>) without impacting other users. Would you like to accept and save these changes as your own project, or discard them?
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <div>
                     <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-600 mb-1">
-                      Session Lineage
+                      Project Name (Saved to Your Projects Library)
                     </label>
-                    <div className="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-mono font-bold text-teal-800">
-                      {currentVersion.versionTag} &bull; {versionHistory.length} Snapshots
+                    <input
+                      id="save-session-project-name-input"
+                      type="text"
+                      value={saveProjectName}
+                      onChange={(e) => setSaveProjectName(e.target.value)}
+                      placeholder="Enter your custom project name..."
+                      className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-teal-600 focus:outline-none text-xs font-bold text-slate-900 bg-white"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-600 mb-1">
+                        Domain / Track
+                      </label>
+                      <input
+                        type="text"
+                        value={saveProjectDomain}
+                        onChange={(e) => setSaveProjectDomain(e.target.value)}
+                        className="w-full px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-600 mb-1">
+                        Session Lineage
+                      </label>
+                      <div className="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-mono font-bold text-teal-800">
+                        {currentVersion.versionTag} &bull; {versionHistory.length} Snapshots
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Modal Footer: 3 Explicit User Actions (Accept & Save / Discard / Cancel) */}
+            {/* Drawer Footer: 3 Explicit User Actions (Accept & Save / Discard / Cancel) */}
             <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
               <button
                 id="save-session-project-cancel-btn"
@@ -3218,25 +3523,33 @@ function DashboardContent() {
       )}
 
       {/* ========================================================================= */}
-      {/* 5. DRAW.IO INLINE EDIT OVERLAY MODAL                                      */}
+      {/* 5. DRAW.IO INLINE EDIT OVERLAY DRAWER                                     */}
       {/* ========================================================================= */}
       {isInlineEditOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0B111E] text-white w-full max-w-7xl h-[90vh] rounded-3xl border border-slate-700 shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="h-14 px-6 bg-[#0B111E] border-b border-slate-800 flex items-center justify-between shrink-0">
+        <div className="fixed inset-0 z-50 bg-slate-900/45 backdrop-blur-xs flex items-stretch justify-end">
+          <div className={`w-full max-w-7xl h-full border-l shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-200 ${
+            isLight ? 'bg-white text-slate-900 border-slate-200' : 'bg-[#0B111E] text-white border-slate-700'
+          }`}>
+            <div className={`h-14 px-6 border-b flex items-center justify-between shrink-0 ${
+              isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#0B111E] border-slate-800'
+            }`}>
               <div className="flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-teal-500 animate-pulse" />
-                <h3 className="font-extrabold text-sm text-slate-100">
+                <h3 className={`font-extrabold text-sm ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
                   Draw.io Inline Canvas Editor &mdash; {canvasTitle} ({currentVersion.versionTag})
                 </h3>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
+                  isLight ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-teal-500/10 text-teal-400 border-teal-500/20'
+                }`}>
                   Auto-forks Session Copy v{currentVersion.major}.{currentVersion.minor + 1} on Save
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setIsInlineEditOpen(false)}
-                className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer"
+                className={`p-1.5 rounded-xl border transition cursor-pointer ${
+                  isLight ? 'bg-white hover:bg-slate-100 text-slate-600 border-slate-200' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+                }`}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -3255,11 +3568,11 @@ function DashboardContent() {
       )}
 
       {/* ========================================================================= */}
-      {/* 6. OMNI SANITY AUDIT & AUTO-FIX DOSSIER DRAWER / MODAL                     */}
+      {/* 6. OMNI SANITY AUDIT & AUTO-FIX DOSSIER RIGHT-SIDE DRAWER (RULE 25F)      */}
       {/* ========================================================================= */}
       {isAuditModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white text-slate-900 w-full max-w-4xl rounded-3xl border border-slate-200 shadow-2xl flex flex-col max-h-[88vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 bg-slate-900/45 backdrop-blur-xs flex items-stretch justify-end">
+          <div className="bg-white text-slate-900 w-full max-w-4xl h-full border-l border-slate-200 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-200">
             {/* Header */}
             <div className="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">

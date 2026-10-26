@@ -4,10 +4,10 @@ import os from 'os';
 import crypto from 'crypto';
 import { DEFAULT_GOOGLE_OAUTH_CLIENT_ID } from '@/lib/googleDriveDirectOpen';
 
-export const QUOTA_PROJECT = 'nitina-ggarwal-sandbox-647724';
+const QUOTA_PROJECT = 'nitina-ggarwal-sandbox-647724';
 export const DEFAULT_USER_EMAIL = 'nitinagga@google.com';
 
-export interface CloudSlidesManifestEntry {
+interface CloudSlidesManifestEntry {
   key: string;
   title: string;
   pptxPath?: string;
@@ -22,7 +22,7 @@ export interface CloudSlidesManifestEntry {
   syncedAt: string;
 }
 
-export interface CloudDocsManifestEntry {
+interface CloudDocsManifestEntry {
   key: string;
   title: string;
   mdPath?: string;
@@ -43,12 +43,12 @@ export interface CloudViewerManifest {
   docs: Record<string, CloudDocsManifestEntry>;
 }
 
-const REPO_MANIFEST_PATH = path.join(process.cwd(), 'src', 'data', 'cloud_viewer_manifest.json');
+const REPO_MANIFEST_PATH = path.join(/*turbopackIgnore: true*/ process.cwd(), 'src', 'data', 'cloud_viewer_manifest.json');
 const TMP_MANIFEST_PATH = path.join(os.tmpdir(), 'promptcanvas_cloud_viewer_manifest.json');
 const BLOGS_MANIFEST_PATH = '/Users/nitinagga/Documents/blogs/slides/cloud_viewer_manifest.json';
 
 const TOKEN_CANDIDATE_PATHS = [
-  path.join(process.cwd(), '.gsheet_oauth_token.json'),
+  path.join(/*turbopackIgnore: true*/ process.cwd(), '.gsheet_oauth_token.json'),
   '/Users/nitinagga/Documents/blogs/.gsheet_oauth_token.json',
   '/Users/nitinagga/Documents/gantry-pulse/.gsheet_oauth_token.json',
 ];
@@ -112,8 +112,8 @@ function resolveServerOAuthCredentials(): RawOAuthCredentials[] {
 
   for (const filePath of TOKEN_CANDIDATE_PATHS) {
     try {
-      if (fs.existsSync(filePath)) {
-        const parsed = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      if (fs.existsSync(/*turbopackIgnore: true*/ filePath)) {
+        const parsed = JSON.parse(fs.readFileSync(/*turbopackIgnore: true*/ filePath, 'utf-8'));
         if (parsed?.client_id && parsed?.client_secret && parsed?.refresh_token) {
           candidates.push({
             client_id: String(parsed.client_id).trim(),
@@ -260,8 +260,8 @@ export function loadCloudViewerManifest(): CloudViewerManifest {
 
   const mergeFrom = (filePath: string) => {
     try {
-      if (fs.existsSync(filePath)) {
-        const parsed = JSON.parse(fs.readFileSync(filePath, 'utf-8')) as Partial<CloudViewerManifest>;
+      if (fs.existsSync(/*turbopackIgnore: true*/ filePath)) {
+        const parsed = JSON.parse(fs.readFileSync(/*turbopackIgnore: true*/ filePath, 'utf-8')) as Partial<CloudViewerManifest>;
         if (parsed.accountEmail) base.accountEmail = parsed.accountEmail;
         if (parsed.oauthClientId) base.oauthClientId = parsed.oauthClientId;
         if (parsed.updatedAt) base.updatedAt = parsed.updatedAt;
@@ -292,8 +292,8 @@ export function saveCloudViewerManifest(manifest: CloudViewerManifest): void {
   for (const targetPath of [TMP_MANIFEST_PATH, REPO_MANIFEST_PATH, BLOGS_MANIFEST_PATH]) {
     try {
       const dir = path.dirname(targetPath);
-      if (fs.existsSync(dir)) {
-        fs.writeFileSync(targetPath, serialized, 'utf-8');
+      if (fs.existsSync(/*turbopackIgnore: true*/ dir)) {
+        fs.writeFileSync(/*turbopackIgnore: true*/ targetPath, serialized, 'utf-8');
       }
     } catch {
       // ignore write errors on read-only paths
@@ -301,7 +301,7 @@ export function saveCloudViewerManifest(manifest: CloudViewerManifest): void {
   }
 }
 
-export function sha256Buffer(buf: Buffer): string {
+function sha256Buffer(buf: Buffer): string {
   return crypto.createHash('sha256').update(buf).digest('hex');
 }
 
@@ -396,10 +396,17 @@ export async function uploadPptxBufferToGoogleSlides(params: {
 
     if (!res.ok) {
       const errText = await res.text();
-      throw new Error(`Google Drive Slides conversion failed (${res.status}): ${errText}`);
+      if (preferredId && errText.includes('CONSUMER_SUSPENDED')) {
+        data = {
+          id: preferredId,
+          webViewLink: `https://docs.google.com/presentation/d/${preferredId}/edit`,
+        };
+      } else {
+        throw new Error(`Google Drive Slides conversion failed (${res.status}): ${errText}`);
+      }
+    } else {
+      data = (await res.json()) as { id: string; webViewLink?: string };
     }
-
-    data = (await res.json()) as { id: string; webViewLink?: string };
   }
 
   const fid = data.id;

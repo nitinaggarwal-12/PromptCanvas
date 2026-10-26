@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const localStorePath = path.resolve(process.cwd(), '.local_backup/user_feedback.json');
+    const localStorePath = path.resolve(/*turbopackIgnore: true*/ process.cwd(), '.local_backup/user_feedback.json');
     const payload = await engine.listFeedback({
       defaultAppId: 'promptcanvas',
       localStorePath,

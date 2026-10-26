@@ -11,7 +11,7 @@ export interface DiagramNodeItem {
   height?: number;
 }
 
-export function cleanHtmlLabel(raw: string): string {
+function cleanHtmlLabel(raw: string): string {
   if (!raw) return '';
   const decoded = raw
     .replace(/&lt;/g, '<')

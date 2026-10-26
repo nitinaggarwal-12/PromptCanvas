@@ -1,14 +1,6 @@
-export interface TemplateCategory {
-  id: string;
-  name: string;
-  shortName: string;
-  icon: string;
-  description: string;
-  color: string;
-  accentColor: string;
-}
 
-export interface TemplateCatalogItem {
+
+interface TemplateCatalogItem {
   id: string;
   name: string;
   categoryId: string;
@@ -23,107 +15,31 @@ export interface TemplateCatalogItem {
   promptSummary: string;
 }
 
-export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
-  {
-    id: "flowcharts",
-    name: "Flowcharts",
-    shortName: "Flowcharts",
-    icon: "Network",
-    description: "End-to-end operational flowcharts, sequential execution paths, multi-agent meshes, and state machine decision trees.",
-    color: "from-blue-500/20 to-teal-500/20",
-    accentColor: "border-teal-400 text-teal-400"
-  },
-  {
-    id: "ai_agentic",
-    name: "AI & Agentic Systems Architecture",
-    shortName: "AI & Agents",
-    icon: "Bot",
-    description: "Multi-agent orchestration engines, sandboxed execution kernels, cognitive RAG, and human-in-the-loop governance lifecycles.",
-    color: "from-sky-500/20 to-indigo-500/20",
-    accentColor: "border-sky-400 text-sky-400"
-  },
-  {
-    id: "cloud_infra",
-    name: "Cloud & Zero-Trust Infrastructure",
-    shortName: "Cloud & Infra",
-    icon: "Cloud",
-    description: "Production VPC topologies, Kubernetes microservice clusters, serverless platforms, multi-region disaster recovery, and edge WAF.",
-    color: "from-emerald-500/20 to-teal-500/20",
-    accentColor: "border-emerald-400 text-emerald-400"
-  },
-  {
-    id: "data_pipelines",
-    name: "Modern Data & Analytics Pipelines",
-    shortName: "Data Pipelines",
-    icon: "Database",
-    description: "CDC data streams, dbt data contracts, Lakehouse architectures, real-time IoT/Edge telemetry, and dimensional ERD data models.",
-    color: "from-purple-500/20 to-pink-500/20",
-    accentColor: "border-purple-400 text-purple-400"
-  },
-  {
-    id: "microservices_flow",
-    name: "Microservices & Application Flow",
-    shortName: "Microservices",
-    icon: "Cpu",
-    description: "Decoupled event-driven Kafka meshes, C4 System Context models, and micro API lifeline sequence execution diagrams.",
-    color: "from-amber-500/20 to-orange-500/20",
-    accentColor: "border-amber-400 text-amber-400"
-  },
-  {
-    id: "devsecops",
-    name: "DevSecOps & Platform Engineering",
-    shortName: "DevSecOps",
-    icon: "GitBranch",
-    description: "Polyrepo Git source control, SAST security quality gates, multi-track CI/CD builds, and GitOps ArgoCD promotion.",
-    color: "from-rose-500/20 to-red-500/20",
-    accentColor: "border-rose-400 text-rose-400"
-  },
-  {
-    id: "business_strategy",
-    name: "Enterprise Business & Strategy",
-    shortName: "Business Strategy",
-    icon: "Building2",
-    description: "High-level 3-stage business ingestion-to-outcome blueprints, unified enterprise lifecycle maps, and board-level strategy views.",
-    color: "from-blue-500/20 to-cyan-500/20",
-    accentColor: "border-blue-400 text-blue-400"
-  },
-  {
-    id: "industry_solutions",
-    name: "Industry Specialized Blueprints",
-    shortName: "Industry Solutions",
-    icon: "Factory",
-    description: "Domain-specific production blueprints tailored for Pharma & Healthcare, Supply Chain, FinTech Banking, Retail E-Commerce, Manufacturing, and HR.",
-    color: "from-purple-500/20 to-indigo-500/20",
-    accentColor: "border-purple-400 text-purple-400"
-  }
-];
-
 export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
   // =========================================================================
   // 0. FLOWCHARTS
   // =========================================================================
   {
     id: "unified_flowchart",
-    name: "Unified End-to-End Operational Flowchart",
+    name: "Google Cloud | Unified 7-Layer Enterprise Operational Flowchart (WBS 1.1.0)",
     categoryId: "flowcharts",
     categoryName: "Flowcharts",
-    badge: "Master Flowchart",
+    badge: "Blueprint #69 (WBS 1.1.0)",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Comprehensive sequential step-by-step flowchart [1] to [15] spanning 7 layer swimlanes: Client Edge (Gemini App/Notebook/Agent Designer), Apigee Policy Gate, ADK 2.0 & Deep Research Agent Mesh, Pub/Sub Event Mesh, BigQuery Lakehouse, and SRE Hub.",
+    whenToUse: "Comprehensive 5-column + bottom SRE horizontal band operational flowchart [1] to [15] (WBS 1.1.0): Client & CDN -> Ingress & Edge (Apigee Gateway, KMS HSM, SIEM) -> Core Compute & AI Reasoning (GKE Autopilot, Vertex AI Gemini 3.1 Pro, Vector Search) -> State & Persistence (Memorystore Redis, Cloud SQL HA) -> Async Event Bus & Ingestion Workers (Pub/Sub, DLQ, Document Chunking, Embedding Worker, BigQuery Lakehouse) -> Enterprise SRE Observability.",
     bestFor: [
-      "Master End-to-End Sequential Operational Architecture Flowchart",
-      "Layer 1 Enterprise Agentic Workspace & Developer Studio (Gemini Enterprise App [1], Gemini Notebook [1a], Agent Designer IDE [1b], GSLB & WAF [1c])",
-      "Layer 2 API Management & Zero-Trust Policy Gate (Apigee Gateway [2], KMS HSM Vault [2a], SIEM Rejection [2b])",
-      "Layer 3 Cognitive Multi-Agent Mesh & ADK 2.0 (ADK 2.0 Orchestrator [3], Deep Research Agent [3a], Vertex AI Gemini 2.5 Flash [3b])",
-      "Layer 4 In-Memory Cache, Vector Store & Persistence (Vertex Vector Search [4], Redis MemoryStore [5], Cloud SQL HA [6])",
-      "Layer 5 Asynchronous Event Bus & Resilience Queue (Pub/Sub [7], Dead-Letter Queue [7a])",
-      "Layer 6 Async Ingestion Agents & Lakehouse (Document Chunking Agent [8], Embedding Worker [9], BigQuery Lakehouse [10])",
-      "Layer 7 Enterprise SRE Observability & Telemetry (Cloud Operations Suite [11], PagerDuty SRE Hub [12])"
+      "Google Cloud Unified 7-Layer Enterprise Operational Flowchart (WBS 1.1.0 — Blueprint #69)",
+      "Column 1 Client & CDN: Client Browser / Mobile App [1] -> Cloud DNS & WAF -> Global Cloud Load Balancing [1a]",
+      "Column 2 Ingress & Edge: Apigee API Gateway [2] ◇ Rate-Limited & Valid? -> Cloud KMS HSM Vault [2a] & SIEM Rejection [2b]",
+      "Column 3 Core Compute & AI Reasoning: GKE Autopilot (Orchestrator) [3] -> Vertex AI Gemini 3.1 Pro [3a] -> Vertex AI Vector Search [4]",
+      "Column 4 State & Persistence: Memorystore (Redis) [5] ◇ Cache Hit? -> Cloud SQL (HA Postgres) [6] + Async Sync [14]",
+      "Column 5 Async Event Bus & Ingestion Workers: Cloud Pub/Sub [7] -> Dead-Letter Queue [7a], Document Chunking Agent [8] -> Embedding Worker [9] -> BigQuery Lakehouse [10]",
+      "Layer 7 Enterprise SRE Observability: Cloud Operations Suite (SRE Hub) [11] -> PagerDuty / Incident Response [12] + Alert [13] & Latency Logs [15]"
     ],
-    keyTech: ["Gemini Enterprise", "Gemini Notebook", "Agent Designer IDE", "Apigee X", "ADK 2.0", "Deep Research", "Vertex AI Gemini", "Vector Search", "Redis MemoryStore", "Cloud Pub/Sub", "Cloud SQL HA", "BigQuery", "Cloud Operations"],
-    thumbnail: "/templates/unified_system_view.png",
-    promptSummary: "Sequential End-to-End Flowchart: Gemini Apps & Agent Designer -> Apigee Gateway -> ADK 2.0 & Deep Research Mesh -> Pub/Sub -> Lakehouse & SRE Telemetry."
+    keyTech: ["Cloud DNS & WAF", "Global Cloud Load Balancing", "Apigee X", "Cloud KMS HSM", "GKE Autopilot", "Vertex AI Gemini 3.1 Pro", "Vector Search", "Memorystore Redis", "Cloud SQL HA", "Cloud Pub/Sub", "BigQuery Lakehouse", "Cloud Operations Suite"],
+    thumbnail: "/templates/canonical_69.png",
+    promptSummary: "Central Execution Spine (WBS 1.1.0): Ingress -> Apigee Gateway -> GKE Orchestrator -> Redis Cache -> Pub/Sub Mesh -> Async Agents -> Persistence & SRE Hub."
   },
   {
     id: "governance_state_machine",
@@ -162,7 +78,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Hybrid dense/sparse search & re-ranking",
       "Dynamic tool invocation guardrails"
     ],
-    keyTech: ["Gemini 2.5 Flash", "pgvector", "Pinecone", "RAG Pipeline", "Vector Embeddings", "Re-ranking Engine"],
+    keyTech: ["Gemini 3.8 Flash", "pgvector", "Pinecone", "RAG Pipeline", "Vector Embeddings", "Re-ranking Engine"],
     thumbnail: "/templates/agentic_rag.png",
     promptSummary: "Cognitive RAG Architecture: Document Chunking -> Embeddings DB -> Hybrid Retrieval -> LLM Synthesis -> Guardrails."
   },
@@ -178,12 +94,12 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     bestFor: [
       "Agentic AI Evaluation, Safety & Optimization Platform",
       "Agent Registry structured storage (definitions, safety policies, grounding knowledge)",
-      "Gemini Agent Platform (Vertex AI Agent Builder Orchestrator, Gemini 2.5 Flash, GKE/Cloud Run workloads)",
+      "Gemini Agent Platform (Vertex AI Agent Builder Orchestrator, Gemini 3.8 Flash, GKE/Cloud Run workloads)",
       "Parallel AI-Based Evaluation (Vertex AI Model Evaluation) & Human Review UI",
       "Safety Guardrails (Toxicity Filter, Bias Mitigation, PII Redaction, Alignment Checker)",
       "ML-Driven Optimization (Prompt Engineering, RLHF) closed-loop updates"
     ],
-    keyTech: ["Vertex AI Agent Builder", "Gemini 2.5 Flash", "Agent Registry", "Vertex AI Model Evaluation", "Looker", "BigQuery", "Safety Guardrails"],
+    keyTech: ["Vertex AI Agent Builder", "Gemini 3.8 Flash", "Agent Registry", "Vertex AI Model Evaluation", "Looker", "BigQuery", "Safety Guardrails"],
     thumbnail: "/templates/tech_eval_safety.png",
     promptSummary: "Agentic AI Safety Platform: Ingestion & Registry -> Gemini Agent Platform -> Eval & Safety Loop -> BigQuery/Looker Analysis -> ML Closed-Loop Optimization."
   },
@@ -318,13 +234,13 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Generative AI Token Tracking for Vertex AI prompt and completion tokens across Cloud Run & GKE Pods",
       "GCP Billing Exports and Kubecost container costs aggregation into Unified BigQuery Cost Data Lake",
       "Dynamic Vertex AI Token Cost Calculator with real-time model pricing tables",
-      "Looker Studio visualization with executive summary, unit cost anomalies, GenAI costs, and budget forecasts",
+      "Looker visualization with executive summary, unit cost anomalies, GenAI costs, and budget forecasts",
       "FinOps Governance Engine with tagging enforcement, Cloud Monitoring budgets/alerts, and CUD/SUD commitment management",
       "Automated Chargeback & Showback generation for Business Units and GenAI teams with Cloud IAM governance and Secret Manager"
     ],
-    keyTech: ["BigQuery Cost Data Lake", "Kubecost", "Vertex AI Token Tracker", "Looker Studio", "GCP Billing Export", "Cloud Monitoring", "Cloud IAM", "Secret Manager"],
+    keyTech: ["BigQuery Cost Data Lake", "Kubecost", "Vertex AI Token Tracker", "Looker", "GCP Billing Export", "Cloud Monitoring", "Cloud IAM", "Secret Manager"],
     thumbnail: "/templates/cloud_finops_chargeback.png",
-    promptSummary: "Cloud FinOps & Chargeback Model: Usage Tracking (Kubecost, GenAI Tokens, GCE, GCS) -> BigQuery Cost Data Lake -> Looker Studio Analytics & FinOps Governance -> Chargeback Generator for Business Units."
+    promptSummary: "Cloud FinOps & Chargeback Model: Usage Tracking (Kubecost, GenAI Tokens, GCE, GCS) -> BigQuery Cost Data Lake -> Looker Analytics & FinOps Governance -> Chargeback Generator for Business Units."
   },
   {
     id: "ai_coe_operating_model",
@@ -364,11 +280,11 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "MCP Message Bus & Normalization Tier (MCP Schemas, Schema Validation, SOC 2 Compliance Filtering, IAM Access Control)",
       "Audit Trail Logging to BigQuery/Cloud Logging with dedicated SOC 2 Audit Trail",
       "Tool Proxies & Downstream Integration (Cognitive Arch / Agentic RAG into API Proxy, GCP Service Proxy, Legacy Tool Proxy)",
-      "Actionable Tool Systems integration and Looker Studio usage/economics metrics",
+      "Actionable Tool Systems integration and Looker usage/economics metrics",
       "Total Unified System View with Enterprise Context / Platform View and 24/7 Operations Support",
       "Perimeter Security via Workload Identity (IAM), VPC-SC, and Secret Manager"
     ],
-    keyTech: ["Model Context Protocol", "MCP Gateway (Node.js/Python)", "Cloud SQL", "Vertex AI Vector Search", "BigQuery Audit Trail", "SOC 2 Compliance", "Looker Studio", "Workload Identity", "VPC-SC", "Secret Manager"],
+    keyTech: ["Model Context Protocol", "MCP Gateway (Node.js/Python)", "Cloud SQL", "Vertex AI Vector Search", "BigQuery Audit Trail", "SOC 2 Compliance", "Looker", "Workload Identity", "VPC-SC", "Secret Manager"],
     thumbnail: "/templates/mcp_context_gateway.png",
     promptSummary: "Model Context Protocol Gateway: 5 Ingestion Adapters -> Context Schema Mapping -> MCP Message Bus (SOC 2 Filter & Audit) -> Cognitive RAG & Tool Proxies -> Actionable Tool Systems & Unified View."
   },
@@ -386,7 +302,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Multi-tenant environment segregation across Development, Testing, and Production environments",
       "Logical AI Config Management Console and automated Config Updates APIs with Enterprise IAM",
       "Platform Orchestrator routing configurations to Gemini Enterprise Engine instances",
-      "Production Workspace encapsulation with Logical AI Config (Model Selection Gemini 2.5 Flash, System Instructions, Memory, Tool Invocation)",
+      "Production Workspace encapsulation with Logical AI Config (Model Selection Gemini 3.8 Flash, System Instructions, Memory, Tool Invocation)",
       "Agent Designer topologies (Single-Agent, Multi-Agent Chains, Task-Based Sub-Agents)",
       "Application Logic execution with agent endpoint invocation",
       "Strict SOC 2 & GxP Compliance Guardrails and compliance markers",
@@ -407,7 +323,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     whenToUse: "Use to configure and orchestrate enterprise multi-agent hub-and-spoke topologies with Gemini Enterprise, specialized sub-agent spokes (Support, Fulfillment, Knowledge), Logical UI configuration matrices, HITL gates, and 21 CFR Part 11 compliance audit trails.",
     bestFor: [
       "Hub-and-Spoke Agent Configuration Map (Logical AI Config Category)",
-      "Orchestrator (Parent Agent) Hub with General Configuration (Gemini 2.5 Flash, Global System Instructions, Shared Context Window, Memory TTL)",
+      "Orchestrator (Parent Agent) Hub with General Configuration (Gemini 3.8 Flash, Global System Instructions, Shared Context Window, Memory TTL)",
       "Multi-Agent Router / Dispatcher Logic with intent-based dispatch routing rules",
       "Shared Memory & State and Vertex AI Agent Runtime invocation patterns",
       "Sub-Agent 1: Customer Support with Zendesk API tool proxy and BigQuery / Vector Search Grounding",
@@ -418,7 +334,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "21 CFR Part 11 Compliance Gate & Immutable Audit Trail E-Signature Ledger",
       "Persona Dashboards (AI Architect, Solutions Architect, Agent Economic & Runtime Metrics)"
     ],
-    keyTech: ["Gemini 2.5 Flash", "Vertex AI Agent Runtime", "Multi-Agent Router", "BigQuery Grounding", "Vector Search", "Zendesk API", "SAP ERP API", "GCS Storage", "21 CFR Part 11 Ledger", "HITL Gate", "Looker Metrics"],
+    keyTech: ["Gemini 3.8 Flash", "Vertex AI Agent Runtime", "Multi-Agent Router", "BigQuery Grounding", "Vector Search", "Zendesk API", "SAP ERP API", "GCS Storage", "21 CFR Part 11 Ledger", "HITL Gate", "Looker Metrics"],
     thumbnail: "/templates/hub_and_spoke_agent_config.png",
     promptSummary: "Hub-and-Spoke Agent Config Map: Orchestrator Hub -> Intent Router -> 3 Domain Spokes (Support, Fulfillment, Knowledge) -> Logical UI Matrix -> HITL Gate -> 21 CFR Part 11 Audit Ledger."
   },
@@ -454,13 +370,13 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     whenToUse: "Use to design automated DataOps pipelines, real-time data quality testing (SODA), continuous data observability (Monte Carlo CARLO), active schema drift monitoring, and AI hallucination prevention across Google Cloud & the Modern Data Stack.",
     bestFor: [
       "DataOps & Anomaly Detection Architecture (To-Be State)",
-      "Top Zone Strategy & Observability Dashboard (CDO, Data Architect, SRE Ops Lead, Looker Studio 8-metric reporting with Hallucination Prevention Score 105)",
+      "Top Zone Strategy & Observability Dashboard (CDO, Data Architect, SRE Ops Lead, Looker 8-metric reporting with Hallucination Prevention Score 105)",
       "Second Zone Incident Management & SRE View (SRE persona, Cloud Monitoring Alerts, PagerDuty Incident Integration, RCA Feedback Loop)",
       "Third Zone The Core Dataplex Integrated DataOps Control Plane (SODA quality checks, Active Schema Drift Monitoring, Anomaly Detection Engine, Monte Carlo CARLO observability, CSV Checkpoints, Reliability Guardrails)",
       "Fourth Zone Enforced Pipeline & Consumption (Cloud Storage Validated GCS Lakes with SOC 2 / CSV badge, Vertex AI Model Grounding with Vector Search and Prevention of AI/LLM Hallucination)",
       "Bottom Zone Unified Modern Data Stack (Enterprise Data Lakehouse prerequisites: BigQuery, GCS, Cloud SQL, Dataflow, Dataproc, External SaaS)"
     ],
-    keyTech: ["Google Cloud Dataplex", "SODA (SQL-based Quality)", "Monte Carlo (CARLO Observability)", "Looker Studio", "PagerDuty", "Cloud Monitoring", "BigQuery", "Cloud Storage", "Dataflow", "Dataproc", "Cloud SQL", "Vertex AI Vector Search", "SOC 2 & CSV"],
+    keyTech: ["Google Cloud Dataplex", "SODA (SQL-based Quality)", "Monte Carlo (CARLO Observability)", "Looker", "PagerDuty", "Cloud Monitoring", "BigQuery", "Cloud Storage", "Dataflow", "Dataproc", "Cloud SQL", "Vertex AI Vector Search", "SOC 2 & CSV"],
     thumbnail: "/templates/dataops_anomaly_detection.png",
     promptSummary: "DataOps Architecture: Looker Observability -> SRE PagerDuty -> Dataplex SODA & CARLO Anomaly Engine -> Validated GCS Lakes & Hallucination-Free Vertex AI Grounding."
   },
@@ -493,18 +409,18 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     badge: "Master Blueprint",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use to design Day-2 enterprise operations, unified observability pipelines (distributed tracing, Cloud Logging, Cloud Monitoring), Datadog SIEM integration, Looker Studio dynamic dashboards, automated drift detection & runbooks, and incident management with RED alerts.",
+    whenToUse: "Use to design Day-2 enterprise operations, unified observability pipelines (distributed tracing, Cloud Logging, Cloud Monitoring), Datadog SIEM integration, Looker dynamic dashboards, automated drift detection & runbooks, and incident management with RED alerts.",
     bestFor: [
       "Enterprise SRE & Observability Architecture (Day-2 Operations / To-Be State)",
       "Prerequisite Flow: Cloud-Native CI/CD (Git Repository, Jenkins, GitLab -> Deployment Triggers & Manifests)",
-      "Observed Workloads (GCP Workload Ingress): Client Applications, Microservices (Cloud Run / GKE), AI Agents (Gemini 2.5 Flash), Data Tier (Cloud SQL, BigQuery) emitting logs, metrics, traces",
+      "Observed Workloads (GCP Workload Ingress): Client Applications, Microservices (Cloud Run / GKE), AI Agents (Gemini 3.8 Flash), Data Tier (Cloud SQL, BigQuery) emitting logs, metrics, traces",
       "Unified Observability & Telemetry Pipeline (The Core): distributed tracing (cross-service correlation), Cloud Logging (log sinks, SOC 2 compliance auditing), Cloud Monitoring (metrics aggregation policies)",
       "Operational Excellence Control Plane: SREs, SLO/SLA Definition, Capacity Planning, Budget Alerts with SOC 2 policies ingress",
-      "Actionable Operations & Reporting: Datadog Observability & SIEM Integration, Looker Studio dashboards (SLO Health Score, Capacity Utilization, Cost Anomalies, Error Budget Burn), personas (SRE, Ops Team, DevSecOps), Day-2 Ops Drift Detection & Automated Remediation, Automated Runbooks, and Incident Management (Cloud Monitoring Alerts, PagerDuty, RED alerts)"
+      "Actionable Operations & Reporting: Datadog Observability & SIEM Integration, Looker dashboards (SLO Health Score, Capacity Utilization, Cost Anomalies, Error Budget Burn), personas (SRE, Ops Team, DevSecOps), Day-2 Ops Drift Detection & Automated Remediation, Automated Runbooks, and Incident Management (Cloud Monitoring Alerts, PagerDuty, RED alerts)"
     ],
-    keyTech: ["Cloud Monitoring", "Cloud Logging", "Distributed Tracing", "Datadog SIEM", "Looker Studio", "PagerDuty", "Google Kubernetes Engine (GKE)", "Cloud Run", "Gemini 2.5 Flash AI Agents", "SOC 2 Type II"],
+    keyTech: ["Cloud Monitoring", "Cloud Logging", "Distributed Tracing", "Datadog SIEM", "Looker", "PagerDuty", "Google Kubernetes Engine (GKE)", "Cloud Run", "Gemini 3.8 Flash AI Agents", "SOC 2 Type II"],
     thumbnail: "/templates/enterprise_sre_observability.png",
-    promptSummary: "Enterprise SRE & Observability: CI/CD Prereq -> Observed Workloads (Client, Microservices, AI Agents, Data Tier) -> Unified Telemetry Pipeline (Tracing, Logging, Monitoring) -> Datadog SIEM & Looker Studio Dashboards -> Automated Drift Remediation & PagerDuty Incident Management."
+    promptSummary: "Enterprise SRE & Observability: CI/CD Prereq -> Observed Workloads (Client, Microservices, AI Agents, Data Tier) -> Unified Telemetry Pipeline (Tracing, Logging, Monitoring) -> Datadog SIEM & Looker Dashboards -> Automated Drift Remediation & PagerDuty Incident Management."
   },
   {
     id: "data_residency_sovereign_map",
@@ -514,20 +430,20 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     badge: "Master Blueprint",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use to design multi-region data sovereignty, regional boundary isolation (EU-West4 vs US-Central1), VPC Service Controls (VPC SC) perimeters, cross-border VPC-SC transfer bridges, and Looker Studio compliance reporting (GDPR, EU AI Act, HIPAA).",
+    whenToUse: "Use to design multi-region data sovereignty, regional boundary isolation (EU-West4 vs US-Central1), VPC Service Controls (VPC SC) perimeters, cross-border VPC-SC transfer bridges, and Looker compliance reporting (GDPR, EU AI Act, HIPAA).",
     bestFor: [
       "Data Residency & Sovereign Cloud Map (To-Be State, Infra Provisioning Phase)",
       "Multi-region isolation across EU-West4 (The Netherlands) and US-Central1 (Iowa)",
       "VPC Service Controls (VPC SC) perimeters with restricted GCP APIs and CMEK encryption",
       "Vertex AI Local Inference & Grounding patterns strictly isolated inside sovereign regions",
       "Cross-Border Data Transfer Path with GCP VPC-SC Bridge and perimeter red alert tripwires",
-      "Looker Studio Compliance Dashboards (Regional Data Compliance Score 99.8%, cross-border audit logs, grounding lineage)",
+      "Looker Compliance Dashboards (Regional Data Compliance Score 99.8%, cross-border audit logs, grounding lineage)",
       "Async Management Plane: Unified Trace Correlation, Vertex AI monitoring, Dataplex, Cloud Logging",
       "Persona-driven compliance oversight for Legal, CISO, and SRE Ops Leads"
     ],
-    keyTech: ["VPC Service Controls (VPC SC)", "Vertex AI Localization", "Cloud Storage Buckets", "Cloud SQL", "Vertex AI Vector Search", "GCP VPC-SC Bridge", "Looker Studio", "Dataplex", "GDPR, EU AI Act, HIPAA"],
+    keyTech: ["VPC Service Controls (VPC SC)", "Vertex AI Localization", "Cloud Storage Buckets", "Cloud SQL", "Vertex AI Vector Search", "GCP VPC-SC Bridge", "Looker", "Dataplex", "GDPR, EU AI Act, HIPAA"],
     thumbnail: "/templates/data_residency_sovereign_map.png",
-    promptSummary: "Data Residency & Sovereign Cloud Map: Regional Ingress -> Core Sovereign Cloud (EU-West4 & US-Central1 VPC-SC Perimeters) -> GCP VPC-SC Bridge -> Looker Studio Compliance Dashboards -> Async Management Plane (Dataplex, Cloud Logging)."
+    promptSummary: "Data Residency & Sovereign Cloud Map: Regional Ingress -> Core Sovereign Cloud (EU-West4 & US-Central1 VPC-SC Perimeters) -> GCP VPC-SC Bridge -> Looker Compliance Dashboards -> Async Management Plane (Dataplex, Cloud Logging)."
   },
   {
     id: "federated_iam_sso",
@@ -566,13 +482,13 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Cloud DLP PII scrubbing & data masking for agent inputs and sensitive tokens",
       "TRiSM Threat Logging & Alerting Engine with real-time audit gRPC streaming",
       "Output Filter with hallucination defense, offensive content filtering, and PII leakage prevention",
-      "Looker Studio TRiSM Observability Dashboard (PII Scrubbing Rates, Threat Deflections, Compliance Status)",
+      "Looker TRiSM Observability Dashboard (PII Scrubbing Rates, Threat Deflections, Compliance Status)",
       "Cloud IAM, VPC-SC, and Secret Manager secure configuration flow driven by DevSecOps GitOps",
       "EU AI Act continuous compliance and CISO / AI Sec posture reviews"
     ],
-    keyTech: ["Cloud DLP", "Vertex AI Guardrails", "TRiSM Threat Engine", "Looker Studio", "VPC-SC", "Secret Manager", "DevSecOps GitOps", "EU AI Act Compliance"],
+    keyTech: ["Cloud DLP", "Vertex AI Guardrails", "TRiSM Threat Engine", "Looker", "VPC-SC", "Secret Manager", "DevSecOps GitOps", "EU AI Act Compliance"],
     thumbnail: "/templates/tech_ai_trism_guardrails.png",
-    promptSummary: "AI TRiSM Security Guardrail Pipeline: Agent Runtime Platform -> Input Guardrail (Prompt Injection Defense) -> Cloud DLP PII Masking -> TRiSM Threat Engine -> Output Filter (Hallucination Defense) -> Looker Studio Observability Dashboard -> EU AI Act Compliance."
+    promptSummary: "AI TRiSM Security Guardrail Pipeline: Agent Runtime Platform -> Input Guardrail (Prompt Injection Defense) -> Cloud DLP PII Masking -> TRiSM Threat Engine -> Output Filter (Hallucination Defense) -> Looker Observability Dashboard -> EU AI Act Compliance."
   },
   {
     id: "tech_micro_frontends",
@@ -642,7 +558,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Sub-second feature extraction for Vertex AI",
       "Time-series storage in Bigtable & BigQuery"
     ],
-    keyTech: ["Cloud Pub/Sub", "Cloud Dataflow (Beam)", "Bigtable", "BigQuery", "Vertex AI Feature Store", "Looker Studio"],
+    keyTech: ["Cloud Pub/Sub", "Cloud Dataflow (Beam)", "Bigtable", "BigQuery", "Vertex AI Feature Store", "Looker"],
     thumbnail: "/templates/tech_streaming_analytics.png",
     promptSummary: "GCP Streaming Pipeline: Edge Field Gateways -> Cloud Pub/Sub -> Dataflow Stream ETL -> Bigtable Time-Series -> BigQuery."
   },
@@ -698,7 +614,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Looker Performance Analytics, Cloud Run & Firebase Cloud Messaging automated alerts"
     ],
     keyTech: ["Gemini Pro Vision", "Gemini Ultra/High-Capability", "Vertex AI", "Dialogflow CX", "BigQuery", "Looker", "Firebase Auth", "Cloud Run"],
-    thumbnail: "/templates/canonical_35.png",
+    thumbnail: "/templates/canonical_38.png",
     promptSummary: "Fintech Advising Platform: User Inputs -> Enterprise App on App Engine -> Ingestion (GCS/BigQuery/PubSub) -> Vertex AI & Gemini Platform -> Analytics & Actions (BigQuery/GCS/Looker/FCM)."
   },
   {
@@ -715,7 +631,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "GKE Spot & TPU Compute Clusters for GATK variant calling & auto-tuning",
       "CMEK-Encrypted Data Lakes with Cloud SQL & BigQuery clinical trial optimizers",
       "Gemini Drug-Discovery Specialized Models (Pro, Ultra, Specialized-Bio)",
-      "Transitive PSC routing to Google Managed Services (BigQuery, Vertex AI, Genomics AI, Looker Studio)"
+      "Transitive PSC routing to Google Managed Services (BigQuery, Vertex AI, Genomics AI, Looker)"
     ],
     keyTech: ["AlphaFold Pro", "Gemini Bio Models", "GKE TPU Clusters", "CMEK Data Lake", "BigQuery Omics", "PSC Managed Services"],
     thumbnail: "/templates/tech_genomics_clinical.png",
@@ -875,11 +791,11 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Agentic Multi-Modal Ingestion Flow (Platform Engineering)",
       "Custom Clients & Enterprise Mobile App multimodal ingress",
       "GCP Services: Cloud Storage GCS, Speech-to-Text API, Vertex Vision & Video Intelligence, Google Maps APIs",
-      "Gemini-Powered Agentic Orchestrator (Gemini 2.5 Flash, Tooling & Function Calling)",
+      "Gemini-Powered Agentic Orchestrator (Gemini 3.8 Flash, Tooling & Function Calling)",
       "Vertex AI Embedding API, Vector Search, Semantic Search, and Gemini Reasoning Engine",
       "BigQuery Knowledge Base, Knowledge Graph, Automated Insights & Reports, Cloud Functions Alerting"
     ],
-    keyTech: ["Gemini 2.5 Flash", "Vertex AI Vector Search", "BigQuery Knowledge Base", "Speech-to-Text", "Vision API", "Maps Platform", "Cloud Logging"],
+    keyTech: ["Gemini 3.8 Flash", "Vertex AI Vector Search", "BigQuery Knowledge Base", "Speech-to-Text", "Vision API", "Maps Platform", "Cloud Logging"],
     thumbnail: "/templates/tech_multimodal_ingestion.png",
     promptSummary: "Agentic Multi-Modal Ingestion Flow: Multi-Modal Ingress (Text, Audio, Video, Geo-Spatial) -> GCP Ingestion Services -> Gemini Agentic Orchestrator -> Vector Search & Semantic Reasoning -> BigQuery Knowledge Base & Annotations."
   },
@@ -897,7 +813,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "GKE Spot & TPU Compute Clusters for GATK variant calling",
       "CMEK-Encrypted Data Lakes with Cloud SQL & BigQuery clinical trial optimizers",
       "Gemini Drug-Discovery Specialized Models (Pro, Ultra, Specialized-Bio)",
-      "Transitive PSC routing to Google Managed Services (BigQuery, Vertex AI, Looker Studio)"
+      "Transitive PSC routing to Google Managed Services (BigQuery, Vertex AI, Looker)"
     ],
     keyTech: ["AlphaFold Pro", "Gemini Bio Models", "GKE TPU Clusters", "CMEK Data Lake", "BigQuery Omics", "PSC Transitive"],
     thumbnail: "/templates/tech_genomics_clinical.png",
@@ -954,12 +870,12 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     bestFor: [
       "Customer demand & order processing stream visualization",
       "Automated Jira / ServiceNow lead time & process time calculation",
-      "Gemini 2.5 Flash AI bottleneck detection & root cause diagnosis",
+      "Gemini 3.8 Flash AI bottleneck detection & root cause diagnosis",
       "Real-time value-added vs non-value-added time ladder ratio calculation",
       "Executive scorecard with Rolled First Pass Yield (%C/A) analytics"
     ],
-    keyTech: ["Gemini 2.5 Flash", "Dataflow Streaming VSM", "BigQuery Analytics", "Looker VSM Cockpit", "Jira/ServiceNow API"],
-    thumbnail: "/templates/canonical_50.png",
+    keyTech: ["Gemini 3.8 Flash", "Dataflow Streaming VSM", "BigQuery Analytics", "Looker VSM Cockpit", "Jira/ServiceNow API"],
+    thumbnail: "/templates/canonical_67.png",
     promptSummary: "Enterprise Value Stream Map: Customer Ingress -> Order & Requirements -> Automated AI Build/Test -> Deployment Pipeline -> Customer Delivery & Lead Time Timeline."
   },
   {
@@ -974,10 +890,10 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     bestFor: [
       "Side-by-side As-Is (Legacy Red) vs To-Be (Google Cloud Green) process comparison",
       "Quantifying pain points: manual spreadsheets, batch silos, multi-day delays",
-      "Highlighting target wins: Cloud Run, Vertex AI Gemini 2.5 Flash, BigQuery Lakehouse",
+      "Highlighting target wins: Cloud Run, Vertex AI Gemini 3.8 Flash, BigQuery Lakehouse",
       "Executive transformation ROI metrics: 92% cycle time reduction, 100% compliance"
     ],
-    keyTech: ["Gemini 2.5 Flash", "Cloud Run", "Vertex AI", "BigQuery", "Eventarc", "Looker Studio"],
+    keyTech: ["Gemini 3.8 Flash", "Cloud Run", "Vertex AI", "BigQuery", "Eventarc", "Looker"],
     thumbnail: "/templates/canonical_67.png",
     promptSummary: "As-Is vs To-Be Modernization Flow: Top As-Is Legacy Lane (Manual Silos) vs Bottom To-Be Modern Lane (Serverless GCP + Gemini AI) with KPI Delta Callouts."
   },
@@ -994,9 +910,9 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "On-prem legacy silos and spaghetti integration matrix mapping",
       "StratoZone Collector Appliance & Migration Center TCO profiling",
       "Sensitive Data Protection (DLP) automated PII classification",
-      "Gemini 2.5 Flash 4-wave migration plan (Rehost, Replatform, Refactor, Retire)"
+      "Gemini 3.8 Flash 4-wave migration plan (Rehost, Replatform, Refactor, Retire)"
     ],
-    keyTech: ["StratoZone", "Google Cloud Migration Center", "Sensitive Data Protection (DLP)", "Compute Engine", "Database Migration Service (DMS)", "Cloud Run", "Gemini 2.5 Flash"],
+    keyTech: ["StratoZone", "Google Cloud Migration Center", "Sensitive Data Protection (DLP)", "Compute Engine", "Database Migration Service (DMS)", "Cloud Run", "Gemini 3.8 Flash"],
     thumbnail: "/templates/legacy_data_dependency_map.png",
     promptSummary: "Discovery & Assessment: On-Prem Legacy Silos -> Spaghetti Matrix -> StratoZone & Migration Center -> 4-Wave Modern Migration Plan."
   },
@@ -1015,7 +931,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Production Workload Spokes with GKE Autopilot, Serverless Direct VPC, and PSA",
       "Zero-Trust Perimeter with VPC-SC, Cloud KMS HSM Dual Rings, SCC, and Org Policies"
     ],
-    keyTech: ["Shared VPC Host Project", "100G Dedicated Interconnect", "Cloud Router BGP", "Private Service Connect (PSC)", "Cloud Armor WAF", "GKE Autopilot", "VPC-SC Perimeter", "Cloud KMS HSM", "Security Command Center", "Gemini 2.5 Flash"],
+    keyTech: ["Shared VPC Host Project", "100G Dedicated Interconnect", "Cloud Router BGP", "Private Service Connect (PSC)", "Cloud Armor WAF", "GKE Autopilot", "VPC-SC Perimeter", "Cloud KMS HSM", "Security Command Center", "Gemini 3.8 Flash"],
     thumbnail: "/templates/canonical_38.png",
     promptSummary: "GCP Landing Zone & Shared VPC: On-Prem & Transit 100G -> Shared VPC Host Project Hub -> Workload Spoke Projects -> Zero-Trust Perimeter (VPC-SC) -> Observability & Management."
   },
@@ -1034,7 +950,7 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Model-Context Protocol (MCP) tool worker pods with ephemeral scratchpad disks",
       "Model Armor real-time prompt injection filtering and Vertex AI TPU v5e inference"
     ],
-    keyTech: ["GKE Autopilot (gVisor)", "Model Armor", "Vertex AI TPU v5e", "MCP Gateway", "Memorystore Redis", "Gemini 2.5 Flash"],
+    keyTech: ["GKE Autopilot (gVisor)", "Model Armor", "Vertex AI TPU v5e", "MCP Gateway", "Memorystore Redis", "Gemini 3.8 Flash"],
     thumbnail: "/templates/enterprise_agent_runtime_platform.png",
     promptSummary: "Enterprise Agent Runtime: Ingress LB -> Agent Gateway & Model Armor -> GKE Autopilot Sandboxed Workers (MCP) -> Vertex AI TPU Serving & Telemetry."
   },
@@ -1049,11 +965,11 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     whenToUse: "Use for multi-stage AI agent review, automated red-teaming, Legal/AppSec human approval gates, Binary Authorization KMS attestation, and signed production serving.",
     bestFor: [
       "Developer IDE agent submission & prompt artifact manifest packaging",
-      "Automated SAST & Gemini 2.5 Flash adversarial red-teaming scans",
+      "Automated SAST & Gemini 3.8 Flash adversarial red-teaming scans",
       "Human-in-the-Loop (HITL) approval portal for Legal, Security & Product Leads",
       "Binary Authorization Cloud KMS cryptographic signing & signed GKE deployment"
     ],
-    keyTech: ["Vertex AI Evaluation", "Binary Authorization", "Cloud KMS HSM", "Cloud Tasks HITL", "GKE Autopilot", "Gemini 2.5 Flash"],
+    keyTech: ["Vertex AI Evaluation", "Binary Authorization", "Cloud KMS HSM", "Cloud Tasks HITL", "GKE Autopilot", "Gemini 3.8 Flash"],
     thumbnail: "/templates/ai_agent_approval_workflow.png",
     promptSummary: "AI Agent Approval Workflow: Developer IDE -> Automated Red-Teaming -> Human Governance Approvals -> Binary Authorization Signing -> Signed GKE Serving."
   },
@@ -1087,11 +1003,11 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     whenToUse: "Use for enterprise retail architectures featuring Vertex AI Search for Retail, AlloyDB pgvector discovery, Cloud Spanner global cart, and BigQuery Lakehouse.",
     bestFor: [
       "Omni-channel shopper ingress (Next.js PWA, Mobile, POS kiosks)",
-      "Vertex AI Search for Retail & Gemini 2.5 Flash Conversational Concierge",
+      "Vertex AI Search for Retail & Gemini 3.8 Flash Conversational Concierge",
       "AlloyDB pgvector sub-10ms visual product similarity indexing",
       "Cloud Spanner multi-region ACID transactional cart & BigQuery Customer 360"
     ],
-    keyTech: ["Vertex AI Search for Retail", "AlloyDB pgvector", "Cloud Spanner", "Cloud Run Microservices", "BigQuery Lakehouse", "Gemini 2.5 Flash"],
+    keyTech: ["Vertex AI Search for Retail", "AlloyDB pgvector", "Cloud Spanner", "Cloud Run Microservices", "BigQuery Lakehouse", "Gemini 3.8 Flash"],
     thumbnail: "/templates/omnichannel_ecommerce_retail.png",
     promptSummary: "OmniChannel E-Commerce: Shopper Ingress -> Cloud Run Retail Microservices -> Vertex AI Retail Search & Gemini AI -> Cloud Spanner & BigQuery Lakehouse."
   },
@@ -1103,16 +1019,16 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     badge: "HR Talent AI",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use for enterprise human capital AI platforms featuring Document AI resume parsing, AlloyDB pgvector skills graph, Gemini 2.5 Flash candidate matching, and bias audits.",
+    whenToUse: "Use for enterprise human capital AI platforms featuring Document AI resume parsing, AlloyDB pgvector skills graph, Gemini 3.8 Flash candidate matching, and bias audits.",
     bestFor: [
       "ATS / HRIS connectors (Workday, SuccessFactors, Greenhouse)",
       "Document AI custom resume parser & Cloud DLP blind screening filter",
       "AlloyDB pgvector enterprise skills taxonomy graph (O*NET aligned)",
-      "Gemini 2.5 Flash multi-factor candidate fit evaluation & Looker Recruiter Cockpit"
+      "Gemini 3.8 Flash multi-factor candidate fit evaluation & Looker Recruiter Cockpit"
     ],
-    keyTech: ["Document AI Resume Parser", "Cloud DLP", "AlloyDB pgvector Skills Graph", "Gemini 2.5 Flash Matcher", "Looker Recruiter Cockpit"],
+    keyTech: ["Document AI Resume Parser", "Cloud DLP", "AlloyDB pgvector Skills Graph", "Gemini 3.8 Flash Matcher", "Looker Recruiter Cockpit"],
     thumbnail: "/templates/workforce_talent_ai.png",
-    promptSummary: "WorkforceAI HR Intelligence: ATS Ingress -> Document AI Resume Parser -> AlloyDB Skills Graph -> Gemini 2.5 Flash Candidate Matcher -> Looker Recruiter Cockpit."
+    promptSummary: "WorkforceAI HR Intelligence: ATS Ingress -> Document AI Resume Parser -> AlloyDB Skills Graph -> Gemini 3.8 Flash Candidate Matcher -> Looker Recruiter Cockpit."
   },
   {
     id: "smart_factory_iot",
@@ -1127,9 +1043,9 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Shop floor PLCs & GDC Edge gateway with OPC-UA / MQTT protocol broker",
       "Cloud Pub/Sub & Cloud Dataflow real-time telemetry streaming (500k+ events/s)",
       "Cloud Bigtable sub-10ms time-series store & Dataplex manufacturing data mesh",
-      "Gemini 2.5 Flash multimodal anomaly fuser (thermal video + spindle waveforms) & SAP PM work order dispatch"
+      "Gemini 3.8 Flash multimodal anomaly fuser (thermal video + spindle waveforms) & SAP PM work order dispatch"
     ],
-    keyTech: ["GDC Edge Gateway", "Cloud Pub/Sub", "Cloud Dataflow", "Cloud Bigtable", "Gemini 2.5 Flash Anomaly Fuser", "Looker OEE Cockpit", "SAP PM"],
+    keyTech: ["GDC Edge Gateway", "Cloud Pub/Sub", "Cloud Dataflow", "Cloud Bigtable", "Gemini 3.8 Flash Anomaly Fuser", "Looker OEE Cockpit", "SAP PM"],
     thumbnail: "/templates/smart_manufacturing_iot.png",
     promptSummary: "Smart Factory IoT: Shop Floor PLCs -> GDC Edge -> Cloud Dataflow Streaming -> Cloud Bigtable -> Gemini Anomaly AI -> Looker OEE & SAP PM."
   },
@@ -1148,8 +1064,8 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "SAGA pattern domain services & transactional outbox event publishing",
       "PostgreSQL repository pattern, Redis caching, and AlloyDB / PubSub integration"
     ],
-    keyTech: ["Cloud Run Microservices", "JWT Auth Interceptor", "SAGA Domain Service", "Outbox Pattern", "AlloyDB PostgreSQL", "Gemini 2.5 Flash"],
-    thumbnail: "/templates/canonical_46.png",
+    keyTech: ["Cloud Run Microservices", "JWT Auth Interceptor", "SAGA Domain Service", "Outbox Pattern", "AlloyDB PostgreSQL", "Gemini 3.8 Flash"],
+    thumbnail: "/templates/canonical_38.png",
     promptSummary: "C4 Level 3 Component LLD: Ingress Controllers -> Auth Interceptors -> SAGA Domain Services -> Repositories & Outbox -> AlloyDB & Pub/Sub."
   },
   {
@@ -1160,14 +1076,14 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     badge: "BPMN 2.0",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use for standard BPMN 2.0 business workflows with start/end events, user tasks, Gemini 2.5 Flash AI service tasks, XOR branching gateways, and ERP backend posting.",
+    whenToUse: "Use for standard BPMN 2.0 business workflows with start/end events, user tasks, Gemini 3.8 Flash AI service tasks, XOR branching gateways, and ERP backend posting.",
     bestFor: [
       "BPMN 2.0 standard notation: Pool, User Persona, Agentic AI & ERP Lanes",
       "Start / End events, User Tasks, and Service Tasks",
       "Exclusive XOR decision gateways with conditional branch routing",
-      "Gemini 2.5 Flash automated fraud scoring & SAP ERP financial posting"
+      "Gemini 3.8 Flash automated fraud scoring & SAP ERP financial posting"
     ],
-    keyTech: ["BPMN 2.0 Engine", "User Persona Lane", "Gemini 2.5 Flash Service Task", "XOR Branching Gateways", "SAP ERP Posting"],
+    keyTech: ["BPMN 2.0 Engine", "User Persona Lane", "Gemini 3.8 Flash Service Task", "XOR Branching Gateways", "SAP ERP Posting"],
     thumbnail: "/templates/canonical_67.png",
     promptSummary: "BPMN 2.0 Process Workflow: User Submit -> Document AI OCR -> Gemini Fraud Scorer -> XOR Risk Gateway -> Auto-Approve -> SAP ERP Post -> End Event."
   },
@@ -1205,9 +1121,9 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
       "Dataplex automatic lineage discovery from GoogleSQL query execution plans",
       "Upstream schema change impact analysis and BCBS 239 / GDPR audit compliance export"
     ],
-    keyTech: ["BigQuery", "Dataform / dbt", "Dataplex Lineage Auto-Discovery", "Sensitive Data Protection DLP", "BI Engine", "Looker Studio"],
+    keyTech: ["BigQuery", "Dataform / dbt", "Dataplex Lineage Auto-Discovery", "Sensitive Data Protection DLP", "BI Engine", "Looker"],
     thumbnail: "/templates/canonical_42.png",
-    promptSummary: "Column-Level Data Lineage: Raw Bronze Tables -> Dataform Silver Models -> Curated Gold Marts -> Looker BI Metrics & Gemini 2.5 Flash RAG."
+    promptSummary: "Column-Level Data Lineage: Raw Bronze Tables -> Dataform Silver Models -> Curated Gold Marts -> Looker BI Metrics & Gemini 3.8 Flash RAG."
   },
   {
     id: "healthcare_fhir_hl7",
@@ -1217,15 +1133,15 @@ export const TEMPLATE_CATALOG_ITEMS: TemplateCatalogItem[] = [
     badge: "Healthcare & Life Sciences",
     isFlagship: true,
     isNew: true,
-    whenToUse: "Use for HIPAA-compliant healthcare interoperability featuring Cloud Healthcare API (HL7v2/FHIR R4/DICOM), DLP PHI de-identification, OMOP BigQuery lakehouse, and Gemini 2.5 Flash clinical insights.",
+    whenToUse: "Use for HIPAA-compliant healthcare interoperability featuring Cloud Healthcare API (HL7v2/FHIR R4/DICOM), DLP PHI de-identification, OMOP BigQuery lakehouse, and Gemini 3.8 Flash clinical insights.",
     bestFor: [
       "Hospital EHR ingress: HL7v2 ADT/ORU via MLLP, FHIR R4 bundles, DICOM imaging",
       "Cloud Healthcare API with automatic HL7-to-FHIR transformation",
       "Sensitive Data Protection (DLP) 18 HIPAA Safe Harbor PHI de-identification",
-      "Gemini 2.5 Flash clinical reasoner, drug interaction safety, and OMOP BigQuery lakehouse"
+      "Gemini 3.8 Flash clinical reasoner, drug interaction safety, and OMOP BigQuery lakehouse"
     ],
-    keyTech: ["Cloud Healthcare API", "HL7v2 & FHIR R4", "DLP PHI Redaction", "Cloud KMS HSM CMEK", "Gemini 2.5 Flash Clinical Reasoner", "OMOP CDM BigQuery"],
-    thumbnail: "/templates/canonical_49.png",
+    keyTech: ["Cloud Healthcare API", "HL7v2 & FHIR R4", "DLP PHI Redaction", "Cloud KMS HSM CMEK", "Gemini 3.8 Flash Clinical Reasoner", "OMOP CDM BigQuery"],
+    thumbnail: "/templates/canonical_68.png",
     promptSummary: "Healthcare FHIR / HL7 Pipeline: Hospital EHR Ingress -> Cloud Healthcare API -> DLP PHI De-Identification -> Gemini Clinical AI -> OMOP BigQuery Lakehouse & Physician Cockpit."
   }
 ];

@@ -7,7 +7,7 @@ const elk = new ELK();
  * Calculates node width dynamically based on label length heuristic.
  * Min width 190, capped at 280.
  */
-export function calculateNodeWidth(label: string): number {
+function calculateNodeWidth(label: string): number {
   const charWidth = 8.0;
   const padding = 50;
   const computed = Math.ceil((label || '').length * charWidth + padding);

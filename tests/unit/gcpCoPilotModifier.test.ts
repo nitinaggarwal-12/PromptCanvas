@@ -109,7 +109,7 @@ describe('GCP Architecture Co-Pilot Modifier & Quality Gates', () => {
     expect(result.updatedXml).not.toContain('<script>');
     expect(result.updatedXml).toContain('&lt;script&gt;');
     expect(result.updatedXml).toContain('&amp;');
-    expect(result.newVersion.versionTag).toBe('v1.1');
+    expect(result.newVersion.versionTag).toBe('v1.0.2');
   });
 
   it('connects suggested prompts to real existing vertex IDs and upgrades nodes in-place on Canonical Blueprint #00', async () => {

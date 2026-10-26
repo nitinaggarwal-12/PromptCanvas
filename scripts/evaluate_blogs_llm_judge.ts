@@ -10,7 +10,7 @@ const CHROME_PATH = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrom
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-export interface JudgeIssue {
+interface JudgeIssue {
   id: string;
   dimension: 'UI/UX' | 'Design' | 'Layout' | 'User Workflow' | 'Content Quality';
   severity: 'HIGH' | 'MEDIUM' | 'LOW';
@@ -19,7 +19,7 @@ export interface JudgeIssue {
   recommendation: string;
 }
 
-export interface JudgeEvaluationReport {
+interface JudgeEvaluationReport {
   passNumber: number;
   timestamp: string;
   overallScore: number;
@@ -97,7 +97,7 @@ Return ONLY valid JSON with keys:
       }
 
       const res = await fetch(
-        'https://us-central1-aiplatform.googleapis.com/v1/projects/nitina-ggarwal-sandbox-647724/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent',
+        'https://aiplatform.googleapis.com/v1/projects/nitina-ggarwal-sandbox-647724/locations/global/publishers/google/models/gemini-3.8-flash:generateContent',
         {
           method: 'POST',
           headers: {
@@ -109,7 +109,9 @@ Return ONLY valid JSON with keys:
             contents: [{ role: 'user', parts }],
             generationConfig: {
               temperature: 0.1,
+              maxOutputTokens: 32768,
               responseMimeType: 'application/json',
+              thinkingConfig: { thinkingLevel: 'LOW' },
             },
           }),
         }
@@ -121,7 +123,7 @@ Return ONLY valid JSON with keys:
         if (text) {
           const parsed = JSON.parse(text);
           return {
-            llmCritiqueSummary: parsed.llmCritiqueSummary || 'Evaluated via Gemini 2.5 Flash Multimodal Judge.',
+            llmCritiqueSummary: parsed.llmCritiqueSummary || 'Evaluated via Gemini 3.8 Flash Multimodal Judge.',
             llmSuggestedIssues: Array.isArray(parsed.llmSuggestedIssues) ? parsed.llmSuggestedIssues : [],
           };
         }

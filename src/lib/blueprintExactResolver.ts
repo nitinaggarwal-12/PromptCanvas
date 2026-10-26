@@ -61,10 +61,10 @@ import {
   getExactIntelligentDocProcessingXml,
 } from './newEnterpriseReferenceXmls';
 
-export type CatalogXmlFactory = () => string;
+type CatalogXmlFactory = () => string;
 
 /** Exact canonical dispatch for the certified 1-60 catalog plus isolated review extensions. */
-export const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>> = {
+const CATALOG_EXACT_FACTORIES: Readonly<Record<string, CatalogXmlFactory>> = {
   legacy_data_dependency_map: getExactLegacyDataDependencyMapXml,
   hybrid_strangler_transition: getExactHybridStranglerTransitionXml,
   value_stream_map: getExactValueStreamMapXml,

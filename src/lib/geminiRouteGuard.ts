@@ -12,7 +12,7 @@ function isGuestUser(user: { email?: string; is_guest?: number | boolean } | nul
   return false;
 }
 
-export interface GeminiGuardResult {
+interface GeminiGuardResult {
   allowed: boolean;
   userId?: string;
   apiKey: string;
@@ -38,7 +38,7 @@ export async function enforceGeminiRouteGuard(
   const maxDailyLimit =
     typeof routeNameOrOpts === 'object' && typeof routeNameOrOpts.maxDailyLimit === 'number'
       ? routeNameOrOpts.maxDailyLimit
-      : 50;
+      : 5000;
 
   const systemKey = process.env.GEMINI_API_KEY || '';
   let user: { id: string; email: string; is_guest?: number | boolean; is_super_admin?: boolean } | null = null;
@@ -170,7 +170,7 @@ export async function enforceGeminiRouteGuard(
   };
 }
 
-export interface ConversationalIntentCheck {
+interface ConversationalIntentCheck {
   isNonMutation: boolean;
   category?: 'greeting' | 'identity' | 'courtesy' | 'ambiguous';
   replyMessage?: string;
@@ -206,7 +206,7 @@ export function checkConversationalOrNonMutationIntent(prompt: string): Conversa
     return {
       isNonMutation: true,
       category: 'greeting',
-      replyMessage: "👋 Hello! I'm your PromptCanvas Architecture Co-Pilot (powered by Google Omni 1.1, Gemini 3.1 Pro & Gemini 2.5 Flash). Tell me what system, cloud topology, or domain infographic you'd like to design or refine!"
+      replyMessage: "👋 Hello! I'm your PromptCanvas Architecture Co-Pilot (powered by Google Omni 1.1, Gemini 4 Argon, Gemini 3.1 Pro & Gemini 3.8 Flash). Tell me what system, cloud topology, or domain infographic you'd like to design or refine!"
     };
   }
 
@@ -214,7 +214,7 @@ export function checkConversationalOrNonMutationIntent(prompt: string): Conversa
     return {
       isNonMutation: true,
       category: 'identity',
-      replyMessage: "🏛️ I am the PromptCanvas Architecture & Infographic Engine, orchestrated by Google Omni 1.1 with Gemini 3.1 Pro, Gemini 2.5 Flash, and Gemini Flash Live. I synthesize collision-free Draw.io XML blueprints, 6-Dimension Domain Research Infographics, and 19-Section Architecture Specifications."
+      replyMessage: "🏛️ I am the PromptCanvas Architecture & Infographic Engine, orchestrated by Google Omni 1.1 with Gemini 4 Argon, Gemini 3.1 Pro, Gemini 3.8 Flash, and Gemini Flash Live. I synthesize collision-free Draw.io XML blueprints, 6-Dimension Domain Research Infographics, and 19-Section Architecture Specifications."
     };
   }
 

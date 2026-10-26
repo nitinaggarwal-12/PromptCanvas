@@ -9,7 +9,7 @@ import { sanitizeDrawioXmlAttributes } from '@/lib/diagramCleaner';
 import { healStubOrOracleDiagramXml } from '@/lib/draftMicroVersionStore';
 import { DiagramErrorBoundary } from './DiagramErrorBoundary';
 
-export interface DiagramViewerRenderSafeProps {
+interface DiagramViewerRenderSafeProps {
   currentLanguage?: SupportedLanguage;
   xml: string;
   diagramId?: string;
@@ -142,7 +142,12 @@ export default function DiagramViewerRenderSafe({
       : {}),
   };
 
-  const bgColor = bgTheme === 'light' ? '#FFFFFF' : '#0F172A';
+  const isXmlDark =
+    sanitizedXml.includes('data-canvas-theme="dark"') ||
+    sanitizedXml.includes('data-theme="dark-neon"') ||
+    sanitizedXml.includes('background="#0F172A"');
+  const effectiveBgTheme = bgTheme === 'dark' || isXmlDark ? 'dark' : 'light';
+  const bgColor = effectiveBgTheme === 'light' ? '#FFFFFF' : '#0F172A';
   const translatedXml = sanitizeDrawioXmlAttributes(
     localizeDrawioXmlDeep(
       translateDiagramXmlToLanguage(sanitizedXml, currentLanguage || 'en'),
@@ -182,15 +187,38 @@ ${origin ? `<base href="${origin}/">` : ''}
     width: 100%;
     height: 100%;
     background: ${bgColor};
-    overflow-y: ${fitToWidth || allowFullScaleScroll ? 'auto' : 'hidden'};
-    overflow-x: ${allowFullScaleScroll ? 'auto' : 'hidden'};
+    overflow-y: ${allowFullScaleScroll ? 'scroll' : fitToWidth ? 'auto' : 'hidden'};
+    overflow-x: ${allowFullScaleScroll ? 'scroll' : 'hidden'};
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
+  ${allowFullScaleScroll ? `
+  html::-webkit-scrollbar, body::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+    display: block;
+  }
+  html::-webkit-scrollbar-track, body::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-left: 1px solid #e2e8f0;
+    border-top: 1px solid #e2e8f0;
+  }
+  html::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 6px;
+    border: 2px solid #f1f5f9;
+  }
+  html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+  }
+  html::-webkit-scrollbar-corner, body::-webkit-scrollbar-corner {
+    background: #e2e8f0;
+  }
+  ` : ''}
   .canvas-container {
     ${fitToWidth
       ? `position: relative; width: 100%; min-height: 100%; padding: 20px 24px; box-sizing: border-box; overflow: visible; background: ${bgColor}; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;`
       : allowFullScaleScroll
-      ? `position: relative; width: 100%; min-width: 1640px; min-height: 1040px; padding: 32px; box-sizing: border-box; overflow: visible; background: ${bgColor}; display: flex; align-items: flex-start; justify-content: center;`
+      ? `position: relative; width: 1680px; min-width: 1680px; min-height: 1060px; padding: 28px; box-sizing: border-box; overflow: visible; background: ${bgColor}; display: flex; align-items: flex-start; justify-content: flex-start;`
       : `position: absolute; inset: 0; padding: 20px 24px; box-sizing: border-box; overflow: hidden; background: ${bgColor}; display: flex; align-items: center; justify-content: center;`}
   }
   .mxgraph {
@@ -227,7 +255,7 @@ ${origin ? `<base href="${origin}/">` : ''}
   }
 
   /* High-contrast dark canvas text overrides: prevent invisible black text on dark canvas */
-  ${bgTheme === 'dark' ? `
+  ${effectiveBgTheme === 'dark' ? `
   .mxgraph foreignObject > div[style*="rgb(0, 0, 0)"] {
     color: #F8FAFC !important;
   }
@@ -251,8 +279,8 @@ ${origin ? `<base href="${origin}/">` : ''}
   /* Smooth customized scrollbars */
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: ${bgColor}; }
-  ::-webkit-scrollbar-thumb { background: ${bgTheme === 'dark' ? '#334155' : '#CBD5E1'}; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: ${bgTheme === 'dark' ? '#475569' : '#94A3B8'}; }
+  ::-webkit-scrollbar-thumb { background: ${effectiveBgTheme === 'dark' ? '#334155' : '#CBD5E1'}; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: ${effectiveBgTheme === 'dark' ? '#475569' : '#94A3B8'}; }
 
   ${isLiveFlow ? `@keyframes flowPulse { 0% { stroke-dashoffset:48; } 100% { stroke-dashoffset:0; } }
   svg path[stroke-dasharray], svg g[data-cell-id] path[stroke], svg .geEdge path { animation:flowPulse 1.1s linear infinite !important; }` : ''}
@@ -289,7 +317,7 @@ ${origin ? `<base href="${origin}/">` : ''}
 
   const canvasContainer = document.querySelector('.canvas-container');
   const aggressiveOverlayGuard = ${aggressiveOverlayGuard ? 'true' : 'false'};
-  const isDarkTheme = ${bgTheme === 'dark' ? 'true' : 'false'};
+  const isDarkTheme = ${effectiveBgTheme === 'dark' ? 'true' : 'false'};
 
   function getCleanGraphXml(xmlStr) {
     if (!xmlStr) return '';
@@ -372,11 +400,7 @@ ${origin ? `<base href="${origin}/">` : ''}
       root.style.setProperty('margin-top', '0px', 'important');
       root.style.setProperty('overflow', 'visible', 'important');
       root.style.setProperty('margin', '0 auto', 'important');
-      if (fitToWidth && window.__viewer && window.__viewer.graph) {
-        try {
-          window.__viewer.graph.fit(12, false, 0, true, false, true);
-        } catch(e) {}
-      } else if (!fitToWidth && !${allowFullScaleScroll ? 'true' : 'false'}) {
+      if (!${allowFullScaleScroll ? 'true' : 'false'}) {
         try {
           var svg = root.querySelector('svg');
           if (svg && typeof svg.getBBox === 'function') {
@@ -385,7 +409,7 @@ ${origin ? `<base href="${origin}/">` : ''}
             var bbox = svg.getBBox();
             if (bbox && bbox.width > 20 && bbox.height > 20) {
               var isPortraitPoster = bbox.height > bbox.width * 1.08;
-              var pad = (hasPosterBg || isPortraitPoster) ? 0 : 36;
+              var pad = (hasPosterBg || isPortraitPoster) ? 0 : 24;
               var vx = Math.floor(bbox.x - pad);
               var vy = Math.floor(bbox.y - pad);
               var vw = Math.ceil(bbox.width + pad * 2);
@@ -408,26 +432,19 @@ ${origin ? `<base href="${origin}/">` : ''}
   let renderSucceeded = false;
 
   function triggerRender() {
+    if (renderSucceeded && root && root.querySelector('svg')) {
+      requestAnimationFrame(finishPresentation);
+      return;
+    }
     renderAttempts++;
-    if (window.GraphViewer) {
-      if (fitToWidth && root) {
-        try {
-          root.innerHTML = '';
-          window.GraphViewer.createViewerForElement(root, function(viewer) {
-            window.__viewer = viewer;
-            viewer.graph.fit(12, false, 0, true, false, true);
-          });
+    if (window.GraphViewer && typeof window.GraphViewer.processElements === 'function') {
+      try {
+        window.GraphViewer.processElements();
+        if (root && root.querySelector('svg')) {
           renderSucceeded = true;
-        } catch(e) {
-          console.warn('[DiagramViewer] fitToWidth render warning:', e);
         }
-      } else if (typeof window.GraphViewer.processElements === 'function') {
-        try {
-          window.GraphViewer.processElements();
-          renderSucceeded = true;
-        } catch(e) {
-          console.warn('[DiagramViewer] processElements warning:', e);
-        }
+      } catch(e) {
+        console.warn('[DiagramViewer] processElements warning:', e);
       }
     }
     requestAnimationFrame(finishPresentation);
@@ -439,15 +456,9 @@ ${origin ? `<base href="${origin}/">` : ''}
     }
   }
 
-  if (fitToWidth) {
-    window.addEventListener('resize', function() {
-      if (window.__viewer && window.__viewer.graph) {
-        try {
-          window.__viewer.graph.fit(12, false, 0, true, false, true);
-        } catch(e) {}
-      }
-    });
-  }
+  window.addEventListener('resize', function() {
+    requestAnimationFrame(finishPresentation);
+  });
 </script>
 <script src="${scriptUrl}" onload="triggerRender()" onerror="this.src='/viewer-static.min.js';"></script>
 <script>
@@ -471,7 +482,7 @@ ${origin ? `<base href="${origin}/">` : ''}
 </body>
 </html>`;
 
-  const containerBgClass = bgTheme === 'light'
+  const containerBgClass = effectiveBgTheme === 'light'
     ? 'bg-white border-slate-300 shadow-xl'
     : 'bg-[#0F172A] border-panel-border/20 shadow-2xl';
 
@@ -496,7 +507,7 @@ ${origin ? `<base href="${origin}/">` : ''}
         style={{
           ...responsiveFrameStyle,
           backgroundImage:
-            bgTheme === 'light'
+            effectiveBgTheme === 'light'
               ? 'radial-gradient(#CBD5E1 1.25px, transparent 1.25px)'
               : 'radial-gradient(#334155 1.25px, transparent 1.25px)',
           backgroundSize: '20px 20px',
@@ -529,7 +540,7 @@ ${origin ? `<base href="${origin}/">` : ''}
         className={`${containerDimensions} relative rounded-xl overflow-hidden ${containerBgClass} transition-all duration-300 mx-auto flex flex-col flex-1`}
       >
         <iframe
-          key={`safe_iframe_${diagramId || 'd'}_${versionId || 'v'}_${aspectRatioId}_${bgTheme}_${sanitizedXml.length}_${sanitizedXml.slice(60, 120)}`}
+          key={`safe_iframe_${diagramId || 'd'}_${versionId || 'v'}_${aspectRatioId}_${effectiveBgTheme}_${sanitizedXml.length}_${sanitizedXml.slice(60, 120)}`}
           srcDoc={iframeHtml}
           className="w-full h-full flex-1 border-0 bg-transparent"
           style={{ minHeight: effectiveMinHeight }}

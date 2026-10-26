@@ -294,7 +294,7 @@ export function buildDynamicInfographicTiers(prompt: string): {
               title: 'Frontier Teacher Ensemble',
               badge: 'TEACHER LLM',
               bullets: [
-                'Gemini 2.5 Pro / Gemini 2.5 Flash high-reasoning',
+                'Gemini 3.1 Pro / Gemini 3.8 Flash high-reasoning',
                 'Generates explicit Chain-of-Thought (CoT) traces',
                 'Synthesizes multi-step MCP tool invocation DAGs'
               ]
@@ -374,7 +374,7 @@ export function buildDynamicInfographicTiers(prompt: string): {
               title: 'Distilled Student SLM / VLM',
               badge: 'STUDENT MODEL',
               bullets: [
-                'Fine-tuned Gemini 2.5 Flash / Gemma 3 12B / LoRA',
+                'Fine-tuned Gemini 3.8 Flash / Gemma 3 12B / LoRA',
                 'FP8 / AWQ quantization on vLLM / TensorRT-LLM',
                 '10x lower latency & 15x lower token cost vs Teacher'
               ]
@@ -634,7 +634,7 @@ export function buildDynamicInfographicTiers(prompt: string): {
           cards: [
             {
               title: 'Multimodal VLM Planner',
-              badge: 'GEMINI 2.5 PRO VLM',
+              badge: 'GEMINI 3.1 PRO VLM',
               bullets: [
                 'Reasons jointly over goal prompt, SoM screenshot & AXTree',
                 'Predicts expected visual state transition after action',

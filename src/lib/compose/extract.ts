@@ -16,7 +16,7 @@ export interface SystemModel {
   unmapped: string[];
 }
 
-export interface ExtractInput {
+interface ExtractInput {
   graph_json?: ArchitectureGraph | unknown;
   xml?: string;
   title?: string;

@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     req.headers.forEach((v, k) => {
       hdrs[k] = v;
     });
-    const localStorePath = path.resolve(process.cwd(), '.local_backup/user_feedback.json');
+    const localStorePath = path.resolve(/*turbopackIgnore: true*/ process.cwd(), '.local_backup/user_feedback.json');
     const isBlogs = String(body.pageUrl || '').startsWith('/blogs');
     const res = await engine.submitFeedback(
       body,

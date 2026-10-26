@@ -108,8 +108,8 @@ export function buildMultiFlowZeroTrustPlatformXml(): string {
           <mxGeometry x="685" y="62" width="310" height="20" as="geometry"/>
         </mxCell>
 
-        <!-- 3.1 Gemini 2.5 Flash Super-Orchestrator -->
-        <mxCell id="node_gemini_brain" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[3.1] Gemini 2.5 Flash Super-Orchestrator&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• LangGraph DAG State Machine &amp;amp; Checkpoints&lt;br&gt;• Dynamic Multi-Modal Synthesis (Text, Vision)&lt;br&gt;• Model Context Protocol (MCP) Tool Calling&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <!-- 3.1 Gemini 3.8 Flash Super-Orchestrator -->
+        <mxCell id="node_gemini_brain" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[3.1] Gemini 3.8 Flash Super-Orchestrator&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• LangGraph DAG State Machine &amp;amp; Checkpoints&lt;br&gt;• Dynamic Multi-Modal Synthesis (Text, Vision)&lt;br&gt;• Model Context Protocol (MCP) Tool Calling&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="690" y="90" width="300" height="65" as="geometry"/>
         </mxCell>
 
@@ -151,8 +151,8 @@ export function buildMultiFlowZeroTrustPlatformXml(): string {
           <mxGeometry x="1025" y="90" width="305" height="65" as="geometry"/>
         </mxCell>
 
-        <!-- 4.2 BigQuery BigLake & Dataplex -->
-        <mxCell id="node_bigquery_lake" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[4.2] BigQuery BigLake &amp;amp; Dataplex&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Medallion Tiering (Bronze, Silver, Gold)&lt;br&gt;• Column-Level Crypto Masking &amp;amp; ABAC Tags&lt;br&gt;• WORM Immutable 7-Year Compliance Vault&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <!-- 4.2 BigLake & Dataplex -->
+        <mxCell id="node_bigquery_lake" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt;[4.2] BigLake &amp;amp; Dataplex&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;• Medallion Tiering (Bronze, Silver, Gold)&lt;br&gt;• Column-Level Crypto Masking &amp;amp; ABAC Tags&lt;br&gt;• WORM Immutable 7-Year Compliance Vault&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="1025" y="185" width="305" height="70" as="geometry"/>
         </mxCell>
 

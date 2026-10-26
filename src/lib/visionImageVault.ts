@@ -71,46 +71,9 @@ export async function getImageFromVault(id: string): Promise<string | null> {
 }
 
 /**
- * Compresses a large Data URI image into a crisp <=150KB WebP Data URI
- * safe for synchronous localStorage caching without triggering QuotaExceededError.
- */
-export async function compressImageForLocalStorage(dataUri: string, maxWidth = 1400): Promise<string> {
-  if (typeof window === 'undefined' || !dataUri || !dataUri.startsWith('data:image/')) {
-    return dataUri;
-  }
-  // If already compact (< 220KB), keep intact
-  if (dataUri.length < 220000) {
-    return dataUri;
-  }
-  return new Promise(resolve => {
-    try {
-      const img = new Image();
-      img.onload = () => {
-        const scale = img.width > maxWidth ? maxWidth / img.width : 1;
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.round(img.width * scale);
-        canvas.height = Math.round(img.height * scale);
-        const ctx = canvas.getContext('2d');
-        if (!ctx) {
-          resolve(dataUri);
-          return;
-        }
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        const compressed = canvas.toDataURL('image/webp', 0.82);
-        resolve(compressed.length < dataUri.length ? compressed : dataUri);
-      };
-      img.onerror = () => resolve(dataUri);
-      img.src = dataUri;
-    } catch {
-      resolve(dataUri);
-    }
-  });
-}
-
-/**
  * Determines if a blueprint ID, title, or XML matches the Gemini Enterprise Agent Platform slide.
  */
-export function isGeminiEnterpriseSlide(id?: string, title?: string, xml?: string): boolean {
+function isGeminiEnterpriseSlide(id?: string, title?: string, xml?: string): boolean {
   const combined = `${id || ''} ${title || ''} ${xml || ''}`.toLowerCase();
   return (
     combined.includes('vis-1787') ||

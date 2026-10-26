@@ -187,6 +187,8 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
                               id.startsWith('title_') ||
                               id.endsWith('_title') ||
                               id.startsWith('banner_') ||
+                              id.includes('banner') ||
+                              id.includes('boundary') ||
                               id.startsWith('legend_') ||
                               id.startsWith('leg_') ||
                               id.startsWith('enabler_') ||
@@ -499,7 +501,7 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
         const isVert = dx < 5;
 
         for (const [vId, v] of verticesMap.entries()) {
-          if (vId === edge.source || vId === edge.target) continue;
+          if (vId === edge.source || vId === edge.target || v.isLabelOrHeader) continue;
 
           if (v.isContainer) {
             const headerMinY = v.absY;

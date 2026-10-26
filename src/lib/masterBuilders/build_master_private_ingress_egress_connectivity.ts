@@ -112,5 +112,3 @@ export function buildMasterPrivateIngressEgressXml(): string {
   </diagram>
 </mxfile>`;
 }
-
-export const MASTER_PRIVATE_INGRESS_EGRESS_XML = buildMasterPrivateIngressEgressXml();

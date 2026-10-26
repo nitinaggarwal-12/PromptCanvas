@@ -47,7 +47,7 @@ export const DOMAIN_PRESETS = [
   { id: 'media', name: 'Media Streaming, 4K Live Transcoding & CDN Edge', prefix: 'MEDIA EDGE' },
 ];
 
-export interface ArchitectureDocumentBinding {
+interface ArchitectureDocumentBinding {
   docId: string;
   title: string;
   primaryPurpose: string;
@@ -55,59 +55,28 @@ export interface ArchitectureDocumentBinding {
 }
 
 export const ARCHITECTURE_DOCUMENT_BINDINGS: ArchitectureDocumentBinding[] = [
-  { docId: 'DOC-01', title: 'Product Requirements Document (PRD)', primaryPurpose: 'Business requirements, user personas, functional scope, and success KPIs', requiredDiagramViews: ['01 System Context', '02 Capability Map', '04 Value Stream'] },
-  { docId: 'DOC-02', title: 'Functional Design Document (FDD)', primaryPurpose: 'Detailed functional specifications, business rules, and user interaction workflows', requiredDiagramViews: ['03 Business Process', '11 Sequence Diagram', '13 Decision Flow'] },
-  { docId: 'DOC-03', title: 'High-Level Architecture Design (HLD)', primaryPurpose: 'End-to-end system architecture, major platform subsystems, integration, and cloud landing zone', requiredDiagramViews: ['06 C4 Context', '07 C4 Container', '10 Integration', '15 Network Topology'] },
-  { docId: 'DOC-04', title: 'Low-Level Technical Design (LLD)', primaryPurpose: 'Detailed component design, internal class structures, API schemas, and thread/connection pools', requiredDiagramViews: ['08 Component Architecture', '11 Sequence Diagram', '14 Data Model / ERD'] },
-  { docId: 'DOC-05', title: 'Data Architecture & Governance Spec', primaryPurpose: 'Data mesh topology, medallion lakehouse, schema catalog, data quality SLAs, and privacy tags', requiredDiagramViews: ['09 Data Flow Architecture', '14 Data Model / ERD', '34 Geographic Architecture'] },
-  { docId: 'DOC-06', title: 'Enterprise Security Architecture & Threat Model', primaryPurpose: 'Zero-trust boundaries, STRIDE threat model, identity federation, and encryption specs', requiredDiagramViews: ['17 Identity & Access Flow', '18 Security / Trust Boundary', '27 Threat Model'] },
-  { docId: 'DOC-07', title: 'AI System Card & Cognitive Architecture Spec', primaryPurpose: 'Model specifications, multi-agent orchestration, RAG knowledge graph, and prompt safety guardrails', requiredDiagramViews: ['23 Agent Interaction', '24 RAG / Knowledge Flow', '25 Tool / Protocol', '26 HITL Flow'] },
-  { docId: 'DOC-08', title: 'Infrastructure & Cloud Deployment Spec', primaryPurpose: 'Physical cloud resource mapping, GKE cluster topology, multi-zone compute, and subnet CIDRs', requiredDiagramViews: ['15 Network Topology', '16 Deployment Architecture', '34 Geographic'] },
-  { docId: 'DOC-09', title: 'High Availability & Disaster Recovery (BCDR) Plan', primaryPurpose: 'RTO/RPO targets, multi-region replication, failover automation, and disaster recovery exercises', requiredDiagramViews: ['19 HA / DR Architecture', '34 Geographic', '28 Failure / Exception Flow'] },
-  { docId: 'DOC-10', title: 'Software Delivery & CI/CD Specification', primaryPurpose: 'Automated build/test pipelines, GitOps declarative delivery, progressive canary rollout, and SLSA L3', requiredDiagramViews: ['20 CI/CD Pipeline', '16 Deployment Architecture', '08 Component'] },
-  { docId: 'DOC-11', title: 'Site Reliability Engineering (SRE) & Telemetry Spec', primaryPurpose: 'SLO/SLA definitions, error budget policies, OpenTelemetry distributed tracing, and alert matrices', requiredDiagramViews: ['21 Observability / SRE', '28 Failure / Exception Flow', '07 Container'] },
-  { docId: 'DOC-12', title: 'Migration & Modernization Strategy (6-Rs)', primaryPurpose: 'Legacy inventory assessment, dependency mapping, migration wave prioritization, and cutover', requiredDiagramViews: ['05 As-Is / To-Be', '22 Migration / Transition', '31 Dependency Map', '32 Roadmap'] },
-  { docId: 'DOC-13', title: 'Production Go-Live & Cutover Runbook', primaryPurpose: 'Minute-by-minute execution steps for launch, war room operations, smoke tests, and rollback', requiredDiagramViews: ['29 Cutover / Operational Runbook', '03 Swimlane', '11 Sequence'] },
-  { docId: 'DOC-14', title: 'Cloud FinOps & Unit Economics Model', primaryPurpose: 'Cloud spend allocation by business unit, automated idle reclaimer, and AI token cost budgeting', requiredDiagramViews: ['30 FinOps / Cost Flow', '04 Value Stream', '33 Matrix / Heatmap'] },
-  { docId: 'DOC-15', title: 'Regulatory Compliance & GxP / HIPAA Validation Pack', primaryPurpose: '21 CFR Part 11 electronic records, HIPAA audit trails, sovereign cloud boundaries, and CSV protocols', requiredDiagramViews: ['18 Security / Trust Boundary', '26 HITL Flow', '34 Geographic Architecture'] },
-  { docId: 'DOC-16', title: 'Architecture Decision Record (ADR) Log', primaryPurpose: 'Formal record of architectural trade-offs, technology evaluations, and approved decision rationale', requiredDiagramViews: ['13 Decision Flow / Tree', '33 Matrix / Heatmap', '06 C4 Context'] },
-];
-
-export interface BiopharmaReferenceTier {
-  tierNumber: number;
-  tierName: string;
-  subsystem: string;
-  gcpTechStack: string;
-  visualGrammars: string[];
-  complianceControls: string;
-}
-
-export const BIOPHARMA_REFERENCE_TIERS: BiopharmaReferenceTier[] = [
-  { tierNumber: 1, tierName: 'Tier 1: Clinical Ingress & Sequencer Edge', subsystem: 'Next-Gen Sequencing (NGS) Edge Gateways & Hospital EHRs', gcpTechStack: 'Google Cloud Batch & Cloud Healthcare API, FastQ / BAM Ingestion, Apigee X FHIR Gateway', visualGrammars: ['01 Context', '10 Integration', '15 Network'], complianceControls: 'HIPAA Encryption in-transit, TLS 1.3, Mutual mTLS, 21 CFR Part 11 Audit' },
-  { tierNumber: 2, tierName: 'Tier 2: Ingestion, Streaming & Raw Lake', subsystem: 'Bronze Raw Genomic Data Lake & Real-Time Sample Streams', gcpTechStack: 'Cloud Storage Immutable Buckets (CMEK), Cloud Pub/Sub, Datastream CDC', visualGrammars: ['09 Data Flow', '16 Deployment', '18 Trust Boundary'], complianceControls: 'Customer-Managed KMS Keys (HSM), Write-Once-Read-Many (WORM) Object Retention' },
-  { tierNumber: 3, tierName: 'Tier 3: Distributed Genomic Processing & Variant Calling', subsystem: 'Silver Conformed Genomic Variants & Bioinformatic Pipelines', gcpTechStack: 'Cloud Dataflow (Apache Beam), Dataproc Serverless (Spark/GATK), BigQuery Silver Variant Store', visualGrammars: ['08 Component', '09 Data Flow', '20 CI/CD Pipeline'], complianceControls: 'Reproducible Pipeline Execution, Automated Quality Gate SLAs, Lineage Tracking' },
-  { tierNumber: 4, tierName: 'Tier 4: Biomedical Knowledge Graph & Hybrid RAG', subsystem: 'Multi-Hop Precision Oncology Knowledge Graph & Vector Search', gcpTechStack: 'Cloud Spanner Graph (ISO GQL Multi-Hop), Vertex AI Vector Search (ScaNN 768-dim), Document AI Clinical Parser', visualGrammars: ['14 Data Model / ERD', '24 RAG / Knowledge Flow', '31 Dependency Map'], complianceControls: 'RAG Triad Verification (Faithfulness > 0.98), Model Armor Clinical Prompt Shield' },
-  { tierNumber: 5, tierName: 'Tier 5: Multi-Agent Clinical Reasoning & HITL Gate', subsystem: 'Precision Oncology Clinical Decision Support Agents & FDA Regulatory Assistant', gcpTechStack: 'Gemini 2.5 Pro ReAct Orchestrator, Vertex AI Agent Engine, Oncologist Review Cockpit', visualGrammars: ['23 Agent Interaction', '25 Tool/Protocol (MCP)', '26 HITL Governance Flow'], complianceControls: 'FDA 21 CFR Part 11 Dual-Electronic Signatures, Human-in-the-Loop Mandatory Signoff' },
-  { tierNumber: 6, tierName: 'Tier 6: Cross-Cutting Sovereign Security & GxP Observability', subsystem: 'Sovereign Cloud Residency, Workload Identity & Immutable Audit Ledger', gcpTechStack: 'Assured Workloads (EU/US Sovereignty), IAM Workload Identity Federation, Cloud Audit Logs, Security Command Center', visualGrammars: ['17 IAM Flow', '18 Security / Trust Boundary', '21 SRE Observability', '34 Geographic'], complianceControls: 'EU GDPR Patient Data Residency, HIPAA BAA Compliance, Tamper-Proof Audit Trails' },
+  { docId: 'DOC-01', title: 'Product Requirements Document (PRD)', primaryPurpose: 'Business requirements, user personas, functional scope, and success KPIs', requiredDiagramViews: ['78 Hub & Spoke', '00 GCP Enterprise Arch', '67 Agentic Flow', '68 Agentic Flowchart'] },
+  { docId: 'DOC-02', title: 'Functional Design Document (FDD)', primaryPurpose: 'Detailed functional specifications, business rules, and user interaction workflows', requiredDiagramViews: ['67 Agentic Flow', '68 Agentic Flowchart', '78 Hub & Spoke', '00 GCP Enterprise Arch'] },
+  { docId: 'DOC-03', title: 'High-Level Architecture Design (HLD)', primaryPurpose: 'End-to-end system architecture, major platform subsystems, integration, and cloud landing zone', requiredDiagramViews: ['78 Hub & Spoke', '00 GCP Enterprise Arch', '38 Cloud Landing Zone', '42 Modern Data Lakehouse'] },
+  { docId: 'DOC-04', title: 'Low-Level Technical Design (LLD)', primaryPurpose: 'Detailed component design, internal class structures, API schemas, and thread/connection pools', requiredDiagramViews: ['78 Hub & Spoke', '38 Cloud Landing Zone', '67 Agentic Flow', '68 Agentic Flowchart'] },
+  { docId: 'DOC-05', title: 'Data Architecture & Governance Spec', primaryPurpose: 'Data mesh topology, medallion lakehouse, schema catalog, data quality SLAs, and privacy tags', requiredDiagramViews: ['42 Modern Data Lakehouse', '44 Zero-Trust & SOC', '78 Hub & Spoke', '68 Agentic Flowchart'] },
+  { docId: 'DOC-06', title: 'Enterprise Security Architecture & Threat Model', primaryPurpose: 'Zero-trust boundaries, STRIDE threat model, identity federation, and encryption specs', requiredDiagramViews: ['44 Zero-Trust & SOC', '38 Cloud Landing Zone', '78 Hub & Spoke', '67 Agentic Flow'] },
+  { docId: 'DOC-07', title: 'AI System Card & Cognitive Architecture Spec', primaryPurpose: 'Model specifications, multi-agent orchestration, RAG knowledge graph, and prompt safety guardrails', requiredDiagramViews: ['78 Hub & Spoke', '00 GCP Enterprise Arch', '67 Agentic Flow', '68 Agentic Flowchart'] },
+  { docId: 'DOC-08', title: 'Infrastructure & Cloud Deployment Spec', primaryPurpose: 'Physical cloud resource mapping, GKE cluster topology, multi-zone compute, and subnet CIDRs', requiredDiagramViews: ['38 Cloud Landing Zone', '44 Zero-Trust & SOC', '00 GCP Enterprise Arch', '78 Hub & Spoke'] },
+  { docId: 'DOC-09', title: 'High Availability & Disaster Recovery (BCDR) Plan', primaryPurpose: 'RTO/RPO targets, multi-region replication, failover automation, and disaster recovery exercises', requiredDiagramViews: ['44 Zero-Trust & SOC', '38 Cloud Landing Zone', '68 Agentic Flowchart'] },
+  { docId: 'DOC-10', title: 'Software Delivery & CI/CD Specification', primaryPurpose: 'Automated build/test pipelines, GitOps declarative delivery, progressive canary rollout, and SLSA L3', requiredDiagramViews: ['38 Cloud Landing Zone', '67 Agentic Flow', '68 Agentic Flowchart'] },
+  { docId: 'DOC-11', title: 'Site Reliability Engineering (SRE) & Telemetry Spec', primaryPurpose: 'SLO/SLA definitions, error budget policies, OpenTelemetry distributed tracing, and alert matrices', requiredDiagramViews: ['44 Zero-Trust & SOC', '67 Agentic Flow', '68 Agentic Flowchart'] },
+  { docId: 'DOC-12', title: 'Migration & Modernization Strategy (6-Rs)', primaryPurpose: 'Legacy inventory assessment, dependency mapping, migration wave prioritization, and cutover', requiredDiagramViews: ['38 Cloud Landing Zone', '00 GCP Enterprise Arch', '42 Modern Data Lakehouse'] },
+  { docId: 'DOC-13', title: 'Production Go-Live & Cutover Runbook', primaryPurpose: 'Minute-by-minute execution steps for launch, war room operations, smoke tests, and rollback', requiredDiagramViews: ['38 Cloud Landing Zone', '67 Agentic Flow', '68 Agentic Flowchart'] },
+  { docId: 'DOC-14', title: 'Cloud FinOps & Unit Economics Model', primaryPurpose: 'Cloud spend allocation by business unit, automated idle reclaimer, and AI token cost budgeting', requiredDiagramViews: ['38 Cloud Landing Zone', '42 Modern Data Lakehouse', '78 Hub & Spoke'] },
+  { docId: 'DOC-15', title: 'Regulatory Compliance & GxP / HIPAA Validation Pack', primaryPurpose: '21 CFR Part 11 electronic records, HIPAA audit trails, sovereign cloud boundaries, and CSV protocols', requiredDiagramViews: ['44 Zero-Trust & SOC', '38 Cloud Landing Zone', '78 Hub & Spoke'] },
+  { docId: 'DOC-16', title: 'Architecture Decision Record (ADR) Log', primaryPurpose: 'Formal record of architectural trade-offs, technology evaluations, and approved decision rationale', requiredDiagramViews: ['78 Hub & Spoke', '00 GCP Enterprise Arch', '42 Modern Data Lakehouse'] },
 ];
 
 import { generateTemplate00GcpEnterpriseArchXml } from "./template00GcpEnterpriseArch";
-import { generateTemplate35FintechWealthEngineXml } from "./template35FintechWealthEngine";
-import { generateTemplate36SmartManufacturingIotXml } from "./template36SmartManufacturingIot";
-import { generateTemplate37DedicatedNetworkInfraXml } from "./template37DedicatedNetworkInfra";
 import { generateTemplate38CloudLandingZoneXml } from "./template38CloudLandingZone";
-import { generateTemplate39SovereignCloudPrivacyXml } from "./template39SovereignCloudPrivacy";
-import { generateTemplate40EnterpriseGenAiPlatformXml } from "./template40EnterpriseGenAiPlatform";
-import { generateTemplate41EnterpriseRagPlatformXml } from "./template41EnterpriseRagPlatform";
 import { generateTemplate42ModernDataLakehouseDataMeshXml } from "./template42ModernDataLakehouseDataMesh";
-import { generateTemplate43RealTimeStreamingEventEnterpriseXml } from "./template43RealTimeStreamingEventEnterprise";
 import { generateTemplate44ZeroTrustCybersecuritySocPlatformXml } from "./template44ZeroTrustCybersecuritySocPlatform";
-import { generateTemplate45EnterpriseApiIntegrationMcpGatewayXml } from "./template45EnterpriseApiIntegrationMcpGateway";
-import { generateTemplate46EnterpriseKubernetesPlatformEngineeringXml } from "./template46EnterpriseKubernetesPlatformEngineering";
-import { generateTemplate47MlopsAiLifecyclePlatformXml } from "./template47MlopsAiLifecyclePlatform";
-import { generateTemplate48BcdrCyberRecoveryResilienceXml } from "./template48BcdrCyberRecoveryResilience";
-import { generateTemplate49HealthcareLifeSciencesPlatformXml } from "./template49HealthcareLifeSciencesPlatform";
-import { generateTemplate50SustainabilityEsgPlatformXml } from "./template50SustainabilityEsgPlatform";
 
 interface RawCanonicalTemplate {
   id: string;
@@ -128,48 +97,12 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     name: 'GCP Enterprise Architecture',
     family: 'Reference Architectures',
     level: 'L1',
-    primaryPurpose: 'Production-grade Google Cloud native topology across 6 balanced zones with Gemini 2.5 Flash & Pro hybrid engine',
+    primaryPurpose: 'Production-grade Google Cloud native topology across 6 balanced zones with Gemini 3.8 Flash & Pro hybrid engine',
     examples: 'Multi-Region Microservices, Vertex AI GenAI Studio, Real-Time Event Streaming & Unified Lakehouse',
     defaultDomain: 'Enterprise Google Cloud Native Architecture',
     previewImage: '/templates/gcp_enterprise_architecture.png',
     keyComponents: ['Ingress & Edge', 'Application Core Mesh', 'Real-Time Event Streaming', 'Vertex AI & Intelligence Hub', 'Multi-Region Lakehouse & DB', 'Zero-Trust Security Baseline'],
     generateXml: generateTemplate00GcpEnterpriseArchXml
-  },
-  {
-    id: '35',
-    name: 'FinTech & Autonomous Wealth Engine',
-    family: 'Reference Architectures',
-    level: 'L2',
-    primaryPurpose: 'Intelligent, autonomous, and compliant wealth management engine on Google Cloud',
-    examples: 'Robo-advisor, wealth tech, algorithmic trading, portfolio rebalancing',
-    defaultDomain: 'FinTech Autonomous Wealth & High-Speed Payments',
-    previewImage: '/templates/35.png',
-    keyComponents: ['Channels / Experience', 'Identity & Onboarding', 'Core Wealth Platform', 'Autonomous AI Layer', 'Trading & Market Ecosystem', 'Data & Intelligence', 'Risk & Compliance', 'Platform / MLOps', 'Security Foundation'],
-    generateXml: generateTemplate35FintechWealthEngineXml
-  },
-  {
-    id: '36',
-    name: 'Smart Manufacturing & Industrial IoT',
-    family: 'Reference Architectures',
-    level: 'L2',
-    primaryPurpose: 'Plant floor OT integration, edge control, MES/MOM, and cloud AI digital twin',
-    examples: 'Connected factory, predictive maintenance, edge analytics, OEE optimization',
-    defaultDomain: 'Smart Manufacturing & Industrial IoT Digital Twin',
-    previewImage: '/templates/36.png',
-    keyComponents: ['Shop Floor / OT Channels', 'Edge Control & Site Ops', 'MES / MOM Platform', 'AI / Optimization Layer', 'Enterprise Ecosystem', 'Industrial Intelligence Layer', 'Safety & Governance', 'Platform / DevOps', 'Security Foundation'],
-    generateXml: generateTemplate36SmartManufacturingIotXml
-  },
-  {
-    id: '37',
-    name: 'Dedicated Network & Infrastructure Blueprint',
-    family: 'Infrastructure',
-    level: 'L3',
-    primaryPurpose: 'Private ingress/egress, PSC connectivity, and secure hybrid cloud networking',
-    examples: 'Shared VPC hub-and-spoke, Cloud Interconnect, Private Service Connect, Secure Web Proxy',
-    defaultDomain: 'Enterprise Multi-Region Hybrid Cloud Infrastructure',
-    previewImage: '/templates/canonical_37.png',
-    keyComponents: ['Users & External Sources', 'Hybrid Connectivity Edge', 'Private Ingress Layer', 'Shared VPC Hub-and-Spoke', 'Private Workloads Layer', 'Private Service Connect', 'Private Egress Controls', 'Data & Platform Shared Controls', 'Security & Reliability'],
-    generateXml: generateTemplate37DedicatedNetworkInfraXml
   },
   {
     id: '38',
@@ -184,42 +117,6 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     generateXml: generateTemplate38CloudLandingZoneXml
   },
   {
-    id: '39',
-    name: 'Sovereign Cloud & Data Privacy Blueprint',
-    family: 'Security & Governance',
-    level: 'L2',
-    primaryPurpose: 'National/regional data residency, privacy by design, and sovereign cloud operations',
-    examples: 'EU GDPR compliance, sovereign cloud enclaves, automated data classification, local KMS/HSM',
-    defaultDomain: 'Sovereign Healthcare & Public Sector Cloud Platform',
-    previewImage: '/templates/canonical_39.png',
-    keyComponents: ['Governance & Sovereign Oversight', 'Stakeholders & Access Gate', 'Sovereign Cloud Environment', 'Data Classification & Residency', 'Privacy & Security Controls', 'Infrastructure Sovereignty', 'Data Exchange & Controls', 'Monitoring & Audit', 'Compliance Frameworks'],
-    generateXml: generateTemplate39SovereignCloudPrivacyXml
-  },
-  {
-    id: '40',
-    name: 'Enterprise GenAI & Multi-Agent Platform',
-    family: 'Structure',
-    level: 'L2',
-    primaryPurpose: 'End-to-end, secure, governed, and observable multi-agent AI platform on Google Cloud',
-    examples: 'Multi-agent system, LLM gateway, enterprise RAG pipeline, MCP tool integration, AI governance & HITL',
-    defaultDomain: 'Enterprise Multi-Agent GenAI Platform',
-    previewImage: '/templates/40.png',
-    keyComponents: ['User & Channels Layer', 'Experience & Access Layer', 'Agent Orchestration Layer', 'Model & Reasoning Layer', 'Memory & RAG Pipeline', 'Tool / MCP Integration', 'Enterprise Systems & Data Sources', 'Zero-Trust Security Foundation', 'Governance / HITL', 'Observability & FinOps', 'Platform Operations'],
-    generateXml: generateTemplate40EnterpriseGenAiPlatformXml
-  },
-  {
-    id: '41',
-    name: 'Enterprise RAG & Knowledge Intelligence Platform',
-    family: 'Structure',
-    level: 'L2',
-    primaryPurpose: 'Trusted enterprise knowledge retrieval, grounding, citations, governance, and observability',
-    examples: 'Enterprise RAG, semantic vector search, knowledge graph, document parsing, grounding & citations, AI safety & compliance',
-    defaultDomain: 'Enterprise Knowledge Intelligence Platform',
-    previewImage: '/templates/41.png',
-    keyComponents: ['User & Channels Layer', 'Access, Identity & Experience Layer', 'Knowledge Experience & Orchestration Layer', 'RAG / Reasoning Layer', 'Memory, Index & Knowledge Layer', '10-Step RAG Pipeline', 'Ingestion, Parsing & Connectors Layer', 'Enterprise Knowledge Sources Layer', 'Security / Privacy Foundation', 'Governance / Compliance', 'Observability & FinOps', 'Platform Operations'],
-    generateXml: generateTemplate41EnterpriseRagPlatformXml
-  },
-  {
     id: '42',
     name: 'Modern Data Lakehouse & Data Mesh',
     family: 'Structure',
@@ -232,18 +129,6 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     generateXml: generateTemplate42ModernDataLakehouseDataMeshXml
   },
   {
-    id: '43',
-    name: 'Real-Time Streaming & Event-Driven Enterprise',
-    family: 'Flow',
-    level: 'L2',
-    primaryPurpose: 'Scalable, event-driven, low-latency, resilient, and governed enterprise real-time streaming platform',
-    examples: 'Real-time streaming, Pub/Sub, Dataflow Beam, Eventarc, Kafka/Confluent compatibility, event mesh, Spanner/Bigtable stores',
-    defaultDomain: 'Real-Time Streaming & Event-Driven Enterprise Platform',
-    previewImage: '/templates/43.png',
-    keyComponents: ['Event Sources Layer', 'Event Ingestion Layer', 'Event Routing & Mesh Layer', 'Stream Processing & Enrichment Layer', 'State, Storage & Analytics Layer', 'Event Consumer & Application Layer', 'Enterprise Business Domains Layer', 'Security & Network Foundation', 'Governance & Event Management', 'Observability & Reliability', 'Platform Operations'],
-    generateXml: generateTemplate43RealTimeStreamingEventEnterpriseXml
-  },
-  {
     id: '44',
     name: 'Zero-Trust Cybersecurity & SOC Platform',
     family: 'Security & Governance',
@@ -254,78 +139,6 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     previewImage: '/templates/44.png',
     keyComponents: ['Consumption Layer', 'Zero-Trust Access Layer', 'Threat Detection & Response Layer', 'Security Controls Layer', 'Visibility & Telemetry Layer', 'Secure Connectivity Layer', 'Asset & Infrastructure Layer', 'Google Cloud Security Foundation', 'Governance, Risk & Compliance', 'Security Operations (SOC)', 'Platform Operations'],
     generateXml: generateTemplate44ZeroTrustCybersecuritySocPlatformXml
-  },
-  {
-    id: '45',
-    name: 'Enterprise API, Integration & MCP Gateway',
-    family: 'Structure',
-    level: 'L2',
-    primaryPurpose: 'Unified enterprise API management, event integration, SaaS connectivity, Model Context Protocol (MCP) tool exposure, and end-to-end policy enforcement',
-    examples: 'API Gateway, Ingress/Mesh, ESB/iPaaS, MCP Gateway & Tool Discovery, Kafka/PubSub event backbone, SaaS connectors, Zero Trust & PEP, Observability',
-    defaultDomain: 'Enterprise API, Integration & MCP Gateway Platform',
-    previewImage: '/templates/45.png',
-    keyComponents: ['Consumer & Channel Layer', 'API Experience & Access Layer', 'Gateway & Traffic Management Layer', 'Integration & Mediation Layer', 'MCP & Tool Exposure Layer', 'Messaging & Event Backbone Layer', 'Enterprise Systems & SaaS Layer', 'Security & Governance Layer', 'Foundational Platform Layer', 'Observability & Operations', 'Operations & Delivery'],
-    generateXml: generateTemplate45EnterpriseApiIntegrationMcpGatewayXml
-  },
-  {
-    id: '46',
-    name: 'Enterprise Kubernetes & Platform Engineering',
-    family: 'Infrastructure',
-    level: 'L3',
-    primaryPurpose: 'Standardized enterprise Kubernetes platform engineering, multi-cluster management, Golden Paths, GKE runtime, infrastructure, governance, and platform operations',
-    examples: 'GKE Fleet, Backstage IDP, Port, ArgoCD GitOps, Kyverno/OPA, Helm/KubeVela, Kubeflow/KServe, Istio Mesh, VPC-native GKE, Cloud Armor, Prometheus/Grafana',
-    defaultDomain: 'Enterprise Kubernetes & Platform Engineering Ecosystem',
-    previewImage: '/templates/46.png',
-    keyComponents: ['Consumer Layer', 'Platform Services Layer', 'Platform Engineering Layer', 'Cluster Management Layer', 'Kubernetes Runtime Layer', 'Infrastructure Layer', 'Google Cloud Foundation', 'Governance & Compliance', 'Observability & Operations', 'Platform Operations', 'Platform Principles'],
-    generateXml: generateTemplate46EnterpriseKubernetesPlatformEngineeringXml
-  },
-  {
-    id: '47',
-    name: 'MLOps & AI Model Lifecycle Platform',
-    family: 'Delivery & Operations',
-    level: 'L2',
-    primaryPurpose: 'Governed, scalable, reproducible, secure, and responsible MLOps & AI model lifecycle platform on Google Cloud',
-    examples: 'Model serving & inference, training & tuning, feature store, Vertex AI pipelines, model registry & cards, AI governance & compliance, model observability & drift',
-    defaultDomain: 'MLOps & AI Model Lifecycle Platform',
-    previewImage: '/templates/47.png',
-    keyComponents: ['Consumption & Business Value Layer', 'Model Serving & Inference Layer', 'Model Training & Tuning Layer', 'Data & Feature Engineering Layer', 'ML Pipeline Orchestration Layer', 'Model Registry & Lifecycle Layer', 'Infrastructure & ML Foundation Layer', 'Governance, Risk & Compliance', 'Observability & Reliability', 'Platform Operations', 'ML Lifecycle Flow', 'Serving Patterns', 'Model Types'],
-    generateXml: generateTemplate47MlopsAiLifecyclePlatformXml
-  },
-  {
-    id: '48',
-    name: 'BCDR, Cyber Recovery & Operational Resilience',
-    family: 'Delivery & Operations',
-    level: 'L3',
-    primaryPurpose: 'Resilient by design, recover with confidence, and continuity assured enterprise disaster recovery and cyber resilience architecture on Google Cloud',
-    examples: 'BCDR orchestration & runbooks, recovery workflows & automated failover, BIA, data protection & immutable storage, multi-region infrastructure, cyber incident recovery',
-    defaultDomain: 'BCDR & Cyber Recovery Resilience Ecosystem',
-    previewImage: '/templates/48.png',
-    keyComponents: ['Resilience Consumers & Business Value', 'Resilience Orchestration & Automation Layer', 'Business Continuity & Disaster Recovery Layer', 'Data Protection Layer', 'Infrastructure Resilience Layer', 'Foundation Services Layer', 'Foundation Infrastructure Layer', 'Resilience Foundation', 'Governance, Risk & Compliance', 'Observability & Assurance', 'Platform Operations', 'Resilience Outcomes', 'Resilience Principles', 'Recovery Strategies', 'Disaster Types'],
-    generateXml: generateTemplate48BcdrCyberRecoveryResilienceXml
-  },
-  {
-    id: '49',
-    name: 'Healthcare & Life Sciences Digital Platform',
-    family: 'Reference Architectures',
-    level: 'L2',
-    primaryPurpose: 'Patient-centric, data-driven, interoperable, secure, and AI-enabled healthcare and life sciences digital platform on Google Cloud',
-    examples: 'FHIR APIs, DICOM, OMOP, SNOMED CT, clinical operations, patient 360, population health, life sciences R&D, commercial & market access, imaging AI, healthcare compliance',
-    defaultDomain: 'Healthcare & Life Sciences Digital Platform',
-    previewImage: '/templates/49.png',
-    keyComponents: ['Consumer Experience Layer', 'Application & Solution Layer', 'Data & Intelligence Layer', 'Integration & Interoperability Layer', 'Platform & Services Layer', 'Data Sources Layer', 'Infrastructure Layer', 'Governance, Risk & Compliance', 'Observability & Assurance', 'Platform Operations', 'Key Standards', 'Healthcare Use Cases', 'Life Sciences Use Cases', 'Outcomes'],
-    generateXml: generateTemplate49HealthcareLifeSciencesPlatformXml
-  },
-  {
-    id: '50',
-    name: 'Sustainability & ESG Intelligence Platform',
-    family: 'Security & Governance',
-    level: 'L1',
-    primaryPurpose: 'Measure, report, reduce, comply, and innovate enterprise sustainability and ESG intelligence platform on Google Cloud',
-    examples: 'Stakeholder ESG portals, carbon intelligence & emissions analytics, GHG Scope 1/2/3 calculations, ESG data models (GRI, SASB, TCFD, CDP, ISSB, EU Taxonomy), double materiality, net zero planning',
-    defaultDomain: 'Sustainability & ESG Intelligence Platform',
-    previewImage: '/templates/50.png',
-    keyComponents: ['Engagement & Impact Layer', 'Analytics & Intelligence Layer', 'Data Integration & Processing Layer', 'ESG Data Model & Governance Layer', 'Sustainability Domain Layer', 'Data Sources & Connectivity Layer', 'Infrastructure Layer', 'Google Cloud Foundation', 'Governance, Risk & Compliance', 'Observability & Assurance', 'Platform Operations', 'Business Outcomes', 'ESG Domains', 'Frameworks & Standards', 'Sustainability by Design'],
-    generateXml: generateTemplate50SustainabilityEsgPlatformXml
   },
   ...FLOW_DIAGRAM_BLUEPRINTS_67_TO_74.map((fb) => ({
     id: fb.id,
@@ -445,7 +258,6 @@ const COMPANY_AND_VENDOR_REPLACEMENTS: [RegExp, string][] = [
   [/\bDatadog\b/gi, 'APM Telemetry Suite'],
   [/\bSplunk\b/gi, 'Security Log SIEM'],
   [/\bNew\s*Relic\b/gi, 'APM Observability'],
-  [/\bPagerDuty\b/gi, 'On-Call Incident Routing'],
   [/\bDynatrace\b/gi, 'Distributed Tracing APM'],
   [/\bCrowdStrike\b/gi, 'Endpoint EDR Sensor'],
   [/\bOkta\b/gi, 'Enterprise SSO IdP'],
@@ -460,9 +272,6 @@ const COMPANY_AND_VENDOR_REPLACEMENTS: [RegExp, string][] = [
   [/\bFivetran\b/gi, 'Managed CDC Connectors'],
   [/\bMuleSoft\b/gi, 'Enterprise ESB Mediation'],
   [/\bBoomi\b/gi, 'Cloud iPaaS Connectors'],
-  [/\bApigee(?:\s+X)?\s+Gateway\b/gi, 'Cloud API Gateway'],
-  [/\bApigee\s+X\b/gi, 'Cloud API Gateway'],
-  [/\bApigee\b/gi, 'Cloud API Gateway'],
   [/\bStripe\b/gi, 'Payment Tokenization Vault'],
   [/\bAdyen\b/gi, 'Global Payment Acquirer'],
   [/\bPlaid\b/gi, 'Open Banking Aggregator'],
@@ -521,12 +330,9 @@ const COMPANY_AND_VENDOR_REPLACEMENTS: [RegExp, string][] = [
 
 const REDUNDANT_BRAND_CELL_IDS = new Set([
   'hdr_brand',
-  'header_logo',
   'brand_block',
   'logo_box',
   'plat_brand',
-  'hdr_gcp',
-  'hdr_gcp_logo',
   'ftr_brand',
   'ftr_brand_gcp',
   'sb_gcp_bottom',
@@ -598,7 +404,7 @@ function getContextualTechnicalSubcaption(plainText: string): string {
   return 'HA Active-Active • mTLS • Telemetry &amp; Audit';
 }
 
-export function sanitizeAndHealCanonicalBlueprintXml(xml: string, templateId?: string): string {
+function sanitizeAndHealCanonicalBlueprintXml(xml: string, templateId?: string): string {
   if (!xml) return '';
   let out = xml.replace(/<!--[\s\S]*?-->/g, '');
 
@@ -790,35 +596,6 @@ export function sanitizeAndHealCanonicalBlueprintXml(xml: string, templateId?: s
             `&lt;div style=&quot;margin-bottom:2px;display:inline-flex;align-items:center;&quot;&gt;${inlineSvg}&lt;/div&gt;`
           )
           .replace(/●\s*/g, `${inlineSvg} `);
-
-        // Auto-enrich sparse functional cards (w>=115, h>=58, area>=9000, <32 chars of plain text) on legacy templates 01-34 only
-        const geom = vertexGeomMap.get(id);
-        const isLegacyTemplate1to34 = Boolean(templateId && Number(templateId) >= 1 && Number(templateId) <= 34);
-        const isBorderedCard =
-          isLegacyTemplate1to34 &&
-          geom &&
-          geom.w >= 115 &&
-          geom.h >= 58 &&
-          geom.w * geom.h >= 9000 &&
-          !/fillColor=none/i.test(style) &&
-          !/strokeColor=none/i.test(style) &&
-          !/shape=(?:ellipse|rhombus|cylinder|step|hexagon|cloud|triangle)/i.test(style) &&
-          !/^(?:hdr|title|lbl|leg|ftr|band_num|chev|gate|phase|step|pil|tiers)/i.test(id);
-
-        if (isBorderedCard && plainText.length >= 4 && plainText.length < 32) {
-          const subCap = getContextualTechnicalSubcaption(plainText);
-          const subColor = isDarkXml ? '#94A3B8' : '#475569';
-          const subTag = `&lt;div style=&quot;font-size:8px;color:${subColor};font-weight:600;margin-top:2px;line-height:1.15;&quot;&gt;${subCap}&lt;/div&gt;`;
-          if (!val.includes(subCap)) {
-            if (/&lt;\/td&gt;\s*&lt;\/tr&gt;\s*&lt;\/table&gt;\s*$/i.test(val)) {
-              val = val.replace(/(&lt;\/td&gt;\s*&lt;\/tr&gt;\s*&lt;\/table&gt;\s*)$/i, `${subTag}$1`);
-            } else if (/&lt;\/div&gt;\s*$/i.test(val)) {
-              val = val.replace(/(&lt;\/div&gt;\s*)$/i, `${subTag}$1`);
-            } else {
-              val = `${val}${subTag}`;
-            }
-          }
-        }
 
         if (!/\bhtml=1\b/i.test(style)) style = `html=1;${style}`;
         if (!/\bwhiteSpace=wrap\b/i.test(style)) style = `whiteSpace=wrap;${style}`;
@@ -1190,103 +967,110 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
 export const ACTIVE_CANONICAL_BLUEPRINT_IDS: readonly string[] = [
   '78',
   '00',
-  '35',
-  '36',
-  '37',
   '38',
-  '39',
-  '40',
-  '41',
   '42',
-  '43',
   '44',
-  '45',
-  '46',
-  '47',
-  '48',
-  '49',
-  '50',
   '67',
   '68',
   '69',
-  '70',
-  '71',
-  '72',
-  '73',
-  '74',
 ] as const;
 
-export const LEGACY_TO_MODERN_BLUEPRINT_MAP: Record<string, string> = {
+const LEGACY_TO_MODERN_BLUEPRINT_MAP: Record<string, string> = {
   '01': '78',
   '02': '78',
   '03': '67',
-  '04': '50',
-  '05': '47',
+  '04': '38',
+  '05': '78',
   '06': '42',
   '07': '42',
   '08': '42',
   '09': '42',
-  '10': '45',
+  '10': '78',
   '11': '67',
   '12': '67',
   '13': '67',
-  '14': '43',
-  '15': '46',
+  '14': '42',
+  '15': '38',
   '16': '38',
   '17': '38',
   '18': '44',
   '19': '44',
-  '20': '46',
-  '21': '46',
-  '22': '43',
-  '23': '40',
+  '20': '38',
+  '21': '38',
+  '22': '42',
+  '23': '78',
   '24': '00',
-  '25': '41',
-  '26': '40',
+  '25': '78',
+  '26': '78',
   '27': '44',
-  '28': '46',
+  '28': '38',
   '29': '67',
   '30': '44',
-  '31': '47',
-  '32': '46',
-  '33': '46',
-  '34': '48',
+  '31': '78',
+  '32': '38',
+  '33': '38',
+  '34': '44',
+  '35': '38',
+  '36': '38',
+  '37': '38',
+  '39': '44',
+  '40': '78',
+  '41': '78',
+  '43': '42',
+  '45': '78',
+  '46': '38',
+  '47': '78',
+  '48': '44',
+  '49': '44',
+  '50': '38',
   '51': '00',
   '52': '00',
-  '53': '40',
+  '53': '78',
   '54': '78',
-  '55': '40',
-  '56': '40',
-  '57': '45',
+  '55': '78',
+  '56': '78',
+  '57': '78',
   '58': '00',
   '59': '78',
-  '60': '41',
-  '61': '41',
-  '62': '45',
-  '63': '40',
-  '64': '46',
+  '60': '78',
+  '61': '78',
+  '62': '78',
+  '63': '78',
+  '64': '38',
   '65': '42',
   '66': '44',
+  '70': '69',
+  '71': '69',
+  '72': '69',
+  '73': '69',
+  '74': '69',
   '75': '00',
   '76': '00',
   '77': '00',
 };
 
-export const ALL_RAW_CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
+const decodeCanonicalMetadataText = (str: string): string =>
+  (str || '').replace(/&amp;/g, '&').replace(/&bull;/g, '•');
+
+const ALL_RAW_CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
   const contract = CANONICAL_CONTRACTS[t.id];
   const paddedId = t.id.padStart(2, '0');
-  const isFlowBp = Number(t.id) >= 67 && Number(t.id) <= 74;
-  const cleanName = t.id === '00'
+  const isFlowBp = Number(t.id) >= 67 && Number(t.id) <= 69;
+  const rawCleanName = t.id === '00'
     ? '2026 Upgraded GCP & Gemini Enterprise Native Architecture'
     : t.id === '78' || isFlowBp
     ? t.name
     : t.name
         .replace(/\bCLAUDE\.md\b/gi, 'AGENTS.md')
         .replace(/\bGPT-6\s+Astra\b/gi, 'Frontier Agent');
+  const cleanName = decodeCanonicalMetadataText(rawCleanName);
   const isSketchBp = t.id === '76' || t.id === '77' || t.id === '78' || isFlowBp;
   return {
     ...t,
     name: cleanName,
+    primaryPurpose: decodeCanonicalMetadataText(t.primaryPurpose),
+    examples: decodeCanonicalMetadataText(t.examples),
+    keyComponents: (t.keyComponents || []).map(decodeCanonicalMetadataText),
     previewImage: isSketchBp ? (t.previewImage || '/templates/canonical_00.png') : `/templates/canonical_${paddedId}.png`,
     sourceImageId: isSketchBp ? (t.previewImage || '/templates/canonical_00.png') : `/templates/canonical_${paddedId}.png`,
     generatorVersion: contract ? contract.generatorVersion : "1.0",

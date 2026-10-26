@@ -17,7 +17,7 @@ export type ArchetypeId =
   | 'golive_runbook'
   | 'sre_resilience';
 
-export type ProvenanceClass = 'derived' | 'inferred' | 'human';
+type ProvenanceClass = 'derived' | 'inferred' | 'human';
 
 export interface BlueprintSlot {
   slotTitle: string;
@@ -26,7 +26,7 @@ export interface BlueprintSlot {
   description: string;
 }
 
-export interface DocSectionSpec {
+interface DocSectionSpec {
   id: string;
   title: string;
   provenance: ProvenanceClass;

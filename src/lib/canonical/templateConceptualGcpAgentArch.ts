@@ -47,7 +47,7 @@ const CONCEPT_ICONS = {
   crmUsers: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 21V19C17 17.9 16.1 17 15 17H5C3.9 17 3 17.9 3 19V21" stroke="#1E293B" stroke-width="1.8"/><circle cx="10" cy="9" r="4" stroke="#1E293B" stroke-width="1.8"/><path d="M23 21V19C22.99 18.1 22.7 17.25 22.16 16.55C21.6 15.85 20.85 15.35 20 15.13" stroke="#2563EB" stroke-width="1.8"/><path d="M16 3.13C16.86 3.35 17.61 3.85 18.16 4.55C18.7 5.25 18.99 6.1 19 7C18.99 7.9 18.7 8.75 18.16 9.45C17.61 10.15 16.86 10.65 16 10.87" stroke="#2563EB" stroke-width="1.8"/></svg>`
 };
 
-export interface ConceptualGcpAgentArchOptions {
+interface ConceptualGcpAgentArchOptions {
   projectTitle?: string;
   projectName?: string;
   useCaseName?: string;

@@ -49,6 +49,10 @@ This skill governs the high-fidelity conversion of raster diagram images (PNG, W
 5. **Closed Return Feedback Loops**:
    - Closed-loop governance, collaboration, or feedback returns must exit the bottom/side of the return node, traverse cleanly along open boundary corridors, turn $90^\circ$, and enter the origin node with an explicit directional arrowhead.
 
+6. **Inked-Pixel (`ctx.getImageData`) Arrow-Label Vertical ("Mid") & Horizontal ("Center") Calibration (`Rule 57C` / `Law 18`)**:
+   - Never rely solely on DOM `div` `getBoundingClientRect()` to certify inline arrow labels (`parses`, `enriches`, `verifies types`, `yes`, `no`, `federates`, `uses`, `calls`, `returns results`, `maps`), because browser CSS `line-height` and font ascenders push lowercase `x`-height letters `2px–2.5px` (`4–5` Retina pixels) below the `div` center.
+   - Always wrap inline arrow labels in `&lt;span style=&apos;padding:0 2px;&apos;&gt;...&lt;/span&gt;` with `labelBackgroundColor=#ffffff` and apply calibrated `<mxPoint as="offset">` coordinates (`y="-2"` on `11px` labels, `y="-1.5"` on `10px` horizontal labels, `y="-6"` + `line-height:0.9` on vertical `no`, `x="-5"` on rightward arrows, `x="5"` on leftward arrows, `x="0"` on orthogonal return loops) so `|glyph_y_mid - shaft_y_mid| <= 0.5px` and `|left_visible_shaft - right_visible_shaft| <= 1.0px`.
+
 ---
 
 ## 3. Middle Space Reclamation & Inline Swimlane Component Architecture Law
@@ -83,14 +87,25 @@ This skill governs the high-fidelity conversion of raster diagram images (PNG, W
 
 ## 5. Pre-Flight Verification & Visual Inspection Protocol
 
-1. Run headless Chrome Puppeteer at $1600 \times 1050$ resolution to capture:
+1. Run headless Chrome Puppeteer at $1600 \times 1050$ resolution (`deviceScaleFactor: 2`, opening a fresh `browser.newPage()` per diagram when rendering via `viewer-static.min.js`) to capture:
    - Studio view: `13_studio_editor_verbatim.png`
    - Comparison verification: `18_reclaimed_bottom_alignment_verification.png`
-2. Physically assert in the rendered DOM:
+2. Physically assert in the rendered DOM and `2x` Retina canvas (`ctx.getImageData` + `verify_arrow_label_inked_pixel_centering.mjs`):
    - Zero diagonal lines between horizontally adjacent blocks.
    - Zero dead vertical voids between decision containers and inline bottom tables.
    - Zero container bottom voids $> 36\text{px}$.
    - Literal presence of all verbatim string tokens.
+   - Exact inked-pixel vertical ("mid", `|glyph_y_mid - shaft_y_mid| <= 0.5px`) and horizontal ("center", `|L_left - L_right| <= 1.0px`) centering of all inline arrow labels with a `2px` white knockout cushion (`padding:0 2px;`).
+
+---
+
+## 6. 2-Stage Hybrid Reference Poster (`gemini-nano-banana-2.1`) $\rightarrow$ Editable Draw.io & Google Slides Decompilation (`src/lib/visionPosterToDrawioDecompiler.ts`)
+
+1. **Mandatory 2-Stage Pipeline**:
+   - **Stage 1**: Synthesize the initial reference poster image via `generate_image` (`gemini-nano-banana-2.1`) from the refined prompt and embed it directly in the user-facing artifact.
+   - **Stage 2**: Decompile normalized `[ymin, xmin, ymax, xmax]` (`0..1000`) bounding boxes (`NANO_BANANA_3TIER_VISION_DECOMPILED_SPEC`, `NANO_BANANA_ECOMMERCE_MICROSERVICES_VISION_DECOMPILED_SPEC`) via `normalizedBoxToCanvasRect()` into `src/lib/compositionalChainCompiler.ts` and `src/lib/export/editablePptxCompiler.ts`.
+   - **Waypoint Coordinate Order (`[nx, ny]`)**: `waypointsNormalized` entries always use `[nx, ny]` (`0..1000` horizontal X first, vertical Y second) so L-shaped orthogonal fan-outs (`/catalog/*` from top of `API Gateway`, `/checkout/*` from bottom of `API Gateway`) route without loopbacks.
+   - **Tall Component Card Preservation in `editablePptxCompiler.ts`**: `containerZones` requires `(c.width >= 300 && c.height >= 320)` (never `c.height >= 220`) and `componentCards` allows `c.height <= 280` so tall parent cards (`Next.js 15 Storefront`, `React 19 Single-Page Application`, `API Gateway`) are never misclassified as swimlane containers.
 
 ---
 

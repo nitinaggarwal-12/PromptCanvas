@@ -255,11 +255,11 @@ export function buildPristineFinopsXml(): string {
           <mxGeometry x="80" y="510" width="1100" height="295" as="geometry" />
         </mxCell>
 
-        <!-- Sub-box 1: Looker Studio (Visualization & Reporting) -->
+        <!-- Sub-box 1: Looker (Visualization & Reporting) -->
         <mxCell id="box_looker_studio" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1;" vertex="1" parent="1">
           <mxGeometry x="90" y="520" width="280" height="275" as="geometry" />
         </mxCell>
-        <mxCell id="lbl_looker_studio" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Looker Studio (Visualization &amp;amp; Reporting)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_looker_studio" value="&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Looker (Visualization &amp;amp; Reporting)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="90" y="525" width="280" height="20" as="geometry" />
         </mxCell>
 
@@ -309,7 +309,7 @@ export function buildPristineFinopsXml(): string {
           <mxGeometry x="405" y="705" width="180" height="50" as="geometry" />
         </mxCell>
 
-        <!-- Connector between Looker Studio and Governance Engine -->
+        <!-- Connector between Looker and Governance Engine -->
         <mxCell id="edge_looker_to_gov" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="box_looker_studio" target="box_gov_engine">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>

@@ -7,22 +7,22 @@
  * and returns rule-by-rule findings so the UI can show real pass/fail counts.
  */
 
-export type HclFindingSeverity = 'error' | 'warning' | 'info';
+type HclFindingSeverity = 'error' | 'warning' | 'info';
 
-export interface HclFinding {
+interface HclFinding {
   severity: HclFindingSeverity;
   rule: string;
   resource?: string;
   message: string;
 }
 
-export interface HclResourceBlock {
+interface HclResourceBlock {
   type: string;
   name: string;
   body: string;
 }
 
-export interface HclStaticAnalysis {
+interface HclStaticAnalysis {
   resources: HclResourceBlock[];
   findings: HclFinding[];
   checksRun: number;
@@ -73,7 +73,7 @@ const REQUIRED_ATTRIBUTES: Record<string, string[]> = {
 const RESOURCE_REGEX = /resource\s+"([^"]+)"\s+"([^"]+)"\s*\{/g;
 
 /** Extracts top-level resource blocks using brace matching (string-literal aware). */
-export function extractResourceBlocks(hcl: string): HclResourceBlock[] {
+function extractResourceBlocks(hcl: string): HclResourceBlock[] {
   const blocks: HclResourceBlock[] = [];
   const src = hcl || '';
   let match: RegExpExecArray | null;

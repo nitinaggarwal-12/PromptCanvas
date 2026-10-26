@@ -265,7 +265,7 @@ function migrateLegacyVisionStorage(): void {
  * Dynamically validates ANY cached XML against ANY master blueprint definition.
  * Eliminates truncated LLM partial outputs from overriding certified master architectures.
  */
-export function isCachedArtifactValidForSample(
+function isCachedArtifactValidForSample(
   sample: SampleBlueprintDef,
   xml: string
 ): boolean {
@@ -510,6 +510,7 @@ export function saveVisionBlueprint(blueprint: SavedVisionBlueprint): void {
     }
 
     const fallbackSafeSrc = resolveIntactBlueprintImage(blueprint.id, '', blueprint.title, blueprint.xml) || '/blueprints/gemini_enterprise_agent_platform.svg';
+    const compactXml = (blueprint.xml || '').replace(/\s+data-source-image="data:image\/[^"]*"/i, '');
 
     const payload = JSON.stringify({
       ...blueprint,
@@ -535,7 +536,8 @@ export function saveVisionBlueprint(blueprint: SavedVisionBlueprint): void {
         try {
           const compactPayload = JSON.stringify({
             ...blueprint,
-            imageSrc: intactImageSrc.length > 250000 ? fallbackSafeSrc : intactImageSrc,
+            xml: compactXml,
+            imageSrc: intactImageSrc.length > 180000 ? fallbackSafeSrc : intactImageSrc,
             source: 'cache'
           });
           localStorage.setItem(`${STORAGE_PREFIX}${blueprint.id}`, compactPayload);
@@ -549,7 +551,7 @@ export function saveVisionBlueprint(blueprint: SavedVisionBlueprint): void {
     if (blueprint.isCustom) {
       const existing = getCustomVisionBlueprints();
       const updated = [
-        { ...blueprint, imageSrc: intactImageSrc },
+        { ...blueprint, xml: compactXml, imageSrc: intactImageSrc },
         ...existing.filter(b => b.id !== blueprint.id)
       ].slice(0, 10); // Keep last 10 custom uploads
 
@@ -558,7 +560,8 @@ export function saveVisionBlueprint(blueprint: SavedVisionBlueprint): void {
       } catch {
         const compactList = updated.map((item, idx) => ({
           ...item,
-          imageSrc: idx === 0 && item.imageSrc.length <= 250000
+          xml: (item.xml || '').replace(/\s+data-source-image="data:image\/[^"]*"/i, ''),
+          imageSrc: idx === 0 && item.imageSrc.length <= 180000
             ? item.imageSrc
             : (resolveIntactBlueprintImage(item.id, '', item.title, item.xml) || item.imageSrc || fallbackSafeSrc)
         }));

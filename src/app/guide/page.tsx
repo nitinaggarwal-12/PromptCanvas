@@ -93,14 +93,14 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
     frames: [
       {
         frameIndex: 0,
-        templateId: '01',
+        templateId: '78',
         imagePath: '/workflows/frames/quickstart/frame_01.png',
         actionLabel: '1. Architecture Studio & Orientation: Canonical Suite (Left), Canvas (Center) & Hub (Top)',
         narrationText: 'Welcome to PromptCanvas. The interface is powered by the Canonical Architecture Suite: the Left Unified Sidebar, Top Header Controls, and the High-DPI 16:9 Canvas.',
         stepNumber: 1,
         title: 'Architecture Studio Orientation',
         whereToClick: 'Architecture Studio / Blueprint Catalog',
-        description: 'PromptCanvas provides a streamlined architecture workspace. Access 77 blueprints in the Blueprint Catalog and 17 archetypes in Document Studio, directly from the sidebar.',
+        description: 'PromptCanvas provides a streamlined architecture workspace. Access 8 blueprints in the Blueprint Catalog and 17 archetypes in Document Studio, directly from the sidebar.',
         validationChecklist: [
           'Left Studio is ready for prompt input or blueprint selection',
           'Canvas is set to high-DPI 1600px 16:9 desktop grid'
@@ -109,14 +109,14 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 1,
-        templateId: '08',
+        templateId: '00',
         imagePath: '/workflows/frames/quickstart/frame_02.png',
         actionLabel: '2. Prompt Entry & Domain Flavoring: Multi-Tier Microservices Topology',
         narrationText: 'Step two: Select your architecture domain flavor or enter plain English requirements into the Studio prompt engine.',
         stepNumber: 2,
         title: 'Prompt Entry & Architecture Selection',
         whereToClick: 'Architecture Studio -> "ACTIVE USE CASE PROMPT" text area',
-        description: 'Type plain English requirements or select from 77 canonical master blueprints (e.g. Microservices, Event Buses, and Zero-Trust Mesh).',
+        description: 'Type plain English requirements or select from 8 canonical master blueprints (Official Hub & Spoke #78, Gemini Enterprise #00, Cloud Landing Zone #38, Data Lakehouse #42, Zero-Trust SOC #44, and Operational Flowcharts #67, #68 & #69).',
         promptRecipe: 'Design an Enterprise Cloud Platform on Google Cloud featuring Cloud Armor WAF, GKE Autopilot microservices with private VPC peering, Cloud SQL high availability, and Pub/Sub event ingestion.',
         validationChecklist: [
           'Active prompt input with concrete cloud infrastructure components',
@@ -126,7 +126,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 2,
-        templateId: '09',
+        templateId: '40',
         imagePath: '/workflows/frames/quickstart/frame_03.png',
         actionLabel: '3. Compiling 2D AST Architecture Graph with Zero Collision Routing',
         narrationText: 'Step three: Click Generate. Gemini AI parses your prompt into functional tiers and compiles a 2D collision-free Draw.io XML graph.',
@@ -142,7 +142,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 3,
-        templateId: '17',
+        templateId: '44',
         imagePath: '/workflows/frames/quickstart/frame_04.png',
         actionLabel: '4. 16:9 Multi-Tier Canvas View: High-Contrast Badges & Demarcation',
         narrationText: 'Step four: The live diagram opens on the canvas. Inspect clean tier containers, subnets, and collision-free connector lines.',
@@ -158,7 +158,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 4,
-        templateId: '23',
+        templateId: '41',
         imagePath: '/workflows/frames/quickstart/frame_05.png',
         actionLabel: '5. Interactive Edits & Zero-Trust Mesh Refinements',
         narrationText: 'Step five: Make edits. In the refinement chat, type any adjustments, like adding Cloud HA VPN dual tunnels and Cloud KMS HSM key rotation.',
@@ -175,7 +175,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 5,
-        templateId: '34',
+        templateId: '48',
         imagePath: '/workflows/frames/quickstart/frame_06.png',
         actionLabel: '6. Save & Version Increments: Immutable Snapshot History (v1 -> v2)',
         narrationText: 'Step six: Saving and version control. Version v2 is automatically committed with full rollback lineage.',
@@ -208,9 +208,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 7,
-        templateId: '10',
+        templateId: '67',
         imagePath: '/workflows/frames/quickstart/frame_08.png',
-        actionLabel: '8. Open PDF Architecture Dossier: Executive Summary, SLAs & Vector Topology',
+        actionLabel: '8. Open PDF Architecture Dossier: Executive Summary, SLAs & Vector Topology (Blueprint #67)',
         narrationText: 'Step eight: Open the generated PDF Architecture Dossier with high-resolution 300 DPI vector diagram and executive SLA summaries.',
         stepNumber: 8,
         title: 'Inspecting Open PDF Architecture Dossier',
@@ -224,9 +224,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 8,
-        templateId: '06',
+        templateId: '68',
         imagePath: '/workflows/frames/quickstart/frame_09.png',
-        actionLabel: '9. Open PowerPoint (.pptx) Deck: Boardroom Vector Slides Ready for ARB Sign-Off',
+        actionLabel: '9. Open PowerPoint (.pptx) Deck: Boardroom Vector Slides Ready for ARB Sign-Off (Blueprint #68)',
         narrationText: 'Step nine: Open the PowerPoint deck. The slides feature native vector diagram shapes, executive decision points, and financial ROI models.',
         stepNumber: 9,
         title: 'Inspecting Open PowerPoint (.pptx) Slide Deck',
@@ -255,13 +255,13 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
     frames: [
       {
         frameIndex: 0,
-        templateId: '17',
+        templateId: '38',
         imagePath: '/workflows/frames/architect/frame_01.png',
-        actionLabel: '1. Greenfield Shared VPC, 100G Interconnect & CIDRs (Blueprint #17)',
+        actionLabel: '1. Greenfield Shared VPC, 100G Interconnect & CIDRs (Blueprint #38)',
         narrationText: 'Enter your greenfield Landing Zone requirements into Architecture Studio: 100G Dedicated Interconnect, Cloud Router BGP, GKE Autopilot subnets, and VPC Service Controls.',
         stepNumber: 1,
         title: 'Inputting Landing Zone Requirements',
-        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #17',
+        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #38',
         description: 'Provide enterprise networking constraints: 100G Dedicated Interconnect, Cloud Router BGP ASN 65001, GKE Autopilot pod CIDR (10.20.0.0/16), and PSC consumer endpoints.',
         promptRecipe: 'Design a Google Cloud Landing Zone and Shared VPC Network Fabric with 100G Dedicated Interconnect, Cloud Router BGP, PSC Hub 10.100.0.0/24, GKE Autopilot, and VPC-SC perimeter.',
         validationChecklist: ['Prompt contains CIDRs and SLA parameters'],
@@ -269,9 +269,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 1,
-        templateId: '23',
+        templateId: '37',
         imagePath: '/workflows/frames/architect/frame_02.png',
-        actionLabel: '2. 5-Tier Zero-Trust Hub & Spoke Network (Blueprint #23)',
+        actionLabel: '2. 5-Tier Zero-Trust Hub & Spoke Network (Blueprint #37)',
         narrationText: 'Open and inspect the rendered diagram on the canvas. Notice the clear 5-tier demarcation, Cloud Router BGP routes, and zero line collisions.',
         stepNumber: 2,
         title: 'Inspecting Hybrid Transit & Hub',
@@ -282,9 +282,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 2,
-        templateId: '08',
+        templateId: '46',
         imagePath: '/workflows/frames/architect/frame_03.png',
-        actionLabel: '3. Adding Cloud HA VPN Failover & Cloud KMS HSM Dual Rings (Blueprint #08)',
+        actionLabel: '3. Adding Cloud HA VPN Failover & Cloud KMS HSM Dual Rings (Blueprint #46)',
         narrationText: 'In the refinement chat, add Cloud HA VPN IPsec backup tunnels and Cloud KMS HSM dual rings for automated key rotation.',
         stepNumber: 3,
         title: 'Adding Resilience & Key Management',
@@ -296,9 +296,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 3,
-        templateId: '16',
+        templateId: '48',
         imagePath: '/workflows/frames/architect/frame_04.png',
-        actionLabel: '4. Multi-Region Active-Active DR & Spanner (Blueprint #16)',
+        actionLabel: '4. Multi-Region Active-Active DR & Spanner (Blueprint #48)',
         narrationText: 'Version v2 is committed automatically with immutable history for your Architecture Review Board sign-off.',
         stepNumber: 4,
         title: 'Committing Version 2 for ARB Sign-off',
@@ -309,9 +309,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 4,
-        templateId: '07',
+        templateId: '45',
         imagePath: '/workflows/frames/architect/frame_05.png',
-        actionLabel: '5. Export Deliverables: Generate PDF Dossier and PowerPoint Deck (Blueprint #07)',
+        actionLabel: '5. Export Deliverables: Generate PDF Dossier and PowerPoint Deck (Blueprint #45)',
         narrationText: 'Open the export menu and choose PowerPoint presentation or PDF Architecture Dossier.',
         stepNumber: 5,
         title: 'Selecting Export Deliverables',
@@ -322,9 +322,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 5,
-        templateId: '18',
+        templateId: '78',
         imagePath: '/workflows/frames/architect/frame_06.png',
-        actionLabel: '6. High-DPI Vector Slides for Enterprise ARB (Blueprint #18)',
+        actionLabel: '6. High-DPI Vector Slides for Enterprise ARB (Blueprint #78)',
         narrationText: 'Open the PowerPoint presentation to inspect your high-res vector diagram slides, network demarcation specs, and executive takeaways.',
         stepNumber: 6,
         title: 'Open PowerPoint (.pptx) Slide Deck',
@@ -350,13 +350,13 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
     frames: [
       {
         frameIndex: 0,
-        templateId: '29',
+        templateId: '42',
         imagePath: '/workflows/frames/data_ai/frame_01.png',
-        actionLabel: '1. Medallion Data Lakehouse & BigQuery (Blueprint #29)',
-        narrationText: 'Enter data and AI platform requirements: AlloyDB pgvector with text-embedding-004, BigQuery Lakehouse Star Schema, and Looker BI.',
+        actionLabel: '1. Medallion Data Lakehouse & BigQuery (Blueprint #42)',
+        narrationText: 'Enter data and AI platform requirements: AlloyDB pgvector with gemini-embedding-001, BigQuery Lakehouse Star Schema, and Looker BI.',
         stepNumber: 1,
         title: 'Inputting Data & AI Requirements',
-        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #29',
+        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #42',
         description: 'Define real-time streaming, Vertex AI Search, AlloyDB pgvector, and BigQuery Lakehouse.',
         promptRecipe: 'Build an Omnichannel Retail AI Platform with AlloyDB pgvector, BigQuery Lakehouse Star Schema, and Looker BI.',
         validationChecklist: ['Data flows and model parameters defined'],
@@ -364,9 +364,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 1,
-        templateId: '34',
+        templateId: '50',
         imagePath: '/workflows/frames/data_ai/frame_02.png',
-        actionLabel: '2. Event-Driven Real-Time CDC & Kafka Streaming (Blueprint #34)',
+        actionLabel: '2. Event-Driven Real-Time CDC & Kafka Streaming (Blueprint #50)',
         narrationText: 'Open the diagram to validate the AI intelligence core, sub-10ms vector similarity recall, and BigQuery Star Schema relationships.',
         stepNumber: 2,
         title: 'Inspecting AI Intelligence Core',
@@ -445,13 +445,13 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
     frames: [
       {
         frameIndex: 0,
-        templateId: '05',
+        templateId: '00',
         imagePath: '/workflows/frames/consultant/frame_01.png',
-        actionLabel: '1. As-Is vs To-Be Cloud Migration Roadmap (Blueprint #05)',
+        actionLabel: '1. As-Is vs To-Be Cloud Migration Roadmap (Blueprint #00)',
         narrationText: 'Provide your legacy infrastructure inventory: Mainframe, Oracle 11g RAC, SAP ECC, and spaghetti ETL scripts.',
         stepNumber: 1,
         title: 'Prompting Discovery & Assessment',
-        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #05',
+        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #00',
         description: 'Provide legacy inventory: Mainframe, Oracle 11g RAC, SAP ECC, and spaghetti ETL scripts.',
         promptRecipe: 'Assess on-prem legacy silos, spaghetti integration matrix, StratoZone Discovery Appliance, and 4 migration waves.',
         validationChecklist: ['Legacy monoliths and discovery tools defined'],
@@ -459,9 +459,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 1,
-        templateId: '04',
+        templateId: '69',
         imagePath: '/workflows/frames/consultant/frame_02.png',
-        actionLabel: '2. Value Stream & Business Process Map (Blueprint #04)',
+        actionLabel: '2. Value Stream & Business Process Map (Blueprint #69)',
         narrationText: 'Open the diagram to see legacy silos in the red zone, spaghetti integrations, and the 4 target migration waves.',
         stepNumber: 2,
         title: 'Mapping On-Premises Monoliths',
@@ -472,9 +472,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 2,
-        templateId: '03',
+        templateId: '70',
         imagePath: '/workflows/frames/consultant/frame_03.png',
-        actionLabel: '3. Cross-Functional Swimlanes & TCO Analysis (Blueprint #03)',
+        actionLabel: '3. Cross-Functional Swimlanes & TCO Analysis (Blueprint #70)',
         narrationText: 'Click Insights and Cost to review the 3-year TCO financial model and 42 percent operating expenditure savings.',
         stepNumber: 3,
         title: 'Reviewing TCO & FinOps Score',
@@ -485,9 +485,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 3,
-        templateId: '02',
+        templateId: '71',
         imagePath: '/workflows/frames/consultant/frame_04.png',
-        actionLabel: '4. Decision Tree & Modernization Waves (Blueprint #02)',
+        actionLabel: '4. Decision Tree & Modernization Waves (Blueprint #71)',
         narrationText: 'The modernization roadmap is saved as version v2 with Strangler Fig API proxies approved.',
         stepNumber: 4,
         title: 'Committing Version 2 Roadmap',
@@ -498,9 +498,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 4,
-        templateId: '11',
+        templateId: '72',
         imagePath: '/workflows/frames/consultant/frame_05.png',
-        actionLabel: '5. Strangler Fig Pattern & API Gateway Migration (Blueprint #11)',
+        actionLabel: '5. Strangler Fig Pattern & API Gateway Migration (Blueprint #72)',
         narrationText: 'Export the client pitch deck as a native PowerPoint presentation.',
         stepNumber: 5,
         title: 'Exporting Client Pitch Deck',
@@ -511,9 +511,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 5,
-        templateId: '01',
+        templateId: '74',
         imagePath: '/workflows/frames/consultant/frame_06.png',
-        actionLabel: '6. Open PowerPoint (.pptx): Client Pitch Deck with 4-Wave Roadmap',
+        actionLabel: '6. Open PowerPoint (.pptx): Client Pitch Deck with 4-Wave Roadmap (Blueprint #74)',
         narrationText: 'Open the PowerPoint pitch pack to view the 4-wave modernization roadmap, financial ROI charts, and decommissioning timeline.',
         stepNumber: 6,
         title: 'Open PowerPoint (.pptx) Client Pitch Deck',
@@ -539,13 +539,13 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
     frames: [
       {
         frameIndex: 0,
-        templateId: '23',
+        templateId: '44',
         imagePath: '/workflows/frames/secops/frame_01.png',
-        actionLabel: '1. Zero-Trust BeyondCorp & Identity-Aware Proxy (Blueprint #23)',
+        actionLabel: '1. Zero-Trust BeyondCorp & Identity-Aware Proxy (Blueprint #44)',
         narrationText: 'Enter zero-trust regulatory constraints: PCI-DSS 4.0, SOC2 Type II, Cloud KMS HSM CMEK, and VPC Service Controls.',
         stepNumber: 1,
         title: 'Prompting Zero-Trust Security Requirements',
-        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #23',
+        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #44',
         description: 'Specify regulatory standards: PCI-DSS 4.0, SOC2 Type II, and VPC Service Controls.',
         promptRecipe: 'Enforce PCI-DSS 4.0 and SOC2 Type II: Cloud KMS HSM CMEK, VPC Service Controls, and Cloud Armor WAF.',
         validationChecklist: ['Compliance guardrails and policy IDs defined'],
@@ -553,9 +553,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 1,
-        templateId: '24',
+        templateId: '39',
         imagePath: '/workflows/frames/secops/frame_02.png',
-        actionLabel: '2. STRIDE Threat Model & Security Controls Matrix (Blueprint #24)',
+        actionLabel: '2. STRIDE Threat Model & Security Controls Matrix (Blueprint #39)',
         narrationText: 'Open the diagram to audit perimeter boundaries, Cloud KMS HSM dual rings, and zero plain-text egress paths.',
         stepNumber: 2,
         title: 'Auditing Perimeter Demarcation',
@@ -566,9 +566,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 2,
-        templateId: '13',
+        templateId: '73',
         imagePath: '/workflows/frames/secops/frame_03.png',
-        actionLabel: '3. SOC 2 / FedRAMP Audit & KMS Key Ring Mesh (Blueprint #13)',
+        actionLabel: '3. SOC 2 / FedRAMP Audit & KMS Key Ring Mesh (Blueprint #73)',
         narrationText: 'Apply one-click automated remediation in chat to patch findings and seal exposed endpoints with Private Service Connect.',
         stepNumber: 3,
         title: 'Executing 1-Click Security Remediation',
@@ -580,9 +580,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 3,
-        templateId: '14',
+        templateId: '49',
         imagePath: '/workflows/frames/secops/frame_04.png',
-        actionLabel: '4. Security Operations Center & Eventarc SIEM Ingestion (Blueprint #14)',
+        actionLabel: '4. Security Operations Center & Eventarc SIEM Ingestion (Blueprint #49)',
         narrationText: 'The hardened architecture is committed as version v2, achieving 100 percent SOC2 and CIS compliance.',
         stepNumber: 4,
         title: 'Committing Hardened Version v2',
@@ -593,9 +593,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 4,
-        templateId: '15',
+        templateId: '47',
         imagePath: '/workflows/frames/secops/frame_05.png',
-        actionLabel: '5. Multi-Cloud Guardrails & Policy Enforcement (Blueprint #15)',
+        actionLabel: '5. Multi-Cloud Guardrails & Policy Enforcement (Blueprint #47)',
         narrationText: 'Export the cryptographic SOC2 and ISO 27001 compliance audit package.',
         stepNumber: 5,
         title: 'Exporting Compliance Audit Package',
@@ -606,9 +606,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 5,
-        templateId: '23',
+        templateId: '43',
         imagePath: '/workflows/frames/secops/frame_06.png',
-        actionLabel: '6. Open PDF Compliance Dossier: Cryptographic Proof for SOC2 Auditors (Blueprint #23)',
+        actionLabel: '6. Open PDF Compliance Dossier: Cryptographic Proof for SOC2 Auditors (Blueprint #43)',
         narrationText: 'Open the PDF compliance dossier to inspect perimeter boundary rules, key rotation policies, and SHA-256 proof for auditors.',
         stepNumber: 6,
         title: 'Open PDF Compliance Dossier',
@@ -642,7 +642,7 @@ export default function GuidePage() {
 
   // Active Canonical Blueprint XML for current frame
   const activeCanonicalXml = useMemo(() => {
-    const targetId = activeFrame.templateId || '01';
+    const targetId = activeFrame.templateId || '78';
     const tpl = CANONICAL_TEMPLATES.find((t) => t.id === targetId) || CANONICAL_TEMPLATES[0];
     return tpl.generateXml('biopharma', isLight ? 'light' : 'dark');
   }, [activeFrame, isLight]);
@@ -757,19 +757,27 @@ export default function GuidePage() {
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         {/* ==================== STICKY CONSOLIDATED TOP NAVBAR ==================== */}
         <AppHeader>
- <div className="w-full max-w-none flex items-center justify-between gap-4">
+          <div className="w-full max-w-none flex items-center justify-between gap-4">
             {/* Left: Breadcrumbs */}
             <div className="flex items-center gap-3 min-w-0">
               <div className="flex items-center gap-2 text-xs font-semibold">
-                <Link href="/" className="text-slate-400 hover:text-white transition-colors" title="Home">
+                <Link
+                  href="/"
+                  className={`transition-colors ${
+                    isLight ? 'text-slate-700 hover:text-teal-700' : 'text-slate-400 hover:text-white'
+                  }`}
+                  title="Home"
+                >
                   PromptCanvas
                 </Link>
-                <span className="text-slate-600">/</span>
-                <span className="text-teal-400 font-bold flex items-center gap-1.5 truncate">
+                <span className={isLight ? 'text-slate-400' : 'text-slate-600'}>/</span>
+                <span className={`font-bold flex items-center gap-1.5 truncate ${isLight ? 'text-teal-700' : 'text-teal-400'}`}>
                   <Sparkles className="w-3.5 h-3.5 shrink-0" />
                   <span>User Guide &amp; Playbooks</span>
                 </span>
-                <span className="hidden sm:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 shrink-0">
+                <span className={`hidden sm:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border shrink-0 ${
+                  isLight ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-teal-500/10 text-teal-400 border border-teal-500/20'
+                }`}>
                   Interactive GIFs
                 </span>
               </div>
@@ -777,13 +785,11 @@ export default function GuidePage() {
 
             {/* Right: Hub Links & Action */}
             <div className="flex items-center gap-2.5 shrink-0">
-              <ThemeToggleBtn id="guide-theme-toggle-btn" />
-
               <Link
-                href="/studio"
+                href="/dashboard"
                 className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-teal-500/20 transition-all hover:scale-[1.02]"
               >
-                <span>Launch Studio</span>
+                <span>Home Dashboard</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -796,11 +802,13 @@ export default function GuidePage() {
         {/* Compact Title Row */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2 border-b border-slate-700/30">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold uppercase tracking-wider mb-1">
+            <div className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full border text-[11px] font-bold uppercase tracking-wider mb-1 ${
+              isLight ? 'bg-teal-50 border-teal-200 text-teal-700' : 'bg-teal-500/10 border-teal-500/20 text-teal-400'
+            }`}>
               <Sparkles className="w-3 h-3" /> First-Time User Playbooks &amp; Interactive Video Player
             </div>
             <h1 className="text-2xl md:text-3xl font-black tracking-tight">
-              Master PromptCanvas: <span className="bg-gradient-to-r from-teal-400 via-sky-400 to-indigo-400 bg-clip-text text-transparent">End-to-End Persona Workflows</span>
+              Master PromptCanvas: <span className="bg-gradient-to-r from-teal-500 via-sky-500 to-indigo-600 bg-clip-text text-transparent">End-to-End Persona Workflows</span>
             </h1>
           </div>
           <p className={`text-xs max-w-xl ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
@@ -848,12 +856,16 @@ export default function GuidePage() {
       <section className="pb-10 px-4 sm:px-6 lg:px-8 w-full max-w-none">
         <div className={`rounded-2xl border p-5 md:p-6 transition-all ${
           isMaximized 
-            ? 'fixed inset-4 z-[99999] overflow-y-auto bg-slate-950/98 border-teal-500/60 shadow-2xl backdrop-blur-2xl p-6 md:p-8'
+            ? isLight
+              ? 'fixed inset-4 z-[99999] overflow-y-auto bg-white border-teal-500 shadow-2xl p-6 md:p-8'
+              : 'fixed inset-4 z-[99999] overflow-y-auto bg-slate-950/98 border-teal-500/60 shadow-2xl backdrop-blur-2xl p-6 md:p-8'
             : isLight ? 'bg-white border-slate-200 shadow-lg' : 'bg-slate-900/90 border-slate-800 shadow-2xl'
         }`}>
           
           {/* PLAYER TOP CONTROL BAR */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-700/30">
+          <div className={`flex flex-wrap items-center justify-between gap-4 pb-4 border-b ${
+            isLight ? 'border-slate-200' : 'border-slate-700/30'
+          }`}>
             
             {/* Left: Active Persona & Step Header */}
             <div className="flex items-center gap-3">
@@ -867,7 +879,7 @@ export default function GuidePage() {
                     {currentWorkflow.role}
                   </span>
                 </div>
-                <p className="text-xs text-teal-400 font-mono font-bold flex items-center gap-1.5 mt-0.5">
+                <p className={`text-xs font-mono font-bold flex items-center gap-1.5 mt-0.5 ${isLight ? 'text-teal-700' : 'text-teal-400'}`}>
                   <Sparkles className="w-3.5 h-3.5" />
                   {activeFrame.actionLabel}
                 </p>
@@ -875,12 +887,16 @@ export default function GuidePage() {
             </div>
 
             {/* Right: Audio, Captions, Speed, Maximize & Playback Controls */}
-            <div className="flex flex-wrap items-center gap-2 bg-slate-950/80 p-1.5 rounded-xl border border-slate-800">
+            <div className={`flex flex-wrap items-center gap-2 p-1.5 rounded-xl border ${
+              isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950/80 border-slate-800'
+            }`}>
               
               {/* Step Backward */}
               <button
                 onClick={handleStepBackward}
-                className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                className={`p-1.5 rounded-lg transition-colors ${
+                  isLight ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70' : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                }`}
                 title="Step Backward (Previous Frame - ArrowLeft)"
               >
                 <SkipBack className="w-4 h-4" />
@@ -891,19 +907,23 @@ export default function GuidePage() {
                 onClick={() => setIsPlaying(!isPlaying)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   isPlaying
-                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30'
-                    : 'bg-teal-500 text-slate-950 font-black shadow-md hover:bg-teal-400'
+                    ? isLight
+                      ? 'bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100'
+                      : 'bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30'
+                    : 'bg-teal-600 text-white font-black shadow-sm hover:bg-teal-500'
                 }`}
                 title={isPlaying ? 'Pause Workflow (Space)' : 'Play Workflow (Space)'}
               >
-                {isPlaying ? <Pause className="w-3.5 h-3.5 fill-amber-300" /> : <Play className="w-3.5 h-3.5 fill-slate-950" />}
+                {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-white" />}
                 <span>{isPlaying ? 'Pause' : 'Play'}</span>
               </button>
 
               {/* Step Forward */}
               <button
                 onClick={handleStepForward}
-                className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                className={`p-1.5 rounded-lg transition-colors ${
+                  isLight ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70' : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                }`}
                 title="Step Forward (Next Frame - ArrowRight)"
               >
                 <SkipForward className="w-4 h-4" />
@@ -912,25 +932,31 @@ export default function GuidePage() {
               {/* Restart */}
               <button
                 onClick={handleRestart}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                className={`p-1.5 rounded-lg transition-colors ${
+                  isLight ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/70' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
                 title="Restart Workflow"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
               </button>
 
-              <div className="h-5 w-px bg-slate-800 mx-0.5" />
+              <div className={`h-5 w-px mx-0.5 ${isLight ? 'bg-slate-200' : 'bg-slate-800'}`} />
 
               {/* 🔊 Audio Description / Voiceover Toggle */}
               <button
                 onClick={() => setIsAudioEnabled(!isAudioEnabled)}
                 className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   isAudioEnabled
-                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-xs'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    ? isLight
+                      ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-xs'
+                      : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-xs'
+                    : isLight
+                      ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
                 }`}
                 title={isAudioEnabled ? "Audio Description Enabled (Click to Mute)" : "Enable Audio Voiceover Description"}
               >
-                {isAudioEnabled ? <Volume2 className="w-3.5 h-3.5 text-emerald-400" /> : <VolumeX className="w-3.5 h-3.5" />}
+                {isAudioEnabled ? <Volume2 className={`w-3.5 h-3.5 ${isLight ? 'text-emerald-600' : 'text-emerald-400'}`} /> : <VolumeX className="w-3.5 h-3.5" />}
                 <span className="hidden sm:inline">{isAudioEnabled ? 'Voiceover ON' : 'Audio'}</span>
               </button>
 
@@ -939,16 +965,20 @@ export default function GuidePage() {
                 onClick={() => setIsCaptionsEnabled(!isCaptionsEnabled)}
                 className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   isCaptionsEnabled
-                    ? 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    ? isLight
+                      ? 'bg-sky-50 text-sky-800 border border-sky-200'
+                      : 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
+                    : isLight
+                      ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
                 }`}
                 title={isCaptionsEnabled ? "Subtitles / Captions Enabled" : "Enable Subtitles / Captions"}
               >
-                <MessageSquareQuote className="w-3.5 h-3.5 text-blue-400" />
+                <MessageSquareQuote className={`w-3.5 h-3.5 ${isLight ? 'text-sky-600' : 'text-blue-400'}`} />
                 <span className="hidden sm:inline">CC</span>
               </button>
 
-              <div className="h-5 w-px bg-slate-800 mx-0.5" />
+              <div className={`h-5 w-px mx-0.5 ${isLight ? 'bg-slate-200' : 'bg-slate-800'}`} />
 
               {/* Speed Controls: 0.5x, 1.0x, 1.5x, 2.0x */}
               <div className="flex items-center gap-1">
@@ -958,7 +988,9 @@ export default function GuidePage() {
                     onClick={() => setPlaybackSpeed(speed)}
                     className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold transition-all ${
                       playbackSpeed === speed
-                        ? 'bg-teal-500 text-slate-950 font-black'
+                        ? 'bg-teal-600 text-white font-black'
+                        : isLight
+                        ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
                         : 'text-slate-400 hover:text-white hover:bg-slate-800'
                     }`}
                   >
@@ -967,17 +999,23 @@ export default function GuidePage() {
                 ))}
               </div>
 
-              <div className="h-5 w-px bg-slate-800 mx-0.5" />
+              <div className={`h-5 w-px mx-0.5 ${isLight ? 'bg-slate-200' : 'bg-slate-800'}`} />
 
               {/* 🗖 Maximize / Fullscreen & Minimize Toggle */}
               <button
                 onClick={() => setIsMaximized(!isMaximized)}
-                className={`p-1.5 rounded-lg text-slate-300 hover:text-white transition-colors ${
-                  isMaximized ? 'bg-teal-500/20 text-teal-300' : 'hover:bg-slate-800'
+                className={`p-1.5 rounded-lg transition-colors ${
+                  isMaximized
+                    ? isLight
+                      ? 'bg-teal-50 text-teal-700'
+                      : 'bg-teal-500/20 text-teal-300'
+                    : isLight
+                      ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800'
                 }`}
                 title={isMaximized ? "Minimize View (Esc)" : "Maximize / Fullscreen Video"}
               >
-                {isMaximized ? <Minimize2 className="w-4 h-4 text-teal-400" /> : <Maximize2 className="w-4 h-4" />}
+                {isMaximized ? <Minimize2 className="w-4 h-4 text-teal-600" /> : <Maximize2 className="w-4 h-4" />}
               </button>
 
             </div>
@@ -1010,7 +1048,9 @@ export default function GuidePage() {
                         ? 'bg-teal-400 ring-2 ring-teal-400/50 shadow-md shadow-teal-400/30'
                         : isPast
                           ? 'bg-teal-600/70 hover:bg-teal-500'
-                          : 'bg-slate-800 hover:bg-slate-700'
+                          : isLight
+                            ? 'bg-slate-200 hover:bg-slate-300'
+                            : 'bg-slate-800 hover:bg-slate-700'
                     }`}
                     title={`Frame ${idx + 1}: ${frame.title}`}
                   />
@@ -1063,7 +1103,7 @@ export default function GuidePage() {
                     </span>
                     <button
                       onClick={() => handleCopyPrompt(activeFrame.promptRecipe!)}
-                      className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-400 hover:text-white transition-colors"
+                      className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-600 hover:text-slate-900 transition-colors"
                     >
                       {copiedPrompt === activeFrame.promptRecipe ? (
                         <>
@@ -1118,31 +1158,39 @@ export default function GuidePage() {
 
             {/* RIGHT (7.5 Cols): HIGH-DPI CANONICAL MASTER BLUEPRINT & WORKFLOW VIEWPORT */}
             <div className="lg:col-span-7">
-              <div className={`rounded-2xl border p-4 shadow-2xl relative overflow-hidden ${
-                isLight ? 'bg-slate-900 border-slate-700 text-white' : 'bg-slate-950 border-slate-800 text-white'
+              <div className={`rounded-2xl border p-4 shadow-lg relative overflow-hidden ${
+                isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-950 border-slate-800 text-white'
               }`}>
                 
                 {/* Window Bar */}
-                <div className="flex flex-wrap items-center justify-between pb-3 mb-3 border-b border-slate-800 gap-2">
+                <div className={`flex flex-wrap items-center justify-between pb-3 mb-3 border-b gap-2 ${
+                  isLight ? 'border-slate-200' : 'border-slate-800'
+                }`}>
                   <div className="flex items-center gap-1.5 min-w-0">
                     <span className="w-2.5 h-2.5 rounded-full bg-red-500/80 inline-block" />
                     <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80 inline-block" />
                     <span className="w-2.5 h-2.5 rounded-full bg-green-500/80 inline-block" />
-                    <span className="text-[11px] font-mono text-slate-200 ml-2 font-bold truncate">
-                      Canonical Master Blueprint #{activeFrame.templateId || '01'} • {currentWorkflow.title}
+                    <span className={`text-[11px] font-mono ml-2 font-bold truncate ${
+                      isLight ? 'text-slate-700' : 'text-slate-200'
+                    }`}>
+                      Canonical Master Blueprint #{activeFrame.templateId || '78'} • {currentWorkflow.title}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2">
                     {/* View Switcher Pill */}
-                    <div className="flex items-center p-0.5 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-bold">
+                    <div className={`flex items-center p-0.5 rounded-lg border text-[10px] font-bold ${
+                      isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+                    }`}>
                       <button
                         type="button"
                         onClick={() => setPlayerViewMode('canonical')}
                         className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 cursor-pointer ${
                           playerViewMode === 'canonical'
-                            ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
-                            : 'text-slate-400 hover:text-white'
+                            ? 'bg-teal-600 text-white shadow-xs font-black'
+                            : isLight
+                            ? 'text-slate-600 hover:text-slate-900'
+                            : 'text-slate-600 hover:text-slate-900'
                         }`}
                       >
                         <Sparkles className="w-3 h-3" />
@@ -1153,8 +1201,10 @@ export default function GuidePage() {
                         onClick={() => setPlayerViewMode('screenshot')}
                         className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 cursor-pointer ${
                           playerViewMode === 'screenshot'
-                            ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
-                            : 'text-slate-400 hover:text-white'
+                            ? 'bg-teal-600 text-white shadow-xs font-black'
+                            : isLight
+                            ? 'text-slate-600 hover:text-slate-900'
+                            : 'text-slate-600 hover:text-slate-900'
                         }`}
                       >
                         <span>Playbook GIF</span>
@@ -1163,7 +1213,7 @@ export default function GuidePage() {
 
                     {/* Open in Canonical Blueprint Link */}
                     <Link
-                      href={`/canonical/${activeFrame.templateId || '01'}`}
+                      href={`/canonical/${activeFrame.templateId || '78'}`}
                       className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-extrabold text-[10px] transition-all flex items-center gap-1 shadow-sm shrink-0 cursor-pointer"
                       title="Open full interactive blueprint in the Blueprint Catalog"
                     >
@@ -1174,7 +1224,9 @@ export default function GuidePage() {
                 </div>
 
                 {/* Frame Screen: Live Vector Diagram or GIF Playback */}
-                <div className={`w-full rounded-xl overflow-hidden border border-slate-800 bg-slate-950 flex items-center justify-center relative ${
+                <div className={`w-full rounded-xl overflow-hidden border flex items-center justify-center relative ${
+                  isLight ? 'border-slate-200 bg-white' : 'border-slate-800 bg-slate-950'
+                } ${
                   isMaximized ? 'h-[620px]' : 'h-[440px]'
                 }`}>
                   {playerViewMode === 'canonical' ? (
@@ -1196,11 +1248,19 @@ export default function GuidePage() {
 
                   {/* 💬 Live Subtitles / Captions Overlay */}
                   {isCaptionsEnabled && activeFrame.narrationText && (
-                    <div className="absolute bottom-4 left-4 right-4 bg-slate-950/90 backdrop-blur-md border border-slate-700/80 rounded-xl p-3 shadow-2xl flex items-center gap-3 animate-fade-in z-20">
-                      <div className="px-2 py-0.5 rounded bg-teal-500/20 text-teal-400 border border-teal-500/30 text-[10px] font-mono font-bold shrink-0">
+                    <div className={`absolute bottom-4 left-4 right-4 backdrop-blur-md border rounded-xl p-3 shadow-xl flex items-center gap-3 animate-fade-in z-20 ${
+                      isLight
+                        ? 'bg-white/95 border-slate-200 text-slate-900'
+                        : 'bg-slate-950/90 border-slate-700/80 text-slate-100'
+                    }`}>
+                      <div className={`px-2 py-0.5 rounded border text-[10px] font-mono font-bold shrink-0 ${
+                        isLight
+                          ? 'bg-teal-50 text-teal-700 border-teal-200'
+                          : 'bg-teal-500/20 text-teal-400 border-teal-500/30'
+                      }`}>
                         CC
                       </div>
-                      <p className="text-xs md:text-sm font-medium text-slate-100 leading-snug">
+                      <p className="text-xs md:text-sm font-medium leading-snug">
                         {activeFrame.narrationText}
                       </p>
                     </div>
@@ -1208,8 +1268,12 @@ export default function GuidePage() {
                 </div>
 
                 {/* Frame Footer Info */}
-                <div className="flex items-center justify-between pt-2.5 mt-2 border-t border-slate-800 text-[10px] text-slate-400 font-mono">
-                  <span className="flex items-center gap-1 text-teal-400 font-bold truncate">
+                <div className={`flex items-center justify-between pt-2.5 mt-2 border-t text-[10px] font-mono ${
+                  isLight ? 'border-slate-200 text-slate-500' : 'border-slate-800 text-slate-400'
+                }`}>
+                  <span className={`flex items-center gap-1 font-bold truncate ${
+                    isLight ? 'text-teal-700' : 'text-teal-400'
+                  }`}>
                     <Sparkles className="w-3 h-3 shrink-0" /> {activeFrame.actionLabel}
                   </span>
                   <span className="shrink-0 ml-2">Frame {currentFrameIndex + 1} / {totalFrames}</span>
@@ -1231,7 +1295,9 @@ export default function GuidePage() {
           
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[10px] font-bold uppercase tracking-wider mb-1">
+              <div className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full border text-[10px] font-bold uppercase tracking-wider mb-1 ${
+                isLight ? 'bg-teal-50 border-teal-200 text-teal-700' : 'bg-teal-500/10 border-teal-500/20 text-teal-400'
+              }`}>
                 <Sparkles className="w-3 h-3" /> Compressed Workflow GIF Library
               </div>
               <h2 className="text-2xl md:text-3xl font-black">
@@ -1243,10 +1309,10 @@ export default function GuidePage() {
             </div>
 
             <Link
-              href="/studio"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs shadow-md shadow-teal-500/20 transition-all hover:scale-105 shrink-0"
+              href="/dashboard"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs shadow-md shadow-teal-500/20 transition-all hover:scale-105 shrink-0"
             >
-              <span>Launch Studio</span>
+              <span>Home Dashboard</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -1260,15 +1326,15 @@ export default function GuidePage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xl">🚀</span>
-                  <span className="text-[9px] font-bold px-2 py-0.2 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                  <span className="text-[9px] font-bold px-2 py-0.2 rounded-full bg-teal-500/10 text-teal-600 border border-teal-500/20">
                     Quickstart Tour
                   </span>
                 </div>
-                <h3 className="font-extrabold text-xs text-teal-400">First-Time User Quickstart</h3>
+                <h3 className={`font-extrabold text-xs ${isLight ? 'text-teal-700' : 'text-teal-400'}`}>First-Time User Quickstart</h3>
                 <p className={`text-[11px] line-clamp-2 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                   Prompt Entry → Options → Live Canvas → Chat Refine → Version v2 → Open PDF &amp; PPTX.
                 </p>
-                <div className="w-full h-28 rounded-lg overflow-hidden border border-slate-800 bg-black flex items-center justify-center">
+                <div className={`w-full h-28 rounded-lg overflow-hidden border bg-black flex items-center justify-center ${isLight ? 'border-slate-200' : 'border-slate-800'}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/workflows/workflow_first_time_user_quickstart.gif"
@@ -1277,12 +1343,12 @@ export default function GuidePage() {
                   />
                 </div>
               </div>
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px]">
+              <div className={`pt-2 border-t flex items-center justify-between text-[11px] ${isLight ? 'border-slate-200' : 'border-slate-800'}`}>
                 <a
                   href="/workflows/workflow_first_time_user_quickstart.gif"
                   target="_blank"
                   rel="noreferrer"
-                  className="font-bold text-teal-400 hover:underline flex items-center gap-1"
+                  className={`font-bold hover:underline flex items-center gap-1 ${isLight ? 'text-teal-700' : 'text-teal-400'}`}
                 >
                   <span>Watch GIF</span>
                   <ExternalLink className="w-3 h-3" />
@@ -1290,7 +1356,7 @@ export default function GuidePage() {
                 <a
                   href="/workflows/workflow_first_time_user_quickstart.gif"
                   download="workflow_first_time_user_quickstart.gif"
-                  className="text-slate-400 hover:text-white flex items-center gap-1"
+                  className="text-slate-600 hover:text-slate-900 flex items-center gap-1"
                 >
                   <Download className="w-3 h-3" />
                   <span>Save</span>
@@ -1305,15 +1371,15 @@ export default function GuidePage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xl">🏢</span>
-                  <span className="text-[9px] font-bold px-2 py-0.2 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                    Blueprint #17
+                  <span className="text-[9px] font-bold px-2 py-0.2 rounded-full bg-blue-500/10 text-blue-600 border border-blue-500/20">
+                    Blueprint #38
                   </span>
                 </div>
-                <h3 className="font-extrabold text-xs text-blue-400">Enterprise Cloud Architect</h3>
+                <h3 className={`font-extrabold text-xs ${isLight ? 'text-blue-700' : 'text-blue-400'}`}>Enterprise Cloud Architect</h3>
                 <p className={`text-[11px] line-clamp-2 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                   Landing Zone Shared VPC, 100G Interconnect, Subnets, v1→v2, and Open PPTX Slides.
                 </p>
-                <div className="w-full h-28 rounded-lg overflow-hidden border border-slate-800 bg-black flex items-center justify-center">
+                <div className={`w-full h-28 rounded-lg overflow-hidden border bg-black flex items-center justify-center ${isLight ? 'border-slate-200' : 'border-slate-800'}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/workflows/workflow_enterprise_architect.gif"
@@ -1322,12 +1388,12 @@ export default function GuidePage() {
                   />
                 </div>
               </div>
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px]">
+              <div className={`pt-2 border-t flex items-center justify-between text-[11px] ${isLight ? 'border-slate-200' : 'border-slate-800'}`}>
                 <a
                   href="/workflows/workflow_enterprise_architect.gif"
                   target="_blank"
                   rel="noreferrer"
-                  className="font-bold text-blue-400 hover:underline flex items-center gap-1"
+                  className={`font-bold hover:underline flex items-center gap-1 ${isLight ? 'text-blue-700' : 'text-blue-400'}`}
                 >
                   <span>Watch GIF</span>
                   <ExternalLink className="w-3 h-3" />
@@ -1335,7 +1401,7 @@ export default function GuidePage() {
                 <a
                   href="/workflows/workflow_enterprise_architect.gif"
                   download="workflow_enterprise_architect.gif"
-                  className="text-slate-400 hover:text-white flex items-center gap-1"
+                  className="text-slate-600 hover:text-slate-900 flex items-center gap-1"
                 >
                   <Download className="w-3 h-3" />
                   <span>Save</span>
@@ -1350,15 +1416,15 @@ export default function GuidePage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xl">🤖</span>
-                  <span className="text-[9px] font-bold px-2 py-0.2 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                  <span className="text-[9px] font-bold px-2 py-0.2 rounded-full bg-purple-500/10 text-purple-600 border border-purple-500/20">
                     Blueprint #41
                   </span>
                 </div>
-                <h3 className="font-extrabold text-xs text-purple-400">Data Platform &amp; AI</h3>
+                <h3 className={`font-extrabold text-xs ${isLight ? 'text-purple-700' : 'text-purple-400'}`}>Data Platform &amp; AI</h3>
                 <p className={`text-[11px] line-clamp-2 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                   Retail AI Core, AlloyDB pgvector, Star Schema Lakehouse, and Open PDF Dossier.
                 </p>
-                <div className="w-full h-28 rounded-lg overflow-hidden border border-slate-800 bg-black flex items-center justify-center">
+                <div className={`w-full h-28 rounded-lg overflow-hidden border bg-black flex items-center justify-center ${isLight ? 'border-slate-200' : 'border-slate-800'}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/workflows/workflow_data_ai_engineer.gif"
@@ -1367,12 +1433,12 @@ export default function GuidePage() {
                   />
                 </div>
               </div>
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px]">
+              <div className={`pt-2 border-t flex items-center justify-between text-[11px] ${isLight ? 'border-slate-200' : 'border-slate-800'}`}>
                 <a
                   href="/workflows/workflow_data_ai_engineer.gif"
                   target="_blank"
                   rel="noreferrer"
-                  className="font-bold text-purple-400 hover:underline flex items-center gap-1"
+                  className={`font-bold hover:underline flex items-center gap-1 ${isLight ? 'text-purple-700' : 'text-purple-400'}`}
                 >
                   <span>Watch GIF</span>
                   <ExternalLink className="w-3 h-3" />
@@ -1380,7 +1446,7 @@ export default function GuidePage() {
                 <a
                   href="/workflows/workflow_data_ai_engineer.gif"
                   download="workflow_data_ai_engineer.gif"
-                  className="text-slate-400 hover:text-white flex items-center gap-1"
+                  className="text-slate-600 hover:text-slate-900 flex items-center gap-1"
                 >
                   <Download className="w-3 h-3" />
                   <span>Save</span>
@@ -1395,15 +1461,15 @@ export default function GuidePage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xl">💼</span>
-                  <span className="text-[9px] font-bold px-2 py-0.2 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    Blueprint #1
+                  <span className="text-[9px] font-bold px-2 py-0.2 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                    Blueprint #00
                   </span>
                 </div>
-                <h3 className="font-extrabold text-xs text-emerald-400">Migration Consultant</h3>
+                <h3 className={`font-extrabold text-xs ${isLight ? 'text-emerald-700' : 'text-emerald-400'}`}>Migration Consultant</h3>
                 <p className={`text-[11px] line-clamp-2 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                   Legacy discovery, spaghetti matrix, 4 migration waves, TCO $/mo, and Open PPTX.
                 </p>
-                <div className="w-full h-28 rounded-lg overflow-hidden border border-slate-800 bg-black flex items-center justify-center">
+                <div className={`w-full h-28 rounded-lg overflow-hidden border bg-black flex items-center justify-center ${isLight ? 'border-slate-200' : 'border-slate-800'}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/workflows/workflow_cloud_migration.gif"
@@ -1412,12 +1478,12 @@ export default function GuidePage() {
                   />
                 </div>
               </div>
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px]">
+              <div className={`pt-2 border-t flex items-center justify-between text-[11px] ${isLight ? 'border-slate-200' : 'border-slate-800'}`}>
                 <a
                   href="/workflows/workflow_cloud_migration.gif"
                   target="_blank"
                   rel="noreferrer"
-                  className="font-bold text-emerald-400 hover:underline flex items-center gap-1"
+                  className={`font-bold hover:underline flex items-center gap-1 ${isLight ? 'text-emerald-700' : 'text-emerald-400'}`}
                 >
                   <span>Watch GIF</span>
                   <ExternalLink className="w-3 h-3" />
@@ -1425,7 +1491,7 @@ export default function GuidePage() {
                 <a
                   href="/workflows/workflow_cloud_migration.gif"
                   download="workflow_cloud_migration.gif"
-                  className="text-slate-400 hover:text-white flex items-center gap-1"
+                  className="text-slate-600 hover:text-slate-900 flex items-center gap-1"
                 >
                   <Download className="w-3 h-3" />
                   <span>Save</span>
@@ -1440,15 +1506,15 @@ export default function GuidePage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xl">🔒</span>
-                  <span className="text-[9px] font-bold px-2 py-0.2 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20">
-                    Blueprint #14
+                  <span className="text-[9px] font-bold px-2 py-0.2 rounded-full bg-rose-500/10 text-rose-600 border border-rose-500/20">
+                    Blueprint #44
                   </span>
                 </div>
-                <h3 className="font-extrabold text-xs text-rose-400">CISO &amp; DevSecOps</h3>
+                <h3 className={`font-extrabold text-xs ${isLight ? 'text-rose-700' : 'text-rose-400'}`}>CISO &amp; DevSecOps</h3>
                 <p className={`text-[11px] line-clamp-2 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                   VPC-SC perimeter audit, automated static remediation, and Open PDF SOC2 Dossier.
                 </p>
-                <div className="w-full h-28 rounded-lg overflow-hidden border border-slate-800 bg-black flex items-center justify-center">
+                <div className={`w-full h-28 rounded-lg overflow-hidden border bg-black flex items-center justify-center ${isLight ? 'border-slate-200' : 'border-slate-800'}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/workflows/workflow_ciso_secops.gif"
@@ -1457,12 +1523,12 @@ export default function GuidePage() {
                   />
                 </div>
               </div>
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px]">
+              <div className={`pt-2 border-t flex items-center justify-between text-[11px] ${isLight ? 'border-slate-200' : 'border-slate-800'}`}>
                 <a
                   href="/workflows/workflow_ciso_secops.gif"
                   target="_blank"
                   rel="noreferrer"
-                  className="font-bold text-rose-400 hover:underline flex items-center gap-1"
+                  className={`font-bold hover:underline flex items-center gap-1 ${isLight ? 'text-rose-700' : 'text-rose-400'}`}
                 >
                   <span>Watch GIF</span>
                   <ExternalLink className="w-3 h-3" />
@@ -1470,7 +1536,7 @@ export default function GuidePage() {
                 <a
                   href="/workflows/workflow_ciso_secops.gif"
                   download="workflow_ciso_secops.gif"
-                  className="text-slate-400 hover:text-white flex items-center gap-1"
+                  className="text-slate-600 hover:text-slate-900 flex items-center gap-1"
                 >
                   <Download className="w-3 h-3" />
                   <span>Save</span>
@@ -1495,39 +1561,39 @@ export default function GuidePage() {
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           <div className={`p-3.5 rounded-xl border space-y-1 ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
-            <span className="w-6 h-6 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center justify-center font-bold text-xs">1</span>
-            <b className="text-xs block text-white">Left Studio</b>
-            <p className="text-[10px] text-slate-400">Prompt input, architecture notation standards, &amp; AI compiler.</p>
+            <span className="w-6 h-6 rounded-md bg-blue-500/10 text-blue-600 border border-blue-500/20 flex items-center justify-center font-bold text-xs">1</span>
+            <b className={`text-xs block ${isLight ? 'text-slate-900' : 'text-white'}`}>Left Studio</b>
+            <p className={`text-[10px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Prompt input, architecture notation standards, &amp; AI compiler.</p>
           </div>
 
           <div className={`p-3.5 rounded-xl border space-y-1 ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
-            <span className="w-6 h-6 rounded-md bg-teal-500/10 text-teal-400 border border-teal-500/20 flex items-center justify-center font-bold text-xs">2</span>
-            <b className="text-xs block text-white">Templates Matrix</b>
-            <p className="text-[10px] text-slate-400">50 reference blueprints with 1-click &quot;Add as New View&quot;.</p>
+            <span className="w-6 h-6 rounded-md bg-teal-500/10 text-teal-600 border border-teal-500/20 flex items-center justify-center font-bold text-xs">2</span>
+            <b className={`text-xs block ${isLight ? 'text-slate-900' : 'text-white'}`}>Templates Matrix</b>
+            <p className={`text-[10px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>7 certified production blueprints with 1-click &quot;Add as New View&quot;.</p>
           </div>
 
           <div className={`p-3.5 rounded-xl border space-y-1 ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
-            <span className="w-6 h-6 rounded-md bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center font-bold text-xs">3</span>
-            <b className="text-xs block text-white">2D Viewport</b>
-            <p className="text-[10px] text-slate-400">1600px wide canvas with pan, zoom, &amp; zero line collisions.</p>
+            <span className="w-6 h-6 rounded-md bg-purple-500/10 text-purple-600 border border-purple-500/20 flex items-center justify-center font-bold text-xs">3</span>
+            <b className={`text-xs block ${isLight ? 'text-slate-900' : 'text-white'}`}>2D Viewport</b>
+            <p className={`text-[10px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>1600px wide canvas with pan, zoom, &amp; zero line collisions.</p>
           </div>
 
           <div className={`p-3.5 rounded-xl border space-y-1 ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
-            <span className="w-6 h-6 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center font-bold text-xs">4</span>
-            <b className="text-xs block text-white">Version Dropdown</b>
-            <p className="text-[10px] text-slate-400">Automatic v1→v2 commits with visual diff &amp; instant rollback.</p>
+            <span className="w-6 h-6 rounded-md bg-amber-500/10 text-amber-600 border border-amber-500/20 flex items-center justify-center font-bold text-xs">4</span>
+            <b className={`text-xs block ${isLight ? 'text-slate-900' : 'text-white'}`}>Version Dropdown</b>
+            <p className={`text-[10px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Automatic v1→v2 commits with visual diff &amp; instant rollback.</p>
           </div>
 
           <div className={`p-3.5 rounded-xl border space-y-1 ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
-            <span className="w-6 h-6 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center font-bold text-xs">5</span>
-            <b className="text-xs block text-white">Insights &amp; Cost</b>
-            <p className="text-[10px] text-slate-400">Live GCP cloud cost estimation ($/mo) &amp; FinOps score.</p>
+            <span className="w-6 h-6 rounded-md bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 flex items-center justify-center font-bold text-xs">5</span>
+            <b className={`text-xs block ${isLight ? 'text-slate-900' : 'text-white'}`}>Insights &amp; Cost</b>
+            <p className={`text-[10px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Live GCP cloud cost estimation ($/mo) &amp; FinOps score.</p>
           </div>
 
           <div className={`p-3.5 rounded-xl border space-y-1 ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
-            <span className="w-6 h-6 rounded-md bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center justify-center font-bold text-xs">6</span>
-            <b className="text-xs block text-white">Export Engine</b>
-            <p className="text-[10px] text-slate-400">Executive PDF Dossiers, Boardroom PPTX, SVG, &amp; Draw.io XML.</p>
+            <span className="w-6 h-6 rounded-md bg-rose-500/10 text-rose-600 border border-rose-500/20 flex items-center justify-center font-bold text-xs">6</span>
+            <b className={`text-xs block ${isLight ? 'text-slate-900' : 'text-white'}`}>Export Engine</b>
+            <p className={`text-[10px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Executive PDF Dossiers, Boardroom PPTX, SVG, &amp; Draw.io XML.</p>
           </div>
         </div>
 

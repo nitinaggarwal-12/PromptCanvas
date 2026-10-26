@@ -8,7 +8,7 @@ import {
   unitCostForCategory,
 } from './unifiedPricing';
 
-export interface CloudCostItem {
+interface CloudCostItem {
   id: string;
   resourceName: string;
   category: string;
@@ -20,7 +20,7 @@ export interface CloudCostItem {
   cloudProvider: 'GCP' | 'AWS' | 'Azure' | 'Multi-Cloud';
 }
 
-export interface CloudCostReport {
+interface CloudCostReport {
   diagramName: string;
   provider: 'GCP' | 'AWS' | 'Azure' | 'Multi-Cloud';
   totalMonthlyCostUsd: number;

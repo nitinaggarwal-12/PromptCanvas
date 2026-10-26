@@ -146,11 +146,10 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
       archType === 'canonical_google_cloud_ref_v2'
     )
   ) || (
-    inputXml.includes('PromptCanvas') ||
+    inputXml.includes('PromptCanvas Master Engine') ||
     inputXml.includes('id="info-') ||
     inputXml.includes('id="infographic_') ||
     inputXml.includes('canonical') ||
-    inputXml.includes('NOVACURA') ||
     inputXml.includes('template_') ||
     inputXml.includes('Template ') ||
     inputXml.includes('Reference Architecture v2.0') ||

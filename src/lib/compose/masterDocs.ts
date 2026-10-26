@@ -575,7 +575,7 @@ graph TD
     AUTH --> ORCHESTRATOR["⚙️ ReAct Agent Orchestrator (< 20ms)"]
     
     ORCHESTRATOR --> VDB["🔍 Vertex Vector Search (< 45ms)"]
-    ORCHESTRATOR --> GEMINI["🤖 Gemini 2.5 Flash Model (< 1200ms)"]
+    ORCHESTRATOR --> GEMINI["🤖 Gemini 3.8 Flash Model (< 1200ms)"]
     ORCHESTRATOR --> SPANNER["🗄️ Spanner Distributed Ledger (< 15ms)"]
     ORCHESTRATOR --> AUDIT["🔒 Cryptographic SHA-256 Audit Logger (< 8ms)"]
 \`\`\`
@@ -742,7 +742,7 @@ graph TD
     L1["1. Executive Digital Workspace & Portal"] --> L2["2. Zero-Trust Identity & ABAC Perimeter"]
     L2 --> L3["3. Agentic Workflow Orchestration (GKE)"]
     L3 --> L4["4. Access-Aware Hybrid Vector RAG"]
-    L4 --> L5["5. Model Gateway & Governance (Gemini 2.5 Flash)"]
+    L4 --> L5["5. Model Gateway & Governance (Gemini 3.8 Flash)"]
     L5 --> L6["6. Human-in-the-Loop Governance Board"]
     L6 --> L7["7. Governed Tool Execution Gateway"]
     L7 --> L8["8. Immutable Cryptographic Audit Ledger"]
@@ -1323,8 +1323,8 @@ graph LR
 
 | Model Tier | Foundation Model | Architectural Role | Latency / SLA Target |
 |---|---|---|---|
-| **Tier 1: Fast Router & Classifier** | Gemini 2.5 Flash / DistilBERT | Query intent classification, PII redaction & safety filter | < 50ms p99 |
-| **Tier 2: Deep Cognitive Reasoning** | Gemini 2.5 Pro ReAct Orchestrator | Multi-step agent planning, tool orchestration & synthesis | < 800ms p99 |
+| **Tier 1: Fast Router & Classifier** | Gemini 3.8 Flash / DistilBERT | Query intent classification, PII redaction & safety filter | < 50ms p99 |
+| **Tier 2: Deep Cognitive Reasoning** | Gemini 3.1 Pro ReAct Orchestrator | Multi-step agent planning, tool orchestration & synthesis | < 800ms p99 |
 | **Tier 3: Domain Specialized Embedder** | ScaNN 768-dim Text-Embedding-004 | Enterprise vector search, semantic clustering & RAG | < 15ms p99 |
 
 ---
@@ -1334,7 +1334,7 @@ graph LR
 ### 📐 Visual Diagram 1: Multi-Agent Cognitive Reasoning & ReAct Loop Topology (Template 23)
 \`\`\`mermaid
 graph TD
-    PROMPT["User Query / Ingress Trigger"] --> PLANNER["🧠 Multi-Agent Planner (Gemini 2.5 Pro)"]
+    PROMPT["User Query / Ingress Trigger"] --> PLANNER["🧠 Multi-Agent Planner (Gemini 3.1 Pro)"]
     PLANNER --> TOOL1["⚙️ Vector Knowledge Tool"]
     PLANNER --> TOOL2["🗄️ Database Query Tool"]
     TOOL1 --> SYNTH["🔬 Evidence Synthesis & Grounding"]
@@ -1718,7 +1718,7 @@ graph TD
 `
 };
 
-export const RETAIL_AMAZON_DOCUMENTS: Record<string, string> = {
+const RETAIL_AMAZON_DOCUMENTS: Record<string, string> = {
   sdd: `# System Design Document (SDD / HLD)
 
 ## Amazon-Scale Hyper-Scalable Omnichannel Marketplace & Logistics Platform

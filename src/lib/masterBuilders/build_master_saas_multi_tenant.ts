@@ -2,10 +2,6 @@ export function buildMasterSaasMultiTenantXml(): string {
   return buildOldMasterSaasMultiTenantXmlInternal();
 }
 
-export function buildOldMasterSaasMultiTenantXml(): string {
-  return buildOldMasterSaasMultiTenantXmlInternal();
-}
-
 const esc = (value: string): string =>
   value
     .replace(/&/g, '&amp;')
@@ -114,5 +110,3 @@ function buildOldMasterSaasMultiTenantXmlInternal(): string {
   </diagram>
 </mxfile>`;
 }
-
-export const MASTER_SAAS_MULTI_TENANT_XML = buildMasterSaasMultiTenantXml();

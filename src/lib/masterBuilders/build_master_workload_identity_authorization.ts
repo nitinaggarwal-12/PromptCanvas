@@ -113,5 +113,3 @@ export function buildMasterWorkloadIdentityAuthXml(): string {
   </diagram>
 </mxfile>`;
 }
-
-export const MASTER_WORKLOAD_IDENTITY_AUTH_XML = buildMasterWorkloadIdentityAuthXml();

@@ -10,7 +10,7 @@ export type BlogFormatId =
   | 'cloud-blog-partner-patterns'
   | 'geap-fde-deep-dive';
 
-export interface BlogFormatMeta {
+interface BlogFormatMeta {
   id: BlogFormatId;
   name: string;
   shortName: string;
@@ -915,7 +915,7 @@ export const BLOG_USE_CASE_PRESETS: UseCaseBlogPreset[] = [
   },
 ];
 
-export const BLOG_DOMAIN_CATALOG = [
+const BLOG_DOMAIN_CATALOG = [
   { id: 'biopharma', name: 'Biopharma & Life Sciences', prefix: 'PHARMA', icon: '🧬', category: 'Life Sciences' },
   { id: 'fintech', name: 'FinTech & Global Banking', prefix: 'FINTECH', icon: '🏦', category: 'Financial Services' },
   { id: 'healthcare', name: 'Healthcare & Clinical AI', prefix: 'HEALTH', icon: '🏥', category: 'Healthcare' },
@@ -927,68 +927,6 @@ export const BLOG_DOMAIN_CATALOG = [
   { id: 'govtech', name: 'Public Sector & Sovereign Cloud', prefix: 'GOV', icon: '🏛️', category: 'Public Sector' },
   { id: 'saas', name: 'Multi-Tenant B2B SaaS Platform', prefix: 'SAAS', icon: '☁️', category: 'Cloud Native' },
   { id: 'robotics', name: 'Aerospace & Autonomous Robotics', prefix: 'AERO', icon: '🛰️', category: 'Aerospace' },
-];
-
-const ADDITIONAL_CURATED_USE_CASES: {
-  id: string;
-  domainId: string;
-  description: string;
-  useCases: string[];
-}[] = [
-  {
-    id: 'pharma-discovery',
-    domainId: 'biopharma',
-    description: 'AlphaFold 3 & Vertex AI multi-agent protein target identification and molecular docking pipeline',
-    useCases: [
-      'De-Novo Protein Target Identification & Molecular Docking GraphRAG',
-      'Automated eCTD Module 3 Regulatory Submission & Deviation Triage',
-    ],
-  },
-  {
-    id: 'fintech-payments',
-    domainId: 'fintech',
-    description: 'ISO 20022 real-time payment settlement, liquidity stress testing, and AML sanctions graph engine',
-    useCases: [
-      'Real-Time Cross-Border ISO 20022 Payment Fraud & Sanctions GraphRAG',
-      'Autonomous Basel III Intraday Liquidity & Counterparty Risk Agent',
-    ],
-  },
-  {
-    id: 'cyber-soc',
-    domainId: 'cybersecurity',
-    description: 'Zero-trust autonomous SOC threat hunting, gVisor malware detonation, and Chronicle SIEM response',
-    useCases: [
-      'Autonomous Zero-Trust Threat Hunting & Chronicle SOAR Remediation Agent',
-      'Hardware-Attested Cloud KMS Supply-Chain Binary Verification Harness',
-    ],
-  },
-  {
-    id: 'retail-commerce',
-    domainId: 'retail',
-    description: 'Hyper-personalized conversational shopping concierge, visual catalog search, and dynamic pricing',
-    useCases: [
-      'Omnichannel Conversational Shopping Concierge & Visual Catalog GraphRAG',
-      'Autonomous Markdown Pricing & Real-Time Inventory Allocation Agent',
-    ],
-  },
-  {
-    id: 'energy-grid',
-    domainId: 'energy',
-    description: 'DERMS renewable microgrid load forecasting, SCADA telemetry anomaly detection, and carbon dispatch',
-    useCases: [
-      'Autonomous DERMS Microgrid Load Balancing & Substation Fault Recovery',
-      'Scope 1-3 Real-Time Carbon Ledger & Renewable PPA Settlement Agent',
-    ],
-  },
-  {
-    id: 'aero-mission',
-    domainId: 'robotics',
-    description: 'Closed-loop mission control digital twin, CCSDS telemetry decoding, and parallel Monte Carlo rollouts',
-    useCases: [
-      'NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Harness',
-      'Autonomous Fleet ROS 2 DDS Telemetry & Predictive Avionics Maintenance',
-    ],
-  },
 ];
 
 /**
@@ -1093,7 +1031,7 @@ export function getAllBlogUseCasePresets(): UseCaseBlogPreset[] {
   return [...BLOG_USE_CASE_PRESETS];
 }
 
-export interface GeneratedBlogSection {
+interface GeneratedBlogSection {
   id: string;
   heading: string;
   level: 2 | 3;

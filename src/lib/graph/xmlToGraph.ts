@@ -1,12 +1,12 @@
 import { XMLParser } from 'fast-xml-parser';
 
-export interface ExtractedTier {
+interface ExtractedTier {
   id: string;
   label: string;
   kind: 'layer' | 'stage' | 'lane';
 }
 
-export interface ExtractedComponent {
+interface ExtractedComponent {
   id: string;
   label: string;
   subtitle?: string;
@@ -14,7 +14,7 @@ export interface ExtractedComponent {
   tier: string;
 }
 
-export interface ExtractedFlow {
+interface ExtractedFlow {
   id: string;
   from: string;
   to: string;
@@ -23,19 +23,19 @@ export interface ExtractedFlow {
   async: boolean;
 }
 
-export interface ExtractedActor {
+interface ExtractedActor {
   id: string;
   label: string;
 }
 
-export interface ExtractedTransition {
+interface ExtractedTransition {
   id: string;
   from: string;
   to: string;
   gate?: string;
 }
 
-export interface ExtractedGraph {
+interface ExtractedGraph {
   title?: string;
   tiers: ExtractedTier[];
   components: ExtractedComponent[];

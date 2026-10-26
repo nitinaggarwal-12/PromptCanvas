@@ -1,6 +1,6 @@
 import { SystemModel } from '../../lib/compose/extract';
 
-export const COMPPOSE_SYSTEM_PROMPT = `You are a Principal Enterprise Systems Architect and Technical Writer composing authoritative technical documentation derived from architectural system models.
+const COMPPOSE_SYSTEM_PROMPT = `You are a Principal Enterprise Systems Architect and Technical Writer composing authoritative technical documentation derived from architectural system models.
 
 RULES FOR INFERRED SECTIONS:
 1. Write in an authoritative, professional technical document voice.

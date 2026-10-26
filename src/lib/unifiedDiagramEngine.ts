@@ -6,8 +6,12 @@ import { preflightVerifyAndHealXmlAcrossAll6Audits } from './preflightAuditEngin
 import { applyBlueprintVisualSystem } from './blueprintVisualSystem';
 import { createDiagram, saveDiagramVersion, getLatestDiagramVersion, updateDiagramArchitectureType } from './db';
 import { researchAndCompileDomainInfographic } from './research/deepDomainResearcher';
+import {
+  shouldUseCompositionalChainCompiler,
+  compileCompositionalArchitectureChain,
+} from './compositionalChainCompiler';
 
-export interface UnifiedDiagramRequest {
+interface UnifiedDiagramRequest {
   prompt: string;
   diagramId?: string;
   architectureType?: string;
@@ -25,7 +29,7 @@ export interface UnifiedDiagramRequest {
   lifecyclePhase?: string;
 }
 
-export interface UnifiedDiagramResponse {
+interface UnifiedDiagramResponse {
   success: boolean;
   diagram?: any;
   version?: any;
@@ -147,7 +151,23 @@ export async function executeUnifiedDiagramPipeline(
   const isAestheticPrompt = /^(?:make it (?:look )?(?:beautiful|clean|better|nice|modern|pretty|gorgeous|good|clear|sharp|crisp)|beautify|clean up|polish|improve styling|style it|fix layout|clean|prettier|crisp)[!.\s]*$/i.test(cleanPrompt);
 
   let customResult: CustomizationResult;
-  if (effectiveArchType === 'dynamic_tiered_infographic' && !isTrivialPrompt) {
+  const candidateExistingXml = req.existingXml || (targetXml?.includes('data-compositional-chain="true"') ? targetXml : '');
+  const chainCompiled =
+    !isTrivialPrompt && shouldUseCompositionalChainCompiler(candidateExistingXml, cleanPrompt)
+      ? compileCompositionalArchitectureChain(candidateExistingXml, cleanPrompt)
+      : null;
+
+  if (chainCompiled) {
+    customResult = {
+      xml: chainCompiled.xml,
+      reasoning: `${chainCompiled.canvasDiff} ${chainCompiled.specDiff}`,
+      businessUsecase: `Compositional Architecture Evolution (${chainCompiled.versionTag}) synthesized by ${chainCompiled.detectedPersona}.`,
+      technicalUsecase: `${chainCompiled.canvasDiff} (${chainCompiled.specDiff})`,
+      isFallback: false,
+      modelUsed: 'gemini-3.8-flash + CompositionalChainCompiler',
+      attribution: `CompositionalChainCompiler (${chainCompiled.versionTag})`,
+    };
+  } else if (effectiveArchType === 'dynamic_tiered_infographic' && !isTrivialPrompt) {
     const researched = await researchAndCompileDomainInfographic(contextualPrompt);
     customResult = {
       xml: researched.xml,

@@ -18,7 +18,7 @@ export interface AstComponent {
   height?: number;
 }
 
-export interface AstConnection {
+interface AstConnection {
   id: string;
   sourceId: string;
   targetId: string;
@@ -28,7 +28,7 @@ export interface AstConnection {
   label: string;
 }
 
-export interface AstMetadata {
+interface AstMetadata {
   projectTitle: string;
   projectId: string;
   version: string;

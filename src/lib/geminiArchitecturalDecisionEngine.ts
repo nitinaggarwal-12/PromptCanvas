@@ -1,13 +1,18 @@
 import { GoogleGenAI } from '@google/genai';
 import { CANONICAL_TEMPLATES, CanonicalTemplate } from './canonical/canonicalTemplates';
-import { GEMINI_FLASH_MODEL_ID, getEffectiveGeminiApiKey } from './geminiConfig';
+import type { GeminiHubSpoke78DynamicSpec } from './canonical/templateOfficialGcpArchCenterHubSpoke';
+import {
+  GEMINI_FALLBACK_FLASH_MODEL_ID,
+  GEMINI_FLASH_MODEL_ID,
+  getEffectiveGeminiApiKey,
+} from './geminiConfig';
 import { generateContentWithRetry } from './geminiRetryHelper';
 
 export type ArchitecturePerspective = 'Conceptual' | 'Logical' | 'Technical' | 'Process' | 'Whiteboard' | 'Paper';
 export type AbstractionDetailLevel = 'L1' | 'L2' | 'L3' | 'L4';
 export type FlowDirectionOption = 'LR' | 'TD';
 
-export interface PerspectiveBlueprintMatch {
+interface PerspectiveBlueprintMatch {
   perspective: ArchitecturePerspective;
   blueprintId: string;
   blueprintName: string;
@@ -17,7 +22,7 @@ export interface PerspectiveBlueprintMatch {
   plannedModifications: string[];
 }
 
-export interface GeminiBlueprintCandidate {
+interface GeminiBlueprintCandidate {
   id: string;
   name: string;
   perspective: ArchitecturePerspective;
@@ -28,7 +33,7 @@ export interface GeminiBlueprintCandidate {
   plannedModifications: string[];
 }
 
-export interface GeminiTemplate40AdaptationSpec {
+interface GeminiTemplate40AdaptationSpec {
   personas: [string, string, string, string, string];
   channels: [string, string, string, string, string];
   copilotName: string;
@@ -67,6 +72,7 @@ export interface GeminiArchitecturalDecision {
     decisionGateQuestion: string;
     customSubsystems: string[];
     template40Adaptation?: GeminiTemplate40AdaptationSpec;
+    hubSpoke78Spec?: GeminiHubSpoke78DynamicSpec;
     genericNodeReplacements?: Array<{ find: string; replace: string }>;
   };
 }
@@ -80,7 +86,7 @@ const decisionCache = new Map<string, GeminiArchitecturalDecision>();
  * - Logical: C4 Containers, Component Architecture, Data Flows, Integration, Multi-Agent & RAG Reference Architectures
  * - Technical: Network Topologies, Cloud Deployments, Zero-Trust Security, HA/DR, CI/CD, Observability
  */
-export function getTemplatePerspective(tpl: CanonicalTemplate): ArchitecturePerspective {
+function getTemplatePerspective(tpl: CanonicalTemplate): ArchitecturePerspective {
   const idNum = parseInt(tpl.id, 10);
   if (
     tpl.family === 'Process' ||
@@ -109,30 +115,6 @@ export function getTemplatePerspective(tpl: CanonicalTemplate): ArchitecturePers
 }
 
 /**
- * Maps a CanonicalTemplate to L1, L2, L3, or L4 detail levels.
- */
-export function getTemplateDetailLevels(tpl: CanonicalTemplate): AbstractionDetailLevel[] {
-  const levels = new Set<AbstractionDetailLevel>([tpl.level]);
-  const perspective = getTemplatePerspective(tpl);
-  if (tpl.id === '78' || tpl.id === '50' || perspective === 'Conceptual') {
-    levels.add('L1');
-    levels.add('L2');
-  }
-  if (tpl.id === '67' || perspective === 'Process') {
-    levels.add('L2');
-    levels.add('L3');
-  }
-  if (tpl.level === 'L3' && (perspective === 'Technical' || tpl.family === 'Delivery & Operations' || tpl.family === 'Security & Governance')) {
-    levels.add('L4');
-  }
-  if (tpl.level === 'L2' || perspective === 'Logical') {
-    levels.add('L2');
-    levels.add('L3');
-  }
-  return Array.from(levels);
-}
-
-/**
  * Calls the Gemini API (`@google/genai`) to make the architectural decision for a user prompt:
  * 1. Which Blueprint to pick (and Top 4 candidates across perspectives)
  * 2. Which Architecture Perspective (`Process`, `Conceptual`, `Logical`, `Technical`) and why
@@ -150,7 +132,7 @@ export async function analyzePromptWithGeminiArchitect(
   }
 
   const apiKey = getEffectiveGeminiApiKey(explicitApiKey);
-  const modelName = process.env.GEMINI_MODEL_ID || GEMINI_FLASH_MODEL_ID;
+  const modelName = GEMINI_FALLBACK_FLASH_MODEL_ID || process.env.GEMINI_MODEL_ID || GEMINI_FLASH_MODEL_ID;
 
   // Build compact catalog summary for Gemini so it can evaluate all canonical templates
   const catalogSummary = CANONICAL_TEMPLATES.map((t) => {
@@ -301,19 +283,66 @@ Return strictly valid JSON matching this structure:
       },
       "enterpriseSystems": ["4 strings"],
       "primaryDatabase": "string"
+    },
+    "hubSpoke78Spec": {
+      "title": "string (authoritative architecture title, max 76 chars)",
+      "subtitle": "string (technical subtitle, max 96 chars)",
+      "topUserTitle": "string (source system or client actor title, max 24 chars)",
+      "topUserSub": "string (source protocol or identity detail, max 38 chars)",
+      "routingHubTitle": "string (Ingress & Routing Hub title, max 48 chars)",
+      "routingHubSub": "string (Routing Hub subtitle, max 68 chars)",
+      "routingCards": {
+        "topLeft": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" },
+        "midLeft": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" },
+        "botLeft": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" },
+        "topRight": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" },
+        "botRight": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" }
+      },
+      "govHubTitle": "string (max 24 chars)",
+      "govHubTitle2": "string (max 24 chars)",
+      "govCards": {
+        "top": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" },
+        "mid": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" },
+        "bot": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" }
+      },
+      "leftBoundaryLabel": "string (Spoke 1 boundary label, max 60 chars)",
+      "leftZoneTitle": "string (Spoke 1 zone title, max 40 chars)",
+      "leftZoneSub": "string (Spoke 1 subtitle, max 56 chars)",
+      "leftCards": {
+        "modelArmor": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" },
+        "llm": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" },
+        "runtime": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" },
+        "mcp": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" },
+        "datastore": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" }
+      },
+      "rightBoundaryLabel": "string (Spoke 2 boundary label, max 60 chars)",
+      "rightZoneTitle": "string (Spoke 2 zone title, max 40 chars)",
+      "rightZoneSub": "string (Spoke 2 subtitle, max 56 chars)",
+      "rightCards": {
+        "modelArmor": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" },
+        "llm": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" },
+        "runtime": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" },
+        "mcp": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" },
+        "datastore": { "title": "string (max 24 chars)", "sub": "string (max 36 chars)" }
+      }
     }
   }
 }`;
 
-      const response = await generateContentWithRetry(ai, {
-        model: modelName,
-        contents: userContents,
-        config: {
-          systemInstruction,
-          temperature: 0.2,
-          responseMimeType: 'application/json',
+      const response = await generateContentWithRetry(
+        ai,
+        {
+          model: modelName,
+          contents: userContents,
+          config: {
+            systemInstruction,
+            temperature: 0.2,
+            responseMimeType: 'application/json',
+            thinkingConfig: { thinkingLevel: 'LOW' } as any,
+          },
         },
-      });
+        { maxRetries: 2, perAttemptTimeoutMs: 25000, totalBudgetMs: 32000, label: 'Gemini Architect Decision' }
+      );
 
       const rawText = (response.text || '').replace(/```json/gi, '').replace(/```/g, '').trim();
       if (rawText) {
@@ -364,8 +393,7 @@ function normalizeGeminiDecision(
       lowerPrompt.includes('a2a') ||
       lowerPrompt.includes('mcp') ||
       lowerPrompt.includes('model armor') ||
-      lowerPrompt.includes('multi-agent') ||
-      lowerPrompt.includes('banking'));
+      lowerPrompt.includes('multi-agent'));
 
   const recommendedBlueprintId = isGcpNativeTech
     ? '00'
@@ -449,6 +477,7 @@ function normalizeGeminiDecision(
       decisionGateQuestion: String(raw?.tailoredSpec?.decisionGateQuestion || fb.tailoredSpec.decisionGateQuestion),
       customSubsystems,
       template40Adaptation: raw?.tailoredSpec?.template40Adaptation || fb.tailoredSpec.template40Adaptation,
+      hubSpoke78Spec: raw?.tailoredSpec?.hubSpoke78Spec || undefined,
     },
   };
 }
@@ -633,3 +662,111 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
     },
   };
 }
+
+export interface LiveGeminiCopilotModificationSpec {
+  isLiveGeminiModification: boolean;
+  modelUsed: string;
+  badgeText: string;
+  titleText: string;
+  descText: string;
+  edgeLabel: string;
+  targetKeywords: string[];
+  accentColor: string;
+  fillColor: string;
+  canvasDiff: string;
+  specDiff: string;
+}
+
+const copilotModCache = new Map<string, LiveGeminiCopilotModificationSpec>();
+
+/**
+ * Calls the live Gemini API to synthesize a tailored L400 architectural component card
+ * and connection specification for any follow-up modification prompt (e.g.,
+ * "Add Gemini Enterprise App for Agentic AI", "add cloud data warehouse for datawarehousing").
+ */
+export async function synthesizeLiveGeminiCopilotModification(
+  promptText: string,
+  currentTitle = 'Enterprise Cloud Architecture',
+  explicitApiKey?: string
+): Promise<LiveGeminiCopilotModificationSpec | null> {
+  const cleanPrompt = (promptText || '').trim();
+  if (!cleanPrompt || cleanPrompt.length < 3) return null;
+
+  const cacheKey = `${currentTitle.toLowerCase()}:::${cleanPrompt.toLowerCase()}`;
+  if (copilotModCache.has(cacheKey)) {
+    return copilotModCache.get(cacheKey)!;
+  }
+
+  const apiKey = getEffectiveGeminiApiKey(explicitApiKey);
+  if (!apiKey) return null;
+
+  const modelName = GEMINI_FALLBACK_FLASH_MODEL_ID || process.env.GEMINI_MODEL_ID || GEMINI_FLASH_MODEL_ID;
+  try {
+    const ai = new GoogleGenAI({ apiKey });
+    const response = await generateContentWithRetry(
+      ai,
+      {
+        model: modelName,
+        contents: `You are the Principal Google Cloud & Multi-Cloud L400 Architecture Synthesizer.
+The user is modifying an active architecture diagram titled "${currentTitle}" with this follow-up instruction:
+"${cleanPrompt}"
+
+Synthesize the exact L400 architectural component card and data-flow edge connection to inject into the Draw.io diagram. Honor the exact product/platform requested by the user in their instruction.
+Return strictly valid JSON with these fields:
+{
+  "badgeText": "Short uppercase category badge (max 42 chars, e.g. '✨ GEMINI ENTERPRISE • AGENTIC AI CORE' or '❄️ CLOUD DATA WAREHOUSE • ICEBERG SYNC')",
+  "titleText": "Authoritative L400 component title honoring the user's requested platform (max 44 chars, e.g. 'Gemini Enterprise App & Google ADK Agent' or 'BigLake Iceberg Enterprise Data Warehouse')",
+  "descText": "Technical SKU, protocol & integration detail (max 68 chars, e.g. 'Vertex AI Agent Builder • A2A & MCP ERP Copilot • Grounded RAG' or 'BigLake Apache Iceberg Federation & GoldenGate 23ai CDC Sync')",
+  "edgeLabel": "Short protocol/flow label for the connector arrow (max 24 chars, e.g. 'A2A / MCP Agent Flow' or 'Iceberg / Federated SQL')",
+  "targetKeywords": ["3 to 5 lowercase keywords of the existing diagram node this should connect to, e.g. ['vertex', 'agent', 'gemini', 'bigquery', 'cortex', 'spanner', 'weblogic', 'exadata']"],
+  "accentColor": "Hex stroke/accent color matching the domain ('#1A73E8' for AI/Compute, '#0284C7' for Data/Warehouse/Storage, '#059669' for Database/Analytics, '#7C3AED' for Security/IAM, '#D97706' for Messaging/Integration)",
+  "fillColor": "Light pastel hex fill color ('#EFF6FF', '#F0F9FF', '#ECFDF5', '#FAF5FF', or '#FFFBEB')",
+  "canvasDiff": "1-sentence summary of what was added/modified on the canvas",
+  "specDiff": "1-sentence summary of which architecture specifications and data contracts were updated"
+}`,
+        config: {
+          temperature: 0.15,
+          responseMimeType: 'application/json',
+          thinkingConfig: { thinkingLevel: 'LOW' } as any,
+        },
+      },
+      { maxRetries: 2, perAttemptTimeoutMs: 22000, totalBudgetMs: 28000, label: 'Gemini Live Co-Pilot Node Synthesis' }
+    );
+
+    const rawText = (response.text || '').replace(/```json/gi, '').replace(/```/g, '').trim();
+    if (rawText) {
+      const parsed = JSON.parse(rawText);
+      if (parsed && typeof parsed.titleText === 'string' && parsed.titleText.trim().length > 2) {
+        const spec: LiveGeminiCopilotModificationSpec = {
+          isLiveGeminiModification: true,
+          modelUsed: modelName,
+          badgeText: String(parsed.badgeText || '✨ LIVE GEMINI CO-PILOT SYNTHESIS').slice(0, 48),
+          titleText: String(parsed.titleText).slice(0, 48),
+          descText: String(parsed.descText || 'Synthesized & connected via live Gemini Architect API').slice(0, 74),
+          edgeLabel: String(parsed.edgeLabel || 'Synthesized Flow').slice(0, 26),
+          targetKeywords: Array.isArray(parsed.targetKeywords)
+            ? parsed.targetKeywords.map((k: unknown) => String(k).toLowerCase()).slice(0, 6)
+            : ['vertex', 'bigquery', 'agent', 'spanner'],
+          accentColor: /^#[0-9A-Fa-f]{6}$/.test(String(parsed.accentColor || ''))
+            ? String(parsed.accentColor)
+            : '#1A73E8',
+          fillColor: /^#[0-9A-Fa-f]{6}$/.test(String(parsed.fillColor || ''))
+            ? String(parsed.fillColor)
+            : '#EFF6FF',
+          canvasDiff: String(
+            parsed.canvasDiff || `+ Live Gemini (${modelName}) synthesized and connected "${parsed.titleText}".`
+          ),
+          specDiff: String(
+            parsed.specDiff || 'Reconciled system architecture topology, component catalog, and data-flow contracts.'
+          ),
+        };
+        copilotModCache.set(cacheKey, spec);
+        return spec;
+      }
+    }
+  } catch (err) {
+    console.warn('[synthesizeLiveGeminiCopilotModification] Live Gemini call fallback:', err);
+  }
+  return null;
+}
+

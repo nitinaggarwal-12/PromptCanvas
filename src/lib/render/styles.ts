@@ -1,6 +1,6 @@
 import { CloudEnum, NodeTypeEnum } from '../graph/schema';
 
-export interface StyleToken {
+interface StyleToken {
   fillColor: string;
   strokeColor: string;
   fontColor: string;

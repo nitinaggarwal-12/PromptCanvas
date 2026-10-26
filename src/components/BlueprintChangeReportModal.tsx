@@ -44,7 +44,7 @@ const DOMAIN_PROFILES: Record<string, DomainProfile> = {
     compliancePills: ['PCI-DSS Level 1 v4.0', 'SOC 2 Type II', 'GDPR / CCPA Tokenized PII', 'ISO 27001'],
   },
   fintech: {
-    name: 'NEXUSFIN High-Speed Wealth Engine',
+    name: 'FINTECH CORE High-Speed Wealth Engine',
     badge: '💳',
     tagline: 'Autonomous Wealth. Zero-Latency Execution.',
     actors: ['Institutional Traders', 'Retail Investors', 'Compliance Officers', 'Risk Managers', 'Quant Analysts'],
@@ -62,7 +62,7 @@ const DOMAIN_PROFILES: Record<string, DomainProfile> = {
     ingressSources: ['Veeva Vault', 'CTMS / Medidata Rave', 'Argus Safety', 'SAP S/4HANA', 'LIMS Lab Gateways'],
     microservices: ['Clinical Study Service', 'Regulatory Operations', 'AI Copilot RAG Service', 'Safety Signal Engine', 'Clinical Data Store'],
     entities: ['Study', 'Protocol', 'Site', 'Trial', 'Patient', 'Event', 'Document', 'KnowledgeBase', 'Embedding'],
-    sequenceScenario: 'Scientist Q&A: Query -> API Gateway -> Orchestrator -> Vector RAG -> MedLM & Gemini 2.5 Pro reasoning -> Policy check -> Citation display',
+    sequenceScenario: 'Scientist Q&A: Query -> API Gateway -> Orchestrator -> Vector RAG -> MedLM & Gemini 3.1 Pro reasoning -> Policy check -> Citation display',
     compliancePills: ['FDA 21 CFR Part 11', 'GxP Validation', 'HIPAA / HITECH', 'ICH E6(R2) GCP'],
   },
   saas: {

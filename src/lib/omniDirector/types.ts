@@ -5,7 +5,7 @@
  * where Omni 1.1 acts as the Director & Quality Control Chief.
  */
 
-export type AgentRole = 
+type AgentRole = 
   | 'OMNI_DIRECTOR'     // Omni 1.1: Work intake, decomposition, crew dispatch
   | 'TOPOLOGY_PLANNER'  // Flash: Fast OCR, spatial zoning, signature matching
   | 'AST_BUILDER'       // Pro: High-fidelity Draw.io XML graph AST synthesis
@@ -23,26 +23,26 @@ export type AuditCategory =
   | 'BRANDING_STYLE'    // Gemini gradient logos, palette contrast, font scaling
   | 'SOURCE_PARITY';    // Does the emitted XML actually depict the SOURCE image?
 
-export interface DiagramRowCard {
+interface DiagramRowCard {
   title: string;
   bullets?: string[];
   meta?: string;
   icon?: string;
 }
 
-export interface DiagramRowInventory {
+interface DiagramRowInventory {
   rowTitle: string;
   cards: DiagramRowCard[];
 }
 
-export interface DiagramZoneColor {
+interface DiagramZoneColor {
   stageName: string;
   color: string;
   bgLight?: string;
   border?: string;
 }
 
-export interface DiagramBrandBlock {
+interface DiagramBrandBlock {
   logoText: string;
   subtitle?: string;
   badgeNumber?: string;
@@ -111,33 +111,11 @@ export interface MultiAgentExecutionStep {
   outputSummary?: string;
 }
 
-export interface ModelCallSpec {
+interface ModelCallSpec {
   model: string;
   role: AgentRole | string;
   order: number;
   inputContract: string;
   outputContract: string;
   isOptional?: boolean;
-}
-
-export interface DynamicModelOrchestrationPlan {
-  decidedBy: 'Google Omni 1.1';
-  executionStrategy: 'SEQUENTIAL' | 'PARALLEL' | 'HYBRID_DAG';
-  selectedModels: ModelCallSpec[];
-  coordinationProtocol: string;
-}
-
-export interface OmniOrchestrationResult {
-  success: boolean;
-  xml: string;
-  summary: string;
-  extractedZones: string[];
-  componentCount: number;
-  isCertified: boolean;
-  auditReport: OmniAuditReport;
-  orchestrationPlan?: DynamicModelOrchestrationPlan;
-  steps: MultiAgentExecutionStep[];
-  matchedMasterBlueprintId?: string;
-  masterBlueprintTitle?: string;
-  totalDurationMs: number;
 }

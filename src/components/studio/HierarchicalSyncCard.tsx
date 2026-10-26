@@ -20,7 +20,7 @@ import {
 import { LivingSpecDocument } from '@/lib/spec/livingSpecsGenerator';
 import { AstComponent } from '@/lib/ast/architectureAst';
 
-export interface HierarchicalSyncCardProps {
+interface HierarchicalSyncCardProps {
   versionTag: string;
   canvasDiff: string;
   specDiff: string;

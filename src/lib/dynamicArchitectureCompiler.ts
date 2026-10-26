@@ -18,7 +18,7 @@
 
 import { renderGcpIconHtml, GcpIconDefinition } from './gcpIcons';
 
-export interface CompiledStage {
+interface CompiledStage {
   num: string;
   title: string;
   category: string;
@@ -35,7 +35,7 @@ export interface CompiledNode {
   highlight?: boolean;
 }
 
-export interface CompiledArchitecture {
+interface CompiledArchitecture {
   projectTitle: string;
   subtitle: string;
   summary: string;

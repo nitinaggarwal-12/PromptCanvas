@@ -1,6 +1,6 @@
-export type ChatIntentType = 'greeting' | 'identity' | 'conversational' | 'question' | 'mutation';
+type ChatIntentType = 'greeting' | 'identity' | 'conversational' | 'question' | 'mutation';
 
-export interface ChatIntentResult {
+interface ChatIntentResult {
   isQuestion: boolean;
   intent: ChatIntentType;
   confidence: number;
@@ -283,7 +283,20 @@ export function classifyChatIntent(prompt: string): ChatIntentResult {
     'split ',
     'merge ',
     'convert ',
-    'implement '
+    'implement ',
+    'introduce ',
+    'separate ',
+    'include ',
+    'draw ',
+    'incorporate ',
+    'generate ',
+    'show ',
+    'highlight ',
+    'redraw ',
+    'detail ',
+    'reorganize ',
+    'color-code ',
+    'color '
   ];
 
   const startsWithMutation = mutationStarters.some(starter => lower.startsWith(starter));

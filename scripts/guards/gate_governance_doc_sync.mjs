@@ -49,7 +49,7 @@ const BANNED_CONTRADICTORY_PATTERNS = [
 
 import { execSync } from 'node:child_process';
 
-export function auditPromptCanvasGovernanceSync() {
+function auditPromptCanvasGovernanceSync() {
   try {
     const trinityScript = path.join(__dirname, 'enforce_universal_single_source_trinity.mjs');
     if (fs.existsSync(trinityScript)) {
@@ -204,6 +204,7 @@ export function auditPromptCanvasGovernanceSync() {
     const hGlobal = sha256(globalSkill);
 
     if (!hRepo) mismatches.push(`MISSING: .agents/skills/${dir}/SKILL.md`);
+    if (!hGlobal) mismatches.push(`MISSING: ~/.gemini/config/skills/${dir}/SKILL.md`);
     if (hRepo && hGlobal && hRepo !== hGlobal) {
       mismatches.push(`DRIFT: .agents/skills/${dir}/SKILL.md and ~/.gemini/config/skills/${dir}/SKILL.md differ`);
     }
@@ -259,9 +260,17 @@ export function auditPromptCanvasGovernanceSync() {
     }
   }
 
-  // 8. Verify stale backup garbage is absent
+  // 8. Verify stale backup garbage and Waves 3-10 purged artifacts are absent
   const staleFiles = [
     path.join(REPO_ROOT, 'scratch/vibe/skills.json'),
+    path.join(REPO_ROOT, 'src/lib/export/googleSlidesDesignArchetypes.ts'),
+    path.join(REPO_ROOT, 'PromptCanvas Architectures Aug 21.pdf'),
+    path.join(REPO_ROOT, 'PromptCanvas_Catalog_Mapping_Batch3.xlsx'),
+    path.join(REPO_ROOT, 'public/gladiators_rome_arena.jpg'),
+    path.join(REPO_ROOT, 'public/exports'),
+    path.join(REPO_ROOT, 'public/walkthrough'),
+    path.join(BLOGS_ROOT, 'scripts/gcp_icons_bundle.mjs'),
+    path.join(BLOGS_ROOT, 'slide-outline.md'),
     path.join(CONFIG_DIR, 'hooks.json.bak.v7'),
     path.join(CONFIG_DIR, 'hooks_backups_20260912_034509'),
   ];

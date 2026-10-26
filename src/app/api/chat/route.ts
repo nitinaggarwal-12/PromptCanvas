@@ -12,14 +12,6 @@ export interface ChatSuggestion {
   type: 'add' | 'modify' | 'security' | 'cost' | 'observability';
 }
 
-export interface ChatResponseBody {
-  answer: string;
-  summary: string;
-  suggestions: ChatSuggestion[];
-  identifiedGaps: string[];
-  latencyMs: number;
-}
-
 function generateDeterministicAdvisory(
   prompt: string,
   diagramName: string,

@@ -60,10 +60,10 @@ const INITIAL_TEST_RESULTS: TestCaseResult[] = [
   // Pillar 1: Product & Business
   { id: 't-1-01', pillar: 'pillar_1', suite: 'FinOps Pricing Catalog (finopsConsistency.test.ts)', name: 'Unified GCP / AWS / Azure cloud resource cost estimator & CUD discount modeling', status: 'PASSED', durationMs: 6, timestamp: '2026-10-05T00:00:00Z' },
   { id: 't-1-02', pillar: 'pillar_1', suite: '13 Enterprise Industry Domains (domainPresets.test.ts)', name: 'Domain flavor XML injection across Healthcare, FinTech, BioPharma, Telecom & Defense', status: 'PASSED', durationMs: 14, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-1-03', pillar: 'pillar_1', suite: 'Navigation & Badge Parity (verify_nav_badge_counts.mjs)', name: 'Sidebar badge counts match 77 Canonical Blueprints & 17 Document Archetypes with zero dead links', status: 'PASSED', durationMs: 18, timestamp: '2026-10-05T00:00:00Z' },
+  { id: 't-1-03', pillar: 'pillar_1', suite: 'Navigation & Badge Parity (verify_nav_badge_counts.mjs)', name: 'Sidebar badge counts match 8 Canonical Blueprints & 17 Document Archetypes with zero dead links', status: 'PASSED', durationMs: 18, timestamp: '2026-10-05T00:00:00Z' },
 
   // Pillar 2: Functional & App
-  { id: 't-2-01', pillar: 'pillar_2', suite: '77 Canonical Blueprints (canonicalTemplates.test.ts)', name: '77 canonical master blueprints x 13 domains x Light/Dark themes generate valid Draw.io XML', status: 'PASSED', durationMs: 1240, timestamp: '2026-10-05T00:00:00Z' },
+  { id: 't-2-01', pillar: 'pillar_2', suite: '8 Canonical Blueprints (canonicalTemplates.test.ts)', name: '8 canonical master blueprints x 13 domains x Light/Dark themes generate valid Draw.io XML', status: 'PASSED', durationMs: 1240, timestamp: '2026-10-05T00:00:00Z' },
   { id: 't-2-02', pillar: 'pillar_2', suite: '17 Document Archetypes (livingSpecsGenerator.test.ts)', name: '17 Master Document Archetypes & 16 Living Specs synthesize grounded architecture dossiers', status: 'PASSED', durationMs: 410, timestamp: '2026-10-05T00:00:00Z' },
   { id: 't-2-03', pillar: 'pillar_2', suite: 'AST Section Editor (docSectionEngine.test.ts)', name: 'Interactive AST Promote, Demote, Move, Clone & Insert section hierarchy operations', status: 'PASSED', durationMs: 45, timestamp: '2026-10-05T00:00:00Z' },
   { id: 't-2-04', pillar: 'pillar_2', suite: 'Export & Cloud Bridge (exportGenerators.test.ts)', name: '16:9 PPTX Slide Decks, DOCX, Draw.io XML & Google Workspace Cloud Bridge exports', status: 'PASSED', durationMs: 180, timestamp: '2026-10-05T00:00:00Z' },
@@ -236,13 +236,13 @@ function TestStatusContent() {
               </div>
             </div>
             <div>
-              <h1 className="font-black text-xs sm:text-sm tracking-tight flex items-center gap-2 text-white">
+              <h1 className={`font-black text-xs sm:text-sm tracking-tight flex items-center gap-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>
                 <span>Enterprise Quality &amp; Test Status Portal</span>
-                <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border ${isLight ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'}`}>
                   ALL 9 PILLARS VERIFIED
                 </span>
               </h1>
-              <p className="text-[10px] text-slate-400 font-medium">
+              <p className={`text-[10px] font-medium ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                 Live automated test execution results, assertion metrics, timestamps &amp; compliance status
               </p>
             </div>

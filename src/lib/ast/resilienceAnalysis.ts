@@ -10,7 +10,7 @@ import type { ArchitectureAst, AstComponent } from "./architectureAst";
  * fault-injection test.
  */
 
-export interface SpofCandidate {
+interface SpofCandidate {
   id: string;
   name: string;
   service: string;
@@ -18,7 +18,7 @@ export interface SpofCandidate {
   reason: string;
 }
 
-export interface ResilienceAnalysis {
+interface ResilienceAnalysis {
   componentCount: number;
   connectionCount: number;
   primaryRegion: string;

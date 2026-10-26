@@ -25,7 +25,7 @@ const CONFIG_PATH = '/Users/nitinagga/.gemini/config/unified_feedback_config.jso
 const SHARED_LEDGER_PATH = '/Users/nitinagga/.gemini/config/shared_app_feedback_ledger.json';
 
 const TOKEN_CANDIDATE_PATHS = [
-  path.resolve(process.cwd(), '.gsheet_oauth_token.json'),
+  path.resolve(/*turbopackIgnore: true*/ process.cwd(), '.gsheet_oauth_token.json'),
   '/Users/nitinagga/Documents/gantry-pulse/.gsheet_oauth_token.json',
   '/Users/nitinagga/Documents/blogs/.gsheet_oauth_token.json',
   '/Users/nitinagga/Documents/PromptCanvas/.gsheet_oauth_token.json',
@@ -47,8 +47,8 @@ let sheetCache = { items: null, fetchedAt: 0 };
 
 function loadConfig() {
   try {
-    if (fs.existsSync(CONFIG_PATH)) {
-      return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf-8'));
+    if (fs.existsSync(/*turbopackIgnore: true*/ CONFIG_PATH)) {
+      return JSON.parse(fs.readFileSync(/*turbopackIgnore: true*/ CONFIG_PATH, 'utf-8'));
     }
   } catch (_) {}
   return {
@@ -68,8 +68,8 @@ async function getOAuthAccessToken() {
   }
   for (const tf of TOKEN_CANDIDATE_PATHS) {
     try {
-      if (fs.existsSync(tf)) {
-        const td = JSON.parse(fs.readFileSync(tf, 'utf-8'));
+      if (fs.existsSync(/*turbopackIgnore: true*/ tf)) {
+        const td = JSON.parse(fs.readFileSync(/*turbopackIgnore: true*/ tf, 'utf-8'));
         if (td.refresh_token && td.client_id && td.client_secret) {
           const body = new URLSearchParams({
             client_id: td.client_id,
@@ -147,8 +147,8 @@ function verifyAdminAccess(headers = {}, remoteAddr = '', queryParams = {}) {
 
 function readJsonList(filePath) {
   try {
-    if (filePath && fs.existsSync(filePath)) {
-      const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    if (filePath && fs.existsSync(/*turbopackIgnore: true*/ filePath)) {
+      const data = JSON.parse(fs.readFileSync(/*turbopackIgnore: true*/ filePath, 'utf-8'));
       if (Array.isArray(data)) return data.filter((x) => x && x.id);
       if (data && Array.isArray(data.items)) return data.items.filter((x) => x && x.id);
     }
@@ -160,8 +160,8 @@ function writeJsonList(filePath, items) {
   try {
     if (!filePath) return;
     const dir = path.dirname(filePath);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(filePath, JSON.stringify(items, null, 2), 'utf-8');
+    if (!fs.existsSync(/*turbopackIgnore: true*/ dir)) fs.mkdirSync(/*turbopackIgnore: true*/ dir, { recursive: true });
+    fs.writeFileSync(/*turbopackIgnore: true*/ filePath, JSON.stringify(items, null, 2), 'utf-8');
   } catch (_) {}
 }
 
@@ -567,7 +567,7 @@ async function updateFeedbackStatus({
   if (!fid) throw new Error('feedbackId is required.');
   const nowIso = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
 
-  if (localStorePath && fs.existsSync(localStorePath)) {
+  if (localStorePath && fs.existsSync(/*turbopackIgnore: true*/ localStorePath)) {
     let localItems = readJsonList(localStorePath);
     if (deleteItem) {
       localItems = localItems.filter((x) => x.id !== fid);

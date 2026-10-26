@@ -1,7 +1,6 @@
 ---
 name: diagram-generation-engine
-description: >-
-  Synthesizes Official Google Cloud Architecture Center Template #78 Hub-and-Spoke, NASA Closed-Loop, and Exadata XML.
+description: "Synthesizes Official Google Cloud Architecture Center Template #78, NASA, and Exadata XML."
 ---
 
 # 📐 Diagram Generation Engine & Universal Quality Standard (SKILL.md)
@@ -81,6 +80,17 @@ Every diagram generated across any system MUST strictly follow these core pillar
 
 8. **Open Routing Corridors & Zero Slicing**:
    - Maintain minimum $140\text{px}$ horizontal column pitch ($gapX$) and $80\text{px}$ inter-row channel pitch ($gapY$). Connector paths must NEVER slice through intermediate cards or table vertices.
+
+9. **Inked-Pixel (`ctx.getImageData`) Arrow-Label Vertical ("Mid") & Horizontal ("Center") Calibration (`Rule 57C` / `Law 18`)**:
+   - **Never rely solely on DOM `div` `getBoundingClientRect()`** for inline arrow-shaft labels (`parses`, `enriches`, `verifies types`, `yes`, `no`, `federates` in `T68` / `openKnowledgeInfographic.ts`; `uses`, `calls`, `returns results`, `yes`, `no`, `maps` in `T53` / `#52`; and all 8 inline arrow labels in `T01` and `T69`–`T78`), because browser CSS `line-height` (`1.2`) and font ascender headroom push lowercase `x`-height letters `2px–2.5px` (`4–5` Retina pixels) below the `div` center.
+   - **Mandatory `2px` Horizontal White-Knockout Cushion**: Wrap inline arrow-label text in `&lt;span style=&apos;padding:0 2px;&apos;&gt;...&lt;/span&gt;` with `labelBackgroundColor=#ffffff` so the arrow shaft never touches the first or last letter.
+   - **Mandatory `<mxPoint as="offset">` Calibration**:
+     - Horizontal `11px` rightward arrows (`t1_edge_1`, `t2_edge_calls`, `t4_edge_maps`): `<mxPoint x="-5" y="-2" as="offset" />` (compensates for the `8px` rightward arrowhead and raises lowercase `x`-height by `2px` so the `4px` Retina arrow shaft passes through the exact vertical midpoint of the lowercase letters / crossbar of `e`: `|glyph_y_mid - shaft_y_mid| <= 0.5px` and `|left_visible_shaft - right_visible_shaft| <= 1.0px`).
+     - Horizontal `11px` orthogonal return loops where the arrowhead is on the vertical segment (`t2_edge_returns` — `verifies types` / `returns results`): `<mxPoint x="0" y="-2" as="offset" />`.
+     - Horizontal `10px` rightward decision arrows (`t3_e_yes1`, `t3_e_yes2`): `<mxPoint x="-5" y="-1.5" as="offset" />`.
+     - Horizontal `10px` leftward decision arrows (`t3_e_no2`): `<mxPoint x="5" y="-1.5" as="offset" />`.
+     - Vertical `10px` downward decision drops (`t3_e_no1`): `&lt;span style=&apos;padding:0 2px;line-height:0.9;&apos;&gt;no&lt;/span&gt;` with `<mxPoint x="0" y="-6" as="offset" />`.
+   - **Fresh Puppeteer `browser.newPage()` Per Diagram**: When rendering multiple Draw.io XMLs with `viewer-static.min.js`, always open and close a fresh `browser.newPage()` per diagram so `window.GraphViewer` never retains stale state across `page.setContent()` calls.
 
 ---
 
@@ -309,4 +319,6 @@ Every Zero-Blueprint synthesis, autonomous agentic harness, digital-twin simulat
 5. **Mandatory Auto-Draft Micro-Versioning (`v1.0.1`, `v1.0.2`) & Library `Drafts` Persistence**:
    - Every generated or prompt-modified diagram across `/dashboard` and `/studio` must automatically increment a 3-segment micro-version (`v<major>.<minor>.<micro>`) via `computeNextMicroVersion` and immediately persist to `localStorage` (`promptcanvas_draft_blueprints`, `promptcanvas_saved_blueprints`) and `/api/diagrams` (`createdStudio: 'draft'`) so it is immediately searchable under **Library → `📝 Drafts (Micro-Versions)`** (`/library?studio=drafts`).
 
-
+6. **Vision Reference Poster (`gemini-nano-banana-2.1`) $\rightarrow$ 1:1 Spatial Draw.io Decompiler Parity (`src/lib/visionPosterToDrawioDecompiler.ts` & `src/lib/compositionalChainCompiler.ts`)**:
+   - Whenever the Hybrid 6-Stage Image-to-Vision-to-Draw.io pipeline generates a visual reference poster (`gemini-nano-banana-2.1`), never leave the Draw.io compiler on a disconnected 3×3 horizontal-stack spreadsheet grid or ultrawide ribbon.
+   - Always decompile and bind the reference poster's `16:9` aspect ratio (`1380×760`), exact `[Google Cloud 4-Color Icon] Google Cloud | <Title>` top lockup (`headerTitle: posterSpec.posterTitle`), 2-line bold swimlane header bars (`max-width: 265px`), intra-tier left-to-right spatial coordinates (`normalizedBoxToCanvasRect`), nested sub-cards (`TanStack Query / Axios REST Client` inside `React 19 Single-Page Application (SPA)` and `Server Actions / Edge BFF Client` inside `Next.js 15 Storefront`), true 3D database cylinders (`shape=cylinder3;size=14;` for `n.shape === 'cylinder'` with left-wall 3D mini-cylinder + centered brand emblem), and rounded pill edge capsules (`border-radius: 10px` with 2-line protocol/port stacking `SSR/<br/>GraphQL`, `REST/<br/>JSON`, `Mongo<br/>:27017`, `RESP3<br/>:6379`, `ACID SQL<br/>:5432`) directly into Draw.io XML and 100% editable Google Slides (`editablePptxCompiler.ts`).

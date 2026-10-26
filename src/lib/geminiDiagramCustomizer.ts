@@ -415,11 +415,11 @@ function mutateNodeValueStructurally(
   let mutatedHtml = '';
   if (isLeftAlign) {
     mutatedHtml = `<div style="padding:10px 12px;text-align:left;font-family:'Google Sans',Roboto,system-ui,sans-serif;">` +
-      `<div style="display:flex;align-items:center;gap:8px;">` +
-      (iconHtml ? `${iconHtml}` : '') +
-      `<span style="font-size:11.5px;font-weight:700;color:${titleColor};">${newTitle}</span>` +
-      (newBadge ? `<span style="font-size:8px;font-weight:700;background:#E8F0FE;color:#1A73E8;padding:2px 6px;border-radius:4px;border:1px solid #DADCE0;margin-left:auto;">${newBadge}</span>` : '') +
-      `</div>` +
+      `<table style="width:100%;border-collapse:collapse;"><tr>` +
+      (iconHtml ? `<td style="width:24px;vertical-align:middle;padding-right:8px;">${iconHtml}</td>` : '') +
+      `<td style="vertical-align:middle;text-align:left;"><span style="font-size:11.5px;font-weight:700;color:${titleColor};">${newTitle}</span></td>` +
+      (newBadge ? `<td style="vertical-align:middle;text-align:right;white-space:nowrap;padding-left:8px;"><span style="font-size:8px;font-weight:700;background:#E8F0FE;color:#1A73E8;padding:2px 6px;border-radius:4px;border:1px solid #DADCE0;">${newBadge}</span></td>` : '') +
+      `</tr></table>` +
       (newSubtitle ? `<div style="font-size:8.5px;color:${subColor};margin-top:4px;">${newSubtitle}</div>` : '') +
       `</div>`;
   } else {

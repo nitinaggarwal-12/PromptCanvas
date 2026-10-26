@@ -235,10 +235,6 @@ function expandText(xml: string, base: string) {
   });
 }
 
-function replaceImgStyle(style: string, url: string) {
-  return style.replace(/image=[^;]+;/i, `image=${url};`);
-}
-
 function neutralStyle(style: string) {
   let n = style
     .replace(/shape=image;?/gi, '')
@@ -312,5 +308,3 @@ export function applyBlueprintSemanticIcons(xml: string, architectureId?: string
   next = next.replace(/(<mxGraphModel\b)/, '<!-- pc-semantic-icons-v1 -->\n<!-- pc-semantic-icons-v2 -->\n$1');
   return next;
 }
-
-export const GENERIC_GOOGLE_BRAND_MARK = SVG_GCP;

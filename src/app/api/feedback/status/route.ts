@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
         { status: 403 }
       );
     }
-    const localStorePath = path.resolve(process.cwd(), '.local_backup/user_feedback.json');
+    const localStorePath = path.resolve(/*turbopackIgnore: true*/ process.cwd(), '.local_backup/user_feedback.json');
     const res = await engine.updateFeedbackStatus({
       feedbackId: String(body.id || body.feedbackId || ''),
       newStatus: body.status || null,

@@ -102,7 +102,7 @@ export function pushVersionSnapshot(
 /**
  * Line-by-line Diff Representation
  */
-export interface DiffLine {
+interface DiffLine {
   type: 'added' | 'removed' | 'unchanged';
   text: string;
   oldLineNumber?: number;
@@ -213,7 +213,7 @@ export function formatRelativeTime(isoString: string): string {
 /**
  * LocalStorage Persistence Helpers
  */
-export function getStorageKey(projectId: string, type: 'versions' | 'chat'): string {
+function getStorageKey(projectId: string, type: 'versions' | 'chat'): string {
   return `promptcanvas_docgen_${type}_${projectId || 'default'}`;
 }
 

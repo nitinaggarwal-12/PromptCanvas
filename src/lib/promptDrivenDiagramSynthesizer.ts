@@ -23,15 +23,8 @@ import { generateLogicalGcpAgentArchitectureXml } from './canonical/templateLogi
 import { generateConceptualGcpAgentArchitectureXml } from './canonical/templateConceptualGcpAgentArch';
 import { generateProcessGcpAgentWorkflowXml } from './canonical/templateProcessGcpAgentWorkflow';
 import { generateTemplate38CloudLandingZoneXml } from './canonical/template38CloudLandingZone';
-import { generateTemplate40EnterpriseGenAiPlatformXml } from './canonical/template40EnterpriseGenAiPlatform';
-import { generateTemplate41EnterpriseRagPlatformXml } from './canonical/template41EnterpriseRagPlatform';
 import { generateTemplate42ModernDataLakehouseDataMeshXml } from './canonical/template42ModernDataLakehouseDataMesh';
-import { generateTemplate43RealTimeStreamingEventEnterpriseXml } from './canonical/template43RealTimeStreamingEventEnterprise';
 import { generateTemplate44ZeroTrustCybersecuritySocPlatformXml } from './canonical/template44ZeroTrustCybersecuritySocPlatform';
-import { generateTemplate45EnterpriseApiIntegrationMcpGatewayXml } from './canonical/template45EnterpriseApiIntegrationMcpGateway';
-import { generateTemplate46EnterpriseKubernetesPlatformEngineeringXml } from './canonical/template46EnterpriseKubernetesPlatformEngineering';
-import { generateTemplate49HealthcareLifeSciencesPlatformXml } from './canonical/template49HealthcareLifeSciencesPlatform';
-import { generateTemplate50SustainabilityEsgPlatformXml } from './canonical/template50SustainabilityEsgPlatform';
 import {
   generateGoogleCloudL1ExecutiveFlowchartXml,
   generateGoogleCloudL2LogicalFlowchartXml,
@@ -240,7 +233,7 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
     if (paddedId === '78' && isOraclePrompt) {
       return buildOfficialOracleEbsExadataArchCenter78Xml('light');
     }
-    if (paddedId === '00') {
+    if (paddedId === '00' || paddedId === '40') {
       if (options?.perspective === 'Logical') {
         return generateLogicalGcpAgentArchitectureXml({
           domain,
@@ -267,13 +260,6 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
         projectTitle: safeTitle,
         domain,
       });
-    } else if (paddedId === '40') {
-      baseXml = generateTemplate40EnterpriseGenAiPlatformXml('enterprise', 'light');
-      templateRefLabel = `Modified Saved Template #40 • [${perspBadge} · ${levelBadge}] ${
-        options?.geminiDecision?.tailoredSpec?.diagramSubtitle ||
-        'Google Cloud & Gemini Enterprise Multi-Agent Platform'
-      }`;
-      domainMutations = buildTemplate40Mutations();
     } else {
       const matchedTpl = CANONICAL_TEMPLATES.find((t) => t.id === paddedId || t.id === explicitBpId);
       if (matchedTpl) {

@@ -354,34 +354,3 @@ export function applyBlueprintVisualSystem(xml: string, architectureId?: string 
 
   return polished;
 }
-
-export type BlueprintVisualAudit = {
-  minFontSize: number | null;
-  unresolvedGcpStencilCount: number;
-  legacyProductNameCount: number;
-  edgeCount: number;
-  polishedCardCount: number;
-  duplicateCanvasHeaderRemoved: boolean;
-};
-
-export function auditBlueprintVisualSystem(xml: string): BlueprintVisualAudit {
-  const fontSizes = [
-    ...Array.from(xml.matchAll(/fontSize=(\d+(?:\.\d+)?)/gi), match => Number(match[1])),
-    ...Array.from(xml.matchAll(/font-size:\s*(\d+(?:\.\d+)?)px/gi), match => Number(match[1]))
-  ].filter(Number.isFinite);
-
-  const legacyProductNameCount = PRODUCT_NAME_REPLACEMENTS.reduce((count, [pattern]) => {
-    const flags = pattern.flags.includes('g') ? pattern.flags : `${pattern.flags}g`;
-    const globalPattern = new RegExp(pattern.source, flags);
-    return count + Array.from(xml.matchAll(globalPattern)).length;
-  }, 0);
-
-  return {
-    minFontSize: fontSizes.length > 0 ? Math.min(...fontSizes) : null,
-    unresolvedGcpStencilCount: Array.from(xml.matchAll(/shape=mxgraph\.gcp2\./gi)).length,
-    legacyProductNameCount,
-    edgeCount: Array.from(xml.matchAll(/\bedge="1"/gi)).length,
-    polishedCardCount: Array.from(xml.matchAll(/\bspacing=6;/gi)).length,
-    duplicateCanvasHeaderRemoved: xml.includes('pc-canvas-header-stripped')
-  };
-}

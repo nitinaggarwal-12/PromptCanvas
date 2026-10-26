@@ -1,4 +1,4 @@
-export interface RasterOptions {
+interface RasterOptions {
   scale?: number;
   transparent?: boolean;
 }
@@ -47,10 +47,6 @@ export function exportDiagramPng(
       transparent: opts?.transparent ?? false,
     })
   );
-}
-
-export function exportDiagramSvg(xml: string): Promise<string> {
-  return queueExport(() => exportDiagramFormat(xml, 'xmlsvg', {}));
 }
 
 function queueExport(fn: () => Promise<string>): Promise<string> {

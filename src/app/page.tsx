@@ -32,6 +32,7 @@ import { VisitorCounter } from '@/components/VisitorCounter';
 import { TEMPLATE_CATALOG_ITEMS } from '@/lib/templateCategories';
 import { useTheme } from '@/lib/themeContext';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
+import { FeedbackHeaderEmailButton } from '@/components/UniversalFeedbackSystem';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -114,8 +115,8 @@ export default function LandingPage() {
       {/* Blueprint Grid Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(20,184,166,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,184,166,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-40 pointer-events-none z-0" />
 
-      {/* Header/Navigation - Strictly Dark Header */}
-      <header className="dark sticky top-0 w-full z-50 border-b border-slate-800 bg-[#0B111E] text-white shrink-0 shadow-md">
+      {/* Header/Navigation - Theme-Aware (Executive Light Theme Default) */}
+      <header className={`sticky top-0 w-full z-50 border-b shrink-0 shadow-md transition-colors ${isLight ? 'bg-white/95 border-slate-200 text-slate-900 backdrop-blur-md' : 'dark border-slate-800 bg-[#0B111E] text-white'}`}>
         <div className="w-full max-w-8xl mx-auto h-16 sm:h-20 px-3 sm:px-6 md:px-12 flex items-center justify-between gap-2 sm:gap-3">
           <Link 
             href="/" 
@@ -134,53 +135,57 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="shrink-0 flex items-center gap-1">
-              <span className="font-extrabold text-sm sm:text-lg tracking-wider bg-clip-text text-white bg-gradient-to-r from-white to-slate-300">
+              <span className={`font-extrabold text-sm sm:text-lg tracking-wider ${isLight ? 'text-slate-900' : 'bg-clip-text text-white bg-gradient-to-r from-white to-slate-300'}`}>
                 PROMPT
               </span>
-              <span className="font-light text-sm sm:text-lg tracking-wider text-teal-400 hidden min-[380px]:inline">
+              <span className={`font-light text-sm sm:text-lg tracking-wider hidden min-[380px]:inline ${isLight ? 'text-teal-600' : 'text-teal-400'}`}>
                 CANVAS
               </span>
             </div>
           </Link>
 
-          <nav aria-label="Primary Header Navigation" className="hidden lg:flex items-center gap-3 xl:gap-4 text-xs font-bold shrink-0 text-slate-300">
-            <Link href="/dashboard" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-teal-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="Workspace Home Dashboard — Search Projects & Create New Diagrams">
-              <BarChart3 className="w-3.5 h-3.5 text-teal-400" aria-hidden="true" />
+          <nav aria-label="Primary Header Navigation" className={`hidden lg:flex items-center gap-3 xl:gap-4 text-xs font-bold shrink-0 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+            <Link href="/dashboard" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-teal-700' : 'hover:bg-slate-800/80 hover:text-white text-teal-400'}`} title="Workspace Home Dashboard — Search Projects & Create New Diagrams">
+              <BarChart3 className={`w-3.5 h-3.5 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} aria-hidden="true" />
               <span>Home Dashboard</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-300 font-mono font-black">HOME</span>
+              <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-black ${isLight ? 'bg-teal-50 text-teal-700 border border-teal-200' : 'bg-teal-500/20 text-teal-300'}`}>HOME</span>
             </Link>
 
-            <Link href="/canonical" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="19 Official Google Cloud Reference Blueprints">
-              <Sparkles className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
+            <Link href="/canonical" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-sky-700' : 'hover:bg-slate-800/80 hover:text-white text-sky-400'}`} title="8 Official Google Cloud Reference Blueprints">
+              <Sparkles className={`w-3.5 h-3.5 ${isLight ? 'text-sky-600' : 'text-sky-400'}`} aria-hidden="true" />
               <span>Canonical Hub</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-300 font-mono font-bold">19</span>
+              <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-sky-50 text-sky-700 border border-sky-200' : 'bg-sky-500/20 text-sky-300'}`}>8</span>
             </Link>
 
-            <Link href="/blogs" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-blue-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="9-Guide Google Cloud Architecture Center Series">
-              <Layers className="w-3.5 h-3.5 text-blue-400" aria-hidden="true" />
+            <Link href="/blogs" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-blue-700' : 'hover:bg-slate-800/80 hover:text-white text-blue-400'}`} title="9-Guide Google Cloud Architecture Center Series">
+              <Layers className={`w-3.5 h-3.5 ${isLight ? 'text-blue-600' : 'text-blue-400'}`} aria-hidden="true" />
               <span>Arch Center</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-blue-500/20 text-blue-300 font-mono font-bold">9</span>
+              <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-blue-500/20 text-blue-300'}`}>9</span>
             </Link>
 
-            <Link href="/docgen" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="17 Enterprise Specification Blueprints (BRD, PRD, SDD, TDD)">
-              <FileText className="w-3.5 h-3.5 text-indigo-400" aria-hidden="true" />
+            <Link href="/docgen" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-indigo-700' : 'hover:bg-slate-800/80 hover:text-white text-indigo-400'}`} title="17 Enterprise Specification Blueprints (BRD, PRD, SDD, TDD)">
+              <FileText className={`w-3.5 h-3.5 ${isLight ? 'text-indigo-600' : 'text-indigo-400'}`} aria-hidden="true" />
               <span>DocGen Hub</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 text-indigo-300 font-mono font-bold">17</span>
+              <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-indigo-500/20 text-indigo-300'}`}>17</span>
             </Link>
 
-            <Link href="/guide" className="px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 hover:bg-teal-500/10 text-teal-400 hover:text-teal-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="Interactive Animated Playbooks & GIFs">
-              <Sparkles className="w-3.5 h-3.5 text-teal-400" aria-hidden="true" />
+            <Link href="/guide" className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-teal-50 text-teal-700' : 'hover:bg-teal-500/10 text-teal-400 hover:text-teal-300'}`} title="Interactive Animated Playbooks & GIFs">
+              <Sparkles className={`w-3.5 h-3.5 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} aria-hidden="true" />
               <span>Playbooks &amp; GIFs</span>
             </Link>
 
-            <Link href="/test-status" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-emerald-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400" title="Enterprise Quality & Test Status (285 Tests Passed across 37 Suites)">
+            <Link href="/test-status" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-emerald-700' : 'hover:bg-slate-800/80 hover:text-white text-emerald-400'}`} title="Enterprise Quality & Test Status (285 Tests Passed across 37 Suites)">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" aria-hidden="true" />
               <span>Test Status</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-emerald-500/20 text-emerald-400 font-mono font-bold">100%</span>
+              <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-emerald-500/20 text-emerald-400'}`}>100%</span>
             </Link>
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <FeedbackHeaderEmailButton
+              appId="promptcanvas"
+              appName="PromptCanvas & Architecture Hub"
+            />
             <ThemeToggleBtn id="landing-theme-toggle-btn" />
 
             {user ? (
@@ -190,9 +195,9 @@ export default function LandingPage() {
                   type="button"
                   onClick={() => setIsProfileOpen(true)}
                   aria-label={`Open profile settings for ${user.name || user.email}`}
-                  className="hidden sm:flex px-2.5 py-1.5 min-h-[40px] rounded-lg border text-xs font-semibold items-center gap-2 transition-all bg-slate-900 border-slate-800 hover:border-teal-500/40 text-slate-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                  className={`hidden sm:flex px-2.5 py-1.5 min-h-[40px] rounded-lg border text-xs font-semibold items-center gap-2 transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'bg-slate-50 border-slate-200 hover:border-teal-400 text-slate-800' : 'bg-slate-900 border-slate-800 hover:border-teal-500/40 text-slate-200'}`}
                 >
-                  <div className="w-5 h-5 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-[10px]">
+                  <div className="w-5 h-5 rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 font-bold flex items-center justify-center text-[10px]">
                     {(user.name || user.email)[0].toUpperCase()}
                   </div>
                   <span className="hidden xl:inline max-w-[100px] truncate text-xs">{user.name || user.email}</span>
@@ -215,7 +220,7 @@ export default function LandingPage() {
                     setAuthMode('signin');
                     setIsAuthOpen(true);
                   }}
-                  className="hidden sm:flex px-3 py-1.5 min-h-[40px] items-center text-xs font-bold transition-colors cursor-pointer text-slate-300 hover:text-white rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                  className={`hidden sm:flex px-3 py-1.5 min-h-[40px] items-center text-xs font-bold transition-colors cursor-pointer rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'text-slate-700 hover:text-slate-950 hover:bg-slate-100' : 'text-slate-300 hover:text-white'}`}
                 >
                   Sign In
                 </button>
@@ -237,7 +242,7 @@ export default function LandingPage() {
               aria-expanded={isMobileNavOpen}
               aria-controls="landing-mobile-nav-drawer"
               aria-label={isMobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              className="lg:hidden min-w-[44px] min-h-[44px] p-2 rounded-lg border cursor-pointer bg-slate-900 border-slate-800 text-slate-300 hover:text-teal-400 flex items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+              className={`lg:hidden min-w-[44px] min-h-[44px] p-2 rounded-lg border cursor-pointer flex items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'bg-slate-50 border-slate-200 text-slate-700 hover:text-teal-600' : 'bg-slate-900 border-slate-800 text-slate-300 hover:text-teal-400'}`}
               title="Toggle Menu"
             >
               {isMobileNavOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
@@ -247,7 +252,7 @@ export default function LandingPage() {
 
         {/* Mobile Navigation Drawer Dropdown */}
         {isMobileNavOpen && (
-          <div id="landing-mobile-nav-drawer" className="lg:hidden border-t border-slate-800 bg-[#070a13]/95 backdrop-blur-xl px-4 py-4 space-y-3 animate-in slide-in-from-top-2 duration-200">
+          <div id="landing-mobile-nav-drawer" className={`lg:hidden border-t backdrop-blur-xl px-4 py-4 space-y-3 animate-in slide-in-from-top-2 duration-200 ${isLight ? 'border-slate-200 bg-white/95' : 'border-slate-800 bg-[#070a13]/95'}`}>
             <nav aria-label="Mobile Navigation" className="flex flex-col space-y-2 text-sm font-semibold text-slate-300">
               <a 
                 href="#features" 
@@ -277,7 +282,7 @@ export default function LandingPage() {
                 className="p-2 rounded-lg hover:bg-slate-800 text-sky-400 font-bold flex items-center justify-between"
               >
                 <span>Blueprint Catalog</span>
-                <span className="px-2 py-0.5 rounded-full text-xs bg-sky-500/20 text-sky-300">26 Blueprints</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-sky-500/20 text-sky-300">8 Blueprints</span>
               </Link>
               <Link 
                 href="/blogs" 
@@ -362,7 +367,7 @@ export default function LandingPage() {
       <section className="relative w-full max-w-8xl mx-auto px-4 sm:px-6 md:px-12 pt-8 sm:pt-12 md:pt-20 pb-16 md:pb-20 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-center z-10">
         <div className="lg:col-span-7 flex flex-col items-start text-left space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-600 dark:text-teal-300 text-sm font-semibold tracking-wide animate-pulse">
-            <Sparkles className="w-4 h-4" aria-hidden="true" /> Powered by Gemini 3.1 Pro, 3.8 Flash &amp; Draw.io
+            <Sparkles className="w-4 h-4" aria-hidden="true" /> Powered by Google Omni 1.1, Gemini 4 Argon, 3.1 Pro, 3.8 Flash &amp; Draw.io
           </div>
           
           <h1 className={`text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] ${isLight ? 'text-slate-900' : 'text-white'}`}>
@@ -551,7 +556,7 @@ export default function LandingPage() {
             </div>
             <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Ready-To-Go Templates</h4>
             <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-              Launch with 19 curated Google Cloud reference blueprints (Official Architecture Center Hub &amp; Spoke #78, Gemini Enterprise ADK/A2A #00, Multi-Agent #40, RAG #41, Lakehouse #42) to instantly validate stacks.
+              Launch with 8 curated Google Cloud reference blueprints (Official Architecture Center Hub &amp; Spoke #78, Gemini Enterprise ADK/A2A #00, Cloud Landing Zone #38, Modern Data Lakehouse #42, Zero-Trust SOC #44, and Operational Flowcharts #67, #68 &amp; #69) to instantly validate stacks.
             </p>
           </div>
 
@@ -618,14 +623,14 @@ export default function LandingPage() {
             Bootstrap with Production-Grade Blueprints
           </h3>
           <p className={`text-lg mt-4 max-w-2xl mx-auto ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-            Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>19 curated Google Cloud reference blueprints</strong> directly in the interactive studio.
+            Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>8 curated Google Cloud reference blueprints</strong> directly in the interactive studio.
           </p>
           <div className="mt-4">
             <Link
               href="/canonical"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>View All 19 Production Blueprints in Templates Gallery →</span>
+              <span>View All 8 Production Blueprints in Templates Gallery →</span>
             </Link>
           </div>
         </div>
@@ -883,16 +888,16 @@ export default function LandingPage() {
             <Network className="w-5 h-5 text-teal-500 dark:text-teal-accent" aria-hidden="true" />
             <span className={`font-extrabold tracking-wider text-sm ${isLight ? 'text-slate-900' : 'text-white'}`}>PROMPT CANVAS</span>
           </div>
-          <p className="text-sm text-slate-300">
+          <p className={`text-sm ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
             &copy; 2026 Prompt Canvas. Designed with high-fidelity cloud blueprints. Open-source Draw.io XML compatible.
           </p>
-          <div className="flex flex-wrap gap-6 text-sm text-slate-300">
-            <Link href="/test-status" className="hover:text-emerald-400 hover:underline underline-offset-4 transition-colors flex items-center gap-1.5 font-bold text-emerald-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded">
+          <div className={`flex flex-wrap gap-6 text-sm ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
+            <Link href="/test-status" className={`hover:underline underline-offset-4 transition-colors flex items-center gap-1.5 font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded ${isLight ? 'text-emerald-700 hover:text-emerald-800' : 'text-emerald-400 hover:text-emerald-300'}`}>
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
               <span>Test Status (302 Passed)</span>
             </Link>
-            <Link href="/privacy" className="hover:text-teal-400 hover:underline underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-teal-400 hover:underline underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded">Terms of Service</Link>
+            <Link href="/privacy" className={`hover:underline underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded ${isLight ? 'hover:text-teal-700' : 'hover:text-teal-400'}`}>Privacy Policy</Link>
+            <Link href="/terms" className={`hover:underline underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded ${isLight ? 'hover:text-teal-700' : 'hover:text-teal-400'}`}>Terms of Service</Link>
           </div>
         </div>
       </footer>

@@ -7,7 +7,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { join, dirname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { mkdirSync } from 'fs';
-import { Pool } from 'pg';
+import type { Pool } from 'pg';
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
 import {
   buildOracleEbsExadataClosedLoopHarnessXml,
@@ -39,16 +39,6 @@ export interface Workspace {
   member_count?: number;
 }
 
-export interface WorkspaceMember {
-  id: string;
-  workspace_id: string;
-  user_id: string;
-  role: 'Owner' | 'Admin' | 'Editor' | 'Viewer';
-  created_at: string | Date;
-  user_email?: string;
-  user_name?: string | null;
-}
-
 export interface MagicLinkToken {
   id: string;
   email: string;
@@ -73,14 +63,6 @@ export interface UserLog {
   created_at: string | Date;
 }
 
-export interface DiagramCollaborator {
-  id: string;
-  diagram_id: string;
-  user_id: string;
-  access_level: 'Viewer' | 'Editor' | 'Owner';
-  created_at: string | Date;
-}
-
 export interface AccessRequest {
   id: string;
   diagram_id: string;
@@ -96,18 +78,7 @@ export interface AccessRequest {
   diagram_name?: string;
 }
 
-export interface DiagramFeedback {
-  id: string;
-  diagram_id: string;
-  version_id?: string | null;
-  user_id: string;
-  rating: 'thumbs_up' | 'thumbs_down' | 'neutral';
-  feedback_tags: string[];
-  free_text_comment: string | null;
-  created_at: string | Date;
-}
-
-export interface ContactSubmission {
+interface ContactSubmission {
   id: string;
   name: string;
   email: string;
@@ -179,7 +150,8 @@ function getPgPool(): Pool {
       }
     }
 
-    pgPoolInstance = new Pool({
+    const { Pool: PgPool } = eval('require')('pg') as { Pool: typeof Pool };
+    pgPoolInstance = new PgPool({
       connectionString: process.env.DATABASE_URL,
       ssl: process.env.DATABASE_URL?.includes('railway') || process.env.NODE_ENV === 'production'
         ? { rejectUnauthorized: false }
@@ -227,7 +199,7 @@ function getSqliteDb(): DatabaseSync {
 // Global Promise-based Mutex queue to serialize SQLite write transactions and prevent race conditions
 let sqliteTransactionLock = Promise.resolve();
 
-export async function runSqliteTransaction<T>(callback: (db: DatabaseSync) => T | Promise<T>): Promise<T> {
+async function runSqliteTransaction<T>(callback: (db: DatabaseSync) => T | Promise<T>): Promise<T> {
   const previousLock = sqliteTransactionLock;
   let releaseLock: () => void;
   sqliteTransactionLock = new Promise<void>((resolve) => {
@@ -1015,6 +987,7 @@ async function doEnsureTablesExist(): Promise<void> {
           OR name ILIKE '%E-Business Suite%'
           OR name ILIKE 'VIS-9745%'
           OR name ILIKE 'VIS-AGENTIC-01%'
+          OR name ILIKE '%Tailored for: add the right components%'
         )`,
         [legacyPurgeNames]
       );
@@ -1032,11 +1005,12 @@ async function doEnsureTablesExist(): Promise<void> {
           OR name ILIKE '%NOVACURA%'
           OR name ILIKE 'CLINICAL AI - %'
           OR name ILIKE 'VIS-9745%'
-          OR name ILIKE 'VIS-AGENTIC-01%'`,
+          OR name ILIKE 'VIS-AGENTIC-01%'
+          OR name ILIKE '%Tailored for: add the right components%'`,
         [legacyPurgeNames]
       );
       await pool.query(
-        `DELETE FROM diagram_versions WHERE TRIM(COALESCE(xml_content, '')) IN ('', '<mxfile></mxfile>') OR xml_content LIKE '%copilot_mod_custom_box_0%' OR xml_content LIKE '%oracle-at-google-ebs-exadata-2026%'`
+        `DELETE FROM diagram_versions WHERE TRIM(COALESCE(xml_content, '')) IN ('', '<mxfile></mxfile>') OR (xml_content LIKE '%copilot_mod_custom_box_0%' AND xml_content NOT LIKE '%copilot_mod_custom_box_5%') OR xml_content LIKE '%oracle-at-google-ebs-exadata-2026%' OR xml_content ILIKE '%NOVACURA%' OR xml_content ILIKE '%OmniCommerce%' OR xml_content ILIKE '%VOLTGRID%' OR xml_content ILIKE '%NEXUSFIN%'`
       );
       await pool.query(`DELETE FROM diagrams WHERE id NOT IN (SELECT DISTINCT diagram_id FROM diagram_versions)`);
     } else {
@@ -1056,12 +1030,13 @@ async function doEnsureTablesExist(): Promise<void> {
         OR UPPER(name) LIKE 'CLINICAL AI - %'
         OR UPPER(name) LIKE 'VIS-9745%'
         OR UPPER(name) LIKE 'VIS-AGENTIC-01%'
+        OR UPPER(name) LIKE '%TAILORED FOR: ADD THE RIGHT COMPONENTS%'
       `;
       db.prepare(`DELETE FROM diagram_versions WHERE diagram_id IN (SELECT id FROM diagrams WHERE name IN (${placeholders}) ${likeClause})`).run(...legacyPurgeNames);
       db.prepare(`DELETE FROM diagrams WHERE name IN (${placeholders}) ${likeClause}`).run(...legacyPurgeNames);
-      // Also purge any 0-vertex empty <mxfile></mxfile> test artifacts, 1-box stubs, or legacy flat 4-tier / Proposal-3 Oracle XML
+      // Also purge any 0-vertex empty <mxfile></mxfile> test artifacts, 1-to-5 box stubs, fake company XML remnants, or legacy flat 4-tier / Proposal-3 Oracle XML
       db.prepare(
-        `DELETE FROM diagram_versions WHERE TRIM(COALESCE(xml_content, '')) IN ('', '<mxfile></mxfile>') OR xml_content LIKE '%copilot_mod_custom_box_0%' OR xml_content LIKE '%oracle-at-google-ebs-exadata-2026%' OR xml_content LIKE '%oracle_ebs_exadata_closed_loop_harness%'`
+        `DELETE FROM diagram_versions WHERE TRIM(COALESCE(xml_content, '')) IN ('', '<mxfile></mxfile>') OR (xml_content LIKE '%copilot_mod_custom_box_0%' AND xml_content NOT LIKE '%copilot_mod_custom_box_5%') OR xml_content LIKE '%oracle-at-google-ebs-exadata-2026%' OR xml_content LIKE '%oracle_ebs_exadata_closed_loop_harness%' OR UPPER(xml_content) LIKE '%NOVACURA%' OR UPPER(xml_content) LIKE '%OMNICOMMERCE%' OR UPPER(xml_content) LIKE '%VOLTGRID%' OR UPPER(xml_content) LIKE '%NEXUSFIN%'`
       ).run();
       db.prepare(`DELETE FROM diagrams WHERE id NOT IN (SELECT DISTINCT diagram_id FROM diagram_versions)`).run();
     }
@@ -1506,6 +1481,13 @@ export async function saveDiagramVersion(
       const maxVersionStmt = db.prepare("SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = ? AND (architecture_type = ? OR architecture_type IS NULL)");
       const versionResult = maxVersionStmt.get(diagramId, architectureType || 'unified_system_view') as { max_version: number };
       const nextVersionNumber = versionResult.max_version + 1;
+
+      db.prepare('INSERT OR IGNORE INTO diagrams (id, name, architecture_type, is_private, created_studio) VALUES (?, ?, ?, 0, ?)').run(
+        diagramId,
+        comment || 'Diagram',
+        architectureType || 'unified_system_view',
+        'studio1'
+      );
 
       const insertVersion = db.prepare(`
         INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type, graph_json)
@@ -2300,132 +2282,6 @@ export async function resolveAccessRequest(
 }
 
 // ==========================================
-// AI DIAGRAM FEEDBACK & CURATION FUNCTIONS
-// ==========================================
-
-export async function submitDiagramFeedback(
-  diagramId: string,
-  versionId: string | null,
-  userId: string,
-  rating: 'thumbs_up' | 'thumbs_down' | 'neutral',
-  feedbackTags: string[],
-  freeTextComment?: string | null
-): Promise<DiagramFeedback> {
-  await ensureTablesExist();
-
-  // Mandatory Validation for Thumbs Down
-  if (rating === 'thumbs_down') {
-    const hasTags = Array.isArray(feedbackTags) && feedbackTags.length > 0;
-    const hasComment = typeof freeTextComment === 'string' && freeTextComment.trim().length > 0;
-    if (!hasTags && !hasComment) {
-      throw new Error('For negative feedback (thumbs_down), at least one issue tag or comment is required.');
-    }
-  }
-
-  const id = uuidv4();
-  const tagsJson = JSON.stringify(feedbackTags || []);
-  const comment = freeTextComment ? freeTextComment.trim() : null;
-
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(
-      `INSERT INTO diagram_feedback (id, diagram_id, version_id, user_id, rating, feedback_tags, free_text_comment)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
-       RETURNING *`,
-      [id, diagramId, versionId || null, userId, rating, tagsJson, comment]
-    );
-    await logUserEvent(userId, 'DIAGRAM_FEEDBACK_SUBMITTED', null, `Rating: ${rating}, Diagram: ${diagramId}`);
-    const row = res.rows[0];
-    return {
-      ...row,
-      feedback_tags: JSON.parse(row.feedback_tags || '[]'),
-    };
-  } else {
-    const db = getSqliteDb();
-    const stmt = db.prepare(
-      `INSERT INTO diagram_feedback (id, diagram_id, version_id, user_id, rating, feedback_tags, free_text_comment)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`
-    );
-    stmt.run(id, diagramId, versionId || null, userId, rating, tagsJson, comment);
-    await logUserEvent(userId, 'DIAGRAM_FEEDBACK_SUBMITTED', null, `Rating: ${rating}, Diagram: ${diagramId}`);
-    
-    const getFb = db.prepare('SELECT * FROM diagram_feedback WHERE id = ?');
-    const row = getFb.get(id) as any;
-    return {
-      ...row,
-      feedback_tags: JSON.parse(row.feedback_tags || '[]'),
-    };
-  }
-}
-
-export async function getFeedbackCurationData(): Promise<{
-  totalCount: number;
-  ratingBreakdown: { thumbs_up: number; thumbs_down: number; neutral: number };
-  topPositiveTags: Record<string, number>;
-  topFailureTags: Record<string, number>;
-  recentComments: { rating: string; comment: string; createdAt: string; diagramId: string }[];
-}> {
-  await ensureTablesExist();
-
-  let rows: any[] = [];
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query('SELECT * FROM v_feedback_curation');
-    rows = res.rows;
-  } else {
-    const db = getSqliteDb();
-    const stmt = db.prepare('SELECT * FROM v_feedback_curation');
-    rows = stmt.all() as any[];
-  }
-
-  const ratingBreakdown = { thumbs_up: 0, thumbs_down: 0, neutral: 0 };
-  const topPositiveTags: Record<string, number> = {};
-  const topFailureTags: Record<string, number> = {};
-  const recentComments: { rating: string; comment: string; createdAt: string; diagramId: string }[] = [];
-
-  for (const row of rows) {
-    const r = row.rating as 'thumbs_up' | 'thumbs_down' | 'neutral';
-    if (ratingBreakdown[r] !== undefined) {
-      ratingBreakdown[r]++;
-    }
-
-    let tags: string[] = [];
-    try {
-      tags = typeof row.feedback_tags === 'string' ? JSON.parse(row.feedback_tags) : (row.feedback_tags || []);
-    } catch {
-      tags = [];
-    }
-
-    if (r === 'thumbs_up') {
-      tags.forEach((tag) => {
-        topPositiveTags[tag] = (topPositiveTags[tag] || 0) + 1;
-      });
-    } else if (r === 'thumbs_down') {
-      tags.forEach((tag) => {
-        topFailureTags[tag] = (topFailureTags[tag] || 0) + 1;
-      });
-    }
-
-    if (row.free_text_comment && row.free_text_comment.trim().length > 0) {
-      recentComments.push({
-        rating: row.rating,
-        comment: row.free_text_comment,
-        createdAt: row.created_at,
-        diagramId: row.diagram_id,
-      });
-    }
-  }
-
-  return {
-    totalCount: rows.length,
-    ratingBreakdown,
-    topPositiveTags,
-    topFailureTags,
-    recentComments: recentComments.slice(0, 30),
-  };
-}
-
-// ==========================================
 // CONTACT US FORM FUNCTIONS
 // ==========================================
 
@@ -2476,94 +2332,6 @@ export async function submitContactForm(
   }
 }
 
-
-// Helper: Sync complete database diagrams and versions
-export async function syncDatabase(
-  diagrams: Diagram[],
-  versions: DiagramVersion[]
-): Promise<void> {
-  await ensureTablesExist();
-
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const client = await pool.connect();
-    try {
-      await client.query('BEGIN');
-      await client.query('DELETE FROM diagram_versions');
-      await client.query('DELETE FROM diagrams');
-
-      for (const diag of diagrams) {
-        await client.query(
-          'INSERT INTO diagrams (id, name, created_at, updated_at) VALUES ($1, $2, $3, $4)',
-          [diag.id, diag.name, diag.created_at, diag.updated_at]
-        );
-      }
-
-      for (const ver of versions) {
-        await client.query(
-          `INSERT INTO diagram_versions (
-            id, diagram_id, version_number, xml_content, comment, created_by, created_at, prompt, ai_reasoning, business_usecase, technical_usecase
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-          [
-            ver.id,
-            ver.diagram_id,
-            ver.version_number,
-            ver.xml_content,
-            ver.comment,
-            ver.created_by,
-            ver.created_at,
-            ver.prompt || null,
-            ver.ai_reasoning || null,
-            ver.business_usecase || null,
-            ver.technical_usecase || null
-          ]
-        );
-      }
-
-      await client.query('COMMIT');
-    } catch (error) {
-      await client.query('ROLLBACK');
-      console.error('Failed to sync database in PostgreSQL:', error);
-      throw error;
-    } finally {
-      client.release();
-    }
-  } else {
-    await runSqliteTransaction((db) => {
-      db.exec('DELETE FROM diagram_versions;');
-      db.exec('DELETE FROM diagrams;');
-
-      const insertDiag = db.prepare(
-        'INSERT INTO diagrams (id, name, created_at, updated_at) VALUES (?, ?, ?, ?)'
-      );
-      for (const diag of diagrams) {
-        insertDiag.run(diag.id, diag.name, diag.created_at as string, diag.updated_at as string);
-      }
-
-      const insertVer = db.prepare(
-        `INSERT INTO diagram_versions (
-          id, diagram_id, version_number, xml_content, comment, created_by, created_at, prompt, ai_reasoning, business_usecase, technical_usecase
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-      );
-      for (const ver of versions) {
-        insertVer.run(
-          ver.id,
-          ver.diagram_id,
-          ver.version_number,
-          ver.xml_content,
-          ver.comment,
-          ver.created_by,
-          ver.created_at as string,
-          ver.prompt || null,
-          ver.ai_reasoning || null,
-          ver.business_usecase || null,
-          ver.technical_usecase || null
-        );
-      }
-    });
-  }
-}
-
 // Helper: Update a diagram version's business and technical use cases
 export async function updateDiagramVersionUseCases(
   versionId: string,
@@ -2585,10 +2353,6 @@ export async function updateDiagramVersionUseCases(
     stmt.run(businessUsecase, technicalUsecase, versionId);
   }
 }
-
-
-
-const AI_RAG_XML = getDefaultXmlForArchitecture('agentic_rag') || '';
 
 async function seedDiagram(name: string, xml: string, comment: string, prompt: string) {
   const diagramId = uuidv4();
@@ -2674,7 +2438,7 @@ export async function ensureUserPersonalWorkspace(userId: string, userEmail: str
   }
 }
 
-export async function getWorkspaceUserRole(
+async function getWorkspaceUserRole(
   workspaceId: string,
   userId: string
 ): Promise<'Owner' | 'Admin' | 'Editor' | 'Viewer' | null> {
@@ -2710,174 +2474,6 @@ export async function getWorkspaceUserRole(
     const ws = wsStmt.get(workspaceId) as any;
     if (ws && ws.owner_id === userId) return 'Owner';
     return null;
-  }
-}
-
-export async function canUserAccessWorkspace(
-  workspaceId: string,
-  userId: string,
-  requiredPermission: 'read' | 'write' | 'admin' = 'read'
-): Promise<boolean> {
-  const role = await getWorkspaceUserRole(workspaceId, userId);
-  if (!role) return false;
-
-  if (requiredPermission === 'read') return ['Owner', 'Admin', 'Editor', 'Viewer'].includes(role);
-  if (requiredPermission === 'write') return ['Owner', 'Admin', 'Editor'].includes(role);
-  if (requiredPermission === 'admin') return ['Owner', 'Admin'].includes(role);
-  return false;
-}
-
-export async function getUserWorkspaces(userId: string): Promise<{
-  personalWorkspace: Workspace;
-  sharedWorkspaces: Workspace[];
-  allWorkspaces: Workspace[];
-}> {
-  await ensureTablesExist();
-
-  const user = await getUserById(userId);
-  const personalWorkspace = await ensureUserPersonalWorkspace(userId, user?.email || '');
-
-  let rawWorkspaces: (Workspace & { user_role?: string; member_count?: number })[] = [];
-
-  if (isUserSuperAdmin(user)) {
-    if (isPostgres()) {
-      const pool = getPgPool();
-      const res = await pool.query(`SELECT * FROM workspaces ORDER BY created_at ASC`);
-      rawWorkspaces = res.rows.map(w => ({ ...w, user_role: 'Owner' }));
-    } else {
-      const db = getSqliteDb();
-      const stmt = db.prepare(`SELECT * FROM workspaces ORDER BY created_at ASC`);
-      rawWorkspaces = (stmt.all() as any[]).map(w => ({ ...w, user_role: 'Owner' }));
-    }
-  } else if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(
-      `SELECT DISTINCT w.*, wm.role as user_role
-       FROM workspaces w
-       LEFT JOIN workspace_members wm ON w.id = wm.workspace_id
-       WHERE w.owner_id = $1 OR wm.user_id = $1
-       ORDER BY w.created_at ASC`,
-      [userId]
-    );
-    rawWorkspaces = res.rows;
-  } else {
-    const db = getSqliteDb();
-    const stmt = db.prepare(
-      `SELECT DISTINCT w.*, wm.role as user_role
-       FROM workspaces w
-       LEFT JOIN workspace_members wm ON w.id = wm.workspace_id
-       WHERE w.owner_id = ? OR wm.user_id = ?
-       ORDER BY w.created_at ASC`
-    );
-    rawWorkspaces = stmt.all(userId, userId) as any[];
-  }
-
-  const seenIds = new Set<string>();
-  const uniqueWorkspaces: Workspace[] = [];
-
-  for (const w of rawWorkspaces) {
-    if (!seenIds.has(w.id)) {
-      seenIds.add(w.id);
-      uniqueWorkspaces.push({
-        ...w,
-        user_role: (w.owner_id === userId ? 'Owner' : w.user_role || 'Viewer') as any,
-      });
-    }
-  }
-
-  const sharedWorkspaces = uniqueWorkspaces.filter(
-    (w) => w.id !== personalWorkspace.id
-  );
-
-  return {
-    personalWorkspace,
-    sharedWorkspaces,
-    allWorkspaces: uniqueWorkspaces,
-  };
-}
-
-export async function createTeamWorkspace(name: string, ownerId: string): Promise<Workspace> {
-  await ensureTablesExist();
-  const wsId = `ws_${uuidv4().slice(0, 8)}`;
-  const trimmedName = name.trim();
-
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const wsRes = await pool.query(
-      `INSERT INTO workspaces (id, name, owner_id) VALUES ($1, $2, $3) RETURNING *`,
-      [wsId, trimmedName, ownerId]
-    );
-    const memId = uuidv4();
-    await pool.query(
-      `INSERT INTO workspace_members (id, workspace_id, user_id, role) VALUES ($1, $2, $3, $4)`,
-      [memId, wsId, ownerId, 'Owner']
-    );
-    return wsRes.rows[0] as Workspace;
-  } else {
-    const db = getSqliteDb();
-    const insertWs = db.prepare(`INSERT INTO workspaces (id, name, owner_id) VALUES (?, ?, ?)`);
-    insertWs.run(wsId, trimmedName, ownerId);
-
-    const memId = uuidv4();
-    const insertMem = db.prepare(`INSERT INTO workspace_members (id, workspace_id, user_id, role) VALUES (?, ?, ?, ?)`);
-    insertMem.run(memId, wsId, ownerId, 'Owner');
-
-    const getWs = db.prepare(`SELECT * FROM workspaces WHERE id = ?`);
-    return getWs.get(wsId) as unknown as Workspace;
-  }
-}
-
-export async function inviteWorkspaceMember(
-  workspaceId: string,
-  targetEmail: string,
-  role: 'Editor' | 'Viewer',
-  inviterUserId: string
-): Promise<WorkspaceMember> {
-  await ensureTablesExist();
-
-  const canInvite = await canUserAccessWorkspace(workspaceId, inviterUserId, 'admin');
-  if (!canInvite) {
-    throw new Error('Unauthorized. Only workspace Owners and Admins can invite team members.');
-  }
-
-  const targetUser = await getUserByEmail(targetEmail.trim());
-  if (!targetUser) {
-    throw new Error(`User with email "${targetEmail}" is not registered on PromptCanvas yet.`);
-  }
-
-  const memId = uuidv4();
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(
-      `INSERT INTO workspace_members (id, workspace_id, user_id, role)
-       VALUES ($1, $2, $3, $4)
-       ON CONFLICT (workspace_id, user_id) DO UPDATE SET role = $4
-       RETURNING *`,
-      [memId, workspaceId, targetUser.id, role]
-    );
-    await logUserEvent(inviterUserId, 'WORKSPACE_MEMBER_INVITED', null, `Target: ${targetUser.id}, Role: ${role}`);
-    return {
-      ...res.rows[0],
-      user_email: targetUser.email,
-      user_name: targetUser.name,
-    };
-  } else {
-    const db = getSqliteDb();
-    const stmt = db.prepare(
-      `INSERT INTO workspace_members (id, workspace_id, user_id, role)
-       VALUES (?, ?, ?, ?)
-       ON CONFLICT(workspace_id, user_id) DO UPDATE SET role = excluded.role`
-    );
-    stmt.run(memId, workspaceId, targetUser.id, role);
-    await logUserEvent(inviterUserId, 'WORKSPACE_MEMBER_INVITED', null, `Target: ${targetUser.id}, Role: ${role}`);
-    
-    const getMem = db.prepare(`SELECT * FROM workspace_members WHERE workspace_id = ? AND user_id = ?`);
-    const row = getMem.get(workspaceId, targetUser.id) as any;
-    return {
-      ...row,
-      user_email: targetUser.email,
-      user_name: targetUser.name,
-    };
   }
 }
 
@@ -3126,126 +2722,6 @@ export async function resetVisitorCount(value: number = 0): Promise<number> {
   }
 }
 
-// ----------------------------------------------------
-// MULTIMODAL MEDIA ASSETS PERSISTENCE HELPERS
-// ----------------------------------------------------
-
-export interface MediaAssetRecord {
-  id: string;
-  diagram_id: string | null;
-  asset_type: string;
-  title: string;
-  url: string | null;
-  html_code: string | null;
-  aspect_ratio: string | null;
-  caption: string | null;
-  category: string | null;
-  created_at: string | Date;
-}
-
-export async function saveMediaAssetRecord(asset: {
-  id?: string;
-  diagram_id?: string | null;
-  asset_type: string;
-  title: string;
-  url?: string | null;
-  html_code?: string | null;
-  aspect_ratio?: string | null;
-  caption?: string | null;
-  category?: string | null;
-}): Promise<MediaAssetRecord> {
-  await ensureTablesExist();
-  const assetId = asset.id || uuidv4();
-  const diagramId = asset.diagram_id || null;
-  const assetType = asset.asset_type || 'animation';
-  const title = asset.title || 'Untitled Multimodal Asset';
-  const url = asset.url || null;
-  const htmlCode = asset.html_code || null;
-  const aspectRatio = asset.aspect_ratio || '16:9';
-  const caption = asset.caption || null;
-  const category = asset.category || 'general';
-
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(`
-      INSERT INTO media_assets (id, diagram_id, asset_type, title, url, html_code, aspect_ratio, caption, category)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      ON CONFLICT (id) DO UPDATE SET
-        title = EXCLUDED.title,
-        url = EXCLUDED.url,
-        html_code = EXCLUDED.html_code,
-        caption = EXCLUDED.caption,
-        category = EXCLUDED.category
-      RETURNING *;
-    `, [assetId, diagramId, assetType, title, url, htmlCode, aspectRatio, caption, category]);
-    return res.rows[0] as MediaAssetRecord;
-  } else {
-    const db = getSqliteDb();
-    const stmt = db.prepare(`
-      INSERT INTO media_assets (id, diagram_id, asset_type, title, url, html_code, aspect_ratio, caption, category)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT(id) DO UPDATE SET
-        title = excluded.title,
-        url = excluded.url,
-        html_code = excluded.html_code,
-        caption = excluded.caption,
-        category = excluded.category;
-    `);
-    stmt.run(assetId, diagramId, assetType, title, url, htmlCode, aspectRatio, caption, category);
-    const row = db.prepare('SELECT * FROM media_assets WHERE id = ?').get(assetId) as unknown as MediaAssetRecord;
-    return row;
-  }
-}
-
-export async function getMediaAssetsForDiagram(diagramId: string): Promise<MediaAssetRecord[]> {
-  await ensureTablesExist();
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(
-      'SELECT * FROM media_assets WHERE diagram_id = $1 ORDER BY created_at DESC',
-      [diagramId]
-    );
-    return res.rows as MediaAssetRecord[];
-  } else {
-    const db = getSqliteDb();
-    const rows = db.prepare(
-      'SELECT * FROM media_assets WHERE diagram_id = ? ORDER BY created_at DESC'
-    ).all(diagramId) as unknown as MediaAssetRecord[];
-    return rows;
-  }
-}
-
-export async function getAllSavedMediaAssets(limit: number = 50): Promise<MediaAssetRecord[]> {
-  await ensureTablesExist();
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(
-      'SELECT * FROM media_assets ORDER BY created_at DESC LIMIT $1',
-      [limit]
-    );
-    return res.rows as MediaAssetRecord[];
-  } else {
-    const db = getSqliteDb();
-    const rows = db.prepare(
-      'SELECT * FROM media_assets ORDER BY created_at DESC LIMIT ?'
-    ).all(limit) as unknown as MediaAssetRecord[];
-    return rows;
-  }
-}
-
-export async function getMediaAssetById(id: string): Promise<MediaAssetRecord | null> {
-  await ensureTablesExist();
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query('SELECT * FROM media_assets WHERE id = $1', [id]);
-    return (res.rows[0] as MediaAssetRecord) || null;
-  } else {
-    const db = getSqliteDb();
-    const row = db.prepare('SELECT * FROM media_assets WHERE id = ?').get(id) as unknown as MediaAssetRecord | undefined;
-    return row || null;
-  }
-}
-
 export async function checkAndRecordDailyGeminiQuota(
   userId: string,
   maxDailyLimit: number = 50,
@@ -3424,7 +2900,7 @@ export async function setUserGeminiApiKey(userId: string, apiKey: string | null)
 // UNIFIED AUDIT CHANGELOG & 2-WAY GOOGLE SHEETS SYNCHRONIZATION ENGINE
 // ============================================================================
 
-export type ChangelogCategory =
+type ChangelogCategory =
   | 'USER_ADDED'
   | 'USER_ROLE_CHANGED'
   | 'COMMENT_ADDED'
@@ -3499,10 +2975,10 @@ export interface SheetSyncConfig {
 
 async function seedInitialGovernanceAndChangelog(): Promise<void> {
   const initialUsers = [
-    { id: 'usr-admin-1', email: 'nitin.aggarwal@enterprise-arch.io', name: 'Nitin Aggarwal', role: 'Super-Admin', isSuper: 1 },
-    { id: 'usr-elena', email: 'elena.rostova@enterprise-arch.io', name: 'Dr. Elena Rostova', role: 'Author', isSuper: 0 },
-    { id: 'usr-marcus', email: 'marcus.vance@enterprise-arch.io', name: 'Marcus Vance', role: 'Super-Admin', isSuper: 1 },
-    { id: 'usr-sophia', email: 'sophia.martinez@enterprise-arch.io', name: 'Sophia Martinez', role: 'Author', isSuper: 0 },
+    { id: 'usr-admin-1', email: 'nitinagga@google.com', name: 'Nitin Aggarwal', role: 'Super-Admin', isSuper: 1 },
+    { id: 'usr-elena', email: 'arch-review-board@google.com', name: 'Principal Domain Architecture Team', role: 'Author', isSuper: 0 },
+    { id: 'usr-marcus', email: 'cloud-governance-board@google.com', name: 'Cloud Architecture Review Board', role: 'Super-Admin', isSuper: 1 },
+    { id: 'usr-sophia', email: 'ai-security-board@google.com', name: 'AI Security & Risk Review Board', role: 'Author', isSuper: 0 },
   ];
   for (const u of initialUsers) {
     if (isPostgres()) {
@@ -3522,6 +2998,39 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
     }
   }
 
+  // Migrate any legacy @enterprise-arch.io or personal mock names in existing SQLite/Postgres rows
+  if (!isPostgres()) {
+    const db = getSqliteDb();
+    db.prepare(`UPDATE users SET email = 'nitinagga@google.com', name = 'Nitin Aggarwal' WHERE id = 'usr-admin-1' OR email = 'nitin.aggarwal@enterprise-arch.io'`).run();
+    db.prepare(`UPDATE users SET email = 'arch-review-board@google.com', name = 'Principal Domain Architecture Team' WHERE id = 'usr-elena' OR email = 'elena.rostova@enterprise-arch.io'`).run();
+    db.prepare(`UPDATE users SET email = 'cloud-governance-board@google.com', name = 'Cloud Architecture Review Board' WHERE id = 'usr-marcus' OR email = 'marcus.vance@enterprise-arch.io'`).run();
+    db.prepare(`UPDATE users SET email = 'ai-security-board@google.com', name = 'AI Security & Risk Review Board' WHERE id = 'usr-sophia' OR email = 'sophia.martinez@enterprise-arch.io'`).run();
+
+    db.prepare(`UPDATE governance_tracker_items SET owner_email = 'nitinagga@google.com', owner_name = 'Nitin Aggarwal', comment_author = 'Nitin Aggarwal', last_modified_by = 'Nitin Aggarwal (UI)' WHERE blueprint_code = 'BP-00'`).run();
+    db.prepare(`UPDATE governance_tracker_items SET owner_email = 'arch-review-board@google.com', owner_name = 'Principal Domain Architecture Team', comment_author = 'Principal Domain Architecture Team', last_modified_by = 'Principal Domain Architecture Team (UI)' WHERE blueprint_code = 'BP-01'`).run();
+    db.prepare(`UPDATE governance_tracker_items SET owner_email = 'cloud-governance-board@google.com', owner_name = 'Cloud Architecture Review Board', comment_author = 'Cloud Architecture Review Board', last_modified_by = 'Cloud Architecture Review Board (GOOGLE_SHEET)' WHERE blueprint_code = 'BP-02'`).run();
+    db.prepare(`UPDATE governance_tracker_items SET owner_email = 'clinical-ops-arch@google.com', owner_name = 'Clinical Operations Architecture Team', comment_author = 'Clinical Operations Architecture Team', last_modified_by = 'Clinical Operations Architecture Team (GOOGLE_SHEET)' WHERE blueprint_code = 'BP-03'`).run();
+    db.prepare(`UPDATE governance_tracker_items SET owner_email = 'data-lakehouse-arch@google.com', owner_name = 'Enterprise Data & Lakehouse Team', comment_author = 'Enterprise Data & Lakehouse Team', last_modified_by = 'Enterprise Data & Lakehouse Team (UI)' WHERE blueprint_code = 'BP-04'`).run();
+    db.prepare(`UPDATE governance_tracker_items SET owner_email = 'ai-security-board@google.com', owner_name = 'AI Security & Risk Review Board', comment_author = 'AI Security & Risk Review Board', last_modified_by = 'AI Security & Risk Review Board (UI)' WHERE blueprint_code = 'BP-05'`).run();
+
+    db.prepare(`UPDATE governance_comments SET author_name = 'Principal Domain Architecture Team', author_email = 'arch-review-board@google.com' WHERE id = 'cmt-seed-1' OR author_email = 'elena.rostova@enterprise-arch.io'`).run();
+    db.prepare(`UPDATE governance_comments SET author_name = 'Cloud Architecture Review Board', author_email = 'cloud-governance-board@google.com' WHERE id = 'cmt-seed-2' OR author_email = 'marcus.vance@enterprise-arch.io'`).run();
+    db.prepare(`UPDATE governance_comments SET author_name = 'AI Security & Risk Review Board', author_email = 'ai-security-board@google.com' WHERE id = 'cmt-seed-3' OR author_email = 'sophia.martinez@enterprise-arch.io'`).run();
+
+    db.prepare(`UPDATE changelog_entries SET actor_email = 'nitinagga@google.com' WHERE actor_email = 'nitin.aggarwal@enterprise-arch.io'`).run();
+    db.prepare(`UPDATE changelog_entries SET actor_name = 'Cloud Architecture Review Board', actor_email = 'cloud-governance-board@google.com' WHERE actor_email = 'marcus.vance@enterprise-arch.io'`).run();
+    db.prepare(`UPDATE changelog_entries SET actor_name = 'Principal Domain Architecture Team', actor_email = 'arch-review-board@google.com' WHERE actor_email = 'elena.rostova@enterprise-arch.io'`).run();
+    db.prepare(`UPDATE changelog_entries SET actor_name = 'AI Security & Risk Review Board', actor_email = 'ai-security-board@google.com' WHERE actor_email = 'sophia.martinez@enterprise-arch.io'`).run();
+    db.prepare(`UPDATE changelog_entries SET entity_name = 'Principal Domain Architecture Team (arch-review-board@google.com)', summary = 'Added Principal Domain Architecture Team via PromptCanvas Admin UI and synced to Google Sheet [Users!A3:F3].' WHERE id = 'chg-seed-01'`).run();
+    db.prepare(`UPDATE changelog_entries SET entity_name = 'AI Security & Risk Review Board (ai-security-board@google.com)', summary = 'Added AI Security & Risk Review Board directly in Google Sheet [Users!A4:F4] — auto-imported into PromptCanvas UI.' WHERE id = 'chg-seed-02'`).run();
+    db.prepare(`UPDATE changelog_entries SET entity_name = 'Cloud Architecture Review Board (cloud-governance-board@google.com)', summary = 'Promoted Cloud Architecture Review Board from Member to Super-Admin in UI and pushed role update to Google Sheet [Users!D5].' WHERE id = 'chg-seed-03'`).run();
+    db.prepare(`UPDATE changelog_entries SET summary = 'Cloud Architecture Review Board changed status of BP-02 from "In Review" to "Approved" in Google Sheet [Tracker!E4] — synced to UI.' WHERE id = 'chg-seed-04'`).run();
+    db.prepare(`UPDATE changelog_entries SET summary = 'AI Security & Risk Review Board added review comment on BP-05 in Google Sheet [Comments!A4:G4] — synced to UI.' WHERE id = 'chg-seed-05'`).run();
+    db.prepare(`UPDATE changelog_entries SET summary = 'Principal Domain Architecture Team updated BP-01 status from "Approved" to "Production Certified" in UI and pushed to Google Sheet [Tracker!E3].' WHERE id = 'chg-seed-06'`).run();
+    db.prepare(`UPDATE changelog_entries SET summary = REPLACE(REPLACE(REPLACE(REPLACE(summary, 'Marcus Vance', 'Cloud Architecture Review Board'), 'Dr. Elena Rostova', 'Principal Domain Architecture Team'), 'Sophia Martinez', 'AI Security & Risk Review Board'), 'Priya Nair', 'Clinical Operations Architecture Team')`).run();
+    db.prepare(`UPDATE sheet_sync_config SET last_sync_actor = REPLACE(last_sync_actor, 'Marcus Vance', 'Cloud Architecture Review Board')`).run();
+  }
+
   const countRes = isPostgres()
     ? await getPgPool().query('SELECT COUNT(*)::int AS cnt FROM governance_tracker_items')
     : (getSqliteDb().prepare('SELECT COUNT(*) AS cnt FROM governance_tracker_items').get() as { cnt: number });
@@ -3537,7 +3046,7 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         status: 'Production Certified',
         priority: 'P0 - Critical',
         owner_name: 'Nitin Aggarwal',
-        owner_email: 'nitin.aggarwal@enterprise-arch.io',
+        owner_email: 'nitinagga@google.com',
         latest_comment: 'Removed redundant brand headers; added closed-loop AI evaluation & FinOps guardrail telemetry.',
         comment_author: 'Nitin Aggarwal',
         version: 'v3.4',
@@ -3552,12 +3061,12 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         domain_layer: 'L1 System Context',
         status: 'Production Certified',
         priority: 'P0 - Critical',
-        owner_name: 'Dr. Elena Rostova',
-        owner_email: 'elena.rostova@enterprise-arch.io',
+        owner_name: 'Principal Domain Architecture Team',
+        owner_email: 'arch-review-board@google.com',
         latest_comment: 'Upgraded to vendor-neutral L1 System Context with CDISC ODM, HL7 FHIR R4, IDMP & GxP Part 11 contracts.',
-        comment_author: 'Dr. Elena Rostova',
+        comment_author: 'Principal Domain Architecture Team',
         version: 'v3.4',
-        last_modified_by: 'Dr. Elena Rostova (UI)',
+        last_modified_by: 'Principal Domain Architecture Team (UI)',
         last_sync_source: 'UI',
         sheet_row_number: 3,
       },
@@ -3568,12 +3077,12 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         domain_layer: 'L1 Capability Architecture',
         status: 'Approved',
         priority: 'P0 - Critical',
-        owner_name: 'Marcus Vance',
-        owner_email: 'marcus.vance@enterprise-arch.io',
+        owner_name: 'Cloud Architecture Review Board',
+        owner_email: 'cloud-governance-board@google.com',
         latest_comment: 'Synced capability maturity ratings from Architecture Review Board Google Sheet.',
-        comment_author: 'Marcus Vance',
+        comment_author: 'Cloud Architecture Review Board',
         version: 'v3.2',
-        last_modified_by: 'Marcus Vance (GOOGLE_SHEET)',
+        last_modified_by: 'Cloud Architecture Review Board (GOOGLE_SHEET)',
         last_sync_source: 'GOOGLE_SHEET',
         sheet_row_number: 4,
       },
@@ -3584,12 +3093,12 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         domain_layer: 'L2 Process Orchestration',
         status: 'In Review',
         priority: 'P1 - High',
-        owner_name: 'Priya Nair',
-        owner_email: 'priya.nair@enterprise-arch.io',
+        owner_name: 'Clinical Operations Architecture Team',
+        owner_email: 'clinical-ops-arch@google.com',
         latest_comment: 'Validating SLA handoff gates between Clinical Operations and Regulatory Submissions.',
-        comment_author: 'Priya Nair',
+        comment_author: 'Clinical Operations Architecture Team',
         version: 'v3.1',
-        last_modified_by: 'Priya Nair (GOOGLE_SHEET)',
+        last_modified_by: 'Clinical Operations Architecture Team (GOOGLE_SHEET)',
         last_sync_source: 'GOOGLE_SHEET',
         sheet_row_number: 5,
       },
@@ -3600,12 +3109,12 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         domain_layer: 'L2 Data & Analytics',
         status: 'Approved',
         priority: 'P0 - Critical',
-        owner_name: 'David Chen',
-        owner_email: 'david.chen@enterprise-arch.io',
+        owner_name: 'Enterprise Data & Lakehouse Team',
+        owner_email: 'data-lakehouse-arch@google.com',
         latest_comment: 'Verified Iceberg/Delta open table formats and PII tokenization gateway.',
-        comment_author: 'David Chen',
+        comment_author: 'Enterprise Data & Lakehouse Team',
         version: 'v3.3',
-        last_modified_by: 'David Chen (UI)',
+        last_modified_by: 'Enterprise Data & Lakehouse Team (UI)',
         last_sync_source: 'UI',
         sheet_row_number: 6,
       },
@@ -3616,12 +3125,12 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         domain_layer: 'L3 AI & Cognitive Plane',
         status: 'In Review',
         priority: 'P0 - Critical',
-        owner_name: 'Sophia Martinez',
-        owner_email: 'sophia.martinez@enterprise-arch.io',
+        owner_name: 'AI Security & Risk Review Board',
+        owner_email: 'ai-security-board@google.com',
         latest_comment: 'Pending final sign-off on citation verification threshold (>= 0.92 groundedness).',
-        comment_author: 'Sophia Martinez',
+        comment_author: 'AI Security & Risk Review Board',
         version: 'v3.2',
-        last_modified_by: 'Sophia Martinez (UI)',
+        last_modified_by: 'AI Security & Risk Review Board (UI)',
         last_sync_source: 'UI',
         sheet_row_number: 7,
       },
@@ -3720,8 +3229,8 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         id: 'cmt-seed-1',
         target_id: 'BP-01',
         target_name: '01 — Enterprise System Context & External Ecosystem Boundary',
-        author_name: 'Dr. Elena Rostova',
-        author_email: 'elena.rostova@enterprise-arch.io',
+        author_name: 'Principal Domain Architecture Team',
+        author_email: 'arch-review-board@google.com',
         author_role: 'Principal Domain Architect',
         comment_text: 'Upgraded to vendor-neutral L1 System Context with CDISC ODM, HL7 FHIR R4, IDMP & GxP Part 11 contracts.',
         status_at_comment: 'Production Certified',
@@ -3732,8 +3241,8 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         id: 'cmt-seed-2',
         target_id: 'BP-02',
         target_name: '02 — Core Business Capability Map (L1–L2 Domain Taxonomy)',
-        author_name: 'Marcus Vance',
-        author_email: 'marcus.vance@enterprise-arch.io',
+        author_name: 'Cloud Architecture Review Board',
+        author_email: 'cloud-governance-board@google.com',
         author_role: 'Enterprise Governance Lead',
         comment_text: 'Synced capability maturity ratings from Architecture Review Board Google Sheet.',
         status_at_comment: 'Approved',
@@ -3744,8 +3253,8 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         id: 'cmt-seed-3',
         target_id: 'BP-05',
         target_name: '05 — Agentic AI, Hybrid RAG & Guardrail Reference Topology',
-        author_name: 'Sophia Martinez',
-        author_email: 'sophia.martinez@enterprise-arch.io',
+        author_name: 'AI Security & Risk Review Board',
+        author_email: 'ai-security-board@google.com',
         author_role: 'AI Security & Risk Reviewer',
         comment_text: 'Pending final sign-off on citation verification threshold (>= 0.92 groundedness).',
         status_at_comment: 'In Review',
@@ -3777,15 +3286,15 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         event_category: 'USER_ADDED',
         actor_id: 'usr-admin-1',
         actor_name: 'Nitin Aggarwal',
-        actor_email: 'nitin.aggarwal@enterprise-arch.io',
+        actor_email: 'nitinagga@google.com',
         actor_role: 'Super-Admin',
         entity_type: 'User',
         entity_id: 'usr-elena',
-        entity_name: 'Dr. Elena Rostova (elena.rostova@enterprise-arch.io)',
+        entity_name: 'Principal Domain Architecture Team (arch-review-board@google.com)',
         field_changed: 'user_created',
         old_value: 'None',
         new_value: 'Author (Principal Domain Architect)',
-        summary: 'Added user Dr. Elena Rostova via PromptCanvas Admin UI and synced to Google Sheet [Users!A3:F3].',
+        summary: 'Added Principal Domain Architecture Team via PromptCanvas Admin UI and synced to Google Sheet [Users!A3:F3].',
         source: 'UI',
         sync_status: 'SYNCED',
         sheet_row_ref: 'Users!A3:F3',
@@ -3794,16 +3303,16 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         id: 'chg-seed-02',
         event_category: 'USER_ADDED',
         actor_id: 'sheet-sync',
-        actor_name: 'Marcus Vance',
-        actor_email: 'marcus.vance@enterprise-arch.io',
+        actor_name: 'Cloud Architecture Review Board',
+        actor_email: 'cloud-governance-board@google.com',
         actor_role: 'Super-Admin',
         entity_type: 'User',
         entity_id: 'usr-sophia',
-        entity_name: 'Sophia Martinez (sophia.martinez@enterprise-arch.io)',
+        entity_name: 'AI Security & Risk Review Board (ai-security-board@google.com)',
         field_changed: 'user_created',
         old_value: 'None',
         new_value: 'Author (AI Security & Risk Reviewer)',
-        summary: 'Added user Sophia Martinez directly in Google Sheet [Users!A4:F4] — auto-imported into PromptCanvas UI.',
+        summary: 'Added AI Security & Risk Review Board directly in Google Sheet [Users!A4:F4] — auto-imported into PromptCanvas UI.',
         source: 'GOOGLE_SHEET',
         sync_status: 'PULLED_FROM_SHEET',
         sheet_row_ref: 'Users!A4:F4',
@@ -3813,15 +3322,15 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         event_category: 'USER_ROLE_CHANGED',
         actor_id: 'usr-admin-1',
         actor_name: 'Nitin Aggarwal',
-        actor_email: 'nitin.aggarwal@enterprise-arch.io',
+        actor_email: 'nitinagga@google.com',
         actor_role: 'Super-Admin',
         entity_type: 'User',
         entity_id: 'usr-marcus',
-        entity_name: 'Marcus Vance (marcus.vance@enterprise-arch.io)',
+        entity_name: 'Cloud Architecture Review Board (cloud-governance-board@google.com)',
         field_changed: 'global_role',
         old_value: 'Member',
         new_value: 'Super-Admin',
-        summary: 'Promoted Marcus Vance from Member to Super-Admin in UI and pushed role update to Google Sheet [Users!D5].',
+        summary: 'Promoted Cloud Architecture Review Board from Member to Super-Admin in UI and pushed role update to Google Sheet [Users!D5].',
         source: 'UI',
         sync_status: 'SYNCED',
         sheet_row_ref: 'Users!D5',
@@ -3830,8 +3339,8 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         id: 'chg-seed-04',
         event_category: 'STATUS_CHANGED',
         actor_id: 'sheet-sync',
-        actor_name: 'Marcus Vance',
-        actor_email: 'marcus.vance@enterprise-arch.io',
+        actor_name: 'Cloud Architecture Review Board',
+        actor_email: 'cloud-governance-board@google.com',
         actor_role: 'Super-Admin',
         entity_type: 'Blueprint',
         entity_id: 'BP-02',
@@ -3839,7 +3348,7 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         field_changed: 'status',
         old_value: 'In Review',
         new_value: 'Approved',
-        summary: 'Marcus Vance changed status of BP-02 from "In Review" to "Approved" in Google Sheet [Tracker!E4] — synced to UI.',
+        summary: 'Cloud Architecture Review Board changed status of BP-02 from "In Review" to "Approved" in Google Sheet [Tracker!E4] — synced to UI.',
         source: 'GOOGLE_SHEET',
         sync_status: 'PULLED_FROM_SHEET',
         sheet_row_ref: 'Tracker!E4',
@@ -3848,8 +3357,8 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         id: 'chg-seed-05',
         event_category: 'COMMENT_ADDED',
         actor_id: 'sheet-sync',
-        actor_name: 'Sophia Martinez',
-        actor_email: 'sophia.martinez@enterprise-arch.io',
+        actor_name: 'AI Security & Risk Review Board',
+        actor_email: 'ai-security-board@google.com',
         actor_role: 'Author',
         entity_type: 'Comment',
         entity_id: 'BP-05',
@@ -3857,7 +3366,7 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         field_changed: 'comment',
         old_value: 'Initial AI topology draft submitted.',
         new_value: 'Pending final sign-off on citation verification threshold (>= 0.92 groundedness).',
-        summary: 'Sophia Martinez added review comment on BP-05 in Google Sheet [Comments!A4:G4] — synced to UI.',
+        summary: 'AI Security & Risk Review Board added review comment on BP-05 in Google Sheet [Comments!A4:G4] — synced to UI.',
         source: 'GOOGLE_SHEET',
         sync_status: 'PULLED_FROM_SHEET',
         sheet_row_ref: 'Comments!A4:G4',
@@ -3866,8 +3375,8 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         id: 'chg-seed-06',
         event_category: 'STATUS_CHANGED',
         actor_id: 'usr-elena',
-        actor_name: 'Dr. Elena Rostova',
-        actor_email: 'elena.rostova@enterprise-arch.io',
+        actor_name: 'Principal Domain Architecture Team',
+        actor_email: 'arch-review-board@google.com',
         actor_role: 'Author',
         entity_type: 'Blueprint',
         entity_id: 'BP-01',
@@ -3875,7 +3384,7 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         field_changed: 'status',
         old_value: 'Approved',
         new_value: 'Production Certified',
-        summary: 'Dr. Elena Rostova updated BP-01 status from "Approved" to "Production Certified" in UI and pushed to Google Sheet [Tracker!E3].',
+        summary: 'Principal Domain Architecture Team updated BP-01 status from "Approved" to "Production Certified" in UI and pushed to Google Sheet [Tracker!E3].',
         source: 'UI',
         sync_status: 'SYNCED',
         sheet_row_ref: 'Tracker!E3',
@@ -3885,7 +3394,7 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         event_category: 'COMMENT_ADDED',
         actor_id: 'usr-admin-1',
         actor_name: 'Nitin Aggarwal',
-        actor_email: 'nitin.aggarwal@enterprise-arch.io',
+        actor_email: 'nitinagga@google.com',
         actor_role: 'Super-Admin',
         entity_type: 'Comment',
         entity_id: 'BP-00',

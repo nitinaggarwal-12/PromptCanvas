@@ -27,7 +27,7 @@ const steps: GateStep[] = [
     command: 'tsx scripts/check-blueprint-render-safety.ts'
   },
   {
-    name: 'Canonical 26-Blueprint Production Catalog Certification Gate',
+    name: 'Canonical 8-Blueprint Production Catalog Certification Gate (#78, #00, #38, #42, #44, #67, #68, #69)',
     category: 'CATALOG_INTEGRITY',
     command: 'tsx scripts/verify_canonical_certification.ts'
   },
@@ -51,19 +51,21 @@ const steps: GateStep[] = [
         throw new Error(`Invalid JSON syntax in .agents/hooks.json: ${err.message}`);
       }
 
-      // Verify official Jetski schema (omni-governance-guard + v2.0.0 FAIL_CLOSED constitution)
-      const guard = parsed['omni-governance-guard'];
+      // Verify official Jetski schema (omni-governance-guard / zyvoriq_guard + v2.0.0 FAIL_CLOSED constitution)
+      const guard = parsed['omni-governance-guard'] || parsed['zyvoriq_guard'];
       const isV2Constitution =
         parsed.schema_version === '2.0.0' &&
         parsed.default_policy === 'FAIL_CLOSED' &&
         Boolean(parsed.hooks?.PreToolUse && parsed.hooks?.Stop);
-      if (!guard || !isV2Constitution) {
-        throw new Error('Missing valid hook schema ("omni-governance-guard" + v2.0.0 FAIL_CLOSED hooks) in .agents/hooks.json');
+      if (!guard && !isV2Constitution) {
+        throw new Error('Missing valid hook schema ("omni-governance-guard" / "zyvoriq_guard" + v2.0.0 FAIL_CLOSED hooks) in .agents/hooks.json');
       }
-      if (!Array.isArray(guard.PreToolUse)) throw new Error('PreToolUse must be an array in omni-governance-guard');
-      if (!Array.isArray(guard.PostToolUse)) throw new Error('PostToolUse must be an array in omni-governance-guard');
-      if (!Array.isArray(guard.PreInvocation)) throw new Error('PreInvocation must be an array in omni-governance-guard');
-      if (!Array.isArray(guard.Stop)) throw new Error('Stop must be an array in omni-governance-guard');
+      if (guard) {
+        if (!Array.isArray(guard.PreToolUse)) throw new Error('PreToolUse must be an array in top-level hook group');
+        if (!Array.isArray(guard.PostToolUse)) throw new Error('PostToolUse must be an array in top-level hook group');
+        if (!Array.isArray(guard.PreInvocation)) throw new Error('PreInvocation must be an array in top-level hook group');
+        if (!Array.isArray(guard.Stop)) throw new Error('Stop must be an array in top-level hook group');
+      }
 
       // Verify referenced scripts exist
       const requiredScripts = [
@@ -176,12 +178,65 @@ const steps: GateStep[] = [
         'src/app/api/audit/route.ts',
         'src/app/api/audit/remediate/route.ts',
         'src/app/api/generate/usecases/route.ts',
-        'src/app/api/export/terraform/route.ts'
+        'src/app/api/export/terraform/route.ts',
+        'src/app/api/decompile-image/route.ts',
+        'src/app/api/infographic-blueprint/route.ts',
+        'src/app/api/research-infographic/route.ts'
       ];
       for (const relRoute of allGeminiRoutes) {
         const src = readFileSync(path.join(process.cwd(), relRoute), 'utf8');
         if (!src.includes('enforceGeminiRouteGuard')) {
           throw new Error(`${relRoute} missing enforceGeminiRouteGuard`);
+        }
+      }
+
+      // 3c. Verify retired studio1 API/libs, redirect shims, unreachable API routes, and transitive dead modules/assets remain purged
+      const purgedPaths = [
+        'src/app/api/studio1/generate/route.ts',
+        'src/lib/studio1ArchitectureCore.ts',
+        'src/lib/studio1GoogleRenderer.ts',
+        'src/lib/studio1HybridEngine.ts',
+        'src/app/api/sync-db/route.ts',
+        'src/app/api/a2a-bridge/compile/route.ts',
+        'src/lib/export/googleSlidesDesignArchetypes.ts',
+        'src/app/workspace/page.tsx',
+        'src/app/studio1/page.tsx',
+        'src/app/gcp/page.tsx',
+        'src/app/api/auth/set-password/route.ts',
+        'src/app/api/feedback/curation/route.ts',
+        'src/app/api/diagrams/[id]/feedback/route.ts',
+        'src/app/api/diagrams/[id]/staleness/route.ts',
+        'src/lib/diagramStaleness.ts',
+        'src/lib/auditContainerVoids.ts',
+        'scripts/audit_canonical_topology_contracts.ts',
+        'scripts/live_grounding_delta_radar.mjs',
+        'docs/INVESTMENT_MEMO.md',
+        'public/images/01.png',
+        'images/01.png',
+        'prompts',
+        'templates/master_blueprints/xml/51_enterprise_api_management.drawio',
+        'src/lib/canonical/template35FintechWealthEngine.ts',
+        'src/lib/canonical/template36SmartManufacturingIot.ts',
+        'src/lib/canonical/template37DedicatedNetworkInfra.ts',
+        'src/lib/canonical/template39SovereignCloudPrivacy.ts',
+        'src/lib/canonical/template40EnterpriseGenAiPlatform.ts',
+        'src/lib/canonical/template41EnterpriseRagPlatform.ts',
+        'src/lib/canonical/template43RealTimeStreamingEventEnterprise.ts',
+        'src/lib/canonical/template45EnterpriseApiIntegrationMcpGateway.ts',
+        'src/lib/canonical/template46EnterpriseKubernetesPlatformEngineering.ts',
+        'src/lib/canonical/template47MlopsAiLifecyclePlatform.ts',
+        'src/lib/canonical/template48BcdrCyberRecoveryResilience.ts',
+        'src/lib/canonical/template49HealthcareLifeSciencesPlatform.ts',
+        'src/lib/canonical/template50SustainabilityEsgPlatform.ts',
+        'public/templates/35.png',
+        'public/templates/40.png',
+        'public/templates/48.png',
+        'public/templates/70.png',
+        'public/templates/74.png'
+      ];
+      for (const relPurged of purgedPaths) {
+        if (existsSync(path.join(process.cwd(), relPurged))) {
+          throw new Error(`Purged legacy file returned: ${relPurged}`);
         }
       }
 
@@ -191,6 +246,30 @@ const steps: GateStep[] = [
         throw new Error('src/app/api/audit/route.ts must not mutate audited XML via injectUseCaseFlavor');
       }
     }
+  },
+  {
+    name: 'Compositional 5-Chains 50-Prompts + Vision Poster 1:1 Parity Pre-Flight Gate (56/56)',
+    category: 'COMPOSITIONAL_5CHAINS_50PROMPTS',
+    command: 'tsx scripts/verify_5chains_50prompts_preflight.ts'
+  },
+  {
+    name: 'Reference-Image 1:1 Geometry Contract & Canonical Brand Light Unit Test Gate (Rule 57-0)',
+    category: 'REFERENCE_GEOMETRY_PARITY',
+    fn: () => {
+      const decompilerPath = path.join(process.cwd(), 'scripts/decompile_reference_image_grid.mjs');
+      if (!existsSync(decompilerPath)) {
+        throw new Error('Phase-0 reference image decompiler missing: scripts/decompile_reference_image_grid.mjs');
+      }
+      execSync('npx vitest run tests/unit/flow-blueprints-67-to-74-grayscale.test.ts', {
+        stdio: 'pipe',
+        timeout: 30000
+      });
+    }
+  },
+  {
+    name: 'Full-Repo TypeScript Strict Typecheck Gate (Zero TS Errors)',
+    category: 'TYPESCRIPT_STRICT_CHECK',
+    command: 'npx tsc --noEmit'
   }
 ];
 

@@ -2,10 +2,6 @@ export function buildMasterEtlEltCdcPipelineXml(): string {
   return buildOldMasterEtlEltCdcPipelineXmlInternal();
 }
 
-export function buildOldMasterEtlEltCdcPipelineXml(): string {
-  return buildOldMasterEtlEltCdcPipelineXmlInternal();
-}
-
 const esc = (value: string): string =>
   value
     .replace(/&/g, '&amp;')
@@ -89,7 +85,7 @@ function buildOldMasterEtlEltCdcPipelineXmlInternal(): string {
     card('gov_dataplex', 'Dataplex Universal Catalog', 'Automated asset discovery, business glossary & column lineage', ICON.dataplex, 45, 745, 360, 70, '#7C3AED'),
     card('gov_quality', 'Dataplex Auto Data Quality', 'Declarative rule validation with automated anomaly alerts', ICON.shield, 435, 745, 360, 70, '#059669'),
     card('gov_dlp', 'Cloud DLP (PII Redaction)', 'Automatic de-identification & crypto-hashing of SSN/PCI fields', ICON.shield, 825, 745, 360, 70, '#059669'),
-    card('gov_looker', 'Looker Studio & Vertex AI', 'Self-service enterprise dashboards and predictive ML features', ICON.looker, 1215, 745, 320, 70, '#9333EA'),
+    card('gov_looker', 'Looker & Vertex AI', 'Self-service enterprise dashboards and predictive ML features', ICON.looker, 1215, 745, 320, 70, '#9333EA'),
 
     // Edges
     edge('e_ora_data', 'src_oracle', 'ing_datastream', 'CDC Replication', 'request'),
@@ -116,5 +112,3 @@ function buildOldMasterEtlEltCdcPipelineXmlInternal(): string {
   </diagram>
 </mxfile>`;
 }
-
-export const MASTER_ETL_ELT_CDC_PIPELINE_XML = buildMasterEtlEltCdcPipelineXml();

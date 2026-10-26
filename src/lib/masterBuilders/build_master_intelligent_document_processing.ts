@@ -6,9 +6,9 @@
  * - Light Background (#F8FAFC) & Crisp White Frosted Containers (#FFFFFF)
  * - Multi-Channel Document Intake (Scanned Invoices, Claims PDFs, Email Attachments, REST API Intake)
  * - OCR & Semantic Extraction Tier (Document AI Custom Extractor, Layout Parser, Entity Extraction)
- * - AI Validation & Confidence Routing Gate (Gemini 2.5 Flash Multimodal Cross-Validation, >95% STP vs <95% Exception Routing)
+ * - AI Validation & Confidence Routing Gate (Gemini 3.8 Flash Multimodal Cross-Validation, >95% STP vs <95% Exception Routing)
  * - Human-in-the-Loop (HITL) Review Cockpit (Document AI Review Interface, Active Learning Model Feedback)
- * - Enterprise Downstream Integration & Storage (BigQuery Lakehouse, ERP Systems SAP/Workday, Vertex AI Search, Looker Studio)
+ * - Enterprise Downstream Integration & Storage (BigQuery Lakehouse, ERP Systems SAP/Workday, Vertex AI Search, Looker)
  * - Document Governance, PII Masking & Immutable Audit Trail Plane (Cloud KMS, DLP, Audit Logs)
  */
 
@@ -70,7 +70,7 @@ export function buildMasterIntelligentDocProcessingXml(): string {
 
     // Main Header Title Pod
     cell('title', 'Blueprint 60 — Intelligent Document Processing (IDP) Platform — Detailed Architecture & Flowchart', 'text;html=1;whiteSpace=wrap;fontColor=#0F172A;fontSize=18;fontStyle=1;align=left;verticalAlign=middle;', 18, 12, 1280, 24),
-    cell('subtitle', 'Multi-Channel Intake, Document AI OCR, Gemini 2.5 Flash Validation, HITL Review Cockpit & Enterprise ERP Integration', 'text;html=1;whiteSpace=wrap;fontColor=#2563EB;fontSize=11.5;fontStyle=1;align=left;verticalAlign=middle;', 18, 36, 1280, 18),
+    cell('subtitle', 'Multi-Channel Intake, Document AI OCR, Gemini 3.8 Flash Validation, HITL Review Cockpit & Enterprise ERP Integration', 'text;html=1;whiteSpace=wrap;fontColor=#2563EB;fontSize=11.5;fontStyle=1;align=left;verticalAlign=middle;', 18, 36, 1280, 18),
 
     // =========================================================================
     // TIER 1: MULTI-CHANNEL DOCUMENT INTAKE
@@ -95,7 +95,7 @@ export function buildMasterIntelligentDocProcessingXml(): string {
     // TIER 3: AI VALIDATION & CONFIDENCE ROUTING GATE
     // =========================================================================
     lane('t3', 'TIER 3', 'AI VALIDATION &amp;<br/>CONFIDENCE GATE', 18, 305, 1260, 105, '#CBD5E1', '#FFFFFF', '#065F46'),
-    card('gt_gemini', 'Gemini 2.5 Flash Validation', 'Cross-Field Arithmetic & Reasoning', ICON.gemini, 145, 322, 270, 70, '#059669'),
+    card('gt_gemini', 'Gemini 3.8 Flash Validation', 'Cross-Field Arithmetic & Reasoning', ICON.gemini, 145, 322, 270, 70, '#059669'),
     decision('d_confidence', 'Confidence &gt;=<br/>95% Threshold?', 445, 320, 120, 75, '#D97706', '#FEF3C7'),
     card('gt_stp', 'Straight-Through Fast Path', 'Zero-Touch Automated Processing', ICON.gate, 595, 322, 270, 70, '#059669'),
     card('gt_exception', 'Exception Routing Queue', 'Low-Confidence Field Isolation', ICON.hitl, 895, 322, 260, 70, '#D97706'),
@@ -116,7 +116,7 @@ export function buildMasterIntelligentDocProcessingXml(): string {
     card('ds_bq', 'BigQuery Lakehouse', 'Structured Analytics Warehouse', ICON.bq, 145, 562, 260, 70, '#1D4ED8'),
     card('ds_erp', 'ERP Systems (SAP / Workday)', 'Automated Payment & Ledger Post', ICON.erp, 425, 562, 260, 70, '#7C3AED'),
     card('ds_search', 'Vertex AI Search Index', 'Full-Text Multimodal Discovery', ICON.search, 705, 562, 260, 70, '#0284C7'),
-    card('ds_looker', 'Looker Studio Dashboard', 'STP Rate & Accuracy SLAs', ICON.looker, 985, 562, 275, 70, '#7C3AED'),
+    card('ds_looker', 'Looker Dashboard', 'STP Rate & Accuracy SLAs', ICON.looker, 985, 562, 275, 70, '#7C3AED'),
 
     // =========================================================================
     // TIER 6: DOCUMENT GOVERNANCE, PII MASKING & AUDIT TRAIL PLANE
@@ -132,7 +132,7 @@ export function buildMasterIntelligentDocProcessingXml(): string {
     cell('p_legend', `<div style="padding:10px;"><b style="font-size:11px;color:#1E3A8A;">IDP SYSTEM LEGEND</b><br/><div style="margin-top:6px;font-size:9.5px;color:#475569;line-height:1.5;">— <b>Blue Line:</b> Synchronous Ingestion Flow<br/>- - <b>Dashed Line:</b> Event &amp; Exception Pipeline<br/>— <b>Green Line:</b> Verified STP &amp; ERP Commit<br/>◇ <b>Amber Diamond:</b> Confidence Policy Gate</div></div>`, 'rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;', 1290, 65, 270, 110),
     cell('p_fallbacks', `<div style="padding:10px;"><b style="font-size:11px;color:#D97706;">FALLBACK &amp; ESCALATION PATHS</b><br/><div style="margin-top:6px;font-size:9px;color:#475569;line-height:1.4;">• <b>Confidence &lt; 95%:</b> Route to HITL Review Cockpit<br/>• <b>Malformed Document:</b> Structured rejection notification<br/>• <b>Specialist Rejection:</b> Flag for compliance audit</div></div>`, 'rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#FCD34D;strokeWidth=1.2;align=left;verticalAlign=top;', 1290, 185, 270, 105),
     cell('p_security', `<div style="padding:10px;"><b style="font-size:11px;color:#047857;">SECURITY &amp; COMPLIANCE</b><br/><div style="margin-top:6px;font-size:9px;color:#475569;line-height:1.4;">• <b>Encryption:</b> Cloud KMS (CMEK) at rest &amp; TLS 1.3<br/>• <b>Privacy:</b> Inline DLP redaction of sensitive fields<br/>• <b>Compliance:</b> HIPAA / SOC2 compliant bucket lock</div></div>`, 'rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.2;align=left;verticalAlign=top;', 1290, 300, 270, 115),
-    cell('p_steps', `<div style="padding:10px;"><b style="font-size:11px;color:#6D28D9;">IDP EXECUTION FLOW (1-10)</b><br/><div style="margin-top:6px;font-size:8.5px;color:#475569;line-height:1.4;">1. Document uploaded to GCS landing zone<br/>2. Document AI extracts OCR layout &amp; table schema<br/>3. Extracted JSON verified against field models<br/>4. Gemini 2.5 Flash validates cross-field arithmetic<br/>5. Confidence &gt;= 95% routes to Straight-Through Path<br/>6. Exceptions (&lt;95%) route to HITL Review Cockpit<br/>7. Human specialist approves / edits corrections<br/>8. Clean verified records stored in BigQuery Lakehouse<br/>9. Automated invoice payments posted to SAP/Workday<br/>10. Corrections exported for continuous model retrain</div></div>`, 'rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.2;align=left;verticalAlign=top;', 1290, 425, 270, 335),
+    cell('p_steps', `<div style="padding:10px;"><b style="font-size:11px;color:#6D28D9;">IDP EXECUTION FLOW (1-10)</b><br/><div style="margin-top:6px;font-size:8.5px;color:#475569;line-height:1.4;">1. Document uploaded to GCS landing zone<br/>2. Document AI extracts OCR layout &amp; table schema<br/>3. Extracted JSON verified against field models<br/>4. Gemini 3.8 Flash validates cross-field arithmetic<br/>5. Confidence &gt;= 95% routes to Straight-Through Path<br/>6. Exceptions (&lt;95%) route to HITL Review Cockpit<br/>7. Human specialist approves / edits corrections<br/>8. Clean verified records stored in BigQuery Lakehouse<br/>9. Automated invoice payments posted to SAP/Workday<br/>10. Corrections exported for continuous model retrain</div></div>`, 'rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.2;align=left;verticalAlign=top;', 1290, 425, 270, 335),
 
     // =========================================================================
     // EXPLICIT DATA FLOW CONNECTORS

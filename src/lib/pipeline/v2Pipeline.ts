@@ -5,11 +5,12 @@ import { renderGraphToDrawioXml } from '../render/drawio-xml';
 import { validateDrawioXml, ValidationResult } from '../validate/validator';
 import { ArchitectureGraph } from '../graph/schema';
 import { REPAIR_XML_SYSTEM_PROMPT, buildRepairXmlPrompt } from '../../prompts/repairXml';
-import { GEMINI_MODEL_ID, getGenConfig } from '../geminiConfig';
+import { GEMINI_MODEL_ID, getDistinctJudgeModel, getGenConfigForModel } from '../geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 
-export interface V2PipelineTelemetry {
+interface V2PipelineTelemetry {
   modelId: string;
+  repairModelId?: string;
   latencyMs: number;
   inputTokens?: number;
   outputTokens?: number;
@@ -20,7 +21,7 @@ export interface V2PipelineTelemetry {
   warningsCount: number;
 }
 
-export interface V2PipelineResult {
+interface V2PipelineResult {
   xml: string;
   graph: ArchitectureGraph;
   validationReport: ValidationResult;
@@ -34,6 +35,7 @@ export async function runV2Pipeline(
 ): Promise<V2PipelineResult> {
   const startTime = Date.now();
   const ai = aiClient || new GoogleGenAI({});
+  const repairModelId = getDistinctJudgeModel(modelId);
 
   let repairAttempts = 0;
 
@@ -49,7 +51,7 @@ export async function runV2Pipeline(
   // 4. Pre-Render Validation
   let validation = validateDrawioXml(currentXml);
 
-  // 5. Automated Repair Loop (if invalid, max 2 attempts)
+  // 5. Automated Cross-Model Repair Loop (if invalid, max 2 attempts via distinct judge/repair model)
   if (!validation.valid) {
     while (repairAttempts < 2 && !validation.valid) {
       repairAttempts++;
@@ -60,11 +62,11 @@ export async function runV2Pipeline(
 
       try {
         const response = await generateContentWithRetry(ai, {
-          model: modelId,
+          model: repairModelId,
           contents: repairPrompt,
           config: {
             systemInstruction: REPAIR_XML_SYSTEM_PROMPT,
-            ...getGenConfig('repair'),
+            ...getGenConfigForModel('repair', repairModelId),
           },
         });
 
@@ -88,6 +90,7 @@ export async function runV2Pipeline(
   const latencyMs = Date.now() - startTime;
   const telemetry: V2PipelineTelemetry = {
     modelId,
+    repairModelId,
     latencyMs,
     validationPassed: validation.valid,
     repairAttempts,
@@ -113,6 +116,7 @@ export async function runV2EditPipeline(
 ): Promise<V2PipelineResult> {
   const startTime = Date.now();
   const ai = aiClient || new GoogleGenAI({});
+  const repairModelId = getDistinctJudgeModel(modelId);
 
   let repairAttempts = 0;
 
@@ -128,7 +132,7 @@ export async function runV2EditPipeline(
   // 4. Pre-Render Validation
   let validation = validateDrawioXml(currentXml);
 
-  // 5. Repair Loop if needed
+  // 5. Automated Cross-Model Repair Loop if needed
   if (!validation.valid) {
     while (repairAttempts < 2 && !validation.valid) {
       repairAttempts++;
@@ -139,11 +143,11 @@ export async function runV2EditPipeline(
 
       try {
         const response = await generateContentWithRetry(ai, {
-          model: modelId,
+          model: repairModelId,
           contents: repairPrompt,
           config: {
             systemInstruction: REPAIR_XML_SYSTEM_PROMPT,
-            ...getGenConfig('repair'),
+            ...getGenConfigForModel('repair', repairModelId),
           },
         });
 
@@ -167,6 +171,7 @@ export async function runV2EditPipeline(
   const latencyMs = Date.now() - startTime;
   const telemetry: V2PipelineTelemetry = {
     modelId,
+    repairModelId,
     latencyMs,
     validationPassed: validation.valid,
     repairAttempts,

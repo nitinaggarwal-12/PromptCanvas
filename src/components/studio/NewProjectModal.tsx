@@ -38,23 +38,31 @@ interface NewProjectModalProps {
 
 const STARTER_BLUEPRINTS = [
   {
+    id: '78',
+    name: 'Official Google Cloud Architecture Center Hub & Spoke',
+    tag: 'Official #78',
+    desc: '18-card Hub-and-Spoke topology with Routing Hub, Governance Hub, Left/Right Spokes & 23 bidirectional edges.',
+    icon: ShieldCheck,
+    color: 'from-blue-600 to-indigo-600'
+  },
+  {
     id: '00',
     name: 'Google Cloud Enterprise Reference Architecture',
     tag: 'Production Flagship',
     desc: 'Certified 6-zone enterprise topology with Spanner, Vertex AI, GKE, Cloud Armor & Zero-Trust.',
     icon: ShieldCheck,
-    color: 'from-blue-600 to-indigo-600'
+    color: 'from-sky-600 to-blue-600'
   },
   {
-    id: '01',
+    id: '43',
     name: 'Real-Time Event Streaming & CDC Pipeline',
     tag: 'Event-Driven',
-    desc: 'Pub/Sub, Datastream CDC, Dataflow stream pipeline, and Redis caching tier.',
+    desc: 'Pub/Sub, Datastream CDC, Dataflow stream pipeline, and Memorystore Redis caching tier.',
     icon: Workflow,
     color: 'from-amber-600 to-orange-600'
   },
   {
-    id: '02',
+    id: '42',
     name: 'Multi-Region Lakehouse & Analytical Warehouse',
     tag: 'Data & Analytics',
     desc: 'BigQuery serverless analytics, Cloud Storage data lake, and Cloud Spanner dual-region replication.',
@@ -62,10 +70,10 @@ const STARTER_BLUEPRINTS = [
     color: 'from-emerald-600 to-teal-600'
   },
   {
-    id: '04',
+    id: '41',
     name: 'GenAI RAG Hub & Foundation Model Engine',
     tag: 'AI & Vertex',
-    desc: 'Vertex Vector Search (ScaNN), Gemini 3.1 Pro / 2.5 Flash engine, Model Armor guardrails, and Document AI.',
+    desc: 'Vertex Vector Search (ScaNN), Gemini 4 Argon / 3.8 Flash / 3.1 Pro engine, Model Armor guardrails, and Document AI.',
     icon: Cpu,
     color: 'from-purple-600 to-pink-600'
   },

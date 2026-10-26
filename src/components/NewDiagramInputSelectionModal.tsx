@@ -41,29 +41,69 @@ interface NewDiagramInputSelectionModalProps {
 
 const STARTER_PROMPT_SUGGESTIONS = [
   {
-    title: 'FinTech Real-Time Payments Mesh',
-    prompt: 'Design an enterprise real-time payment processing platform on Google Cloud with Cloud Spanner nam3 multi-region, Pub/Sub event streaming, Cloud HSM CMEK, Model Armor, and Zero-Trust VPC-SC.',
+    title: 'Teradata → BigQuery & H2O.ai → Vertex AI Migration',
+    prompt: 'Technical architecture of Teradata migration to BigQuery and H2O.ai migration to Vertex AI with Cloud Interconnect, Batch SQL Translator, BigLake, H2O MOJO Importer, Feature Store, and Dataplex governance.',
     provider: 'gcp' as const,
     style: 'technical' as const
   },
   {
-    title: 'GenAI RAG Hub with Gemini & Vector Search',
-    prompt: 'Build a production Agentic RAG and Knowledge Retrieval Hub with Vertex Vector Search (ScaNN), Gemini 2.5 Flash / Pro reasoning engine, Document AI ingestion, and Model Armor guardrails.',
+    title: 'Multi-Tenant Agentic AI Hub & Spoke (#78)',
+    prompt: 'Design an Official Google Cloud Architecture Center Hub-and-Spoke (#78) multi-tenant agentic AI platform with Cloud Armor, Model Armor, IAP OBO+DPoP, Vertex AI Agent Engine, MCP servers, and AlloyDB RLS.',
     provider: 'gcp' as const,
     style: 'technical' as const
   },
   {
-    title: 'Multi-Region Azure Kubernetes Mesh',
-    prompt: 'Architect a high-availability Azure Application Landing Zone with Azure Front Door, AKS cluster across dual regions, Cosmos DB multi-master, and Azure Key Vault private endpoints.',
-    provider: 'azure' as const,
+    title: 'FinTech Real-Time Payments (Spanner + GKE)',
+    prompt: 'Design an enterprise real-time payment processing platform on Google Cloud with Cloud Spanner nam3 multi-region, GKE Autopilot, Pub/Sub event streaming, Cloud HSM CMEK, and Zero-Trust VPC-SC.',
+    provider: 'gcp' as const,
     style: 'technical' as const
   },
   {
-    title: 'Executive Cloud AI Transformation Infographic',
-    prompt: 'Create an executive C-suite visual infographic showcasing multi-agent orchestration, enterprise data lakehouse governance, and business ROI across 4 transformation phases.',
-    provider: 'multicloud' as const,
-    style: 'infographic' as const
+    title: 'Oracle Exadata Database@Google Cloud',
+    prompt: 'Architect an Oracle E-Business Suite (EBS) and Exadata Database@Google Cloud Split-VPC topology with Partner Interconnect, Active/Active WebLogic, Data Guard Standby, and BigQuery analytics.',
+    provider: 'gcp' as const,
+    style: 'technical' as const
   }
+];
+
+const ZERO_TYPING_ARCHITECT_DEPARTMENTS = [
+  {
+    id: 'domain',
+    label: '1. Industry Domain',
+    options: [
+      { id: 'FinTech & Real-Time Payments', snippet: 'for a PCI-DSS Level 1 FinTech real-time payments platform' },
+      { id: 'Healthcare & HIPAA Clinical FHIR', snippet: 'for a HIPAA-compliant clinical FHIR R4 & genomics lakehouse' },
+      { id: 'NASA Aerospace & Orbital TT&C', snippet: 'for a NASA CCSDS 133.0-B orbital satellite TT&C and counterfactual digital-twin mission control system' },
+      { id: 'Multi-Tenant SaaS & Retail', snippet: 'for a global omnichannel retail & multi-tenant B2B SaaS platform' },
+    ],
+  },
+  {
+    id: 'topology',
+    label: '2. Topology Archetype',
+    options: [
+      { id: 'Official #78 Hub & Spoke', snippet: 'using Official Google Cloud Architecture Center Hub-and-Spoke (#78) topology with Routing Hub, Governance Hub, and Left/Right Spokes' },
+      { id: '7-Tier Enterprise Mesh (#00)', snippet: 'structured across 7 enterprise security & runtime zones with Global Front-Door, GKE Autopilot, and DR failover' },
+      { id: 'Closed-Loop 1:3 Digital Twin', snippet: 'with a closed-loop 100Hz telemetry feedback loop and 1:3 parallel Monte Carlo simulation lanes' },
+      { id: 'Oracle@Google Exadata Split-VPC', snippet: 'integrating Oracle Exadata X10M Database@Google Cloud across Partner Interconnect and Client/Backup subnets' },
+    ],
+  },
+  {
+    id: 'data',
+    label: '3. Data & Storage Tier',
+    options: [
+      { id: 'Cloud Spanner + BigQuery', snippet: 'backed by Cloud Spanner nam3 multi-region TrueTime consistency, Pub/Sub CDC, and BigQuery Iceberg Lakehouse' },
+      { id: 'AlloyDB + Vertex Vector Search', snippet: 'backed by AlloyDB PostgreSQL with ScaNN vector index and Vertex AI Vector Search (gemini-embedding-2)' },
+      { id: 'Firestore + Memorystore Redis', snippet: 'backed by Firestore low-latency document state and Memorystore Redis Cluster sub-millisecond cache' },
+    ],
+  },
+  {
+    id: 'security',
+    label: '4. Security & AI Runtime',
+    options: [
+      { id: 'Model Armor + VPC-SC + CMEK', snippet: 'protected by Cloud Armor WAF, IAP Zero-Trust, VPC Service Controls, Cloud KMS HSM CMEK, and Model Armor Guardrails orchestrating Gemini 4 Argon & 3.8 Flash ADK/A2A agents' },
+      { id: 'Assured Workloads FedRAMP High', snippet: 'enforcing Assured Workloads FedRAMP High / ITAR sovereignty, Secret Manager rotation, and Cloud Audit Logs' },
+    ],
+  },
 ];
 
 export function NewDiagramInputSelectionModal({
@@ -77,15 +117,20 @@ export function NewDiagramInputSelectionModal({
 
   const [activeTab, setActiveTab] = useState<'prompt' | 'blueprint' | 'vision' | 'blank' | 'import'>('prompt');
 
+  // Drawer Width State (Slim 640px vs Wide 880px so live canvas remains visible)
+  const [isExpandedWide, setIsExpandedWide] = useState(false);
+
   // Prompt Mode State
   const [promptText, setPromptText] = useState('');
   const [selectedProvider, setSelectedProvider] = useState<'gcp' | 'azure' | 'aws' | 'multicloud'>('gcp');
   const [selectedStyle, setSelectedStyle] = useState<'technical' | 'infographic' | 'conceptual' | 'paper'>('technical');
+  // Honest initial state: empty object when prompt is empty (no false blue active pills)
+  const [directorSelections, setDirectorSelections] = useState<Record<string, number>>({});
 
   // Blueprint Mode State
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>('00');
+  const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>('78');
 
   // Vision Decompile Mode State
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -123,14 +168,57 @@ export function NewDiagramInputSelectionModal({
 
   if (!isOpen) return null;
 
+  const handlePromptChange = (val: string) => {
+    setPromptText(val);
+    const low = val.toLowerCase();
+    if (/\b(gcp|google|bigquery|big\s*query|vertex|vertx|vertxai|spanner|alloydb|gke|dataplex|teradata|h2o|h20|cloud\s+run|pub\/?sub)\b/i.test(low)) {
+      setSelectedProvider('gcp');
+    }
+  };
+
   const handleApplySuggestion = (sug: typeof STARTER_PROMPT_SUGGESTIONS[0]) => {
     setPromptText(sug.prompt);
     setSelectedProvider(sug.provider);
     setSelectedStyle(sug.style);
   };
 
-  const handlePromptSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const composeDirectorPrompt = (nextSelections: Record<string, number>) => {
+    const activeEntries = ZERO_TYPING_ARCHITECT_DEPARTMENTS.filter(
+      (dept) => nextSelections[dept.id] !== undefined
+    );
+    if (activeEntries.length === 0) {
+      return;
+    }
+    const parts = activeEntries.map((dept) => {
+      const idx = nextSelections[dept.id] ?? 0;
+      return dept.options[idx]?.snippet || dept.options[0].snippet;
+    });
+    setPromptText(`Architect a production Google Cloud topology ${parts.join(', ')}.`);
+    setSelectedProvider('gcp');
+  };
+
+  const handleDirectorSelect = (deptId: string, optionIdx: number) => {
+    const next = { ...directorSelections };
+    if (next[deptId] === optionIdx) {
+      delete next[deptId];
+    } else {
+      next[deptId] = optionIdx;
+    }
+    setDirectorSelections(next);
+    composeDirectorPrompt(next);
+  };
+
+  const handleRandomizeDirector = () => {
+    const next: Record<string, number> = {};
+    for (const dept of ZERO_TYPING_ARCHITECT_DEPARTMENTS) {
+      next[dept.id] = Math.floor(Math.random() * dept.options.length);
+    }
+    setDirectorSelections(next);
+    composeDirectorPrompt(next);
+  };
+
+  const handlePromptSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!promptText.trim()) return;
     onSelectOption({
       mode: 'prompt',
@@ -163,7 +251,7 @@ export function NewDiagramInputSelectionModal({
   const handleDecompileAndOpen = async () => {
     if (!uploadedImageBase64) return;
     setIsDecompiling(true);
-    setDecompileStatus('Gemini 2.5 Pro Vision is decompiling architectural nodes, tiers & flows...');
+    setDecompileStatus('Gemini 3.1 Pro & 3.8 Flash Vision is decompiling architectural nodes, tiers & flows...');
 
     try {
       const res = await fetch('/api/decompile-image', {
@@ -195,16 +283,16 @@ export function NewDiagramInputSelectionModal({
     }
   };
 
-  const handleBlankCanvasSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleBlankCanvasSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     onSelectOption({
       mode: 'blank',
       projectName: blankCanvasTitle.trim() || 'New Blank Canvas'
     });
   };
 
-  const handleImportXmlSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleImportXmlSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!pastedXml.trim()) return;
     onSelectOption({
       mode: 'import_xml',
@@ -214,225 +302,300 @@ export function NewDiagramInputSelectionModal({
   };
 
   const inactiveTabClass = isLight
-    ? 'bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200 border border-slate-200'
-    : 'bg-slate-800/60 text-slate-300 hover:text-white hover:bg-slate-800';
+    ? 'bg-white text-slate-700 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/90'
+    : 'bg-slate-800/60 text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-700';
 
   const inputClass = isLight
     ? 'w-full bg-white border border-slate-300 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 rounded-xl px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 outline-none transition font-medium'
     : 'w-full bg-slate-950 border border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 outline-none transition font-medium';
 
   const cancelBtnClass = isLight
-    ? 'px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer'
+    ? 'px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-200/70 transition cursor-pointer'
     : 'px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer';
+
+  const activeDirectorCount = Object.keys(directorSelections).length;
 
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-labelledby="new-diagram-modal-title"
-      className={`fixed inset-0 z-[140] flex items-center justify-center p-3 sm:p-6 backdrop-blur-md animate-in fade-in duration-200 ${
-        isLight ? 'bg-slate-900/40' : 'bg-slate-950/80'
+      data-testid="new-diagram-drawer-backdrop"
+      className={`fixed inset-0 z-[140] flex justify-end animate-in fade-in duration-150 ${
+        isLight ? 'bg-slate-900/15' : 'bg-slate-950/45'
       }`}
       onClick={onClose}
     >
       <div
-        className={`relative w-full max-w-4xl border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] transition-colors ${
+        data-testid="new-diagram-docked-drawer"
+        className={`relative h-full w-full ${
+          isExpandedWide ? 'max-w-[860px]' : 'max-w-[640px]'
+        } border-l shadow-2xl overflow-hidden flex flex-col transition-all duration-200 ${
           isLight
             ? 'bg-white border-slate-200 text-slate-900'
             : 'bg-slate-900 border-slate-800 text-slate-100'
         }`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* MODAL HEADER */}
+        {/* DRAWER HEADER */}
         <div
-          className={`px-6 py-4 border-b flex items-center justify-between shrink-0 ${
+          className={`px-5 py-3.5 border-b flex items-center justify-between shrink-0 ${
             isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950/60 border-slate-800'
           }`}
         >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/20">
-              <Plus className="w-5 h-5 stroke-[2.5]" />
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20 shrink-0">
+              <Plus className="w-4 h-4 stroke-[2.5]" />
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <h2
                   id="new-diagram-modal-title"
-                  className={`text-base font-extrabold tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}
+                  className={`text-sm font-extrabold tracking-tight truncate ${isLight ? 'text-slate-900' : 'text-white'}`}
                 >
-                  Create New Architecture Diagram
+                  New Google Cloud Architecture Diagram
                 </h2>
                 <span
-                  className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${
+                  className={`text-[9.5px] font-mono font-bold px-2 py-0.5 rounded-full border shrink-0 ${
                     isLight
                       ? 'bg-sky-50 text-sky-700 border-sky-200'
                       : 'bg-sky-500/20 text-sky-400 border-sky-500/30'
                   }`}
                 >
-                  INPUT SELECTION
+                  OFFICIAL #78 STANDARD
                 </span>
               </div>
-              <p className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                Choose how you want to initiate your architecture canvas
+              <p className={`text-[11px] truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                Describe your use case, pick a certified blueprint, or upload an image
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close new diagram dialog"
-            className={`p-2 rounded-xl transition cursor-pointer ${
-              isLight ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/70' : 'text-slate-400 hover:text-white hover:bg-slate-800'
-            }`}
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              type="button"
+              onClick={() => setIsExpandedWide(!isExpandedWide)}
+              data-testid="new-diagram-drawer-width-toggle"
+              className={`px-2.5 py-1.5 rounded-lg text-[10.5px] font-bold border transition cursor-pointer ${
+                isLight
+                  ? 'bg-white hover:bg-slate-100 text-slate-600 border-slate-200'
+                  : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+              }`}
+              title={isExpandedWide ? 'Dock to compact 640px drawer' : 'Expand drawer to 860px wide'}
+            >
+              {isExpandedWide ? '⇥ Compact' : '⇤ Expand'}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close new diagram dialog"
+              className={`p-1.5 rounded-xl transition cursor-pointer ${
+                isLight ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/70' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
-        {/* INPUT SELECTION TABS */}
+        {/* 5-COLUMN EQUAL-WIDTH SEGMENTED TAB GRID (ZERO HORIZONTAL OVERFLOW) */}
         <div
-          className={`px-6 pt-3 pb-2 border-b flex items-center gap-2 overflow-x-auto shrink-0 ${
-            isLight ? 'border-slate-200 bg-slate-50/70' : 'border-slate-800/80 bg-slate-950/30'
+          data-testid="new-diagram-segmented-tabs"
+          className={`px-5 py-2.5 border-b grid grid-cols-5 gap-1.5 shrink-0 ${
+            isLight ? 'border-slate-200 bg-slate-50/80' : 'border-slate-800/80 bg-slate-950/30'
           }`}
         >
           <button
             type="button"
+            data-testid="new-diagram-tab-prompt"
             onClick={() => setActiveTab('prompt')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shrink-0 ${
+            className={`px-2 py-2 rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-1.5 cursor-pointer min-w-0 ${
               activeTab === 'prompt'
-                ? 'bg-sky-600 text-white shadow-md shadow-sky-600/30'
+                ? 'bg-sky-600 text-white shadow-sm shadow-sky-600/30'
                 : inactiveTabClass
             }`}
           >
-            <Sparkles className={`w-4 h-4 ${activeTab === 'prompt' ? 'text-sky-200' : 'text-sky-500'}`} />
-            <span>1. Prompt to Architecture (AI)</span>
+            <Sparkles className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'prompt' ? 'text-sky-200' : 'text-sky-500'}`} />
+            <span className="truncate">AI Prompt</span>
           </button>
 
           <button
             type="button"
+            data-testid="new-diagram-tab-blueprint"
             onClick={() => setActiveTab('blueprint')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shrink-0 ${
+            className={`px-2 py-2 rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-1.5 cursor-pointer min-w-0 ${
               activeTab === 'blueprint'
-                ? 'bg-sky-600 text-white shadow-md shadow-sky-600/30'
+                ? 'bg-amber-600 text-white shadow-sm shadow-amber-600/30'
                 : inactiveTabClass
             }`}
           >
-            <LayoutGrid className={`w-4 h-4 ${activeTab === 'blueprint' ? 'text-amber-200' : 'text-amber-500'}`} />
-            <span>2. 77 Certified Blueprints</span>
+            <LayoutGrid className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'blueprint' ? 'text-amber-100' : 'text-amber-500'}`} />
+            <span className="truncate">{CANONICAL_TEMPLATES.length} Blueprints</span>
           </button>
 
           <button
             type="button"
+            data-testid="new-diagram-tab-vision"
             onClick={() => setActiveTab('vision')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shrink-0 ${
+            className={`px-2 py-2 rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-1.5 cursor-pointer min-w-0 ${
               activeTab === 'vision'
-                ? 'bg-teal-600 text-white shadow-md shadow-teal-600/30'
+                ? 'bg-teal-600 text-white shadow-sm shadow-teal-600/30'
                 : inactiveTabClass
             }`}
           >
-            <ImageIcon className={`w-4 h-4 ${activeTab === 'vision' ? 'text-teal-200' : 'text-teal-500'}`} />
-            <span>3. Image Decompile (Vision AI)</span>
+            <ImageIcon className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'vision' ? 'text-teal-200' : 'text-teal-500'}`} />
+            <span className="truncate">Vision AI</span>
           </button>
 
           <button
             type="button"
+            data-testid="new-diagram-tab-blank"
             onClick={() => setActiveTab('blank')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shrink-0 ${
+            className={`px-2 py-2 rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-1.5 cursor-pointer min-w-0 ${
               activeTab === 'blank'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30'
                 : inactiveTabClass
             }`}
           >
-            <FileCode2 className={`w-4 h-4 ${activeTab === 'blank' ? 'text-indigo-200' : 'text-indigo-500'}`} />
-            <span>4. Blank Canvas</span>
+            <FileCode2 className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'blank' ? 'text-indigo-200' : 'text-indigo-500'}`} />
+            <span className="truncate">Blank Canvas</span>
           </button>
 
           <button
             type="button"
+            data-testid="new-diagram-tab-import"
             onClick={() => setActiveTab('import')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shrink-0 ${
+            className={`px-2 py-2 rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-1.5 cursor-pointer min-w-0 ${
               activeTab === 'import'
-                ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
+                ? 'bg-purple-600 text-white shadow-sm shadow-purple-600/30'
                 : inactiveTabClass
             }`}
           >
-            <FileUp className={`w-4 h-4 ${activeTab === 'import' ? 'text-purple-200' : 'text-purple-500'}`} />
-            <span>5. Import XML</span>
+            <FileUp className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'import' ? 'text-purple-200' : 'text-purple-500'}`} />
+            <span className="truncate">Import XML</span>
           </button>
         </div>
 
-        {/* MODAL BODY */}
-        <div className="flex-1 overflow-y-auto p-6">
-          {/* TAB 1: PROMPT TO ARCHITECTURE */}
+        {/* DRAWER BODY (SCROLLABLE) */}
+        <div className="flex-1 overflow-y-auto px-5 py-4">
+          {/* TAB 1: PROMPT TO ARCHITECTURE (CLEAN, FOCUSED 2-STEP FLOW) */}
           {activeTab === 'prompt' && (
-            <form onSubmit={handlePromptSubmit} className="space-y-5">
-              {/* Quick suggestions */}
+            <form id="new-diagram-prompt-form" onSubmit={handlePromptSubmit} className="space-y-4">
+              {/* 1. PRIMARY INPUT AT TOP: Natural Language Prompt Input */}
               <div>
-                <span
-                  className={`text-[11px] font-bold uppercase tracking-wider block mb-2 ${
-                    isLight ? 'text-slate-500' : 'text-slate-400'
-                  }`}
-                >
-                  ⚡ 1-Click Starter Prompts:
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {STARTER_PROMPT_SUGGESTIONS.map((sug, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => handleApplySuggestion(sug)}
-                      className={`text-left p-2.5 rounded-xl border transition group cursor-pointer ${
-                        isLight
-                          ? 'bg-slate-50 hover:bg-sky-50/60 border-slate-200 hover:border-sky-400 text-slate-800'
-                          : 'bg-slate-800/60 hover:bg-slate-800 border-slate-700/80 hover:border-sky-500/50 text-slate-200'
+                <div className="flex items-center justify-between mb-1.5">
+                  <label
+                    htmlFor="new-diagram-prompt-textarea"
+                    className={`text-xs font-extrabold flex items-center gap-1.5 ${
+                      isLight ? 'text-slate-900' : 'text-slate-100'
+                    }`}
+                  >
+                    <span>1. What Architecture Do You Want to Build or Migrate?</span>
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <span
+                      data-testid="prompt-readiness-badge"
+                      className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${
+                        promptText.trim()
+                          ? isLight
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                          : isLight
+                          ? 'bg-slate-100 text-slate-500 border-slate-200'
+                          : 'bg-slate-800 text-slate-400 border-slate-700'
                       }`}
                     >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className={`text-xs font-bold ${isLight ? 'text-sky-700 group-hover:text-sky-800' : 'text-sky-400 group-hover:text-sky-300'}`}>
-                          {sug.title}
-                        </span>
-                        <span
-                          className={`text-[9.5px] uppercase font-mono px-1.5 py-0.5 rounded border ${
-                            isLight
-                              ? 'bg-white text-slate-600 border-slate-200'
-                              : 'bg-slate-900 text-slate-400 border-slate-700'
+                      {promptText.trim() ? '🟢 Ready to Synthesize (#78 GCP Standard)' : 'Type below or click an example'}
+                    </span>
+                    {promptText.trim() && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPromptText('');
+                          setDirectorSelections({});
+                          setSelectedProvider('gcp');
+                          setSelectedStyle('technical');
+                        }}
+                        className={`text-[10px] font-bold hover:underline cursor-pointer ${
+                          isLight ? 'text-slate-500 hover:text-slate-800' : 'text-slate-400 hover:text-slate-200'
+                        }`}
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <textarea
+                  id="new-diagram-prompt-textarea"
+                  data-testid="new-diagram-prompt-textarea"
+                  rows={4}
+                  required
+                  value={promptText}
+                  onChange={(e) => handlePromptChange(e.target.value)}
+                  placeholder="e.g. Technical architecture of Teradata migration to BigQuery and H2O.ai migration to Vertex AI with Cloud Interconnect, Batch SQL Translator, BigLake, and Dataplex governance..."
+                  className={`w-full border focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 rounded-2xl p-3.5 text-xs outline-none transition leading-relaxed resize-none font-medium ${
+                    isLight
+                      ? 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 shadow-2xs'
+                      : 'bg-slate-950 border-slate-700 text-white placeholder-slate-500'
+                  }`}
+                />
+
+                {/* 1-Click Enterprise Architecture Examples */}
+                <div className="mt-2.5">
+                  <span className={`text-[10px] font-bold uppercase tracking-wider block mb-1.5 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                    ⚡ 1-Click Enterprise Examples:
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                    {STARTER_PROMPT_SUGGESTIONS.map((sug, idx) => {
+                      const isApplied = promptText === sug.prompt;
+                      return (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => handleApplySuggestion(sug)}
+                          className={`px-3 py-2 rounded-xl text-[11px] font-bold border transition cursor-pointer text-left flex items-center justify-between gap-1.5 ${
+                            isApplied
+                              ? isLight
+                                ? 'bg-sky-50 border-sky-500 text-sky-900 shadow-2xs'
+                                : 'bg-sky-500/25 border-sky-400 text-sky-200'
+                              : isLight
+                              ? 'bg-slate-50 hover:bg-sky-50/70 border-slate-200 hover:border-sky-300 text-slate-700'
+                              : 'bg-slate-800/70 hover:bg-slate-800 border-slate-700 text-slate-300'
                           }`}
                         >
-                          {sug.provider}
-                        </span>
-                      </div>
-                      <p className={`text-[11px] line-clamp-2 leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                        {sug.prompt}
-                      </p>
-                    </button>
-                  ))}
+                          <span className="truncate">{sug.title}</span>
+                          <ArrowRight className="w-3 h-3 shrink-0 opacity-60" />
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
-              {/* Cloud Provider & Architectural Style selectors */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* 2. COMPACT 1-ROW SEGMENTED STRIPS: Cloud Provider & Diagram Style */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 <div>
-                  <label className={`block text-xs font-bold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                    Cloud Provider Ecosystem
+                  <label className={`block text-[11px] font-bold mb-1 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+                    2. Cloud Ecosystem (Default: GCP)
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className={`grid grid-cols-4 gap-1 p-1 rounded-xl border ${isLight ? 'bg-slate-100/80 border-slate-200' : 'bg-slate-950 border-slate-800'}`}>
                     {[
-                      { id: 'gcp', label: 'Google Cloud' },
-                      { id: 'azure', label: 'Microsoft Azure' },
+                      { id: 'gcp', label: 'GCP' },
+                      { id: 'multicloud', label: 'Hybrid' },
                       { id: 'aws', label: 'AWS' },
-                      { id: 'multicloud', label: 'Multi-Cloud / Hybrid' }
+                      { id: 'azure', label: 'Azure' }
                     ].map((p) => (
                       <button
                         key={p.id}
                         type="button"
                         onClick={() => setSelectedProvider(p.id as any)}
-                        className={`p-2 rounded-xl text-xs font-bold text-center border transition cursor-pointer ${
+                        className={`py-1.5 px-1.5 rounded-lg text-[10.5px] font-bold text-center transition cursor-pointer truncate ${
                           selectedProvider === p.id
                             ? isLight
-                              ? 'bg-sky-50 border-sky-500 text-sky-800 shadow-2xs'
-                              : 'bg-sky-500/20 border-sky-500 text-sky-300 shadow-xs'
+                              ? 'bg-white text-sky-800 shadow-xs border border-sky-400'
+                              : 'bg-sky-500/20 text-sky-300 border border-sky-500/50'
                             : isLight
-                            ? 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                            : 'bg-slate-800/40 border-slate-700/80 text-slate-400 hover:text-slate-200'
+                            ? 'text-slate-600 hover:text-slate-900'
+                            : 'text-slate-400 hover:text-slate-200'
                         }`}
                       >
                         {p.label}
@@ -442,28 +605,28 @@ export function NewDiagramInputSelectionModal({
                 </div>
 
                 <div>
-                  <label className={`block text-xs font-bold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                    Diagram Perspective &amp; Style
+                  <label className={`block text-[11px] font-bold mb-1 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+                    3. Architecture Standard
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className={`grid grid-cols-4 gap-1 p-1 rounded-xl border ${isLight ? 'bg-slate-100/80 border-slate-200' : 'bg-slate-950 border-slate-800'}`}>
                     {[
-                      { id: 'technical', label: 'Technical Components' },
-                      { id: 'infographic', label: 'Executive Infographic' },
-                      { id: 'conceptual', label: 'Conceptual Flow' },
-                      { id: 'whiteboard', label: 'Whiteboard Sketch' }
+                      { id: 'technical', label: 'GCP #78' },
+                      { id: 'infographic', label: 'Executive' },
+                      { id: 'conceptual', label: 'Flow' },
+                      { id: 'paper', label: 'Sketch' }
                     ].map((s) => (
                       <button
                         key={s.id}
                         type="button"
                         onClick={() => setSelectedStyle(s.id as any)}
-                        className={`p-2 rounded-xl text-xs font-bold text-center border transition cursor-pointer ${
+                        className={`py-1.5 px-1 rounded-lg text-[10.5px] font-bold text-center transition cursor-pointer truncate ${
                           selectedStyle === s.id
                             ? isLight
-                              ? 'bg-indigo-50 border-indigo-500 text-indigo-800 shadow-2xs'
-                              : 'bg-indigo-500/20 border-indigo-500 text-indigo-300 shadow-xs'
+                              ? 'bg-white text-indigo-800 shadow-xs border border-indigo-400'
+                              : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/50'
                             : isLight
-                            ? 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                            : 'bg-slate-800/40 border-slate-700/80 text-slate-400 hover:text-slate-200'
+                            ? 'text-slate-600 hover:text-slate-900'
+                            : 'text-slate-400 hover:text-slate-200'
                         }`}
                       >
                         {s.label}
@@ -473,56 +636,84 @@ export function NewDiagramInputSelectionModal({
                 </div>
               </div>
 
-              {/* Natural Language Prompt Input */}
-              <div>
-                <label className={`block text-xs font-bold mb-1.5 flex items-center justify-between ${isLight ? 'text-slate-800' : 'text-slate-200'}`}>
-                  <span>Describe Your Architecture Goals</span>
-                  <span className={`text-[11px] font-normal ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                    Gemini 3.8 Flash AI Synthesis
+              {/* 3. Optional Collapsible Guided L400 Builder (Collapsed by default to eliminate clutter) */}
+              <details
+                data-testid="zero-typing-architecture-director"
+                className={`rounded-2xl border overflow-hidden ${
+                  isLight ? 'bg-slate-50/70 border-slate-200' : 'bg-slate-950/60 border-slate-800'
+                }`}
+              >
+                <summary className="px-3.5 py-2.5 cursor-pointer flex items-center justify-between gap-2 select-none">
+                  <span
+                    className={`text-[11px] font-bold truncate ${
+                      isLight ? 'text-slate-600' : 'text-slate-300'
+                    }`}
+                  >
+                    🎛️ Optional: Guided L400 Prompt Builder ({activeDirectorCount}/4 Selected) ▾
                   </span>
-                </label>
-                <textarea
-                  rows={4}
-                  required
-                  value={promptText}
-                  onChange={(e) => setPromptText(e.target.value)}
-                  placeholder="e.g. Design a multi-region retail checkout system with Cloud Spanner dual-region nam3, Cloud Armor WAF, GKE autopilot, Pub/Sub order queue, and Gemini real-time fraud scoring..."
-                  className={`w-full border focus:border-sky-500 focus:ring-1 focus:ring-sky-500 rounded-2xl p-3.5 text-xs outline-none transition leading-relaxed resize-none font-medium ${
-                    isLight
-                      ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
-                      : 'bg-slate-950 border-slate-700 text-white placeholder-slate-500'
-                  }`}
-                />
-              </div>
-
-              {/* Action Buttons */}
-              <div className="pt-2 flex items-center justify-end gap-3">
-                <button type="button" onClick={onClose} className={cancelBtnClass}>
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!promptText.trim()}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 disabled:opacity-40 text-white text-xs font-extrabold shadow-lg shadow-sky-500/25 transition flex items-center gap-2 cursor-pointer"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  <span>Synthesize Architecture Diagram →</span>
-                </button>
-              </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleRandomizeDirector();
+                    }}
+                    data-testid="zero-typing-randomize-btn"
+                    className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition cursor-pointer shrink-0 whitespace-nowrap ${
+                      isLight
+                        ? 'bg-white hover:bg-sky-50 text-sky-700 border-sky-200'
+                        : 'bg-slate-900 hover:bg-slate-800 text-sky-300 border-slate-700'
+                    }`}
+                  >
+                    🎲 Auto-Compose L400 Prompt
+                  </button>
+                </summary>
+                <div className="px-3.5 pb-3.5 pt-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5 border-t border-slate-200/70">
+                  {ZERO_TYPING_ARCHITECT_DEPARTMENTS.map((dept) => (
+                    <div key={dept.id} className="space-y-1">
+                      <span className={`text-[10px] font-bold block ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                        {dept.label}
+                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {dept.options.map((opt, idx) => {
+                          const active = directorSelections[dept.id] === idx;
+                          return (
+                            <button
+                              key={opt.id}
+                              type="button"
+                              onClick={() => handleDirectorSelect(dept.id, idx)}
+                              className={`px-2 py-1 rounded-lg text-[10.5px] font-semibold border transition cursor-pointer ${
+                                active
+                                  ? isLight
+                                    ? 'bg-sky-100 border-sky-400 text-sky-900 shadow-2xs'
+                                    : 'bg-sky-500/20 border-sky-500/60 text-sky-300'
+                                  : isLight
+                                  ? 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300'
+                                  : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+                              }`}
+                            >
+                              {opt.id}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </details>
             </form>
           )}
 
           {/* TAB 2: CERTIFIED BLUEPRINT CATALOG */}
           {activeTab === 'blueprint' && (
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row items-center gap-3">
+            <div className="space-y-3.5">
+              <div className="flex flex-col sm:flex-row items-center gap-2.5">
                 <div className="relative flex-1 w-full">
                   <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search 77 certified reference architectures..."
+                    placeholder={`Search ${CANONICAL_TEMPLATES.length} certified reference architectures...`}
                     className={`w-full border rounded-xl pl-9 pr-3.5 py-2 text-xs outline-none focus:border-sky-500 font-medium ${
                       isLight
                         ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
@@ -530,13 +721,13 @@ export function NewDiagramInputSelectionModal({
                     }`}
                   />
                 </div>
-                <div className="flex items-center gap-1.5 shrink-0 overflow-x-auto w-full sm:w-auto">
+                <div className="flex items-center gap-1 shrink-0 flex-wrap w-full sm:w-auto">
                   {['all', 'Reference Architectures', 'Infographic', 'Flow'].map((f) => (
                     <button
                       key={f}
                       type="button"
                       onClick={() => setSelectedCategory(f)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer ${
+                      className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition shrink-0 cursor-pointer ${
                         selectedCategory === f
                           ? isLight
                             ? 'bg-amber-100 text-amber-900 border border-amber-300'
@@ -546,14 +737,14 @@ export function NewDiagramInputSelectionModal({
                           : 'bg-slate-800/60 text-slate-400 hover:text-slate-200'
                       }`}
                     >
-                      {f === 'all' ? 'All (77)' : f}
+                      {f === 'all' ? `All (${CANONICAL_TEMPLATES.length})` : f}
                     </button>
                   ))}
                 </div>
               </div>
 
               {/* Blueprints Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[460px] overflow-y-auto pr-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pr-1">
                 {filteredBlueprints.map((bp) => {
                   const isSelected = selectedBlueprintId === bp.id;
                   return (
@@ -600,7 +791,7 @@ export function NewDiagramInputSelectionModal({
                           isLight ? 'border-slate-200' : 'border-slate-800/60'
                         }`}
                       >
-                        <span className={`text-[10px] truncate max-w-[160px] ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                        <span className={`text-[10px] truncate max-w-[140px] ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                           {bp.examples || 'Enterprise Cloud Topology'}
                         </span>
                         <button
@@ -622,32 +813,6 @@ export function NewDiagramInputSelectionModal({
                     </div>
                   );
                 })}
-              </div>
-
-              {/* Action bar */}
-              <div
-                className={`pt-2 border-t flex items-center justify-between ${
-                  isLight ? 'border-slate-200' : 'border-slate-800'
-                }`}
-              >
-                <span className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                  Showing {filteredBlueprints.length} of 77 Reference Blueprints
-                </span>
-                <div className="flex items-center gap-3">
-                  <button type="button" onClick={onClose} className={cancelBtnClass}>
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const bp = CANONICAL_TEMPLATES.find((t) => t.id === selectedBlueprintId);
-                      if (bp) handleBlueprintSubmit(bp);
-                    }}
-                    className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold shadow-lg shadow-amber-500/20 transition flex items-center gap-2 cursor-pointer"
-                  >
-                    <span>Load Selected Blueprint →</span>
-                  </button>
-                </div>
               </div>
             </div>
           )}
@@ -718,7 +883,7 @@ export function NewDiagramInputSelectionModal({
                         Drop architecture screenshot, diagram PNG, or whiteboard photo here
                       </span>
                       <span className={`text-[11px] ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                        Supports PNG, JPG, WEBP, SVG • Analyzed with Gemini 2.5 Pro Vision
+                        Supports PNG, JPG, WEBP, SVG • Analyzed with Gemini 3.8 Flash Vision
                       </span>
                     </div>
                   </>
@@ -759,49 +924,24 @@ export function NewDiagramInputSelectionModal({
                 </div>
               )}
 
-              <div
-                className={`pt-2 border-t flex items-center justify-between ${
-                  isLight ? 'border-slate-200' : 'border-slate-800'
-                }`}
-              >
+              <div className="pt-1">
                 <Link
                   href="/vision"
                   onClick={onClose}
-                  className={`text-xs flex items-center gap-1 font-semibold hover:underline ${
+                  className={`text-xs inline-flex items-center gap-1 font-semibold hover:underline ${
                     isLight ? 'text-teal-700 hover:text-teal-800' : 'text-teal-400 hover:text-teal-300'
                   }`}
                 >
                   <span>Open Full Side-by-Side Vision Studio</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </Link>
-
-                <div className="flex items-center gap-3">
-                  <button type="button" onClick={onClose} className={cancelBtnClass}>
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    disabled={!uploadedImageBase64 || isDecompiling}
-                    onClick={handleDecompileAndOpen}
-                    className="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 disabled:opacity-40 text-white text-xs font-bold shadow-lg shadow-teal-500/25 transition flex items-center gap-2 cursor-pointer"
-                  >
-                    {isDecompiling ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Decompiling Blueprint...</span>
-                      </>
-                    ) : (
-                      <span>Decompile &amp; Open Canvas →</span>
-                    )}
-                  </button>
-                </div>
               </div>
             </div>
           )}
 
           {/* TAB 4: BLANK CANVAS */}
           {activeTab === 'blank' && (
-            <form onSubmit={handleBlankCanvasSubmit} className="space-y-5">
+            <form id="new-diagram-blank-form" onSubmit={handleBlankCanvasSubmit} className="space-y-5">
               <div
                 className={`p-6 rounded-2xl border text-center space-y-3 ${
                   isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950/60 border-slate-800'
@@ -837,28 +977,12 @@ export function NewDiagramInputSelectionModal({
                   className={inputClass}
                 />
               </div>
-
-              <div
-                className={`pt-2 border-t flex items-center justify-end gap-3 ${
-                  isLight ? 'border-slate-200' : 'border-slate-800'
-                }`}
-              >
-                <button type="button" onClick={onClose} className={cancelBtnClass}>
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold shadow-lg shadow-indigo-500/25 transition flex items-center gap-2 cursor-pointer"
-                >
-                  <span>Create Blank Canvas →</span>
-                </button>
-              </div>
             </form>
           )}
 
           {/* TAB 5: IMPORT XML */}
           {activeTab === 'import' && (
-            <form onSubmit={handleImportXmlSubmit} className="space-y-4">
+            <form id="new-diagram-import-form" onSubmit={handleImportXmlSubmit} className="space-y-4">
               <div>
                 <label className={`block text-xs font-bold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
                   Diagram Title
@@ -889,25 +1013,117 @@ export function NewDiagramInputSelectionModal({
                   }`}
                 />
               </div>
-
-              <div
-                className={`pt-2 border-t flex items-center justify-end gap-3 ${
-                  isLight ? 'border-slate-200' : 'border-slate-800'
-                }`}
-              >
-                <button type="button" onClick={onClose} className={cancelBtnClass}>
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!pastedXml.trim()}
-                  className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white text-xs font-extrabold shadow-lg shadow-purple-500/25 transition flex items-center gap-2 cursor-pointer"
-                >
-                  <span>Load Imported XML →</span>
-                </button>
-              </div>
             </form>
           )}
+        </div>
+
+        {/* STICKY BOTTOM FOOTER: PRIMARY CTA ALWAYS VISIBLE ABOVE THE FOLD */}
+        <div
+          data-testid="new-diagram-sticky-footer"
+          className={`px-5 py-3.5 border-t flex items-center justify-between gap-3 shrink-0 ${
+            isLight ? 'bg-slate-50/95 border-slate-200' : 'bg-slate-950/90 border-slate-800'
+          }`}
+        >
+          <div className="min-w-0">
+            {activeTab === 'prompt' && (
+              <span className={`text-[11px] font-medium block truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                {promptText.trim()
+                  ? `${promptText.trim().length} chars • ${selectedProvider.toUpperCase()} • ${selectedStyle}`
+                  : 'Tap a preset or type a prompt above'}
+              </span>
+            )}
+            {activeTab === 'blueprint' && (
+              <span className={`text-[11px] font-medium block truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                Showing {filteredBlueprints.length} of {CANONICAL_TEMPLATES.length} Certified Blueprints
+              </span>
+            )}
+            {activeTab === 'vision' && (
+              <span className={`text-[11px] font-medium block truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                {uploadedFileName ? `Ready: ${uploadedFileName}` : 'Upload PNG/JPG/SVG to decompile'}
+              </span>
+            )}
+            {activeTab === 'blank' && (
+              <span className={`text-[11px] font-medium block truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                16:9 Vector Canvas • 0 pre-loaded nodes
+              </span>
+            )}
+            {activeTab === 'import' && (
+              <span className={`text-[11px] font-medium block truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                {pastedXml.trim() ? `${pastedXml.trim().length} bytes XML ready` : 'Paste <mxGraphModel> XML above'}
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2.5 shrink-0">
+            <button type="button" onClick={onClose} className={cancelBtnClass}>
+              Cancel
+            </button>
+
+            {activeTab === 'prompt' && (
+              <button
+                type="button"
+                onClick={() => handlePromptSubmit()}
+                disabled={!promptText.trim()}
+                data-testid="new-diagram-synthesize-submit-btn"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 disabled:opacity-40 text-white text-xs font-extrabold shadow-md shadow-sky-500/20 transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Synthesize Architecture Diagram →</span>
+              </button>
+            )}
+
+            {activeTab === 'blueprint' && (
+              <button
+                type="button"
+                onClick={() => {
+                  const bp = CANONICAL_TEMPLATES.find((t) => t.id === selectedBlueprintId);
+                  if (bp) handleBlueprintSubmit(bp);
+                }}
+                className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold shadow-md shadow-amber-500/20 transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Load Blueprint #{selectedBlueprintId} →</span>
+              </button>
+            )}
+
+            {activeTab === 'vision' && (
+              <button
+                type="button"
+                disabled={!uploadedImageBase64 || isDecompiling}
+                onClick={handleDecompileAndOpen}
+                className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 disabled:opacity-40 text-white text-xs font-extrabold shadow-md shadow-teal-500/20 transition flex items-center gap-1.5 cursor-pointer"
+              >
+                {isDecompiling ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Decompiling Blueprint...</span>
+                  </>
+                ) : (
+                  <span>Decompile &amp; Open Canvas →</span>
+                )}
+              </button>
+            )}
+
+            {activeTab === 'blank' && (
+              <button
+                type="button"
+                onClick={() => handleBlankCanvasSubmit()}
+                className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold shadow-md shadow-indigo-500/20 transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Create Blank Canvas →</span>
+              </button>
+            )}
+
+            {activeTab === 'import' && (
+              <button
+                type="button"
+                disabled={!pastedXml.trim()}
+                onClick={() => handleImportXmlSubmit()}
+                className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white text-xs font-extrabold shadow-md shadow-purple-500/20 transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Load Imported XML →</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

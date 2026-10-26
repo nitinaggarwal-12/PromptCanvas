@@ -15,11 +15,11 @@
 
 export type GoogleWorkspaceKind = 'slides' | 'docs';
 
-export const GOOGLE_DRIVE_FILE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
+const GOOGLE_DRIVE_FILE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 /** drive.file + the basic identity scopes so we can pin `authuser=` on the redirect. */
 export const GOOGLE_OAUTH_SCOPES = `${GOOGLE_DRIVE_FILE_SCOPE} openid email`;
 
-export const GOOGLE_OAUTH_CLIENT_ID_STORAGE_KEY = 'pc_google_oauth_client_id';
+const GOOGLE_OAUTH_CLIENT_ID_STORAGE_KEY = 'pc_google_oauth_client_id';
 export const CANONICAL_BEYONDCORP_ORIGIN = 'https://promptcanvas-248990048888.cr.gclb.goog';
 export const DEFAULT_GOOGLE_OAUTH_CLIENT_ID =
   '248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com';
@@ -58,7 +58,7 @@ export interface CachedDriveToken {
   email?: string;
 }
 
-export interface GoogleWorkspaceFileResult {
+interface GoogleWorkspaceFileResult {
   id: string;
   url: string;
   webViewLink?: string;
@@ -120,7 +120,7 @@ export function getRememberedGoogleAccountEmail(): string | undefined {
   return undefined;
 }
 
-export function saveRememberedGoogleAccountEmail(email?: string): void {
+function saveRememberedGoogleAccountEmail(email?: string): void {
   if (!email || !email.includes('@')) return;
   safeStorage('local')?.setItem(REMEMBERED_EMAIL_STORAGE_KEY, email.trim().toLowerCase());
 }
@@ -225,7 +225,7 @@ export function getCachedDriveToken(clientId?: string): CachedDriveToken | null 
   }
 }
 
-export function cacheDriveToken(token: CachedDriveToken): void {
+function cacheDriveToken(token: CachedDriveToken): void {
   if (!token.email) {
     token.email = getRememberedGoogleAccountEmail();
   } else {
@@ -255,7 +255,7 @@ export function clearCachedDriveToken(): void {
 
 let gisLoadPromise: Promise<void> | null = null;
 
-export function loadGoogleIdentityServices(): Promise<void> {
+function loadGoogleIdentityServices(): Promise<void> {
   if (typeof window === 'undefined') {
     return Promise.reject(new GoogleDriveDirectOpenError('gis_unavailable', 'Google Identity Services requires a browser.'));
   }
@@ -304,7 +304,7 @@ export function loadGoogleIdentityServices(): Promise<void> {
   return gisLoadPromise;
 }
 
-export interface DriveTokenRequestOptions {
+interface DriveTokenRequestOptions {
   /** '' lets returning users skip the consent screen; 'select_account' forces the chooser. */
   prompt?: '' | 'consent' | 'select_account';
   loginHint?: string;
@@ -385,7 +385,7 @@ export async function prepareDriveTokenClient(clientId: string): Promise<DriveTo
   };
 }
 
-export async function fetchGoogleAccountEmail(accessToken: string): Promise<string | undefined> {
+async function fetchGoogleAccountEmail(accessToken: string): Promise<string | undefined> {
   try {
     const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -402,13 +402,13 @@ export async function fetchGoogleAccountEmail(accessToken: string): Promise<stri
 /*  Drive upload + conversion                                                  */
 /* -------------------------------------------------------------------------- */
 
-export function buildGoogleEditorUrl(kind: GoogleWorkspaceKind, fileId: string, email?: string): string {
+function buildGoogleEditorUrl(kind: GoogleWorkspaceKind, fileId: string, email?: string): string {
   const base = `https://docs.google.com/${GOOGLE_WORKSPACE_MIME[kind].editorPath}/d/${encodeURIComponent(fileId)}/edit`;
   return email ? `${base}?authuser=${encodeURIComponent(email)}` : base;
 }
 
 /** Builds a `multipart/related` body (metadata part + media part) for Drive `files.create`. */
-export function buildDriveMultipartBody(
+function buildDriveMultipartBody(
   metadata: Record<string, unknown>,
   media: Blob,
   mediaMimeType: string,
@@ -428,7 +428,7 @@ export function buildDriveMultipartBody(
 }
 
 /** Maps a Drive API error payload to an actionable, user-facing error. */
-export function describeDriveApiError(status: number, rawBody: string): GoogleDriveDirectOpenError {
+function describeDriveApiError(status: number, rawBody: string): GoogleDriveDirectOpenError {
   let reason = '';
   let message = '';
   try {
@@ -534,7 +534,7 @@ export async function createGoogleWorkspaceFileFromBlob(
 }
 
 /** Canonical authorized JavaScript origin for Google Identity Services. */
-export function getGoogleOAuthSetupOrigins(): string[] {
+function getGoogleOAuthSetupOrigins(): string[] {
   return [CANONICAL_BEYONDCORP_ORIGIN];
 }
 

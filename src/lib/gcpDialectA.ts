@@ -15,7 +15,7 @@
 
 import { GCP_OFFICIAL_ICONS } from './gcpIcons';
 
-export interface GcpComponentDef {
+interface GcpComponentDef {
   name: string;
   type: string;
   role: string;
@@ -24,7 +24,7 @@ export interface GcpComponentDef {
   category: 'actor' | 'ingress' | 'agent' | 'model' | 'tool' | 'storage' | 'security';
 }
 
-export interface GcpFlowStep {
+interface GcpFlowStep {
   step: string;
   from: string;
   to: string;
@@ -155,7 +155,7 @@ function renderCleanEdge(edge: EdgeDef, isDark = false): string {
  * Official URL: https://docs.cloud.google.com/architecture/multiagent-ai-system?hl=en
  * 100% fidelity to the published Google Cloud Architecture Center reference diagram
  */
-export const GCP_MULTIAGENT_CORE: GcpArchitectureDef = {
+const GCP_MULTIAGENT_CORE: GcpArchitectureDef = {
   id: 'gcp-multiagent-core',
   title: 'Multi-Agent AI System in Google Cloud',
   subtitle: 'Official Solution Architecture: Coordinator + Sequential & Iterative Refinement Patterns + A2A & MCP',
@@ -459,7 +459,7 @@ export const GCP_MULTIAGENT_CORE: GcpArchitectureDef = {
  * Official URL: https://docs.cloud.google.com/architecture/agentic-ai-classify-multimodal-data?hl=en
  * 100% fidelity to the published Google Cloud Architecture Center reference diagram
  */
-export const GCP_MULTIMODAL_CLASSIFY: GcpArchitectureDef = {
+const GCP_MULTIMODAL_CLASSIFY: GcpArchitectureDef = {
   id: 'gcp-multimodal-classify',
   title: 'Classify Multimodal Data with Multi-Agent System',
   subtitle: 'Official Solution Architecture: Parallel Agent Pattern + Shared Session State + Dual MCP Gateway',
@@ -484,7 +484,7 @@ export const GCP_MULTIMODAL_CLASSIFY: GcpArchitectureDef = {
     'Cloud Run (Root Coordinator & Custom MCP)',
     'Cloud Armor (DDoS & WAF Security Policy)',
     'External Application Load Balancer (Serverless HTTPS Ingress)',
-    'Gemini Multimodal Models (Gemini 2.5 Flash / Pro)',
+    'Gemini Multimodal Models (Gemini 3.8 Flash / Pro)',
     'Gemini Enterprise Agent Platform',
     'BigQuery (Contextual Tables, Sensor Records & Logs)',
     'Cloud Storage (Raw Multimodal Media Bucket with Autoclass)',
@@ -502,7 +502,7 @@ export const GCP_MULTIMODAL_CLASSIFY: GcpArchitectureDef = {
     { name: 'Video analyst (Subagent)', type: 'Specialist Agent', role: 'Analyzes temporal video sequences and keyframes', iconKey: 'vertex_ai', spec: 'Parallel Worker', category: 'agent' },
     { name: 'Structured data analyst (Subagent)', type: 'Specialist Agent', role: 'Correlates sensor telemetry and historical database records', iconKey: 'vertex_ai', spec: 'Parallel Worker', category: 'agent' },
     { name: 'ADK Adapter', type: 'Framework', role: 'Agent Development Kit coordinating inference requests', iconKey: 'vertex_ai', spec: 'ADK Adapter', category: 'agent' },
-    { name: 'Gemini Enterprise Agent Platform', type: 'Inference Engine', role: 'Multimodal reasoning engine calculating domain confidence', iconKey: 'gemini', spec: 'Gemini 2.5 Flash / Pro', category: 'model' },
+    { name: 'Gemini Enterprise Agent Platform', type: 'Inference Engine', role: 'Multimodal reasoning engine calculating domain confidence', iconKey: 'gemini', spec: 'Gemini 3.8 Flash / Pro', category: 'model' },
     { name: 'Custom MCP server', type: 'Tool Gateway', role: 'Cloud Run remote MCP server fetching raw images and video blobs', iconKey: 'cloud_run', spec: 'Cloud Run Service', category: 'tool' },
     { name: 'BigQuery MCP server', type: 'Tool Gateway', role: 'Google-managed remote MCP server querying structured datasets', iconKey: 'bigquery', spec: 'Google Managed MCP', category: 'tool' },
     { name: 'Multimodal data (Cloud Storage)', type: 'Media Repository', role: 'Object store housing raw image, video, and audio payloads', iconKey: 'cloud_storage', spec: 'Cloud Storage (Autoclass)', category: 'storage' },
@@ -753,7 +753,7 @@ export const GCP_MULTIMODAL_CLASSIFY: GcpArchitectureDef = {
  * ARCHITECTURE 3: Multi-Tenant Agentic AI System
  * Official URL: https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system?hl=en
  */
-export const GCP_MULTITENANT_AGENTIC: GcpArchitectureDef = {
+const GCP_MULTITENANT_AGENTIC: GcpArchitectureDef = {
   id: 'gcp-multitenant-agentic',
   title: 'Multi-Tenant Agentic AI System in Google Cloud',
   subtitle: 'Official Solution Architecture: Hub-and-Spoke VPC + Service Perimeter + PAB Policies + Tenant Datastores',
@@ -793,7 +793,7 @@ export const GCP_MULTITENANT_AGENTIC: GcpArchitectureDef = {
     { name: 'Tenant B Project (Healthcare)', type: 'Isolated Boundary', role: 'Dedicated tenant project isolated by Principal Access Boundary policy', iconKey: 'vertex_ai', spec: 'Tenant Project B', category: 'agent' },
     { name: 'Tenant Model Armor', type: 'Tenant Guardrail', role: 'Inspects tenant prompts and uses Sensitive Data Protection (DLP) for PII masking', iconKey: 'cloud_armor', spec: 'DLP Sensitive Protection', category: 'security' },
     { name: 'Tenant Dedicated Datastores', type: 'Sovereign DB', role: 'AlloyDB / BigQuery maintaining strict data sovereignty with tenant-only access', iconKey: 'spanner', spec: 'Customer-Managed Keys', category: 'storage' },
-    { name: 'Gemini Enterprise Platform', type: 'Model Core', role: 'Serves tenant reasoning passes and grounded fact generation', iconKey: 'gemini', spec: 'Gemini 2.5 Pro', category: 'model' }
+    { name: 'Gemini Enterprise Platform', type: 'Model Core', role: 'Serves tenant reasoning passes and grounded fact generation', iconKey: 'gemini', spec: 'Gemini 3.1 Pro', category: 'model' }
   ],
   flowSteps: [
     { step: '1', from: 'User Request', to: 'External Load Balancer', title: 'Edge Ingress', desc: 'User request arrives at global External Application Load Balancer.', protocol: 'HTTPS' },
@@ -948,7 +948,7 @@ export const GCP_MULTITENANT_AGENTIC: GcpArchitectureDef = {
  * ARCHITECTURE 4: Autonomous Deep-Sea Robotic Fleet (Dialect A Solution)
  * Strictly grounded in Google Cloud Architecture Center patterns
  */
-export const GCP_DEEPSEA_AGENTIC: GcpArchitectureDef = {
+const GCP_DEEPSEA_AGENTIC: GcpArchitectureDef = {
   id: 'gcp-deepsea-agentic',
   title: 'Autonomous Deep-Sea Robotic Fleet in Google Cloud',
   subtitle: 'Dialect A Solution: Closed-Loop Agentic Mesh + Acoustic Telemetry + Safety Sandbox & Satellite Downlink',
@@ -969,7 +969,7 @@ export const GCP_DEEPSEA_AGENTIC: GcpArchitectureDef = {
   productsUsed: [
     'Cloud Pub/Sub (Satellite Acoustic Uplink Stream)',
     'Cloud Run (Mission Coordinator & Custom Subsea MCP)',
-    'Gemini 2.5 Pro Multimodal (Acoustic Sonar & Thermal Bathymetry)',
+    'Gemini 3.1 Pro Multimodal (Acoustic Sonar & Thermal Bathymetry)',
     'Model Armor (Kinematic Boundary & Collision Safeguards)',
     'Cloud Spanner (Global Hydrographic Feature Store nam3)',
     'BigQuery (Subsea Environmental Sensor Lakehouse)'
@@ -985,7 +985,7 @@ export const GCP_DEEPSEA_AGENTIC: GcpArchitectureDef = {
     { name: 'Path Refiner Subagent', type: 'Correction Agent', role: 'Refines thruster vectors and returns updated trajectory to Trajectory Planner', iconKey: 'vertex_ai', spec: 'Path Tuner', category: 'agent' },
     { name: 'Downlink Dispatcher Subagent', type: 'Actuator Synthesizer', role: 'Compiles binary acoustic packets and transmits actuation commands to fleet', iconKey: 'vertex_ai', spec: 'Actuation Generator', category: 'agent' },
     { name: 'Model Armor Kinematics', type: 'Safety Guard', role: 'Enforces kinematic speed limits, depth ceilings, and prevents rogue commands', iconKey: 'cloud_armor', spec: 'Boundary Enforcer', category: 'security' },
-    { name: 'Gemini 2.5 Pro Multimodal Core', type: 'Inference Engine', role: 'Cross-modal reasoning over sonar imagery, thermal profiles, and fleet status', iconKey: 'gemini', spec: 'Enterprise Platform', category: 'model' },
+    { name: 'Gemini 3.1 Pro Multimodal Core', type: 'Inference Engine', role: 'Cross-modal reasoning over sonar imagery, thermal profiles, and fleet status', iconKey: 'gemini', spec: 'Enterprise Platform', category: 'model' },
     { name: 'Subsea MCP Server', type: 'Tool Gateway', role: 'Model Context Protocol server connecting agents to thruster kinematics API', iconKey: 'cloud_run', spec: 'Cloud Run Remote MCP', category: 'tool' },
     { name: 'Cloud Spanner Hydrographic DB', type: 'Feature Store', role: 'Subsea bathymetric map, seafloor topography, and swarm positioning', iconKey: 'spanner', spec: 'Cloud Spanner nam3', category: 'storage' },
     { name: 'BigQuery Sensor Lakehouse', type: 'Sensor Lakehouse', role: 'Historical timeseries records of benthic currents and salinity', iconKey: 'bigquery', spec: 'BigQuery', category: 'storage' }
@@ -1098,7 +1098,7 @@ export const GCP_DEEPSEA_AGENTIC: GcpArchitectureDef = {
           <mxGeometry x="870" y="355" width="180" height="55" as="geometry"/>
         </mxCell>
 
-        <mxCell id="node_gemini_deepsea" value="${encodeXml(`<div style="padding:6px 10px;font-family:'Google Sans',sans-serif;display:flex;align-items:center;gap:8px;height:100%;">${getIconSvgHtml('gemini', 28)}<div><div style="font-size:12px;font-weight:800;color:${isDark ? '#93C5FD' : '#1A73E8'};">Gemini 2.5 Pro</div><div style="font-size:8.5px;color:${subtextColor};">Multimodal Sonar Engine</div></div></div>`)}" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${cardFill};strokeColor=#1A73E8;strokeWidth=1.5;" vertex="1" parent="1">
+        <mxCell id="node_gemini_deepsea" value="${encodeXml(`<div style="padding:6px 10px;font-family:'Google Sans',sans-serif;display:flex;align-items:center;gap:8px;height:100%;">${getIconSvgHtml('gemini', 28)}<div><div style="font-size:12px;font-weight:800;color:${isDark ? '#93C5FD' : '#1A73E8'};">Gemini 3.1 Pro</div><div style="font-size:8.5px;color:${subtextColor};">Multimodal Sonar Engine</div></div></div>`)}" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${cardFill};strokeColor=#1A73E8;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="1090" y="355" width="180" height="55" as="geometry"/>
         </mxCell>
 
@@ -1160,7 +1160,7 @@ export const GCP_DEEPSEA_AGENTIC: GcpArchitectureDef = {
  * Production-grade solution architecture for enterprise pharmaceutical discovery pipelines.
  * Autonomous In Silico Target-to-Lead Generation: Multi-Agent Mesh, TPU/GPU HPC Simulation & GxP-Compliant Wet Lab Dispatch.
  */
-export const GCP_PHARMA_DRUG_DISCOVERY: GcpArchitectureDef = {
+const GCP_PHARMA_DRUG_DISCOVERY: GcpArchitectureDef = {
   id: 'gcp-pharma-drug-discovery',
   title: 'Pharma Drug Discovery: Logical Architecture',
   subtitle: 'Target-to-Lead Generation: Multi-Agent Mesh, TPU/GPU HPC Simulation & GxP-Compliant Wet-Lab Dispatch',
@@ -1697,7 +1697,7 @@ export const GCP_PHARMA_DRUG_DISCOVERY: GcpArchitectureDef = {
  * Production Google Cloud physical/technical deployment blueprint.
  * Multi-Zone VPC Network, Cloud TPU v5e / NVIDIA H100 Slurm Cluster, VPC-SC Perimeter & SiLA 2 Interconnect.
  */
-export const GCP_PHARMA_TECHNICAL_INFRASTRUCTURE: GcpArchitectureDef = {
+const GCP_PHARMA_TECHNICAL_INFRASTRUCTURE: GcpArchitectureDef = {
   id: 'gcp-pharma-technical-infrastructure',
   title: 'Pharma Drug Discovery: Technical Infrastructure Blueprint',
   subtitle: 'Production GCP Deployment: Multi-Zone VPC, Cloud TPU v5e/H100 HPC, VPC-SC Perimeter & SiLA 2 Interconnect',

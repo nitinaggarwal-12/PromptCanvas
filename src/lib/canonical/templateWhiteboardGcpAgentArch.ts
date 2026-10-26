@@ -18,7 +18,7 @@
  * - 6 bottom banking capability cards: BALANCE ENQUIRY, TRANSACTION DETAILS, STATEMENT REQUEST, CHANGE OF ADDRESS, CHEQUE BOOK REQUEST, eKYC UPDATE
  */
 
-export interface WhiteboardGcpArchitectureParams {
+interface WhiteboardGcpArchitectureParams {
   projectTitle?: string;
   domain?: string;
   theme?: 'light' | 'dark';

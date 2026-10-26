@@ -4,7 +4,7 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import { Shield, Cookie, FileText, Scale, X, Check, Sliders, ExternalLink } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 
-export type LegalModalType = 'privacy' | 'terms' | 'disclaimer' | 'cookies' | null;
+type LegalModalType = 'privacy' | 'terms' | 'disclaimer' | 'cookies' | null;
 
 interface LegalContextType {
   openLegalModal: (type: LegalModalType) => void;
@@ -13,7 +13,7 @@ interface LegalContextType {
   updateCookieConsent: (prefs: CookiePreferences) => void;
 }
 
-export interface CookiePreferences {
+interface CookiePreferences {
   essential: boolean;
   analytics: boolean;
   telemetry: boolean;
@@ -34,7 +34,9 @@ const LegalContext = createContext<LegalContextType>({
   updateCookieConsent: () => {},
 });
 
-export const useLegal = () => useContext(LegalContext);
+export function useLegal() {
+  return useContext(LegalContext);
+}
 
 export function LegalProvider({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme();
@@ -45,6 +47,17 @@ export function LegalProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
+      const params = new URLSearchParams(window.location.search);
+      const requestedLegal = params.get('legal') as LegalModalType;
+      if (
+        requestedLegal === 'disclaimer' ||
+        requestedLegal === 'privacy' ||
+        requestedLegal === 'terms' ||
+        requestedLegal === 'cookies'
+      ) {
+        setActiveModal(requestedLegal);
+      }
+
       const stored = localStorage.getItem('promptcanvas_cookie_consent');
       if (stored) {
         if (stored === 'accepted' || stored === 'true') {
@@ -54,17 +67,8 @@ export function LegalProvider({ children }: { children: React.ReactNode }) {
         }
         setShowBanner(false);
       } else {
-        const path = typeof window !== 'undefined' ? window.location.pathname : '';
-        const isWorkspaceRoute =
-          path.startsWith('/dashboard') ||
-          path.startsWith('/library') ||
-          path.startsWith('/studio') ||
-          path.startsWith('/vision');
-        if (isWorkspaceRoute) {
-          setShowBanner(false);
-        } else {
-          setShowBanner(true);
-        }
+        // Never obstruct operational workspace routes with an unrequested floating bottom-right banner
+        setShowBanner(false);
       }
     } catch {
       setShowBanner(false);
@@ -198,7 +202,7 @@ export function LegalProvider({ children }: { children: React.ReactNode }) {
         </aside>
       )}
 
-      {/* 2. Interactive Legal Modals */}
+      {/* 2. Interactive Legal Drawer (Rule 25F Right-Side Drawer) */}
       {activeModal && (
         <LegalModalContainer
           activeModal={activeModal}
@@ -213,7 +217,7 @@ export function LegalProvider({ children }: { children: React.ReactNode }) {
 }
 
 // ------------------------------------------------------------------------------
-// Legal Modal Container & Content Views
+// Legal Drawer Container & Content Views
 // ------------------------------------------------------------------------------
 function LegalModalContainer({
   activeModal,
@@ -228,6 +232,8 @@ function LegalModalContainer({
   cookieConsent: CookiePreferences;
   onSaveCookies: (prefs: CookiePreferences) => void;
 }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const [localCookies, setLocalCookies] = useState<CookiePreferences>(cookieConsent);
 
   const tabs = [
@@ -238,30 +244,42 @@ function LegalModalContainer({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-4xl max-h-[90vh] bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-stretch justify-end bg-slate-900/35 backdrop-blur-xs animate-in fade-in duration-200"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className={`relative w-full max-w-2xl h-full border-l shadow-2xl flex flex-col overflow-hidden ${
+          isLight ? 'bg-white border-slate-200 text-slate-800' : 'bg-slate-900 border-slate-800 text-slate-200'
+        }`}
+      >
         
-        {/* Modal Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+        {/* Drawer Header */}
+        <div className={`px-6 py-4 border-b flex items-center justify-between ${
+          isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950/60 border-slate-800'
+        }`}>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+            <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
               <Shield className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white tracking-tight">PromptCanvas Enterprise Trust & Legal Center</h3>
-              <p className="text-[11px] text-slate-400">Compliance, Data Sovereignty, and AI Governance</p>
+              <h3 className={`text-sm font-bold tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>PromptCanvas Enterprise Trust &amp; Legal Center</h3>
+              <p className="text-[11px] text-slate-500">Compliance, Data Sovereignty, and AI Governance</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className={`p-1.5 rounded-lg transition ${isLight ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-200' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center gap-1 px-6 py-2 border-b border-slate-800 bg-slate-900/80 overflow-x-auto">
+        <div className={`flex items-center gap-1 px-6 py-2 border-b overflow-x-auto ${
+          isLight ? 'bg-white border-slate-200' : 'bg-slate-900/80 border-slate-800'
+        }`}>
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeModal === tab.id;
@@ -272,6 +290,8 @@ function LegalModalContainer({
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition shrink-0 ${
                   isActive
                     ? 'bg-blue-600 text-white shadow-sm'
+                    : isLight
+                    ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
                 }`}
               >
@@ -282,33 +302,37 @@ function LegalModalContainer({
           })}
         </div>
 
-        {/* Modal Content Body */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 text-slate-300 text-xs leading-relaxed font-sans">
+        {/* Drawer Content Body */}
+        <div className={`flex-1 overflow-y-auto p-6 space-y-6 text-xs leading-relaxed font-sans ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
           
           {/* VIEW: DISCLAIMER */}
           {activeModal === 'disclaimer' && (
             <div className="space-y-4">
-              <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 space-y-1">
+              <div className={`p-4 rounded-xl border space-y-1 ${
+                isLight
+                  ? 'bg-amber-50 border-amber-200 text-amber-900'
+                  : 'bg-amber-500/10 border-amber-500/20 text-amber-300'
+              }`}>
                 <div className="font-semibold text-xs flex items-center gap-1.5">
-                  <Shield className="w-4 h-4" />
-                  AI Synthesis & Engineering Pre-Flight Notice
+                  <Shield className={`w-4 h-4 ${isLight ? 'text-amber-700' : 'text-amber-400'}`} />
+                  AI Synthesis &amp; Engineering Pre-Flight Notice
                 </div>
-                <p className="text-[11px] text-amber-200/80">
+                <p className={`text-[11px] ${isLight ? 'text-amber-800' : 'text-amber-200/80'}`}>
                   Diagrams, network CIDR topologies, and Living Specifications emitted by PromptCanvas are generated via multimodal generative AI (Google Vertex AI / Gemini). They serve as reference architectures and require formal review by certified Solutions Architects before deployment into production VPCs.
                 </p>
               </div>
 
-              <h4 className="text-sm font-bold text-white">1. Technical Accuracy & Cloud Quota Disclosures</h4>
+              <h4 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>1. Technical Accuracy &amp; Cloud Quota Disclosures</h4>
               <p>
                 While PromptCanvas enforces 100% collision-free geometric layout rules and authentic Google Cloud Platform iconography, live infrastructure deployments are subject to account-level GCP quota limits (e.g. TPU v5e/v5p allocations, Cloud Spanner processing units, Cloud Interconnect fiber provisioning).
               </p>
 
-              <h4 className="text-sm font-bold text-white">2. Trademark & Google Cloud Attribution</h4>
+              <h4 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>2. Trademark &amp; Google Cloud Attribution</h4>
               <p>
                 Google Cloud, Google Cloud Platform, Vertex AI, Cloud Spanner, BigQuery, GKE Autopilot, and all associated service logos are trademarks of Google LLC. PromptCanvas is an independent architecture synthesis platform and is not officially operated by Google LLC.
               </p>
 
-              <h4 className="text-sm font-bold text-white">3. Zero Liability for Deployment Incidents</h4>
+              <h4 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>3. Zero Liability for Deployment Incidents</h4>
               <p>
                 PromptCanvas and its authors disclaim all warranties and liability for outages, cloud billing overages, or compliance breaches resulting from the direct execution of generated Terraform manifests without prior staging validation.
               </p>
@@ -318,30 +342,30 @@ function LegalModalContainer({
           {/* VIEW: PRIVACY POLICY */}
           {activeModal === 'privacy' && (
             <div className="space-y-4">
-              <h4 className="text-sm font-bold text-white">Enterprise Privacy & Data Sovereignty Policy</h4>
-              <p className="text-slate-400">Last updated: September 2026 • Governing Law: EU GDPR, CCPA, and ISO/IEC 27001</p>
+              <h4 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>Enterprise Privacy &amp; Data Sovereignty Policy</h4>
+              <p className={isLight ? 'text-slate-500' : 'text-slate-400'}>Last updated: September 2026 • Governing Law: EU GDPR, CCPA, and ISO/IEC 27001</p>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 my-4">
-                <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                  <div className="font-semibold text-white text-xs">Zero Model Retraining</div>
-                  <div className="text-[11px] text-slate-400 mt-0.5">Proprietary architecture prompts are NEVER used to train foundational AI models.</div>
+                <div className={`p-3 rounded-xl border ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'}`}>
+                  <div className={`font-semibold text-xs ${isLight ? 'text-slate-900' : 'text-white'}`}>Zero Model Retraining</div>
+                  <div className={`text-[11px] mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Proprietary architecture prompts are NEVER used to train foundational AI models.</div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                  <div className="font-semibold text-white text-xs">FIPS 140-3 Encryption</div>
-                  <div className="text-[11px] text-slate-400 mt-0.5">All sessions, snapshots, and specifications encrypted at rest and in transit (TLS 1.3).</div>
+                <div className={`p-3 rounded-xl border ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'}`}>
+                  <div className={`font-semibold text-xs ${isLight ? 'text-slate-900' : 'text-white'}`}>FIPS 140-3 Encryption</div>
+                  <div className={`text-[11px] mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>All sessions, snapshots, and specifications encrypted at rest and in transit (TLS 1.3).</div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                  <div className="font-semibold text-white text-xs">Local-First Storage</div>
-                  <div className="text-[11px] text-slate-400 mt-0.5">Working diagram ASTs reside in client-side localStorage and isolated tenant boundaries.</div>
+                <div className={`p-3 rounded-xl border ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'}`}>
+                  <div className={`font-semibold text-xs ${isLight ? 'text-slate-900' : 'text-white'}`}>Local-First Storage</div>
+                  <div className={`text-[11px] mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Working diagram ASTs reside in client-side localStorage and isolated tenant boundaries.</div>
                 </div>
               </div>
 
-              <h4 className="text-sm font-bold text-white">1. Information We Process</h4>
+              <h4 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>1. Information We Process</h4>
               <p>
                 We process text prompts submitted to synthesize diagrams, user-configured architectural metadata, and telemetry tokens strictly necessary to maintain active session state and render Draw.io XML graphs.
               </p>
 
-              <h4 className="text-sm font-bold text-white">2. Your Data Protection Rights</h4>
+              <h4 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>2. Your Data Protection Rights</h4>
               <p>
                 Under GDPR and CCPA, you have the right to request deletion of all locally cached session histories, export living specification artifacts (PRD, HLD, STRIDE, IaC), and restrict non-essential telemetry.
               </p>
@@ -351,15 +375,15 @@ function LegalModalContainer({
           {/* VIEW: TERMS OF SERVICE */}
           {activeModal === 'terms' && (
             <div className="space-y-4">
-              <h4 className="text-sm font-bold text-white">Terms of Service & Acceptable Use</h4>
-              <p className="text-slate-400">Effective Date: September 2026</p>
+              <h4 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>Terms of Service &amp; Acceptable Use</h4>
+              <p className={isLight ? 'text-slate-500' : 'text-slate-400'}>Effective Date: September 2026</p>
 
-              <h4 className="text-sm font-bold text-white">1. Intellectual Property & Artifact Ownership</h4>
+              <h4 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>1. Intellectual Property &amp; Artifact Ownership</h4>
               <p>
                 You retain 100% full intellectual property ownership of all architecture diagrams, Draw.io XML files, Living Specification documents, and Terraform IaC manifests generated within PromptCanvas. You are free to commit, publish, and deploy these assets into commercial and open-source codebases.
               </p>
 
-              <h4 className="text-sm font-bold text-white">2. Prohibited Uses</h4>
+              <h4 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>2. Prohibited Uses</h4>
               <p>
                 You agree not to use PromptCanvas to synthesize malicious attack vectors, circumvent cloud service rate limits, or reverse engineer proprietary safety filters.
               </p>
@@ -370,21 +394,21 @@ function LegalModalContainer({
           {activeModal === 'cookies' && (
             <div className="space-y-5">
               <div>
-                <h4 className="text-sm font-bold text-white">Granular Cookie & Telemetry Preferences</h4>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <h4 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>Granular Cookie &amp; Telemetry Preferences</h4>
+                <p className={`text-xs mt-0.5 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                   Configure which data tokens are stored locally on your device.
                 </p>
               </div>
 
               <div className="space-y-3">
                 {/* Essential */}
-                <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
+                <div className={`p-4 rounded-xl border flex items-center justify-between ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'}`}>
                   <div className="space-y-0.5 pr-4">
-                    <div className="font-semibold text-white text-xs flex items-center gap-2">
+                    <div className={`font-semibold text-xs flex items-center gap-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>
                       Essential Core Cookies
-                      <span className="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-400 font-mono">Always Active</span>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-mono ${isLight ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-800 text-slate-400'}`}>Always Active</span>
                     </div>
-                    <p className="text-[11px] text-slate-400">
+                    <p className={`text-[11px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                       Required to persist Draw.io XML canvas state, version timelines, and session IDs.
                     </p>
                   </div>
@@ -392,10 +416,10 @@ function LegalModalContainer({
                 </div>
 
                 {/* Analytics */}
-                <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
+                <div className={`p-4 rounded-xl border flex items-center justify-between ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'}`}>
                   <div className="space-y-0.5 pr-4">
-                    <div className="font-semibold text-white text-xs">Performance & Viewport Analytics</div>
-                    <p className="text-[11px] text-slate-400">
+                    <div className={`font-semibold text-xs ${isLight ? 'text-slate-900' : 'text-white'}`}>Performance &amp; Viewport Analytics</div>
+                    <p className={`text-[11px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                       Helps us profile Core Web Vitals and optimize rendering across ultra-wide desktop monitors.
                     </p>
                   </div>
@@ -408,10 +432,10 @@ function LegalModalContainer({
                 </div>
 
                 {/* Telemetry */}
-                <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
+                <div className={`p-4 rounded-xl border flex items-center justify-between ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'}`}>
                   <div className="space-y-0.5 pr-4">
-                    <div className="font-semibold text-white text-xs">AI Architecture Compiler Telemetry</div>
-                    <p className="text-[11px] text-slate-400">
+                    <div className={`font-semibold text-xs ${isLight ? 'text-slate-900' : 'text-white'}`}>AI Architecture Compiler Telemetry</div>
+                    <p className={`text-[11px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                       Enables real-time prompt-to-AST token streaming and collision-free auto-healing heuristics.
                     </p>
                   </div>
@@ -427,7 +451,11 @@ function LegalModalContainer({
               <div className="pt-2 flex justify-end gap-3">
                 <button
                   onClick={() => onSaveCookies({ essential: true, analytics: true, telemetry: true, hasInteracted: true })}
-                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition"
+                  className={`px-4 py-2 rounded-xl text-xs font-medium transition border ${
+                    isLight
+                      ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-200'
+                      : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                  }`}
                 >
                   Enable All
                 </button>
@@ -445,11 +473,19 @@ function LegalModalContainer({
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-3.5 border-t border-slate-800 bg-slate-950/60 flex items-center justify-between text-[11px] text-slate-500">
+        <div className={`px-6 py-3.5 border-t flex items-center justify-between text-[11px] ${
+          isLight
+            ? 'border-slate-200 bg-slate-50 text-slate-500'
+            : 'border-slate-800 bg-slate-950/60 text-slate-500'
+        }`}>
           <div>© 2026 PromptCanvas. All rights reserved. Google Cloud is a trademark of Google LLC.</div>
           <button
             onClick={onClose}
-            className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition"
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold border transition ${
+              isLight
+                ? 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200 shadow-2xs'
+                : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+            }`}
           >
             Close
           </button>

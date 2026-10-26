@@ -10,7 +10,7 @@ CORE ARCHITECTURAL RULES:
    - 'tier_ingress': API Gateways (Apigee/Kong), Cloud Armor, WAF, TLS Termination, CDN
    - 'tier_orchestration': Event Brokers (Pub/Sub, Kafka), Workflows, Sagas, Task Queues
    - 'tier_compute': Application Microservices, Cloud Run, GKE/EKS Pods, Serverless Functions
-   - 'tier_ai': LLMs (Gemini, Gemini 2.5 Pro), Agent Runtimes, Embedding Models, Vector Retrievers, Guardrails
+   - 'tier_ai': LLMs (Gemini 3.1 Pro, Gemini 3.8 Flash), Agent Runtimes, Embedding Models, Vector Retrievers, Guardrails
    - 'tier_data': Databases (Spanner, Cloud SQL, DynamoDB), Lakehouse (BigQuery, BigLake), Caches (Redis), Storage (GCS, S3)
    - 'tier_governance': IAM/STS, Secret Manager, OpenTelemetry, Cloud Logging/Monitoring, Audit Ledgers
    Only instantiate tiers relevant to the user request.
@@ -22,7 +22,7 @@ CORE ARCHITECTURAL RULES:
    - Set 'style' to "solid" for synchronous blocking calls, and "dashed" for asynchronous/eventual/telemetry flows.
 
 4. ACCURATE PRODUCT NAMING & ICON SLUGS:
-   - 'label': Clear, official product title (e.g. "Cloud Spanner (Multi-Region)", "BigQuery Lakehouse", "Vertex AI / Gemini 2.5", "Apache Kafka Cluster").
+   - 'label': Clear, official product title (e.g. "Cloud Spanner (Multi-Region)", "BigQuery Lakehouse", "Vertex AI / Gemini 3.8 Flash", "Apache Kafka Cluster").
    - 'subtitle': 1-line technical role summary (e.g. "99.999% SLA Distributed RDBMS", "Peta-scale Vector & Analytical Mart").
    - 'product': Standard cloud slug matching the vendor ("bigquery", "spanner", "vertex ai", "cloud run", "pubsub", "gcs", "gke", "postgres", "redis", "kafka", "s3", "lambda", "dynamodb", "databricks", "biglake").
    - 'type': Categorical enum ("compute", "database", "storage", "queue", "cache", "network", "security", "ai", "analytics", "user", "external", "gateway", "service").

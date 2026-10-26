@@ -214,7 +214,7 @@ Whenever the diagram is modified by the AI Co-Pilot, all 16 documents update in 
 To start designing your own architecture, click **"+ New Canvas"** above!`;
 }
 
-export interface StudioTabItem {
+interface StudioTabItem {
   id: string;
   title: string;
   mode: 'launchpad' | 'canvas';
@@ -1204,7 +1204,7 @@ function StudioMain() {
           const extractedUseCasePrompt = targetUseCaseMatch
             ? targetUseCaseMatch[1].trim()
             : isAwsProjectWithGcpXml
-            ? awsUserMsgMatch?.[0]?.trim() || 'AWS Cloud AI Architecture on Amazon Bedrock, SageMaker, Redshift & Gemini 2.5 Pro'
+            ? awsUserMsgMatch?.[0]?.trim() || 'AWS Cloud AI Architecture on Amazon Bedrock, SageMaker, Redshift & Gemini 3.1 Pro'
             : '';
 
           if (extractedUseCasePrompt && (restoredXml.includes('id="z1_bg"') || restoredXml.includes('id="z1"') || restoredXml.includes('id="spatial_gcp_reference_arch"') || !restoredXml.includes('Generative Prompt:') || !restoredXml.includes('AWS CLOUD ARCHITECTURE'))) {
@@ -2250,11 +2250,11 @@ function StudioMain() {
         {
           id: 'comp_aws_bedrock',
           name: 'Amazon Bedrock & SageMaker AI Hub',
-          service: 'Amazon Bedrock (Gemini 2.5 Pro (Dedicated PT)) & SageMaker',
+          service: 'Amazon Bedrock (Gemini 3.1 Pro (Dedicated PT)) & SageMaker',
           tier: 'compute',
           region: 'us-east-1',
           role: 'Foundation Model Inference, Guardrails & Fine-Tuning',
-          description: 'Managed Gemini 2.5 Pro (Dedicated PT), Titan Embeddings v2, Bedrock Guardrails PII redaction, and SageMaker custom endpoints.',
+          description: 'Managed Gemini 3.1 Pro (Dedicated PT), Titan Embeddings v2, Bedrock Guardrails PII redaction, and SageMaker custom endpoints.',
           sla: '99.99%',
           protocols: ['Bedrock Runtime API', 'HTTPS TLS 1.3']
         },
@@ -3420,7 +3420,7 @@ function StudioMain() {
                                     ? '2. Select Reference Blueprint (59)'
                                     : selectedDiagramMode === 'infographic'
                                     ? '2. Select Infographic Template (15)'
-                                    : '2. Abstraction Level & Saved Flow Blueprints (#67–#74)'}
+                                    : '2. Abstraction Level & Saved Flow Blueprints (#67–#69)'}
                                 </span>
                                 {selectedDiagramMode !== 'flowchart' ? (
                                   <button
@@ -3435,7 +3435,7 @@ function StudioMain() {
                                   </button>
                                 ) : (
                                   <span className="text-[8.5px] font-mono px-1.5 py-0.2 rounded bg-blue-50 text-blue-700 font-bold">
-                                    Tier 2 • #67–#74
+                                    Tier 2 • #67–#69
                                   </span>
                                 )}
                               </div>
@@ -3736,7 +3736,7 @@ function StudioMain() {
                                     })}
 
                                     <div className="pt-1 pb-0.5 px-1 text-[8.5px] font-extrabold uppercase tracking-wider text-slate-400">
-                                      Saved Flow Diagram Blueprints (#67–#74)
+                                      Saved Flow Diagram Blueprints (#67–#69)
                                     </div>
                                     {FLOW_DIAGRAM_BLUEPRINTS_67_TO_74.map((fb) => {
                                       const isSelected = selectedBlueprintId === fb.id;
@@ -3822,11 +3822,11 @@ function StudioMain() {
                                     />
                                   ) : selectedDiagramMode === 'blueprint' ? (
                                     <img
-                                      src={`/images/${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}.png`}
+                                      src={`/templates/${selectedBlueprintId === 'custom' ? '00' : selectedBlueprintId}.png`}
                                       alt={`Blueprint #${selectedBlueprintId}`}
                                       className="w-full h-full object-cover object-top"
                                       onError={(e) => {
-                                        (e.currentTarget as HTMLImageElement).src = '/templates/52.png';
+                                        (e.currentTarget as HTMLImageElement).src = '/templates/00.png';
                                       }}
                                     />
                                   ) : selectedAbstractionLevel === 'L1' ? (
@@ -4893,7 +4893,7 @@ function StudioMain() {
                 className="flex-1 min-h-0 p-3 md:p-5 flex items-center justify-center overflow-auto bg-slate-50/50"
               >
                 {isInlineDrawioEdit ? (
-                  <div className="w-full max-w-[1440px] h-full min-h-[560px] m-auto bg-white rounded-2xl border-2 border-emerald-500 shadow-2xl flex flex-col overflow-hidden">
+                  <div className="w-full max-w-none h-full min-h-[560px] m-auto bg-white rounded-2xl border-2 border-emerald-500 shadow-2xl flex flex-col overflow-hidden">
                     <div className="px-4 py-2 bg-[#0B111E] text-white flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2 font-bold">
                         <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono text-[10px]">
@@ -4934,7 +4934,7 @@ function StudioMain() {
                 ) : isSideBySideCompare ? (
                   <div
                     id="studio-side-by-side-compare-viewport"
-                    className="w-full max-w-[1680px] h-full min-h-[560px] m-auto flex flex-col gap-3 overflow-hidden"
+                    className="w-full max-w-none h-full min-h-[560px] m-auto flex flex-col gap-3 overflow-hidden"
                   >
                     {/* Quick Infographic Blueprint Strip (#52 - #66) */}
                     <div className="bg-white rounded-xl border border-slate-200 px-3 py-2 shadow-xs flex items-center justify-between gap-2 overflow-x-auto shrink-0">
@@ -5008,15 +5008,13 @@ function StudioMain() {
                             </span>
                           </div>
                           <a
-                            href={
-                              selectedDiagramMode === 'infographic' || Number(selectedBlueprintId) >= 52
-                                ? `/templates/${
-                                    selectedDiagramMode === 'infographic'
-                                      ? selectedInfographicBlueprintId
-                                      : selectedBlueprintId
-                                  }.png`
-                                : `/images/${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}.png`
-                            }
+                            href={`/templates/${
+                              selectedDiagramMode === 'infographic'
+                                ? selectedInfographicBlueprintId
+                                : selectedBlueprintId === 'custom'
+                                  ? '00'
+                                  : selectedBlueprintId
+                            }.png`}
                             target="_blank"
                             rel="noreferrer"
                             className="text-[10.5px] font-mono font-bold text-sky-300 hover:text-sky-200 shrink-0"
@@ -5027,19 +5025,17 @@ function StudioMain() {
                         <div className="flex-1 min-h-0 relative overflow-hidden bg-slate-100/70">
                           <img
                             id="sbs-reference-png-img"
-                            src={
-                              selectedDiagramMode === 'infographic' || Number(selectedBlueprintId) >= 52
-                                ? `/templates/${
-                                    selectedDiagramMode === 'infographic'
-                                      ? selectedInfographicBlueprintId
-                                      : selectedBlueprintId
-                                  }.png`
-                                : `/images/${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}.png`
-                            }
+                            src={`/templates/${
+                              selectedDiagramMode === 'infographic'
+                                ? selectedInfographicBlueprintId
+                                : selectedBlueprintId === 'custom'
+                                  ? '00'
+                                  : selectedBlueprintId
+                            }.png`}
                             alt="Reference Infographic PNG"
                             className="absolute inset-3 w-[calc(100%-24px)] h-[calc(100%-24px)] object-contain rounded-xl border border-slate-200 bg-white shadow-md"
                             onError={(e) => {
-                              (e.currentTarget as HTMLImageElement).src = '/templates/52.png';
+                              (e.currentTarget as HTMLImageElement).src = '/templates/00.png';
                             }}
                           />
                         </div>
@@ -5094,7 +5090,7 @@ function StudioMain() {
                       setSelectedComponent(spanner);
                       setIsRightGovernanceOpen(true);
                     }}
-                    className="w-full max-w-[1440px] h-full min-h-[520px] m-auto bg-white rounded-2xl border border-slate-300/80 shadow-2xl relative overflow-hidden cursor-pointer flex-shrink-0"
+                    className="w-full max-w-none h-full min-h-[520px] m-auto bg-white rounded-2xl border border-slate-300/80 shadow-2xl relative overflow-hidden cursor-pointer flex-shrink-0"
                   >
                     <DiagramViewerRenderSafe
                       key={`studio_canvas_${selectedBlueprintId}_${activeVersionTag}_${xml.length}`}

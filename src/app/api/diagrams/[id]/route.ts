@@ -4,8 +4,6 @@ import { getAuthenticatedUser } from '@/lib/auth';
 import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import { generateGeminiEnterpriseArchitectureXml } from '@/lib/masterBuilders/build_master_gemini_enterprise_agent_platform';
-import { generateAzureLandingZoneArchitectureXml } from '@/lib/masterBuilders/build_master_azure_landing_zone';
-import { generateAgenticAiArchitectureXml } from '@/lib/masterBuilders/build_master_agentic_ai_architecture';
 import { generateGoogleMultiagentArchitectureXml } from '@/lib/masterBuilders/build_master_google_multiagent_ai_system';
 import { generateUpgradedGcpGeBankingArchitectureXml } from '@/lib/canonical/upgradedGcpGeBankingAgentTemplate';
 import { generateGcpNativeArchitectureXml } from '@/lib/gcpNativeArchitecture';
@@ -44,7 +42,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     let diagram = await getDiagram(id, user?.id);
 
-    // If not found by exact primary key, check if id is a short display code (e.g. VIS-6505, VIS-3093, VIS-1787, VIS-5965, VIS-9745)
+    // If not found by exact primary key, check if id is a short display code (e.g. VIS-6505, VIS-3093, VIS-1787)
     if (!diagram) {
       const allDiagrams = await listDiagrams(user?.id);
       const shortMatch = allDiagrams.find(d => {
@@ -68,18 +66,6 @@ export async function GET(request: Request, { params }: RouteParams) {
         if (
           (id.toUpperCase() === 'VIS-3093' || id.toUpperCase() === 'VIS-1787') &&
           (d.name || '').toLowerCase().includes('gemini enterprise')
-        ) {
-          return true;
-        }
-        if (
-          (id.toUpperCase() === 'VIS-5965' || id.toUpperCase() === 'VIS-9745') &&
-          (d.name || '').toLowerCase().includes('landing zone')
-        ) {
-          return true;
-        }
-        if (
-          (id.toUpperCase() === 'VIS-AGENTIC-01' || id.toUpperCase().includes('AGENTIC')) &&
-          (d.name || '').toLowerCase().includes('agentic ai')
         ) {
           return true;
         }
@@ -189,56 +175,6 @@ export async function GET(request: Request, { params }: RouteParams) {
         });
       }
 
-      if (upperId === 'VIS-5965' || upperId === 'VIS-9745' || id.toLowerCase().includes('landing_zone')) {
-        const now = new Date().toISOString();
-        const azureMasterXml = enrichDrawioXmlWithVectorIcons(generateAzureLandingZoneArchitectureXml());
-        return NextResponse.json({
-          id: upperId.startsWith('VIS-') ? upperId : 'VIS-5965',
-          name: `Azure Application Landing Zone (${upperId.startsWith('VIS-') ? upperId : 'VIS-5965'})`,
-          architecture_type: 'vision_decompiled',
-          is_private: false,
-          created_at: now,
-          updated_at: now,
-          access_level: 'Owner',
-          xml_content: azureMasterXml,
-          versions: [{
-            id: `${upperId.startsWith('VIS-') ? upperId : 'VIS-5965'}__live_master`,
-            diagram_id: upperId.startsWith('VIS-') ? upperId : 'VIS-5965',
-            version_number: 1,
-            xml_content: azureMasterXml,
-            comment: 'Azure Application Landing Zone (42 Nodes, 9 Subnets) — Self-healed Master Blueprint',
-            created_by: 'System',
-            created_at: now,
-            architecture_type: 'vision_decompiled'
-          }]
-        });
-      }
-
-      if (upperId === 'VIS-AGENTIC-01' || id.toLowerCase().includes('agentic')) {
-        const now = new Date().toISOString();
-        const agenticMasterXml = enrichDrawioXmlWithVectorIcons(generateAgenticAiArchitectureXml());
-        return NextResponse.json({
-          id: 'VIS-AGENTIC-01',
-          name: 'Agentic AI Architecture (bismart)',
-          architecture_type: 'vision_decompiled',
-          is_private: false,
-          created_at: now,
-          updated_at: now,
-          access_level: 'Owner',
-          xml_content: agenticMasterXml,
-          versions: [{
-            id: 'VIS-AGENTIC-01__live_master',
-            diagram_id: 'VIS-AGENTIC-01',
-            version_number: 1,
-            xml_content: agenticMasterXml,
-            comment: 'Agentic AI Architecture (bismart) — Neon-Cyan Glassmorphic Master Blueprint',
-            created_by: 'System',
-            created_at: now,
-            architecture_type: 'vision_decompiled'
-          }]
-        });
-      }
-
       if ((isCatalogBlueprint || matchedCanonicalTemplate) && liveMasterXml) {
         const now = new Date().toISOString();
         const resolvedName = matchedCanonicalTemplate
@@ -335,16 +271,6 @@ export async function GET(request: Request, { params }: RouteParams) {
         (String(xmlStr).includes('value="+ Gemini Enterprise') || String(xmlStr).includes('x="1020"') || String(xmlStr).includes('x="1068"'))
       ) {
         xmlStr = enrichDrawioXmlWithVectorIcons(generateGeminiEnterpriseArchitectureXml());
-      } else if (
-        (id.toUpperCase() === 'VIS-5965' || nameLower.includes('landing zone')) &&
-        (String(xmlStr).match(/<mxCell/gi) || []).length < 25
-      ) {
-        xmlStr = enrichDrawioXmlWithVectorIcons(generateAzureLandingZoneArchitectureXml());
-      } else if (
-        (id.toUpperCase() === 'VIS-AGENTIC-01' || nameLower.includes('agentic ai') || nameLower.includes('bismart')) &&
-        String(xmlStr).includes('gradientColor=#FFFFFF')
-      ) {
-        xmlStr = enrichDrawioXmlWithVectorIcons(generateAgenticAiArchitectureXml());
       }
       const diagramLatestPrompt = (diagram as { latest_prompt?: string | null }).latest_prompt;
       xmlStr = healStubOrOracleDiagramXml(

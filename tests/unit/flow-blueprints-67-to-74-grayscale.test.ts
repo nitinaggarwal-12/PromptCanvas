@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { CANONICAL_TEMPLATES, ACTIVE_CANONICAL_BLUEPRINT_IDS, injectDomainFlavorXml } from '../../src/lib/canonical/canonicalTemplates';
+import { CANONICAL_CONTRACTS } from '../../src/lib/canonical/canonicalContracts';
 import {
   OFFICIAL_ARCH_CENTER_BLUEPRINTS,
   compileOfficialArchCenterDrawioXml,
@@ -47,18 +48,27 @@ const ALLOWED_GOOGLE_BRAND_LIGHT_HEXES = new Set([
   '#B31412',
 ]);
 
-describe('Flow Blueprints #67..#74 Official Google Cloud Brand Light Theme & 9-Guide Diagram Parity', () => {
-  it('includes all 8 operational & agentic flow blueprints (#67..#74) in CANONICAL_TEMPLATES with light theme', () => {
-    for (const id of ['67', '68', '69', '70', '71', '72', '73', '74']) {
+describe('8 Core Canonical Blueprints (#78, #00, #38, #42, #44, #67, #68, #69), Permanent Tier 1/2/3 Purge & 9-Guide Diagram Parity', () => {
+  it('retains strictly the 8 core blueprints (#78, #00, #38, #42, #44, #67, #68, #69) and permanently purges all Tier 1 (except #68/#69), Tier 2, and Tier 3 blueprints', () => {
+    expect(ACTIVE_CANONICAL_BLUEPRINT_IDS).toEqual(['78', '00', '38', '42', '44', '67', '68', '69']);
+    expect(CANONICAL_TEMPLATES.length).toBe(8);
+
+    for (const id of ['67', '68', '69']) {
       expect(ACTIVE_CANONICAL_BLUEPRINT_IDS.includes(id)).toBe(true);
       const bp = CANONICAL_TEMPLATES.find((t) => t.id === id);
       expect(bp).toBeDefined();
       expect(bp?.theme).toBe('light');
     }
+
+    const purgedIds = ['35', '36', '37', '39', '40', '41', '43', '45', '46', '47', '48', '49', '50', '70', '71', '72', '73', '74'];
+    for (const purgedId of purgedIds) {
+      expect(ACTIVE_CANONICAL_BLUEPRINT_IDS.includes(purgedId)).toBe(false);
+      expect(CANONICAL_TEMPLATES.find((t) => t.id === purgedId)).toBeUndefined();
+    }
   });
 
-  it('enforces strictly Official Google Cloud Brand Light palette across #67..#74 with zero funky colors and preserves header_logo through injectDomainFlavorXml', () => {
-    for (const id of ['67', '68', '69', '70', '71', '72', '73', '74']) {
+  it('enforces strictly Official Google Cloud Brand Light palette across #67, #68, and #69 with zero funky colors and preserves header_logo through injectDomainFlavorXml', () => {
+    for (const id of ['67', '68', '69']) {
       const bp = CANONICAL_TEMPLATES.find((t) => t.id === id)!;
       const rawXml = bp.generateXml('biopharma', 'light');
       const xml = injectDomainFlavorXml(rawXml, 'biopharma');
@@ -66,7 +76,6 @@ describe('Flow Blueprints #67..#74 Official Google Cloud Brand Light Theme & 9-G
       // Must include authentic 4-color Google G logo and Google Blue primary accents
       expect(xml).toContain('id="header_logo"');
       expect(xml).toContain('Google Cloud');
-      expect(xml).toContain('Gemini');
       expect(xml).toContain('#1A73E8');
       expect(xml).toContain('#E8F0FE');
       const hexMatches = Array.from(
@@ -74,6 +83,49 @@ describe('Flow Blueprints #67..#74 Official Google Cloud Brand Light Theme & 9-G
       );
       const funkyOrNonBrand = hexMatches.filter((h) => !ALLOWED_GOOGLE_BRAND_LIGHT_HEXES.has(h));
       expect(funkyOrNonBrand, `Blueprint #${id} emitted non-Google-Brand hexes: ${funkyOrNonBrand.join(', ')}`).toEqual([]);
+    }
+  });
+
+  it('enforces per-blueprint ReferenceGeometryContract (#67, #68, #69) for exact pageWidth/pageHeight, SVG icon count, required/forbidden mxCell IDs, and DOM painting order', () => {
+    for (const id of ['67', '68', '69']) {
+      const bp = CANONICAL_TEMPLATES.find((t) => t.id === id)!;
+      const rg = CANONICAL_CONTRACTS[id]?.referenceGeometry!;
+      expect(rg, `Missing referenceGeometry contract for #${id}`).toBeDefined();
+
+      const xml = bp.generateXml('default', 'light');
+      expect(xml).toContain(`pageWidth="${rg.pageWidth}"`);
+      expect(xml).toContain(`pageHeight="${rg.pageHeight}"`);
+
+      const iconMatches = xml.match(/shape=image;[^"]*image=data:image\/svg\+xml,/g) || [];
+      if (typeof rg.exactIconCount === 'number') {
+        expect(iconMatches.length, `Blueprint #${id} must embed exactly ${rg.exactIconCount} SVG icons`).toBe(rg.exactIconCount);
+      }
+      if (typeof rg.minIconCount === 'number') {
+        expect(iconMatches.length, `Blueprint #${id} must embed >= ${rg.minIconCount} SVG icons`).toBeGreaterThanOrEqual(rg.minIconCount);
+      }
+
+      for (const reqId of rg.requiredCellIds) {
+        expect(xml, `Blueprint #${id} missing required cell id="${reqId}"`).toContain(`id="${reqId}"`);
+      }
+      for (const forbId of rg.forbiddenCellIds) {
+        expect(xml, `Blueprint #${id} contains forbidden invented cell id="${forbId}"`).not.toContain(`id="${forbId}"`);
+      }
+      for (const reqSub of rg.requiredSubstrings) {
+        expect(xml, `Blueprint #${id} missing required substring "${reqSub}"`).toContain(reqSub);
+      }
+      for (const forbSub of rg.forbiddenSubstrings) {
+        expect(xml, `Blueprint #${id} contains forbidden substring "${forbSub}"`).not.toContain(forbSub);
+      }
+      if (rg.domOrderPairs) {
+        const cellIds = (xml.match(/<mxCell[^>]*\sid="([^"]+)"/g) || []).map((m) => m.match(/\sid="([^"]+)"/)?.[1] || '');
+        for (const [earlierId, laterId] of rg.domOrderPairs) {
+          const idxA = cellIds.indexOf(earlierId);
+          const idxB = cellIds.indexOf(laterId);
+          expect(idxA).toBeGreaterThan(-1);
+          expect(idxB).toBeGreaterThan(-1);
+          expect(idxA, `In #${id}, ${earlierId} must precede ${laterId} in DOM order`).toBeLessThan(idxB);
+        }
+      }
     }
   });
 

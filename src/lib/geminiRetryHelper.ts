@@ -1,7 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { parseUpstreamError } from './ai/modelErrors';
 
-export interface GeminiRetryOptions {
+interface GeminiRetryOptions {
   /** Total attempts, including the first. */
   maxRetries?: number;
   /** Ceiling for a single attempt. Prevents one slow call eating the budget. */

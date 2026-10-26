@@ -41,11 +41,26 @@ function numBadgeHtml(num: string): string {
   return `<span style="display:inline-block;background:#1A73E8;color:#FFFFFF;border-radius:999px;width:16px;height:16px;line-height:16px;text-align:center;font-size:10px;font-weight:700;margin-right:4px;">${num}</span>`;
 }
 
-export interface UniversalClosedLoopHarnessOptions {
+interface UniversalClosedLoopHarnessOptions {
   prompt?: string;
   projectTitle?: string;
   domain?: string;
   theme?: 'light' | 'dark';
+  customSubsystems?: string[];
+  decisionGateQuestion?: string;
+}
+
+function extractCustomDomainClauses(prompt?: string, customSubsystems?: string[]): string[] {
+  if (Array.isArray(customSubsystems) && customSubsystems.length >= 4) {
+    return customSubsystems.map((s) => String(s || '').trim()).filter(Boolean);
+  }
+  const cleaned = String(prompt || '')
+    .replace(/^(please\s+)?((design|architect|build|create|deploy|synthesize|generate|draw|show)\s+)?(a\s+|an\s+|the\s+)?(full\s+|complete\s+|enterprise\s+)?(architecture\s+(diagram\s+)?(showing|for|of|with)\s+|diagram\s+(showing|for|of|with)\s+|blueprint\s+(for|of)\s+|topology\s+(for|of)\s+)?/i, '')
+    .trim();
+  return cleaned
+    .split(/(?:,|;|\+|→|->|\band\b|\bwith\b|\bvia\b|\busing\b|\binto\b|\bbacked by\b)/i)
+    .map((s) => s.replace(/^(a\s+|an\s+|the\s+)/i, '').trim())
+    .filter((s) => s.length >= 3);
 }
 
 interface ClosedLoopDomainTopologySpec {
@@ -168,16 +183,9 @@ function resolveClosedLoopDomainSpec(options?: UniversalClosedLoopHarnessOptions
 
   const isNasaOrAerospace =
     !combined.trim() ||
-    combined.includes('nasa') ||
-    combined.includes('satellite') ||
-    combined.includes('satellight') ||
-    combined.includes('universe') ||
-    combined.includes('multiverse') ||
-    combined.includes('orbital') ||
-    combined.includes('space') ||
-    combined.includes('rocket') ||
-    combined.includes('aerospace') ||
-    combined.includes('constellation');
+    /\b(nasa|satellite|satellight|multiverse|multi-universe|orbital|spacecraft|deep[- ]space|outer[- ]space|space[- ]flight|space[- ]station|space[- ]mission|space[- ]launch|rocket|aerospace|constellation)\b/i.test(
+      combined
+    );
 
   if (isNasaOrAerospace) {
     return {
@@ -348,11 +356,20 @@ function resolveClosedLoopDomainSpec(options?: UniversalClosedLoopHarnessOptions
     options?.projectTitle ||
     options?.domain ||
     String(options?.prompt || 'Enterprise Cyber-Physical System')
-      .replace(/^(please\s+)?(build|design|create|architect|generate|show)\s+(a|an|the)?\s*/i, '')
+      .replace(/^(please\s+)?(build|design|create|architect|generate|synthesize|draw|show)\s+(a|an|the)?\s*/i, '')
       .slice(0, 56)
       .trim() ||
     'Autonomous Agentic System';
   const cleanSubject = escHtml(rawSubject);
+  const clauses = extractCustomDomainClauses(options?.prompt, options?.customSubsystems);
+  const c0 = escHtml((clauses[0] || cleanSubject).slice(0, 32));
+  const c1 = escHtml((clauses[1] || 'Cloud Armor, Apigee X, Envoy AI Gateway').slice(0, 42));
+  const c2 = escHtml((clauses[2] || 'State & Topology Planning').slice(0, 26));
+  const c3 = escHtml((clauses[3] || 'Policy & Compliance Verification').slice(0, 26));
+  const c4 = escHtml((clauses[4] || 'Counterfactual Sim Digital-Twin').slice(0, 26));
+  const gateLabel = options?.decisionGateQuestion
+    ? escHtml(options.decisionGateQuestion.slice(0, 38))
+    : 'Policy &amp; Safety Commit Gate';
 
   return {
     diagramId: 'universal_closed_loop_domain_harness',
@@ -361,10 +378,10 @@ function resolveClosedLoopDomainSpec(options?: UniversalClosedLoopHarnessOptions
     headerSubtitleHtml:
       'Custom Compositional AST • Rhombus Policy Gate (GO/NO-GO) • Hexagon ADK Agents • 1:3 Counterfactual Scenario Fork-Join • Closed-Loop Telemetry Return',
     certStandardsLineHtml: 'NIST AI RMF 1.0 • ISO/IEC 42001 • OpenTelemetry • Zero-Trust OIDC',
-    uiTitleHtml: `${cleanSubject} Console UI`,
+    uiTitleHtml: `${c0} Console UI`,
     uiSubHtml: '(Operator Mission Control / Gemini Live / AG-UI)',
     edgeTitleHtml: 'Zero-Trust Edge &amp; Telemetry Gateway',
-    edgeLine1Html: '(Cloud Armor, Apigee X, Envoy AI Gateway)',
+    edgeLine1Html: `(${c1})`,
     edgeLine2Html: '(mTLS 1.3, Rate Limiting &amp; Protocol Guard)',
     edgeAuthLabelHtml: 'Zero-Trust OIDC',
     identityTitleHtml: 'Identity Platform',
@@ -373,7 +390,7 @@ function resolveClosedLoopDomainSpec(options?: UniversalClosedLoopHarnessOptions
     abortTitleHtml: '⛔ Policy Violation Quarantine Sink',
     abortLine1Html: 'Automated Circuit-Breaker &amp; Safe-Hold',
     abortLine2Html: 'Immutable Audit Lockout • HITL Escalation',
-    gateTitleHtml: 'Policy &amp; Safety Commit Gate',
+    gateTitleHtml: gateLabel,
     gateSubHtml: 'Deterministic Invariant &amp; Risk Decision Gate',
     gateGoEdgeHtml: '[GO: POLICY PASS]',
     gateArmorEdgeHtml: 'Safety &amp; Invariant Check',
@@ -386,18 +403,18 @@ function resolveClosedLoopDomainSpec(options?: UniversalClosedLoopHarnessOptions
     obsItem3SubHtml: '(Counterfactual Eval Score)',
     obsItem4SubHtml: '(TPU/GPU Compute FinOps)',
     iamSubHtml: '(WIF &amp; Least-Privilege RBAC)',
-    coordTitleHtml: 'Lead Orchestrator Coordinator',
+    coordTitleHtml: `${c0} Coordinator`,
     coordLine1Html: '(Vertex AI Agent Engine / Google ADK /',
     coordLine2Html: 'LangGraph &amp; A2A Control Hexagon)',
-    agent1TitleHtml: 'State &amp; Topology<br/>Planning Agent',
+    agent1TitleHtml: `${c2}<br/>Agent`,
     agent1SubHtml: '(Graph State Solver / ADK)',
-    agent2TitleHtml: 'Policy &amp; Compliance<br/>Verification Agent',
+    agent2TitleHtml: `${c3}<br/>Agent`,
     agent2SubHtml: '(Guardrail Enforcement / ADK)',
-    agent3TitleHtml: 'Counterfactual Sim<br/>Digital-Twin Agent',
+    agent3TitleHtml: `${c4}<br/>Agent`,
     agent3SubHtml: '(1:3 Scenario Rollout Fork)',
     sandboxTitleHtml: 'Parallel 1:3 Counterfactual Digital-Twin Sandbox',
-    laneAlphaTitleHtml: '⚡ Scenario α (Nominal Baseline Operating Regime)',
-    laneAlphaSubHtml: 'Digital-Twin Baseline • Standard Load &amp; Equilibrium Parameters',
+    laneAlphaTitleHtml: `⚡ Scenario α (Nominal ${c0} Baseline)`,
+    laneAlphaSubHtml: `Digital-Twin Baseline • ${c1} Standard Load &amp; Equilibrium`,
     laneBetaTitleHtml: '⚡ Scenario β (High-Stress Surge &amp; Parameter Shift)',
     laneBetaSubHtml: '3.5x Tail-Risk Perturbation • Monte Carlo Sensitivity Sweep',
     laneGammaTitleHtml: '⚡ Scenario γ (Adversarial Fault &amp; Degraded Regime)',
@@ -417,7 +434,7 @@ function resolveClosedLoopDomainSpec(options?: UniversalClosedLoopHarnessOptions
     exec1Line1Html: 'Cryptographic Signature Verification',
     exec1Line2Html: 'Idempotent Command Envelope Check',
     exec1EdgeHtml: 'Verified Command Uplink',
-    exec2TitleHtml: 'Primary State Actuator',
+    exec2TitleHtml: `${c0} State Actuator`,
     exec2Line1Html: 'Policy Commit Gate Approved',
     exec2Line2Html: 'Atomic Production State Mutation',
     exec2EdgeHtml: 'Atomic Commit Dispatch',

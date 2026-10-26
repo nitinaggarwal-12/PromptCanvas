@@ -77,11 +77,11 @@ export function healStubOrOracleDiagramXml(
 
   const vertexCount = (safeXml.match(/vertex="1"/gi) || []).length;
   const isOneBoxCoPilotStub =
-    safeXml.includes('copilot_mod_custom_box_0') ||
-    safeXml.includes('CO-PILOT SYNTHESIS V1.1') ||
-    (!safeXml.includes('data-blank-canvas="true"') &&
-      vertexCount > 0 &&
-      vertexCount < 6 &&
+    !safeXml.includes('data-blank-canvas="true"') &&
+    vertexCount > 0 &&
+    vertexCount < 6 &&
+    (safeXml.includes('copilot_mod_custom_box_0') ||
+      safeXml.includes('CO-PILOT SYNTHESIS V1.1') ||
       Boolean((prompt && prompt.trim().length > 5) || isOracleExadataContext));
 
   if (isOneBoxCoPilotStub) {
@@ -104,6 +104,30 @@ export function healStubOrOracleDiagramXml(
       healed: true,
       canonicalTitle: title || fallbackPrompt,
     };
+  }
+
+  const isGenericClipboardTitle = /^(clipboard_diagram|screenshot|pasted_image|image_|decompiled architecture)/i.test(
+    (title || '').trim()
+  );
+  if (isGenericClipboardTitle) {
+    if (safeXml.includes('arch_center_78_oracle_ebs_exadata') || isOracleExadataContext) {
+      return {
+        xml: safeXml,
+        latest_xml: safeXml,
+        healed: false,
+        canonicalTitle:
+          'Oracle EBS R12.2 & Exadata X10M on Google Cloud — Official #78 Hub-and-Spoke Architecture',
+      };
+    }
+    const diagramNameMatch = safeXml.match(/<diagram[^>]*\bname="([^"]+)"/i);
+    if (diagramNameMatch && diagramNameMatch[1] && !/^(page-1|diagram)$/i.test(diagramNameMatch[1].trim())) {
+      return {
+        xml: safeXml,
+        latest_xml: safeXml,
+        healed: false,
+        canonicalTitle: diagramNameMatch[1].replace(/&amp;/g, '&').trim(),
+      };
+    }
   }
 
   return { xml: safeXml, healed: false };
@@ -168,7 +192,7 @@ export function normalizeToMicroVersionTag(tag?: string, fallbackIndex = 1): str
   return `v1.0.${fallbackIndex}`;
 }
 
-export function getDeletedDraftIds(): string[] {
+function getDeletedDraftIds(): string[] {
   if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(DELETED_DRAFTS_KEY);
@@ -393,7 +417,7 @@ export function buildOracleEbsExadataClosedLoopDraftItem(): AutoSavedDraftBluepr
  * Official Google Cloud Architecture Center Hub-and-Spoke (#78) L400 Topology
  * for Oracle E-Business Suite (EBS R12.2) on Exadata X10M (`DRAFT-ORACLE-EXADATA-EBS-78-V1-0-1`).
  */
-export function buildOracleEbsExadataArchCenter78DraftItem(): AutoSavedDraftBlueprint {
+function buildOracleEbsExadataArchCenter78DraftItem(): AutoSavedDraftBlueprint {
   const oracle78Xml = buildOfficialOracleEbsExadataArchCenter78Xml('light');
   const blankBaselineXml = createBlankCanvasDrawioXml('Blank Canvas (v1.0.0)');
   const oracle78Prompt =
@@ -638,68 +662,68 @@ export function getAutoSavedDraftBlueprints(): AutoSavedDraftBlueprint[] {
   const deletedSet = new Set(getDeletedDraftIds().map((x) => x.toUpperCase()));
   const draftsMap = new Map<string, AutoSavedDraftBlueprint>();
 
+  const seedStudioIfUnmodified = (seedDraft: AutoSavedDraftBlueprint, defaultBpId: string) => {
+    if (typeof window === 'undefined') return;
+    try {
+      const studioKey = `promptcanvas_studio_${seedDraft.id}`;
+      const existingRaw = localStorage.getItem(studioKey);
+      if (existingRaw) {
+        const existing = JSON.parse(existingRaw);
+        const hasUserMods =
+          (Array.isArray(existing?.versions) && existing.versions.length > 2) ||
+          (typeof existing?.xml === 'string' &&
+            existing.xml.includes('copilot_mod_') &&
+            (existing.xml.match(/vertex="1"/g) || []).length >= 6);
+        if (hasUserMods) {
+          draftsMap.set(seedDraft.id.toUpperCase(), {
+            ...seedDraft,
+            ...existing,
+            id: seedDraft.id,
+          });
+          return;
+        }
+      }
+      localStorage.setItem(
+        studioKey,
+        JSON.stringify({
+          ...seedDraft,
+          projectTitle: seedDraft.name,
+          visibility: 'private',
+          selectedBlueprintId: defaultBpId,
+        })
+      );
+    } catch {}
+  };
+
   // 1. Seed the Oracle@Google Cloud E-Business Suite (EBS R12.2) on Exadata X10M Split-VPC Architecture (v1.0.1) as #1 draft
   const oracleDraft = buildOracleEbsExadataClosedLoopDraftItem();
   if (!deletedSet.has(oracleDraft.id.toUpperCase())) {
     draftsMap.set(oracleDraft.id.toUpperCase(), oracleDraft);
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(
-          `promptcanvas_studio_${oracleDraft.id}`,
-          JSON.stringify({
-            ...oracleDraft,
-            projectTitle: oracleDraft.name,
-            visibility: 'private',
-            selectedBlueprintId: 'none',
-          })
-        );
-      } catch {}
-    }
+    seedStudioIfUnmodified(oracleDraft, 'none');
   }
 
   // 1B. Seed the Official #78 Hub-and-Spoke L400 Oracle@Google Cloud EBS R12.2 on Exadata X10M Architecture (v1.0.1)
   const oracle78Draft = buildOracleEbsExadataArchCenter78DraftItem();
   if (!deletedSet.has(oracle78Draft.id.toUpperCase())) {
     draftsMap.set(oracle78Draft.id.toUpperCase(), oracle78Draft);
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(
-          `promptcanvas_studio_${oracle78Draft.id}`,
-          JSON.stringify({
-            ...oracle78Draft,
-            projectTitle: oracle78Draft.name,
-            visibility: 'private',
-            selectedBlueprintId: '78',
-          })
-        );
-      } catch {}
-    }
+    seedStudioIfUnmodified(oracle78Draft, '78');
   }
 
   // 2. Seed the NASA Closed-Loop Multi-Universe Digital-Twin Harness (v1.0.1) as #3 draft
   const nasaDraft = buildNasaMultiverseDraftItem();
   if (!deletedSet.has(nasaDraft.id.toUpperCase())) {
     draftsMap.set(nasaDraft.id.toUpperCase(), nasaDraft);
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(
-          `promptcanvas_studio_${nasaDraft.id}`,
-          JSON.stringify({
-            ...nasaDraft,
-            projectTitle: nasaDraft.name,
-            visibility: 'private',
-            selectedBlueprintId: '00',
-          })
-        );
-      } catch {}
-    }
+    seedStudioIfUnmodified(nasaDraft, '00');
   }
 
   if (typeof window === 'undefined') {
     return Array.from(draftsMap.values());
   }
 
-  // 3. Load & self-heal from promptcanvas_draft_blueprints
+  const PURGED_LEGACY_DRAFT_REGEX =
+    /novacura|omnicommerce|voltgrid|nexusfin|^add\s+\d+\s+more\s+components|clinical\s+ai\s+-|vis-9745|vis-agentic-01|^custom\s+diagram\s+#|^unified\s+cloud\s+architecture\s+#/i;
+
+  // 3. Load & self-heal from promptcanvas_draft_blueprints (preserving user modifications >= 6 vertices)
   try {
     const rawDrafts = JSON.parse(localStorage.getItem(DRAFT_STORAGE_KEY) || '[]');
     let mutatedStorage = false;
@@ -707,11 +731,11 @@ export function getAutoSavedDraftBlueprints(): AutoSavedDraftBlueprint[] {
     if (Array.isArray(rawDrafts)) {
       for (const item of rawDrafts) {
         if (!item?.id || deletedSet.has(String(item.id).toUpperCase())) continue;
-        const combinedText = `${item.id || ''} ${item.name || ''} ${item.prompt || ''} ${item.description || ''}`;
-        const isOracleItem = /oracle|exadata|ebusiness|e-business|\bebs\b|oracle@googl/i.test(combinedText);
-        if (isOracleItem) {
+        if (PURGED_LEGACY_DRAFT_REGEX.test(`${item.id || ''} ${item.name || ''} ${item.prompt || ''} ${item.description || ''}`)) {
           mutatedStorage = true;
-          cleanedDrafts.push(oracleDraft);
+          try {
+            localStorage.removeItem(`promptcanvas_studio_${item.id}`);
+          } catch {}
           continue;
         }
         const normalizedTag = normalizeToMicroVersionTag(item.activeVersionTag || 'v1.0.1');
@@ -784,14 +808,23 @@ export function getAutoSavedDraftBlueprints(): AutoSavedDraftBlueprint[] {
       const latestVer = parsed.versionHistory[0];
       if (!latestVer?.xml) continue;
       const metaText = `${latestVer.title || ''} ${latestVer.prompt || ''}`;
+      if (PURGED_LEGACY_DRAFT_REGEX.test(metaText)) {
+        try {
+          sessionStorage.removeItem(key);
+        } catch {}
+        continue;
+      }
       const isOracleVer = /oracle|exadata|ebusiness|e-business|\bebs\b|oracle@googl/i.test(metaText);
-      if (isOracleVer) {
+      const isNasaVer = /nasa|satellite|satellight|multiverse|multi-universe/i.test(metaText);
+
+      // Only skip static unmodified v1.0.1 Oracle sessions that have no Co-Pilot modifications
+      const hasCopilotMod = typeof latestVer.xml === 'string' && latestVer.xml.includes('copilot_mod_');
+      if (isOracleVer && !hasCopilotMod && parsed.versionHistory.length <= 2) {
         continue;
       }
 
       const microCount = parsed.versionHistory.length - 1;
       const microTag = normalizeToMicroVersionTag(latestVer.versionTag, microCount);
-      const isNasaVer = /nasa|satellite|satellight|multiverse|multi-universe/i.test(metaText);
 
       const healedMain = healStubOrOracleDiagramXml(latestVer.xml, latestVer.prompt, latestVer.title);
       if (healedMain.healed) {
@@ -809,9 +842,13 @@ export function getAutoSavedDraftBlueprints(): AutoSavedDraftBlueprint[] {
         } catch {}
       }
 
-      const recoveredId = isNasaVer
-        ? 'DRAFT-NASA-MULTIVERSE-V1-0-1'
-        : `draft_${parsed.sessionCopyId || key.replace('promptcanvas_dashboard_session_', '')}`;
+      const recoveredId = isOracleVer
+        ? parsed.blueprintId === '78' || healedMain.xml.includes('oracle_ebs_exadata_arch_center_78')
+          ? 'DRAFT-ORACLE-EXADATA-ARCH78-V1-0-1'
+          : 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1'
+        : isNasaVer
+          ? 'DRAFT-NASA-MULTIVERSE-V1-0-1'
+          : `draft_${parsed.sessionCopyId || key.replace('promptcanvas_dashboard_session_', '')}`;
 
       if (deletedSet.has(recoveredId.toUpperCase())) continue;
 
@@ -821,9 +858,11 @@ export function getAutoSavedDraftBlueprints(): AutoSavedDraftBlueprint[] {
       draftsMap.set(recoveredId.toUpperCase(), {
         id: recoveredId,
         name: displayTitle,
-        domain: isNasaVer
-          ? 'Aerospace & Defense (NASA CCSDS / DSN / cFS / Digital-Twin)'
-          : 'Enterprise Cloud & Multi-Agent AI',
+        domain: isOracleVer
+          ? 'Enterprise ERP & Database Modernization (Oracle Database@Google Cloud / Exadata X10M)'
+          : isNasaVer
+            ? 'Aerospace & Defense (NASA CCSDS / DSN / cFS / Digital-Twin)'
+            : 'Enterprise Cloud & Multi-Agent AI',
         description: latestVer.diffSummary || latestVer.prompt || `Auto-saved Draft (${microTag})`,
         prompt: latestVer.prompt || '',
         tags: ['Draft', microTag, `Blueprint #${parsed.blueprintId || '00'}`],
@@ -837,9 +876,11 @@ export function getAutoSavedDraftBlueprints(): AutoSavedDraftBlueprint[] {
         xml: healedMain.xml,
         created_studio: 'draft',
         status: 'draft',
-        architecture_type: isNasaVer
-          ? 'nasa_multiverse_closed_loop_harness'
-          : `draft_canonical_${parsed.blueprintId || '00'}`,
+        architecture_type: isOracleVer
+          ? 'oracle_ebs_exadata_gcp_split_vpc_official'
+          : isNasaVer
+            ? 'nasa_multiverse_closed_loop_harness'
+            : `draft_canonical_${parsed.blueprintId || '00'}`,
         blueprintId: parsed.blueprintId || '00',
         perspective: latestVer.perspective || 'Technical',
         createdAt: parsed.updatedAt || new Date().toISOString(),

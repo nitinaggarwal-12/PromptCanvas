@@ -154,9 +154,10 @@ describe('Phase 1 & 2: Diagram Rasterizer & Export Protocols', () => {
     await expect(exportPromise).rejects.toThrow('Export service unreachable');
   });
 
-  it('Static Guard Test: ExportDiagramModal contains zero placeholder fingerprints', () => {
-    const modalPath = path.join(__dirname, '../../src/components/ExportDiagramModal.tsx');
-    const content = fs.readFileSync(modalPath, 'utf8');
+  it('Static Guard Test: diagramRaster and dashboard export contain zero placeholder fingerprints', () => {
+    const rasterPath = path.join(__dirname, '../../src/lib/export/diagramRaster.ts');
+    const dashboardPath = path.join(__dirname, '../../src/app/dashboard/page.tsx');
+    const content = fs.readFileSync(rasterPath, 'utf8') + '\n' + fs.readFileSync(dashboardPath, 'utf8');
 
     expect(content).not.toContain('Draw.io Architecture Diagram Component Nodes');
     expect(content).not.toContain('fillRect');

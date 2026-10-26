@@ -30,7 +30,7 @@ export interface LivingSpecDocument {
 }
 
 /** Where the component inventory that drives the documents actually came from. */
-export type SpecGroundingSource = "canvas-xml" | "ast" | "default-template";
+type SpecGroundingSource = "canvas-xml" | "ast" | "default-template";
 
 export interface SpecGroundingSummary {
   source: SpecGroundingSource;
@@ -47,7 +47,7 @@ export interface SpecGroundingSummary {
 
 type LiveComponent = { name: string; service: string; tier: string; sla: string };
 
-export function parseSlaPercent(sla: string | undefined | null): number | null {
+function parseSlaPercent(sla: string | undefined | null): number | null {
   if (!sla) return null;
   const m = String(sla).match(/(\d{2,3}(?:\.\d+)?)\s*%/);
   if (!m) return null;
@@ -61,7 +61,7 @@ export function parseSlaPercent(sla: string | undefined | null): number | null {
  * that exist to *raise* availability (DR replicas, observability) are excluded because they
  * are not in the synchronous request path.
  */
-export function computeCompositeAvailability(components: LiveComponent[]): { pct: number | null; sampleSize: number } {
+function computeCompositeAvailability(components: LiveComponent[]): { pct: number | null; sampleSize: number } {
   const inPath = components.filter((c) => !/(^|\b)(dr|disaster|standby|observability|monitoring|logging|telemetry)(\b|$)/i.test(`${c.tier} ${c.name}`));
   const pcts = inPath.map((c) => parseSlaPercent(c.sla)).filter((v): v is number => v !== null);
   if (pcts.length === 0) return { pct: null, sampleSize: 0 };
@@ -69,7 +69,7 @@ export function computeCompositeAvailability(components: LiveComponent[]): { pct
   return { pct: Math.round(product * 100 * 10000) / 10000, sampleSize: pcts.length };
 }
 
-export function downtimeMinutesPerYear(slaPct: number | null): number | null {
+function downtimeMinutesPerYear(slaPct: number | null): number | null {
   if (slaPct === null) return null;
   return Math.round((1 - slaPct / 100) * 525_600 * 100) / 100;
 }
@@ -252,7 +252,7 @@ export function summarizeSpecGrounding(rawAst: ArchitectureAst, activeXml?: stri
   };
 }
 
-export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: string): LivingSpecDocument[] {
+function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: string): LivingSpecDocument[] {
   const defaultAst = createDefaultFintechAst(rawAst?.metadata?.projectTitle, rawAst?.metadata?.domain);
   const ast: ArchitectureAst = {
     metadata: {
@@ -387,7 +387,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
             ]
           : []),
         "## 1.0 Executive Problem Statement & Architecture Scope",
-        "Mission-critical **" + resolvedDomain + "** workloads for **" + meta.projectTitle + "** require continuous high-throughput orchestration across **" + c0 + "**, **" + c1 + "**, and **" + c2 + "** with strict **" + meta.slaTarget + " availability** and zero data loss (**RPO = " + meta.targetRpo + "**). The platform unifies edge ingestion, real-time event streaming, and **Gemini 3.1 Pro + Gemini 2.5 Flash** grounded inference into an integrated, Zero-Trust ecosystem.",
+        "Mission-critical **" + resolvedDomain + "** workloads for **" + meta.projectTitle + "** require continuous high-throughput orchestration across **" + c0 + "**, **" + c1 + "**, and **" + c2 + "** with strict **" + meta.slaTarget + " availability** and zero data loss (**RPO = " + meta.targetRpo + "**). The platform unifies edge ingestion, real-time event streaming, and **Gemini 3.1 Pro + Gemini 3.8 Flash** grounded inference into an integrated, Zero-Trust ecosystem.",
         "",
         "## 1.5 " + (isCanvasSynced ? "Live Synchronized Canvas Component Inventory" : "Component Inventory (" + (groundingSource === "ast" ? "from architecture AST" : "default reference template") + ")"),
         "| Component ID | Active Canvas Node / Subsystem | Cloud Backing Service | Architectural Tier | Target SLA |",
@@ -447,7 +447,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         "1. **Phase 1 — Ingress & Telemetry (" + c0 + ")**: Client/edge node authenticates via OIDC / mTLS and submits structured payload with idempotency key.",
         "2. **Phase 2 — Edge & Policy Validation (" + c1 + ")**: Cloud Armor & Apigee X inspect payloads and enforce rate limits and schema contracts.",
         "3. **Phase 3 — Core Orchestration (" + c2 + ")**: GKE Autopilot / Cloud Run verifies state and checks Memorystore Redis 7.2 for duplicate execution.",
-        "4. **Phase 4 — AI-Grounded Reasoning (" + c3 + ")**: Vertex AI ScaNN performs vector similarity search; **Gemini 2.5 Flash** and **Gemini 3.1 Pro** evaluate domain policies.",
+        "4. **Phase 4 — AI-Grounded Reasoning (" + c3 + ")**: Vertex AI ScaNN performs vector similarity search; **Gemini 3.8 Flash** and **Gemini 3.1 Pro** evaluate domain policies.",
         "5. **Phase 5 — State Commit & Event Broadcast (" + c4 + ")**: Cloud Spanner records immutable state entry and emits CDC event to Cloud Pub/Sub.",
         "",
         "## 2.0 Business Logic Exception Matrix",
@@ -492,8 +492,8 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         "* **Zone 1 (Ingress & Edge)**: **" + c0 + "** backed by Anycast External HTTPS GCLB + Cloud Armor L7 WAF + Apigee X.",
         "* **Zone 2 (Core Orchestration)**: **" + c1 + "** running on GKE Autopilot c3-standard-8 + Cloud Run Gen2 + Memorystore Redis 7.2.",
         "* **Zone 3 (Real-Time Event Mesh)**: **" + c2 + "** powered by Cloud Pub/Sub + Datastream CDC + Cloud Dataflow Apache Beam.",
-        "* **Zone 4 (Vertex AI Intelligence Hub)**: **" + c3 + "** with ScaNN Vector Search + Model Armor Shield + **Gemini 3.1 Pro** & **Gemini 2.5 Flash**.",
-        "* **Zone 5 (Multi-Region Persistence)**: **" + c4 + "** on Cloud Spanner nam3 + BigQuery BigLake + Dual-Region Cloud Storage.",
+        "* **Zone 4 (Vertex AI Intelligence Hub)**: **" + c3 + "** with ScaNN Vector Search + Model Armor Shield + **Gemini 3.1 Pro** & **Gemini 3.8 Flash**.",
+        "* **Zone 5 (Multi-Region Persistence)**: **" + c4 + "** on Cloud Spanner nam3 + BigLake + Dual-Region Cloud Storage.",
         "* **Zone 6 (Zero-Trust Governance)**: VPC Service Controls + Keyless Workload Identity + Cloud KMS HSM + **Gemini 3.1 Pro** Multimodal Certification.",
         "",
         "---"
@@ -525,7 +525,7 @@ export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: st
         "| **Step 2** | Token Authentication & Routing | HTTPS Anycast | " + c0 + " -> " + c1 + " | < 3.5ms |",
         "| **Step 3** | HSM Tokenization & Idempotency Lock | gRPC mTLS | " + c1 + " -> " + c2 + " / Redis 7.2 | < 2.0ms |",
         "| **Step 4** | ScaNN Vector Embeddings Match | gRPC Internal | " + c2 + " -> Vertex Vector Search | < 12.0ms |",
-        "| **Step 5** | Gemini 2.5 Flash + 3.1 Pro Inference | gRPC Internal | Vertex Search -> Gemini 2.5 Flash | < 18.0ms |",
+        "| **Step 5** | Gemini 3.8 Flash + 3.1 Pro Inference | gRPC Internal | Vertex Search -> Gemini 3.8 Flash | < 18.0ms |",
         "| **Step 6** | Spanner TrueTime 2PC ACID Commit | gRPC Private | " + c3 + " -> " + c4 + " | < 6.5ms |",
         "| **Step 7** | Asynchronous Audit Event Stream | Pub/Sub Stream | " + c4 + " -> Pub/Sub / BigQuery | Async (< 2ms) |",
         "| **TOTAL** | **End-to-End Execution Latency** | | **Client to Confirmed Response** | **46.0ms (p99 < 50ms)** |",

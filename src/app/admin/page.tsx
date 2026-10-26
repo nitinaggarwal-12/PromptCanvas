@@ -73,7 +73,8 @@ export default function SuperAdminDashboard() {
       setTimeout(() => setToastMsg(null), 3000);
     } catch (err: unknown) {
       console.error(err);
-      alert(err instanceof Error ? err.message : 'Error updating role');
+      setToastMsg(err instanceof Error ? err.message : 'Error updating role');
+      setTimeout(() => setToastMsg(null), 4000);
     } finally {
       setUpdatingId(null);
     }
@@ -104,15 +105,21 @@ export default function SuperAdminDashboard() {
 
         {/* Top Header */}
         <AppHeader>
- <div className="w-full max-w-none flex items-center justify-between gap-4">
+          <div className="w-full max-w-none flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 text-xs font-semibold">
-                <Link href="/" className="text-slate-400 hover:text-white transition-colors" title="Home">
+                <Link
+                  href="/"
+                  className={`transition-colors ${
+                    isLight ? 'text-slate-700 hover:text-amber-700' : 'text-slate-400 hover:text-white'
+                  }`}
+                  title="Home"
+                >
                   PromptCanvas
                 </Link>
-                <span className="text-slate-600">/</span>
-                <span className="font-bold text-amber-400 flex items-center gap-1.5 truncate">
-                  <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" />
+                <span className={isLight ? 'text-slate-400' : 'text-slate-600'}>/</span>
+                <span className={`font-bold flex items-center gap-1.5 truncate ${isLight ? 'text-amber-700' : 'text-amber-400'}`}>
+                  <ShieldCheck className={`w-4 h-4 shrink-0 ${isLight ? 'text-amber-600' : 'text-amber-400'}`} />
                   <span>Admin Governance &amp; Directory</span>
                 </span>
                 <span className="hidden sm:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 shrink-0">

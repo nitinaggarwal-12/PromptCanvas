@@ -22,7 +22,7 @@ const OFFICIAL_ASSETS = officialAssetsRaw as Record<string, string>;
 const USER_SILHOUETTE_DATA_URI =
   'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NCIgaGVpZ2h0PSIzNiIgdmlld0JveD0iMCAwIDQ0IDM2Ij48Y2lyY2xlIGN4PSIyMiIgY3k9IjExIiByPSI4LjUiIGZpbGw9IiMwMDAwMDAiLz48cGF0aCBkPSJNIDYgMzQgQyA2IDI0IDM4IDI0IDM4IDM0IFoiIGZpbGw9IiMwMDAwMDAiLz48L3N2Zz4=';
 
-export interface OfficialArchCardItem {
+interface OfficialArchCardItem {
   icon: string;
   title: string;
   title2?: string;
@@ -1654,6 +1654,365 @@ ${cells.join('\n')}
 </mxfile>`;
 }
 
+export interface GeminiHubSpokeCardOverride {
+  title: string;
+  sub: string;
+  icon?: string;
+}
+
+export interface GeminiHubSpoke78DynamicSpec {
+  title?: string;
+  subtitle?: string;
+  topUserTitle?: string;
+  topUserSub?: string;
+  routingHubTitle?: string;
+  routingHubSub?: string;
+  routingCards?: {
+    topLeft?: GeminiHubSpokeCardOverride;
+    midLeft?: GeminiHubSpokeCardOverride;
+    botLeft?: GeminiHubSpokeCardOverride;
+    topRight?: GeminiHubSpokeCardOverride;
+    botRight?: GeminiHubSpokeCardOverride;
+  };
+  govHubTitle?: string;
+  govHubTitle2?: string;
+  govCards?: {
+    top?: GeminiHubSpokeCardOverride;
+    mid?: GeminiHubSpokeCardOverride;
+    bot?: GeminiHubSpokeCardOverride;
+  };
+  leftBoundaryLabel?: string;
+  leftZoneTitle?: string;
+  leftZoneSub?: string;
+  leftCards?: {
+    modelArmor?: GeminiHubSpokeCardOverride;
+    llm?: GeminiHubSpokeCardOverride;
+    runtime?: GeminiHubSpokeCardOverride;
+    mcp?: GeminiHubSpokeCardOverride;
+    datastore?: GeminiHubSpokeCardOverride;
+  };
+  rightBoundaryLabel?: string;
+  rightZoneTitle?: string;
+  rightZoneSub?: string;
+  rightCards?: {
+    modelArmor?: GeminiHubSpokeCardOverride;
+    llm?: GeminiHubSpokeCardOverride;
+    runtime?: GeminiHubSpokeCardOverride;
+    mcp?: GeminiHubSpokeCardOverride;
+    datastore?: GeminiHubSpokeCardOverride;
+  };
+}
+
+function inferIconFromText(text: string, defaultIcon: string): string {
+  const l = (text || '').toLowerCase();
+  if (l.includes('bigquery') || l.includes('big query') || l.includes('biglake') || l.includes('edw') || l.includes('looker') || l.includes('dvt')) return 'bigquery_analytics';
+  if (l.includes('vertex') || l.includes('gemini') || l.includes('mlops') || l.includes('model') || l.includes('h2o') || l.includes('mojo') || l.includes('agent')) return 'gemini_agent_platform';
+  if (l.includes('spanner') || l.includes('alloydb') || l.includes('postgres') || l.includes('sql') || l.includes('database') || l.includes('feature store')) return 'datastore_alloydb_bq';
+  if (l.includes('gke') || l.includes('kubernetes') || l.includes('autopilot')) return 'gke';
+  if (l.includes('cloud run') || l.includes('microservice') || l.includes('router') || l.includes('hub')) return 'cloud_run';
+  if (l.includes('load balanc') || l.includes('composer') || l.includes('airflow') || l.includes('cdn')) return 'load_balancer_cloud_armor';
+  if (l.includes('security command') || l.includes('scc') || l.includes('dataplex') || l.includes('catalog') || l.includes('chronicle')) return 'security_command_center';
+  if (l.includes('iam') || l.includes('kms') || l.includes('iap') || l.includes('apigee') || l.includes('oauth') || l.includes('datastream') || l.includes('transfer')) return 'iap_iam_shield';
+  if (l.includes('model armor') || l.includes('dlp') || l.includes('translator') || l.includes('guard')) return 'model_armor';
+  if (l.includes('armor') || l.includes('interconnect') || l.includes('waf') || l.includes('vpn')) return 'cloud_armor';
+  return defaultIcon;
+}
+
+function applyGeminiHubSpokeOverrides(
+  base: OfficialArchCenterBlueprintConfig,
+  spec?: GeminiHubSpoke78DynamicSpec | null
+): OfficialArchCenterBlueprintConfig {
+  if (!spec) return base;
+  const mergeCard = (orig: OfficialArchCardItem, ov?: GeminiHubSpokeCardOverride): OfficialArchCardItem => {
+    if (!ov || !ov.title || ov.title.trim().length < 2) return orig;
+    const cleanTitle = ov.title.trim().slice(0, 28);
+    const cleanSub = (ov.sub || orig.sub).trim().slice(0, 42);
+    return {
+      ...orig,
+      icon: ov.icon || inferIconFromText(`${cleanTitle} ${cleanSub}`, orig.icon),
+      title: cleanTitle,
+      title2: undefined,
+      sub: cleanSub,
+    };
+  };
+
+  return {
+    ...base,
+    title: spec.title?.trim() ? spec.title.trim().slice(0, 84) : base.title,
+    subtitle: spec.subtitle?.trim() ? spec.subtitle.trim().slice(0, 110) : base.subtitle,
+    topUserTitle: spec.topUserTitle?.trim() ? spec.topUserTitle.trim().slice(0, 28) : base.topUserTitle,
+    topUserSub: spec.topUserSub?.trim() ? spec.topUserSub.trim().slice(0, 44) : base.topUserSub,
+    routingHubTitle: spec.routingHubTitle?.trim() ? spec.routingHubTitle.trim().slice(0, 54) : base.routingHubTitle,
+    routingHubSub: spec.routingHubSub?.trim() ? spec.routingHubSub.trim().slice(0, 78) : base.routingHubSub,
+    routingCards: {
+      ...base.routingCards,
+      topLeft: mergeCard(base.routingCards.topLeft, spec.routingCards?.topLeft),
+      midLeft: mergeCard(base.routingCards.midLeft, spec.routingCards?.midLeft),
+      botLeft: mergeCard(base.routingCards.botLeft, spec.routingCards?.botLeft),
+      topRight: mergeCard(base.routingCards.topRight, spec.routingCards?.topRight),
+      botRight: mergeCard(base.routingCards.botRight, spec.routingCards?.botRight),
+    },
+    govHubTitle: spec.govHubTitle?.trim() ? spec.govHubTitle.trim().slice(0, 28) : base.govHubTitle,
+    govHubTitle2: spec.govHubTitle2?.trim() ? spec.govHubTitle2.trim().slice(0, 28) : base.govHubTitle2,
+    govCards: {
+      top: mergeCard(base.govCards.top, spec.govCards?.top),
+      mid: mergeCard(base.govCards.mid, spec.govCards?.mid),
+      bot: mergeCard(base.govCards.bot, spec.govCards?.bot),
+    },
+    leftBoundaryLabel: spec.leftBoundaryLabel?.trim() ? spec.leftBoundaryLabel.trim().slice(0, 68) : base.leftBoundaryLabel,
+    leftZoneTitle: spec.leftZoneTitle?.trim() ? spec.leftZoneTitle.trim().slice(0, 46) : base.leftZoneTitle,
+    leftZoneSub: spec.leftZoneSub?.trim() ? spec.leftZoneSub.trim().slice(0, 64) : base.leftZoneSub,
+    leftCards: {
+      ...base.leftCards,
+      modelArmor: mergeCard(base.leftCards.modelArmor, spec.leftCards?.modelArmor),
+      llm: mergeCard(base.leftCards.llm, spec.leftCards?.llm),
+      runtime: mergeCard(base.leftCards.runtime, spec.leftCards?.runtime),
+      mcp: mergeCard(base.leftCards.mcp, spec.leftCards?.mcp),
+      datastore: mergeCard(base.leftCards.datastore, spec.leftCards?.datastore),
+    },
+    rightBoundaryLabel: spec.rightBoundaryLabel?.trim() ? spec.rightBoundaryLabel.trim().slice(0, 68) : base.rightBoundaryLabel,
+    rightZoneTitle: spec.rightZoneTitle?.trim() ? spec.rightZoneTitle.trim().slice(0, 46) : base.rightZoneTitle,
+    rightZoneSub: spec.rightZoneSub?.trim() ? spec.rightZoneSub.trim().slice(0, 64) : base.rightZoneSub,
+    rightCards: {
+      ...base.rightCards,
+      modelArmor: mergeCard(base.rightCards.modelArmor, spec.rightCards?.modelArmor),
+      llm: mergeCard(base.rightCards.llm, spec.rightCards?.llm),
+      runtime: mergeCard(base.rightCards.runtime, spec.rightCards?.runtime),
+      mcp: mergeCard(base.rightCards.mcp, spec.rightCards?.mcp),
+      datastore: mergeCard(base.rightCards.datastore, spec.rightCards?.datastore),
+    },
+  };
+}
+
+export function buildDynamicOfficialArchCenter78Config(
+  promptText: string,
+  geminiSpec?: GeminiHubSpoke78DynamicSpec | null
+): OfficialArchCenterBlueprintConfig {
+  const raw = String(promptText || '').trim();
+  const lower = raw.toLowerCase();
+
+  const hasTeradataOrEdw = /\b(teradata|edw|netezza|redshift|vertica|greenplum|data\s*warehouse|bteq|fastload)\b/i.test(lower);
+  const hasBigQuery = /\b(big\s*query|bigquery|bq|biglake)\b/i.test(lower);
+  const hasH2o = /\b(h2o|h20|driverless\s*ai|mojo|pojo|sparkling\s*water)\b/i.test(lower);
+  const hasVertex = /\b(vertex|vertx|vertxai|vertexai|mlops|feature\s*store|automl|model\s*registry)\b/i.test(lower);
+
+  if ((hasTeradataOrEdw && hasBigQuery) || hasH2o || (hasBigQuery && hasVertex && /\b(migrat|moderniz|teradata|h2o|h20)\b/i.test(lower))) {
+    const sourceSystemLabel = hasTeradataOrEdw && hasH2o
+      ? 'Teradata EDW & H2O.ai'
+      : hasTeradataOrEdw
+      ? 'Legacy Teradata EDW'
+      : 'Legacy H2O.ai & Data Estate';
+    const sourceSubLabel = hasTeradataOrEdw && hasH2o
+      ? 'On-Prem BTEQ/FastLoad & H2O Driverless AI MOJO'
+      : 'On-Premises EDW Tables & ML Scoring Models';
+
+    const baseMigrationCfg: OfficialArchCenterBlueprintConfig = {
+      id: 'arch-center-teradata-bq-h2o-vertexai-78',
+      badge: 'GOOGLE CLOUD ARCHITECTURE CENTER • DATA & AI MIGRATION (#78)',
+      title: hasTeradataOrEdw && hasH2o
+        ? 'Teradata EDW to BigQuery & H2O.ai to Vertex AI Migration Architecture'
+        : 'Enterprise Data Warehouse to BigQuery & MLOps to Vertex AI Architecture',
+      subtitle: 'Official Google Cloud Hub-and-Spoke Reference Architecture • Dual-Spoke EDW & MLOps Modernization',
+      topUserTitle: sourceSystemLabel,
+      topUserSub: sourceSubLabel,
+      step1LeftLabel: 'Extract & Sync',
+      step7RightLabel: 'Cutover & Serve',
+      outerWrapperLabel: 'Google Cloud Enterprise Landing Zone (VPC Service Controls Perimeter + Cloud KMS CMEK)',
+      innerWrapperLabel: 'Shared Migration & MLOps VPC • Hybrid Connectivity & Cutover Control Plane',
+      routingHubTitle: 'Hybrid Migration & Ingestion Hub (Hop 1 & Hop 2)',
+      routingHubSub: 'Dedicated Interconnect, Batch SQL translation, CDC transfer & DAG orchestration',
+      routingCards: {
+        topLeft: { icon: 'cloud_armor', title: 'Cloud Interconnect', sub: '100Gbps Dedicated HA VPN & PSC' },
+        midLeft: { icon: 'model_armor', title: 'Batch SQL Translator', sub: 'Teradata BTEQ / TPT → GoogleSQL' },
+        botLeft: { icon: 'iap_iam_shield', title: 'Storage Transfer & CDC', sub: 'Datastream + GCS Transfer Agent' },
+        topRight: { icon: 'load_balancer_cloud_armor', title: 'Cloud Composer 3', title2: '(Airflow Orchestrator)', sub: 'End-to-End EDW & MLOps Cutover DAGs' },
+        botRight: { icon: 'cloud_run', title: 'Cloud Run Migration Hub', sub: 'Dual-Spoke Schema & Model Router' },
+        edgeTopLeft: ['Dedicated', 'HA Interconnect'],
+        edgeMidLeft: ['Translate', 'Teradata SQL'],
+        edgeBotLeft: ['Bulk + CDC', 'transfer sync'],
+        step2Left: 'Ingest',
+        step7Mid: 'Verified',
+      },
+      govHubTitle: 'Unified Data & AI',
+      govHubTitle2: 'Governance Hub',
+      govCards: {
+        top: { icon: 'security_command_center', title: 'Dataplex Universal', title2: 'Catalog & Lineage', sub: 'End-to-End EDW & Feature Governance' },
+        mid: { icon: 'iap_iam_shield', title: 'Cloud KMS & VPC-SC', sub: 'CMEK HSM Keys & DLP Redaction' },
+        bot: { icon: 'bigquery_analytics', title: 'Data Validation (DVT)', sub: 'Row-Hash Parity & Drift Audit Sink' },
+      },
+      midStep3Label: ['Route EDW tables &', 'H2O MOJO artifacts'],
+      midStep7Label: ['Validated BigQuery &', 'Vertex AI endpoints'],
+      midGovLabel: ['Dataplex lineage, DVT parity', '& Cloud Audit telemetry'],
+      leftBoundaryLabel: 'Spoke 1: Teradata EDW to BigQuery Data Warehouse Modernization',
+      leftZoneTitle: 'BigQuery Enterprise Data Warehouse Spoke',
+      leftZoneSub: 'BigQuery Migration Service (BMS) • BigLake • BI Engine',
+      leftCards: {
+        modelArmor: { icon: 'bigquery_analytics', title: 'BQ Migration Service', sub: 'Automated Teradata Schema & DDL' },
+        llm: { icon: 'gemini_agent_platform', title: 'Gemini in BigQuery', sub: 'AI-Assisted SQL & Stored Proc Conversion' },
+        runtime: { icon: 'bigquery_analytics', title: 'BigQuery EDW Core', sub: 'Partitioned & Clustered GoogleSQL' },
+        mcp: { icon: 'datastore_alloydb_bq', title: 'BigLake & Iceberg', sub: 'Open-Format GCS Staging & Federation' },
+        datastore: { icon: 'bigquery_analytics', title: 'Looker & BI Engine', sub: 'Sub-Second Executive BI & SQL Analytics' },
+        step4Label: 'Validate DDL & SQL',
+        step6Label: 'Certify row parity',
+        step5Label: ['Convert BTEQ', '& stored procs'],
+        ragLabel: ['High-Throughput', 'Storage Write API'],
+        toolLabel: ['Federated SQL', '& BI Acceleration'],
+      },
+      rightBoundaryLabel: 'Spoke 2: H2O.ai (Driverless AI / Sparkling Water) to Vertex AI Migration',
+      rightZoneTitle: 'Vertex AI MLOps & Prediction Spoke',
+      rightZoneSub: 'H2O MOJO/POJO Runtime • Feature Store • Vertex AI Pipelines',
+      rightCards: {
+        modelArmor: { icon: 'model_armor', title: 'H2O MOJO Importer', sub: 'C++ / Java Scorer Container Wrapper' },
+        llm: { icon: 'gemini_agent_platform', title: 'Vertex AI Workbench', sub: 'Driverless AI → AutoML & Custom Train' },
+        runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Pipelines', sub: 'Kubeflow MLOps & Model Registry' },
+        mcp: { icon: 'mcp_servers', title: 'Vertex AI Endpoints', sub: 'Low-Latency Online & Batch Prediction' },
+        datastore: { icon: 'datastore_alloydb_bq', title: 'Vertex Feature Store', sub: 'BigQuery-Backed Online/Offline Features' },
+        ragLabel: ['Register & Deploy', 'MOJO / Custom Models'],
+        toolLabel: ['Zero-Copy BQ', 'Feature Serving'],
+      },
+    };
+    return applyGeminiHubSpokeOverrides(baseMigrationCfg, geminiSpec);
+  }
+
+  // Clean out purely stylistic / meta phrases so we extract genuine domain intent
+  const cleanedPrompt = raw
+    .replace(/\b(make\s+it\s+beautiful|as\s+google\s+gcp\s+standards?|neat\s+and\s+formatted|make\s+it\s+neat|formatted|clean\s+up|pretty|gorgeous|reformat|redesign)\b/gi, '')
+    .replace(/^(?:please\s+)?(?:create|design|build|draw|architect|generate|show(?:\s+me)?)\s+(?:a\s+|an\s+|the\s+)?(?:technical\s+|logical\s+|enterprise\s+)?(?:architecture\s+diagram|diagram|architecture|system|topology|blueprint)\s*(?:for|of|showing)?\s*/i, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const effectiveTitle = cleanedPrompt.length >= 4
+    ? cleanedPrompt.slice(0, 78)
+    : 'Enterprise Google Cloud Hub-and-Spoke Reference Architecture';
+  const titleFormatted = effectiveTitle.charAt(0).toUpperCase() + effectiveTitle.slice(1);
+
+  // Extract distinct domain clauses from the user's prompt so even before Live Gemini responds,
+  // the two spokes and cards reflect the user's specific domain and services
+  const clauses = cleanedPrompt
+    .split(/(?:,|;|\+|→|->|\band\b|\bwith\b|\bvia\b|\busing\b|\bto\b)/i)
+    .map((s) => s.replace(/^(?:a|an|the)\s+/i, '').trim())
+    .filter((s) => s.length >= 3);
+
+  const clause0 = clauses[0] ? clauses[0].slice(0, 26) : '';
+  const clause1 = clauses[1] ? clauses[1].slice(0, 26) : '';
+  const clause2 = clauses[2] ? clauses[2].slice(0, 26) : '';
+  const clause3 = clauses[3] ? clauses[3].slice(0, 26) : '';
+
+  const hasSpanner = /\b(spanner)\b/i.test(lower);
+  const hasAlloy = /\b(alloydb|postgres)\b/i.test(lower);
+  const hasGke = /\b(gke|kubernetes|anthos)\b/i.test(lower);
+  const hasPubSub = /\b(pub\/?sub|kafka|event|stream)\b/i.test(lower);
+  const hasRedis = /\b(redis|memorystore|valkey|cache)\b/i.test(lower);
+
+  const baseCustomCfg: OfficialArchCenterBlueprintConfig = {
+    id: 'arch-center-custom-synthesized-78',
+    badge: 'GOOGLE CLOUD ARCHITECTURE CENTER • OFFICIAL HUB & SPOKE (#78)',
+    title: `${titleFormatted}`,
+    subtitle: 'Official Google Cloud Architecture Center Reference Topology • Zero-Trust Hub & Dual Execution Spokes',
+    topUserTitle: clause0 || 'Enterprise Clients & Workloads',
+    topUserSub: 'Cloud Identity OIDC / BeyondCorp Zero-Trust',
+    step1LeftLabel: 'Request',
+    step7RightLabel: 'Response',
+    outerWrapperLabel: 'Google Cloud Organization Perimeter (VPC Service Controls + Cloud KMS CMEK)',
+    innerWrapperLabel: 'Shared Production VPC • 5-Hop Cryptographic Context & Service Mesh',
+    routingHubTitle: 'Global Ingress & Policy Routing Hub (Hop 1 & Hop 2)',
+    routingHubSub: 'Cloud Armor WAF, Model Armor screening, Apigee/IAM & global load balancing',
+    routingCards: {
+      topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF, DDoS & Edge Rate Limiting' },
+      midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Prompt Injection & DLP Guardrails' },
+      botLeft: { icon: 'iap_iam_shield', title: 'Apigee X & IAP', sub: 'OAuth 2.0 / OBO Token Exchange' },
+      topRight: { icon: 'load_balancer_cloud_armor', title: 'Global Application', title2: 'Load Balancer', sub: 'Anycast TLS 1.3 & Cloud CDN' },
+      botRight: {
+        icon: hasGke ? 'gke' : 'cloud_run',
+        title: hasGke ? 'GKE Autopilot Router' : 'Cloud Run Orchestrator',
+        sub: hasPubSub ? 'Pub/Sub Event Mesh & Traffic Router' : 'High-Concurrency Service Coordinator',
+      },
+      edgeTopLeft: ['WAF & DDoS', 'policies'],
+      edgeMidLeft: ['Sanitize', 'payload'],
+      edgeBotLeft: ['Verify IAM', '& OAuth JWT'],
+      step2Left: 'Dispatch',
+      step7Mid: 'Response',
+    },
+    govHubTitle: 'Central Security &',
+    govHubTitle2: 'Observability Hub',
+    govCards: {
+      top: { icon: 'security_command_center', title: 'Security Command', title2: 'Center Enterprise', sub: 'Continuous Threat & Drift Detection' },
+      mid: { icon: 'iap_iam_shield', title: 'Cloud KMS & VPC-SC', sub: 'HSM CMEK Keys & Service Perimeters' },
+      bot: { icon: 'bigquery_analytics', title: 'Cloud Logging & BQ', sub: 'OpenTelemetry Traces & FinOps Audit' },
+    },
+    midStep3Label: ['Route to Data & AI', 'execution spokes'],
+    midStep7Label: ['Validated response &', 'telemetry emit'],
+    midGovLabel: ['Security, OTel & FinOps', 'audit telemetry'],
+    leftBoundaryLabel: clause1
+      ? `Spoke 1: ${clause0 || 'Core'} & ${clause1} Execution Plane`
+      : 'Spoke 1: Transactional Compute, Event Processing & Operational Data Plane',
+    leftZoneTitle: clause1 ? `${clause1.charAt(0).toUpperCase() + clause1.slice(1)} Spoke` : 'Core Compute & Operational Data Spoke',
+    leftZoneSub: hasSpanner
+      ? 'GKE Autopilot • Cloud Spanner Multi-Region • Pub/Sub'
+      : 'Cloud Run / GKE • AlloyDB PostgreSQL • Pub/Sub Event Stream',
+    leftCards: {
+      modelArmor: { icon: 'cloud_armor', title: 'Service Mesh & IAM', sub: 'mTLS & Workload Identity Federation' },
+      llm: {
+        icon: hasPubSub ? 'pubsub' : 'cloud_run',
+        title: clause0 || (hasPubSub ? 'Cloud Pub/Sub & Dataflow' : 'Cloud Run Microservices'),
+        sub: hasPubSub ? 'Exactly-Once Streaming & CDC' : 'Auto-Scaling Stateless API Tier',
+      },
+      runtime: {
+        icon: hasGke ? 'gke' : 'cloud_run',
+        title: clause1 || (hasGke ? 'GKE Autopilot Cluster' : 'Cloud Run Services'),
+        sub: 'Regional HA Compute & Domain Logic',
+      },
+      mcp: {
+        icon: hasRedis ? 'memorystore' : 'mcp_servers',
+        title: hasRedis ? 'Memorystore for Redis' : 'Integration Connectors',
+        sub: hasRedis ? 'Sub-Millisecond Read/Session Cache' : 'REST / gRPC & Eventarc Triggers',
+      },
+      datastore: {
+        icon: hasSpanner ? 'spanner' : 'alloydb',
+        title: hasSpanner ? 'Cloud Spanner' : hasAlloy ? 'AlloyDB for PostgreSQL' : 'Cloud Spanner & AlloyDB',
+        sub: hasSpanner ? '99.999% Multi-Region TrueTime ACID' : 'Transactional HA + Vector Index',
+      },
+      step4Label: 'Authorize workload',
+      step6Label: 'Commit & emit event',
+      step5Label: ['Stream &', 'transform'],
+      ragLabel: ['Low-Latency', 'State & Cache'],
+      toolLabel: ['ACID Read/Write', 'Persistence'],
+    },
+    rightBoundaryLabel: clause2
+      ? `Spoke 2: ${clause2}${clause3 ? ` & ${clause3}` : ''} Intelligence Plane`
+      : 'Spoke 2: Enterprise Analytics, BigQuery Lakehouse & Vertex AI Platform',
+    rightZoneTitle: clause2 ? `${clause2.charAt(0).toUpperCase() + clause2.slice(1)} Spoke` : 'BigQuery Lakehouse & Vertex AI Spoke',
+    rightZoneSub: 'Vertex AI Agent Engine • Gemini Models • BigQuery & Dataplex',
+    rightCards: {
+      modelArmor: { icon: 'model_armor', title: 'Model Armor & DLP', sub: 'RAI Safety Filters & PII Redaction' },
+      llm: {
+        icon: 'gemini_agent_platform',
+        title: clause2 || 'Gemini & Vertex AI',
+        sub: 'Foundation Models & Custom Training',
+      },
+      runtime: {
+        icon: 'gemini_agent_platform',
+        title: clause3 || 'Vertex AI Platform',
+        sub: 'Agent Engine, Pipelines & Endpoints',
+      },
+      mcp: { icon: 'mcp_servers', title: 'Vertex Vector Search', sub: 'Low-Latency ANN Embeddings & RAG' },
+      datastore: { icon: 'bigquery_analytics', title: 'BigQuery Lakehouse', sub: 'BigLake Iceberg, BI Engine & ML' },
+      ragLabel: ['Grounded Vector', '& Feature Lookup'],
+      toolLabel: ['Zero-Copy BQ', 'Analytics & ML'],
+    },
+  };
+
+  return applyGeminiHubSpokeOverrides(baseCustomCfg, geminiSpec);
+}
+
+export function synthesizeOfficialGcpArchCenter78FromPrompt(
+  promptText: string,
+  geminiSpec?: GeminiHubSpoke78DynamicSpec | null
+): string {
+  const cfg = buildDynamicOfficialArchCenter78Config(promptText, geminiSpec);
+  return compileOfficialArchCenterDrawioXml(cfg);
+}
+
 export function generateTemplate78OfficialGcpArchCenterHubSpokeXml(
   domainFlavor?: string,
   _theme?: 'light' | 'dark'
@@ -1662,5 +2021,9 @@ export function generateTemplate78OfficialGcpArchCenterHubSpokeXml(
   if (match) {
     return compileOfficialArchCenterDrawioXml(match);
   }
+  if (domainFlavor && domainFlavor.trim().length > 0) {
+    return synthesizeOfficialGcpArchCenter78FromPrompt(domainFlavor);
+  }
   return compileOfficialArchCenterDrawioXml(OFFICIAL_ARCH_CENTER_BLUEPRINTS[0]);
 }
+

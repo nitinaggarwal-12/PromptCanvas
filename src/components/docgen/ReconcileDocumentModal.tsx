@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { extractSystemModel } from '@/lib/compose/extract';
 
-export interface ReconcileDocumentModalProps {
+interface ReconcileDocumentModalProps {
   isOpen: boolean;
   onClose: () => void;
   onApplyReconciliation: (updatedSectionsSummary: string[]) => void;

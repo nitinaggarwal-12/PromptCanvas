@@ -81,7 +81,7 @@ function compactNodeHtml(opts: {
   </table>`;
 }
 
-export interface UpgradedGcpNativeArchOptions {
+interface UpgradedGcpNativeArchOptions {
   projectTitle?: string;
   projectName?: string;
   useCaseName?: string;
@@ -505,10 +505,10 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
   // ============================================================================
   // ❹ AI CLUSTER (GEMINI ENTERPRISE & GOOGLE ADK) (x=378, y=304, w=476, h=256)
   // ============================================================================
-  const aiClusterLabel = `<div style="font-family:'Inter',-apple-system,sans-serif;text-align:left;padding:6px 10px;line-height:1.2;">
+  const aiClusterLabel = `<table style="width:456px;border-collapse:collapse;font-family:'Inter',-apple-system,sans-serif;"><tr><td style="text-align:left;padding:6px 10px;line-height:1.2;">
     <span style="font-size:11.5px;font-weight:800;color:#0F172A;">AI Cluster</span>
     <span style="font-size:8.5px;font-weight:700;color:#15803D;margin-left:4px;">${profile.aiClusterSub || '(GE • ADK • A2A)'}</span>
-  </div>`;
+  </td></tr></table>`;
   addVertex(
     'ai_cluster',
     aiClusterLabel,

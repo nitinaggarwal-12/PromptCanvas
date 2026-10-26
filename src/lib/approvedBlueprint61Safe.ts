@@ -5,7 +5,6 @@
 import { getApprovedEnterpriseAiDocumentAssistantBlueprintXml as getImmutablePayloadXml } from './approvedBlueprint61Payload';
 
 export const BLUEPRINT_61_CANONICAL_ID = 'enterprise_ai_document_assistant';
-export const BLUEPRINT_61_NUMBER = 61 as const;
 
 function stampBlueprint61Identity(xml: string): string {
   const normalized = xml

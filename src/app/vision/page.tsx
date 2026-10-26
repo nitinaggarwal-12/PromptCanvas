@@ -364,7 +364,14 @@ function VisionPageContent() {
   const [activeObjectSlug, setActiveObjectSlug] = useState<string | null>(null);
 
   const diagramObjects = useMemo(
-    () => extractDiagramObjects(decompiledXml),
+    () =>
+      extractDiagramObjects(decompiledXml).map((obj) => ({
+        ...obj,
+        label: (obj.label || '')
+          .replace(/&amp;/g, '&')
+          .replace(/&quot;/g, '"')
+          .replace(/&apos;|&#39;/g, "'"),
+      })),
     [decompiledXml]
   );
 
@@ -412,6 +419,54 @@ function VisionPageContent() {
 
   const reqIdRef = useRef(0);
 
+  // Compress oversized retina screenshots (>900KB base64) for API transport while keeping full image in UI/Vault
+  const normalizeImageForDecompile = useCallback(
+    async (rawBase64: string, fallbackMime: string): Promise<{ payloadBase64: string; payloadMime: string }> => {
+      if (typeof window === 'undefined' || !rawBase64 || rawBase64.length <= 900000 || rawBase64.includes('svg')) {
+        return { payloadBase64: rawBase64, payloadMime: fallbackMime || 'image/png' };
+      }
+      return new Promise((resolve) => {
+        try {
+          const img = new window.Image();
+          img.onload = () => {
+            try {
+              const maxDim = 1920;
+              let w = img.naturalWidth || img.width || 1600;
+              let h = img.naturalHeight || img.height || 900;
+              if (w > maxDim || h > maxDim) {
+                const scale = maxDim / Math.max(w, h);
+                w = Math.round(w * scale);
+                h = Math.round(h * scale);
+              }
+              const canvas = document.createElement('canvas');
+              canvas.width = w;
+              canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              if (!ctx) {
+                resolve({ payloadBase64: rawBase64, payloadMime: fallbackMime || 'image/png' });
+                return;
+              }
+              ctx.fillStyle = '#FFFFFF';
+              ctx.fillRect(0, 0, w, h);
+              ctx.drawImage(img, 0, 0, w, h);
+              const compressed = canvas.toDataURL('image/jpeg', 0.90);
+              resolve({ payloadBase64: compressed, payloadMime: 'image/jpeg' });
+            } catch {
+              resolve({ payloadBase64: rawBase64, payloadMime: fallbackMime || 'image/png' });
+            }
+          };
+          img.onerror = () => resolve({ payloadBase64: rawBase64, payloadMime: fallbackMime || 'image/png' });
+          img.src = rawBase64.startsWith('data:')
+            ? rawBase64
+            : `data:${fallbackMime || 'image/png'};base64,${rawBase64}`;
+        } catch {
+          resolve({ payloadBase64: rawBase64, payloadMime: fallbackMime || 'image/png' });
+        }
+      });
+    },
+    []
+  );
+
   // Execute Decompilation API call
   const triggerDecompile = useCallback(async (
     base64Data: string,
@@ -423,16 +478,19 @@ function VisionPageContent() {
     const curReqId = ++reqIdRef.current;
     setIsDecompiling(true);
     setDecompiledXml('');
+    setComponentCount(0);
+    setExtractedZones([]);
     setSummaryText('');
     setValidationReport(null);
 
     try {
+      const { payloadBase64, payloadMime } = await normalizeImageForDecompile(base64Data, mimeType);
       const res = await fetch('/api/decompile-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          imageBase64: base64Data,
-          mimeType: mimeType || 'image/png',
+          imageBase64: payloadBase64,
+          mimeType: payloadMime || 'image/png',
           projectName: projectName || 'Architecture Blueprint',
           useCaseName: 'DeepMind Gemini Multimodal Vision Decompilation'
         })
@@ -474,7 +532,10 @@ function VisionPageContent() {
                ? base64Data
                : `data:${mimeType || 'image/png'};base64,${base64Data}`));
 
-        const selfContainedXml = embedSourceImageInXml(enrichedXml, finalImageSrc);
+        const selfContainedXml =
+          finalImageSrc.length <= 180000
+            ? embedSourceImageInXml(enrichedXml, finalImageSrc)
+            : enrichedXml;
 
         setDecompiledXml(selfContainedXml);
         setSelectedBlueprintId(finalBlueprintId);
@@ -548,7 +609,7 @@ function VisionPageContent() {
         setIsDecompiling(false);
       }
     }
-  }, [syncVisionUrl]);
+  }, [normalizeImageForDecompile, syncVisionUrl]);
 
   // Core Blueprint Loader: checks localStorage first, renders instantly with 0ms delay!
   const loadBlueprint = useCallback(async (id: string, forceRecompile = false, initialObjSlug?: string | null) => {
@@ -822,6 +883,9 @@ function VisionPageContent() {
       setSelectedImageName(cleanName);
       setIsCustomUpload(true);
       setLeftPaneMode('single'); // Guarantees original image appears on the left immediately
+      setComponentCount(0);
+      setActiveObjectSlug(null);
+      syncVisionUrl(customId, null);
 
       // Check if this exact file was previously compiled!
       const saved = getSavedVisionBlueprint(customId);
@@ -840,7 +904,7 @@ function VisionPageContent() {
       await triggerDecompile(base64, file.type, cleanName, customId, true);
     };
     reader.readAsDataURL(file);
-  }, [triggerDecompile]);
+  }, [syncVisionUrl, triggerDecompile]);
 
   // Convert a clipboard Blob into a File and trigger decompilation
   const processClipboardImageBlob = useCallback(async (blob: Blob, sourceName = 'Clipboard_Diagram') => {
@@ -1478,7 +1542,7 @@ function VisionPageContent() {
         <div
           role="status"
           aria-live="polite"
-          className="fixed top-6 right-6 z-50 bg-slate-900/95 border border-teal-500/50 text-white px-5 py-3 rounded-xl shadow-2xl backdrop-blur-md flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-200"
+          className="fixed top-14 right-6 z-[70] bg-slate-900/95 border border-teal-500/50 text-white px-5 py-3 rounded-xl shadow-2xl backdrop-blur-md flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-200"
         >
           <Sparkles className="w-4 h-4 text-teal-400 shrink-0" aria-hidden="true" />
           <span className="text-xs font-semibold">{toastMessage}</span>
@@ -1490,16 +1554,16 @@ function VisionPageContent() {
         <div className="flex items-center gap-2.5 min-w-0">
           <Link 
             href="/dashboard"
-            className="flex items-center gap-2 text-slate-400 hover:text-white transition group cursor-pointer shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400 rounded-md"
+            className="flex items-center gap-2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition group cursor-pointer shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400 rounded-md"
           >
-            <div className="w-7 h-7 rounded-lg bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400 group-hover:scale-105 transition">
+            <div className="w-7 h-7 rounded-lg bg-teal-50 dark:bg-teal-500/10 border border-teal-200 dark:border-teal-500/30 flex items-center justify-center text-teal-600 dark:text-teal-400 group-hover:scale-105 transition">
               <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-bold text-white tracking-tight whitespace-nowrap">
+              <span className="text-xs font-bold text-slate-900 dark:text-white tracking-tight whitespace-nowrap">
                 Vision AI Studio
               </span>
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-300 font-mono font-bold border border-teal-500/30 whitespace-nowrap">
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-teal-50 text-teal-800 border-teal-300 dark:bg-teal-500/20 dark:text-teal-300 font-mono font-bold border dark:border-teal-500/30 whitespace-nowrap">
                 DECOMPILER
               </span>
             </div>
@@ -1743,7 +1807,7 @@ function VisionPageContent() {
             )}
           </div>
 
-          {/* 4. Open in Dashboard Primary CTA */}
+          {/* 4. Home Dashboard Primary CTA */}
           <button
             type="button"
             onClick={handleOpenInStudio}
@@ -1751,7 +1815,7 @@ function VisionPageContent() {
             className="px-3.5 py-1 rounded-md bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-[11px] font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
           >
             <Layers className="w-3 h-3" aria-hidden="true" />
-            <span>Open in Dashboard</span>
+            <span>Home Dashboard</span>
             <ArrowRight className="w-2.5 h-2.5" aria-hidden="true" />
           </button>
         </div>
@@ -2327,9 +2391,27 @@ function VisionPageContent() {
                   />
                 </div>
               ) : (
-                <div className="text-center text-slate-400 py-12">
-                  <Sparkles className="w-10 h-10 mx-auto mb-2 opacity-30 text-teal-500" />
-                  <p className="text-xs">No diagram generated yet</p>
+                <div className="text-center text-slate-500 py-12 px-4 flex flex-col items-center gap-2.5">
+                  <Sparkles className="w-10 h-10 mx-auto opacity-40 text-teal-600" />
+                  <p className="text-xs font-semibold text-slate-600">No diagram generated yet</p>
+                  {selectedImageSrc && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        triggerDecompile(
+                          selectedImageSrc,
+                          'image/png',
+                          selectedImageName || 'Architecture Blueprint',
+                          selectedBlueprintId || generateShortVisionBlueprintId(selectedImageName),
+                          isCustomUpload
+                        )
+                      }
+                      className="mt-1 px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-xs inline-flex items-center gap-1.5 cursor-pointer transition active:scale-95"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      <span>Decompile Image to Draw.io</span>
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -2417,23 +2499,14 @@ function VisionPageContent() {
                   </span>
                 )}
               </div>
-
-              <button
-                onClick={handleOpenInStudio}
-                disabled={!decompiledXml || isDecompiling}
-                className="px-2.5 py-0.5 rounded-md bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-[10px] font-bold transition flex items-center gap-1 cursor-pointer shadow-xs flex-shrink-0"
-              >
-                <span>Edit in Dashboard</span>
-                <ArrowRight className="w-2.5 h-2.5" />
-              </button>
             </div>
           </div>
         </div>
 
-        {/* Web URL Scanner Modal Dialog */}
+        {/* Web URL Scanner Right-Side Drawer (Rule 25F) */}
         {showUrlModal && (
           <div
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in"
+            className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-stretch justify-end animate-in fade-in"
             role="presentation"
             onClick={(e) => {
               if (e.target === e.currentTarget) {
@@ -2447,7 +2520,7 @@ function VisionPageContent() {
               aria-modal="true"
               aria-labelledby="vision-url-modal-title"
               aria-describedby="vision-url-modal-desc"
-              className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-xl w-full p-5 space-y-4 relative"
+              className="bg-white shadow-2xl border-l border-slate-200 max-w-xl w-full h-full p-6 space-y-5 relative overflow-y-auto animate-in slide-in-from-right duration-200"
             >
               <button
                 type="button"
@@ -2455,7 +2528,7 @@ function VisionPageContent() {
                   setShowUrlModal(false);
                   setScanError(null);
                 }}
-                aria-label="Close Web URL Scanner modal"
+                aria-label="Close Web URL Scanner drawer"
                 className="absolute top-3.5 right-3.5 p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               >
                 <X className="w-4 h-4" aria-hidden="true" />
@@ -2580,11 +2653,11 @@ function VisionPageContent() {
         )}
 
         {/* ========================================================================= */}
-        {/* 📋 PASTE FROM CLIPBOARD MODAL */}
+        {/* 📋 PASTE FROM CLIPBOARD RIGHT-SIDE DRAWER (Rule 25F) */}
         {/* ========================================================================= */}
         {showPasteModal && (
           <div
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in"
+            className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-stretch justify-end animate-in fade-in"
             role="presentation"
             onPaste={handleClipboardPasteEvent}
             onClick={(e) => {
@@ -2599,7 +2672,7 @@ function VisionPageContent() {
               aria-modal="true"
               aria-labelledby="vision-paste-modal-title"
               aria-describedby="vision-paste-modal-desc"
-              className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-lg w-full p-5 space-y-4 relative"
+              className="bg-white shadow-2xl border-l border-slate-200 max-w-lg w-full h-full p-6 space-y-5 relative overflow-y-auto animate-in slide-in-from-right duration-200"
             >
               <button
                 type="button"
@@ -2607,7 +2680,7 @@ function VisionPageContent() {
                   setShowPasteModal(false);
                   setPasteError(null);
                 }}
-                aria-label="Close Paste from Clipboard modal"
+                aria-label="Close Paste from Clipboard drawer"
                 className="absolute top-3.5 right-3.5 p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
               >
                 <X className="w-4 h-4" aria-hidden="true" />
@@ -2725,11 +2798,11 @@ function VisionPageContent() {
         )}
 
         {/* ========================================================================= */}
-        {/* 🏛️ BLUEPRINT LIBRARY & SAVED DIAGRAMS MODAL */}
+        {/* 🏛️ BLUEPRINT LIBRARY & SAVED DIAGRAMS RIGHT-SIDE DRAWER (Rule 25F) */}
         {/* ========================================================================= */}
         {showLibraryModal && (
           <div
-            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-150"
+            className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-stretch justify-end animate-in fade-in duration-150"
             role="presentation"
             onClick={(e) => {
               if (e.target === e.currentTarget) setShowLibraryModal(false);
@@ -2739,25 +2812,25 @@ function VisionPageContent() {
               role="dialog"
               aria-modal="true"
               aria-labelledby="vision-library-modal-title"
-              className="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-5xl max-h-[88vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
+              className="bg-white border-l border-slate-200 shadow-2xl w-full max-w-5xl h-full flex flex-col overflow-hidden animate-in slide-in-from-right duration-200"
             >
               
-              {/* Modal Header - Dark Shell Scoped */}
-              <div className="bg-[#0B111E] text-white px-5 py-3.5 flex items-center justify-between border-b border-slate-800 flex-shrink-0">
+              {/* Drawer Header - Executive Light Mode */}
+              <div className="bg-slate-50 text-slate-900 px-5 py-3.5 flex items-center justify-between border-b border-slate-200 flex-shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-teal-500/20 text-teal-400 border border-teal-500/30">
+                  <div className="p-2 rounded-xl bg-teal-50 text-teal-600 border border-teal-200">
                     <BookOpen className="w-5 h-5" aria-hidden="true" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h2 id="vision-library-modal-title" className="text-base font-bold text-white tracking-tight">
+                      <h2 id="vision-library-modal-title" className="text-base font-bold text-slate-900 tracking-tight">
                         Vision AI Blueprint Library
                       </h2>
-                      <span className="px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 text-[10px] font-mono font-bold border border-teal-500/30 tabular-nums">
+                      <span className="px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 text-[10px] font-mono font-bold border border-teal-200 tabular-nums">
                         {allLibraryBlueprints.length} Available
                       </span>
                     </div>
-                    <p className="text-xs text-slate-300 mt-0.5">
+                    <p className="text-xs text-slate-500 mt-0.5">
                       Browse certified master architectures, web-imported diagrams, and user-saved decompilations.
                     </p>
                   </div>
@@ -2767,7 +2840,7 @@ function VisionPageContent() {
                   type="button"
                   onClick={() => setShowLibraryModal(false)}
                   aria-label="Close Vision AI Blueprint Library"
-                  className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
                   title="Close Library"
                 >
                   <X className="w-5 h-5" aria-hidden="true" />
@@ -3126,11 +3199,11 @@ function VisionPageContent() {
         )}
 
         {/* ========================================================================= */}
-        {/* ✏️ RENAME BLUEPRINT & EDIT UNIQUE ID MODAL */}
+        {/* ✏️ RENAME BLUEPRINT & EDIT UNIQUE ID RIGHT-SIDE DRAWER (Rule 25F) */}
         {/* ========================================================================= */}
         {showRenameModal && (
           <div
-            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150"
+            className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-stretch justify-end animate-in fade-in duration-150"
             role="presentation"
             onClick={(e) => {
               if (e.target === e.currentTarget) setShowRenameModal(false);
@@ -3141,7 +3214,7 @@ function VisionPageContent() {
               aria-modal="true"
               aria-labelledby="vision-rename-modal-title"
               aria-describedby="vision-rename-modal-desc"
-              className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-md w-full p-5 space-y-4 relative animate-in zoom-in-95 duration-150"
+              className="bg-white shadow-2xl border-l border-slate-200 max-w-md w-full h-full p-6 space-y-5 relative overflow-y-auto animate-in slide-in-from-right duration-200"
             >
               <button
                 type="button"

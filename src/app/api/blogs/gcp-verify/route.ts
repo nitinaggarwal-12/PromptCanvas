@@ -9,7 +9,7 @@ import {
 
 export const dynamic = 'force-dynamic';
 
-export interface WorkstreamCheckResult {
+interface WorkstreamCheckResult {
   id: string;
   workstream: 'WS1' | 'WS2.1' | 'WS2.5' | 'WS3.1' | 'WS4.1' | 'WS5';
   pattern: 'Pattern A' | 'Pattern B' | 'Pattern C' | 'Cross-Pattern';
@@ -43,7 +43,7 @@ export async function GET() {
       drawioBytes: Buffer.byteLength(xml, 'utf8'),
       hasValidViewBox: svg.includes('viewBox="0 0 1654 1057"'),
       hasConnectedEdges: xml.includes('source="') && xml.includes('target="'),
-      zeroHallucinatedAcronyms: !/\b(GEAP|NLCs)\b/.test(svg),
+      zeroHallucinatedAcronyms: !/\b(GEAP|ARD|NLC|NLCs)\b/.test(svg),
       status: 'PASS' as const,
     };
   });

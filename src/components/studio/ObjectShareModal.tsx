@@ -41,7 +41,7 @@ function loadStoredComments(targetId: string): StoredComment[] {
   }
 }
 
-export interface ObjectShareModalProps {
+interface ObjectShareModalProps {
   isOpen: boolean;
   onClose: () => void;
   targetType: 'project' | 'doc' | 'node' | 'version';

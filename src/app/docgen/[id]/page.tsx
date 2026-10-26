@@ -78,7 +78,7 @@ function InlineDiagramFigure({
     setTimeout(() => setCopiedXml(false), 2000);
   };
 
-  const imageSrc = canonicalTpl?.previewImage || `/images/${templateId}.png`;
+  const imageSrc = canonicalTpl?.previewImage || `/templates/${templateId || '00'}.png`;
 
   return (
     <div
@@ -98,7 +98,7 @@ function InlineDiagramFigure({
       >
         <div className="flex items-center gap-3">
           <span className="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-500 font-mono font-black text-xs flex items-center justify-center border border-sky-500/20">
-            {templateId || '01'}
+            {templateId || '00'}
           </span>
           <div>
             <span className="text-[10px] font-mono uppercase text-sky-500 font-bold tracking-wider">
@@ -210,7 +210,7 @@ function InlineDiagramFigure({
               className="w-full max-h-[700px] object-contain rounded-xl mx-auto"
               onError={(e) => {
                 if (canonicalTpl) {
-                  (e.target as HTMLImageElement).src = `/images/${canonicalTpl.id}.png`;
+                  (e.target as HTMLImageElement).src = `/templates/${canonicalTpl.id}.png`;
                 }
               }}
             />

@@ -22,12 +22,12 @@ const HIGH_CONFIDENCE_REPLACEMENTS: Array<[RegExp, string]> = [
   [/\bChronicle\b/gi, 'Google Security Operations'],
 
   // Gemini/model naming: keep evergreen architecture templates configurable.
-  [/Gemini 3\.7 Pro Vision/gi, 'Gemini multimodal model'],
-  [/Gemini 3\.7 Flash\s*\/\s*Pro/gi, 'Gemini (approved model)'],
-  [/Gemini 3\.7 Pro/gi, 'Gemini (approved model)'],
-  [/Gemini 3\.7 Flash/gi, 'Gemini (approved model)'],
-  [/Gemini 3\.7/gi, 'Gemini'],
+  [/Gemini (?:2\.5|3\.7) Pro Vision/gi, 'Gemini multimodal model'],
+  [/Gemini (?:2\.5|3\.7) Flash\s*\/\s*Pro/gi, 'Gemini (approved model)'],
+  [/Gemini (?:2\.5|3\.7) Pro(?:\s+3\.5)?/gi, 'Gemini (approved model)'],
+  [/Gemini (?:2\.5|3\.7) Flash/gi, 'Gemini (approved model)'],
   [/Gemini 2\.5 Pro Multimodal Synthesizer/gi, 'Gemini (approved multimodal model)'],
+  [/Gemini (?:2\.5|3\.7)/gi, 'Gemini'],
   [/Gemini Bio Foundation Models/gi, 'Approved biopharma foundation models'],
 
   // Explicit architecture corrections discovered during rendered Phase-1 review.
@@ -135,7 +135,7 @@ const KNOWN_RENDER_REPAIRS: Record<string, RenderPatch[]> = {
   ],
 };
 
-export function applyKnownBlueprintRenderRepairs(xml: string, architectureId?: string | null): string {
+function applyKnownBlueprintRenderRepairs(xml: string, architectureId?: string | null): string {
   if (!xml) return xml;
   const id = String(architectureId || '').toLowerCase();
   const patches = KNOWN_RENDER_REPAIRS[id];

@@ -66,7 +66,7 @@ import { AppHeader } from '@/components/AppHeader';
 import { estimateCloudArchitectureCost } from '@/lib/cost/cloudCostEstimator';
 
 // Audit Category Definition with metadata
-export interface CategoryMeta {
+interface CategoryMeta {
   id: AuditCategory;
   name: string;
   shortName: string;
@@ -133,7 +133,7 @@ export const AUDIT_CATEGORIES: CategoryMeta[] = [
   }
 ];
 
-export interface GeneratedArtifact {
+interface GeneratedArtifact {
   id: string;
   name: string;
   created_at: string;
@@ -645,35 +645,46 @@ function AuditHubContent() {
             {/* Left: Breadcrumbs & Hub Badge */}
             <div className="flex items-center gap-3 min-w-0">
               <div className="flex items-center gap-2 text-xs font-semibold">
-                <Link href="/" className="text-slate-400 hover:text-white transition-colors whitespace-nowrap">
+                <Link
+                  href="/"
+                  className={`transition-colors whitespace-nowrap ${
+                    isLight ? 'text-slate-700 hover:text-teal-700' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
                   PromptCanvas
                 </Link>
-                <span className="text-slate-600">/</span>
-                <span className="font-bold text-teal-400 flex items-center gap-1.5 whitespace-nowrap">
-                  <ShieldCheck className="w-4 h-4 text-teal-400 shrink-0" />
+                <span className={isLight ? 'text-slate-400' : 'text-slate-600'}>/</span>
+                <span className={`font-bold flex items-center gap-1.5 whitespace-nowrap ${isLight ? 'text-teal-700' : 'text-teal-400'}`}>
+                  <ShieldCheck className={`w-4 h-4 shrink-0 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
                   <span>Audit, FinOps &amp; Health</span>
                 </span>
-                <span className="hidden xl:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 whitespace-nowrap shrink-0">
+                <span className={`hidden xl:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border whitespace-nowrap shrink-0 ${
+                  isLight ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-teal-500/10 text-teal-400 border-teal-500/20'
+                }`}>
                   {artifacts.length} Artifact{artifacts.length === 1 ? '' : 's'}
                 </span>
               </div>
             </div>
 
-            {/* Right: Actions & Theme Toggle */}
+            {/* Right: Actions */}
             <div className="flex items-center gap-2.5 shrink-0">
               {/* Domain Preset Selector */}
-              <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium bg-slate-900 border-slate-700 text-slate-200">
-                <Sliders className="w-3.5 h-3.5 text-teal-400 shrink-0" aria-hidden="true" />
-                <label htmlFor="audit-domain-select" className="text-slate-300 hidden xl:inline text-[11px]">Domain:</label>
+              <div className={`hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium ${
+                isLight ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-slate-900 border-slate-700 text-slate-200'
+              }`}>
+                <Sliders className={`w-3.5 h-3.5 shrink-0 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} aria-hidden="true" />
+                <label htmlFor="audit-domain-select" className={`hidden xl:inline text-[11px] ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>Domain:</label>
                 <select
                   id="audit-domain-select"
                   aria-label="Audit domain preset"
                   value={selectedDomain}
                   onChange={(e) => setSelectedDomain(e.target.value)}
-                  className="bg-transparent font-semibold text-teal-400 outline-none cursor-pointer text-xs max-w-[170px] truncate focus-visible:ring-2 focus-visible:ring-teal-400 rounded"
+                  className={`bg-transparent font-semibold outline-none cursor-pointer text-xs max-w-[170px] truncate focus-visible:ring-2 focus-visible:ring-teal-400 rounded ${
+                    isLight ? 'text-teal-700' : 'text-teal-400'
+                  }`}
                 >
                   {DOMAIN_PRESETS.map((d) => (
-                    <option key={d.id} value={d.id} className="bg-slate-900 text-slate-100">
+                    <option key={d.id} value={d.id} className={isLight ? 'bg-white text-slate-900' : 'bg-slate-900 text-slate-100'}>
                       {d.name}
                     </option>
                   ))}
@@ -692,21 +703,22 @@ function AuditHubContent() {
                 <span>Run 6-Tier Audit</span>
               </button>
 
-              {/* Open in Studio */}
+              {/* Home Dashboard CTA */}
               <Link
                 href={
                   scopeTab === 'canonical'
-                    ? `/studio?blueprint=${encodeURIComponent(activeCanonicalTemplate.id)}`
-                    : `/studio?id=${encodeURIComponent(activeArtifact?.id || '')}`
+                    ? `/dashboard?blueprint=${encodeURIComponent(activeCanonicalTemplate.id)}`
+                    : `/dashboard?id=${encodeURIComponent(activeArtifact?.id || '')}`
                 }
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95"
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95 ${
+                  isLight
+                    ? 'bg-sky-50 hover:bg-sky-100 text-sky-800 border-sky-200'
+                    : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                }`}
               >
-                <ExternalLink className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
-                <span className="hidden md:inline">Open in Studio</span>
+                <ExternalLink className={`w-3.5 h-3.5 ${isLight ? 'text-sky-600' : 'text-sky-400'}`} aria-hidden="true" />
+                <span className="hidden md:inline">Home Dashboard</span>
               </Link>
-
-              {/* Theme Toggle */}
-              <ThemeToggleBtn id="audit-theme-toggle-btn" />
             </div>
           </AppHeader>
 

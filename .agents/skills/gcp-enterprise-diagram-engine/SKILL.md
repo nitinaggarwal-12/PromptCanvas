@@ -1,7 +1,6 @@
 ---
 name: gcp-enterprise-diagram-engine
-description: >-
-  Builds and certifies the 26 Production Google Cloud Blueprints (#78, #00, #35-#50, #67-#74) and 14 workstream topologies.
+description: "Builds and certifies the 26 Production Google Cloud Blueprints (#78, #00, #35-#50, #67-#74)."
 ---
 
 # 📐 GCP Enterprise Architecture Diagram Engine (SKILL.md)

@@ -12,20 +12,36 @@ export async function GET(request: Request) {
     const user = await getAuthenticatedUser();
     let diagrams = await listDiagrams(user?.id);
 
+    const seenNormalizedTitles = new Set<string>();
     diagrams = diagrams
       .filter((d: any) => {
         const text = `${d.id || ''} ${d.name || ''} ${d.latest_prompt || ''}`;
-        return !/novacura|^add\s+\d+\s+more\s+components|clinical\s+ai\s+-|vis-9745|vis-agentic-01/i.test(
+        return !/novacura|^add\s+\d+\s+more\s+components|clinical\s+ai\s+-|vis-9745|vis-agentic-01|tailored\s+for:\s+add\s+the\s+right\s+components/i.test(
           text
         );
       })
       .map((d: any) => {
-        const healed = healStubOrOracleDiagramXml(String(d.latest_xml || ''), d.latest_prompt, d.name);
+        const rawXml = String(d.latest_xml || d.xml_content || '');
+        const healed = healStubOrOracleDiagramXml(rawXml, d.latest_prompt, d.name);
+        const resolvedTitle = (healed.canonicalTitle || d.name || '').replace(/&amp;/g, '&');
         return {
           ...d,
-          name: healed.canonicalTitle || d.name,
+          name: resolvedTitle,
+          latest_prompt:
+            d.latest_prompt === 'DeepMind Gemini Multimodal Vision Decompilation' &&
+            resolvedTitle.includes('Oracle EBS R12.2')
+              ? 'Official Google Cloud Architecture Center (#78) Hub-and-Spoke Topology for Oracle E-Business Suite (EBS R12.2) & Oracle Database@Google Cloud (Exadata X10M)'
+              : (d.latest_prompt || '').replace(/&amp;/g, '&'),
           latest_xml: d.latest_xml ? healed.xml : d.latest_xml,
+          xml_content: d.xml_content ? healed.xml : d.xml_content,
         };
+      })
+      .filter((d: any) => {
+        const normTitle = String(d.name || '').trim().toLowerCase();
+        if (!normTitle) return false;
+        if (seenNormalizedTitles.has(normTitle)) return false;
+        seenNormalizedTitles.add(normTitle);
+        return true;
       });
 
     if (studioParam) {

@@ -28,7 +28,7 @@ const mini=(id:string,title:string,body:string,x:number,y:number,w:number,h:numb
 const edge=(id:string,s:string,t:string,label:string,color:string,dashed=false,exitX=1,exitY=.5,entryX=0,entryY=.5)=>`<mxCell id="${id}" value="${esc(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${color};strokeWidth=1.8;${dashed?'dashed=1;dashPattern=6 4;':''}endArrow=block;endFill=1;fontSize=9.2;fontColor=#334155;labelBackgroundColor=#FFFFFF;exitX=${exitX};exitY=${exitY};entryX=${entryX};entryY=${entryY};" edge="1" parent="1" source="${s}" target="${t}"><mxGeometry relative="1" as="geometry"/></mxCell>`;
 
 export function buildSupplyChainXml():string{return buildManufacturingOptimizationXml();}
-export function buildManufacturingOptimizationXml():string{
+function buildManufacturingOptimizationXml():string{
  const c:string[]=['<mxCell id="0"/>','<mxCell id="1" parent="0"/>'];
  c.push(zone('assets',1,'EQUIPMENT & CONDITION SIGNALS','Asset-centric telemetry and inspection evidence',25,285,'#1A73E8','#EFF6FF'));
  c.push(mini('equipment','Critical equipment','Rotating assets • pumps • compressors • motors • CNC/robotics • production equipment',45,95,245,82,'#1A73E8'));

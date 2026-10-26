@@ -1,10 +1,6 @@
 export function buildAsIsToBeProcessFlowXml(): string {
-  return buildOldAsIsToBeXml();
-}
-
-export function buildOldAsIsToBeXml(): string {
   return `<mxfile host="embed.diagrams.net">
-  <diagram id="old_asis_tobe" name="As-Is vs To-Be">
+  <diagram id="master_asis_tobe" name="As-Is vs To-Be">
     <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
@@ -36,7 +32,7 @@ export function buildOldAsIsToBeXml(): string {
           <mxGeometry x="100" y="85" width="1440" height="235" as="geometry" />
         </mxCell>
 
-        <mxCell id="badge_asis_title" value="&lt;b style=&quot;color:#991B1B;font-size:12px;&quot;&gt;🔴 AS-IS ARCHITECTURE: Fragile Monolithic Batch Pipeline &amp;amp; Multi-Week Human Hand-offs&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="badge_asis_title" value="&lt;b style=&quot;color:#991B1B;font-size:12px;&quot;&gt;AS-IS ARCHITECTURE: Fragile Monolithic Batch Pipeline &amp;amp; Multi-Week Human Hand-offs&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="115" y="92" width="750" height="22" as="geometry" />
         </mxCell>
 
@@ -80,14 +76,14 @@ export function buildOldAsIsToBeXml(): string {
         </mxCell>
 
         <!-- As-Is Pain Point Strip -->
-        <mxCell id="asis_pain_points" value="&lt;table style=&quot;width:100%;font-size:10.5px;color:#7F1D1D;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;⚠️ Major Bottlenecks:&lt;/b&gt; Single point of failure • 100% manual ticket triage • No semantic grounding • Escalating license costs ($1.24M/yr) • 3-4 week lead times&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#F87171;strokeWidth=1;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="asis_pain_points" value="&lt;table style=&quot;width:100%;font-size:10.5px;color:#7F1D1D;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Major Bottlenecks:&lt;/b&gt; Single point of failure • 100% manual ticket triage • No semantic grounding • Escalating license costs ($1.24M/yr) • 3-4 week lead times&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#F87171;strokeWidth=1;align=left;spacingLeft=12;" vertex="1" parent="1">
           <mxGeometry x="120" y="250" width="1400" height="34" as="geometry" />
         </mxCell>
 
         <!-- ========================================================================= -->
         <!-- CENTER TRANSITION: STRANGLER FIG MODERNIZATION BRIDGE (Y: 335 to Y: 385) -->
         <!-- ========================================================================= -->
-        <mxCell id="bridge_bar" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#1E3A8A;&quot;&gt;⚡ GOOGLE CLOUD STRANGLER FIG MODERNIZATION BRIDGE &amp;nbsp;|&amp;nbsp; &lt;span style=&quot;font-weight:normal;color:#2563EB;&quot;&gt;Apigee API Interceptor (Edge Traffic Routing) • Datastream CDC Ingestion (Zero-Downtime Sync) • Gemini Enterprise AST Compiler&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="bridge_bar" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#1E3A8A;&quot;&gt;GOOGLE CLOUD STRANGLER FIG MODERNIZATION BRIDGE &amp;nbsp;|&amp;nbsp; &lt;span style=&quot;font-weight:normal;color:#2563EB;&quot;&gt;Apigee API Interceptor (Edge Traffic Routing) • Datastream CDC Ingestion (Zero-Downtime Sync) • Gemini Enterprise AST Compiler&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="20" y="335" width="1520" height="42" as="geometry" />
         </mxCell>
 
@@ -123,7 +119,7 @@ export function buildOldAsIsToBeXml(): string {
           <mxGeometry x="100" y="395" width="1440" height="500" as="geometry" />
         </mxCell>
 
-        <mxCell id="badge_tobe_title" value="&lt;b style=&quot;color:#15803D;font-size:12px;&quot;&gt;🟢 TO-BE ARCHITECTURE: Autonomous Gemini Enterprise Cognitive Architecture &amp;amp; Real-Time Lakehouse Mesh&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="badge_tobe_title" value="&lt;b style=&quot;color:#15803D;font-size:12px;&quot;&gt;TO-BE ARCHITECTURE: Autonomous Gemini Enterprise Cognitive Architecture &amp;amp; Real-Time Lakehouse Mesh&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="115" y="402" width="850" height="22" as="geometry" />
         </mxCell>
 
@@ -148,7 +144,7 @@ export function buildOldAsIsToBeXml(): string {
         </mxCell>
 
         <!-- To-Be Stage 5: Modern Serving & SRE Cockpit -->
-        <mxCell id="node_tobe_serving" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2024%2024'%3E%3Crect%20width%3D'24'%20height%3D'24'%20rx%3D'5'%20fill%3D'%231A73E8'%2F%3E%3Ccircle%20cx%3D'12'%20cy%3D'12'%20r%3D'5'%20fill%3D'%23ffffff'%2F%3E%3C%2Fsvg%3E&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;5. Serverless Serving &amp;amp; BI&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#166534;font-weight:normal;&quot;&gt;Cloud Run Microservices&lt;br&gt;Looker Studio AI SRE Cockpit&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
+        <mxCell id="node_tobe_serving" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2024%2024'%3E%3Crect%20width%3D'24'%20height%3D'24'%20rx%3D'5'%20fill%3D'%231A73E8'%2F%3E%3Ccircle%20cx%3D'12'%20cy%3D'12'%20r%3D'5'%20fill%3D'%23ffffff'%2F%3E%3C%2Fsvg%3E&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;5. Serverless Serving &amp;amp; BI&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#166534;font-weight:normal;&quot;&gt;Cloud Run Microservices&lt;br&gt;Looker AI SRE Cockpit&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
           <mxGeometry x="1300" y="435" width="220" height="115" as="geometry" />
         </mxCell>
 
@@ -173,12 +169,12 @@ export function buildOldAsIsToBeXml(): string {
           <mxGeometry x="120" y="585" width="1400" height="235" as="geometry" />
         </mxCell>
 
-        <mxCell id="lbl_lakehouse_tier" value="&lt;b style=&quot;color:#0F172A;font-size:12px;&quot;&gt;🗄️ Google Cloud Unified Enterprise Lakehouse &amp;amp; Zero-Trust Data Mesh (VPC Service Controls Perimeter)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="lbl_lakehouse_tier" value="&lt;b style=&quot;color:#0F172A;font-size:12px;&quot;&gt;Google Cloud Unified Enterprise Lakehouse &amp;amp; Zero-Trust Data Mesh (VPC Service Controls Perimeter)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="135" y="592" width="750" height="22" as="geometry" />
         </mxCell>
 
         <!-- BigQuery Lakehouse Card -->
-        <mxCell id="node_tobe_lakehouse" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2024%2024'%3E%3Crect%20width%3D'24'%20height%3D'24'%20rx%3D'5'%20fill%3D'%231A73E8'%2F%3E%3Ccircle%20cx%3D'12'%20cy%3D'12'%20r%3D'5'%20fill%3D'%23ffffff'%2F%3E%3C%2Fsvg%3E&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;BigQuery BigLake&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;font-weight:normal;&quot;&gt;Apache Iceberg &amp;amp; Delta Tables&lt;br&gt;Storage Write API • BI Engine&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
+        <mxCell id="node_tobe_lakehouse" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2024%2024'%3E%3Crect%20width%3D'24'%20height%3D'24'%20rx%3D'5'%20fill%3D'%231A73E8'%2F%3E%3Ccircle%20cx%3D'12'%20cy%3D'12'%20r%3D'5'%20fill%3D'%23ffffff'%2F%3E%3C%2Fsvg%3E&quot; width=&quot;26&quot; height=&quot;26&quot;/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11.5px;font-weight:bold;color:#0F172A;padding-top:4px;&quot;&gt;BigLake&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;font-weight:normal;&quot;&gt;Apache Iceberg &amp;amp; Delta Tables&lt;br&gt;Storage Write API • BI Engine&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=top;padding=6;" vertex="1" parent="1">
           <mxGeometry x="145" y="625" width="225" height="120" as="geometry" />
         </mxCell>
 
@@ -222,7 +218,7 @@ export function buildOldAsIsToBeXml(): string {
         </mxCell>
 
         <!-- Strategic Advantages Banner (Bottom) -->
-        <mxCell id="tobe_advantages" value="&lt;table style=&quot;width:100%;font-size:10.5px;color:#15803D;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;🚀 Strategic Target State Advantages:&lt;/b&gt; Real-time sub-second streaming • Gemini 3.1 Pro continuous reasoning • Automated HITL governance • 99.99% multi-region HA • 68% lower OpEx ($395k vs $1.24M)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="tobe_advantages" value="&lt;table style=&quot;width:100%;font-size:10.5px;color:#15803D;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Strategic Target State Advantages:&lt;/b&gt; Real-time sub-second streaming • Gemini 3.1 Pro continuous reasoning • Automated HITL governance • 99.99% multi-region HA • 68% lower OpEx ($395k vs $1.24M)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1;align=left;spacingLeft=12;" vertex="1" parent="1">
           <mxGeometry x="120" y="845" width="1400" height="34" as="geometry" />
         </mxCell>
 

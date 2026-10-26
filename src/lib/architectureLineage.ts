@@ -18,7 +18,7 @@ export interface BlueprintLineage {
   lineageBreadcrumb: string[];// ["Phase 4: Platform Engineering", "Physical Layer (-P-)", "Data & Ingestion", "P4-DAT-P-09"]
 }
 
-export const BLUEPRINT_LINEAGE_REGISTRY: Record<string, BlueprintLineage> = {
+const BLUEPRINT_LINEAGE_REGISTRY: Record<string, BlueprintLineage> = {
   // ==========================================
   // PHASE 1: FOUNDATION & DISCOVERY
   // ==========================================
