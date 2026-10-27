@@ -48,16 +48,19 @@ const ALLOWED_GOOGLE_BRAND_LIGHT_HEXES = new Set([
   '#B31412',
 ]);
 
-describe('22 Canonical Blueprints (7 Core Architecture/Flow #78, #79, #81, #84, #00, #67, #69 + 15 Infographic #52–#66), Permanent Purge of #38, #42, #44, #68, #80, #82, #83 & 9-Guide Diagram Parity', () => {
-  it('retains strictly the 22 canonical blueprints (7 core architecture/flow + 15 infographic #52–#66) and permanently purges #35–#50, #68, #70–#74, #80, #82, #83', () => {
+describe('40 Canonical Blueprints (7 Core #78,#79,#81,#84,#00,#67,#69 + 14 G-Series #85–#98 + 4 Restored #03,#12,#14,#29 + 15 Infographic #52–#66), Permanent Purge of #38, #42, #44, #68, #80, #82, #83 & 9-Guide Diagram Parity', () => {
+  it('retains strictly the 40 canonical blueprints and permanently purges #35–#50, #68, #70–#74, #80, #82, #83', () => {
     expect(ACTIVE_CANONICAL_BLUEPRINT_IDS).toEqual([
       '78', '79', '81', '84',
-      '00', '67', '69',
+      '85', '86', '87', '88', '89', '90', '91', '92', '93',
+      '94', '95', '96', '97', '98',
+      '00', '03', '12', '14', '29',
+      '67', '69',
       '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66',
     ]);
-    expect(CANONICAL_TEMPLATES.length).toBe(22);
+    expect(CANONICAL_TEMPLATES.length).toBe(40);
 
-    for (const id of ['78', '79', '81', '84', '67', '69']) {
+    for (const id of ['78', '79', '81', '84', '85', '86', '87', '88', '89', '90', '91', '92', '93', '94', '95', '96', '97', '98', '03', '12', '14', '29', '67', '69']) {
       expect(ACTIVE_CANONICAL_BLUEPRINT_IDS.includes(id)).toBe(true);
       const bp = CANONICAL_TEMPLATES.find((t) => t.id === id);
       expect(bp).toBeDefined();
@@ -72,7 +75,7 @@ describe('22 Canonical Blueprints (7 Core Architecture/Flow #78, #79, #81, #84, 
       expect(bp?.family).toBe('Infographic');
     }
 
-    const purgedIds = ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '68', '70', '71', '72', '73', '74', '80', '82', '83'];
+    const purgedIds = ['01', '02', '04', '05', '06', '07', '08', '09', '10', '11', '13', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '68', '70', '71', '72', '73', '74', '80', '82', '83'];
     for (const purgedId of purgedIds) {
       expect(ACTIVE_CANONICAL_BLUEPRINT_IDS.includes(purgedId)).toBe(false);
       expect(CANONICAL_TEMPLATES.find((t) => t.id === purgedId)).toBeUndefined();
@@ -99,8 +102,8 @@ describe('22 Canonical Blueprints (7 Core Architecture/Flow #78, #79, #81, #84, 
     }
   });
 
-  it('enforces per-blueprint ReferenceGeometryContract (#67, #69) for exact pageWidth/pageHeight, SVG icon count, required/forbidden mxCell IDs, and DOM painting order', () => {
-    for (const id of ['67', '69']) {
+  it('enforces per-blueprint ReferenceGeometryContract (#67, #69, #85..#93) for exact pageWidth/pageHeight, SVG icon count, required/forbidden mxCell IDs, and DOM painting order', () => {
+    for (const id of ['67', '69', '85', '86', '87', '88', '89', '90', '91', '92', '93']) {
       const bp = CANONICAL_TEMPLATES.find((t) => t.id === id)!;
       const rg = CANONICAL_CONTRACTS[id]?.referenceGeometry!;
       expect(rg, `Missing referenceGeometry contract for #${id}`).toBeDefined();

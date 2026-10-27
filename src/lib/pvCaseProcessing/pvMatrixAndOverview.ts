@@ -1,4 +1,16 @@
 import { GOOGLE_CLOUD_OFFICIAL_SVG } from '@/lib/gcpOfficialSvgAssets';
+import { getCanonicalTemplateById } from '@/lib/canonical/canonicalTemplates';
+
+export interface PvDiagramTemplateVariant {
+  variantKey: string;
+  levelTag: 'L100' | 'L200' | 'L300' | 'L400';
+  code: string;
+  templateId: string;
+  title: string;
+  canonicalHref: string;
+  isRestoredPurged?: boolean;
+  isGSeriesRef?: boolean;
+}
 
 export interface PvDiagramNodeSpec {
   id: string;
@@ -32,6 +44,7 @@ export interface PvMatrixRow {
   keyTakeaway: string;
   edgeLabels: [string, string, string];
   lanes: [PvDiagramLaneSpec, PvDiagramLaneSpec, PvDiagramLaneSpec, PvDiagramLaneSpec];
+  diagramVariants: PvDiagramTemplateVariant[];
 }
 
 export interface PvUseCaseOverview {
@@ -114,7 +127,262 @@ function getSafeGcpIconDataUri(key: keyof typeof GOOGLE_CLOUD_OFFICIAL_SVG): str
  * - Exact horizontal alignment (cy = nodeY + 74 -> min(dx,dy) = 0.0px)
  * - Dedicated inter-lane label channel so connector_path_through_text_or_badge === 0
  */
-export function compilePvRowDrawioXml(row: PvMatrixRow): string {
+function compilePvC4ContextDiagramXml(row: PvMatrixRow): string {
+  const W = 1600;
+  const H = 860;
+  const cells: string[] = [];
+
+  cells.push(
+    `<mxCell id="poster_bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="${W}" height="${H}" as="geometry"/></mxCell>`
+  );
+
+  const headerHtml = `<table style="width:1512px;border-collapse:collapse;font-family:Inter,sans-serif;">` +
+    `<tr>` +
+    `<td style="text-align:left;vertical-align:middle;padding-bottom:4px;">` +
+    `<span style="display:inline-block;background:#1a73e8;color:#ffffff;font-size:10px;font-weight:800;padding:3px 9px;border-radius:4px;letter-spacing:0.6px;margin-right:8px;">CANONICAL BLUEPRINT G-01 · C4 LEVEL 1</span>` +
+    `<span style="display:inline-block;background:#e8f0fe;color:#174ea6;border:1px solid #aecbfa;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;margin-right:8px;">DOC #${row.docNum} · ${escapeXml(row.document.toUpperCase())} · ROW #${row.rowId}</span>` +
+    `<span style="display:inline-block;background:#e6f4ea;color:#137333;border:1px solid #ceead6;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;">GOOGLE CLOUD ARCHITECTURE CENTER STANDARD</span>` +
+    `</td>` +
+    `<td style="text-align:right;vertical-align:middle;padding-bottom:4px;white-space:nowrap;">` +
+    `<span style="display:inline-block;background:#ffffff;color:#334155;border:1px solid #cbd5e1;font-size:10px;font-weight:700;padding:3px 10px;border-radius:5px;">Notation: C4 Model Level 1 (System Context) · Level: ${escapeXml(row.level)} · Owner: ${escapeXml(row.owner)}</span>` +
+    `</td>` +
+    `</tr>` +
+    `<tr>` +
+    `<td colspan="2" style="text-align:left;vertical-align:middle;">` +
+    `<div style="font-size:16px;font-weight:800;color:#0f172a;line-height:1.25;">${escapeXml(row.diagram)} — Agentic Pharmacovigilance (PV) Case Processing on Google Cloud</div>` +
+    `<div style="font-size:11px;font-weight:500;color:#475569;margin-top:2px;">${escapeXml(row.summary)}</div>` +
+    `</td>` +
+    `</tr>` +
+    `</table>`;
+
+  cells.push(
+    `<mxCell id="pv_hdr_${row.rowId}" value="${escapeXml(headerHtml)}" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#cbd5e1;strokeWidth=1.2;align=left;verticalAlign=middle;spacingLeft=14;spacingRight=14;" vertex="1" parent="1"><mxGeometry x="30" y="16" width="1540" height="82" as="geometry"/></mxCell>`
+  );
+
+  // Zone 1: Left External Upstream Zone (x=40, y=114, w=320, h=644)
+  cells.push(
+    `<mxCell id="zone_left_bg_${row.rowId}" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#94a3b8;strokeWidth=1.4;dashed=1;dashPattern=6 4;" vertex="1" parent="1"><mxGeometry x="40" y="114" width="320" height="644" as="geometry"/></mxCell>`
+  );
+  const leftHdrHtml = `<table style="width:276px;border-collapse:collapse;font-family:Inter,sans-serif;"><tr><td style="text-align:left;padding:4px 8px;">` +
+    `<div style="font-size:11px;font-weight:800;color:#1e293b;letter-spacing:0.5px;">UPSTREAM ACTORS &amp; AE SOURCES</div>` +
+    `<div style="font-size:9.5px;font-weight:600;color:#475569;margin-top:2px;">[Person] &amp; [External System] · 500k Reports/Yr</div>` +
+    `</td></tr></table>`;
+  cells.push(
+    `<mxCell id="zone_left_hdr_${row.rowId}" value="${escapeXml(leftHdrHtml)}" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;strokeWidth=1;align=left;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="54" y="126" width="292" height="42" as="geometry"/></mxCell>`
+  );
+
+  // Zone 2: Center Target System Boundary — Google Cloud Platform [Software System] (x=550, y=114, w=500, h=644)
+  cells.push(
+    `<mxCell id="zone_center_bg_${row.rowId}" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#f8fbff;strokeColor=#1a73e8;strokeWidth=2.5;" vertex="1" parent="1"><mxGeometry x="550" y="114" width="500" height="644" as="geometry"/></mxCell>`
+  );
+  const centerHdrHtml = `<table style="width:420px;border-collapse:collapse;font-family:Inter,sans-serif;"><tr>` +
+    `<td style="text-align:left;vertical-align:middle;padding:4px 6px;">` +
+    `<div style="font-size:12px;font-weight:800;color:#174ea6;letter-spacing:0.4px;">AGENTIC PHARMACOVIGILANCE (PV) SYSTEM <span style="display:inline-block;background:#e8f0fe;color:#1a73e8;border:1px solid #aecbfa;font-size:9.5px;font-weight:800;padding:1px 6px;border-radius:3px;margin-left:4px;">[Software System]</span></div>` +
+    `<div style="font-size:10px;font-weight:700;color:#1e40af;margin-top:2px;">Google Cloud Platform (pv-prod · us-central1) · 8 ADK Agents · A2A + MCP</div>` +
+    `</td></tr></table>`;
+  cells.push(
+    `<mxCell id="zone_center_hdr_${row.rowId}" value="${escapeXml(centerHdrHtml)}" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#aecbfa;strokeWidth=1.5;align=left;verticalAlign=middle;spacingLeft=38;" vertex="1" parent="1"><mxGeometry x="566" y="126" width="468" height="44" as="geometry"/></mxCell>`
+  );
+  cells.push(
+    `<mxCell id="zone_center_ico_${row.rowId}" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=none;verticalAlign=top;aspect=fixed;imageAspect=0;image=${getSafeGcpIconDataUri('vertex_ai')};" vertex="1" parent="1"><mxGeometry x="578" y="136" width="24" height="24" as="geometry"/></mxCell>`
+  );
+
+  // Zone 3: Right External Downstream Zone (x=1240, y=114, w=320, h=644)
+  cells.push(
+    `<mxCell id="zone_right_bg_${row.rowId}" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#94a3b8;strokeWidth=1.4;dashed=1;dashPattern=6 4;" vertex="1" parent="1"><mxGeometry x="1240" y="114" width="320" height="644" as="geometry"/></mxCell>`
+  );
+  const rightHdrHtml = `<table style="width:276px;border-collapse:collapse;font-family:Inter,sans-serif;"><tr><td style="text-align:left;padding:4px 8px;">` +
+    `<div style="font-size:11px;font-weight:800;color:#1e293b;letter-spacing:0.5px;">ENTERPRISE SoR &amp; REGULATORS</div>` +
+    `<div style="font-size:9.5px;font-weight:600;color:#475569;margin-top:2px;">[External System] · Dictionaries, SoR &amp; Gateways</div>` +
+    `</td></tr></table>`;
+  cells.push(
+    `<mxCell id="zone_right_hdr_${row.rowId}" value="${escapeXml(rightHdrHtml)}" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;strokeWidth=1;align=left;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="1254" y="126" width="292" height="42" as="geometry"/></mxCell>`
+  );
+
+  const addC4Card = (cfg: {
+    id: string; x: number; y: number; w: number; h: number;
+    stereo: string; title: string; desc: string; meta: string;
+    fill: string; stroke: string; badgeBg: string; badgeFg: string; badgeBorder: string;
+    iconId: keyof typeof GOOGLE_CLOUD_OFFICIAL_SVG;
+  }) => {
+    const innerW = cfg.w - 58;
+    const cardHtml = `<table style="width:${innerW}px;border-collapse:collapse;font-family:Inter,sans-serif;">` +
+      `<tr><td style="text-align:left;vertical-align:top;padding:0;">` +
+      `<div style="margin-bottom:4px;"><span style="display:inline-block;background:${cfg.badgeBg};color:${cfg.badgeFg};border:1px solid ${cfg.badgeBorder};font-size:9.5px;font-weight:800;padding:1.5px 7px;border-radius:4px;letter-spacing:0.2px;">${escapeXml(cfg.stereo)}</span></div>` +
+      `<div style="font-size:12.5px;font-weight:800;color:#0f172a;line-height:1.25;margin-bottom:4px;">${escapeXml(cfg.title)}</div>` +
+      `<div style="font-size:10.5px;font-weight:500;color:#334155;line-height:1.35;margin-bottom:6px;">${escapeXml(cfg.desc)}</div>` +
+      `<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;padding:3px 7px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9.5px;font-weight:700;color:#0f172a;">${escapeXml(cfg.meta)}</div>` +
+      `</td></tr></table>`;
+
+    cells.push(
+      `<mxCell id="${cfg.id}" value="${escapeXml(cardHtml)}" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=${cfg.fill};strokeColor=${cfg.stroke};strokeWidth=1.6;align=left;verticalAlign=middle;spacingLeft=46;spacingRight=10;spacingTop=6;spacingBottom=6;" vertex="1" parent="1"><mxGeometry x="${cfg.x}" y="${cfg.y}" width="${cfg.w}" height="${cfg.h}" as="geometry"/></mxCell>`
+    );
+    cells.push(
+      `<mxCell id="${cfg.id}_icobg" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=${cfg.badgeBg};strokeColor=${cfg.badgeBorder};strokeWidth=1;" vertex="1" parent="1"><mxGeometry x="${cfg.x + 10}" y="${cfg.y + 12}" width="28" height="28" as="geometry"/></mxCell>`
+    );
+    cells.push(
+      `<mxCell id="${cfg.id}_ico" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=none;verticalAlign=top;aspect=fixed;imageAspect=0;image=${getSafeGcpIconDataUri(cfg.iconId)};" vertex="1" parent="1"><mxGeometry x="${cfg.x + 14}" y="${cfg.y + 16}" width="20" height="20" as="geometry"/></mxCell>`
+    );
+  };
+
+  const rowYs = [180, 360, 540];
+  const cardH = 134;
+
+  addC4Card({
+    id: `l_row0_${row.rowId}`, x: 54, y: rowYs[0], w: 292, h: cardH,
+    stereo: '[Person · External Reporter]',
+    title: 'Patients, HCPs & Call Centers',
+    desc: 'Reports spontaneous adverse events via email, web portal, fax scan & call audio',
+    meta: 'Channels: PDF · Fax · Audio · Web',
+    fill: '#ffffff', stroke: '#aecbfa', badgeBg: '#e8f0fe', badgeFg: '#174ea6', badgeBorder: '#aecbfa',
+    iconId: 'iap'
+  });
+  addC4Card({
+    id: `l_row1_${row.rowId}`, x: 54, y: rowYs[1], w: 292, h: cardH,
+    stereo: '[Person · Internal GxP User]',
+    title: 'Case Processors & Physicians',
+    desc: 'Verifies source PDF highlights, edits AI fields & executes 21 CFR Part 11 sign-off',
+    meta: 'Roles: Processor · Physician · QPPV',
+    fill: '#ffffff', stroke: '#81c995', badgeBg: '#e6f4ea', badgeFg: '#137333', badgeBorder: '#ceead6',
+    iconId: 'cloud_iam'
+  });
+  addC4Card({
+    id: `l_row2_${row.rowId}`, x: 54, y: rowYs[2], w: 292, h: cardH,
+    stereo: '[External System · Clinical Feeds]',
+    title: 'EDC Trials, EHR & Literature',
+    desc: 'Pushes serious clinical trial SAEs, HL7 FHIR R4 bundles & PubMed/FAERS hits',
+    meta: 'Feeds: FHIR R4 · E2B XML · PubMed',
+    fill: '#ffffff', stroke: '#fdd663', badgeBg: '#fef7e0', badgeFg: '#b06000', badgeBorder: '#fde293',
+    iconId: 'pubsub'
+  });
+
+  addC4Card({
+    id: `c_row0_${row.rowId}`, x: 566, y: rowYs[0], w: 468, h: cardH,
+    stereo: '[Capability 1 · Multimodal Intake & Triage]',
+    title: 'Omnichannel Ingestion, OCR & Day-0 Clock',
+    desc: 'Normalizes PDF/fax/audio/FHIR, redacts HIPAA 18 PHI via SDP, checks 4 validity rules & starts 7d/15d SLA clock',
+    meta: 'Cloud Storage · Document AI · Speech-to-Text · Healthcare API · SDP',
+    fill: '#ffffff', stroke: '#1a73e8', badgeBg: '#e8f0fe', badgeFg: '#174ea6', badgeBorder: '#aecbfa',
+    iconId: 'document_ai'
+  });
+  addC4Card({
+    id: `c_row1_${row.rowId}`, x: 566, y: rowYs[1], w: 468, h: cardH,
+    stereo: '[Capability 2 · 8-Agent ADK Core & HITL Console]',
+    title: 'Parallel Agent Engine & 1-Screen Review UI',
+    desc: 'Runs Orchestrator, Extraction, Coding, Dedup & Narrative agents on Gemini 2.5; serves IAP side-by-side reviewer UI',
+    meta: 'Vertex AI Agent Engine (ADK) · Gemini 2.5 Pro/Flash · Cloud Run UI',
+    fill: '#ffffff', stroke: '#1a73e8', badgeBg: '#e8f0fe', badgeFg: '#174ea6', badgeBorder: '#aecbfa',
+    iconId: 'vertex_ai'
+  });
+  addC4Card({
+    id: `c_row2_${row.rowId}`, x: 566, y: rowYs[2], w: 468, h: cardH,
+    stereo: '[Capability 3 · GxP Validation, WORM Audit & E2B]',
+    title: '200-Rule E2B(R3) Builder & Part 11 Gate',
+    desc: 'Validates ICH/FDA/EMA rules, blocks submission without cryptographic signature_id & logs 10-yr WORM trail',
+    meta: 'Cloud SQL (MedDRA) · Firestore · BigQuery WORM · Cloud KMS CMEK',
+    fill: '#ffffff', stroke: '#137333', badgeBg: '#e6f4ea', badgeFg: '#137333', badgeBorder: '#ceead6',
+    iconId: 'bigquery'
+  });
+
+  const boundaryBarHtml = `<table style="width:444px;border-collapse:collapse;font-family:Inter,sans-serif;"><tr><td style="text-align:center;padding:3px 6px;">` +
+    `<div style="font-size:10px;font-weight:800;color:#174ea6;letter-spacing:0.4px;">GOOGLE CLOUD ZERO-TRUST &amp; GxP BOUNDARY CONTROLS</div>` +
+    `<div style="font-size:9.5px;font-weight:600;color:#334155;margin-top:2px;">VPC-SC Perimeter · Cloud Armor WAF · Model Armor · Cloud KMS CMEK · 0% PHI in Logs</div>` +
+    `</td></tr></table>`;
+  cells.push(
+    `<mxCell id="c_boundary_bar_${row.rowId}" value="${escapeXml(boundaryBarHtml)}" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#aecbfa;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="566" y="690" width="468" height="50" as="geometry"/></mxCell>`
+  );
+
+  addC4Card({
+    id: `r_row0_${row.rowId}`, x: 1254, y: rowYs[0], w: 292, h: cardH,
+    stereo: '[External System · Identity & Dictionaries]',
+    title: 'Corporate OIDC IdP & MSSO / UMC',
+    desc: 'Authenticates reviewers, issues Part 11 re-auth tokens & provides pinned MedDRA v27.1 / WHODrug releases',
+    meta: 'Protocols: OIDC · SAML 2.0 · SHA-256',
+    fill: '#ffffff', stroke: '#c4b5fd', badgeBg: '#f3e8ff', badgeFg: '#6d28d9', badgeBorder: '#d8b4fe',
+    iconId: 'scc'
+  });
+  addC4Card({
+    id: `r_row1_${row.rowId}`, x: 1254, y: rowYs[1], w: 292, h: cardH,
+    stereo: '[External System · Authoritative GxP SoR]',
+    title: 'Enterprise Safety DB (Veeva / Argus)',
+    desc: 'Authoritative pharmacovigilance system of record queried for duplicates & updated only after human sign-off',
+    meta: 'Interface: mTLS REST over Interconnect',
+    fill: '#ffffff', stroke: '#aecbfa', badgeBg: '#e8f0fe', badgeFg: '#174ea6', badgeBorder: '#aecbfa',
+    iconId: 'cloud_storage'
+  });
+  addC4Card({
+    id: `r_row2_${row.rowId}`, x: 1254, y: rowYs[2], w: 292, h: cardH,
+    stereo: '[External System · Regulatory Authorities]',
+    title: 'FDA FAERS, EMA & PMDA Gateways',
+    desc: 'Receives validated ICH E2B(R3) XML regulatory submissions via AS2 gateway & returns MDN / ACK receipts',
+    meta: 'Standard: ICH E2B(R3) XML · AS2 MDN',
+    fill: '#ffffff', stroke: '#f28b82', badgeBg: '#fce8e6', badgeFg: '#c5221f', badgeBorder: '#f6aea9',
+    iconId: 'cloud_load_balancing'
+  });
+
+  const footerHtml = `<table style="width:1512px;border-collapse:collapse;font-family:Inter,sans-serif;">` +
+    `<tr>` +
+    `<td style="text-align:left;vertical-align:middle;padding-bottom:4px;">` +
+    `<span style="display:inline-block;background:#e8f0fe;color:#174ea6;border:1px solid #aecbfa;font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:4px;margin-right:8px;">[Person] External / Internal Actor</span>` +
+    `<span style="display:inline-block;background:#e8f0fe;color:#1a73e8;border:1.5px solid #1a73e8;font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:4px;margin-right:8px;">[Software System] Agentic PV on Google Cloud</span>` +
+    `<span style="display:inline-block;background:#f8fafc;color:#334155;border:1px dashed #64748b;font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:4px;margin-right:8px;">[External System] Enterprise SoR / Regulator</span>` +
+    `<span style="display:inline-block;background:#e6f4ea;color:#137333;border:1px solid #ceead6;font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:4px;">①–⑥ Synchronous / Event-Driven Context Interfaces</span>` +
+    `</td>` +
+    `<td style="text-align:right;vertical-align:middle;padding-bottom:4px;font-size:10px;font-weight:800;color:#137333;">` +
+    `C4 LEVEL 1 SYSTEM CONTEXT · 21 CFR PART 11 · ICH E2B(R3)` +
+    `</td>` +
+    `</tr>` +
+    `<tr>` +
+    `<td colspan="2" style="text-align:left;vertical-align:middle;font-size:10.5px;color:#334155;line-height:1.35;">` +
+    `<strong style="color:#0f172a;">C4 L1 Boundary Invariant:</strong> ${escapeXml(row.keyTakeaway)}` +
+    `</td>` +
+    `</tr>` +
+    `</table>`;
+
+  cells.push(
+    `<mxCell id="pv_ftr_${row.rowId}" value="${escapeXml(footerHtml)}" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#86efac;strokeWidth=1.4;align=left;verticalAlign=middle;spacingLeft=14;spacingRight=14;" vertex="1" parent="1"><mxGeometry x="30" y="772" width="1540" height="68" as="geometry"/></mxCell>`
+  );
+
+  const addHorizontalContextEdge = (cfg: { id: string; src: string; tgt: string; label: string; stroke: string; biDir: boolean }) => {
+    const startArrow = cfg.biDir ? 'startArrow=block;startFill=1;startSize=6;' : 'startArrow=none;';
+    const labelSpan = `<span style='padding:0 4px;'>${escapeXml(cfg.label)}</span>`;
+    cells.push(
+      `<mxCell id="${cfg.id}" value="${escapeXml(labelSpan)}" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=${cfg.stroke};strokeWidth=2;${startArrow}endArrow=block;endFill=1;endSize=6;fontSize=9.5;fontStyle=1;fontColor=#0f172a;labelBackgroundColor=#ffffff;labelBorderColor=${cfg.stroke};" edge="1" parent="1" source="${cfg.src}" target="${cfg.tgt}"><mxGeometry relative="1" as="geometry"><mxPoint x="0" y="-2" as="offset"/></mxGeometry></mxCell>`
+    );
+  };
+
+  addHorizontalContextEdge({ id: `e_l0_c0_${row.rowId}`, src: `l_row0_${row.rowId}`, tgt: `c_row0_${row.rowId}`, label: '① AE Reports (PDF/Audio)', stroke: '#1a73e8', biDir: false });
+  addHorizontalContextEdge({ id: `e_l1_c1_${row.rowId}`, src: `l_row1_${row.rowId}`, tgt: `c_row1_${row.rowId}`, label: '② Review & Part 11 Sign', stroke: '#137333', biDir: true });
+  addHorizontalContextEdge({ id: `e_l2_c2_${row.rowId}`, src: `l_row2_${row.rowId}`, tgt: `c_row2_${row.rowId}`, label: '③ FHIR R4 & Trial SAEs', stroke: '#d97706', biDir: false });
+
+  addHorizontalContextEdge({ id: `e_c0_r0_${row.rowId}`, src: `c_row0_${row.rowId}`, tgt: `r_row0_${row.rowId}`, label: '④ OIDC MFA & MedDRA', stroke: '#7c3aed', biDir: true });
+  addHorizontalContextEdge({ id: `e_c1_r1_${row.rowId}`, src: `c_row1_${row.rowId}`, tgt: `r_row1_${row.rowId}`, label: '⑤ Dedup & Signed Case', stroke: '#1a73e8', biDir: true });
+  addHorizontalContextEdge({ id: `e_c2_r2_${row.rowId}`, src: `c_row2_${row.rowId}`, tgt: `r_row2_${row.rowId}`, label: '⑥ E2B(R3) XML & ACK', stroke: '#c5221f', biDir: true });
+
+  cells.push(
+    `<mxCell id="e_c0_c1_${row.rowId}" value="" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#1a73e8;strokeWidth=1.8;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;endSize=6;" edge="1" parent="1" source="c_row0_${row.rowId}" target="c_row1_${row.rowId}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+  );
+  cells.push(
+    `<mxCell id="e_c1_c2_${row.rowId}" value="" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#1a73e8;strokeWidth=1.8;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;endSize=6;" edge="1" parent="1" source="c_row1_${row.rowId}" target="c_row2_${row.rowId}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+  );
+
+  return `<mxfile host="PromptCanvas"><diagram id="pv-diagram-row-${row.rowId}" name="${escapeXml(`Row ${row.rowId} - ${row.diagram}`)}"><mxGraphModel dx="1600" dy="860" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="${W}" pageHeight="${H}" background="#FFFFFF" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/>${cells.join('')}</root></mxGraphModel></diagram></mxfile>`;
+}
+
+export function compilePvRowDrawioXml(row: PvMatrixRow, variantKey?: string): string {
+  if (variantKey) {
+    const variants = row.diagramVariants || getPvRowDiagramVariants(row);
+    const matched = variants.find((v) => v.variantKey === variantKey || v.levelTag === variantKey || v.code === variantKey);
+    if (matched && matched.templateId !== 'pv-row') {
+      const tpl = getCanonicalTemplateById(matched.templateId);
+      if (tpl) {
+        return tpl.generateXml('biopharma', 'light');
+      }
+    }
+  }
+  if (row.rowId === 1 || row.rowId === 6) {
+    return compilePvC4ContextDiagramXml(row);
+  }
   const cells: string[] = [];
 
   // 1. Outer Frame (id="poster_bg" unlocks 0px viewBox tight-fit in DiagramViewerRenderSafe) & Top Executive Banner (1600 x 796)
@@ -206,6 +474,211 @@ export function compilePvRowDrawioXml(row: PvMatrixRow): string {
   return `<mxfile host="PromptCanvas"><diagram id="pv-diagram-row-${row.rowId}" name="${escapeXml(`Row ${row.rowId} - ${row.diagram}`)}"><mxGraphModel dx="1600" dy="796" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="796" background="#FFFFFF" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/>${cells.join('')}</root></mxGraphModel></diagram></mxfile>`;
 }
 
+export const PV_ROW_DIAGRAM_VARIANTS_MAP: Record<number, PvDiagramTemplateVariant[]> = {
+  1: [
+    { variantKey: 'g01-l100', levelTag: 'L100', code: 'G-01 (#85)', templateId: '85', title: 'C4 Level 1 System Context — PV & AE AI Platform', canonicalHref: '/canonical/G-01', isGSeriesRef: true },
+    { variantKey: 'bp00-l200', levelTag: 'L200', code: '#00', templateId: '00', title: 'GCP & Gemini Enterprise Native Architecture', canonicalHref: '/canonical/00' },
+    { variantKey: 'pv01-l300', levelTag: 'L300', code: 'PV-01', templateId: 'pv-row', title: 'PV Omnichannel Context & Boundary Spec', canonicalHref: '/canonical/85' },
+    { variantKey: 'g01-l400', levelTag: 'L400', code: 'G-01 L400 (#94)', templateId: '94', title: 'G-01: L400 C4 Level 1 System Context — PV & AE AI Platform', canonicalHref: '/canonical/G-01-L400', isGSeriesRef: true },
+  ],
+  2: [
+    { variantKey: 'g02-l200', levelTag: 'L200', code: 'G-02 (#86)', templateId: '86', title: 'As-Is vs. To-Be BPMN 2.0 Process Swimlane (ICSR)', canonicalHref: '/canonical/G-02', isGSeriesRef: true },
+    { variantKey: 'bp03-l300', levelTag: 'L300', code: '#03', templateId: '03', title: 'Restored Business Process / BPMN Swimlane', canonicalHref: '/canonical/03', isRestoredPurged: true },
+    { variantKey: 'g02-l400', levelTag: 'L400', code: 'G-02 L400 (#95)', templateId: '95', title: 'G-02: L400 As-Is vs. To-Be BPMN 2.0 Process Swimlane (P99 7.4d vs 9.8s)', canonicalHref: '/canonical/G-02-L400', isGSeriesRef: true },
+  ],
+  3: [
+    { variantKey: 'g03-l200', levelTag: 'L200', code: 'G-03 (#87)', templateId: '87', title: 'Multi-Persona User Journey & OpenTelemetry Blueprint', canonicalHref: '/canonical/G-03', isGSeriesRef: true },
+    { variantKey: 'bp66-l100', levelTag: 'L100', code: '#66', templateId: '66', title: 'Journey Map Infographic Blueprint', canonicalHref: '/canonical/66' },
+    { variantKey: 'pv03-l300', levelTag: 'L300', code: 'PV-03', templateId: 'pv-row', title: 'PV Reviewer Journey & Telemetry Spec', canonicalHref: '/canonical/87' },
+    { variantKey: 'g03-l400', levelTag: 'L400', code: 'G-03 L400 (#96)', templateId: '96', title: 'G-03: L400 Multi-Persona User Journey, OpenTelemetry & Touchpoint Blueprint', canonicalHref: '/canonical/G-03-L400', isGSeriesRef: true },
+  ],
+  4: [
+    { variantKey: 'g04-l200', levelTag: 'L200', code: 'G-04 (#88)', templateId: '88', title: 'UML Use Case, IAM/RBAC & GxP Separation-of-Duties Boundary', canonicalHref: '/canonical/G-04', isGSeriesRef: true },
+    { variantKey: 'pv04-l300', levelTag: 'L300', code: 'PV-04', templateId: 'pv-row', title: 'PV Actor & 21 CFR Part 11 Use Case Spec', canonicalHref: '/canonical/88' },
+    { variantKey: 'g04-l400', levelTag: 'L400', code: 'G-04 L400 (#97)', templateId: '97', title: 'G-04: L400 UML Use Case, IAM/PAM & SPIFFE Agent Identity SoD Boundary', canonicalHref: '/canonical/G-04-L400', isGSeriesRef: true },
+  ],
+  5: [
+    { variantKey: 'pv05-l200', levelTag: 'L200', code: 'PV-05', templateId: 'pv-row', title: 'Side-by-Side Reviewer Console Wireframe Flow', canonicalHref: '/canonical/67' },
+    { variantKey: 'bp67-l300', levelTag: 'L300', code: '#67', templateId: '67', title: '7-Stage Sync/Async UI & Agent Flow', canonicalHref: '/canonical/67' },
+  ],
+  6: [
+    { variantKey: 'g01-l100', levelTag: 'L100', code: 'G-01 (#85)', templateId: '85', title: 'C4 Level 1 System Context — PV & AE AI Platform', canonicalHref: '/canonical/G-01', isGSeriesRef: true },
+    { variantKey: 'bp78-l200', levelTag: 'L200', code: '#78', templateId: '78', title: 'Official Google Cloud Hub-and-Spoke Context', canonicalHref: '/canonical/78' },
+    { variantKey: 'pv06-l300', levelTag: 'L300', code: 'PV-06', templateId: 'pv-row', title: 'SAD System Context & External Gateways', canonicalHref: '/canonical/85' },
+    { variantKey: 'g01-l400', levelTag: 'L400', code: 'G-01 L400 (#94)', templateId: '94', title: 'G-01: L400 C4 Level 1 System Context — PV & AE AI Platform', canonicalHref: '/canonical/G-01-L400', isGSeriesRef: true },
+  ],
+  7: [
+    { variantKey: 'bp00-l100', levelTag: 'L100', code: '#00', templateId: '00', title: 'GCP & Gemini Enterprise Native Conceptual Architecture', canonicalHref: '/canonical/00' },
+    { variantKey: 'bp78-l200', levelTag: 'L200', code: '#78', templateId: '78', title: 'Official Google Cloud Hub-and-Spoke Blueprint', canonicalHref: '/canonical/78' },
+    { variantKey: 'pv07-l300', levelTag: 'L300', code: 'PV-07', templateId: 'pv-row', title: 'PV 6-Layer Conceptual Architecture', canonicalHref: '/canonical/00' },
+  ],
+  8: [
+    { variantKey: 'bp69-l200', levelTag: 'L200', code: '#69', templateId: '69', title: 'Unified 7-Layer Operational Flowchart', canonicalHref: '/canonical/69' },
+    { variantKey: 'bp78-l300', levelTag: 'L300', code: '#78', templateId: '78', title: 'Official Google Cloud Hub-and-Spoke Logical Blueprint', canonicalHref: '/canonical/78' },
+    { variantKey: 'pv08-l400', levelTag: 'L400', code: 'PV-08', templateId: 'pv-row', title: 'PV Logical Subsystem & Bus Decomposition', canonicalHref: '/canonical/78' },
+  ],
+  9: [
+    { variantKey: 'bp78-l300', levelTag: 'L300', code: '#78', templateId: '78', title: 'L300 Cloud Reference Technical Architecture', canonicalHref: '/canonical/78' },
+    { variantKey: 'bp79-l400', levelTag: 'L400', code: '#79', templateId: '79', title: 'L400 Production Cloud Deployment & Network Spec', canonicalHref: '/canonical/79' },
+    { variantKey: 'pv09-l200', levelTag: 'L200', code: 'PV-09', templateId: 'pv-row', title: 'PV Technical Service Stack & Runtime Spec', canonicalHref: '/canonical/78' },
+  ],
+  10: [
+    { variantKey: 'bp79-l300', levelTag: 'L300', code: '#79', templateId: '79', title: 'L400 Production Cloud Deployment Spec', canonicalHref: '/canonical/79' },
+    { variantKey: 'bp84-l400', levelTag: 'L400', code: '#84', templateId: '84', title: 'L400 Enterprise Hybrid Interconnect & Multi-Zone HA', canonicalHref: '/canonical/84' },
+    { variantKey: 'pv10-l200', levelTag: 'L200', code: 'PV-10', templateId: 'pv-row', title: 'PV Regional HA & VPC-SC Deployment Summary', canonicalHref: '/canonical/79' },
+  ],
+  11: [
+    { variantKey: 'bp67-l200', levelTag: 'L200', code: '#67', templateId: '67', title: '7-Stage Sync/Async Agentic Flow', canonicalHref: '/canonical/67' },
+    { variantKey: 'bp69-l300', levelTag: 'L300', code: '#69', templateId: '69', title: 'Unified 7-Layer Agentic Operational Flowchart', canonicalHref: '/canonical/69' },
+    { variantKey: 'bp81-l400', levelTag: 'L400', code: '#81', templateId: '81', title: 'L400 Principal Sequence A2A/MCP Orchestration', canonicalHref: '/canonical/81' },
+  ],
+  12: [
+    { variantKey: 'g04-l200', levelTag: 'L200', code: 'G-04 (#88)', templateId: '88', title: 'UML Use Case, IAM/RBAC & GxP Separation-of-Duties Boundary', canonicalHref: '/canonical/G-04', isGSeriesRef: true },
+    { variantKey: 'bp67-l300', levelTag: 'L300', code: '#67', templateId: '67', title: '7-Stage Sync/Async Guardrail & HITL Flow', canonicalHref: '/canonical/67' },
+    { variantKey: 'g04-l400', levelTag: 'L400', code: 'G-04 L400 (#97)', templateId: '97', title: 'G-04: L400 UML Use Case, IAM/PAM & SPIFFE Agent Identity SoD Boundary', canonicalHref: '/canonical/G-04-L400', isGSeriesRef: true },
+  ],
+  13: [
+    { variantKey: 'g06-l200', levelTag: 'L200', code: 'G-06 (#89)', templateId: '89', title: 'ADR Multi-Option Architecture Trade-Off & Scoring Matrix', canonicalHref: '/canonical/G-06', isGSeriesRef: true },
+    { variantKey: 'bp56-l100', levelTag: 'L100', code: '#56', templateId: '56', title: 'Side-by-Side Architecture Comparison Infographic', canonicalHref: '/canonical/56' },
+    { variantKey: 'pv13-l300', levelTag: 'L300', code: 'PV-13', templateId: 'pv-row', title: 'PV 8-ADR Decision Trade-Off Matrix', canonicalHref: '/canonical/89' },
+  ],
+  14: [
+    { variantKey: 'g07-l300', levelTag: 'L300', code: 'G-07 (#90)', templateId: '90', title: 'C4 Level 3 Internal Component & Hexagonal Decomposition', canonicalHref: '/canonical/G-07', isGSeriesRef: true },
+    { variantKey: 'bp69-l200', levelTag: 'L200', code: '#69', templateId: '69', title: 'Unified 7-Layer Operational Flowchart', canonicalHref: '/canonical/69' },
+    { variantKey: 'pv14-l400', levelTag: 'L400', code: 'PV-14', templateId: 'pv-row', title: 'PV HLD Microservice & Worker Component Spec', canonicalHref: '/canonical/90' },
+  ],
+  15: [
+    { variantKey: 'bp67-l300', levelTag: 'L300', code: '#67', templateId: '67', title: '7-Stage Sync/Async Sequence Flow', canonicalHref: '/canonical/67' },
+    { variantKey: 'bp81-l400', levelTag: 'L400', code: '#81', templateId: '81', title: 'L400 Principal Sequence A2A/MCP Protocol Spec', canonicalHref: '/canonical/81' },
+    { variantKey: 'pv15-l200', levelTag: 'L200', code: 'PV-15', templateId: 'pv-row', title: 'PV End-to-End Case Intake-to-Submission Sequence', canonicalHref: '/canonical/81' },
+  ],
+  16: [
+    { variantKey: 'bp14-l200', levelTag: 'L200', code: '#14', templateId: '14', title: 'Restored Data Model / Entity-Relationship Diagram (ERD)', canonicalHref: '/canonical/14', isRestoredPurged: true },
+    { variantKey: 'g10-l300', levelTag: 'L300', code: 'G-10 (#93)', templateId: '93', title: 'Physical ERD & AlloyDB PostgreSQL 16 + ScaNN DDL Schema', canonicalHref: '/canonical/G-10', isGSeriesRef: true },
+    { variantKey: 'pv16-l100', levelTag: 'L100', code: 'PV-16', templateId: 'pv-row', title: 'PV High-Level Conceptual Domain Entity Model', canonicalHref: '/canonical/14' },
+  ],
+  17: [
+    { variantKey: 'bp14-l200', levelTag: 'L200', code: '#14', templateId: '14', title: 'Restored Data Model / Entity-Relationship Diagram (ERD)', canonicalHref: '/canonical/14', isRestoredPurged: true },
+    { variantKey: 'g10-l300', levelTag: 'L300', code: 'G-10 (#93)', templateId: '93', title: 'Physical ERD & AlloyDB PostgreSQL 16 + ScaNN DDL Schema', canonicalHref: '/canonical/G-10', isGSeriesRef: true },
+    { variantKey: 'pv17-l400', levelTag: 'L400', code: 'PV-17', templateId: 'pv-row', title: 'PV Logical Entity-Relationship & Cardinality Model', canonicalHref: '/canonical/93' },
+  ],
+  18: [
+    { variantKey: 'g09-l300', levelTag: 'L300', code: 'G-09 (#92)', templateId: '92', title: 'Formal Yourdon/DeMarco Data Flow Diagram (DFD Level 1)', canonicalHref: '/canonical/G-09', isGSeriesRef: true },
+    { variantKey: 'bp69-l200', levelTag: 'L200', code: '#69', templateId: '69', title: 'Unified 7-Layer Data & Control Flowchart', canonicalHref: '/canonical/69' },
+    { variantKey: 'pv18-l400', levelTag: 'L400', code: 'PV-18', templateId: 'pv-row', title: 'PV HLD Data Lineage & Store Transitions', canonicalHref: '/canonical/92' },
+  ],
+  19: [
+    { variantKey: 'bp03-l200', levelTag: 'L200', code: '#03', templateId: '03', title: 'Restored Business Process / BPMN Swimlane', canonicalHref: '/canonical/03', isRestoredPurged: true },
+    { variantKey: 'bp67-l300', levelTag: 'L300', code: '#67', templateId: '67', title: '7-Stage Sync/Async Agentic Flow', canonicalHref: '/canonical/67' },
+    { variantKey: 'bp81-l400', levelTag: 'L400', code: '#81', templateId: '81', title: 'L400 Principal Sequence A2A/MCP Spec', canonicalHref: '/canonical/81' },
+  ],
+  20: [
+    { variantKey: 'bp81-l400', levelTag: 'L400', code: '#81', templateId: '81', title: 'L400 Principal Sequence OIDC/mTLS & Tool Calls', canonicalHref: '/canonical/81' },
+    { variantKey: 'pv20-l300', levelTag: 'L300', code: 'PV-20', templateId: 'pv-row', title: 'PV LLD Retry, Circuit-Breaker & Idempotency Sequence', canonicalHref: '/canonical/81' },
+  ],
+  21: [
+    { variantKey: 'g07-l300', levelTag: 'L300', code: 'G-07 (#90)', templateId: '90', title: 'C4 Level 3 Hexagonal Ports, Adapters & Domain Classes', canonicalHref: '/canonical/G-07', isGSeriesRef: true },
+    { variantKey: 'pv21-l400', levelTag: 'L400', code: 'PV-21', templateId: 'pv-row', title: 'PV LLD Pydantic Schemas, ADK BaseAgent & MCP Interfaces', canonicalHref: '/canonical/90' },
+  ],
+  22: [
+    { variantKey: 'g08-l300', levelTag: 'L300', code: 'G-08 (#91)', templateId: '91', title: 'UML 2.5 Finite State Machine, Guard Conditions & SLA Clock', canonicalHref: '/canonical/G-08', isGSeriesRef: true },
+    { variantKey: 'bp12-l200', levelTag: 'L200', code: '#12', templateId: '12', title: 'Restored State Machine Diagram', canonicalHref: '/canonical/12', isRestoredPurged: true },
+    { variantKey: 'g08-l400', levelTag: 'L400', code: 'G-08 L400 (#98)', templateId: '98', title: 'G-08: L400 UML 2.5 Hierarchical ICSR Statechart & SLA Clock Formula', canonicalHref: '/canonical/G-08-L400', isGSeriesRef: true },
+  ],
+  23: [
+    { variantKey: 'g10-l300', levelTag: 'L300', code: 'G-10 (#93)', templateId: '93', title: 'Physical ERD & AlloyDB PostgreSQL 16 + ScaNN DDL Schema', canonicalHref: '/canonical/G-10', isGSeriesRef: true },
+    { variantKey: 'bp14-l200', levelTag: 'L200', code: '#14', templateId: '14', title: 'Restored Data Model / Entity-Relationship Diagram (ERD)', canonicalHref: '/canonical/14', isRestoredPurged: true },
+    { variantKey: 'pv23-l400', levelTag: 'L400', code: 'PV-23', templateId: 'pv-row', title: 'PV LLD Firestore, Cloud SQL & BigQuery WORM DDL Spec', canonicalHref: '/canonical/93' },
+  ],
+  24: [
+    { variantKey: 'g07-l300', levelTag: 'L300', code: 'G-07 (#90)', templateId: '90', title: 'C4 Level 3 Hexagonal API Ports & Adapters', canonicalHref: '/canonical/G-07', isGSeriesRef: true },
+    { variantKey: 'bp81-l400', levelTag: 'L400', code: '#81', templateId: '81', title: 'L400 Principal Sequence API Contract Flow', canonicalHref: '/canonical/81' },
+    { variantKey: 'pv24-l200', levelTag: 'L200', code: 'PV-24', templateId: 'pv-row', title: 'PV Per-Endpoint REST & Part 11 API Flow', canonicalHref: '/canonical/81' },
+  ],
+  25: [
+    { variantKey: 'bp67-l300', levelTag: 'L300', code: '#67', templateId: '67', title: '7-Stage Sync/Async Agent Tool Flow', canonicalHref: '/canonical/67' },
+    { variantKey: 'bp81-l400', levelTag: 'L400', code: '#81', templateId: '81', title: 'L400 Principal Sequence MCP Tool Call & Part 11 Gate', canonicalHref: '/canonical/81' },
+    { variantKey: 'pv25-l200', levelTag: 'L200', code: 'PV-25', templateId: 'pv-row', title: 'PV MCP Tool-Call & Guardrail Proxy Sequence', canonicalHref: '/canonical/81' },
+  ],
+  26: [
+    { variantKey: 'g09-l200', levelTag: 'L200', code: 'G-09 (#92)', templateId: '92', title: 'Formal Yourdon/DeMarco DFD Level 1 with Trust Boundaries', canonicalHref: '/canonical/G-09', isGSeriesRef: true },
+    { variantKey: 'bp78-l300', levelTag: 'L300', code: '#78', templateId: '78', title: 'L300 Zero-Trust Hub-and-Spoke Perimeter', canonicalHref: '/canonical/78' },
+    { variantKey: 'pv26-l400', levelTag: 'L400', code: 'PV-26', templateId: 'pv-row', title: 'PV STRIDE Trust Boundary & VPC-SC DFD', canonicalHref: '/canonical/92' },
+  ],
+  27: [
+    { variantKey: 'g04-l200', levelTag: 'L200', code: 'G-04 (#88)', templateId: '88', title: 'UML Use Case, IAM/RBAC & GxP Separation-of-Duties Boundary', canonicalHref: '/canonical/G-04', isGSeriesRef: true },
+    { variantKey: 'bp79-l400', levelTag: 'L400', code: '#79', templateId: '79', title: 'L400 Security Enforcement & Perimeter Spec', canonicalHref: '/canonical/79' },
+    { variantKey: 'pv27-l300', levelTag: 'L300', code: 'PV-27', templateId: 'pv-row', title: 'PV OWASP LLM Top-10 & Model Armor Defense Flow', canonicalHref: '/canonical/88' },
+  ],
+  28: [
+    { variantKey: 'pv28-l200', levelTag: 'L200', code: 'PV-28', templateId: 'pv-row', title: 'PV GAMP 5 IQ/OQ/PQ Test Pyramid & Promotion Flow', canonicalHref: '/canonical/69' },
+    { variantKey: 'bp69-l300', levelTag: 'L300', code: '#69', templateId: '69', title: 'Unified 7-Layer Verification Flowchart', canonicalHref: '/canonical/69' },
+  ],
+  29: [
+    { variantKey: 'pv29-l200', levelTag: 'L200', code: 'PV-29', templateId: 'pv-row', title: 'PV 500-Case Golden Dataset & Vertex AI Eval Gate', canonicalHref: '/canonical/67' },
+    { variantKey: 'bp67-l300', levelTag: 'L300', code: '#67', templateId: '67', title: '7-Stage Sync/Async Eval & CI Gate Flow', canonicalHref: '/canonical/67' },
+  ],
+  30: [
+    { variantKey: 'bp78-l300', levelTag: 'L300', code: '#78', templateId: '78', title: 'L300 Cloud Reference Deployment Topology', canonicalHref: '/canonical/78' },
+    { variantKey: 'bp79-l400', levelTag: 'L400', code: '#79', templateId: '79', title: 'L400 Production Cloud Deployment & Network Spec', canonicalHref: '/canonical/79' },
+    { variantKey: 'pv30-l200', levelTag: 'L200', code: 'PV-30', templateId: 'pv-row', title: 'PV Multi-Zone Production Deployment Spec', canonicalHref: '/canonical/79' },
+  ],
+  31: [
+    { variantKey: 'bp79-l300', levelTag: 'L300', code: '#79', templateId: '79', title: 'L400 VPC-SC, Cloud Armor, IAP & Private Service Connect', canonicalHref: '/canonical/79' },
+    { variantKey: 'bp84-l400', levelTag: 'L400', code: '#84', templateId: '84', title: 'L400 Hybrid Interconnect & HA VPN Topology', canonicalHref: '/canonical/84' },
+    { variantKey: 'pv31-l200', levelTag: 'L200', code: 'PV-31', templateId: 'pv-row', title: 'PV Network Perimeter & Subnets Spec', canonicalHref: '/canonical/79' },
+  ],
+  32: [
+    { variantKey: 'bp29-l200', levelTag: 'L200', code: '#29', templateId: '29', title: 'Restored Cutover / Rollback Runbook Decision Flow', canonicalHref: '/canonical/29', isRestoredPurged: true },
+    { variantKey: 'pv32-l300', levelTag: 'L300', code: 'PV-32', templateId: 'pv-row', title: 'PV Cloud Build, Binary Auth & Canary Promotion Pipeline', canonicalHref: '/canonical/29' },
+  ],
+  33: [
+    { variantKey: 'bp29-l300', levelTag: 'L300', code: '#29', templateId: '29', title: 'Restored Cutover / Rollback Runbook Decision Flow', canonicalHref: '/canonical/29', isRestoredPurged: true },
+    { variantKey: 'bp84-l400', levelTag: 'L400', code: '#84', templateId: '84', title: 'L400 Multi-Region HA / DR Failover Topology (RPO<=5m)', canonicalHref: '/canonical/84' },
+    { variantKey: 'pv33-l200', levelTag: 'L200', code: 'PV-33', templateId: 'pv-row', title: 'PV Regional DR & Failover Runbook Flow', canonicalHref: '/canonical/84' },
+  ],
+  34: [
+    { variantKey: 'g03-l200', levelTag: 'L200', code: 'G-03 (#87)', templateId: '87', title: 'Multi-Persona User Journey & OpenTelemetry Blueprint', canonicalHref: '/canonical/G-03', isGSeriesRef: true },
+    { variantKey: 'pv34-l300', levelTag: 'L300', code: 'PV-34', templateId: 'pv-row', title: 'PV SLA Clock Breach & PagerDuty Alert Routing', canonicalHref: '/canonical/87' },
+  ],
+  35: [
+    { variantKey: 'bp29-l300', levelTag: 'L300', code: '#29', templateId: '29', title: 'Restored Cutover / Rollback Runbook Decision Flow', canonicalHref: '/canonical/29', isRestoredPurged: true },
+    { variantKey: 'pv35-l200', levelTag: 'L200', code: 'PV-35', templateId: 'pv-row', title: 'PV Traffic-Split Canary & 60s Instant Rollback Flow', canonicalHref: '/canonical/29' },
+  ],
+  36: [
+    { variantKey: 'g03-l200', levelTag: 'L200', code: 'G-03 (#87)', templateId: '87', title: 'Multi-Persona User Journey & OpenTelemetry Blueprint', canonicalHref: '/canonical/G-03', isGSeriesRef: true },
+    { variantKey: 'pv36-l300', levelTag: 'L300', code: 'PV-36', templateId: 'pv-row', title: 'PV OpenTelemetry GenAI Spans & BigQuery WORM Sink', canonicalHref: '/canonical/87' },
+  ],
+  37: [
+    { variantKey: 'g09-l300', levelTag: 'L300', code: 'G-09 (#92)', templateId: '92', title: 'Formal Yourdon/DeMarco DFD Level 1 — PHI Tokenization & AE Lineage', canonicalHref: '/canonical/G-09', isGSeriesRef: true },
+    { variantKey: 'g04-l200', levelTag: 'L200', code: 'G-04 (#88)', templateId: '88', title: 'UML Use Case, IAM/RBAC & GxP Separation-of-Duties Boundary', canonicalHref: '/canonical/G-04', isGSeriesRef: true },
+    { variantKey: 'pv37-l400', levelTag: 'L400', code: 'PV-37', templateId: 'pv-row', title: 'PV HIPAA 18-Identifier SDP Redaction & Re-Identification Flow', canonicalHref: '/canonical/92' },
+  ],
+  38: [
+    { variantKey: 'g01-l100', levelTag: 'L100', code: 'G-01 (#85)', templateId: '85', title: 'C4 Level 1 System Context Boundary', canonicalHref: '/canonical/G-01', isGSeriesRef: true },
+    { variantKey: 'g04-l200', levelTag: 'L200', code: 'G-04 (#88)', templateId: '88', title: 'UML Use Case, IAM/RBAC & GxP Separation-of-Duties Boundary', canonicalHref: '/canonical/G-04', isGSeriesRef: true },
+    { variantKey: 'bp78-l300', levelTag: 'L300', code: '#78', templateId: '78', title: 'L300 Validated GxP Hub-and-Spoke Boundary', canonicalHref: '/canonical/78' },
+  ],
+  39: [
+    { variantKey: 'bp78-l300', levelTag: 'L300', code: '#78', templateId: '78', title: 'L300 Cloud Reference Baseline', canonicalHref: '/canonical/78' },
+    { variantKey: 'bp79-l400', levelTag: 'L400', code: '#79', templateId: '79', title: 'L400 As-Built IQ/OQ Production Deployment Spec', canonicalHref: '/canonical/79' },
+    { variantKey: 'pv39-l200', levelTag: 'L200', code: 'PV-39', templateId: 'pv-row', title: 'PV As-Built IQ Baseline (pv-prod · us-central1)', canonicalHref: '/canonical/79' },
+  ],
+};
+
+export function getPvRowDiagramVariants(row: PvMatrixRow): PvDiagramTemplateVariant[] {
+  return PV_ROW_DIAGRAM_VARIANTS_MAP[row.rowId] || [
+    {
+      variantKey: `pv-${row.rowId}-l200`,
+      levelTag: 'L200',
+      code: `PV-${String(row.rowId).padStart(2, '0')}`,
+      templateId: 'pv-row',
+      title: row.diagram,
+      canonicalHref: '/canonical/78',
+    },
+  ];
+}
+
 type QuickRowInput = {
   rowId: number;
   docNum: number;
@@ -269,6 +742,7 @@ function buildRow(input: QuickRowInput): PvMatrixRow {
     keyTakeaway: input.keyTakeaway,
     edgeLabels: input.edgeLabels,
     lanes,
+    diagramVariants: PV_ROW_DIAGRAM_VARIANTS_MAP[input.rowId] || [],
   };
 }
 

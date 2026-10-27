@@ -84,18 +84,24 @@ if (
   console.log('✅ Obsolete Route Guard: Zero retired studio links or route directories (/workspace, /studio1, /gcp)');
 }
 
-// Legacy & Purged Tier 1/2/3 Template Guard: public/templates must only contain the 22 active blueprints (7 core Google Cloud blueprints #78, #79, #81, #84, #00, #67, #69 + 15 Infographic blueprints #52–#66 -> 44 files)
+// Legacy & Purged Tier 1/2/3 Template Guard: public/templates must only contain the 40 active blueprints (7 core #78,#79,#81,#84,#00,#67,#69 + 14 G-Series #85..#98 + 4 restored #03,#12,#14,#29 + 15 Infographic #52–#66 -> 66 files)
 const pubTemplates = fs.readdirSync('public/templates');
+const RESTORED_CANONICAL_PNGS = new Set([
+  'canonical_03.png',
+  'canonical_12.png',
+  'canonical_14.png',
+  'canonical_29.png',
+]);
 const forbiddenLegacyFiles = pubTemplates.filter((f) =>
-  /^(?:0[1-9]|[1234]\d|5[01]|68|7[0-4]|80|82|83)\.png$/.test(f) ||
-  /^canonical_(?:0[1-9]|[1234]\d|5[01]|68|7[0-4]|80|82|83)\.png$/.test(f) ||
+  (/^(?:0[1-9]|[1234]\d|5[01]|68|7[0-4]|80|82|83)\.png$/.test(f)) ||
+  (/^canonical_(?:0[1-9]|[1234]\d|5[01]|68|7[0-4]|80|82|83)\.png$/.test(f) && !RESTORED_CANONICAL_PNGS.has(f)) ||
   /^(?:P[1-5]|ARCH|IND|NEW)-/.test(f) ||
   /^infographic_/.test(f) ||
   f === '40.svg' ||
   f === 'ge_equipment_optimization_gemini.png'
 );
-if (forbiddenLegacyFiles.length > 0 || pubTemplates.length !== 44) {
-  console.error(`❌ Legacy Template Purge Guard: Found ${forbiddenLegacyFiles.length} purged legacy files in public/templates/ (total=${pubTemplates.length}, expected 44): ${forbiddenLegacyFiles.join(', ')}`);
+if (forbiddenLegacyFiles.length > 0 || pubTemplates.length !== 66) {
+  console.error(`❌ Legacy Template Purge Guard: Found ${forbiddenLegacyFiles.length} purged legacy files in public/templates/ (total=${pubTemplates.length}, expected 66): ${forbiddenLegacyFiles.join(', ')}`);
   failed++;
 } else {
   console.log(`✅ Legacy Template Purge Guard: 0 purged Tier 1/2/3 or legacy files in public/templates/ (${pubTemplates.length} clean files)`);
@@ -117,14 +123,22 @@ for (const imgDir of ['images', 'public/images']) {
   }
 }
 
-// Canonical Source Purge Guard: src/lib/canonical/ must contain 0 retired template01..34, purged Tier 1/2/3 (35..52) .ts files
+// Canonical Source Purge Guard: src/lib/canonical/ must contain 0 retired template01..34 (except restored 03, 12, 14, 29) or purged Tier 1/2/3 (35..52) .ts files
 const canonFiles = fs.readdirSync('src/lib/canonical');
-const forbiddenCanonTs = canonFiles.filter((f) => /^template(?:0[1-9]|[1234]\d|5[0-2]).*\.ts$/.test(f));
+const RESTORED_CANON_TS = new Set([
+  'template03Swimlane.ts',
+  'template12StateMachine.ts',
+  'template14DataModelErd.ts',
+  'template29CutoverRunbook.ts',
+]);
+const forbiddenCanonTs = canonFiles.filter(
+  (f) => /^template(?:0[1-9]|[1234]\d|5[0-2]).*\.ts$/.test(f) && !RESTORED_CANON_TS.has(f)
+);
 if (forbiddenCanonTs.length > 0) {
   console.error(`❌ Canonical Source Purge Guard: Found ${forbiddenCanonTs.length} retired/purged template .ts files in src/lib/canonical/: ${forbiddenCanonTs.join(', ')}`);
   failed++;
 } else {
-  console.log(`✅ Canonical Source Purge Guard: 0 retired or purged Tier 1/2/3 template .ts files in src/lib/canonical/`);
+  console.log(`✅ Canonical Source Purge Guard: 0 retired or purged Tier 1/2/3 template .ts files in src/lib/canonical/ (4 restored templates active)`);
 }
 
 // Public Blueprints Purge Guard: public/blueprints/ must contain strictly the 5 /vision reference assets

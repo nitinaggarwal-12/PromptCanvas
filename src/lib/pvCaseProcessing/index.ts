@@ -1,11 +1,14 @@
 import {
   PV_USE_CASE_OVERVIEW,
   PV_MASTER_DIAGRAM_MATRIX,
+  PV_ROW_DIAGRAM_VARIANTS_MAP,
+  getPvRowDiagramVariants,
   compilePvRowDrawioXml,
   type PvMatrixRow,
   type PvUseCaseOverview,
   type PvDiagramLaneSpec,
   type PvDiagramNodeSpec,
+  type PvDiagramTemplateVariant,
 } from './pvMatrixAndOverview';
 import {
   PV_DOCS_01_TO_05,
@@ -24,11 +27,14 @@ export const PV_DOCUMENTS: PvAssociatedDocument[] = [
 export {
   PV_USE_CASE_OVERVIEW,
   PV_MASTER_DIAGRAM_MATRIX,
+  PV_ROW_DIAGRAM_VARIANTS_MAP,
+  getPvRowDiagramVariants,
   compilePvRowDrawioXml,
   type PvMatrixRow,
   type PvUseCaseOverview,
   type PvDiagramLaneSpec,
   type PvDiagramNodeSpec,
+  type PvDiagramTemplateVariant,
   type PvAssociatedDocument,
   type PvDocSection,
   type PvDocTable,

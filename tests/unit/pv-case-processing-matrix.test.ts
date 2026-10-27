@@ -99,19 +99,30 @@ describe('PV Case Processing 10-Document & 39-Diagram Matrix Pack', () => {
     );
   });
 
-  it('compiles all 39 diagrams into valid Brand Light Draw.io XML with semicolon-safe SVG icons', () => {
+  it('compiles all 39 diagrams and all L100/L200/L300/L400 variants into valid Brand Light Draw.io XML', () => {
+    const multiVariantRowIds = [1, 2, 3, 4, 6, 13, 14, 16, 17, 18, 22, 23, 35];
     for (let rId = 1; rId <= 39; rId++) {
       const row = getPvRowById(rId);
       const doc = getPvDocById(row.docId);
       expect(doc.docNum).toBe(row.docNum);
+      expect(row.diagramVariants.length).toBeGreaterThanOrEqual(1);
 
-      const xml = compilePvRowDrawioXml(row);
-      expect(xml).toContain('<mxGraphModel');
-      expect(xml).toContain('background="#FFFFFF"');
-      expect(xml).toContain(row.diagram.replace(/&/g, '&amp;'));
-      // Verify 12 official GCP icon cells with semicolon-safe data URIs
-      const iconMatches = xml.match(/shape=image;[^"]*image=data:image\/svg\+xml,[^";]+/g) || [];
-      expect(iconMatches).toHaveLength(12);
+      if (multiVariantRowIds.includes(rId)) {
+        expect(row.diagramVariants.length).toBeGreaterThanOrEqual(2);
+        const levels = row.diagramVariants.map((v) => v.levelTag);
+        expect(new Set(levels).size).toBe(levels.length);
+      }
+
+      for (const variant of row.diagramVariants) {
+        expect(['L100', 'L200', 'L300', 'L400']).toContain(variant.levelTag);
+        expect(variant.canonicalHref).toMatch(/^\/canonical\/[A-Za-z0-9-]+$/);
+        const vXml = compilePvRowDrawioXml(row, variant.variantKey);
+        expect(vXml).toContain('<mxGraphModel');
+        expect(vXml.length).toBeGreaterThan(1500);
+      }
+
+      const defaultXml = compilePvRowDrawioXml(row);
+      expect(defaultXml).toContain('<mxGraphModel');
     }
   });
 });

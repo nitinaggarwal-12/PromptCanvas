@@ -34,15 +34,33 @@ import {
   PV_MASTER_DIAGRAM_MATRIX,
   PV_DOCUMENTS,
   compilePvRowDrawioXml,
+  getPvRowDiagramVariants,
   getPvDocById,
   getPvRowById,
   getPvRowsForDoc,
   exportPvDocToMarkdown,
   type PvMatrixRow,
   type PvAssociatedDocument,
+  type PvDiagramTemplateVariant,
 } from '@/lib/pvCaseProcessing';
 
 type ActiveTab = 'matrix' | 'docs' | 'overview';
+
+function getDepthLevelBadgeStyle(levelTag: PvDiagramTemplateVariant['levelTag'], isActive: boolean): string {
+  if (isActive) {
+    return 'bg-blue-600 text-white border-blue-700 shadow-2xs';
+  }
+  switch (levelTag) {
+    case 'L100':
+      return 'bg-sky-50 text-sky-800 border-sky-200 hover:bg-sky-100';
+    case 'L200':
+      return 'bg-indigo-50 text-indigo-800 border-indigo-200 hover:bg-indigo-100';
+    case 'L300':
+      return 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100';
+    case 'L400':
+      return 'bg-purple-50 text-purple-800 border-purple-200 hover:bg-purple-100';
+  }
+}
 
 function getProjectTypeBadgeStyle(projectType: PvMatrixRow['projectType']): string {
   switch (projectType) {
@@ -77,6 +95,7 @@ function PvCaseProcessingPageInner() {
   const initialTab = (searchParams.get('tab') as ActiveTab) || 'matrix';
   const initialDocId = searchParams.get('doc') || 'doc-01';
   const initialRowParam = Number(searchParams.get('row') || '0');
+  const initialVariantParam = searchParams.get('variant') || '';
 
   const [activeTab, setActiveTab] = useState<ActiveTab>(
     ['matrix', 'docs', 'overview'].includes(initialTab) ? initialTab : 'matrix'
@@ -85,6 +104,12 @@ function PvCaseProcessingPageInner() {
   const [inspectedRowId, setInspectedRowId] = useState<number | null>(
     initialRowParam >= 1 && initialRowParam <= 39 ? initialRowParam : null
   );
+  const [selectedVariantByRow, setSelectedVariantByRow] = useState<Record<number, string>>(() => {
+    if (initialRowParam >= 1 && initialRowParam <= 39 && initialVariantParam) {
+      return { [initialRowParam]: initialVariantParam };
+    }
+    return {};
+  });
 
   // Matrix Filters
   const [docFilter, setDocFilter] = useState<string>('ALL');
@@ -97,6 +122,7 @@ function PvCaseProcessingPageInner() {
     const t = searchParams.get('tab') as ActiveTab | null;
     const d = searchParams.get('doc');
     const r = Number(searchParams.get('row') || '0');
+    const v = searchParams.get('variant');
     if (t && ['matrix', 'docs', 'overview'].includes(t)) {
       setActiveTab(t);
     }
@@ -105,8 +131,23 @@ function PvCaseProcessingPageInner() {
     }
     if (r >= 1 && r <= 39) {
       setInspectedRowId(r);
+      if (v) {
+        setSelectedVariantByRow((prev) => ({ ...prev, [r]: v }));
+      }
     }
   }, [searchParams]);
+
+  const getActiveVariantForRow = (row: PvMatrixRow): PvDiagramTemplateVariant => {
+    const variants = row.diagramVariants?.length ? row.diagramVariants : getPvRowDiagramVariants(row);
+    const chosenKey = selectedVariantByRow[row.rowId];
+    if (chosenKey) {
+      const found = variants.find(
+        (v) => v.variantKey === chosenKey || v.levelTag === chosenKey || v.code === chosenKey
+      );
+      if (found) return found;
+    }
+    return variants[0];
+  };
 
   const activeDocument: PvAssociatedDocument = useMemo(
     () => getPvDocById(selectedDocId),
@@ -123,9 +164,27 @@ function PvCaseProcessingPageInner() {
     [inspectedRowId]
   );
 
+  const inspectedRowActiveVariant: PvDiagramTemplateVariant | null = useMemo(() => {
+    if (!inspectedRow) return null;
+    const variants = inspectedRow.diagramVariants?.length
+      ? inspectedRow.diagramVariants
+      : getPvRowDiagramVariants(inspectedRow);
+    const chosenKey = selectedVariantByRow[inspectedRow.rowId];
+    if (chosenKey) {
+      const found = variants.find(
+        (v) => v.variantKey === chosenKey || v.levelTag === chosenKey || v.code === chosenKey
+      );
+      if (found) return found;
+    }
+    return variants[0];
+  }, [inspectedRow, selectedVariantByRow]);
+
   const inspectedRowXml = useMemo(
-    () => (inspectedRow ? compilePvRowDrawioXml(inspectedRow) : ''),
-    [inspectedRow]
+    () =>
+      inspectedRow
+        ? compilePvRowDrawioXml(inspectedRow, inspectedRowActiveVariant?.variantKey)
+        : '',
+    [inspectedRow, inspectedRowActiveVariant]
   );
 
   const uniqueOwners = useMemo(
@@ -140,7 +199,10 @@ function PvCaseProcessingPageInner() {
       if (ownerFilter !== 'ALL' && row.owner !== ownerFilter) return false;
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const hay = `${row.docNum} ${row.document} ${row.diagram} ${row.level} ${row.owner} ${row.projectType} ${row.summary}`.toLowerCase();
+        const variantStr = (row.diagramVariants || [])
+          .map((v) => `${v.levelTag} ${v.code} ${v.title}`)
+          .join(' ');
+        const hay = `${row.docNum} ${row.document} ${row.diagram} ${row.level} ${row.owner} ${row.projectType} ${row.summary} ${variantStr}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
@@ -162,8 +224,9 @@ function PvCaseProcessingPageInner() {
     }
   };
 
-  const handleOpenInStudio = (row: PvMatrixRow) => {
-    const xml = compilePvRowDrawioXml(row);
+  const handleOpenInStudio = (row: PvMatrixRow, variantKey?: string) => {
+    const activeVar = variantKey || getActiveVariantForRow(row).variantKey;
+    const xml = compilePvRowDrawioXml(row, activeVar);
     try {
       localStorage.setItem('promptcanvas_active_xml', xml);
       localStorage.setItem(
@@ -176,13 +239,14 @@ function PvCaseProcessingPageInner() {
     router.push('/dashboard');
   };
 
-  const handleDownloadDrawio = (row: PvMatrixRow) => {
-    const xml = compilePvRowDrawioXml(row);
+  const handleDownloadDrawio = (row: PvMatrixRow, variantKey?: string) => {
+    const activeVar = variantKey || getActiveVariantForRow(row).variantKey;
+    const xml = compilePvRowDrawioXml(row, activeVar);
     const blob = new Blob([xml], { type: 'application/xml;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `pv-doc${String(row.docNum).padStart(2, '0')}-row${String(row.rowId).padStart(2, '0')}-${row.sectionAnchor}.drawio`;
+    a.download = `pv-doc${String(row.docNum).padStart(2, '0')}-row${String(row.rowId).padStart(2, '0')}-${activeVar}.drawio`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -451,6 +515,10 @@ function PvCaseProcessingPageInner() {
                     <tbody className="divide-y divide-slate-200 text-xs">
                       {filteredMatrixRows.map((row) => {
                         const docObj = getPvDocById(row.docId);
+                        const variants = row.diagramVariants?.length
+                          ? row.diagramVariants
+                          : getPvRowDiagramVariants(row);
+                        const activeVar = getActiveVariantForRow(row);
                         return (
                           <tr
                             key={row.rowId}
@@ -482,7 +550,7 @@ function PvCaseProcessingPageInner() {
                               </button>
                             </td>
 
-                            {/* Diagram Column (Linked to Interactive Diagram & Doc Section) */}
+                            {/* Diagram Column (Linked to Interactive Diagram + Multi-Template L100/L200/L300/L400 Switcher & Canonical Links) */}
                             <td className="py-3 px-3 overflow-hidden">
                               <button
                                 type="button"
@@ -494,9 +562,54 @@ function PvCaseProcessingPageInner() {
                                   {row.diagram}
                                 </div>
                                 <div className="text-[10px] font-mono text-slate-500 mt-0.5">
-                                  Row #{String(row.rowId).padStart(2, '0')} · Click to preview diagram
+                                  Row #{String(row.rowId).padStart(2, '0')} · {variants.length} Level Templates ({variants.map((v) => v.levelTag).join(' / ')})
                                 </div>
                               </button>
+
+                              {/* Multi-Template Level Pills (L100 / L200 / L300 / L400) + Canonical Links */}
+                              <div
+                                className="mt-1.5 flex flex-wrap items-center gap-1"
+                                data-testid={`matrix-row-variants-${row.rowId}`}
+                              >
+                                {variants.map((v) => {
+                                  const isSelectedVar = activeVar.variantKey === v.variantKey;
+                                  return (
+                                    <span
+                                      key={v.variantKey}
+                                      className="inline-flex items-center rounded border border-slate-200 bg-white overflow-hidden"
+                                    >
+                                      <button
+                                        type="button"
+                                        data-testid={`matrix-variant-btn-${row.rowId}-${v.levelTag}`}
+                                        onClick={() => {
+                                          setSelectedVariantByRow((prev) => ({
+                                            ...prev,
+                                            [row.rowId]: v.variantKey,
+                                          }));
+                                          setInspectedRowId(row.rowId);
+                                        }}
+                                        title={`${v.levelTag}: ${v.title} (Click to preview)`}
+                                        className={`px-1.5 py-0.5 text-[10px] font-bold transition-colors ${getDepthLevelBadgeStyle(
+                                          v.levelTag,
+                                          isSelectedVar
+                                        )}`}
+                                      >
+                                        {v.levelTag} · {v.code}
+                                      </button>
+                                      {v.templateId !== 'pv-row' && (
+                                        <Link
+                                          href={v.canonicalHref}
+                                          data-testid={`matrix-canonical-link-${row.rowId}-${v.levelTag}`}
+                                          title={`Open Canonical Blueprint ${v.code} (${v.canonicalHref})`}
+                                          className="px-1 py-0.5 text-[10px] font-extrabold text-blue-700 hover:bg-blue-50 border-l border-slate-200"
+                                        >
+                                          ↗
+                                        </Link>
+                                      )}
+                                    </span>
+                                  );
+                                })}
+                              </div>
                             </td>
 
                             {/* Level Column */}
@@ -508,6 +621,16 @@ function PvCaseProcessingPageInner() {
                               >
                                 {row.level}
                               </span>
+                              <div className="mt-1 flex flex-wrap gap-1">
+                                {variants.map((v) => (
+                                  <span
+                                    key={v.variantKey}
+                                    className="inline-block px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 border border-slate-200 text-[9.5px] font-bold"
+                                  >
+                                    {v.levelTag}
+                                  </span>
+                                ))}
+                              </div>
                             </td>
 
                             {/* Owner Column */}
@@ -557,13 +680,23 @@ function PvCaseProcessingPageInner() {
                                     Diagram #{row.rowId}
                                   </button>
                                 </div>
-                                <button
-                                  type="button"
-                                  onClick={() => handleOpenInStudio(row)}
-                                  className="text-[10.5px] font-semibold text-slate-500 hover:text-blue-700 hover:underline"
-                                >
-                                  Open in Studio Canvas ↗
-                                </button>
+                                <div className="flex items-center gap-2">
+                                  <Link
+                                    href={activeVar.canonicalHref}
+                                    data-testid={`btn-canonical-row-${row.rowId}`}
+                                    className="text-[10.5px] font-bold text-blue-700 hover:text-blue-900 hover:underline"
+                                  >
+                                    Canonical {activeVar.code} ↗
+                                  </Link>
+                                  <span className="text-slate-300">·</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleOpenInStudio(row)}
+                                    className="text-[10.5px] font-semibold text-slate-500 hover:text-blue-700 hover:underline"
+                                  >
+                                    Studio ↗
+                                  </button>
+                                </div>
                               </div>
                             </td>
                           </tr>
@@ -773,7 +906,11 @@ function PvCaseProcessingPageInner() {
                       <div className="space-y-5 pt-2">
                         {sec.diagramRowIds.map((rId) => {
                           const row = getPvRowById(rId);
-                          const xml = compilePvRowDrawioXml(row);
+                          const variants = row.diagramVariants?.length
+                            ? row.diagramVariants
+                            : getPvRowDiagramVariants(row);
+                          const activeVar = getActiveVariantForRow(row);
+                          const xml = compilePvRowDrawioXml(row, activeVar.variantKey);
                           return (
                             <div
                               key={rId}
@@ -783,7 +920,7 @@ function PvCaseProcessingPageInner() {
                             >
                               <div className="bg-white px-4 py-3 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
                                 <div>
-                                  <div className="flex items-center gap-2">
+                                  <div className="flex flex-wrap items-center gap-2">
                                     <span className="px-2 py-0.5 rounded bg-blue-600 text-white text-[11px] font-extrabold">
                                       Matrix Row #{row.rowId} · Doc #{row.docNum}
                                     </span>
@@ -808,7 +945,14 @@ function PvCaseProcessingPageInner() {
                                   <p className="text-xs text-slate-600 mt-1">{row.summary}</p>
                                 </div>
 
-                                <div className="flex items-center gap-2">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <Link
+                                    href={activeVar.canonicalHref}
+                                    data-testid={`inline-canonical-link-${row.rowId}`}
+                                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold"
+                                  >
+                                    Canonical {activeVar.code} ↗
+                                  </Link>
                                   <button
                                     type="button"
                                     onClick={() => setInspectedRowId(row.rowId)}
@@ -819,7 +963,7 @@ function PvCaseProcessingPageInner() {
                                   </button>
                                   <button
                                     type="button"
-                                    onClick={() => handleDownloadDrawio(row)}
+                                    onClick={() => handleDownloadDrawio(row, activeVar.variantKey)}
                                     className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-bold"
                                   >
                                     <Download className="w-3.5 h-3.5" />
@@ -827,7 +971,7 @@ function PvCaseProcessingPageInner() {
                                   </button>
                                   <button
                                     type="button"
-                                    onClick={() => handleOpenInStudio(row)}
+                                    onClick={() => handleOpenInStudio(row, activeVar.variantKey)}
                                     className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold"
                                   >
                                     Edit in Studio ↗
@@ -835,10 +979,50 @@ function PvCaseProcessingPageInner() {
                                 </div>
                               </div>
 
+                              {/* Multi-Template Architectural Depth Switcher Bar (L100 / L200 / L300 / L400) */}
+                              <div
+                                className="px-4 py-2 bg-slate-100/90 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2"
+                                data-testid={`inline-level-switcher-${row.rowId}`}
+                              >
+                                <div className="flex flex-wrap items-center gap-1.5">
+                                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 mr-1">
+                                    Mapped Templates by Level:
+                                  </span>
+                                  {variants.map((v) => {
+                                    const isSel = activeVar.variantKey === v.variantKey;
+                                    return (
+                                      <button
+                                        key={v.variantKey}
+                                        type="button"
+                                        data-testid={`inline-variant-btn-${row.rowId}-${v.levelTag}`}
+                                        onClick={() =>
+                                          setSelectedVariantByRow((prev) => ({
+                                            ...prev,
+                                            [row.rowId]: v.variantKey,
+                                          }))
+                                        }
+                                        className={`px-2.5 py-1 rounded-md border text-[11px] font-bold transition-all ${getDepthLevelBadgeStyle(
+                                          v.levelTag,
+                                          isSel
+                                        )}`}
+                                      >
+                                        {v.levelTag} · {v.code}: {v.title}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                                <Link
+                                  href={activeVar.canonicalHref}
+                                  className="text-[11px] font-bold text-blue-700 hover:underline shrink-0"
+                                >
+                                  Open {activeVar.canonicalHref} →
+                                </Link>
+                              </div>
+
                               <div className="bg-white p-2">
                                 <DiagramViewerRenderSafe
                                   xml={xml}
-                                  diagramId={`pv-inline-${row.rowId}`}
+                                  diagramId={`pv-inline-${row.rowId}-${activeVar.variantKey}`}
                                   bgTheme="light"
                                   aspectRatioId="16:9"
                                   fitToWidth={false}
@@ -849,13 +1033,13 @@ function PvCaseProcessingPageInner() {
                               <div className="px-4 py-2.5 bg-slate-100/80 border-t border-slate-200 text-xs text-slate-700 flex flex-wrap items-center justify-between gap-2">
                                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                                   <span>
-                                    <strong className="text-slate-900">4-Stage Topology:</strong>{' '}
-                                    {row.lanes.map((c) => c.laneTitle).join(' → ')}
+                                    <strong className="text-slate-900">Active Template:</strong>{' '}
+                                    {activeVar.levelTag} · {activeVar.code} ({activeVar.title})
                                   </span>
                                   <span className="text-slate-400">|</span>
                                   <span>
-                                    <strong className="text-slate-900">Inter-Stage Protocols:</strong>{' '}
-                                    {row.edgeLabels.join(' · ')}
+                                    <strong className="text-slate-900">4-Stage Topology:</strong>{' '}
+                                    {row.lanes.map((c) => c.laneTitle).join(' → ')}
                                   </span>
                                 </div>
                                 <span className="text-[11px] font-bold text-slate-800 shrink-0">
@@ -1120,7 +1304,7 @@ function PvCaseProcessingPageInner() {
       {/* =====================================================================
           INTERACTIVE DIAGRAM INSPECTOR MODAL (FOR ALL 39 MATRIX DIAGRAMS)
          ===================================================================== */}
-      {inspectedRow && (
+      {inspectedRow && inspectedRowActiveVariant && (
         <div
           data-testid="pv-diagram-inspector-modal"
           className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto"
@@ -1129,7 +1313,7 @@ function PvCaseProcessingPageInner() {
             {/* Modal Header */}
             <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <span className="px-2 py-0.5 rounded bg-blue-600 text-white text-xs font-extrabold">
                     Matrix Row #{inspectedRow.rowId} of 39
                   </span>
@@ -1156,7 +1340,14 @@ function PvCaseProcessingPageInner() {
                 </h3>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <Link
+                  href={inspectedRowActiveVariant.canonicalHref}
+                  data-testid="modal-canonical-link"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold"
+                >
+                  Open Canonical {inspectedRowActiveVariant.code} ↗
+                </Link>
                 <button
                   type="button"
                   onClick={() => {
@@ -1172,7 +1363,9 @@ function PvCaseProcessingPageInner() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleDownloadDrawio(inspectedRow)}
+                  onClick={() =>
+                    handleDownloadDrawio(inspectedRow, inspectedRowActiveVariant.variantKey)
+                  }
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-bold"
                 >
                   <Download className="w-3.5 h-3.5" />
@@ -1180,7 +1373,9 @@ function PvCaseProcessingPageInner() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleOpenInStudio(inspectedRow)}
+                  onClick={() =>
+                    handleOpenInStudio(inspectedRow, inspectedRowActiveVariant.variantKey)
+                  }
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold"
                 >
                   Open in Studio Canvas ↗
@@ -1196,11 +1391,54 @@ function PvCaseProcessingPageInner() {
               </div>
             </div>
 
+            {/* Modal Multi-Template Level Switcher Bar (L100 / L200 / L300 / L400) */}
+            <div
+              className="px-6 py-2.5 bg-slate-100 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2"
+              data-testid="modal-level-switcher-bar"
+            >
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-slate-600 mr-1">
+                  Architectural Depth Levels:
+                </span>
+                {(inspectedRow.diagramVariants?.length
+                  ? inspectedRow.diagramVariants
+                  : getPvRowDiagramVariants(inspectedRow)
+                ).map((v) => {
+                  const isSel = inspectedRowActiveVariant.variantKey === v.variantKey;
+                  return (
+                    <button
+                      key={v.variantKey}
+                      type="button"
+                      data-testid={`modal-variant-btn-${v.levelTag}`}
+                      onClick={() =>
+                        setSelectedVariantByRow((prev) => ({
+                          ...prev,
+                          [inspectedRow.rowId]: v.variantKey,
+                        }))
+                      }
+                      className={`px-3 py-1 rounded-md border text-xs font-bold transition-all ${getDepthLevelBadgeStyle(
+                        v.levelTag,
+                        isSel
+                      )}`}
+                    >
+                      {v.levelTag} · {v.code}: {v.title}
+                    </button>
+                  );
+                })}
+              </div>
+              <Link
+                href={inspectedRowActiveVariant.canonicalHref}
+                className="text-xs font-bold text-blue-700 hover:underline shrink-0"
+              >
+                Direct Route: {inspectedRowActiveVariant.canonicalHref} →
+              </Link>
+            </div>
+
             {/* Rendered Draw.io Vector Canvas */}
             <div className="p-3 bg-white">
               <DiagramViewerRenderSafe
                 xml={inspectedRowXml}
-                diagramId={`pv-modal-${inspectedRow.rowId}`}
+                diagramId={`pv-modal-${inspectedRow.rowId}-${inspectedRowActiveVariant.variantKey}`}
                 bgTheme="light"
                 aspectRatioId="16:9"
                 fitToWidth={false}

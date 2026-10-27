@@ -74,6 +74,28 @@ export const ARCHITECTURE_DOCUMENT_BINDINGS: ArchitectureDocumentBinding[] = [
 ];
 
 import { generateTemplate00GcpEnterpriseArchXml } from "./template00GcpEnterpriseArch";
+import { generateTemplate03SwimlaneXml } from "./template03Swimlane";
+import { generateTemplate12StateMachineXml } from "./template12StateMachine";
+import { generateTemplate14DataModelErdXml } from "./template14DataModelErd";
+import { generateTemplate29CutoverRunbookXml } from "./template29CutoverRunbook";
+import {
+  generateTemplate85G01C4SystemContextXml,
+  generateTemplate86G02BpmnSwimlaneXml,
+  generateTemplate87G03UserJourneyOtelXml,
+  generateTemplate88G04UmlUseCaseSodXml,
+  generateTemplate89G06AdrTradeoffMatrixXml,
+  generateTemplate90G07C4ComponentHexagonalXml,
+  generateTemplate91G08UmlStateMachineSlaXml,
+  generateTemplate92G09YourdonDfdXml,
+  generateTemplate93G10PhysicalErdDdlXml,
+} from "./pvGSeriesReferenceBlueprints";
+import {
+  generateTemplate94G01L400C4ContextXml,
+  generateTemplate95G02L400BpmnSwimlaneXml,
+  generateTemplate96G03L400UserJourneyXml,
+  generateTemplate97G04L400UmlUseCaseSodXml,
+  generateTemplate98G08L400StateMachineSlaXml,
+} from "./pvGSeriesL400Blueprints";
 
 interface RawCanonicalTemplate {
   id: string;
@@ -101,6 +123,58 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     previewImage: '/templates/gcp_enterprise_architecture.png',
     keyComponents: ['Ingress & Edge', 'Application Core Mesh', 'Real-Time Event Streaming', 'Vertex AI & Intelligence Hub', 'Multi-Region Lakehouse & DB', 'Zero-Trust Security Baseline'],
     generateXml: generateTemplate00GcpEnterpriseArchXml
+  },
+  {
+    id: '03',
+    name: 'Business Process / BPMN Swimlane',
+    family: 'Process',
+    level: 'L3',
+    theme: 'light',
+    primaryPurpose: 'Roles, activities, decisions, and handoffs across operational departments with SLA timers and approval gates',
+    examples: 'Adverse event triage, clinical onboarding, approval gates, cross-department handoffs',
+    defaultDomain: 'Clinical Trials & Regulatory Operations',
+    previewImage: '/templates/incident_triage_swimlane.png',
+    keyComponents: ['Department Swimlanes', 'Hand-off Triggers', 'Approval Decision Gates', 'Audit Milestones'],
+    generateXml: generateTemplate03SwimlaneXml
+  },
+  {
+    id: '12',
+    name: 'State Machine Diagram',
+    family: 'Process',
+    level: 'L2',
+    theme: 'light',
+    primaryPurpose: 'Discrete entity lifecycle states (S0..S9), trigger events (E1..E8), transition guard conditions, and analytical cards',
+    examples: 'ICSR case states, AI agent execution lifecycle, clinical protocol approval workflows',
+    defaultDomain: 'Clinical Study Protocol Intelligence State Machine',
+    previewImage: '/templates/governance_state_machine.png',
+    keyComponents: ['S0..S9 States', 'E1..E8 Triggers', 'Guardrail Failure Branches', '4 Analytical Cards'],
+    generateXml: generateTemplate12StateMachineXml
+  },
+  {
+    id: '14',
+    name: 'Data Model / ERD',
+    family: 'Structure',
+    level: 'L2',
+    theme: 'light',
+    primaryPurpose: 'Database entities, tables, attributes, primary/foreign keys, and Crow’s Foot cardinalities across 7 core enterprise domains',
+    examples: 'Relational data model, lakehouse star schema, biopharma enterprise semantic ontology',
+    defaultDomain: 'Bio-Pharma Enterprise Entity Model & Relational Schema',
+    previewImage: '/templates/erd.png',
+    keyComponents: ['24 Entities / Tables', '7 Core Domains', 'Crow’s Foot Cardinality', '4 Analytical Panels'],
+    generateXml: generateTemplate14DataModelErdXml
+  },
+  {
+    id: '29',
+    name: 'Cutover / Rollback Runbook Decision Flow',
+    family: 'Delivery & Operations',
+    level: 'L3',
+    theme: 'light',
+    primaryPurpose: 'Step-by-step production cutover checklist, maintenance window, incident decision gates, RACI, and automated rollback flow',
+    examples: 'Production launch, DR failover exercise, incident rollback decision tree, cloud cutover runbook',
+    defaultDomain: 'Production Go-Live & Environment Cutover',
+    previewImage: '/templates/golive_warroom_runbook.png',
+    keyComponents: ['Cutover Lifecycle', '8 Detailed Steps', 'Rollback Plan', 'RACI & Timeline Window'],
+    generateXml: generateTemplate29CutoverRunbookXml
   },
   ...INFOGRAPHIC_BLUEPRINTS_LIST.map((ib) => ({
     id: ib.id,
@@ -178,6 +252,188 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     previewImage: '/templates/canonical_84.png',
     keyComponents: ['EBS R12.2 Enterprise Users (O2C, P2P, GL & Manufacturing)', 'Ingress, Hybrid BGP & ODB Routing Hub (10.20.0.0/16 • Cloud Armor, Cloud Router/DNS, IAP, Global ALB, ODB Partner Interconnect)', 'Security, KMS, GoldenGate 23ai & BigQuery Cortex Hub (10.20.20.0/24)', 'Zone 1: Google Cloud Customer VPC (EBS App Tier 10.20.1.0/24 • WebLogic 12c, GridLink, PCP, ADOP, Cloud Filestore NFSv4.1)', 'Zone 2: Co-Located OCI Child Site (Exadata X10M Tier 10.20.2.0/24 • ODB SCAN/Backup Subnets, 2-Node RAC, 100GbE RoCEv2 Smart Scan, Active Data Guard)'],
     generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate84L400OracleEbsExadataArchCenter78Xml(domainFlavor, theme)
+  },
+  {
+    id: '85',
+    name: 'G-01: C4 Level 1 System Context — Pharmacovigilance & Adverse Event (AE) AI Platform',
+    family: 'Understand',
+    level: 'L1',
+    theme: 'light',
+    primaryPurpose: 'C4 Level 1 System Context diagram mapping External Actors & Upstream Sources, Google Cloud / Gemini Enterprise PV AI Platform, and Downstream Safety DB & Regulatory Agencies',
+    examples: 'C4 Level 1 System Context, BRD Context Diagram, SAD Context Diagram, Pharmacovigilance & AE AI Platform',
+    defaultDomain: 'Pharmacovigilance & Adverse Event (AE) AI Platform',
+    previewImage: '/templates/canonical_85.png',
+    keyComponents: ['External AE Reporters & Clinical Reviewers', 'Pharmacovigilance & AE AI Platform (#4A86E8)', 'Multimodal AE Intake, Gemini Extraction & E2B(R3) Validation', 'Trust & Governance Strip (VPC-SC, CMEK, DLP, GAMP 5)', 'Safety DB of Record, FDA FAERS / EMA & WORM Archive'],
+    generateXml: () => generateTemplate85G01C4SystemContextXml()
+  },
+  {
+    id: '86',
+    name: 'G-02: As-Is vs. To-Be BPMN 2.0 Process Swimlane — Adverse Event (ICSR) Case Processing',
+    family: 'Process',
+    level: 'L2',
+    theme: 'light',
+    primaryPurpose: 'Side-by-side BPMN 2.0 swimlane comparison contrasting the 7–10 day manual As-Is ICSR workflow (14% error) with the <12m Gemini Enterprise To-Be automated workflow (89% STP, <0.2% error)',
+    examples: 'As-Is vs. To-Be BPMN 2.0 Process Swimlane, Parallel AND Gateway, Exclusive XOR Confidence Gate, 2h HITL SLA Timer',
+    defaultDomain: 'BPMN 2.0 Adverse Event (ICSR) Case Processing',
+    previewImage: '/templates/canonical_86.png',
+    keyComponents: ['As-Is Legacy Manual ICSR Pool (7-10d Cycle, 14% Error)', 'To-Be Gemini Enterprise Automated Pool (<12m Cycle, 89% STP)', 'Parallel AND Fork/Join (OCR, MedDRA, DLP, Narrative)', 'Confidence >= 0.95 & Zero Seriousness XOR Gate', '2h SLA Timer + 21 CFR Part 11 Dual e-Signature HITL Queue'],
+    generateXml: () => generateTemplate86G02BpmnSwimlaneXml()
+  },
+  {
+    id: '87',
+    name: 'G-03: Multi-Persona User Journey & OpenTelemetry Blueprint (Adverse Event Lifecycle)',
+    family: 'Process',
+    level: 'L2',
+    theme: 'light',
+    primaryPurpose: '5-stage multi-persona user journey and service blueprint correlating Patient/HCP Reporter, Drug Safety Associate, and QPPV Medical Reviewer touchpoints with Frontstage Apigee Edge and Backstage Gemini Enterprise + OpenTelemetry',
+    examples: 'Multi-Persona User Journey, Service Blueprint, Frontstage vs Backstage, W3C traceparent, FIDO2 21 CFR Part 11 e-Sign',
+    defaultDomain: 'Multi-Persona Adverse Event Lifecycle Journey',
+    previewImage: '/templates/canonical_87.png',
+    keyComponents: ['5 Lifecycle Stage Chevrons (Intake -> Ingestion -> Triage -> Review -> Submission)', 'Patient/HCP Reporter, Drug Safety Associate & QPPV Lanes', 'Frontstage API & Edge (Cloud Armor WAF, Apigee X FHIR, gRPC-Web)', 'Backstage Gemini Enterprise & OTel (W3C traceparent, AlloyDB ScaNN, Cloud KMS, BigQuery OTel Sink)'],
+    generateXml: () => generateTemplate87G03UserJourneyOtelXml()
+  },
+  {
+    id: '88',
+    name: 'G-04: UML Use Case, IAM/RBAC & GxP Separation-of-Duties (SoD) Boundary',
+    family: 'Security & Governance',
+    level: 'L2',
+    theme: 'light',
+    primaryPurpose: 'Formal UML 2.5 Use Case diagram partitioning Intake, Triage, Approval, and Audit zones inside the VPC-SC & 21 CFR Part 11 boundary with OPA Rego Separation-of-Duties (SoD Rules 1–3) enforcement',
+    examples: 'UML Use Case Diagram, <<include>> Dependencies, OPA Rego Policy Enforcement Point (PEP), GxP Separation of Duties',
+    defaultDomain: 'GxP Separation-of-Duties & RBAC Use Case Boundary',
+    previewImage: '/templates/canonical_88.png',
+    keyComponents: ['5 Actors (External Reporter, Autonomous ADK Agent, DSA, QPPV Approver, QA GxP Auditor)', '4 Colored Security Zones (Intake, Triage, Approval, Audit)', '7 Use Case Ellipses with <<include>> Stereotypes', 'OPA Rego & IAM Policy Enforcement Point (SoD Rules 1, 2, 3)'],
+    generateXml: () => generateTemplate88G04UmlUseCaseSodXml()
+  },
+  {
+    id: '89',
+    name: 'G-06: ADR Multi-Option Architecture Trade-Off & Quantitative Scoring Matrix (PV Platform)',
+    family: 'Analysis & Planning',
+    level: 'L2',
+    theme: 'light',
+    primaryPurpose: 'Architecture Decision Record (ADR) trade-off visual comparing Option A (GKE Monolith, 3.11/5.00), Option B (Selected: Cloud Run Gen2 + Pub/Sub Outbox + AlloyDB AI ScaNN + Gemini ADK, 4.71/5.00), and Option C (Active-Active Spanner, 3.10/5.00)',
+    examples: 'ADR Option Comparison Sketch, Weighted Fitness Scoring Matrix, FinOps & Latency Trade-Off Analysis',
+    defaultDomain: 'ADR Multi-Option Architecture Trade-Off Matrix',
+    previewImage: '/templates/canonical_89.png',
+    keyComponents: ['Option A: Regional Monolith on GKE + Cloud SQL ($4.8k/mo, 3.11/5.00)', 'Option B (SELECTED): Cloud Run Gen2 + Pub/Sub + AlloyDB AI ScaNN + Gemini ADK ($8.6k/mo, 4.71/5.00)', 'Option C: Multi-Region Active-Active GKE Mesh + Cloud Spanner ($32.5k/mo, 3.10/5.00)', '5-Criterion Quantitative Weighted Scoring Matrix (100% Weight)'],
+    generateXml: () => generateTemplate89G06AdrTradeoffMatrixXml()
+  },
+  {
+    id: '90',
+    name: 'G-07: C4 Level 3 Internal Component & Hexagonal Interface Decomposition (ICSR Worker)',
+    family: 'Structure',
+    level: 'L3',
+    theme: 'light',
+    primaryPurpose: 'C4 Level 3 hexagonal component decomposition of the Cloud Run Gen2 Go 1.24 ICSR Worker across Inbound Driving Adapters, Port Interfaces, Domain & Application Core, and Outbound Driven Adapters',
+    examples: 'C4 Level 3 Component Diagram, Hexagonal Ports & Adapters, Lollipop Interface Notation, Go 1.24 Cloud Run Worker',
+    defaultDomain: 'Hexagonal C4 Level 3 Component Decomposition',
+    previewImage: '/templates/canonical_90.png',
+    keyComponents: ['Inbound Driving Adapters (gRPC/FHIR, Pub/Sub Push, A2A JSON-RPC 2.0)', 'Inbound Port Interfaces (IIcsrCommandPort, IEventIngestPort, IA2ATaskPort)', 'Domain & Application Core (Redis SETNX Lock, ADK Saga Coordinator, OPA/E2B XSD Validator, Context Manager)', 'Outbound Driven Adapters (Gemini 3.0 Pro, AlloyDB AI pgx, Apigee MCP/AS2, OpenTelemetry WORM Sink)'],
+    generateXml: () => generateTemplate90G07C4ComponentHexagonalXml()
+  },
+  {
+    id: '91',
+    name: 'G-08: UML 2.5 Finite State Machine, Guard Conditions & Regulatory SLA Clock Lifecycle',
+    family: 'Process',
+    level: 'L3',
+    theme: 'light',
+    primaryPurpose: 'Formal UML 2.5 ICSR case lifecycle statechart with composite AGENTIC_PROCESSING sub-states, transition guard conditions, and synchronized 7d/15d Regulatory SLA Clock Bar',
+    examples: 'UML 2.5 Statechart, Composite Sub-States, Guard Conditions, Regulatory SLA Clock Formula & Progress Bar',
+    defaultDomain: 'UML 2.5 ICSR Lifecycle State Machine & SLA Clock',
+    previewImage: '/templates/canonical_91.png',
+    keyComponents: ['Initial [*] -> INGESTED -> VALIDATED States', 'Composite AGENTIC_PROCESSING (DOC_AI_OCR -> ALLOYDB_MEDDRA_RAG -> GEMINI_CAUSALITY_EVAL -> E2B_R3_XSD_CHECK)', 'WAITING_CLINICAL_HITL -> SLA_ESCALATED_QPPV -> QPPV_SIGNED_SUBMITTED / AUTO_SUBMITTED_E2B / DLQ_QUARANTINED', 'Synchronized 4-Zone Regulatory SLA Clock Bar (Green 0-80%, Yellow Paused, Amber 80%, Red 100% Breach)'],
+    generateXml: () => generateTemplate91G08UmlStateMachineSlaXml()
+  },
+  {
+    id: '92',
+    name: 'G-09: Formal Yourdon/DeMarco Data Flow Diagram (DFD Level 1 — PHI Tokenization & AE Lineage)',
+    family: 'Flow',
+    level: 'L3',
+    theme: 'light',
+    primaryPurpose: 'Classical Yourdon/DeMarco Level 1 Data Flow Diagram separating External Entities (Rectangles E1–E2), numbered Processes (Circles P1.0–P4.0), and open-ended Data Stores (Parallel Bars D1–D5) with PHI classification tags',
+    examples: 'Yourdon/DeMarco DFD Level 1, PHI Surrogate Tokenization Lineage, Open-Ended Parallel Bar Data Stores',
+    defaultDomain: 'Yourdon/DeMarco DFD Level 1 — PHI Tokenization & AE Lineage',
+    previewImage: '/templates/canonical_92.png',
+    keyComponents: ['External Entities E1 (Patient/HCP & FHIR) & E2 (FDA FAERS / EMA Gateway)', 'Numbered Process Circles P1.0 (Tokenize PHI), P2.0 (MedDRA RAG), P3.0 (Clinical Inference), P4.0 (21 CFR Part 11 e-Sign)', 'Open-Ended Parallel Data Stores D1 (Raw PHI Vault), D2 (Token Vault), D3 (ScaNN Index), D4 (ICSR Store), D5 (WORM Ledger)'],
+    generateXml: () => generateTemplate92G09YourdonDfdXml()
+  },
+  {
+    id: '93',
+    name: 'G-10: Physical ERD & DDL Schema (AlloyDB for PostgreSQL 16 + AlloyDB AI ScaNN — PV Domain)',
+    family: 'Structure',
+    level: 'L3',
+    theme: 'light',
+    primaryPurpose: 'Physical Entity-Relationship Diagram (ERD) and PostgreSQL 16 DDL schema for AlloyDB & AlloyDB AI ScaNN detailing PK/FK types, monthly range partitioning, RLS policies, GIN/ScaNN indexes, and 21 CFR Part 11 append-only triggers',
+    examples: 'Physical ERD & DDL Schema, AlloyDB for PostgreSQL 16, VECTOR(768) ScaNN Index, Crow’s Foot 1:N Notation',
+    defaultDomain: 'AlloyDB PostgreSQL 16 & ScaNN Physical ERD Schema',
+    previewImage: '/templates/canonical_93.png',
+    keyComponents: ['tenants_sponsors (UUID PK, RLS sponsor_isolation_policy)', 'icsr_cases (UUID PK/FK, icsr_state_enum, PARTITION BY RANGE MONTHLY)', 'ae_source_documents (dlp_tokenized, surrogate_token_map JSONB)', 'part11_worm_audit_outbox (tr_enforce_21cfr11_append_only) & adk_clinical_inference_runs (idx_gin_e2b)', 'meddra_whodrug_vectors (VECTOR(768), idx_scann_meddra USING scann)'],
+    generateXml: () => generateTemplate93G10PhysicalErdDdlXml()
+  },
+  {
+    id: '94',
+    name: 'G-01: L400 C4 Level 1 System Context — Pharmacovigilance & Adverse Event (AE) AI Platform',
+    family: 'Structure',
+    level: 'L3',
+    theme: 'light',
+    primaryPurpose: 'L400 physical & security-hardened C4 Level 1 System Context diagram detailing OAuth 2.1 DPoP, mTLS 1.3, BeyondCorp FIDO2 WebAuthn, VPC-SC restricted.googleapis.com, Model Armor, Gemini 3.0 Pro ADK, OPA Rego XSD validation, Oracle Argus/Veeva Vault commit, AS2 MDN E2B(R3), and SecOps Chronicle WORM retention',
+    examples: 'L400 C4 Level 1 System Context, VPC-SC restricted.googleapis.com, FIDO2 WebAuthn 21 CFR Part 11, AS2 MDN E2B(R3)',
+    defaultDomain: 'L400 Pharmacovigilance & Adverse Event (AE) AI Platform Context',
+    previewImage: '/templates/canonical_94.png',
+    keyComponents: ['External Actors (OAuth 2.1 DPoP, mTLS 1.3, BeyondCorp FIDO2 WebAuthn, HL7 FHIR R4 over Partner Interconnect, Okta OIDC/SCIM 2.0)', 'Google Cloud VPC-SC Platform (Multimodal AE Intake & Triage, Gemini 3.0 Pro Agentic Extraction & MedDRA Coding, ICH E2B(R3) Compliance & Causality Engine)', 'Trust & Governance Invariants (VPC-SC, Cloud KMS FIPS 140-3 Level 3 HSM CMEK, Cloud DLP CryptoHash/FPE, GAMP 5 Cat 4/5)', 'Downstream Regulators (Oracle Argus / Veeva Vault Safety, FDA FAERS / EMA / PMDA AS2 MDN, SecOps Chronicle & GCS WORM)'],
+    generateXml: () => generateTemplate94G01L400C4ContextXml()
+  },
+  {
+    id: '95',
+    name: 'G-02: L400 As-Is vs. To-Be BPMN 2.0 Process Swimlane — ICSR Adverse Event Lifecycle',
+    family: 'Process',
+    level: 'L3',
+    theme: 'light',
+    primaryPurpose: 'L400 BPMN 2.0 dual-pool swimlane contrasting As-Is Legacy Manual ICSR Workflow (P99 Cycle: 7.4 Days, Touch Time: 185m, Error Rate: 14.2%, 38% Rework) against To-Be Gemini Enterprise ADK Automated Workflow (P99 Cycle: 9.8s, STP: 92.4%, Error Rate: 0.08%)',
+    examples: 'L400 BPMN 2.0 Swimlane, P99 7.4d vs 9.8s Cycle Compression, 92.4% STP vs 7.6% QPPV HITL Boundary Timer',
+    defaultDomain: 'L400 BPMN 2.0 As-Is vs. To-Be ICSR Adverse Event Lifecycle',
+    previewImage: '/templates/canonical_95.png',
+    keyComponents: ['As-Is Legacy Pool (AE Reporter -> Triage 72h SLA Timer -> Medical Reviewer 38% XOR Rework Loop -> Overnight SFTP Batch)', 'To-Be Gemini Enterprise ADK Pool (Eventarc/Apigee Ingress -> Parallel AND OCR + ScaNN MedDRA v27.1 + Gemini 3.0 Pro Narrative)', 'Model Armor, Cloud DLP FPE & OPA XSD Gate (Logprob >= 0.96 & Seriousness == False XOR Gateway)', 'Transactional Outbox & AS2 Gateway (92.4% STP) vs. QPPV Clinical HITL Exception Queue (7.6% 2h SLA Timer + FIDO2 Dual e-Sign)'],
+    generateXml: () => generateTemplate95G02L400BpmnSwimlaneXml()
+  },
+  {
+    id: '96',
+    name: 'G-03: L400 Multi-Persona User Journey, OpenTelemetry & Gemini Enterprise Touchpoint Blueprint',
+    family: 'Process',
+    level: 'L3',
+    theme: 'light',
+    primaryPurpose: 'L400 5-stage multi-persona user journey and OpenTelemetry touchpoint blueprint across Patient/HCP Reporter, Drug Safety Associate (DSA), QPPV Medical Reviewer, Frontstage Edge & API Mesh, and Backstage Gemini ADK & OpenTelemetry with p99 latency budgets',
+    examples: 'L400 Multi-Persona User Journey, W3C traceparent Propagation, EC-P384 KMS Signing, BigQuery OTel FinOps Sink',
+    defaultDomain: 'L400 Multi-Persona User Journey & OpenTelemetry Touchpoint Blueprint',
+    previewImage: '/templates/canonical_96.png',
+    keyComponents: ['5 End-to-End Stages (Zero-Trust Auth & Intake -> Multimodal FHIR & Doc Ingestion -> Gemini ADK & ScaNN Triage -> QPPV Clinical Diff & Part 11 e-Sign -> AS2 E2B(R3) Release & WORM Audit)', '3 Clinical Personas (Patient/HCP Reporter p99 75ms/290ms, Drug Safety Associate gRPC-Web Stream, QPPV Medical Reviewer PAM JIT & FIDO2)', 'Frontstage Edge & API Mesh (Cloud CDN + Cloud Armor WAF, Apigee X FHIR R4 & Managed MCP, SSE Token Stream, If-Match ETag OCC, AS2 mTLS)', 'Backstage Gemini ADK & OpenTelemetry (W3C traceparent, Cloud DLP + Doc AI p99 410ms, Gemini 3.0 Pro + ScaNN p99 1.1s, KMS FIPS 140-3 EC-P384, BigQuery OTel FinOps p99 60ms)'],
+    generateXml: () => generateTemplate96G03L400UserJourneyXml()
+  },
+  {
+    id: '97',
+    name: 'G-04: L400 UML Use Case, IAM/PAM & Agent Identity Separation-of-Duties (SoD) Boundary',
+    family: 'Flow',
+    level: 'L3',
+    theme: 'light',
+    primaryPurpose: 'L400 UML 2.5 Use Case & Separation-of-Duties (SoD) security boundary mapping 5 IAM/SPIFFE principals across 4 VPC-SC zones and an OPA Rego & GCP IAM CEL Policy Enforcement Point (PEP)',
+    examples: 'L400 UML Use Case Diagram, SPIFFE Agent Identity SoD, OPA Rego & GCP IAM CEL Policy Enforcement Point (PEP)',
+    defaultDomain: 'L400 UML Use Case, IAM/PAM & SPIFFE Agent Identity SoD Boundary',
+    previewImage: '/templates/canonical_97.png',
+    keyComponents: ['5 Principals (roles/pv.reporter, spiffe://gcp.pv.prod/ns/adk/sa/meddra-coder, roles/pv.dsa, roles/pv.qppv + PAM JIT 1h TTL, roles/logging.viewer)', '4 VPC-SC Security Zones (Zone 1 Intake, Zone 2 Agentic & DSA Triage, Zone 3 QPPV Approval, Zone 4 GxP Audit)', 'OPA Rego & GCP IAM CEL Policy Enforcement Point (SoD Invariant 1 Submitter != Approver, SoD Invariant 2 SPIFFE Denied Release, SoD Invariant 3 Mutually Exclusive IAM Groups)'],
+    generateXml: () => generateTemplate97G04L400UmlUseCaseSodXml()
+  },
+  {
+    id: '98',
+    name: 'G-08: L400 UML 2.5 Finite State Machine, Guard Conditions & Regulatory SLA Clock Lifecycle',
+    family: 'Process',
+    level: 'L3',
+    theme: 'light',
+    primaryPurpose: 'L400 Hierarchical UML 2.5 ICSR Statechart detailing composite AGENTIC_PROCESSING sub-states, transition guard conditions, error/exception escalations, and the Synchronized Regulatory SLA Clock Formula & State Bar',
+    examples: 'L400 UML 2.5 Hierarchical Statechart, Guard Conditions, Regulatory SLA Clock Formula & 4-Zone State Bar',
+    defaultDomain: 'L400 UML 2.5 Hierarchical ICSR Statechart & Regulatory SLA Clock',
+    previewImage: '/templates/canonical_98.png',
+    keyComponents: ['Initial [*] -> INGESTED (initSLATimer) -> VALIDATED (fhirValid && dlpTokenized && modelArmorSafe)', 'Composite AGENTIC_PROCESSING (1. DOC_AI_OCR -> 2. ALLOYDB_SCANN_MEDDRA_RAG -> 3. GEMINI_3_CAUSALITY_EVAL -> 4. OPA_E2B_R3_XSD_CHECK)', 'Terminal & Escalation States (AUTO_SUBMITTED_E2B, WAITING_CLINICAL_HITL, SLA_ESCALATED_QPPV, QPPV_SIGNED_SUBMITTED, NULLIFIED_COMPENSATED, DLQ_QUARANTINED)', 'Synchronized Regulatory SLA Clock Formula & 4-Zone State Bar (Green 0-80%, Yellow Paused Clock-Stop, Amber 80% Soft Warning, Red 100% Breach)'],
+    generateXml: () => generateTemplate98G08L400StateMachineSlaXml()
   }
 ];
 
@@ -973,7 +1229,13 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/GxP/gi, 'SMPTE');
   }
 
-  if (out.includes('id="flow_blueprint_') || out.includes('official_gcp_arch_center') || out.includes('id="bp79_') || out.includes('oracle_exadata_ebs_topology')) {
+  if (
+    out.includes('id="flow_blueprint_') ||
+    out.includes('official_gcp_arch_center') ||
+    out.includes('id="bp79_') ||
+    out.includes('oracle_exadata_ebs_topology') ||
+    /id="g(?:0[1-9]|10)_root"/.test(out)
+  ) {
     return out;
   }
   return sanitizeAndHealCanonicalBlueprintXml(out);
@@ -984,7 +1246,25 @@ export const ACTIVE_CANONICAL_BLUEPRINT_IDS: readonly string[] = [
   '79',
   '81',
   '84',
+  '85',
+  '86',
+  '87',
+  '88',
+  '89',
+  '90',
+  '91',
+  '92',
+  '93',
+  '94',
+  '95',
+  '96',
+  '97',
+  '98',
   '00',
+  '03',
+  '12',
+  '14',
+  '29',
   '67',
   '69',
   '52',
@@ -1004,10 +1284,40 @@ export const ACTIVE_CANONICAL_BLUEPRINT_IDS: readonly string[] = [
   '66',
 ] as const;
 
+export const G_SERIES_TO_CANONICAL_ID_MAP: Record<string, string> = {
+  'G-01': '85',
+  'G01': '85',
+  'G-02': '86',
+  'G02': '86',
+  'G-03': '87',
+  'G03': '87',
+  'G-04': '88',
+  'G04': '88',
+  'G-06': '89',
+  'G06': '89',
+  'G-07': '90',
+  'G07': '90',
+  'G-08': '91',
+  'G08': '91',
+  'G-09': '92',
+  'G09': '92',
+  'G-10': '93',
+  'G10': '93',
+  'G-01-L400': '94',
+  'G01-L400': '94',
+  'G-02-L400': '95',
+  'G02-L400': '95',
+  'G-03-L400': '96',
+  'G03-L400': '96',
+  'G-04-L400': '97',
+  'G04-L400': '97',
+  'G-08-L400': '98',
+  'G08-L400': '98',
+};
+
 const LEGACY_TO_MODERN_BLUEPRINT_MAP: Record<string, string> = {
   '01': '00',
   '02': '55',
-  '03': '69',
   '04': '00',
   '05': '56',
   '06': '62',
@@ -1016,9 +1326,7 @@ const LEGACY_TO_MODERN_BLUEPRINT_MAP: Record<string, string> = {
   '09': '62',
   '10': '78',
   '11': '81',
-  '12': '67',
   '13': '67',
-  '14': '62',
   '15': '79',
   '16': '79',
   '17': '57',
@@ -1033,7 +1341,6 @@ const LEGACY_TO_MODERN_BLUEPRINT_MAP: Record<string, string> = {
   '26': '67',
   '27': '57',
   '28': '67',
-  '29': '53',
   '30': '61',
   '31': '62',
   '32': '62',
@@ -1078,7 +1385,7 @@ const ALL_RAW_CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => 
   const paddedId = t.id.padStart(2, '0');
   const isFlowBp = Number(t.id) >= 67 && Number(t.id) <= 69;
   const isInfographicBp = Number(t.id) >= 52 && Number(t.id) <= 66;
-  const isNewArchBp = Number(t.id) >= 78 && Number(t.id) <= 84;
+  const isNewArchBp = Number(t.id) >= 78 && Number(t.id) <= 98;
   const rawCleanName = t.id === '00'
     ? '2026 Upgraded GCP & Gemini Enterprise Native Architecture'
     : isNewArchBp || isFlowBp || isInfographicBp
@@ -1115,10 +1422,18 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = ACTIVE_CANONICAL_BLUEPRI
   .filter((t): t is CanonicalTemplate => Boolean(t));
 
 export function getCanonicalTemplateById(rawId?: string | null): CanonicalTemplate {
-  const padded = String(rawId || '78').replace(/^(bp_|canonical_|#)/i, '').trim().padStart(2, '0');
+  const cleaned = String(rawId || '78').replace(/^(bp_|canonical_|#)/i, '').trim();
+  const upper = cleaned.toUpperCase();
+  if (G_SERIES_TO_CANONICAL_ID_MAP[upper]) {
+    const gTarget = G_SERIES_TO_CANONICAL_ID_MAP[upper];
+    const gFound = CANONICAL_TEMPLATES.find((t) => t.id === gTarget);
+    if (gFound) return gFound;
+  }
+  const padded = cleaned.padStart(2, '0');
   const direct = CANONICAL_TEMPLATES.find((t) => t.id === padded || t.id === rawId);
   if (direct) return direct;
   const mappedId = LEGACY_TO_MODERN_BLUEPRINT_MAP[padded] || '78';
   return CANONICAL_TEMPLATES.find((t) => t.id === mappedId) || CANONICAL_TEMPLATES[0];
 }
+
 
