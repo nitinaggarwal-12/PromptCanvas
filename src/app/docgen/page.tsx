@@ -2237,16 +2237,27 @@ function DocGenContent() {
               isLight ? 'bg-white border-slate-200/90' : 'bg-[#0B111E] border-slate-800'
             }`}>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div>
-                  <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
-                    <span>1. Master Consolidation &amp; Blueprint Mapping Table</span>
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
-                      Pharma Regulatory Rigor &bull; Zero Redundancy
-                    </span>
-                  </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Maps every absorbed redundant document, its specialized topics, and its deduplicated blueprint #IDs directly into the 8 surviving core documents.
-                  </p>
+                <div className="flex flex-wrap items-center justify-between gap-3 w-full">
+                  <div>
+                    <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                      <span>1. Master Consolidation &amp; Blueprint Mapping Table</span>
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                        Pharma Regulatory Rigor &bull; Zero Redundancy
+                      </span>
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Maps every absorbed redundant document, its specialized topics, and its deduplicated blueprint #IDs directly into the 8 surviving core documents.
+                    </p>
+                  </div>
+                  <Link
+                    href="/pv-case-processing"
+                    data-testid="docgen-open-pv-matrix-link"
+                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold shadow-xs transition-colors"
+                  >
+                    <Layers className="w-3.5 h-3.5" />
+                    <span>Open PV Case Processing Matrix (10 Docs · 39 Diagrams)</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
                 </div>
               </div>
 

@@ -63,6 +63,11 @@ const meta = arche.slice(metaStart, metaEnd === -1 ? undefined : metaEnd);
 const archetypeCount = (meta.match(/^\s*id:\s*'/gm) || []).length;
 check('Document Studio', archetypeCount, 'docgen', sidebar);
 
+// PV Case Matrix: count buildRow({...}) entries in PV_MASTER_DIAGRAM_MATRIX
+const pvMatrixSrc = read('src/lib/pvCaseProcessing/pvMatrixAndOverview.ts');
+const pvRowCount = (pvMatrixSrc.match(/buildRow\(\{/g) || []).length;
+check('PV Case Matrix (10 Docs)', pvRowCount, 'pv-pack', sidebar);
+
 // Obsolete route guard: /workspace, /studio1, and /gcp are retired and must never appear in UnifiedAppSidebar or exist in src/app/
 const retiredRouteDirs = ['src/app/workspace', 'src/app/studio1', 'src/app/gcp'].filter((d) =>
   fs.existsSync(path.join(ROOT, d))

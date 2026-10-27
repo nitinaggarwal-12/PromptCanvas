@@ -67,6 +67,14 @@ All 9 Canonical Use-Case Blog presets (`1:1` with `DOC-MT-01`..`DOC-REF-09`) and
 npx tsx scripts/verify_export_slides_quality_gate.ts && npx tsx scripts/verify_blogs_and_gcp_workstreams.ts && npx tsx scripts/evaluate_blogs_llm_judge.ts --pass=2
 ```
 
+### 🏥 Agentic Pharmacovigilance (PV) Case Processing — 39-Row Document & Diagram Matrix & 10 Associated Documents (`/pv-case-processing`)
+The `/pv-case-processing` workspace (`src/app/pv-case-processing/page.tsx` & `src/lib/pvCaseProcessing/`) provides the complete **39-Row Document & Diagram Architecture Matrix** (`#`, `Document`, `Diagram`, `Level`, `Owner`, `Project type`) and **10 Associated Lifecycle Documents (`Doc 1` to `Doc 10`)** for the **Healthcare Agentic AI Pharmacovigilance (PV) Case Processing on Google Cloud** reference use case (8 ADK Agents on Vertex AI Agent Engine, A2A + MCP protocols, 21 CFR Part 11 e-signature, and ICH E2B(R3) XML submission):
+- **39 Interactive Matrix Entries (`PV_MASTER_DIAGRAM_MATRIX`)**: Every row (`Row #1` through `Row #39`) links directly to its parent document (`Doc 1: BRD / PRD` [5 rows], `Doc 2: SAD` [7 rows], `Doc 3: ADRs` [1 row], `Doc 4: HLD` [6 rows], `Doc 5: LLD` [4 rows], `Doc 6: API Spec` [2 rows], `Doc 7: Threat Model` [2 rows], `Doc 8: Test & Eval Plan` [2 rows], `Doc 9: Deployment & Ops Doc` [7 rows], `Doc 10: Compliance & Validation Pack` [3 rows]) and its interactive Draw.io vector diagram (`compilePvRowDrawioXml`).
+- **Automated Unit & Matrix Parity Verification**:
+```bash
+npx vitest run tests/unit/pv-case-processing-matrix.test.ts
+```
+
 ### Per-Request A/B Feature Flag Override
 Pass `layoutEngineV2: true` (or `false`) in the `POST /api/generate` request body, query parameter `?layoutEngineV2=true`, or HTTP header `x-layout-engine-v2: true` to switch between Pipeline V1 and V2 on the fly.
 

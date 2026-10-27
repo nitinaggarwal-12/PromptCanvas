@@ -77,6 +77,7 @@ const NAV_GROUPS: NavGroup[] = [
       { id: 'dashboard', name: 'Home Dashboard', icon: Compass, href: '/dashboard', badge: 'HOME', badgeColor: 'bg-sky-500/20 text-sky-400 border-sky-500/30' },
       { id: 'vision', name: 'Image to Diagram', icon: Sparkles, href: '/vision', badge: 'AI', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
       { id: 'docgen', name: 'Document Studio', icon: FileText, href: '/docgen', badge: '8' },
+      { id: 'pv-pack', name: 'PV Case Matrix (10 Docs)', icon: Layers, href: '/pv-case-processing', badge: '39' },
       { id: 'blogs', name: 'Technical Blog Studio', icon: Newspaper, href: '/blogs', badge: 'BLOG', badgeColor: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30' },
     ],
   },
