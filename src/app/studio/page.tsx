@@ -3686,7 +3686,7 @@ function StudioMain() {
                                         {
                                           id: 'L4',
                                           title: 'L4 • Google Cloud Agentic AI Mesh (#67)',
-                                          desc: '7 Swimlanes • 20 Product Icons • Agent Designer • ADK 2.0 • Deep Research',
+                                          desc: '7 Swimlanes • 20 Product Icons • Agent Designer • Google ADK • Deep Research',
                                           badge: '20 Nodes',
                                         },
                                       ] as const

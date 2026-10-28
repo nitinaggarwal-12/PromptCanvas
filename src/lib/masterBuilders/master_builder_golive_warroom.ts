@@ -118,7 +118,7 @@ export function buildGoLiveWarRoomRunbookXml(): string {
     },
     {
       id: 's6', number: '6', title: 'Hypercare &amp;&lt;br&gt;T+48h Stabilization', x: 1036, w: 185, color: '#4C20A5', fill: '#FDFCFF', icon: ICON_HEADSET,
-      bullets: ['Cloud Monitoring dashboards', 'Cloud Logging analysis', 'SLO / error budget watch', 'PagerDuty / on-call engaged', 'Stakeholder status updates', 'Post-cutover review', 'Incident ledger updated', 'Cutover sign-off obtained'],
+      bullets: ['Cloud Monitoring dashboards', 'Cloud Logging analysis', 'SLO / error budget watch', 'Cloud Monitoring Alerting / on-call engaged', 'Stakeholder status updates', 'Post-cutover review', 'Incident ledger updated', 'Cutover sign-off obtained'],
       deliverable: 'Deliverable: Stabilization Sign-off'
     }
   ];

@@ -19,29 +19,22 @@ import {
 
 const LEGACY_PRESENTATION_IDS_BY_DOC: Record<string, string[]> = {
   'DOC-MT-01': [
-    '1dwa5ER2-aWO_Qo1QhSR4TVtkRsuw9RL-Exf0YDUDrIg',
     '1RUkSWKaufU1PgLhI7-ufJ_Y7DPlZeLp8REHoXsHc-cI',
     '1rBHt-al8JDO9UZY6IIJpOdAR76zZQvvoNhPnX-ae9NY',
     '1fp-Q21VVhy3hnqWDHBmZu1GLpLD6ts2ylhFfMR7LXsg',
   ],
   'DOC-MT-02': [
-    '1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc',
     '1uro8CTfEKfRg03geNOTQ4Hmy1lk3r_ewfKPt0vNbZcs',
     '1bRva9gC6980Lbd33pC1x-6s5994E9rR0oT3nJ0rE_k8',
   ],
   'DOC-MT-03': [
-    '1WYmj2wHnC9ofji_--4M_fnLtJ2B245umKmEdQwQCYE0',
     '1G42hI3r29R7b7_iF1R3B76xP2r40A4bK4P7v6D0v1eI',
   ],
   'DOC-MT-04': [
-    '1Tm2bkJNUCXa-oLoOaL7x1ho6TBKY5YRwC4rjgxaGTXA',
     '1y_0vA3x10M7g5_nQ8V1W90cR7t21Z8jL2N5m9B4x8qP',
   ],
-  'DOC-MT-05': [
-    '1r_2oEeBC-XKkub16auZfLD8levx3ZORxEKBiBDlW5Gs',
-  ],
+  'DOC-MT-05': [],
   'DOC-MT-06': [
-    '1wNzyaGuMdWhVlxNdWJw8fJda7aovAQ0pgE8mtZUTNUc',
     '1p_9cB2v40K1h6_mR5T3Y81zQ4w19X7fJ8L2n6V1c5wM',
   ],
   'DOC-REF-07': [

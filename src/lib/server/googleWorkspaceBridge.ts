@@ -357,7 +357,23 @@ export async function uploadPptxBufferToGoogleSlides(params: {
     Buffer.from(`\r\n--${boundary}--\r\n`, 'utf-8'),
   ]);
 
-  const preferredId = params.targetFileId || existing?.googleSlidesId;
+  const workstreamReservedIds = new Set(
+    ['WS1', 'WS2', 'WS3', 'WS4', 'WS5', 'ALL']
+      .map((k) => manifest.slides[k]?.googleSlidesId)
+      .filter((v): v is string => Boolean(v))
+  );
+  workstreamReservedIds.add('1dwa5ER2-aWO_Qo1QhSR4TVtkRsuw9RL-Exf0YDUDrIg');
+  workstreamReservedIds.add('1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc');
+  workstreamReservedIds.add('1WYmj2wHnC9ofji_--4M_fnLtJ2B245umKmEdQwQCYE0');
+  workstreamReservedIds.add('1Tm2bkJNUCXa-oLoOaL7x1ho6TBKY5YRwC4rjgxaGTXA');
+  workstreamReservedIds.add('1r_2oEeBC-XKkub16auZfLD8levx3ZORxEKBiBDlW5Gs');
+  workstreamReservedIds.add('1wNzyaGuMdWhVlxNdWJw8fJda7aovAQ0pgE8mtZUTNUc');
+
+  const rawPreferredId = params.targetFileId || existing?.googleSlidesId;
+  const preferredId =
+    normalizedKey.startsWith('DOC-') && rawPreferredId && workstreamReservedIds.has(rawPreferredId)
+      ? undefined
+      : rawPreferredId;
   let data: { id: string; webViewLink?: string } | null = null;
 
   if (preferredId) {

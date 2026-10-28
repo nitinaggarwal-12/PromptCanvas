@@ -100,8 +100,8 @@ const forbiddenLegacyFiles = pubTemplates.filter((f) =>
   f === '40.svg' ||
   f === 'ge_equipment_optimization_gemini.png'
 );
-if (forbiddenLegacyFiles.length > 0 || pubTemplates.length !== 66) {
-  console.error(`❌ Legacy Template Purge Guard: Found ${forbiddenLegacyFiles.length} purged legacy files in public/templates/ (total=${pubTemplates.length}, expected 66): ${forbiddenLegacyFiles.join(', ')}`);
+if (forbiddenLegacyFiles.length > 0 || pubTemplates.length !== 67) {
+  console.error(`❌ Legacy Template Purge Guard: Found ${forbiddenLegacyFiles.length} purged legacy files in public/templates/ (total=${pubTemplates.length}, expected 67): ${forbiddenLegacyFiles.join(', ')}`);
   failed++;
 } else {
   console.log(`✅ Legacy Template Purge Guard: 0 purged Tier 1/2/3 or legacy files in public/templates/ (${pubTemplates.length} clean files)`);
@@ -218,8 +218,9 @@ const crossPageTargets = [
   'src/app/dashboard/page.tsx',
   'src/app/guide/page.tsx',
   'src/app/test-status/page.tsx',
+  'README.md',
 ];
-const staleBlueprintRegex = /\b(?:7|8|18|19|23|26|29|77)\s+(?:Official\s+Google\s+Cloud\s+Reference\s+(?:&\s+Infographic\s+)?Blueprints|curated\s+Google\s+Cloud\s+reference\s+(?:&\s+infographic\s+)?blueprints|Production\s+Blueprints|Certified\s+Blueprints|Certified|certified\s+reference\s+architectures|Reference\s+Blueprints|Blueprints|blueprints|Canonical\s+Blueprints|canonical\s+master\s+blueprints)\b/;
+const staleBlueprintRegex = /\b(?:7|8|18|19|22|23|26|29|77)\s+(?:Official\s+Google\s+Cloud\s+Reference\s+(?:&\s+Infographic\s+)?Blueprints|curated\s+Google\s+Cloud\s+reference\s+(?:&\s+infographic\s+)?blueprints|Production\s+Blueprints|Certified\s+Blueprints|Certified|certified\s+reference\s+architectures|Reference\s+Blueprints|Blueprints|blueprints|Canonical\s+Blueprints|canonical\s+master\s+blueprints|production\s+Google\s+Cloud\s+blueprints)\b/;
 for (const rel of crossPageTargets) {
   const content = read(rel);
   const m = staleBlueprintRegex.exec(content);

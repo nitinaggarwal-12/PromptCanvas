@@ -648,7 +648,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
   const [selectedZoomScreenshot, setSelectedZoomScreenshot] = useState<{ src: string; title: string; badge: string; desc: string } | null>(null);
   const [showEditorialBylinesPanel, setShowEditorialBylinesPanel] = useState<boolean>(false);
 
-  // E2E Pattern Execution, Live GCP Resources, 24-File Reference Codebase & 8-Stage Cloud Console SSH Runbook Workbench State
+  // E2E Pattern Execution, Live GCP Resources, 27-File Reference Codebase & 8-Stage Cloud Console SSH Runbook Workbench State
   const [activeWorkbenchTab, setActiveWorkbenchTab] = useState<'execution' | 'codebase' | 'resources' | 'runbook'>('execution');
   const [selectedExecutionSuiteId, setSelectedExecutionSuiteId] = useState<string>('all');
   const [selectedCodebaseCategory, setSelectedCodebaseCategory] = useState<string>('all');
@@ -803,14 +803,14 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
       src: '/blogs-verification-screenshots/gcp_console_03_bigquery_studio_pattern_a_rls.png',
       badge: 'GCP CONSOLE • BIGQUERY STUDIO PATTERN A RLS',
       title: 'Google Cloud Console: BigQuery Studio Live SQL Query on pattern_a_pooled_rls_entities with Active Row-Level Security',
-      desc: 'Live capture of BigQuery Studio executing SELECT * FROM `nitinagga-ge-2.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` with the active Row-Level Security banner ("Your query results may be limited because you do not have access to certain rows") and 4 tenant rows.',
+      desc: 'Live capture of BigQuery Studio executing SELECT * FROM `cymbal-pooled-prod.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` with the active Row-Level Security banner ("Your query results may be limited because you do not have access to certain rows") and 4 tenant rows.',
     },
     {
       id: 'gcp-console-04-bigquery-pattern-b-cmek',
       src: '/blogs-verification-screenshots/gcp_console_04_bigquery_studio_pattern_b_cmek.png',
       badge: 'GCP CONSOLE • BIGQUERY STUDIO PATTERN B CMEK',
       title: 'Google Cloud Console: BigQuery Studio Sovereign Silo Vault (pattern_b_silo_finvault_cmek_vault)',
-      desc: 'Live capture of BigQuery Studio inspecting nitinagga-ge-2.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault showing VAULT-FV-9001 and VAULT-FV-9002 bound to finvault-silo-cmek and ECDSA P-256 adk-agent-signing-key.',
+      desc: 'Live capture of BigQuery Studio inspecting cymbal-pooled-prod.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault showing VAULT-FV-9001 and VAULT-FV-9002 bound to finvault-silo-cmek and ECDSA P-256 adk-agent-signing-key.',
     },
     {
       id: 'gcp-console-05-cloud-kms-keyring',
@@ -836,8 +836,8 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
     {
       id: 'gcp-console-08-gemini-enterprise-live',
       src: '/blogs-verification-screenshots/gcp_console_08_gemini_enterprise_app_live_exec.png',
-      badge: 'GEMINI ENTERPRISE APP • LIVE CLINICAL EXECUTION',
-      title: 'Gemini Enterprise Web App: Live Multi-Tenant Clinical Document & Regulatory Synthesis (vertexaisearch.cloud.google.com)',
+      badge: 'GEMINI ENTERPRISE APP • LIVE MULTI-TENANT EXECUTION',
+      title: 'Gemini Enterprise Web App: Live Multi-Tenant Document & Regulatory Synthesis (vertexaisearch.cloud.google.com)',
       desc: 'Live browser capture of vertexaisearch.cloud.google.com/us/home/cid/e823f383-deba-4330-9270-ed6ac94cbbc6 executing grounded enterprise search across SOP-CLIN-0042, PRO-ONC-2026-V3, VAL-GXP-0119, CSR-PH3-0881, and BND-TMF-2026-Q1.',
     },
     {
@@ -850,9 +850,9 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
     {
       id: 'pantheon-live-user-capture',
       src: '/blogs-verification-screenshots/pantheon_live_user_capture_ssh_verify.png',
-      badge: 'LIVE USER CAPTURE • PANTHEON + CLOUD SHELL SSH',
-      title: 'Live Pantheon Cloud Run Source Editor (server.py) + Docked Cloud Shell SSH (BigQuery Audit Insert 200 OK)',
-      desc: 'Authenticated user session in pantheon.corp.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/source showing the 24-file tree and live root@localhost:/app# BigQuery streaming insert.',
+      badge: 'LIVE USER CAPTURE • GOOGLE CLOUD CONSOLE + CLOUD SHELL SSH',
+      title: 'Live Google Cloud Console Cloud Run Source Editor (server.py) + Docked Cloud Shell SSH (BigQuery Audit Insert 200 OK)',
+      desc: 'Authenticated user session in console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/source showing the 27-file tree and live root@localhost:/app# BigQuery streaming insert.',
     },
   ];
 
@@ -1421,7 +1421,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                   <a
-                    href="https://console.cloud.google.com/security/kms/keyrings/manage/us-west1/cymbal-multi-tenant-kr?project=nitina-ggarwal-sandbox-647724"
+                    href="https://console.cloud.google.com/security/kms/keyrings/manage/us-west1/cymbal-multi-tenant-kr?project=cymbal-build-sandbox"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 transition-all block"
@@ -1435,7 +1435,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                     </div>
                   </a>
                   <a
-                    href="https://console.cloud.google.com/bigquery?project=nitina-ggarwal-sandbox-647724&ws=!1m4!1m3!3m2!1snitina-ggarwal-sandbox-647724!2scymbal_agentic_finops_otel"
+                    href="https://console.cloud.google.com/bigquery?project=cymbal-build-sandbox&ws=!1m4!1m3!3m2!1scymbal-build-sandbox!2scymbal_agentic_finops_otel"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 transition-all block"
@@ -1449,17 +1449,17 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                     </div>
                   </a>
                   <a
-                    href="https://console.cloud.google.com/storage/browser/nitina-ggarwal-sandbox-647724-cymbal-multi-tenant-artifacts?project=nitina-ggarwal-sandbox-647724"
+                    href="https://console.cloud.google.com/storage/browser/cymbal-build-sandbox-cymbal-multi-tenant-artifacts?project=cymbal-build-sandbox"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 transition-all block"
                   >
                     <div className="font-bold text-indigo-600 dark:text-indigo-400 flex items-center justify-between">
-                      <span>🪣 Cloud Storage Artifacts (16 Objects)</span>
+                      <span>🪣 Cloud Storage Artifacts (27 Objects)</span>
                       <ExternalLink className="w-3 h-3" />
                     </div>
                     <div className="font-mono text-[10px] text-slate-600 dark:text-slate-400 mt-1 break-all">
-                      gs://nitina-ggarwal-sandbox-647724-cymbal-multi-tenant-artifacts/ (7 .svg + 7 .drawio + DDL)
+                      gs://cymbal-build-sandbox-cymbal-multi-tenant-artifacts/ (14 .svg + 14 .drawio + DDL)
                     </div>
                   </a>
                   <a
@@ -2540,7 +2540,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
           )}
 
           {/* =====================================================================
-              MODE 3: MULTI-FORMAT STUDIO & 24-FILE E2E CODEBASE WORKBENCH
+              MODE 3: MULTI-FORMAT STUDIO & 27-FILE E2E CODEBASE WORKBENCH
               (Visible in 'legacy-studio' mode or when showDocWorkbench is toggled)
               ===================================================================== */}
           <div
@@ -3296,7 +3296,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                     })}
                   </div>
 
-                  {/* End-to-End Pattern Implementation, Live Code Execution Results, Cloud Console Resources & 24-File Reference Codebase Workbench (Executive Light Theme per Rule 54) */}
+                  {/* End-to-End Pattern Implementation, Live Code Execution Results, Cloud Console Resources & 27-File Reference Codebase Workbench (Executive Light Theme per Rule 54) */}
                   <div
                     id="blog-e2e-pattern-execution-and-codebase-workbench"
                     data-testid="blog-e2e-pattern-execution-and-codebase-workbench"
@@ -3309,17 +3309,17 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                             End-to-End GCP Pattern Workbench • WS1–WS5
                           </span>
                           <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-extrabold uppercase tracking-wider">
-                            20/20 Pattern Tests PASS (Exit Code 0)
+                            107/107 Assertions • 20/20 GCP Checks PASS (Exit Code 0)
                           </span>
                           <span className="px-2.5 py-0.5 rounded-full bg-teal-50 border border-teal-200 text-teal-700 text-[10px] font-mono font-bold">
-                            12 Provisioned GCP Resources • 24 Source Files
+                            20 Live GCP Resources • 27 Production Source Files
                           </span>
                         </div>
                         <h3 className="text-base md:text-lg font-extrabold text-slate-900 mt-2">
                           🧪 End-to-End Pattern Implementation, Live Code Execution Results &amp; Complete Multi-Tenant Codebase Explorer (Pattern A • Pattern B • Pattern C)
                         </h3>
                         <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                          Live Google Cloud resources provisioned and executed in <code className="text-indigo-700 bg-indigo-50 px-1 py-0.5 rounded">nitina-ggarwal-sandbox-647724</code>, <code className="text-indigo-700 bg-indigo-50 px-1 py-0.5 rounded">nitinagga-ge-2 (#638420508320)</code>, and <code className="text-indigo-700 bg-indigo-50 px-1 py-0.5 rounded">ramp-portal-dev (#248990048888)</code> (Cloud Run Source Function <code className="text-teal-700 bg-teal-50 px-1 py-0.5 rounded">cymbal-multi-tenant-patterns</code>, BigQuery Row-Level Security, CMEK-encrypted Sovereign Vault, Cloud KMS HSM/CMEK &amp; ECDSA P-256 Asymmetric Signing Keys, Custom Hub &amp; Spoke VPCs + Private Service Connect <code className="text-teal-700 bg-teal-50 px-1 py-0.5 rounded">/28</code> NAT Subnet), paired with verbatim execution stdout and the complete 24-file Python + Terraform reference codebase.
+                          Live Google Cloud resources provisioned and executed in <code className="text-indigo-700 bg-indigo-50 px-1 py-0.5 rounded">cymbal-build-sandbox (#887605034827)</code>, <code className="text-indigo-700 bg-indigo-50 px-1 py-0.5 rounded">cymbal-pooled-prod (#638420508320)</code>, and <code className="text-indigo-700 bg-indigo-50 px-1 py-0.5 rounded">ramp-portal-dev (#248990048888)</code> (Cloud Run Source Function <code className="text-teal-700 bg-teal-50 px-1 py-0.5 rounded">cymbal-multi-tenant-patterns</code>, BigQuery Row-Level Security, CMEK-encrypted Sovereign Vault, Cloud KMS HSM/CMEK &amp; ECDSA P-256 Asymmetric Signing Keys, Custom Hub &amp; Spoke VPCs + Private Service Connect <code className="text-teal-700 bg-teal-50 px-1 py-0.5 rounded">/28</code> NAT Subnet), paired with verbatim execution stdout and the complete 27-file Python + Terraform reference codebase.
                         </p>
                       </div>
 
@@ -3335,7 +3335,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                           }`}
                         >
                           <Terminal className="w-3.5 h-3.5" />
-                          <span>1. Live E2E Execution Results (4 Suites • 20/20 PASS)</span>
+                          <span>1. Live E2E Execution Results (6 Suites • 107/107 PASS)</span>
                         </button>
                         <button
                           type="button"
@@ -3348,7 +3348,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                           }`}
                         >
                           <Database className="w-3.5 h-3.5" />
-                          <span>2. Provisioned GCP Console Resources (12)</span>
+                          <span>2. Live GCP Resources ({activePatternBundle?.provisionedResources?.length || 20})</span>
                         </button>
                         <button
                           type="button"
@@ -3361,7 +3361,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                           }`}
                         >
                           <FileCode className="w-3.5 h-3.5" />
-                          <span>3. Complete Source Codebase ({activePatternBundle?.codebaseFiles?.length || 24} Files)</span>
+                          <span>3. Complete Source Codebase ({activePatternBundle?.codebaseFiles?.length || 27} Files)</span>
                         </button>
                         <button
                           type="button"
@@ -3385,11 +3385,13 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                           <div className="flex items-center gap-1.5 flex-wrap">
                             {[
-                              { id: 'all', label: 'All 4 Suites Combined (20/20 PASS)' },
+                              { id: 'all', label: 'All 6 Suites Combined (107/107 PASS)' },
                               { id: 'suite-pattern-a-breach', label: 'Pattern A: Pooled (10/10 Breach Sims)' },
                               { id: 'suite-pattern-b-silo', label: 'Pattern B: Sovereign Silos (6/6 CMEK & VPC-SC)' },
                               { id: 'suite-pattern-c-hybrid', label: 'Pattern C: Hybrid PSC (4/4 Live Migration)' },
-                              { id: 'suite-gcp-live-resources', label: '☁️ Live GCP Console CLI & SQL Verification' },
+                              { id: 'suite-gcp-live-resources', label: '☁️ Live GCP Console CLI & SQL (20/20)' },
+                              { id: 'suite-multicloud-aws-3p-live', label: '🌐 Multi-Cloud AWS AgentCore MCP (7/7)' },
+                              { id: 'suite-5-third-party-saas-live', label: '🔌 10 Third-Party SaaS × 3 Patterns (60/60)' },
                             ].map((st) => (
                               <button
                                 key={st.id}
@@ -3533,19 +3535,20 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                       </div>
                     )}
 
-                    {/* TAB 3: COMPLETE 24-FILE MULTI-PATTERN SOURCE CODEBASE EXPLORER */}
+                    {/* TAB 3: COMPLETE 27-FILE MULTI-PATTERN SOURCE CODEBASE EXPLORER */}
                     {activeWorkbenchTab === 'codebase' && (
                       <div className="mt-5 space-y-4" data-testid="workbench-pane-codebase">
                         {/* Category Filter Bar */}
                         <div className="flex flex-wrap items-center justify-between gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
                           <div className="flex items-center gap-1.5 flex-wrap">
                             {[
-                              { id: 'all', label: `All Files (${activePatternBundle?.codebaseFiles?.length || 24})` },
-                              { id: '5-Hop Core Engine', label: '🔐 5-Hop Core Engine (9)' },
-                              { id: 'Pattern A: Pooled', label: '🟦 Pattern A: Pooled (5)' },
+                              { id: 'all', label: `All Files (${activePatternBundle?.codebaseFiles?.length || 27})` },
+                              { id: '5-Hop Core Engine', label: '🔐 5-Hop Core Engine (10)' },
+                              { id: 'Pattern A: Pooled', label: '🟦 Pattern A: Pooled (3)' },
                               { id: 'Pattern B: Sovereign Silos', label: '🟨 Pattern B: Sovereign Silos (3)' },
-                              { id: 'Pattern C: Hybrid PSC', label: '🟥 Pattern C: Hybrid PSC (4)' },
-                              { id: 'Terraform IaC', label: '🏗️ Terraform HCL IaC (3)' },
+                              { id: 'Pattern C: Hybrid PSC', label: '🟥 Pattern C: Hybrid PSC (2)' },
+                              { id: 'Terraform IaC', label: '🏗️ Terraform HCL IaC (6)' },
+                              { id: '10 Third-Party SaaS Connectors', label: '🔌 10 Third-Party SaaS Connectors (3)' },
                             ].map((cat) => (
                               <button
                                 key={cat.id}
@@ -3686,10 +3689,10 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                           <div className="space-y-1">
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-mono font-bold">
-                                LIVE PANTHEON CLOUD RUN + DOCKED CLOUD SHELL RUNBOOK
+                                LIVE GOOGLE CLOUD CONSOLE + DOCKED CLOUD SHELL RUNBOOK
                               </span>
                               <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200 text-[10px] font-mono font-bold">
-                                cymbal-multi-tenant-patterns-00003-wfh (us-west1)
+                                cymbal-multi-tenant-patterns-00001-dmg (us-west1)
                               </span>
                               <span className="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 border border-indigo-200 text-[10px] font-mono font-bold">
                                 root@localhost:/app# Verified
@@ -3699,12 +3702,12 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                               🚀 End-to-End Google Cloud Console Setup, Execution, Validation &amp; Deployment Process (8 Stages)
                             </h4>
                             <p className="text-xs text-slate-600 leading-relaxed">
-                              Step-by-step operational guide with Pantheon Cloud Run + Docked Cloud Shell screenshots showing how to inspect all 24 files in the Cloud Run Source tab, open an interactive SSH tunnel into the live Gen2 container (<code className="text-blue-700 font-mono">root@localhost:/app#</code>), execute Pattern A/B/C &amp; Core 5-Hop suites, validate Cloud KMS &amp; BigQuery streaming inserts, and deploy revisions.
+                              Step-by-step operational guide with Google Cloud Console Cloud Run + Docked Cloud Shell screenshots showing how to inspect all 27 files in the Cloud Run Source tab, open an interactive SSH tunnel into the live Gen2 container (<code className="text-blue-700 font-mono">root@localhost:/app#</code>), execute Pattern A/B/C &amp; Core 5-Hop suites, validate Cloud KMS &amp; BigQuery streaming inserts, and deploy revisions.
                             </p>
                           </div>
                           <div className="flex flex-wrap items-center gap-2 shrink-0">
                             <a
-                              href="https://console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/source?project=nitina-ggarwal-sandbox-647724&cloudshell=true"
+                              href="https://console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/source?project=cymbal-build-sandbox&cloudshell=true"
                               target="_blank"
                               rel="noopener noreferrer"
                               className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-extrabold inline-flex items-center gap-1.5"
@@ -3712,7 +3715,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                               <span>☁️ Open Cloud Run Source + Cloud Shell ↗</span>
                             </a>
                             <a
-                              href="https://console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/revisions?project=nitina-ggarwal-sandbox-647724&cloudshell=true"
+                              href="https://console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/revisions?project=cymbal-build-sandbox&cloudshell=true"
                               target="_blank"
                               rel="noopener noreferrer"
                               className="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold inline-flex items-center gap-1.5"

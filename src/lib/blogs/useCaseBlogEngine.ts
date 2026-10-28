@@ -606,7 +606,7 @@ export const BLOG_USE_CASE_PRESETS: UseCaseBlogPreset[] = [
     archCenterBlueprintVariantId: 'ws2-pattern-a-breach-defense-sequence',
     defaultFormatId: 'geap-fde-deep-dive',
     summaryPrompt:
-      'Verify multi-tenant isolation before production launch by executing the 10-Point Automated Red-Team Breach Simulation Suite (SIM 1–SIM 10) across Hop 1–Hop 5 and auditing cryptographic pass/block receipts in BigQuery (`security_breach_audit_log`) and Cloud Logging across `ramp-portal-dev` and `nitina-ggarwal-sandbox-647724`.',
+      'Verify multi-tenant isolation before production launch by executing the 10-Point Automated Red-Team Breach Simulation Suite (SIM 1–SIM 10) across Hop 1–Hop 5 and auditing cryptographic pass/block receipts in BigQuery (`security_breach_audit_log`) and Cloud Logging across `ramp-portal-dev` and `cymbal-build-sandbox`.',
     primaryTemplateId: '78',
     ingestionTemplateId: '78',
     searchTemplateId: '78',
@@ -631,8 +631,8 @@ export const BLOG_USE_CASE_PRESETS: UseCaseBlogPreset[] = [
     primaryDataStore: 'BigQuery Security & FinOps Audit Mart (`cymbal_agentic_finops_otel.security_breach_audit_log`)',
     secondaryDataStore: 'Cloud Logging, Cloud KMS HSM (`cymbal-multi-tenant-kr`) & Security Command Center',
     mcpResources: [
-      'bigquery://nitina-ggarwal-sandbox-647724/cymbal_agentic_finops_otel/security_breach_audit_log',
-      'kms://nitina-ggarwal-sandbox-647724/us-west1/cymbal-multi-tenant-kr/medcore-revoked-cmek',
+      'bigquery://cymbal-build-sandbox/cymbal_agentic_finops_otel/security_breach_audit_log',
+      'kms://cymbal-build-sandbox/us-west1/cymbal-multi-tenant-kr/medcore-revoked-cmek',
       'cloudrun://ramp-portal-dev/us-west1/cymbal-multi-tenant-patterns',
     ],
     adversarialPromptExample:
@@ -654,7 +654,7 @@ export const BLOG_USE_CASE_PRESETS: UseCaseBlogPreset[] = [
         clientContext:
           'Platform SRE teams needed an 8-stage Google Cloud Console and SSH verification runbook to audit live RLS policies, KMS CMEK key states, and PSC endpoints.',
         solutionSummary:
-          'Standardized on the 20/20 live GCP verification suite across ramp-portal-dev and nitina-ggarwal-sandbox-647724 with zero manual compliance drift.',
+          'Standardized on the 20/20 live GCP verification suite across ramp-portal-dev and cymbal-build-sandbox with zero manual compliance drift.',
       },
     ],
     industryVariations: [
@@ -1319,17 +1319,17 @@ function buildSocialPromotionAndAssetsMarkdown(
 ): string {
   return `### Google Cloud Console & Gemini Enterprise Verification Runbook (CLI, SQL & API)
 
-To validate **${useCase.shortLabel}** end-to-end inside **Google Cloud Console (\`ramp-portal-dev\` Control Plane & \`nitina-ggarwal-sandbox-647724\` KMS/BigQuery/Storage Silo)** and **Gemini Enterprise**, execute the following verification checks across the live cloud resources provisioned for this blueprint:
+To validate **${useCase.shortLabel}** end-to-end inside **Google Cloud Console (\`ramp-portal-dev\` Control Plane & \`cymbal-build-sandbox\` KMS/BigQuery/Storage Silo)** and **Gemini Enterprise**, execute the following verification checks across the live cloud resources provisioned for this blueprint:
 
 1. **Verify Cloud KMS HSM CMEK Keys & Cryptographic Signing (\`us-west1\`)**:
    - Inspect KeyRing \`cymbal-multi-tenant-kr\` and keys \`finvault-silo-cmek\`, \`retailstream-silo-cmek\`, \`medcore-revoked-cmek\`, and \`adk-agent-signing-key\`:
-   - \`gcloud kms keys list --keyring=cymbal-multi-tenant-kr --location=us-west1 --project=nitina-ggarwal-sandbox-647724\`
+   - \`gcloud kms keys list --keyring=cymbal-multi-tenant-kr --location=us-west1 --project=cymbal-build-sandbox\`
 2. **Verify BigQuery Zero-PII OpenTelemetry Chargeback & 10/10 Breach Audit Ledger**:
    - Query live multi-tenant telemetry spans and SIM 1–SIM 10 red-team interception logs in dataset \`cymbal_agentic_finops_otel\`:
-   - \`bq query --project_id=nitina-ggarwal-sandbox-647724 --use_legacy_sql=false "SELECT tenant_id, isolation_pattern, COUNT(*) AS turns, ROUND(AVG(cache_hit_ratio)*100,1) AS avg_cache_pct, SUM(net_cost_usd) AS total_usd FROM cymbal_agentic_finops_otel.tenant_telemetry_spans GROUP BY 1, 2 ORDER BY 1"\`
+   - \`bq query --project_id=cymbal-build-sandbox --use_legacy_sql=false "SELECT tenant_id, isolation_pattern, COUNT(*) AS turns, ROUND(AVG(cache_hit_ratio)*100,1) AS avg_cache_pct, SUM(net_cost_usd) AS total_usd FROM cymbal_agentic_finops_otel.tenant_telemetry_spans GROUP BY 1, 2 ORDER BY 1"\`
 3. **Verify Cloud Storage Architecture Artifacts & AlloyDB \`FORCE RLS\` DDL Bundle**:
-   - Inspect the live bucket \`gs://nitina-ggarwal-sandbox-647724-cymbal-multi-tenant-artifacts\` containing all 7 verified \`.svg\` and \`.drawio\` topology diagrams and SQL/Terraform manifests:
-   - \`gcloud storage ls -l gs://nitina-ggarwal-sandbox-647724-cymbal-multi-tenant-artifacts/\`
+   - Inspect the live bucket \`gs://cymbal-build-sandbox-cymbal-multi-tenant-artifacts\` containing all 7 verified \`.svg\` and \`.drawio\` topology diagrams and SQL/Terraform manifests:
+   - \`gcloud storage ls -l gs://cymbal-build-sandbox-cymbal-multi-tenant-artifacts/\`
 4. **Verify Cloud Run Control Plane & Live 20/20 Multi-Tenant Workstream API**:
    - Inspect the Cloud Run service in \`ramp-portal-dev\` (\`gcloud run services describe promptcanvas --region=us-west1 --project=ramp-portal-dev\`) or call \`GET /api/blogs/gcp-verify\` (or click **☁️ GCP Verified (20/20 PASS)** at the top of this page) to execute live BigQuery, Cloud KMS, Cloud Storage, and Pattern A/B/C isolation assertions in real time.`;
 }
@@ -1550,7 +1550,7 @@ def sign_agent_payload(payload: dict) -> str:
     """Signs a deterministic JSON payload using Cloud KMS HSM asymmetric key."""
     client = kms.KeyManagementServiceClient()
     key_path = client.crypto_key_version_path(
-        "nitina-ggarwal-sandbox-647724", "us-west1", "cymbal-multi-tenant-kr",
+        "cymbal-build-sandbox", "us-west1", "cymbal-multi-tenant-kr",
         "adk-agent-signing-key", "1"
     )
     serialized = json.dumps(payload, sort_keys=True).encode("utf-8")

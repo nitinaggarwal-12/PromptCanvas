@@ -591,10 +591,10 @@ function CanonicalContent() {
             </div>
           </div>
 
-          {/* 75 TEMPLATES GRID WITH REAL THUMBNAILS BEHIND TILES & BIGGER HOVER CARDS */}
+          {/* 40 CERTIFIED BLUEPRINTS GRID WITH REAL THUMBNAILS BEHIND TILES & BIGGER HOVER CARDS */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 pt-2">
             {filteredTemplates.map((template, idx) => {
-              const isHighlighted = ['78', '00', '35', '40', '67'].includes(template.id);
+              const isHighlighted = ['78', '00', '67'].includes(template.id);
               const thumbSrc = template.previewImage || `/templates/canonical_${template.id.padStart(2, '0')}.png`;
               const isHovered = hoveredTemplateId === template.id;
               // Determine horizontal alignment of the bigger hover card so edge columns never clip

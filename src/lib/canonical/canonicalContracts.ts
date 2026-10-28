@@ -1,6 +1,6 @@
 /**
- * Machine-Readable Canonical Architecture Contracts for the 22 Production Blueprints
- * (7 Core Google Cloud Architecture/Flow Blueprints #78, #79, #81, #84, #00, #67, #69 + 15 Infographic Blueprints #52–#66)
+ * Machine-Readable Canonical Architecture Contracts for the 40 Certified Blueprints
+ * (7 Core #78, #79, #81, #84, #00, #67, #69 + 14 G-Series #85–#98 + 4 Restored #03, #12, #14, #29 + 15 Infographics #52–#66)
  * Enforces strict semantic boundaries, required elements, forbidden antipatterns,
  * exact reference geometry, PNG aspect-ratio locks, and fail-closed QA certification.
  */
@@ -473,9 +473,9 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
     grammar: 'G-01: L400 C4 Level 1 System Context — Pharmacovigilance & Adverse Event (AE) AI Platform',
     family: 'Structure',
     level: ['L3'],
-    semanticQuestion: 'How does the L400 Pharmacovigilance & AE AI Platform enforce OAuth 2.1 DPoP, mTLS 1.3, BeyondCorp FIDO2 WebAuthn, VPC-SC restricted.googleapis.com, Model Armor, Gemini 3.0 Pro ADK, OPA Rego XSD validation, Oracle Argus/Veeva Vault commit, AS2 MDN E2B(R3), and SecOps Chronicle WORM retention?',
-    requiredElements: ['oauth 2.1 dpop', 'fido2 webauthn', 'restricted.googleapis.com', 'oracle argus', 'secops chronicle'],
-    forbiddenElements: ['unconnected-edges'],
+    semanticQuestion: 'How does the L400 Pharmacovigilance & AE AI Platform enforce OAuth 2.1 DPoP, mTLS 1.3, BeyondCorp FIDO2 WebAuthn, VPC-SC restricted.googleapis.com, Model Armor, Gemini 2.5 Pro ADK, OPA Rego XSD validation, Enterprise Regulatory Vault SoR commit, AS2 MDN E2B(R3), and SecOps Chronicle WORM retention?',
+    requiredElements: ['oauth 2.1 dpop', 'fido2 webauthn', 'restricted.googleapis.com', 'enterprise regulatory vault sor', 'secops chronicle'],
+    forbiddenElements: ['unconnected-edges', 'okta', 'oracle argus', 'veeva', 'medidata', 'pagerduty', 'gemini 3.0 pro'],
     edgeTypes: ['ae-case-ingestion', 'identity-vocab-sync', 'regulatory-e2b'],
     iconPolicy: 'authentic-brand',
     sourceImage: 'canonical_94.png',
@@ -486,10 +486,10 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
       pageHeight: 858,
       aspectRatio: 1536 / 858,
       minIconCount: 4,
-      requiredCellIds: ['g01_l400_left_col', 'g01_l400_sys', 'g01_l400_c1', 'g01_l400_c2', 'g01_l400_c3', 'g01_l400_gov', 'g01_l400_right_col'],
+      requiredCellIds: ['g01_l400_left_col', 'g01_l400_sys', 'g01_l400_c1', 'g01_l400_c2', 'g01_l400_c3', 'g01_l400_gov', 'g01_l400_right_col', 'g01_l400_ftr'],
       forbiddenCellIds: [],
-      requiredSubstrings: ['G-01: L400 C4 Level 1 System Context', 'Multimodal AE Intake', 'restricted.googleapis.com'],
-      forbiddenSubstrings: ['image=data:image/svg+xml;utf8,']
+      requiredSubstrings: ['G-01: L400 C4 Level 1 System Context', 'Multimodal AE Intake', 'restricted.googleapis.com', 'Cloud Identity / WIF OIDC', 'Enterprise Regulatory Vault SoR'],
+      forbiddenSubstrings: ['image=data:image/svg+xml;utf8,', 'Okta', 'Oracle Argus', 'Veeva', 'Medidata', 'Gemini 3.0 Pro']
     }
   },
   '95': {

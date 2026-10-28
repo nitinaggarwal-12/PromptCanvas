@@ -7,7 +7,7 @@
  * Comprehensive Semantic Intent Hierarchy:
  * 1. Cloud Armor / WAF / DDoS / Security Perimeter ("add cloud armor", "enforce waf")
  * 2. Multi-Tier VPC Subnets & Networking ("add subnets", "private subnets", "psc")
- * 3. ADK 2.0 Agentic Tools & BeyondCorp Zero-Trust ("integrate adk", "tool calling")
+ * 3. Google ADK Agentic Tools & BeyondCorp Zero-Trust ("integrate adk", "tool calling")
  * 4. Vertex AI Vector Search / ScaNN / RAG Grounding ("vector search", "scann", "rag")
  * 5. GPU MIGs, Compute Engine Autoscaling & Slurm ("scale migs", "gpu compute", "h100")
  * 6. Cloud Spanner / Multi-Region DB / ACID ("spanner", "ha database", "sql")
@@ -170,19 +170,19 @@ export function compileArchitectureFromPrompt(
   }
 
   // =========================================================================
-  // 3. SPECIFIC: ADK 2.0 / Agent Tools / BeyondCorp / Function Calling / MCP
+  // 3. SPECIFIC: Google ADK / Agent Tools / BeyondCorp / Function Calling / MCP
   // =========================================================================
   if (p.includes('adk') || p.includes('agentic tool') || p.includes('beyondcorp') || p.includes('tool calling') || p.includes('function call') || (p.includes('tool') && p.includes('iap')) || (p.includes('tool') && p.includes('agent'))) {
     return {
-      projectTitle: title.includes('ADK') || title.includes('BeyondCorp') || title.includes('Tool') ? title : `${projectName || 'Google Cloud'}: ADK 2.0 Agentic Tools & BeyondCorp Zero-Trust Platform`,
-      subtitle: 'Agentic Tool Architecture: BeyondCorp Ingress → ADK 2.0 Tool Runtime → Privileged HITL Gate → Enterprise API Connectors',
-      summary: 'Integrated ADK 2.0 Agentic Tools with BeyondCorp Zero-Trust & Identity-Aware Proxy (IAP)',
+      projectTitle: title.includes('ADK') || title.includes('BeyondCorp') || title.includes('Tool') ? title : `${projectName || 'Google Cloud'}: Google ADK Agentic Tools & BeyondCorp Zero-Trust Platform`,
+      subtitle: 'Agentic Tool Architecture: BeyondCorp Ingress → Google ADK Tool Runtime → Privileged HITL Gate → Enterprise API Connectors',
+      summary: 'Integrated Google ADK Agentic Tools with BeyondCorp Zero-Trust & Identity-Aware Proxy (IAP)',
       targetTier: 'Agentic Tools & Zero-Trust Governance (Tier 4)',
-      changedComponents: ['ADK 2.0 Agent Tool Runtime', 'BeyondCorp Context-Aware IAP', 'Privileged Action Approval Gate (HITL)', 'Enterprise Tool Registry (OpenAPI)'],
+      changedComponents: ['Google ADK Agent Tool Runtime', 'BeyondCorp Context-Aware IAP', 'Privileged Action Approval Gate (HITL)', 'Enterprise Tool Registry (OpenAPI)'],
       stages: [
         { num: '1', title: 'Zero-Trust Ingress', category: 'ingress', color: '#1A73E8' },
         { num: '2', title: 'Intent & Policy Router', category: 'orchestration', color: '#1A73E8' },
-        { num: '3', title: 'ADK 2.0 Agent Swarm', category: 'compute', color: '#1A73E8' },
+        { num: '3', title: 'Google ADK Agent Swarm', category: 'compute', color: '#1A73E8' },
         { num: '4', title: 'Tools & Privileged Gate', category: 'data', color: '#1A73E8' },
         { num: '5', title: 'Gemini Multi-Agent Core', category: 'ai', color: '#1E8E3E' },
         { num: '6', title: 'Audited Action Delivery', category: 'ops', color: '#1E8E3E' }
@@ -197,7 +197,7 @@ export function compileArchitectureFromPrompt(
         routing: [
           { id: 'n_fast_path', title: 'Direct Read-Only Tool Cache', subtitle: 'Memorystore Fast-Path Tool Lookup', icon: 'memorystore', stage: 2 },
           { id: 'gate_task_type', title: 'Agent Policy & Scope Router', subtitle: 'Role-Based Tool Permissions (RBAC)', icon: 'agent_builder', stage: 2 },
-          { id: 'n_supervisor', title: 'ADK 2.0 Supervisor Engine', subtitle: 'GKE Autopilot Multi-Agent Orchestrator', icon: 'gke_autopilot', stage: 2, highlight: true },
+          { id: 'n_supervisor', title: 'Google ADK Supervisor Engine', subtitle: 'GKE Autopilot Multi-Agent Orchestrator', icon: 'gke_autopilot', stage: 2, highlight: true },
           { id: 'n_memory', title: 'Episodic & Tool State Store', subtitle: 'Cloud Memorystore & Spanner Session Sync', icon: 'memorystore', stage: 2 }
         ],
         workers: [

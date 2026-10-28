@@ -1,0 +1,150 @@
+{
+  "schema": "Cymbal-Multi-Tenant-Cloud-Verification-Receipt-v3.1",
+  "verifiedAtUtc": "2026-10-28T12:00:00Z",
+  "overallStatus": "CERTIFIED",
+  "controlPlaneProjectId": "ramp-portal-dev",
+  "controlPlaneProjectNumber": "248990048888",
+  "pooledProdProjectId": "cymbal-pooled-prod",
+  "pooledProdProjectNumber": "638420508320",
+  "dataSiloProjectId": "cymbal-build-sandbox",
+  "dataSiloProjectNumber": "887605034827",
+  "authenticatedAccount": "sre-automation@cymbal-cloud.iam.gserviceaccount.com",
+  "region": "us-west1",
+  "bigQueryDataset": "cymbal-build-sandbox:cymbal_agentic_finops_otel",
+  "bigQueryTables": [
+    "tenant_telemetry_spans",
+    "security_breach_audit_log",
+    "tenant_promotion_migrations",
+    "pattern_a_pooled_rls_entities",
+    "pattern_c_psc_endpoints_registry"
+  ],
+  "siloBigQueryDataset": "cymbal-build-sandbox:cymbal_silo_finvault_usw1",
+  "siloBigQueryTables": [
+    "pattern_b_silo_finvault_cmek_vault"
+  ],
+  "kmsKeyRing": "projects/cymbal-build-sandbox/locations/us-west1/keyRings/cymbal-multi-tenant-kr",
+  "kmsKeys": [
+    "finvault-silo-cmek",
+    "retailstream-silo-cmek",
+    "medcore-revoked-cmek",
+    "adk-agent-signing-key"
+  ],
+  "vpcNetworks": [
+    "cymbal-pattern-c-hub-vpc (10.128.0.0/24 + PSC /28 10.240.0.0/28)",
+    "cymbal-pattern-c-finvault-spoke-vpc (10.140.0.0/24)"
+  ],
+  "gcsBucket": "gs://cymbal-build-sandbox-cymbal-multi-tenant-artifacts",
+  "gcsObjectsCount": 27,
+  "cloudRunService": "projects/ramp-portal-dev/locations/us-west1/services/promptcanvas",
+  "cloudRunFleetRevisions": [
+    "ge-blogs-00023-7j4",
+    "promptcanvas-00061-2sr",
+    "cymbal-multi-tenant-patterns-00001-dmg"
+  ],
+  "bigQueryBreachSummary": [
+    {
+      "simId": "SIM-01",
+      "hop": "Hop 1",
+      "vector": "Forged X-Tenant-ID Header Injection",
+      "verdict": "BLOCKED_401"
+    },
+    {
+      "simId": "SIM-02",
+      "hop": "Hop 1",
+      "vector": "Replay Stolen OAuth Bearer Without DPoP Proof",
+      "verdict": "BLOCKED_401"
+    },
+    {
+      "simId": "SIM-03",
+      "hop": "Hop 2",
+      "vector": "Cross-Tenant Private Agent Alpha Enumeration",
+      "verdict": "BLOCKED_403"
+    },
+    {
+      "simId": "SIM-04",
+      "hop": "Hop 2",
+      "vector": "Unauthorized Cross-Tenant MCP Connector Call",
+      "verdict": "PRUNED_403"
+    },
+    {
+      "simId": "SIM-05",
+      "hop": "Hop 3",
+      "vector": "LLM Prompt-Injection Mutation of temp:tenant_id",
+      "verdict": "SEALED_IMMUTABLE"
+    },
+    {
+      "simId": "SIM-06",
+      "hop": "Hop 3",
+      "vector": "Noisy-Neighbor Thinking-Token Exhaustion Flood",
+      "verdict": "THROTTLED_429"
+    },
+    {
+      "simId": "SIM-07",
+      "hop": "Hop 3",
+      "vector": "Cross-Tenant ContextCache Prefix Collision",
+      "verdict": "ISOLATED_NAMESPACE"
+    },
+    {
+      "simId": "SIM-08",
+      "hop": "Hop 4",
+      "vector": "Indirect RAG Prompt Injection & IBAN Exfiltration",
+      "verdict": "REDACTED_SDP"
+    },
+    {
+      "simId": "SIM-09",
+      "hop": "Hop 5",
+      "vector": "SQL Injection & SET SESSION RLS Override Attempt",
+      "verdict": "BLOCKED_FORCE_RLS"
+    },
+    {
+      "simId": "SIM-10",
+      "hop": "Hop 5",
+      "vector": "Unconsented Cross-Tenant 3LO Connector Token Reuse",
+      "verdict": "CHALLENGED_401"
+    }
+  ],
+  "exportedDiagrams": [
+    {
+      "id": "ws1-multi-tenant-taxonomy-overview"
+    },
+    {
+      "id": "ws1-cloud-arch-center-5hop-baseline"
+    },
+    {
+      "id": "ws2-pattern-a-pooled-5hop-architecture"
+    },
+    {
+      "id": "ws2-pattern-a-breach-defense-sequence"
+    },
+    {
+      "id": "ws3-pattern-b-sovereign-silos-architecture"
+    },
+    {
+      "id": "ws4-pattern-c-hybrid-psc-and-migration"
+    },
+    {
+      "id": "ws5-decision-tree-and-agentic-triad"
+    },
+    {
+      "id": "ws2-demo-env-and-3p-auth-sandbox-topology"
+    },
+    {
+      "id": "ws2-terraform-starter-resource-graph"
+    },
+    {
+      "id": "ws3-multi-project-silo-and-cmek-setup-topology"
+    },
+    {
+      "id": "ws3-terraform-silo-blueprint-resource-graph"
+    },
+    {
+      "id": "ws4-hub-and-spoke-demo-env-setup-topology"
+    },
+    {
+      "id": "ws4-zero-downtime-tier-upgrade-sequence"
+    },
+    {
+      "id": "ws4-terraform-hybrid-psc-blueprint-resource-graph"
+    }
+  ]
+}

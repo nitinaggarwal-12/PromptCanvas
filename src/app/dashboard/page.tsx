@@ -2504,7 +2504,7 @@ function DashboardContent() {
               onClick={() => setIsNewDiagramModalOpen(true)}
               data-testid="dashboard-new-diagram-btn"
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs transition shadow-md shadow-sky-500/25 cursor-pointer shrink-0 active:scale-95"
-              title="Create New Architecture Diagram (Select Input Method: Prompt AI, 22 Blueprints, Image Decompile, Blank Canvas)"
+              title="Create New Architecture Diagram (Select Input Method: Prompt AI, 40 Certified Blueprints, Image Decompile, Blank Canvas)"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>New Diagram</span>

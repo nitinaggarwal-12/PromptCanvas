@@ -19,7 +19,7 @@ const section=(id:string,n:number,title:string,sub:string,x:number,y:number,w:nu
 
 export function getApprovedSixRsMigrationMatrixV2Xml():string{
  const n:string[]=['<mxCell id="0"/>','<mxCell id="1" parent="0"/>']; const e:string[]=[]; const W=1760,H=1040;
- n.push(cell('count','&lt;b&gt;29 OF 50&lt;/b&gt;',`${BOX}fillColor=#175CD3;strokeColor=#175CD3;fontColor=#FFFFFF;fontStyle=1;fontSize=17;align=center;`,16,14,118,42));
+ n.push(cell('count','&lt;b&gt;BLUEPRINT #29&lt;/b&gt;',`${BOX}fillColor=#175CD3;strokeColor=#175CD3;fontColor=#FFFFFF;fontStyle=1;fontSize=13.5;align=center;`,16,14,128,42));
  n.push(text('title','6Rs Migration Disposition Matrix',155,10,900,42,30,'#101828','left',true));
  n.push(text('sub','Assessment-driven 6R recommendation with explicit decision rules, constraints, dependencies, target architecture, value, risk and sequencing.',155,49,1130,34,12.5,'#475467'));
  n.push(cell('master','MASTER BLUEPRINT',`${BOX}fillColor=#FFFFFF;strokeColor=#175CD3;fontColor=#175CD3;fontStyle=1;fontSize=11;align=center;`,1560,14,180,30));

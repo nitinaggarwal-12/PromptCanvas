@@ -513,7 +513,7 @@ function DocGenContent() {
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
-  // Navigation and active tabs (Defaults to 'catalog' so all 17 Document Archetypes load immediately)
+  // Navigation and active tabs (Defaults to 'catalog' so all 8 Core Document Archetypes load immediately)
   const tabParam = searchParams.get('tab');
   const archParam = searchParams.get('archetype') || searchParams.get('arch');
   const [activeTab, setActiveTab] = useState<'catalog' | 'studio'>(() => {

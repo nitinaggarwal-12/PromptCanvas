@@ -26,12 +26,12 @@ export function generateTemplate29CutoverRunbookXml(
 
   const stepChevron = (id: string, v: string, x: number, y: number, w: number, h: number, col: string) =>
     c.push(
-      `<mxCell id="${id}" value="${E(v)}" style="shape=step;perimeter=stepPerimeter;fixedSize=1;size=14;fillColor=${col};strokeColor=${col};fontColor=#FFFFFF;fontStyle=1;fontSize=10;align=center;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+      `<mxCell id="${id}" value="${E(v)}" style="shape=step;perimeter=stepPerimeter;fixedSize=1;size=12;whiteSpace=wrap;html=1;fillColor=${col};strokeColor=${col};fontColor=#FFFFFF;fontStyle=1;fontSize=9;align=center;verticalAlign=middle;spacingLeft=10;spacingRight=8;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
 
   const stepChevronSmall = (id: string, v: string, x: number, y: number, w: number, h: number, col: string) =>
     c.push(
-      `<mxCell id="${id}" value="${E(v)}" style="shape=step;perimeter=stepPerimeter;fixedSize=1;size=10;fillColor=${col};strokeColor=${col};fontColor=#FFFFFF;fontStyle=1;fontSize=9.5;align=center;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+      `<mxCell id="${id}" value="${E(v)}" style="shape=step;perimeter=stepPerimeter;fixedSize=1;size=10;whiteSpace=wrap;html=1;fillColor=${col};strokeColor=${col};fontColor=#FFFFFF;fontStyle=1;fontSize=9.5;align=center;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
 
   const circle = (id: string, v: string, x: number, y: number, d: number, fill: string, stroke: string, fontCol = "#FFFFFF", fontSz = 11) =>
@@ -97,12 +97,12 @@ export function generateTemplate29CutoverRunbookXml(
   text("lbl_life", "<div style='font-size:12.5px;font-weight:900;color:#1E3A8A;text-align:center;'>CUTOVER LIFECYCLE – PHASES</div>", 204, 78, 960, 18, "align=center;");
 
   const phases = [
-    { n: "1. PLAN & PREPARE\n(T-2 to T-14 Days)", col: "#1E3A8A", bg: "#EFF6FF", icon: "●", sub: "• Finalize cutover approach<br/>• Validate readiness criteria<br/>• Complete DR &amp; rollback plan<br/>• Obtain business sign-off" },
-    { n: "2. PRE-CUTOVER\n(T-24 to T-1 Hours)", col: "#2563EB", bg: "#EFF6FF", icon: "●", sub: "• Deploy &amp; warm up prod<br/>• Sync / freeze data (if needed)<br/>• Run pre-cutover checks<br/>• Get final go/no-go approval" },
-    { n: "3. CUTOVER\n(T-0 Window)", col: "#16A34A", bg: "#F0FDF4", icon: "●", sub: "• Switch traffic to production<br/>• Enable services / agents<br/>• Run smoke &amp; validation tests<br/>• Monitor in real-time" },
-    { n: "4. STABILIZATION\n(T+0 to T+24 Hours)", col: "#EA580C", bg: "#FFFBEB", icon: "●", sub: "• Hypercare monitoring<br/>• Resolve P1/P2 issues<br/>• Validate KPIs &amp; SLAs<br/>• Confirm business usage" },
-    { n: "5. POST-CUTOVER\n(T+1 to T+7 Days)", col: "#0284C7", bg: "#F0F9FF", icon: "●", sub: "• Performance optimization<br/>• Decommission old env<br/>• Documentation update<br/>• Formal go-live sign-off" },
-    { n: "6. OPERATE\n(BAU)", col: "#7C3AED", bg: "#FAF5FF", icon: "●", sub: "• Steady state operations<br/>• Continuous monitoring<br/>• Cost &amp; usage optimization<br/>• Ongoing improvements" }
+    { n: "1. PLAN &amp; PREPARE<br/>(T-2 to T-14 Days)", col: "#1E3A8A", bg: "#EFF6FF", icon: "●", sub: "• Finalize cutover approach<br/>• Validate readiness criteria<br/>• Complete DR &amp; rollback plan<br/>• Obtain business sign-off" },
+    { n: "2. PRE-CUTOVER<br/>(T-24 to T-1 Hours)", col: "#2563EB", bg: "#EFF6FF", icon: "●", sub: "• Deploy &amp; warm up prod<br/>• Sync / freeze data (if needed)<br/>• Run pre-cutover checks<br/>• Get final go/no-go approval" },
+    { n: "3. CUTOVER<br/>(T-0 Window)", col: "#16A34A", bg: "#F0FDF4", icon: "●", sub: "• Switch traffic to production<br/>• Enable services / agents<br/>• Run smoke &amp; validation tests<br/>• Monitor in real-time" },
+    { n: "4. STABILIZATION<br/>(T+0 to T+24 Hours)", col: "#EA580C", bg: "#FFFBEB", icon: "●", sub: "• Hypercare monitoring<br/>• Resolve P1/P2 issues<br/>• Validate KPIs &amp; SLAs<br/>• Confirm business usage" },
+    { n: "5. POST-CUTOVER<br/>(T+1 to T+7 Days)", col: "#0284C7", bg: "#F0F9FF", icon: "●", sub: "• Performance optimization<br/>• Decommission old env<br/>• Documentation update<br/>• Formal go-live sign-off" },
+    { n: "6. OPERATE<br/>(BAU)", col: "#7C3AED", bg: "#FAF5FF", icon: "●", sub: "• Steady state operations<br/>• Continuous monitoring<br/>• Cost &amp; usage optimization<br/>• Ongoing improvements" }
   ];
 
   phases.forEach((p, idx) => {
@@ -238,8 +238,8 @@ export function generateTemplate29CutoverRunbookXml(
     { t: "Cloud Logging", sub: "(Logs)", icon: "●" },
     { t: "Error Reporting", sub: "(Exceptions)", icon: "●" },
     { t: "Uptime Checks", sub: "(Availability)", icon: "🩺" },
-    { t: "PagerDuty", sub: "(On-call)", icon: "●" },
-    { t: "Slack / Email", sub: "(Notifications)", icon: "●" }
+    { t: "Cloud Monitoring Alerting", sub: "(On-call)", icon: "●" },
+    { t: "Cloud Chat / Email", sub: "(Notifications)", icon: "●" }
   ];
   hyperCards.forEach((hc, idx) => {
     const col = idx % 3;
@@ -295,7 +295,7 @@ export function generateTemplate29CutoverRunbookXml(
   rect("lbl_comm", `<b style="font-size:10px;color:#2563EB;">COMMUNICATION PLAN</b>`, 940, 754, 215, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=0;align=center;");
   text("txt_comm", `<div style="font-size:8.5px;line-height:1.45;color:#0F172A;padding:4px;">
      <b>Stakeholders:</b><br/>Execs, Business, OC<br/><br/>
-     <b>Channels:</b><br/>Email, Slack, War Room<br/><br/>
+     <b>Channels:</b><br/>Email, Cloud Chat, War Room<br/><br/>
     ⏱ <b>Cadence:</b><br/>Pre / During / Post
   </div>`, 942, 780, 211, 168, "align=left;verticalAlign=top;");
 
@@ -322,11 +322,8 @@ export function generateTemplate29CutoverRunbookXml(
   </div>`, 1318, 780, 200, 168, "align=left;verticalAlign=top;");
 
   // ==================== 7. FOOTER STATUS BAR (y=962, h=24) ====================
-  const footerHtml = `<div style='font-size:9px;color:#64748B;display:flex;justify-content:space-between;align-items:center;'>
-    <div><b>NOTES:</b> All runbook executions require formal sign-off and post-mortem audit.</div>
-    <div>Version: 1.0 &nbsp;|&nbsp; Enterprise Architecture Team</div>
-  </div>`;
-  rect("footer_status", footerHtml, 16, 962, 1504, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=4;");
+  const footerHtml = `<table style='width:1490px;border-collapse:collapse;font-size:9px;color:#64748B;'><tr><td style='text-align:left;padding-left:6px;'><b>NOTES:</b> All runbook executions require formal sign-off and post-mortem audit.</td><td style='text-align:right;padding-right:6px;'>Version: 1.0 &nbsp;|&nbsp; Enterprise Architecture Team</td></tr></table>`;
+  rect("footer_status", footerHtml, 16, 962, 1504, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_29_cutover_runbook_architecture" name="Template 29: Cutover / Runbook Architecture">

@@ -57,11 +57,11 @@ export function buildMasterUnifiedFlowchartXml(): string {
       <mxGeometry x="58" y="37" width="36" height="36" as="geometry" />
     </mxCell>
 
-    <mxCell id="header_text" value="&lt;b style='font-size:16px;color:#0F172A;'&gt;Google Cloud | Unified Enterprise Agentic AI &amp;amp; Operational Architecture&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11.5px;color:#475569;'&gt;Full-Lifecycle Agent Mesh: Gemini Apps &amp;bull; Agent Designer &amp;bull; ADK 2.0 &amp;bull; Deep Research &amp;bull; Vertex AI &amp;bull; Pub/Sub &amp;bull; Persistence &amp;amp; SRE Hub&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
+    <mxCell id="header_text" value="&lt;b style='font-size:16px;color:#0F172A;'&gt;Google Cloud | Unified Enterprise Agentic AI &amp;amp; Operational Architecture&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11.5px;color:#475569;'&gt;Full-Lifecycle Agent Mesh: Gemini Apps &amp;bull; Agent Designer &amp;bull; Google ADK &amp;bull; Deep Research &amp;bull; Vertex AI &amp;bull; Pub/Sub &amp;bull; Persistence &amp;amp; SRE Hub&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
       <mxGeometry x="110" y="32" width="840" height="46" as="geometry" />
     </mxCell>
 
-    <mxCell id="header_badges" value="&lt;span style='background-color:#E0F2FE;color:#0369A1;border:1px solid #7DD3FC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;ADK 2.0 Core&lt;/span&gt; &lt;span style='background-color:#DCFCE7;color:#15803D;border:1px solid #86EFAC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Deep Research&lt;/span&gt; &lt;span style='background-color:#EEF2FF;color:#4338CA;border:1px solid #A5B4FC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;HA 99.99%&lt;/span&gt; &lt;span style='background-color:#F3E8FF;color:#7E22CE;border:1px solid #D8B4FE;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Zero-Trust&lt;/span&gt;" style="text;html=1;align=right;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
+    <mxCell id="header_badges" value="&lt;span style='background-color:#E0F2FE;color:#0369A1;border:1px solid #7DD3FC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Google ADK Core&lt;/span&gt; &lt;span style='background-color:#DCFCE7;color:#15803D;border:1px solid #86EFAC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Deep Research&lt;/span&gt; &lt;span style='background-color:#EEF2FF;color:#4338CA;border:1px solid #A5B4FC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;HA 99.99%&lt;/span&gt; &lt;span style='background-color:#F3E8FF;color:#7E22CE;border:1px solid #D8B4FE;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Zero-Trust&lt;/span&gt;" style="text;html=1;align=right;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
       <mxGeometry x="960" y="37" width="440" height="36" as="geometry" />
     </mxCell>
 
@@ -85,11 +85,11 @@ export function buildMasterUnifiedFlowchartXml(): string {
       <mxGeometry x="850" y="286" width="310" height="20" as="geometry" />
     </mxCell>
 
-    <!-- Tier 3: Multi-Agent Mesh & ADK 2.0 Runtime -->
+    <!-- Tier 3: Multi-Agent Mesh & Google ADK Runtime -->
     <mxCell id="tier_3_frame" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;fillColor=#FAF5FF;fillOpacity=40;strokeColor=#E9D5FF;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
       <mxGeometry x="40" y="470" width="1380" height="145" as="geometry" />
     </mxCell>
-    <mxCell id="tier_3_tab" value="&lt;b style='font-size:10px;color:#7E22CE;'&gt;TIER 3: COGNITIVE MULTI-AGENT MESH &amp;amp; ADK 2.0 REASONING ENGINE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F3E8FF;strokeColor=#A855F7;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+    <mxCell id="tier_3_tab" value="&lt;b style='font-size:10px;color:#7E22CE;'&gt;TIER 3: COGNITIVE MULTI-AGENT MESH &amp;amp; Google ADK REASONING ENGINE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F3E8FF;strokeColor=#A855F7;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
       <mxGeometry x="55" y="476" width="430" height="20" as="geometry" />
     </mxCell>
 
@@ -181,9 +181,9 @@ export function buildMasterUnifiedFlowchartXml(): string {
     </mxCell>
 
     <!-- ========================================================================= -->
-    <!-- TIER 3: COGNITIVE MULTI-AGENT MESH & ADK 2.0 (WITH PRODUCT ICONS)         -->
+    <!-- TIER 3: COGNITIVE MULTI-AGENT MESH & Google ADK (WITH PRODUCT ICONS)         -->
     <!-- ========================================================================= -->
-    <mxCell id="node_3_orchestrator" value="&lt;b style='font-size:13px;color:#6B21A8;'&gt;[3] ADK 2.0 / GKE Orchestrator&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#581C87;'&gt;LangGraph State Machine Router&lt;br&gt;Autonomous Subagent Coordinator&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
+    <mxCell id="node_3_orchestrator" value="&lt;b style='font-size:13px;color:#6B21A8;'&gt;[3] Google ADK / GKE Orchestrator&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#581C87;'&gt;LangGraph State Machine Router&lt;br&gt;Autonomous Subagent Coordinator&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
       <mxGeometry x="80" y="506" width="420" height="88" as="geometry" />
     </mxCell>
     <mxCell id="icon_3_orchestrator" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=none;imageAspect=1;aspect=fixed;image=${SVG_ADK_GKE};" vertex="1" parent="1">
@@ -325,7 +325,7 @@ export function buildMasterUnifiedFlowchartXml(): string {
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <!-- Flow 3: Apigee -> ADK 2.0 Orchestrator (Open Inter-Tier Channel at y=448) -->
+    <!-- Flow 3: Apigee -> Google ADK Orchestrator (Open Inter-Tier Channel at y=448) -->
     <mxCell id="flow_3" value="&lt;b style='color:#6B21A8;'&gt;3. Auth'd &amp;amp; PII-Masked Payload&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9333EA;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#9333EA;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10.5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="node_2_apigee" target="node_3_orchestrator">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
@@ -335,7 +335,7 @@ export function buildMasterUnifiedFlowchartXml(): string {
       </mxGeometry>
     </mxCell>
 
-    <!-- Flow 4: ADK 2.0 Orchestrator <-> Deep Research Agent (80px Wide Gap) -->
+    <!-- Flow 4: Google ADK Orchestrator <-> Deep Research Agent (80px Wide Gap) -->
     <mxCell id="flow_4_fwd" value="&lt;b style='color:#0284C7;'&gt;4. Multi-Hop Search&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#0284C7;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=1;exitY=0.35;entryX=0;entryY=0.35;" edge="1" parent="1" source="node_3_orchestrator" target="node_3_research">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
@@ -351,17 +351,17 @@ export function buildMasterUnifiedFlowchartXml(): string {
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <!-- Flow 5: ADK 2.0 Orchestrator -> Vector Search (Open Vertical Drop at y=638) -->
+    <!-- Flow 5: Google ADK Orchestrator -> Vector Search (Open Vertical Drop at y=638) -->
     <mxCell id="flow_5" value="&lt;b style='color:#065F46;'&gt;5. Vector RAG Query&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#059669;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0.26;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="node_3_orchestrator" target="node_4_vector">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <!-- Flow 6: ADK 2.0 Orchestrator -> Redis (Open Vertical Drop at y=638) -->
+    <!-- Flow 6: Google ADK Orchestrator -> Redis (Open Vertical Drop at y=638) -->
     <mxCell id="flow_6" value="&lt;b style='color:#065F46;'&gt;6. Read/Write State&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#059669;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0.85;exitY=1;entryX=0.12;entryY=0;" edge="1" parent="1" source="node_3_orchestrator" target="node_5_redis">
       <mxGeometry relative="1" as="geometry" />
     </mxCell>
 
-    <!-- Flow 7: ADK 2.0 Orchestrator -> Cloud SQL (Open Inter-Tier Channel at y=638) -->
+    <!-- Flow 7: Google ADK Orchestrator -> Cloud SQL (Open Inter-Tier Channel at y=638) -->
     <mxCell id="flow_7" value="&lt;b style='color:#1E40AF;'&gt;7. ACID Commit&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#2563EB;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0.96;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="node_3_orchestrator" target="node_6_cloudsql">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
@@ -413,7 +413,7 @@ export function buildMasterUnifiedFlowchartXml(): string {
       </mxGeometry>
     </mxCell>
 
-    <!-- Flow 13: ADK 2.0 Orchestrator -> Telemetry Hub (Dedicated Leftmost Corridor at x=55) -->
+    <!-- Flow 13: Google ADK Orchestrator -> Telemetry Hub (Dedicated Leftmost Corridor at x=55) -->
     <mxCell id="flow_13" value="&lt;b style='color:#1E293B;'&gt;13. OTel Traces &amp;amp; Metrics&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#475569;spacingTop=2;spacingBottom=2;spacingLeft=5;spacingRight=5;fontFamily=Arial;fontSize=10;exitX=0;exitY=0.8;entryX=0;entryY=0.5;" edge="1" parent="1" source="node_3_orchestrator" target="node_11_telemetry">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">

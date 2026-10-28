@@ -87,11 +87,11 @@ export function generateGoogleCloudL4AgenticFlowchartXml(customTitle?: string): 
       <mxGeometry x="58" y="37" width="36" height="36" as="geometry" />
     </mxCell>
 
-    <mxCell id="header_text" value="&lt;b style='font-size:16px;color:#0F172A;'&gt;${titleText}&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11.5px;color:#475569;'&gt;Full-Lifecycle Agent Mesh (L4 Production): Gemini Apps &amp;bull; Agent Designer &amp;bull; ADK 2.0 &amp;bull; Deep Research &amp;bull; Vertex AI &amp;bull; Pub/Sub &amp;bull; Persistence &amp; SRE Hub&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
+    <mxCell id="header_text" value="&lt;b style='font-size:16px;color:#0F172A;'&gt;${titleText}&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11.5px;color:#475569;'&gt;Full-Lifecycle Agent Mesh (L4 Production): Gemini Apps &amp;bull; Agent Designer &amp;bull; Google ADK &amp;bull; Deep Research &amp;bull; Vertex AI &amp;bull; Pub/Sub &amp;bull; Persistence &amp; SRE Hub&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
       <mxGeometry x="110" y="32" width="840" height="46" as="geometry" />
     </mxCell>
 
-    <mxCell id="header_badges" value="&lt;span style='background-color:#E0F2FE;color:#0369A1;border:1px solid #7DD3FC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;ADK 2.0 Core&lt;/span&gt; &lt;span style='background-color:#DCFCE7;color:#15803D;border:1px solid #86EFAC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Deep Research&lt;/span&gt; &lt;span style='background-color:#EEF2FF;color:#4338CA;border:1px solid #A5B4FC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;HA 99.99%&lt;/span&gt; &lt;span style='background-color:#F3E8FF;color:#7E22CE;border:1px solid #D8B4FE;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Zero-Trust&lt;/span&gt;" style="text;html=1;align=right;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
+    <mxCell id="header_badges" value="&lt;span style='background-color:#E0F2FE;color:#0369A1;border:1px solid #7DD3FC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Google ADK Core&lt;/span&gt; &lt;span style='background-color:#DCFCE7;color:#15803D;border:1px solid #86EFAC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Deep Research&lt;/span&gt; &lt;span style='background-color:#EEF2FF;color:#4338CA;border:1px solid #A5B4FC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;HA 99.99%&lt;/span&gt; &lt;span style='background-color:#F3E8FF;color:#7E22CE;border:1px solid #D8B4FE;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Zero-Trust&lt;/span&gt;" style="text;html=1;align=right;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
       <mxGeometry x="960" y="37" width="440" height="36" as="geometry" />
     </mxCell>
 
@@ -115,11 +115,11 @@ export function generateGoogleCloudL4AgenticFlowchartXml(customTitle?: string): 
       <mxGeometry x="850" y="286" width="310" height="20" as="geometry" />
     </mxCell>
 
-    <!-- Tier 3: Multi-Agent Mesh & ADK 2.0 Runtime -->
+    <!-- Tier 3: Multi-Agent Mesh & Google ADK Runtime -->
     <mxCell id="tier_3_frame" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;fillColor=#FAF5FF;fillOpacity=40;strokeColor=#E9D5FF;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
       <mxGeometry x="40" y="470" width="1380" height="145" as="geometry" />
     </mxCell>
-    <mxCell id="tier_3_tab" value="&lt;b style='font-size:10px;color:#7E22CE;'&gt;TIER 3: COGNITIVE MULTI-AGENT MESH &amp; ADK 2.0 REASONING ENGINE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F3E8FF;strokeColor=#A855F7;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+    <mxCell id="tier_3_tab" value="&lt;b style='font-size:10px;color:#7E22CE;'&gt;TIER 3: COGNITIVE MULTI-AGENT MESH &amp; Google ADK REASONING ENGINE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F3E8FF;strokeColor=#A855F7;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
       <mxGeometry x="55" y="476" width="430" height="20" as="geometry" />
     </mxCell>
 
@@ -211,9 +211,9 @@ export function generateGoogleCloudL4AgenticFlowchartXml(customTitle?: string): 
     </mxCell>
 
     <!-- ========================================================================= -->
-    <!-- TIER 3: COGNITIVE MULTI-AGENT MESH & ADK 2.0 (WITH PRODUCT ICONS)         -->
+    <!-- TIER 3: COGNITIVE MULTI-AGENT MESH & Google ADK (WITH PRODUCT ICONS)         -->
     <!-- ========================================================================= -->
-    <mxCell id="node_3_orchestrator" value="&lt;b style='font-size:13px;color:#6B21A8;'&gt;[3] ADK 2.0 / GKE Orchestrator&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#581C87;'&gt;LangGraph State Machine Router&lt;br&gt;Autonomous Subagent Coordinator&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
+    <mxCell id="node_3_orchestrator" value="&lt;b style='font-size:13px;color:#6B21A8;'&gt;[3] Google ADK / GKE Orchestrator&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#581C87;'&gt;LangGraph State Machine Router&lt;br&gt;Autonomous Subagent Coordinator&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
       <mxGeometry x="80" y="506" width="420" height="88" as="geometry" />
     </mxCell>
     <mxCell id="icon_3_orchestrator" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=none;imageAspect=1;aspect=fixed;image=${ICONS.gkeHex};" vertex="1" parent="1">
@@ -766,7 +766,7 @@ export function generateGoogleCloudL3OperationalFlowchartXml(customTitle?: strin
 }
 
 /**
- * L2 Flowchart (5-Layer Logical Policy Gate, ADK 2.0 Mesh, Persistence & Event Bus with Product Icons)
+ * L2 Flowchart (5-Layer Logical Policy Gate, Google ADK Mesh, Persistence & Event Bus with Product Icons)
  */
 export function generateGoogleCloudL2LogicalFlowchartXml(customTitle?: string): string {
   const titleText = customTitle?.trim()
@@ -790,11 +790,11 @@ export function generateGoogleCloudL2LogicalFlowchartXml(customTitle?: string): 
       <mxGeometry x="58" y="37" width="36" height="36" as="geometry" />
     </mxCell>
 
-    <mxCell id="header_text" value="&lt;b style='font-size:16px;color:#0F172A;'&gt;${titleText}&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11.5px;color:#475569;'&gt;5-Layer Logical Architecture (L2): Workspace Ingress &amp;rarr; Apigee Policy Rhombus Gate &amp;rarr; ADK 2.0 Reasoning &amp;rarr; Persistence &amp; Pub/Sub DLQ&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
+    <mxCell id="header_text" value="&lt;b style='font-size:16px;color:#0F172A;'&gt;${titleText}&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11.5px;color:#475569;'&gt;5-Layer Logical Architecture (L2): Workspace Ingress &amp;rarr; Apigee Policy Rhombus Gate &amp;rarr; Google ADK Reasoning &amp;rarr; Persistence &amp; Pub/Sub DLQ&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
       <mxGeometry x="110" y="32" width="840" height="46" as="geometry" />
     </mxCell>
 
-    <mxCell id="header_badges" value="&lt;span style='background-color:#E0F2FE;color:#0369A1;border:1px solid #7DD3FC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;L2 Logical Flow&lt;/span&gt; &lt;span style='background-color:#FEF3C7;color:#B45309;border:1px solid #FDE68A;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Apigee Policy Gate&lt;/span&gt; &lt;span style='background-color:#DCFCE7;color:#15803D;border:1px solid #86EFAC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;ADK 2.0 Mesh&lt;/span&gt; &lt;span style='background-color:#F3E8FF;color:#7E22CE;border:1px solid #D8B4FE;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;DLQ Retry&lt;/span&gt;" style="text;html=1;align=right;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
+    <mxCell id="header_badges" value="&lt;span style='background-color:#E0F2FE;color:#0369A1;border:1px solid #7DD3FC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;L2 Logical Flow&lt;/span&gt; &lt;span style='background-color:#FEF3C7;color:#B45309;border:1px solid #FDE68A;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Apigee Policy Gate&lt;/span&gt; &lt;span style='background-color:#DCFCE7;color:#15803D;border:1px solid #86EFAC;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;Google ADK Mesh&lt;/span&gt; &lt;span style='background-color:#F3E8FF;color:#7E22CE;border:1px solid #D8B4FE;padding:3px 8px;border-radius:5px;font-weight:bold;font-size:10px;'&gt;DLQ Retry&lt;/span&gt;" style="text;html=1;align=right;verticalAlign=middle;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
       <mxGeometry x="960" y="37" width="440" height="36" as="geometry" />
     </mxCell>
 
@@ -816,7 +816,7 @@ export function generateGoogleCloudL2LogicalFlowchartXml(customTitle?: string): 
     <mxCell id="tier_3_frame" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;fillColor=#FAF5FF;fillOpacity=40;strokeColor=#E9D5FF;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
       <mxGeometry x="40" y="470" width="1380" height="145" as="geometry" />
     </mxCell>
-    <mxCell id="tier_3_tab" value="&lt;b style='font-size:10px;color:#7E22CE;'&gt;TIER 3: COGNITIVE MULTI-AGENT MESH &amp; ADK 2.0 REASONING ENGINE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F3E8FF;strokeColor=#A855F7;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+    <mxCell id="tier_3_tab" value="&lt;b style='font-size:10px;color:#7E22CE;'&gt;TIER 3: COGNITIVE MULTI-AGENT MESH &amp; Google ADK REASONING ENGINE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F3E8FF;strokeColor=#A855F7;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
       <mxGeometry x="55" y="476" width="430" height="20" as="geometry" />
     </mxCell>
 
@@ -879,7 +879,7 @@ export function generateGoogleCloudL2LogicalFlowchartXml(customTitle?: string): 
     </mxCell>
 
     <!-- TIER 3 NODES -->
-    <mxCell id="node_3_orchestrator" value="&lt;b style='font-size:13px;color:#6B21A8;'&gt;[3] ADK 2.0 / GKE Orchestrator&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#581C87;'&gt;LangGraph State Machine Router&lt;br&gt;Autonomous Subagent Coordinator&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
+    <mxCell id="node_3_orchestrator" value="&lt;b style='font-size:13px;color:#6B21A8;'&gt;[3] Google ADK / GKE Orchestrator&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#581C87;'&gt;LangGraph State Machine Router&lt;br&gt;Autonomous Subagent Coordinator&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
       <mxGeometry x="80" y="506" width="420" height="88" as="geometry" />
     </mxCell>
     <mxCell id="icon_l2_3" value="" style="shape=image;html=1;imageAspect=1;aspect=fixed;image=${ICONS.gkeHex};" vertex="1" parent="1">
@@ -1000,7 +1000,7 @@ export function generateGoogleCloudL1ExecutiveFlowchartXml(customTitle?: string)
     <mxCell id="tier_2_frame" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;fillColor=#FAF5FF;fillOpacity=40;strokeColor=#E9D5FF;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
       <mxGeometry x="40" y="310" width="1380" height="150" as="geometry" />
     </mxCell>
-    <mxCell id="tier_2_tab" value="&lt;b style='font-size:10px;color:#7E22CE;'&gt;TIER 2: COGNITIVE MULTI-AGENT MESH &amp; ADK 2.0 REASONING ENGINE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F3E8FF;strokeColor=#A855F7;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+    <mxCell id="tier_2_tab" value="&lt;b style='font-size:10px;color:#7E22CE;'&gt;TIER 2: COGNITIVE MULTI-AGENT MESH &amp; Google ADK REASONING ENGINE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F3E8FF;strokeColor=#A855F7;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
       <mxGeometry x="55" y="316" width="430" height="20" as="geometry" />
     </mxCell>
 
@@ -1034,7 +1034,7 @@ export function generateGoogleCloudL1ExecutiveFlowchartXml(customTitle?: string)
     </mxCell>
 
     <!-- TIER 2 NODES -->
-    <mxCell id="n3" value="&lt;b style='font-size:13px;color:#6B21A8;'&gt;[2] ADK 2.0 / GKE Orchestrator&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#581C87;'&gt;LangGraph State Machine Router&lt;br&gt;Autonomous Subagent Coordinator&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
+    <mxCell id="n3" value="&lt;b style='font-size:13px;color:#6B21A8;'&gt;[2] Google ADK / GKE Orchestrator&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#581C87;'&gt;LangGraph State Machine Router&lt;br&gt;Autonomous Subagent Coordinator&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
       <mxGeometry x="80" y="350" width="380" height="88" as="geometry" />
     </mxCell>
     <mxCell id="ic3" value="" style="shape=image;html=1;imageAspect=1;aspect=fixed;image=${ICONS.gkeHex};" vertex="1" parent="1">

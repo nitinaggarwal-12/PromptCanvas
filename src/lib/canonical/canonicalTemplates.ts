@@ -120,7 +120,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Production-grade Google Cloud native topology across 6 balanced zones with Gemini 3.8 Flash & Pro hybrid engine',
     examples: 'Multi-Region Microservices, Vertex AI GenAI Studio, Real-Time Event Streaming & Unified Lakehouse',
     defaultDomain: 'Enterprise Google Cloud Native Architecture',
-    previewImage: '/templates/gcp_enterprise_architecture.png',
+    previewImage: '/templates/canonical_00.png',
     keyComponents: ['Ingress & Edge', 'Application Core Mesh', 'Real-Time Event Streaming', 'Vertex AI & Intelligence Hub', 'Multi-Region Lakehouse & DB', 'Zero-Trust Security Baseline'],
     generateXml: generateTemplate00GcpEnterpriseArchXml
   },
@@ -172,7 +172,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Step-by-step production cutover checklist, maintenance window, incident decision gates, RACI, and automated rollback flow',
     examples: 'Production launch, DR failover exercise, incident rollback decision tree, cloud cutover runbook',
     defaultDomain: 'Production Go-Live & Environment Cutover',
-    previewImage: '/templates/golive_warroom_runbook.png',
+    previewImage: '/templates/canonical_29.png',
     keyComponents: ['Cutover Lifecycle', '8 Detailed Steps', 'Rollback Plan', 'RACI & Timeline Window'],
     generateXml: generateTemplate29CutoverRunbookXml
   },
@@ -376,11 +376,11 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     family: 'Structure',
     level: 'L3',
     theme: 'light',
-    primaryPurpose: 'L400 physical & security-hardened C4 Level 1 System Context diagram detailing OAuth 2.1 DPoP, mTLS 1.3, BeyondCorp FIDO2 WebAuthn, VPC-SC restricted.googleapis.com, Model Armor, Gemini 3.0 Pro ADK, OPA Rego XSD validation, Oracle Argus/Veeva Vault commit, AS2 MDN E2B(R3), and SecOps Chronicle WORM retention',
+    primaryPurpose: 'L400 physical & security-hardened C4 Level 1 System Context diagram detailing OAuth 2.1 DPoP, mTLS 1.3, BeyondCorp FIDO2 WebAuthn, VPC-SC restricted.googleapis.com, Model Armor, Gemini 2.5 Pro ADK, OPA Rego XSD validation, Enterprise Regulatory Vault SoR commit, AS2 MDN E2B(R3), Cloud Monitoring Alerting, and SecOps Chronicle WORM retention',
     examples: 'L400 C4 Level 1 System Context, VPC-SC restricted.googleapis.com, FIDO2 WebAuthn 21 CFR Part 11, AS2 MDN E2B(R3)',
     defaultDomain: 'L400 Pharmacovigilance & Adverse Event (AE) AI Platform Context',
     previewImage: '/templates/canonical_94.png',
-    keyComponents: ['External Actors (OAuth 2.1 DPoP, mTLS 1.3, BeyondCorp FIDO2 WebAuthn, HL7 FHIR R4 over Partner Interconnect, Okta OIDC/SCIM 2.0)', 'Google Cloud VPC-SC Platform (Multimodal AE Intake & Triage, Gemini 3.0 Pro Agentic Extraction & MedDRA Coding, ICH E2B(R3) Compliance & Causality Engine)', 'Trust & Governance Invariants (VPC-SC, Cloud KMS FIPS 140-3 Level 3 HSM CMEK, Cloud DLP CryptoHash/FPE, GAMP 5 Cat 4/5)', 'Downstream Regulators (Oracle Argus / Veeva Vault Safety, FDA FAERS / EMA / PMDA AS2 MDN, SecOps Chronicle & GCS WORM)'],
+    keyComponents: ['External Actors (OAuth 2.1 DPoP, mTLS 1.3, BeyondCorp FIDO2 WebAuthn, HL7 FHIR R4 over Partner Interconnect, Cloud Identity / WIF OIDC)', 'Google Cloud VPC-SC Platform (Multimodal AE Intake & Triage, Gemini 2.5 Pro Agentic Extraction & MedDRA Coding, ICH E2B(R3) Compliance & Causality Engine)', 'Trust & Governance Invariants (VPC-SC, Cloud KMS FIPS 140-3 Level 3 HSM CMEK, Cloud DLP CryptoHash/FPE, Cloud Monitoring Alerting, GAMP 5 Cat 4/5)', 'Downstream Regulators (Enterprise Regulatory Vault SoR, FDA FAERS / EMA / PMDA AS2 MDN, SecOps Chronicle & GCS WORM)'],
     generateXml: () => generateTemplate94G01L400C4ContextXml()
   },
   {

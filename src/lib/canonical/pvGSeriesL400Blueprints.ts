@@ -92,7 +92,7 @@ export function generateTemplate94G01L400C4ContextXml(): string {
       y: 464,
       h: 142,
       title: 'Clinical Trial EDC & Hospital EHR Systems',
-      sub: '(HL7 FHIR R4 Bundles, Medidata/Epic over Partner Interconnect)',
+      sub: '(HL7 FHIR R4 Bundles, Enterprise Clinical & ERP SoR over Partner Interconnect)',
       pillId: 'g01_l400_p3',
       pillText: 'Audit\nStream',
     },
@@ -101,7 +101,7 @@ export function generateTemplate94G01L400C4ContextXml(): string {
       y: 630,
       h: 142,
       title: 'Corporate IdP & Controlled Vocabularies',
-      sub: '(Okta OIDC/SCIM 2.0, MedDRA v27.1 & WHODrug Global B3/C3 Releases)',
+      sub: '(Cloud Identity / WIF OIDC, MedDRA v27.1 & WHODrug Global B3/C3 Releases)',
       pillId: '',
       pillText: '',
     },
@@ -167,8 +167,8 @@ export function generateTemplate94G01L400C4ContextXml(): string {
       id: 'g01_l400_c2',
       y: 368,
       h: 132,
-      title: 'Gemini 3.0 Pro Agentic Extraction & MedDRA Coding',
-      sub: '(ADK Runtime, A2A Registry, AlloyDB AI ScaNN Vector RAG)',
+      title: 'Gemini 2.5 Pro Agentic Extraction & MedDRA Coding',
+      sub: '(Google ADK Runtime, A2A Registry, AlloyDB AI ScaNN Vector RAG)',
       icon: 'alloydb' as const,
     },
     {
@@ -199,7 +199,7 @@ export function generateTemplate94G01L400C4ContextXml(): string {
   const govHtml =
     `<table style="width:548px;border-collapse:collapse;font-family:Inter,sans-serif;"><tr><td style="text-align:center;">` +
     `<div style="font-size:14.5px;font-weight:800;color:#0F172A;">Trust &amp; Governance Invariants</div>` +
-    `<div style="font-size:11.5px;font-weight:600;color:#0F172A;margin-top:3px;line-height:1.3;">(VPC Service Controls | Cloud KMS FIPS 140-3 Level 3 HSM CMEK | Cloud DLP CryptoHash/FPE | GAMP 5 Cat 4/5 Validated)</div>` +
+    `<div style="font-size:11.5px;font-weight:600;color:#0F172A;margin-top:3px;line-height:1.3;">(VPC Service Controls | Cloud KMS FIPS 140-3 Level 3 HSM CMEK | Cloud DLP CryptoHash/FPE | Cloud Monitoring Alerting | GAMP 5 Cat 4/5)</div>` +
     `</td></tr></table>`;
   cells.push(
     `<mxCell id="g01_l400_gov" value="${esc(govHtml)}" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#93C5FD;strokeColor=#1E3A8A;strokeWidth=1.4;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="484" y="676" width="568" height="98" as="geometry"/></mxCell>`
@@ -220,7 +220,7 @@ export function generateTemplate94G01L400C4ContextXml(): string {
       y: 136,
       h: 176,
       title: 'Safety Database of Record',
-      sub: '(Oracle Argus / Veeva Vault Safety — Idempotent Dedup & Case Commit)',
+      sub: '(Enterprise Regulatory Vault SoR — Idempotent Dedup & Case Commit)',
       pillId: '',
       pillText: '',
     },
@@ -266,10 +266,21 @@ export function generateTemplate94G01L400C4ContextXml(): string {
     }
   }
 
-  // Bottom Footer Bar
-  const ftrHtml = `<table style="width:1460px;border-collapse:collapse;font-family:Inter,sans-serif;"><tr><td style="text-align:center;font-size:14.5px;font-weight:800;color:#0F172A;">C4 Legend &amp; Architectural Invariants</td></tr></table>`;
+  // Bottom C4 Legend Bar (x=26, y=800, w=1484, h=44; fits inside pageHeight=858 with 14px bottom margin and 0 clipping)
+  const ftrHtml =
+    `<table style="width:1460px;border-collapse:collapse;font-family:Inter,sans-serif;"><tr>` +
+    `<td style="text-align:left;padding-left:10px;font-size:12.5px;font-weight:800;color:#0F172A;white-space:nowrap;">C4 Legend &amp; Architectural Invariants:</td>` +
+    `<td style="text-align:right;padding-right:10px;font-size:11.5px;font-weight:600;color:#1E293B;white-space:nowrap;">` +
+    `<span style="display:inline-block;width:10px;height:10px;background:#4A86E8;border:1px solid #1E3A8A;border-radius:2px;vertical-align:middle;margin-right:5px;"></span>Target System (VPC-SC)` +
+    `&nbsp;&nbsp;&bull;&nbsp;&nbsp;` +
+    `<span style="display:inline-block;width:10px;height:10px;background:#FFFFFF;border:1.5px solid #0F172A;border-radius:2px;vertical-align:middle;margin-right:5px;"></span>External Actor / Enterprise SoR` +
+    `&nbsp;&nbsp;&bull;&nbsp;&nbsp;` +
+    `<span style="display:inline-block;width:10px;height:10px;background:#E2E8F0;border:1px solid #0F172A;border-radius:5px;vertical-align:middle;margin-right:5px;"></span>mTLS 1.3 / AS2 MDN Contract` +
+    `&nbsp;&nbsp;&bull;&nbsp;&nbsp;` +
+    `<span style="display:inline-block;width:10px;height:10px;background:#93C5FD;border:1px solid #1E3A8A;border-radius:2px;vertical-align:middle;margin-right:5px;"></span>FIPS 140-3 CMEK &amp; 21 CFR Part 11 WORM` +
+    `</td></tr></table>`;
   cells.push(
-    `<mxCell id="g01_l400_ftr" value="${esc(ftrHtml)}" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#CBD5E1;strokeWidth=1.3;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="26" y="802" width="1484" height="40" as="geometry"/></mxCell>`
+    `<mxCell id="g01_l400_ftr" value="${esc(ftrHtml)}" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#CBD5E1;strokeWidth=1.3;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="26" y="800" width="1484" height="44" as="geometry"/></mxCell>`
   );
 
   return wrapDrawioEnvelope(

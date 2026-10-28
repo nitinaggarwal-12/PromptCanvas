@@ -147,7 +147,7 @@ const RAW_GOOGLE_CLOUD_DOCUMENTATION_SERIES: CanonicalDocGuide[] = [
     audience: 'SaaS Platform Architects, Principal Security Engineers & B2B ISV CTOs',
     gcpProductsUsed: [
       'Vertex AI Agent Engine',
-      'Google ADK 2.0',
+      'Google ADK',
       'Cloud Identity / Workforce Identity Federation',
       'Cloud Armor & IAP',
       'Vertex AI Model Armor',
@@ -158,7 +158,7 @@ const RAW_GOOGLE_CLOUD_DOCUMENTATION_SERIES: CanonicalDocGuide[] = [
     overviewParagraphs: [
       'Independent software vendors are moving agents out of pilots and into products. The engineering question is no longer whether an agent can complete a task, but whether one platform can serve thousands of customers with agents without leaking data across accounts, eroding gross margin, or failing an enterprise security review.',
       'That is a multi-tenancy problem, and it is not the multi-tenancy problem ISVs have already solved. In conventional SaaS, isolation is enforced at a small number of predictable choke points: an authenticated request, a scoped query, a row filter. The code path is deterministic, so it can be enumerated, tested, and demonstrated to an auditor. An agent removes that guarantee. It decides at runtime which tools to call, what to retrieve, how many turns to take, and which sub-agents to spawn. The execution path is generated rather than written, and every architectural assumption that depended on knowing the path in advance has to be re-established somewhere else.',
-      'This guide sets out the ten components where that work happens, how cryptographic identity is bound at ingress, and how tenant context survives every hop across the Gemini Enterprise Agent Platform.',
+      'To reason rigorously about multi-tenant isolation, map the three core agentic primitives onto CS101 operating-system kernel abstractions: Google ADK acts as the OS syscall scheduler (enforcing deterministic lifecycle callbacks before and after every model turn), the Model Context Protocol (MCP) acts as the POSIX tool driver ABI (binding sender-constrained 2LO/3LO credentials per invocation), and Agent Registry Discovery acts as a chrooted virtual file system (VFS) catalog (exposing only shared platform tools and tenant-entitled private descriptors). Together with five feature-flagged compensating controls (GAP-01 through GAP-05), this guide sets out the ten components where isolation happens, how cryptographic identity is bound at ingress, and how tenant context survives every hop across the enterprise agent platform.',
     ],
     sections: [
       {
@@ -336,7 +336,7 @@ const RAW_GOOGLE_CLOUD_DOCUMENTATION_SERIES: CanonicalDocGuide[] = [
     audience: 'Cloud Solutions Architects, SaaS Product Leaders & FinOps Engineering Teams',
     gcpProductsUsed: [
       'Vertex AI Agent Engine',
-      'Google ADK 2.0',
+      'Google ADK',
       'Vertex AI Model Garden',
       'Private Service Connect (PSC)',
       'VPC Service Controls (VPC-SC)',
@@ -361,7 +361,7 @@ const RAW_GOOGLE_CLOUD_DOCUMENTATION_SERIES: CanonicalDocGuide[] = [
           {
             title: '1. Build (Open & Framework-Agnostic)',
             detail:
-              'Supports Google ADK 2.0 alongside third-party agent frameworks (LangGraph, CrewAI, AutoGen). Integrates frontier Gemini models and open-weight models via Model Garden, coupled with open standard protocols (Agent-to-Agent [A2A], Stateless MCP, A2UI, and enterprise connectors).',
+              'Supports Google ADK alongside third-party agent frameworks (LangGraph, CrewAI, AutoGen). Integrates frontier Gemini models and open-weight models via Model Garden, coupled with open standard protocols (Agent-to-Agent [A2A], Stateless MCP, A2UI, and enterprise connectors).',
           },
           {
             title: '2. Scale (Managed Compute & State Isolation)',
@@ -667,8 +667,8 @@ COMMIT;
 
 -- 2. BigQuery: Row-Level Access Policy on shared analytical tables
 CREATE OR REPLACE ROW ACCESS POLICY tenant_pooled_rls_policy
-  ON \`nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities\`
-  GRANT TO ("serviceAccount:cymbal-pooled-runtime@nitina-ggarwal-sandbox-647724.iam.gserviceaccount.com")
+  ON \`cymbal-build-sandbox.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities\`
+  GRANT TO ("serviceAccount:cymbal-pooled-runtime@cymbal-build-sandbox.iam.gserviceaccount.com")
   FILTER USING (tenant_id = SESSION_USER());`,
         },
         wellArchitectedHook:
@@ -792,7 +792,7 @@ CREATE OR REPLACE ROW ACCESS POLICY tenant_pooled_rls_policy
           title: 'Terraform Private Service Connect NAT Subnet & Dynamic Spoke Dispatcher',
           language: 'hcl',
           filename: 'terraform/pattern_2b_psc_bridge.tf',
-          code: `# 1. Hub VPC & /28 Private Service Connect NAT Subnet (nitina-ggarwal-sandbox-647724)
+          code: `# 1. Hub VPC & /28 Private Service Connect NAT Subnet (cymbal-build-sandbox)
 resource "google_compute_network" "hub_vpc" {
   name                    = "cymbal-pattern-c-hub-vpc"
   auto_create_subnetworks = false
@@ -882,7 +882,7 @@ resource "google_compute_network" "finvault_spoke_vpc" {
           {
             title: '3. Dedicated Agent Runtime & gVisor Sandboxes',
             detail:
-              'Runs inside proj-tenant-301-sovereign-prod enclosed in VPC-SC, executing ADK 2.0 agents on dedicated compute instances and isolated gVisor microVMs.',
+              'Runs inside proj-tenant-301-sovereign-prod enclosed in VPC-SC, executing Google ADK agents on dedicated compute instances and isolated gVisor microVMs.',
           },
           {
             title: '4. Dedicated Memory Bank & Sessions with Tenant CMEK',
@@ -979,7 +979,7 @@ def assert_tenant_cmek_active_or_halt(kms_key_name: str, tenant_id: str) -> dict
       'Security Command Center',
     ],
     executiveSummary:
-      'Architecture diagrams alone do not pass an enterprise CISO security review. Before a multi-tenant agent platform goes live, every isolation boundary must be tested against adversarial red-team attacks. This capstone guide presents the 10-Point Breach Simulation Matrix, the live 24-file reference codebase, and the 8-stage Google Cloud Console & SSH verification runbook.',
+      'Architecture diagrams alone do not pass an enterprise CISO security review. Before a multi-tenant agent platform goes live, every isolation boundary must be tested against adversarial red-team attacks. This capstone guide presents the 10-Point Breach Simulation Matrix, the live 27-file reference codebase, and the 8-stage Google Cloud Console & SSH verification runbook.',
     overviewParagraphs: [
       'In conventional SaaS, a unit test on a WHERE tenant_id = ? clause was sufficient to prove tenant isolation. In an autonomous agentic platform, an attacker can attempt to spoof HTTP headers at ingress, trick the LLM into overriding SQL session variables, poison shared RAG chunks, hijack 3LO OAuth tokens, or exhaust shared token quotas.',
       'To provide deterministic, auditor-verifiable proof across Pattern 1 (Pool), Pattern 2 (Bridge), and Pattern 3 (Silo), we deploy a live verification harness on Google Cloud Run, BigQuery, Cloud KMS, and VPC/PSC and execute 10 automated red-team breach simulations on every build.',
@@ -1068,7 +1068,7 @@ def assert_tenant_cmek_active_or_halt(kms_key_name: str, tenant_id: str) -> dict
         numberLabel: '2',
         heading: 'Live Google Cloud Console, Cloud Shell SSH & BigQuery Audit Verification Runbook',
         leadParagraphs: [
-          'Every security control in the 10-point red-team suite is backed by deterministic audit receipts in BigQuery (cymbal_agentic_finops_otel.security_breach_audit_log) and Cloud Logging across ramp-portal-dev and nitina-ggarwal-sandbox-647724:',
+          'Every security control in the 10-point red-team suite is backed by deterministic audit receipts in BigQuery (cymbal_agentic_finops_otel.security_breach_audit_log) and Cloud Logging across ramp-portal-dev and cymbal-build-sandbox:',
         ],
         whatHappens:
           'Executing the verification suite invokes the deployed Cloud Run endpoint, triggers all 10 adversarial simulations, and writes cryptographic pass/block receipts to BigQuery and Cloud Logging.',
@@ -1077,7 +1077,7 @@ def assert_tenant_cmek_active_or_halt(kms_key_name: str, tenant_id: str) -> dict
           language: 'sql',
           filename: 'sql/verify_10_point_breach_audit_log.sql',
           code: `SELECT sim_id, attack_vector, enforcement_hop, http_status_code, verdict, verified_at
-FROM \`nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel.security_breach_audit_log\`
+FROM \`cymbal-build-sandbox.cymbal_agentic_finops_otel.security_breach_audit_log\`
 ORDER BY sim_id ASC;`,
         },
         wellArchitectedHook:
@@ -1216,7 +1216,7 @@ RETURN a.company_name AS origin_entity,
     lastVerifiedDate: 'October 2026',
     audience: 'AI Application Developers, Application Security Engineers & DevSecOps',
     gcpProductsUsed: [
-      'Google ADK 2.0',
+      'Google ADK',
       'Cloud KMS (FIPS 140-3 L3 HSM)',
       'Cloud Run Gen2 (gVisor Sandbox)',
       'Vertex AI Model Armor',
@@ -1329,7 +1329,7 @@ def sign_approved_mutation_with_hsm(
     audience: 'Enterprise Solution Architects, Partner SIs & Multi-Agent Platform Teams',
     gcpProductsUsed: [
       'Vertex AI Agent Engine',
-      'Google ADK 2.0',
+      'Google ADK',
       'Cloud Run (Stateless MCP Servers)',
       'BigQuery Enterprise Data Warehouse',
       'Gemini Enterprise (A2A Agent Catalog)',
@@ -1411,7 +1411,7 @@ order_agent = LlmAgent(
         wellArchitectedHook:
           'Reliability — Circuit breakers and stateless MCP tool pools prevent a slow downstream partner API from cascading into Root Orchestrator thread exhaustion.',
         inlineScreenshotFilenames: [
-          'real_gcp_13_run_gateway_env_vars.png',
+          'real_gcp_11_run_a2a_gateway_revisions.png',
           'gcp_console_02_cloud_run_revisions_deploy.png',
         ],
       },
@@ -1848,6 +1848,52 @@ function toOfficialCloudArchCenterFormat(raw: CanonicalDocGuide): CanonicalDocGu
             },
           ],
         },
+        ...(raw.docId === 'DOC-MT-01'
+          ? [
+              {
+                id: 'cs101_primitives_and_eap_gap_controls',
+                heading: 'CS101 operating-system primitives & feature-flagged compensating controls (GAP-01..05)',
+                leadParagraphs: [
+                  'Across Pooled, Hybrid Bridge, and Sovereign Silo topologies, the shared application runtime (core-cymbal-agent/) maps agentic orchestration onto three deterministic operating-system primitives: Google ADK operates as the OS syscall scheduler (enforcing before_agent_callback and before_tool_callback boundaries), Model Context Protocol (MCP) operates as the POSIX tool driver ABI (isolating 2LO/3LO credentials), and Agent Registry Discovery operates as a chrooted VFS catalog (scoping visible descriptors by signed tenant_id).',
+                ],
+                subBlocks: [
+                  {
+                    subHeading: 'Compensating controls for preview product boundaries (GAP-01..05)',
+                    paragraphs: [
+                      'Where managed cloud services enforce project-level boundaries today, five feature-flagged compensating controls close tenant-level gaps with seamless native GA sunset hooks:',
+                    ],
+                    bullets: [
+                      {
+                        label: 'GAP-01 (Hop 2 — Agent Engine Registry scoping)',
+                        detail:
+                          'Hop2RegistryPDP filters catalog discovery predicates by signed JWT tenant_id and prunes unentitled tool schemas in before_agent_callback (verified with HTTP 403 on cross-tenant probes).',
+                      },
+                      {
+                        label: 'GAP-02 (Hop 3 — Pooled Memory Bank CMEK & L1 eviction)',
+                        detail:
+                          'Enforces envelope encryption plus <5s tenant-prefixed Memorystore Valkey SCAN+UNLINK eviction (cache:{tenant_id}:*) and <60s HTTP 423 Locked fail-closed halt upon KMS key disablement.',
+                      },
+                      {
+                        label: 'GAP-03 (Hop 3 — Per-tenant RPM & thinking token bulkheads)',
+                        detail:
+                          'Hop3ComputeFinOpsBulkhead enforces atomic Lua token-bucket RPM ceilings in Valkey (120 Standard vs. 600 Enterprise RPM, HTTP 429 Retry-After) and deterministic 4k/8k thinking-token clamps.',
+                      },
+                      {
+                        label: 'GAP-04 (Hop 1 & Hop 4 — Multi-IdP 3LO OAuth & anti-confused-deputy vault)',
+                        detail:
+                          'Normalizes Google Workspace and Microsoft Entra ID claims into RFC 9449 DPoP-bound {tenant}:{user} 3LO token vaults with -32042 step-up consent challenges.',
+                      },
+                      {
+                        label: 'GAP-05 (Hop 5 — Zero-PII per-tenant FinOps token billing)',
+                        detail:
+                          'Hop5DataPlaneRLSAndOTel streams SHA-256 zero-PII OpenTelemetry token spans (cached prefix, prompt, thinking, and output tokens) into BigQuery for exact per-tenant chargeback.',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ]
+          : []),
       ],
     },
 

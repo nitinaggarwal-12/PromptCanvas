@@ -89,8 +89,13 @@ async function main() {
       `Blog ${preset.id} must include the Google Cloud Console & Gemini Enterprise Verification Runbook`
     );
     assertCondition(
-      fullMd.includes('nitina-ggarwal-sandbox-647724') && fullMd.includes('ramp-portal-dev'),
-      `Blog ${preset.id} runbook must reference both ramp-portal-dev and nitina-ggarwal-sandbox-647724`
+      fullMd.includes('cymbal-build-sandbox') &&
+        fullMd.includes('ramp-portal-dev') &&
+        !fullMd.includes('nitina-ggarwal-sandbox-647724') &&
+        !fullMd.includes('nitinagga-ge-2') &&
+        !fullMd.includes('merck-a2a-shield') &&
+        !fullMd.includes('ADK 2.0'),
+      `Blog ${preset.id} runbook must reference ramp-portal-dev and cymbal-build-sandbox with zero legacy sandbox/Merck/ADK 2.0 leaks`
     );
     totalBlogsChecked++;
   }
@@ -98,14 +103,15 @@ async function main() {
 
   // 3. Verify Live GCP Verification Receipt & API Handler (20/20 PASS)
   const receiptPath = path.join(process.cwd(), 'src/data/gcpWorkstreamVerificationReceipt.json');
+  assertCondition(fs.existsSync(receiptPath), 'src/data/gcpWorkstreamVerificationReceipt.json must exist');
   if (fs.existsSync(receiptPath)) {
     const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
     assertCondition(receipt.controlPlaneProjectId === 'ramp-portal-dev', 'controlPlaneProjectId must be ramp-portal-dev');
-    assertCondition(receipt.dataSiloProjectId === 'nitina-ggarwal-sandbox-647724', 'dataSiloProjectId must be nitina-ggarwal-sandbox-647724');
+    assertCondition(receipt.dataSiloProjectId === 'cymbal-build-sandbox', 'dataSiloProjectId must be cymbal-build-sandbox');
     assertCondition(receipt.bigQueryBreachSummary?.length === 10, 'bigQueryBreachSummary must have 10 SIM checks');
     assertCondition(receipt.kmsKeys?.length === 4, 'kmsKeys must have 4 keys');
-    assertCondition(receipt.gcsObjectsCount >= 16, 'gcsObjectsCount must be >= 16');
-    assertCondition(receipt.exportedDiagrams?.length >= 7, 'exportedDiagrams must have >= 7 diagrams');
+    assertCondition(receipt.gcsObjectsCount >= 27, 'gcsObjectsCount must be >= 27');
+    assertCondition(receipt.exportedDiagrams?.length >= 14, 'exportedDiagrams must have >= 14 diagrams');
   }
 
   const { GET } = await import('../src/app/api/blogs/gcp-verify/route');
@@ -201,20 +207,36 @@ async function main() {
   );
   console.log(`  [PASS] Verified ${screenshotFiles.length}/21 pure multi-tenant PNG visual proofs (${realUiFiles.length} Real GCP Console & Gemini Enterprise Web UI captures + ${liveConsoleFiles.length} Live Cloud Console Code/Deploy/Execute captures + 1 Live Pantheon SSH capture, 0 custom or cross-project Merck screenshots) in public/blogs-verification-screenshots/ and embedded on /blogs UI.`);
 
-  // 5. Verify End-to-End Pattern Execution Results, Provisioned GCP Resources & 24-File Reference Codebase Workbench
+  // 5. Verify End-to-End Pattern Execution Results, Provisioned GCP Resources & 27-File Reference Codebase Workbench
   const bundle = apiJson.patternExecutionBundle;
   assertCondition(!!bundle, 'apiJson.patternExecutionBundle must be returned by GET /api/blogs/gcp-verify');
   assertCondition(
-    Array.isArray(bundle.codebaseFiles) && bundle.codebaseFiles.length === 24,
-    `Expected 24 codebaseFiles in patternExecutionBundle, got ${bundle.codebaseFiles?.length}`
+    Array.isArray(bundle.codebaseFiles) && bundle.codebaseFiles.length === 27,
+    `Expected 27 codebaseFiles in patternExecutionBundle, got ${bundle.codebaseFiles?.length}`
   );
   assertCondition(
-    Array.isArray(bundle.executionSuites) && bundle.executionSuites.length === 4,
-    `Expected 4 executionSuites in patternExecutionBundle, got ${bundle.executionSuites?.length}`
+    Array.isArray(bundle.executionSuites) && bundle.executionSuites.length === 6,
+    `Expected 6 executionSuites in patternExecutionBundle, got ${bundle.executionSuites?.length}`
   );
   assertCondition(
-    Array.isArray(bundle.provisionedResources) && bundle.provisionedResources.length === 12,
-    `Expected 12 provisionedResources in patternExecutionBundle, got ${bundle.provisionedResources?.length}`
+    Array.isArray(bundle.provisionedResources) && bundle.provisionedResources.length === 20,
+    `Expected 20 provisionedResources in patternExecutionBundle, got ${bundle.provisionedResources?.length}`
+  );
+  const bundleRawStr = JSON.stringify(bundle);
+  assertCondition(
+    !bundleRawStr.includes('nitina-ggarwal-sandbox-647724') &&
+      !bundleRawStr.includes('nitinagga-ge-2') &&
+      !bundleRawStr.includes('merck-a2a-shield') &&
+      !bundleRawStr.includes('merck-co-scientist') &&
+      !bundleRawStr.includes('ADK 2.0'),
+    'gcpPatternCodebaseAndExecutionBundle.json must contain 0 legacy sandbox IDs, 0 Merck service leaks, and 0 "ADK 2.0" references'
+  );
+  assertCondition(
+    !blogsPageCode.includes('nitina-ggarwal-sandbox-647724') &&
+      !blogsPageCode.includes('nitinagga-ge-2') &&
+      !blogsPageCode.includes('pantheon.corp.google.com') &&
+      !blogsPageCode.includes('ADK 2.0'),
+    'src/app/blogs/page.tsx must contain 0 legacy sandbox IDs, 0 pantheon.corp.google.com links, and 0 "ADK 2.0" references'
   );
   assertCondition(
     blogsPageCode.includes('data-testid="blog-e2e-pattern-execution-and-codebase-workbench"') &&
@@ -225,7 +247,7 @@ async function main() {
       blogsPageCode.includes('openDrawioInNewTab'),
     'src/app/blogs/page.tsx must embed E2E Pattern Execution & Codebase Workbench and InteractiveDrawioInlineEditor'
   );
-  console.log(`  [PASS] Verified E2E Pattern Workbench: ${bundle.executionSuites.length} Execution Suites (20/20 PASS), ${bundle.provisionedResources.length} Live GCP Resources & ${bundle.codebaseFiles.length} Production Source Files.`);
+  console.log(`  [PASS] Verified E2E Pattern Workbench: ${bundle.executionSuites.length} Execution Suites (107/107 Assertions • 20/20 GCP PASS), ${bundle.provisionedResources.length} Live GCP Resources & ${bundle.codebaseFiles.length} Production Source Files.`);
 
   // 6. Verify 100% Purge of Legacy Renderers, Subtitle Icon Hijackers, Legacy Template IDs ('51', '27', '24'), Dark-Shell Hook & Synthetic Pantheon Script
   const wsRendererCode = fs.readFileSync(
