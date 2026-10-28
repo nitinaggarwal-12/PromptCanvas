@@ -84,6 +84,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: '/gallery',
+        destination: '/canonical',
+        permanent: true,
+      },
+      {
         source: '/compare-diagrams',
         destination: '/gcp',
         permanent: true,

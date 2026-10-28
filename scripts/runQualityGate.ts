@@ -27,7 +27,7 @@ const steps: GateStep[] = [
     command: 'tsx scripts/check-blueprint-render-safety.ts'
   },
   {
-    name: 'Canonical 22-Blueprint Production Catalog Certification Gate (#78, #79, #81, #84, #00, #67, #69 + #52–#66)',
+    name: 'Canonical 40-Blueprint Production Catalog Certification Gate (#78, #79, #81, #84, #85–#98, #00, #03, #12, #14, #29, #67, #69 + #52–#66)',
     category: 'CATALOG_INTEGRITY',
     command: 'tsx scripts/verify_canonical_certification.ts'
   },
@@ -245,7 +245,31 @@ const steps: GateStep[] = [
       if (auditSrc.includes('injectUseCaseFlavor')) {
         throw new Error('src/app/api/audit/route.ts must not mutate audited XML via injectUseCaseFlavor');
       }
+
+      // 5. Verify SSRF, RBAC, Path Traversal & Rule 26A/26B CSS Guards (PC-01..PC-04)
+      const proxyImgSrc = readFileSync(path.join(process.cwd(), 'src/app/api/proxy-image/route.ts'), 'utf8');
+      const extractImgSrc = readFileSync(path.join(process.cwd(), 'src/app/api/extract-web-images/route.ts'), 'utf8');
+      const adminUsersSrc = readFileSync(path.join(process.cwd(), 'src/app/api/admin/users/route.ts'), 'utf8');
+      const cloudBridgeSrc = readFileSync(path.join(process.cwd(), 'src/app/api/export/cloud-bridge/route.ts'), 'utf8');
+      const globalsCssSrc = readFileSync(path.join(process.cwd(), 'src/app/globals.css'), 'utf8');
+      if (!proxyImgSrc.includes('isPrivateOrMetadataHost') || !extractImgSrc.includes('isPrivateOrMetadataHost')) {
+        throw new Error('SSRF guard isPrivateOrMetadataHost missing in proxy-image or extract-web-images');
+      }
+      if ((adminUsersSrc.match(/isUserSuperAdmin/g) || []).length < 2) {
+        throw new Error('SuperAdmin RBAC guard missing on GET or POST in src/app/api/admin/users/route.ts');
+      }
+      if (!cloudBridgeSrc.includes('sanitizeBridgeFileId')) {
+        throw new Error('Path traversal guard sanitizeBridgeFileId missing in src/app/api/export/cloud-bridge/route.ts');
+      }
+      if (!globalsCssSrc.includes('span.truncate') || !globalsCssSrc.includes('table.table-fixed tbody td')) {
+        throw new Error('Rule 26A/26B CSS guards missing in src/app/globals.css');
+      }
     }
+  },
+  {
+    name: 'Master DocGen & 40-Blueprint 5-Domain Non-Biopharma Purity Harness (1,515 Assertions)',
+    category: 'MASTER_DOCGEN_AND_DOMAIN_PURITY',
+    command: 'tsx scripts/master_docgen_audit_harness.ts'
   },
   {
     name: 'Compositional 5-Chains 50-Prompts + Vision Poster 1:1 Parity Pre-Flight Gate (56/56)',

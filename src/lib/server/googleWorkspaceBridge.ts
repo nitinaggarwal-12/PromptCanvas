@@ -4,7 +4,7 @@ import os from 'os';
 import crypto from 'crypto';
 import { DEFAULT_GOOGLE_OAUTH_CLIENT_ID } from '@/lib/googleDriveDirectOpen';
 
-const QUOTA_PROJECT = 'nitina-ggarwal-sandbox-647724';
+const QUOTA_PROJECT = 'ramp-portal-dev';
 export const DEFAULT_USER_EMAIL = 'nitinagga@google.com';
 
 interface CloudSlidesManifestEntry {

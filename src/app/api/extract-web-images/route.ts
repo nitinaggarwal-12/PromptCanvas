@@ -48,6 +48,34 @@ function computeDiagramScore(url: string, alt: string): { isProbableDiagram: boo
   };
 }
 
+function isPrivateOrMetadataHost(hostname: string): boolean {
+  const h = hostname.trim().toLowerCase().replace(/^\[|\]$/g, '');
+  if (
+    h === 'localhost' ||
+    h === '0.0.0.0' ||
+    h === '::1' ||
+    h === '0:0:0:0:0:0:0:1' ||
+    h === 'metadata.google.internal' ||
+    h === 'metadata' ||
+    h.endsWith('.internal') ||
+    h.endsWith('.local')
+  ) {
+    return true;
+  }
+  if (/^127\./.test(h) || /^10\./.test(h) || /^192\.168\./.test(h) || /^169\.254\./.test(h) || /^0\./.test(h)) {
+    return true;
+  }
+  const m172 = h.match(/^172\.(\d+)\./);
+  if (m172) {
+    const second = Number(m172[1]);
+    if (second >= 16 && second <= 31) return true;
+  }
+  if (/^(fc00:|fd00:|fe80:)/i.test(h)) {
+    return true;
+  }
+  return false;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { url } = await req.json();
@@ -66,6 +94,9 @@ export async function POST(req: NextRequest) {
       parsedBase = new URL(targetUrl);
     } catch {
       return NextResponse.json({ error: 'Invalid URL format' }, { status: 400 });
+    }
+    if (!['http:', 'https:'].includes(parsedBase.protocol) || isPrivateOrMetadataHost(parsedBase.hostname)) {
+      return NextResponse.json({ error: 'Forbidden internal/metadata target host' }, { status: 403 });
     }
 
     // 1. Direct Image Check: if URL directly ends in an image extension
@@ -90,7 +121,7 @@ export async function POST(req: NextRequest) {
 
     // 2. Fetch Webpage HTML
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 12000);
+    const timeout = setTimeout(() => controller.abort(), 10000);
 
     let html = '';
     try {
@@ -100,7 +131,8 @@ export async function POST(req: NextRequest) {
           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
           'Accept-Language': 'en-US,en;q=0.9'
         },
-        signal: controller.signal
+        signal: controller.signal,
+        redirect: 'manual',
       });
 
       clearTimeout(timeout);
@@ -133,7 +165,7 @@ export async function POST(req: NextRequest) {
     } catch (err: any) {
       clearTimeout(timeout);
       return NextResponse.json({
-        error: `Could not reach ${targetUrl}. ${err?.name === 'AbortError' ? 'Connection timed out (12s)' : err?.message || 'Network error'}`
+        error: `Could not reach ${targetUrl}. ${err?.name === 'AbortError' ? 'Connection timed out (10s)' : err?.message || 'Network error'}`
       }, { status: 504 });
     }
 
@@ -152,9 +184,10 @@ export async function POST(req: NextRequest) {
         if (relOrAbs.startsWith('data:image')) {
           return relOrAbs.length > 500 ? relOrAbs : null;
         }
-        const resolved = new URL(relOrAbs, targetUrl).href;
-        if (!['http:', 'https:'].includes(new URL(resolved).protocol)) return null;
-        return resolved;
+        const parsedResolved = new URL(relOrAbs, targetUrl);
+        if (!['http:', 'https:'].includes(parsedResolved.protocol)) return null;
+        if (isPrivateOrMetadataHost(parsedResolved.hostname)) return null;
+        return parsedResolved.href;
       } catch {
         return null;
       }

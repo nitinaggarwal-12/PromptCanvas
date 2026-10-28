@@ -2034,18 +2034,6 @@ function DocGenContent() {
                   <Menu className="w-4 h-4" />
                 </button>
               )}
-              <button
-                type="button"
-                onClick={() => {
-                  setIsMobileMenuOpen(!isMobileMenuOpen);
-                  window.dispatchEvent(new CustomEvent('promptcanvas_toggle_sidebar'));
-                }}
-                aria-label="Open navigation menu"
-                className="lg:hidden min-w-[40px] min-h-[40px] flex items-center justify-center p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
-                title="Toggle Menu"
-              >
-                <Menu className="w-4 h-4" />
-              </button>
 
               <div className="flex items-center gap-2 text-xs font-semibold" role="tablist" aria-label="Document Specification Views">
                 <Link
@@ -3081,7 +3069,7 @@ function DocGenContent() {
                               <span className="text-[10px] font-bold uppercase text-slate-400 shrink-0">Assigned:</span>
                               <select
                                 value={currentTplId}
-                                onChange={(e) => handleSwapSlotTemplate(sIdx, e.target.value)}
+                                onChange={(e) => handleSwapSlotTemplate(sIdx + 1, e.target.value)}
                                 className={`w-full text-xs font-semibold p-1.5 rounded-lg border focus:outline-none cursor-pointer ${
                                   isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-950 border-slate-800 text-white'
                                 }`}

@@ -97,13 +97,13 @@ Return ONLY valid JSON with keys:
       }
 
       const res = await fetch(
-        'https://aiplatform.googleapis.com/v1/projects/nitina-ggarwal-sandbox-647724/locations/global/publishers/google/models/gemini-3.8-flash:generateContent',
+        'https://aiplatform.googleapis.com/v1/projects/ramp-portal-dev/locations/global/publishers/google/models/gemini-3.1-pro-preview:generateContent',
         {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
-            'x-goog-user-project': 'nitina-ggarwal-sandbox-647724',
+            'x-goog-user-project': 'ramp-portal-dev',
           },
           body: JSON.stringify({
             contents: [{ role: 'user', parts }],

@@ -50,9 +50,9 @@ async function runMasterAuditHarness() {
   console.log('================================================================\n');
 
   // ============================================================================
-  // SUITE 1: ALL 50 CANONICAL TEMPLATES x 5 DOMAINS x 2 THEMES x 3 FUZZ TITLES (1,500 TESTS)
+  // SUITE 1: ALL 40 CANONICAL TEMPLATES x 5 DOMAINS x 2 THEMES x 3 FUZZ TITLES (1,200 TESTS)
   // ============================================================================
-  console.log('📌 SUITE 1: All 50 Canonical Diagrams x 5 Domains x 2 Themes Stress Test (1,500 Combinations)');
+  console.log('📌 SUITE 1: All 40 Canonical Diagrams x 5 Domains x 2 Themes Stress Test (1,200 Combinations)');
   const domains = ['biopharma', 'fintech', 'retail', 'manufacturing', 'saas'];
   const themes = ['light', 'dark'] as const;
   const fuzzTitles = [
@@ -112,9 +112,9 @@ async function runMasterAuditHarness() {
   }
 
   // ============================================================================
-  // SUITE 2: 85-PERMUTATION (17 ARCHETYPES x 5 DOMAINS) SYNTHESIS & PERSONAL NAME SCRUBBING
+  // SUITE 2: 40-PERMUTATION (8 LEAN ARCHETYPES x 5 DOMAINS) SYNTHESIS & PERSONAL NAME SCRUBBING
   // ============================================================================
-  console.log('\n📌 SUITE 2: Full 85-Permutation ($17 \\times 5$) Document Synthesis & Author Scrubbing');
+  console.log('\n📌 SUITE 2: Full 40-Permutation ($8 \\times 5$) Lean Document Synthesis & Author Scrubbing');
   const bannedPersonalNames = [
     'Nitin Aggarwal',
     'Dr. Marcus Vance',

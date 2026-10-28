@@ -1229,6 +1229,28 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/GxP/gi, 'SMPTE');
   }
 
+  if (domainFlavor && domainFlavor !== 'biopharma' && domainFlavor !== 'general') {
+    const sorReplacement =
+      domainFlavor === 'fintech'
+        ? 'Cloud Spanner Core Banking Ledger'
+        : domainFlavor === 'retail'
+        ? 'Cloud Spanner Order &amp; Inventory Ledger'
+        : domainFlavor === 'saas'
+        ? 'Cloud Spanner Multi-Tenant State Store'
+        : domainFlavor === 'manufacturing'
+        ? 'Cloud Spanner Fleet &amp; Telemetry Ledger'
+        : 'Cloud Spanner Enterprise System of Record';
+    out = out
+      .replace(/Oracle Argus\s*\/\s*Veeva Vault Safety/gi, sorReplacement)
+      .replace(/Veeva Vault\s*\/\s*Argus Safety/gi, sorReplacement)
+      .replace(/Veeva Vault Safety/gi, sorReplacement)
+      .replace(/Veeva Vault/gi, sorReplacement)
+      .replace(/Argus Safety/gi, sorReplacement)
+      .replace(/Oracle Argus/gi, sorReplacement)
+      .replace(/Medidata Rave/gi, sorReplacement)
+      .replace(/Phase 3 trials/gi, 'Production workloads');
+  }
+
   if (
     out.includes('id="flow_blueprint_') ||
     out.includes('official_gcp_arch_center') ||

@@ -99,21 +99,33 @@ export default function CanonicalTemplateDetailPage() {
     return domainCleaned;
   }, [activeTemplate, selectedDomain, themeMode, titleParam, promptParam]);
 
-  // Keyboard navigation for Left / Right arrows
+  const buildCanonicalNavHref = (targetId: string) => {
+    const qp = new URLSearchParams();
+    if (isSideBySide) qp.set('sbs', '1');
+    if (selectedDomain && selectedDomain !== 'generic') qp.set('domain', selectedDomain);
+    const qs = qp.toString();
+    return `/canonical/${targetId}${qs ? `?${qs}` : ''}`;
+  };
+
+  // Keyboard navigation for Left / Right arrows & Escape from FullScreen
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullScreen) {
+        setIsFullScreen(false);
+        return;
+      }
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) {
         return;
       }
       if (e.key === 'ArrowLeft' && prevTemplate) {
-        router.push(`/canonical/${prevTemplate.id}`);
+        router.push(buildCanonicalNavHref(prevTemplate.id));
       } else if (e.key === 'ArrowRight' && nextTemplate) {
-        router.push(`/canonical/${nextTemplate.id}`);
+        router.push(buildCanonicalNavHref(nextTemplate.id));
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [prevTemplate, nextTemplate, router]);
+  }, [prevTemplate, nextTemplate, router, isFullScreen, isSideBySide, selectedDomain]);
 
   const handleCopyXml = () => {
     navigator.clipboard.writeText(currentXml);
@@ -194,7 +206,7 @@ export default function CanonicalTemplateDetailPage() {
               }`}>
                 <button
                   disabled={!prevTemplate}
-                  onClick={() => prevTemplate && router.push(`/canonical/${prevTemplate.id}${isSideBySide ? '?sbs=1' : ''}`)}
+                  onClick={() => prevTemplate && router.push(buildCanonicalNavHref(prevTemplate.id))}
                   className={`flex items-center gap-0.5 px-2 py-1 rounded-lg text-xs font-bold transition-all ${
                     prevTemplate
                       ? isDark
@@ -214,7 +226,7 @@ export default function CanonicalTemplateDetailPage() {
 
                 <button
                   disabled={!nextTemplate}
-                  onClick={() => nextTemplate && router.push(`/canonical/${nextTemplate.id}${isSideBySide ? '?sbs=1' : ''}`)}
+                  onClick={() => nextTemplate && router.push(buildCanonicalNavHref(nextTemplate.id))}
                   className={`flex items-center gap-0.5 px-2 py-1 rounded-lg text-xs font-bold transition-all ${
                     nextTemplate
                       ? isDark
@@ -355,11 +367,26 @@ export default function CanonicalTemplateDetailPage() {
 
       {/* FULL PAGE DIAGRAM VIEWPORT */}
       <main className="flex-1 w-full relative flex flex-col p-2 md:p-6">
+        {/* Floating Exit Full Screen Button when Top Header is Hidden */}
+        {isFullScreen && (
+          <div className="absolute right-6 top-4 z-40">
+            <button
+              type="button"
+              onClick={() => setIsFullScreen(false)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-700 shadow-lg text-xs font-extrabold text-slate-800 dark:text-slate-100 hover:bg-blue-50 dark:hover:bg-slate-800 transition cursor-pointer"
+              title="Exit Full Screen (Esc)"
+            >
+              <Minimize2 className="w-3.5 h-3.5 text-blue-600" />
+              <span>Exit Full Screen (Esc)</span>
+            </button>
+          </div>
+        )}
+
         {/* Floating Quick Prev / Next Arrows for Immersive Browsing */}
         <div className="absolute left-4 top-1/2 -translate-y-1/2 z-30">
           <button
             disabled={!prevTemplate}
-            onClick={() => prevTemplate && router.push(`/canonical/${prevTemplate.id}`)}
+            onClick={() => prevTemplate && router.push(buildCanonicalNavHref(prevTemplate.id))}
             className={`w-12 h-12 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xl flex items-center justify-center transition-all ${
               prevTemplate
                 ? 'hover:scale-110 hover:bg-sky-500 hover:text-white text-slate-700 dark:text-slate-200 cursor-pointer'
@@ -374,7 +401,7 @@ export default function CanonicalTemplateDetailPage() {
         <div className="absolute right-4 top-1/2 -translate-y-1/2 z-30">
           <button
             disabled={!nextTemplate}
-            onClick={() => nextTemplate && router.push(`/canonical/${nextTemplate.id}`)}
+            onClick={() => nextTemplate && router.push(buildCanonicalNavHref(nextTemplate.id))}
             className={`w-12 h-12 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xl flex items-center justify-center transition-all ${
               nextTemplate
                 ? 'hover:scale-110 hover:bg-sky-500 hover:text-white text-slate-700 dark:text-slate-200 cursor-pointer'
@@ -389,14 +416,14 @@ export default function CanonicalTemplateDetailPage() {
         {/* Viewport Frame */}
         {isSideBySide ? (
           <div className="flex-1 w-full h-[calc(100vh-90px)] flex flex-col gap-3 overflow-hidden">
-            {/* Quick 22 Certified Production Blueprint Switcher (#78, #79, #81, #84, #00, #67, #69, #52–#66) */}
+            {/* Quick 40 Certified Production Blueprint Switcher */}
             <div className="bg-white rounded-2xl border border-slate-200 px-4 py-2 shadow-sm flex items-center justify-between gap-3 overflow-x-auto shrink-0">
               <div className="flex items-center gap-2 shrink-0">
                 <span className="px-2.5 py-0.5 rounded-md bg-indigo-600 text-white font-mono text-[10px] font-extrabold uppercase tracking-wider">
                   Side-by-Side Comparison
                 </span>
                 <span className="text-xs font-extrabold text-slate-800">
-                  22 Certified Blueprints:
+                  40 Certified Blueprints:
                 </span>
               </div>
               <div className="flex items-center gap-1 overflow-x-auto py-0.5">

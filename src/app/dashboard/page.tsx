@@ -494,6 +494,39 @@ function DashboardContent() {
           }
         }
 
+        const activeHandoffXml = localStorage.getItem('promptcanvas_active_xml');
+        if ((importParam === 'pv' || !bpParam) && activeHandoffXml && activeHandoffXml.includes('<mxCell')) {
+          const activeHandoffTitle = localStorage.getItem('promptcanvas_active_title') || 'PV Case Processing Architecture';
+          localStorage.removeItem('promptcanvas_active_xml');
+          localStorage.removeItem('promptcanvas_active_title');
+          setCanvasTitle(activeHandoffTitle);
+          setIsSessionForked(true);
+          setHasUnsavedSessionChanges(true);
+          setVersionHistory([
+            {
+              id: `ver_handoff_${Date.now()}`,
+              versionTag: 'v1.0.1',
+              major: 1,
+              minor: 0,
+              micro: 1,
+              title: activeHandoffTitle,
+              prompt: 'Imported from PV Case Processing / Architecture Matrix',
+              source: 'initial_load',
+              sourceLabel: 'Matrix Import',
+              diffSummary: 'Imported canonical architecture topology into Studio.',
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              xml: activeHandoffXml,
+              blueprintId: '78',
+              level: 'L3',
+              perspective: 'Technical',
+              status: 'draft',
+              perspectiveXmlMap: { Technical: activeHandoffXml },
+            },
+          ]);
+          setActiveVersionIndex(0);
+          return;
+        }
+
         if (
           bpParam?.toLowerCase() === 'blank' ||
           params.get('mode')?.toLowerCase() === 'blank'
@@ -2520,10 +2553,10 @@ function DashboardContent() {
                       ? 'bg-teal-600 text-white border-teal-700'
                       : 'bg-teal-600 text-white border-teal-500'
                   }`}
-                  title="Workflow 1: Start from one of 22 certified Google Cloud reference & infographic architectures"
+                  title="Workflow 1: Start from one of 40 certified Google Cloud reference & infographic architectures"
                 >
                   <span className="truncate">🏛️ Blueprint</span>
-                  <span className="text-[8.5px] font-medium opacity-90 truncate">22 Certified</span>
+                  <span className="text-[8.5px] font-medium opacity-90 truncate">40 Certified</span>
                 </button>
                 <Link
                   href="/prompt-to-diagram"
@@ -2557,10 +2590,10 @@ function DashboardContent() {
                       ? 'bg-white hover:bg-teal-50 text-slate-800 border-slate-200/90 hover:border-teal-300'
                       : 'bg-slate-950 hover:bg-slate-800 text-slate-200 border-slate-800'
                   }`}
-                  title="Workflow 4: Generate 17-archetype RFCs, PRDs, and Executive Spec Docs from your architecture"
+                  title="Workflow 4: Generate 8-archetype RFCs, PRDs, and Executive Spec Docs from your architecture"
                 >
                   <span className="truncate">📄 Spec Docs</span>
-                  <span className={`text-[8.5px] font-medium truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>17 RFC/PRDs</span>
+                  <span className={`text-[8.5px] font-medium truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>8 Core Specs</span>
                 </Link>
               </div>
             </div>

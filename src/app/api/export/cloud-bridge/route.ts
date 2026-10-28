@@ -129,6 +129,13 @@ async function uploadToGcsAndSignV4Url(
   }
 }
 
+function sanitizeBridgeFileId(rawId: string): string {
+  return String(rawId || 'bridge_item')
+    .replace(/\.\.+/g, '_')
+    .replace(/[^a-zA-Z0-9._-]/g, '_')
+    .slice(0, 128);
+}
+
 export function saveBridgeFileToDisk(
   id: string,
   format: 'pptx' | 'docx' | 'drawio',
@@ -137,15 +144,16 @@ export function saveBridgeFileToDisk(
   version: string = CURRENT_BRIDGE_SCHEMA_VERSION
 ) {
   try {
+    const safeId = sanitizeBridgeFileId(id);
     if (!fs.existsSync(BRIDGE_TMP_DIR)) {
       fs.mkdirSync(BRIDGE_TMP_DIR, { recursive: true });
     }
-    const filePath = path.join(BRIDGE_TMP_DIR, `${id}.${format}`);
-    const metaPath = path.join(BRIDGE_TMP_DIR, `${id}.${format}.json`);
+    const filePath = path.join(BRIDGE_TMP_DIR, `${safeId}.${format}`);
+    const metaPath = path.join(BRIDGE_TMP_DIR, `${safeId}.${format}.json`);
     fs.writeFileSync(filePath, buffer);
     fs.writeFileSync(
       metaPath,
-      JSON.stringify({ id, title, format, version, createdAt: Date.now(), size: buffer.length })
+      JSON.stringify({ id: safeId, title, format, version, createdAt: Date.now(), size: buffer.length })
     );
   } catch (err) {
     console.warn('Could not write cloud bridge file to disk tmp:', err);
@@ -154,20 +162,22 @@ export function saveBridgeFileToDisk(
 
 export function loadBridgeFileFromDisk(id: string, requestedFormat?: 'pptx' | 'docx' | 'drawio'): CloudBridgeEntry | null {
   try {
-    const cleanId = id.replace(/\.(pptx|docx|drawio)$/i, '');
+    const strippedId = id.replace(/\.(pptx|docx|drawio)$/i, '');
+    const cleanId = sanitizeBridgeFileId(strippedId);
     const fmt = requestedFormat || (id.endsWith('.docx') ? 'docx' : id.endsWith('.drawio') ? 'drawio' : 'pptx');
     const metaPathNew = path.join(BRIDGE_TMP_DIR, `${cleanId}.${fmt}.json`);
     const metaPathLegacy = path.join(BRIDGE_TMP_DIR, `${cleanId}.json`);
     const metaPath = fs.existsSync(metaPathNew) ? metaPathNew : metaPathLegacy;
     if (!fs.existsSync(metaPath)) return null;
     const meta = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-    const filePath = path.join(BRIDGE_TMP_DIR, `${cleanId}.${meta.format || fmt}`);
+    const safeFmt = ['pptx', 'docx', 'drawio'].includes(meta.format) ? meta.format : fmt;
+    const filePath = path.join(BRIDGE_TMP_DIR, `${cleanId}.${safeFmt}`);
     if (!fs.existsSync(filePath)) return null;
     const buffer = fs.readFileSync(filePath);
     return {
       id: cleanId,
       title: meta.title || 'Architecture Blueprint',
-      format: meta.format || fmt,
+      format: safeFmt,
       buffer,
       createdAt: meta.createdAt || Date.now(),
       version: meta.version,
@@ -309,7 +319,7 @@ export async function POST(req: NextRequest) {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${effectiveDriveToken}`,
-              'x-goog-user-project': 'nitina-ggarwal-sandbox-647724',
+              'x-goog-user-project': 'ramp-portal-dev',
               'Content-Type': `multipart/related; boundary=${boundary}`,
             },
             body: new Uint8Array(multipartBody),

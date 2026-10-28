@@ -1115,18 +1115,6 @@ function ArchitectureLibraryContent() {
         <AppHeader>
           {/* Breadcrumbs */}
           <div className="flex items-center gap-3 shrink-0 min-w-0">
-            <button
-              type="button"
-              onClick={() => {
-                setIsMobileMenuOpen(true);
-                window.dispatchEvent(new CustomEvent('promptcanvas_toggle_sidebar'));
-              }}
-              aria-label="Open navigation menu"
-              className="lg:hidden min-w-[40px] min-h-[40px] flex items-center justify-center p-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
-            >
-              <Menu className="w-4 h-4" />
-            </button>
-
             <div className={`flex items-center gap-2 text-xs font-semibold ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
               <Link href="/" className={`font-extrabold flex items-center gap-1.5 transition-colors ${isLight ? 'text-slate-800 hover:text-teal-700' : 'text-slate-300 hover:text-white'}`}>
                 <span>PromptCanvas</span>
@@ -1667,7 +1655,7 @@ function ArchitectureLibraryContent() {
                     <option value="gemini_enterprise">✨ VIS-1787 / VIS-3093 Gemini Enterprise Agent Platform</option>
                     <option value="studio_pro">💎 Architecture Studio (Pro)</option>
                     <option value="studio1_lab">🧪 Prompt Lab (Studio 1)</option>
-                    <option value="canonical_50">📚 Canonical Reference Blueprints (7)</option>
+                    <option value="canonical_50">📚 Canonical Reference Blueprints (40)</option>
                   </select>
 
                   {/* Sort By Dropdown */}

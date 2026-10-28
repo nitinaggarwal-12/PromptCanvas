@@ -697,9 +697,51 @@ export function getDomainMasterDocument(docId: string, domainId: string = 'bioph
   const isAmazonOrRetail =
     domainId === 'retail' || (userPrompt && /amazon|retail|ecommerce|cart|store|shop|marketplace/i.test(userPrompt));
 
-  if (isAmazonOrRetail && RETAIL_AMAZON_DOCUMENTS[resolvedId]) {
-    return RETAIL_AMAZON_DOCUMENTS[resolvedId];
+  let rawDoc =
+    isAmazonOrRetail && RETAIL_AMAZON_DOCUMENTS[resolvedId]
+      ? RETAIL_AMAZON_DOCUMENTS[resolvedId]
+      : MASTER_DOCUMENTS[resolvedId] || MASTER_DOCUMENTS.sdd;
+
+  if (domainId && domainId !== 'biopharma') {
+    const domainMeta: Record<string, { label: string; sor: string; reg: string }> = {
+      fintech: {
+        label: 'FinTech Autonomous Payments & Risk',
+        sor: 'Core Banking Ledger / ISO 20022 Gateway / SAP ERP',
+        reg: 'PCI-DSS v4.0, SOX 404, SEC Rule 17a-4',
+      },
+      retail: {
+        label: 'Omnichannel Retail & Supply Chain',
+        sor: 'Order Management / WMS Inventory / SAP ERP',
+        reg: 'PCI-DSS v4.0, SOC 2 Type II, GDPR/CCPA',
+      },
+      manufacturing: {
+        label: 'Smart Manufacturing & Industrial IoT',
+        sor: 'SCADA Telemetry / MES Historian / SAP ERP',
+        reg: 'IEC 62443, ISO 9001, FAA Part 135',
+      },
+      saas: {
+        label: 'Multi-Tenant Enterprise SaaS Mesh',
+        sor: 'Tenant Control Plane / Subscription Ledger / CRM',
+        reg: 'SOC 2 Type II, ISO 27001, FedRAMP High',
+      },
+    };
+    const meta = domainMeta[domainId] || {
+      label: `${domainId.toUpperCase()} Enterprise Cloud`,
+      sor: 'Cloud Spanner System of Record / SAP ERP',
+      reg: 'SOC 2 Type II, ISO 27001',
+    };
+    rawDoc = rawDoc
+      .replace(/Veeva Vault\s*\/\s*Argus Safety\s*\/\s*SAP ERP/gi, meta.sor)
+      .replace(/Veeva Vault/gi, meta.sor.split(' / ')[0])
+      .replace(/Argus Safety/gi, meta.sor.split(' / ')[1] || 'Cloud Spanner Ledger')
+      .replace(/Medidata Rave/gi, 'Enterprise Telemetry Hub')
+      .replace(/IND Submission/gi, 'Production Release Gate')
+      .replace(/GxP & Functional/gi, 'Zero-Trust & Functional')
+      .replace(/GxP Systems of Record/gi, 'Enterprise Systems of Record')
+      .replace(/Bio-Pharma/gi, meta.label)
+      .replace(/FDA 21 CFR Part 11, EMA Annex 11, HIPAA, GxP Computer System Validation \(CSV\)/gi, meta.reg);
   }
 
-  return MASTER_DOCUMENTS[resolvedId] || MASTER_DOCUMENTS.sdd;
+  return rawDoc;
 }
+

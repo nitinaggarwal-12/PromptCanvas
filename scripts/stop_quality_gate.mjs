@@ -5,6 +5,10 @@
  * Standards: Google Omni 1.1 Architecture Blueprint Engine | Zombie Stall Defense
  */
 import { execSync } from 'child_process';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 let inputData = '';
 let handled = false;
@@ -28,6 +32,7 @@ function executeQualityGate() {
   try {
     // Execute the Omni 1.1 Master Quality Gate
     execSync('npm run quality-gate', {
+      cwd: REPO_ROOT,
       stdio: 'pipe',
       timeout: 45000,
       killSignal: 'SIGKILL'

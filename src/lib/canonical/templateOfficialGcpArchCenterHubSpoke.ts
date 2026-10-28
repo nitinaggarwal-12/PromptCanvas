@@ -785,9 +785,12 @@ export function buildOfficialArchCenterConfigForUseCase(
     shortLabel?: string;
     title?: string;
     subtitle?: string;
+    summaryPrompt?: string;
     domainName?: string;
     rootAgentName?: string;
     subAgents?: Array<{ name: string; role: string; tools: string[] }>;
+    primaryDataStore?: string;
+    secondaryDataStore?: string;
     primaryDataStores?: string[];
     securityControls?: string[];
   },
@@ -913,24 +916,41 @@ export function buildOfficialArchCenterConfigForUseCase(
     };
   }
 
-  // Generic adaptation for any of the 20+ domain use cases or custom use cases
+  // Dynamic, topic-faithful adaptation for any custom use case or domain preset
   const sub1 = useCase.subAgents?.[0] || { name: 'IngestionSubAgent', role: 'Data & Event Ingestion', tools: ['ingest_stream'] };
   const sub2 = useCase.subAgents?.[1] || { name: 'GraphRagReasoner', role: 'Hybrid Knowledge Retrieval', tools: ['query_graph'] };
   const sub3 = useCase.subAgents?.[2] || { name: 'ActionExecutorAgent', role: 'Governed Tool Execution', tools: ['execute_workflow'] };
-  const store1 = useCase.primaryDataStores?.[0] || 'Cloud Spanner Graph';
-  const store2 = useCase.primaryDataStores?.[1] || 'BigQuery & AlloyDB';
+  const store1Raw =
+    useCase.primaryDataStore ||
+    useCase.primaryDataStores?.[0] ||
+    'Cloud Spanner Graph';
+  const store2Raw =
+    useCase.secondaryDataStore ||
+    useCase.primaryDataStores?.[1] ||
+    'AlloyDB & BigQuery';
+  const store1Title = store1Raw.split('+')[0].trim().slice(0, 22) || 'Cloud Spanner Graph';
+  const store2Title = store2Raw.split('+')[0].trim().slice(0, 22) || 'AlloyDB & BigQuery';
+  const sub2Title = (sub2.name || 'DomainReasoningAgent').slice(0, 22);
+  const sub3Title =
+    (sub3.name || 'ActionExecutorAgent').slice(0, 22) === sub2Title
+      ? 'GovernedActionAgent'
+      : (sub3.name || 'ActionExecutorAgent').slice(0, 22);
   const wfLabel =
     workflowVariant === 'ingestion'
       ? ' — Sequential Data Ingestion & MCP Pipeline'
       : workflowVariant === 'search'
       ? ' — Hybrid GraphRAG Search & Governed Action Flow'
       : '';
+  const resolvedSubtitle =
+    useCase.subtitle ||
+    (useCase.summaryPrompt ? useCase.summaryPrompt.slice(0, 125) : undefined) ||
+    'Production Reference Architecture with Vertex AI Agent Engine, Model Armor & MCP';
 
   return {
     id: `arch-center-${useCase.id || 'custom'}-${workflowVariant}`,
     badge: `GOOGLE CLOUD ARCHITECTURE CENTER • ${(useCase.domainName || 'ENTERPRISE').toUpperCase()} (${workflowVariant.toUpperCase()} #78)`,
     title: `${useCase.title || 'Enterprise Multi-Agent Architecture on Google Cloud'}${wfLabel}`,
-    subtitle: useCase.subtitle || 'Production Reference Architecture with Vertex AI Agent Engine, Model Armor & MCP',
+    subtitle: resolvedSubtitle,
     topUserTitle: `${useCase.shortLabel || 'Enterprise'} Users`,
     topUserSub: 'OIDC / BeyondCorp Access',
     step1LeftLabel: workflowVariant === 'ingestion' ? 'Ingest Stream' : 'Request',
@@ -941,10 +961,10 @@ export function buildOfficialArchCenterConfigForUseCase(
     routingHubSub: 'Central ingress, Model Armor screening & ADK orchestration',
     routingCards: {
       topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & Zero-Trust IAP Access' },
-      midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Prompt Injection & DLP Filter' },
-      botLeft: { icon: 'iap_iam_shield', title: 'Apigee X & IAM', sub: 'OAuth 2.0 & Token Exchange' },
+      midLeft: { icon: 'model_armor', title: 'Model Armor Shield', sub: 'Prompt Injection & DLP Filter' },
+      botLeft: { icon: 'apigee_gateway', title: 'Apigee X & IAM', sub: 'OAuth 2.0 & Token Exchange' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Load Balancing' },
-      botRight: { icon: 'cloud_run', title: 'Cloud Run Coordinator', sub: useCase.rootAgentName || 'RootCoordinatorAgent' },
+      botRight: { icon: 'cloud_run', title: 'Cloud Run Coordinator', sub: (useCase.rootAgentName || 'RootCoordinatorAgent').slice(0, 30) },
       edgeTopLeft: ['WAF & IAP', 'policies'],
       edgeMidLeft: ['Sanitize', 'prompt'],
       edgeBotLeft: ['Verify IAM', '& OBO token'],
@@ -955,8 +975,8 @@ export function buildOfficialArchCenterConfigForUseCase(
     govHubTitle2: 'FinOps observability hub',
     govCards: {
       top: { icon: 'security_command_center', title: 'Security Command', title2: 'Center', sub: 'Continuous Threat & Drift Detection' },
-      mid: { icon: 'iap_iam_shield', title: 'Cloud KMS & IAM', sub: (useCase.securityControls?.[0] || 'CMEK & Least-Privilege IAM').slice(0, 30) },
-      bot: { icon: 'cloud_logging', title: 'Cloud Logging & BQ', sub: 'OpenTelemetry & Token FinOps' },
+      mid: { icon: 'cloud_kms', title: 'Cloud KMS & IAM', sub: (useCase.securityControls?.[0] || 'CMEK & Least-Privilege IAM').slice(0, 30) },
+      bot: { icon: 'bigquery_analytics', title: 'Cloud Logging & BQ', sub: 'OpenTelemetry & Token FinOps' },
     },
     midStep3Label: ['Route to specialist', 'ADK agent spokes'],
     midStep7Label: ['Sanitized response', 'with grounded citations'],
@@ -965,11 +985,11 @@ export function buildOfficialArchCenterConfigForUseCase(
     leftZoneTitle: `${useCase.shortLabel || 'Domain'} Reasoning & RAG Pool`,
     leftZoneSub: `${sub1.name} + ${sub2.name}`,
     leftCards: {
-      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Domain Guardrails & PII Redaction' },
+      modelArmor: { icon: 'cloud_sdp_dlp', title: 'Cloud DLP & Guardrails', sub: 'Domain Guardrails & PII Redaction' },
       llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: '90% Context Prefix Caching' },
-      runtime: { icon: 'gemini_agent_platform', title: sub2.name.slice(0, 22), sub: sub2.role.slice(0, 30) },
+      runtime: { icon: 'vertex_agent_engine', title: sub2Title, sub: (sub2.role || 'Hybrid Knowledge Retrieval').slice(0, 30) },
       mcp: { icon: 'mcp_servers', title: 'MCP Retrieval Tools', sub: (sub2.tools?.join(', ') || 'hybrid_graphrag_search').slice(0, 30) },
-      datastore: { icon: 'datastore_alloydb_bq', title: store1.slice(0, 22), sub: 'Vector Search + Graph Index' },
+      datastore: { icon: 'cloud_spanner', title: store1Title, sub: 'Vector Search + Graph Index' },
       step4Label: 'Sanitize request',
       step6Label: 'Sanitize response',
       step5Label: ['Generates', 'response'],
@@ -980,11 +1000,15 @@ export function buildOfficialArchCenterConfigForUseCase(
     rightZoneTitle: 'Governed Action & Transaction Spoke',
     rightZoneSub: `VPC-SC + Cloud KMS CMEK + ${sub3.name}`,
     rightCards: {
-      modelArmor: { icon: 'model_armor', title: 'Action Safety Gate', sub: 'Pre-Commit Policy Verification' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Flash', sub: 'Deterministic Schema Validator' },
-      runtime: { icon: 'gemini_agent_platform', title: sub3.name.slice(0, 22), sub: sub3.role.slice(0, 30) },
-      mcp: { icon: 'mcp_servers', title: 'MCP Action Connectors', sub: (sub3.tools?.join(', ') || 'execute_transactional_tool').slice(0, 30) },
-      datastore: { icon: 'datastore_alloydb_bq', title: store2.slice(0, 22), sub: 'ACID Ledger & Audit Trail' },
+      modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & Action Gate', sub: 'Pre-Commit Policy Verification' },
+      llm: { icon: 'cloud_trace', title: 'Gemini 2.5 Flash', sub: 'Deterministic Schema Validator' },
+      runtime: { icon: 'gke', title: sub3Title, sub: (sub3.role || 'Governed Tool Execution').slice(0, 30) },
+      mcp: { icon: 'discovery_engine', title: 'MCP Action Connectors', sub: (sub3.tools?.join(', ') || 'execute_transactional_tool').slice(0, 30) },
+      datastore: {
+        icon: 'alloydb',
+        title: store2Title === store1Title ? 'AlloyDB & Audit Store' : store2Title,
+        sub: 'ACID Ledger & Audit Trail',
+      },
       ragLabel: ['Governed', 'Tool Call'],
       toolLabel: ['CMEK-Encrypted', 'State Commit'],
     },

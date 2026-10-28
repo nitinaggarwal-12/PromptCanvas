@@ -45,7 +45,7 @@ export function generateTemplate29CutoverRunbookXml(
     "hdr_title",
     `<div style='font-size:25px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>Cutover / Runbook Architecture</div>` +
     `<div style='font-size:13px;font-weight:700;color:#1E3A8A;margin-top:2px;'>Use Case: Enterprise – Production Go-Live &amp; Environment Cutover</div>` +
-    `<div style='font-size:11px;color:#64748B;margin-top:1px;'>Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>`,
+    `<div style='font-size:11px;color:#64748B;margin-top:1px;'>Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: October 2026</div>`,
     94,
     12,
     760,

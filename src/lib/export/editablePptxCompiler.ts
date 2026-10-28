@@ -277,6 +277,14 @@ function normalizeSvgDimensions(svgStr: string, widthPx: number, heightPx: numbe
       }
     }
   }
+  if (clean.includes('&lt;svg') || clean.includes('&quot;') || clean.includes('&amp;')) {
+    clean = clean
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&apos;/g, "'")
+      .replace(/&amp;/g, '&');
+  }
   if (!clean.includes('xmlns=')) {
     clean = clean.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
   }
@@ -299,6 +307,10 @@ async function renderInlineSvgToPngDataUrl(
   heightPx: number = 128
 ): Promise<string | null> {
   if (!svgOrDataUrl) return null;
+  const trimmedInput = svgOrDataUrl.trim();
+  if (trimmedInput.startsWith('data:image/png') || trimmedInput.startsWith('data:image/jpeg')) {
+    return trimmedInput;
+  }
 
   if (typeof window === 'undefined') {
     const nodeDynamicImport = async (modName: string) => {
@@ -311,7 +323,7 @@ async function renderInlineSvgToPngDataUrl(
         return createRequire(process.cwd() + '/package.json')(modName);
       }
     };
-    const cleanSvg = normalizeSvgDimensions(svgOrDataUrl.trim(), widthPx, heightPx);
+    const cleanSvg = normalizeSvgDimensions(trimmedInput, widthPx, heightPx);
     try {
       const sharpMod = await nodeDynamicImport('sharp');
       const sharpFn = sharpMod.default || sharpMod;
@@ -319,22 +331,7 @@ async function renderInlineSvgToPngDataUrl(
       const pngBuf = await sharpFn(svgBuf).resize(widthPx, heightPx).png().toBuffer();
       return `data:image/png;base64,${pngBuf.toString('base64')}`;
     } catch {
-      try {
-        const { createCanvas, loadImage } = await nodeDynamicImport('canvas');
-        let dataUriToLoad = svgOrDataUrl.trim();
-        if (!dataUriToLoad.startsWith('data:image/png') && !dataUriToLoad.startsWith('data:image/jpeg')) {
-          dataUriToLoad = `data:image/svg+xml;base64,${Buffer.from(cleanSvg, 'utf-8').toString('base64')}`;
-        }
-        const img = await loadImage(dataUriToLoad);
-        const canvas = createCanvas(widthPx, heightPx);
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, widthPx, heightPx);
-        ctx.drawImage(img, 0, 0, widthPx, heightPx);
-        return canvas.toDataURL('image/png');
-      } catch (err) {
-        console.warn('Node SVG rasterization notice:', err);
-        return null;
-      }
+      return null;
     }
   }
 
@@ -962,6 +959,15 @@ export function resolveDocGuideForSlideDeck(
     .filter(Boolean)
     .map((s) => String(s).trim().toLowerCase());
 
+  // Custom use-case blogs (uc-custom-*, uc-query-*, custom-*) must synthesize dynamic slides
+  // from their own diagram XML and markdown rather than hijacking a static canonical guide (FM-02).
+  const isCustomTopicId = [docId, blueprintId]
+    .filter(Boolean)
+    .some((id) => /^(uc-custom-|uc-query-|custom-|arch-center-uc-custom-|arch-center-uc-query-|arch-center-custom-)/i.test(String(id).trim()));
+  if (isCustomTopicId) {
+    return undefined;
+  }
+
   for (const c of candidates) {
     const exact = GOOGLE_CLOUD_DOCUMENTATION_SERIES.find(
       (d) =>
@@ -1001,9 +1007,13 @@ export function resolveDocGuideForSlideDeck(
   }
 
   if (markdownContent) {
-    const mdLower = markdownContent.toLowerCase();
+    // Only inspect YAML frontmatter / H1 header (first 480 chars) so "What's next" footer links
+    // never false-match custom blogs to DOC-REF-07 or DOC-MT-01 (FM-02).
+    const mdHeaderLower = markdownContent.slice(0, 480).toLowerCase();
     const byMd = GOOGLE_CLOUD_DOCUMENTATION_SERIES.find(
-      (d) => mdLower.includes(d.docId.toLowerCase()) || mdLower.includes(d.title.toLowerCase().slice(0, 32))
+      (d) =>
+        mdHeaderLower.includes(d.docId.toLowerCase()) ||
+        mdHeaderLower.includes(d.title.toLowerCase().slice(0, 32))
     );
     if (byMd) return byMd;
   }

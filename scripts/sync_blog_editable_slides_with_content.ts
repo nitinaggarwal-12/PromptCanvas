@@ -75,7 +75,7 @@ async function patchPresentationIdInPlace(fileId: string, pptxBuffer: Buffer, ti
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${token}`,
-        'x-goog-user-project': 'nitina-ggarwal-sandbox-647724',
+        'x-goog-user-project': 'ramp-portal-dev',
         'Content-Type': `multipart/related; boundary=${boundary}`,
       },
       body: new Uint8Array(multipartBody),

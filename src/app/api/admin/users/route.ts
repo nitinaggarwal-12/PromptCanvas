@@ -80,6 +80,9 @@ export async function PUT(request: Request) {
 export async function POST(request: Request) {
   try {
     const user = await getAuthenticatedUser();
+    if (!user || !isUserSuperAdmin(user)) {
+      return NextResponse.json({ error: 'Forbidden. Super-Admin access required.' }, { status: 403 });
+    }
     const body = await request.json();
     const { name, email, role } = body;
 
@@ -88,8 +91,8 @@ export async function POST(request: Request) {
     }
 
     const validRole = ['Super-Admin', 'Author', 'Member'].includes(role) ? role : 'Author';
-    const actorName = user?.name || body.actorName || 'Nitin Aggarwal';
-    const actorEmail = user?.email || body.actorEmail || 'nitin.aggarwal@enterprise-arch.io';
+    const actorName = user.name || body.actorName || 'Nitin Aggarwal';
+    const actorEmail = user.email || body.actorEmail || 'nitin.aggarwal@enterprise-arch.io';
 
     const result = await addOrUpdateUserWithChangelog({
       name,

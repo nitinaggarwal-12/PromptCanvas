@@ -155,3 +155,14 @@ body {
   }
 }
 
+/* Rule 26A & Rule 26B: Inline Truncate Safety & Table Cell Containment */
+span.truncate {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: bottom;
+}
+
+table.table-fixed tbody td {
+  overflow: hidden;
+  max-width: 0;
+}

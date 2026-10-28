@@ -57,6 +57,7 @@ import {
   getAllBlogUseCasePresets,
   buildUseCasePresetFromCustomInput,
   generateBlogForUseCase,
+  rebuildGeneratedBlogFullMarkdown,
 } from '@/lib/blogs/useCaseBlogEngine';
 import {
   GOOGLE_CLOUD_DOCUMENTATION_SERIES,
@@ -574,12 +575,15 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
       customFocusNotes,
     });
     const cacheKey = `${activeUseCase.id}::${selectedFormatId}`;
+    let hasOverrides = false;
     const sectionsWithOverrides = base.sections.map((sec, idx) => {
       const overrideKey = `${cacheKey}::${sec.id}`;
       if (sectionOverrides[overrideKey] !== undefined) {
+        hasOverrides = true;
         return { ...sec, markdown: sectionOverrides[overrideKey] };
       }
       if (idx === 0 && aiEnhancedOverride?.key === cacheKey && aiEnhancedOverride.introMarkdown) {
+        hasOverrides = true;
         return { ...sec, markdown: aiEnhancedOverride.introMarkdown };
       }
       return sec;
@@ -589,13 +593,20 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
       aiEnhancedOverride?.key === cacheKey && aiEnhancedOverride.tldrSummary
         ? aiEnhancedOverride.tldrSummary
         : base.tldrSummary;
+    if (aiEnhancedOverride?.key === cacheKey && aiEnhancedOverride.tldrSummary) {
+      hasOverrides = true;
+    }
 
-    return {
+    const nextBlog: GeneratedUseCaseBlog = {
       ...base,
       tldrSummary: tldr,
       subtitle: tldr,
       sections: sectionsWithOverrides,
     };
+    if (hasOverrides) {
+      rebuildGeneratedBlogFullMarkdown(nextBlog, activeUseCase.domainName);
+    }
+    return nextBlog;
   }, [activeUseCase, selectedFormatId, authorName, authorRole, customFocusNotes, sectionOverrides, aiEnhancedOverride]);
 
   // Generate all 3 blogs for Compare-All mode
@@ -903,6 +914,13 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
     return GOOGLE_CLOUD_DOCUMENTATION_SERIES[0];
   }, [activeDocId]);
 
+  const activeStudioManifestKey = useMemo<string>(() => {
+    const matchedDoc = GOOGLE_CLOUD_DOCUMENTATION_SERIES.find(
+      (d) => d.useCasePresetId === activeUseCase.id || d.docId === activeUseCase.id
+    );
+    return matchedDoc ? matchedDoc.docId : activeUseCase.id;
+  }, [activeUseCase.id]);
+
   const filteredDocSeries = useMemo(() => {
     return GOOGLE_CLOUD_DOCUMENTATION_SERIES.filter((doc) => {
       if (catalogSeriesFilter !== 'all' && doc.seriesId !== catalogSeriesFilter) {
@@ -1128,6 +1146,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
     setCustomPresets((prev) => [preset, ...prev]);
     setSelectedUseCaseId(customId);
     setSelectedFormatId(newUcFormatId);
+    setStudioLayoutMode('legacy-studio');
     setShowCustomBuilderModal(false);
     setNewUcTitle('');
     setNewUcPrompt('');
@@ -1246,7 +1265,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
               ) : studioLayoutMode === 'legacy-studio' ? (
                 <DiagramInlineSlidesPreviewer
                   headerOnly={true}
-                  manifestKey={activeDocGuide.docId}
+                  manifestKey={activeStudioManifestKey}
                   title={
                     isOfficialArchCenterActive
                       ? `${activeOfficialArchCenterBp.title} — ${activeOfficialArchCenterBp.subtitle}`
@@ -1666,6 +1685,16 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                         className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-normal focus:outline-none focus:ring-2 focus:ring-[#1a73e8]/30 focus:border-[#1a73e8]"
                       />
                     </div>
+                    <button
+                      type="button"
+                      data-testid="catalog-new-topic-blog-btn"
+                      onClick={() => setShowCustomBuilderModal(true)}
+                      className="px-3 py-1.5 rounded-lg bg-[#1a73e8] hover:bg-[#1557b0] text-white text-xs font-semibold inline-flex items-center justify-center gap-1.5 cursor-pointer shrink-0 shadow-2xs"
+                      title="Generate a new technical blog and Blueprint #78 diagram for any custom topic"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>New Topic Blog</span>
+                    </button>
                     <button
                       type="button"
                       data-testid="catalog-print-export-btn"
@@ -3032,7 +3061,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                           </button>
                           <DiagramInlineSlidesPreviewer
                             headerOnly={true}
-                            manifestKey={activeDocGuide.docId}
+                            manifestKey={activeStudioManifestKey}
                             title={`${activeOfficialArchCenterBp.title} — ${activeOfficialArchCenterBp.subtitle}`}
                             subtitle={activeUseCase.summaryPrompt}
                             xml={effectiveSelectorXml}
