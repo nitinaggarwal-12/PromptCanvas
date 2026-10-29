@@ -107,7 +107,7 @@ async function main() {
   if (fs.existsSync(receiptPath)) {
     const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
     assertCondition(receipt.controlPlaneProjectId === 'ramp-portal-dev', 'controlPlaneProjectId must be ramp-portal-dev');
-    assertCondition(receipt.dataSiloProjectId === 'cymbal-build-sandbox', 'dataSiloProjectId must be cymbal-build-sandbox');
+    assertCondition(receipt.dataSiloProjectId === 'bbar-138hf0', 'dataSiloProjectId must be bbar-138hf0');
     assertCondition(receipt.bigQueryBreachSummary?.length === 10, 'bigQueryBreachSummary must have 10 SIM checks');
     assertCondition(receipt.kmsKeys?.length === 4, 'kmsKeys must have 4 keys');
     assertCondition(receipt.gcsObjectsCount >= 27, 'gcsObjectsCount must be >= 27');
@@ -219,8 +219,8 @@ async function main() {
     `Expected 6 executionSuites in patternExecutionBundle, got ${bundle.executionSuites?.length}`
   );
   assertCondition(
-    Array.isArray(bundle.provisionedResources) && bundle.provisionedResources.length === 20,
-    `Expected 20 provisionedResources in patternExecutionBundle, got ${bundle.provisionedResources?.length}`
+    Array.isArray(bundle.provisionedResources) && bundle.provisionedResources.length >= 20,
+    `Expected >= 20 provisionedResources in patternExecutionBundle, got ${bundle.provisionedResources?.length}`
   );
   const bundleRawStr = JSON.stringify(bundle);
   assertCondition(

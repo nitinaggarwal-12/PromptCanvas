@@ -1,16 +1,14 @@
 {
-  "schema": "Cymbal-Multi-Tenant-Cloud-Verification-Receipt-v3.1",
-  "verifiedAtUtc": "2026-10-28T12:00:00Z",
+  "schema": "Cymbal-Multi-Tenant-Cloud-Verification-Receipt-v3.2",
+  "verifiedAtUtc": "2026-10-28T18:26:37Z",
   "overallStatus": "CERTIFIED",
   "controlPlaneProjectId": "ramp-portal-dev",
   "controlPlaneProjectNumber": "248990048888",
-  "pooledProdProjectId": "cymbal-pooled-prod",
-  "pooledProdProjectNumber": "638420508320",
-  "dataSiloProjectId": "cymbal-build-sandbox",
-  "dataSiloProjectNumber": "887605034827",
-  "authenticatedAccount": "sre-automation@cymbal-cloud.iam.gserviceaccount.com",
+  "dataSiloProjectId": "bbar-138hf0",
+  "dataSiloProjectNumber": "48439189383",
+  "authenticatedAccount": "nitinagga@google.com",
   "region": "us-west1",
-  "bigQueryDataset": "cymbal-build-sandbox:cymbal_agentic_finops_otel",
+  "bigQueryDataset": "bbar-138hf0:cymbal_agentic_finops_otel",
   "bigQueryTables": [
     "tenant_telemetry_spans",
     "security_breach_audit_log",
@@ -18,11 +16,12 @@
     "pattern_a_pooled_rls_entities",
     "pattern_c_psc_endpoints_registry"
   ],
-  "siloBigQueryDataset": "cymbal-build-sandbox:cymbal_silo_finvault_usw1",
+  "siloBigQueryDataset": "bbar-138hf0:cymbal_silo_finvault_usw1",
   "siloBigQueryTables": [
-    "pattern_b_silo_finvault_cmek_vault"
+    "pattern_b_silo_finvault_cmek_vault",
+    "pattern_b_silo_medcore_revoked_vault"
   ],
-  "kmsKeyRing": "projects/cymbal-build-sandbox/locations/us-west1/keyRings/cymbal-multi-tenant-kr",
+  "kmsKeyRing": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr",
   "kmsKeys": [
     "finvault-silo-cmek",
     "retailstream-silo-cmek",
@@ -30,16 +29,19 @@
     "adk-agent-signing-key"
   ],
   "vpcNetworks": [
-    "cymbal-pattern-c-hub-vpc (10.128.0.0/24 + PSC /28 10.240.0.0/28)",
-    "cymbal-pattern-c-finvault-spoke-vpc (10.140.0.0/24)"
+    "ramp-portal-dev:cymbal-pattern-c-hub-vpc (10.240.0.0/24 + PSC /28 10.240.10.0/28)",
+    "bbar-138hf0:cymbal-pattern-c-finvault-spoke-vpc (10.140.0.0/24)"
   ],
-  "gcsBucket": "gs://cymbal-build-sandbox-cymbal-multi-tenant-artifacts",
-  "gcsObjectsCount": 27,
+  "cloudArmorWaf": "projects/bbar-138hf0/global/securityPolicies/cymbal-pooled-edge-waf",
+  "gcsBucket": "gs://bbar-138hf0-cymbal-multi-tenant-artifacts",
+  "gcsObjectsCount": 61,
+  "discoveryEngineApp": "projects/ramp-portal-dev/locations/global/collections/default_collection/engines/cymbal-multi-tenant-agent-hub",
+  "discoveryEngineDataStore": "projects/ramp-portal-dev/locations/global/collections/default_collection/dataStores/cymbal-multi-tenant-rag-datastore",
   "cloudRunService": "projects/ramp-portal-dev/locations/us-west1/services/promptcanvas",
   "cloudRunFleetRevisions": [
-    "ge-blogs-00023-7j4",
-    "promptcanvas-00061-2sr",
-    "cymbal-multi-tenant-patterns-00001-dmg"
+    "ge-blogs-00026-lmw",
+    "promptcanvas-00064-hv9",
+    "cymbal-multi-tenant-patterns-00002-vs2"
   ],
   "bigQueryBreachSummary": [
     {

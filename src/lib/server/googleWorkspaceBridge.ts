@@ -412,17 +412,9 @@ export async function uploadPptxBufferToGoogleSlides(params: {
 
     if (!res.ok) {
       const errText = await res.text();
-      if (preferredId && errText.includes('CONSUMER_SUSPENDED')) {
-        data = {
-          id: preferredId,
-          webViewLink: `https://docs.google.com/presentation/d/${preferredId}/edit`,
-        };
-      } else {
-        throw new Error(`Google Drive Slides conversion failed (${res.status}): ${errText}`);
-      }
-    } else {
-      data = (await res.json()) as { id: string; webViewLink?: string };
+      throw new Error(`Google Drive Slides conversion failed (${res.status}): ${errText}`);
     }
+    data = (await res.json()) as { id: string; webViewLink?: string };
   }
 
   const fid = data.id;

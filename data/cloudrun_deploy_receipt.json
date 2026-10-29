@@ -2,16 +2,55 @@
   "serviceName": "promptcanvas",
   "beyondCorpUrl": "https://promptcanvas-248990048888.cr.gclb.goog",
   "directCloudRunUrl": "https://promptcanvas-mi7l4h536a-uw.a.run.app",
-  "buildProject": "cymbal-build-sandbox",
+  "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "promptcanvas-00062-nwv",
-  "latestCreatedRevisionName": "promptcanvas-00062-nwv",
+  "latestReadyRevisionName": "promptcanvas-00064-hv9",
+  "latestCreatedRevisionName": "promptcanvas-00064-hv9",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/promptcanvas:v20261028-134533-rule58",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/promptcanvas:v20261028-182434-rule58",
   "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"promptcanvas-1\" on port 8080.",
-  "verifiedAt": "2026-10-28T13:46:40Z",
+  "liveHttpVerification": {
+    "verifiedAt": "2026-10-28T18:25:26.162Z",
+    "verificationMode": "cloud_run_revision_pre_traffic_live_http_dom_probe",
+    "project": "ramp-portal-dev",
+    "region": "us-west1",
+    "service": "promptcanvas",
+    "revision": "promptcanvas-00064-hv9",
+    "overallPassed": true,
+    "routes": [
+      {
+        "path": "/blogs",
+        "httpStatus": 200,
+        "responseBytes": 11359,
+        "bodySha256Short": "0dc237746de16cd8",
+        "latencyMs": 10984,
+        "markersMatched": [
+          "Architecture",
+          "blogs"
+        ],
+        "markersMissing": [],
+        "passed": true,
+        "error": ""
+      },
+      {
+        "path": "/api/blogs/gcp-verify",
+        "httpStatus": 200,
+        "responseBytes": 1063887,
+        "bodySha256Short": "70ef809ffed60aa9",
+        "latencyMs": 184,
+        "markersMatched": [
+          "ramp-portal-dev",
+          "bbar-138hf0"
+        ],
+        "markersMissing": [],
+        "passed": true,
+        "error": ""
+      }
+    ]
+  },
+  "verifiedAt": "2026-10-28T18:25:37Z",
   "canonicalBlueprintsCount": 40,
   "leanDocArchetypesCount": 8
 }
