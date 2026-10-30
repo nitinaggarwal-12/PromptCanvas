@@ -73,7 +73,7 @@ function providerSpecificDescription(
     }
   }
   switch (category) {
-    case 'ai_inference': return 'Vertex AI Gemini 3.1 Pro / 3.8 Flash tokens + Vector Search index';
+    case 'ai_inference': return 'Vertex AI Gemini 3.1 Pro / 2.5 Flash tokens + Vector Search index';
     case 'kubernetes': return 'GKE regional control plane + 3 e2-standard-4 nodes';
     case 'serverless': return 'Cloud Run Gen2 (2 vCPU / 4 GB, min-instances=1)';
     case 'database': return hasToken(lower, 'spanner') ? 'Cloud Spanner 300 processing units' : hasToken(lower, 'alloydb') ? 'AlloyDB 4 vCPU HA primary' : 'Cloud SQL HA (db-custom-2-8192)';

@@ -9,11 +9,6 @@ import { generateUpgradedGcpGeBankingArchitectureXml } from '@/lib/canonical/upg
 import { generateGcpNativeArchitectureXml } from '@/lib/gcpNativeArchitecture';
 import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 import { enrichDrawioXmlWithVectorIcons } from '@/lib/vectorIcons/visionIconEnricher';
-import {
-  buildNasaMultiverseDraftItem,
-  buildOracleEbsExadataClosedLoopDraftItem,
-  healStubOrOracleDiagramXml,
-} from '@/lib/draftMicroVersionStore';
 
 interface RouteParams {
   params: Promise<{
@@ -79,26 +74,6 @@ export async function GET(request: Request, { params }: RouteParams) {
     // Catalog blueprint deep links or preset library / studio session deep links must not fail when not yet persisted in SQLite.
     if (!diagram) {
       const upperId = id.toUpperCase();
-
-      if (upperId === 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1' || upperId.includes('ORACLE') || upperId.includes('EXADATA')) {
-        const oracleDraft = buildOracleEbsExadataClosedLoopDraftItem();
-        return NextResponse.json({
-          ...oracleDraft,
-          id,
-          access_level: 'Owner',
-          xml_content: oracleDraft.latest_xml,
-        });
-      }
-
-      if (upperId === 'DRAFT-NASA-MULTIVERSE-V1-0-1' || upperId.includes('NASA')) {
-        const nasaDraft = buildNasaMultiverseDraftItem();
-        return NextResponse.json({
-          ...nasaDraft,
-          id,
-          access_level: 'Owner',
-          xml_content: nasaDraft.latest_xml,
-        });
-      }
 
       if (upperId === 'GCP-GE-BANKING-2026') {
         const now = '2026-09-30T12:00:00.000Z';
@@ -272,12 +247,7 @@ export async function GET(request: Request, { params }: RouteParams) {
       ) {
         xmlStr = enrichDrawioXmlWithVectorIcons(generateGeminiEnterpriseArchitectureXml());
       }
-      const diagramLatestPrompt = (diagram as { latest_prompt?: string | null }).latest_prompt;
-      xmlStr = healStubOrOracleDiagramXml(
-        String(xmlStr || ''),
-        v.prompt || diagramLatestPrompt,
-        diagram.name
-      ).xml;
+      xmlStr = String(xmlStr || '');
       const healedXml = preflightVerifyAndHealXmlAcrossAll6Audits(
         xmlStr || '',
         diagram.architecture_type || 'unified_system_view'
@@ -305,7 +275,7 @@ export async function GET(request: Request, { params }: RouteParams) {
       xml_content:
         liveMasterXml ||
         versions[0]?.xml_content ||
-        healStubOrOracleDiagramXml(diagram.xml_content || '', topLatestPrompt, diagram.name).xml,
+        (diagram.xml_content || ''),
       versions
     });
   } catch (error) {

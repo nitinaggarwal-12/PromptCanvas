@@ -103,12 +103,6 @@ import {
   TruthfulnessGroundingDossier,
   runTruthfulnessAndGroundingCertification
 } from '@/lib/truthfulnessGroundingEngine';
-import {
-  computeNextMicroVersion,
-  autoSaveGeneratedDiagramAsDraft,
-  getAutoSavedDraftBlueprints,
-  healStubOrOracleDiagramXml
-} from '@/lib/draftMicroVersionStore';
 
 const DEFAULT_DASHBOARD_PROMPT =
   'Design a GCP native technical architecture with Gemini Enterprise, Google ADK, A2A, MCP, Model Armor, Vector Search 2.0, and Cloud Spanner';
@@ -400,7 +394,7 @@ function DashboardContent() {
             : null);
 
         if (targetDraftId) {
-          const allDrafts = getAutoSavedDraftBlueprints();
+          const allDrafts: any[] = [];
           const matchedDraft = allDrafts.find(
             (d) => d.id.toUpperCase() === targetDraftId.toUpperCase()
           );
@@ -415,14 +409,14 @@ function DashboardContent() {
               setVersionHistory([
                 {
                   id: `ver_${matchedDraft.id}`,
-                  versionTag: matchedDraft.activeVersionTag || 'v1.0.1',
-                  major: matchedDraft.major || 1,
-                  minor: matchedDraft.minor || 0,
-                  micro: matchedDraft.micro || 1,
+                  versionTag: 'Saved Draft',
+                  major: 1,
+                  minor: 0,
+                  micro: 1,
                   title: matchedDraft.name,
                   prompt: matchedDraft.prompt || matchedDraft.description,
                   source: 'ai_copilot',
-                  sourceLabel: `Auto-Saved Draft (${matchedDraft.activeVersionTag || 'v1.0.1'})`,
+                  sourceLabel: 'Saved Draft',
                   diffSummary: matchedDraft.description,
                   timestamp: new Date(matchedDraft.updatedAt).toLocaleTimeString([], {
                     hour: '2-digit',
@@ -588,11 +582,8 @@ function DashboardContent() {
             sessionStorage.removeItem(`promptcanvas_dashboard_session_${sid}_00`);
           } else if (Array.isArray(parsed.versionHistory) && parsed.versionHistory.length > 1) {
             const healedHistory = parsed.versionHistory.map((v: any) => {
-              const healedXml = healStubOrOracleDiagramXml(
-                typeof v?.xml === 'string' ? v.xml : '',
-                v?.prompt,
-                v?.title
-              ).xml;
+              const healedXml = 
+                typeof v?.xml === 'string' ? v.xml : '';
               return {
                 ...v,
                 xml: healedXml,
@@ -1232,22 +1223,15 @@ function DashboardContent() {
     setActiveVersionIndex(0);
   };
 
-  // Handler for New Diagram Input Selection Modal results
+  // Handler for New Diagram Input Selection Modal results (World 1: Template-First Studio)
   const handleSelectNewDiagramOption = (result: NewDiagramSelectionResult) => {
     setIsNewDiagramModalOpen(false);
 
-    if (result.mode === 'prompt' && result.prompt) {
-      if (result.style === 'infographic') {
-        setCanvasPerspective('Logical');
-      } else if (result.style === 'conceptual') {
-        setCanvasPerspective('Conceptual');
-      } else if (result.style === 'paper') {
-        setCanvasPerspective('Paper');
-      } else {
-        setCanvasPerspective('Technical');
-      }
-      handleExecutePrompt(result.prompt, true);
-      showToast('🚀 Synthesizing new architecture from prompt...');
+    if (result.mode === 'prompt') {
+      const targetUrl = result.prompt?.trim()
+        ? `/prompt-to-diagram?prompt=${encodeURIComponent(result.prompt.trim())}`
+        : '/prompt-to-diagram';
+      router.push(targetUrl);
       return;
     }
 
@@ -1277,7 +1261,7 @@ function DashboardContent() {
         diffSummary: 'Decompiled architectural vectors and components from image.',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         xml: result.customXml,
-        blueprintId: 'custom',
+        blueprintId: loadedBlueprintId,
         level: 'L2',
         perspective: 'Technical',
         status: 'draft',
@@ -1286,63 +1270,6 @@ function DashboardContent() {
       setVersionHistory((prev) => [newEntry, ...prev]);
       setActiveVersionIndex(0);
       showToast('🖼️ Decompiled architecture loaded into canvas!');
-      return;
-    }
-
-    if (result.mode === 'blank') {
-      const blankTitle = result.projectName || 'Blank Architecture Canvas';
-      const blankXml = `<mxGraphModel data-blank-canvas="true" dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel>`;
-      setCanvasTitle(blankTitle);
-      setLoadedBlueprintId('blank');
-      setIsSessionForked(true);
-      setHasUnsavedSessionChanges(true);
-      const blankEntry: DashboardVersionEntry = {
-        id: `ver_blank_${Date.now()}`,
-        versionTag: 'v1.0 (Blank Scratchpad)',
-        major: 1,
-        minor: 0,
-        title: blankTitle,
-        prompt: 'Blank Canvas Initialization',
-        source: 'initial_load',
-        sourceLabel: 'Clean Scratchpad',
-        diffSummary: 'Clean canvas initialized with 0 components.',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        xml: blankXml,
-        blueprintId: 'blank',
-        level: 'L2',
-        perspective: 'Technical',
-        status: 'draft',
-        perspectiveXmlMap: { Technical: blankXml },
-        truthfulnessDossier: {
-          prompt: 'Blank Canvas Initialization',
-          evaluatedAtUtc: new Date().toISOString(),
-          generatorModel: 'gemini-3.8-flash',
-          groundingModel: 'deep-research-max-preview-04-2026',
-          criticJudgeModel: 'gemini-3.1-pro-preview',
-          orchestratorId: 'google-omni-1.1',
-          isLiveModelEvaluated: false,
-          scores: {
-            truthfulnessAndReality: 0,
-            externalStandardsGrounding: 0,
-            logicalMissionCompleteness: 0,
-            promptRelevance: 0,
-            geometricZeroCollision: 0,
-            overallCompositeScore: 0
-          },
-          speculativePremiseWarning: {
-            detected: false,
-            rawClaimInPrompt: 'None',
-            scientificRealityCheck: 'Blank Canvas initialized with 0 architectural components and 0 connectors.',
-            architecturalReframingApplied: 'Enter an architecture prompt in the AI Co-Pilot composer to synthesize a complete multi-tier architecture.'
-          },
-          groundedStandards: [],
-          completenessChecklist: [],
-          provenanceLedger: []
-        }
-      };
-      setVersionHistory([blankEntry]);
-      setActiveVersionIndex(0);
-      showToast('📄 Blank canvas ready for design!');
       return;
     }
 
@@ -1363,7 +1290,7 @@ function DashboardContent() {
         diffSummary: 'Imported vector geometry from external Draw.io XML.',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         xml: result.customXml,
-        blueprintId: 'custom',
+        blueprintId: loadedBlueprintId,
         level: 'L2',
         perspective: 'Technical',
         status: 'draft',
@@ -1439,29 +1366,21 @@ function DashboardContent() {
       plannedSteps?: string[];
       truthfulnessDossier?: TruthfulnessGroundingDossier;
       resetSessionForNewSynthesis?: boolean;
+      blueprintIdOverride?: string;
     }
   ) => {
     const isReset = Boolean(aiMeta?.resetSessionForNewSynthesis);
+    const effectiveBpId = aiMeta?.blueprintIdOverride || loadedBlueprintId;
+    const isZeroTemplateBp = effectiveBpId === 'blank' || effectiveBpId === 'custom';
     const prevVer = currentVersion;
-    const {
-      major: nextMajor,
-      minor: nextMinor,
-      micro: nextMicro,
-      versionTag: nextTag
-    } = isReset
-      ? { major: 1, minor: 0, micro: 1, versionTag: 'v1.0.1' }
-      : computeNextMicroVersion(
-          prevVer.major ?? 1,
-          prevVer.minor ?? 0,
-          prevVer.micro ?? 0,
-          prevVer.versionTag
-        );
+    const nextChangeNum = isReset ? 1 : Math.min(15, versionHistory.length + 1);
+    const nextTag = `Change #${nextChangeNum}`;
 
     // Compute AST Diff between previous and new XML
     const diffResult: ArchitectureDiffResult = computeArchitectureDiff(
       isReset ? '' : prevVer.xml,
       newXml,
-      isReset ? 'v1.0' : prevVer.versionTag,
+      isReset ? 'Baseline' : prevVer.versionTag,
       nextTag
     );
 
@@ -1472,8 +1391,8 @@ function DashboardContent() {
     );
 
     const forkId = isReset
-      ? `fork_bp${loadedBlueprintId}_${canvasPerspective.toLowerCase()}_${sessionUserId}_${Date.now()}`
-      : sessionCopyId || `fork_bp${loadedBlueprintId}_${canvasPerspective.toLowerCase()}_${sessionUserId}`;
+      ? `fork_bp${effectiveBpId}_${canvasPerspective.toLowerCase()}_${sessionUserId}_${Date.now()}`
+      : sessionCopyId || `fork_bp${effectiveBpId}_${canvasPerspective.toLowerCase()}_${sessionUserId}`;
     setIsSessionForked(true);
     setHasUnsavedSessionChanges(true);
     setSessionCopyId(forkId);
@@ -1481,19 +1400,19 @@ function DashboardContent() {
     const effectiveTitle = overrideTitle || canvasTitle;
 
     const newEntry: DashboardVersionEntry = {
-      id: `ver_${Date.now()}_${nextTag}`,
+      id: `ver_${Date.now()}_${nextChangeNum}`,
       versionTag: nextTag,
-      major: nextMajor,
-      minor: nextMinor,
-      micro: nextMicro,
+      major: 1,
+      minor: 0,
+      micro: nextChangeNum,
       title: effectiveTitle,
       prompt: promptText,
       source,
-      sourceLabel: `${sourceLabel} (${canvasPerspective} Draft ${nextTag})`,
+      sourceLabel: `${sourceLabel} (${canvasPerspective})`,
       diffSummary: summaryText,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       xml: newXml,
-      blueprintId: loadedBlueprintId,
+      blueprintId: effectiveBpId,
       level: selectedLevel,
       perspective: canvasPerspective,
       status: 'draft',
@@ -1509,42 +1428,28 @@ function DashboardContent() {
     };
 
     setVersionHistory((prev) => {
-      const nextHistory = isReset ? [newEntry] : [newEntry, ...prev];
+      const nextHistory = (isReset ? [newEntry] : [newEntry, ...prev]).slice(0, 15);
       if (typeof window !== 'undefined') {
         try {
           sessionStorage.setItem(
-            `promptcanvas_dashboard_session_${sessionUserId}_${loadedBlueprintId}`,
+            `promptcanvas_dashboard_session_${sessionUserId}_${effectiveBpId}`,
             JSON.stringify({
               sessionCopyId: forkId,
-              blueprintId: loadedBlueprintId,
+              blueprintId: effectiveBpId,
               updatedAt: new Date().toISOString(),
               versionHistory: nextHistory
             })
           );
-          autoSaveGeneratedDiagramAsDraft({
-            id: /nasa|satellite|satellight|multiverse|multi-universe/i.test(`${effectiveTitle} ${promptText}`)
-              ? 'DRAFT-NASA-MULTIVERSE-V1-0-1'
-              : /\b(oracle|exadata|e-business|ebusiness|\bebs\b|goldengate|weblogic)\b/i.test(`${effectiveTitle} ${promptText}`)
-              ? 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1'
-              : `draft_${forkId}`,
-            title: effectiveTitle,
-            xml: newXml,
-            prompt: promptText,
-            diffSummary: summaryText,
-            blueprintId: loadedBlueprintId,
-            perspective: canvasPerspective,
-            versionTag: nextTag,
-            major: nextMajor,
-            minor: nextMinor,
-            micro: nextMicro,
-            versions: nextHistory
-          });
         } catch {}
       }
       return nextHistory;
     });
     setActiveVersionIndex(0);
-    showToast(`⚡ Auto-Saved Draft (${nextTag}) to Library → Drafts • Canonical Blueprint #${loadedBlueprintId} remains untouched`);
+    showToast(
+      isZeroTemplateBp
+        ? `⚡ Saved change (${nextChangeNum}/15 for Undo/Redo)`
+        : `⚡ Saved change (${nextChangeNum}/15 for Undo/Redo) • Canonical Blueprint #${effectiveBpId} untouched`
+    );
   };
 
   // =========================================================================
@@ -1615,11 +1520,26 @@ function DashboardContent() {
   };
 
   // =========================================================================
-  // CORE ACTION: Execute Prompt with Gemini Architect API + Connected Topology Synthesis
+  // CORE ACTION: Execute Prompt Mutation on Selected Certified Blueprint (World 1)
   // =========================================================================
-  const handleExecutePrompt = async (promptToRun?: string, forceNewSynthesis = false) => {
+  const handleExecutePrompt = async (
+    promptToRun?: string,
+    forceNewSynthesis = false
+  ) => {
     const rawPrompt = promptToRun || activeComposerPrompt;
     if (!rawPrompt.trim() || isProcessingAi) return;
+
+    // World 1 Contract: A certified template MUST be selected in Step 1 before prompt mutation
+    const hasSelectedTemplate = Boolean(
+      loadedBlueprintId &&
+        loadedBlueprintId !== 'blank' &&
+        loadedBlueprintId !== 'custom' &&
+        CANONICAL_TEMPLATES.some((t) => t.id === loadedBlueprintId)
+    );
+    if (!hasSelectedTemplate) {
+      showToast('🏛️ Select one of the 40 Certified Blueprints in Step 1 before applying AI mutations (or use Prompt Only for no-template generation).');
+      return;
+    }
 
     const query = rawPrompt.trim();
     setActiveComposerPrompt('');
@@ -1648,53 +1568,46 @@ function DashboardContent() {
 
     setConversationalReply(null);
     setIsProcessingAi(true);
-    setAiPlanningStatus('Stage 1/4: Grounding Standards & Reality Check (gemini-3.8-flash + googleSearch / deep-research-max-preview-04-2026)...');
-    showToast(`🧠 Running Live Gemini Co-Pilot Synthesis & 4-Stage Multi-Model Truthfulness Audit...`);
+    setAiPlanningStatus(`Stage 1/4: Grounding Standards & Mutating Blueprint #${loadedBlueprintId} (gemini-2.5-flash)...`);
+    showToast(`🧠 Customizing Blueprint #${loadedBlueprintId} via Live Gemini Co-Pilot...`);
 
     try {
-      const currentVertexCount = forceNewSynthesis
-        ? 0
-        : (currentVersion.xml.match(/vertex="1"/g) || []).length;
       const existingCopilotBoxes = forceNewSynthesis
         ? 0
         : (currentVersion.xml.match(/id="copilot_mod_[a-z0-9_]*box(?:_\d+)?"/gi) || []).length;
       const nextModStep = forceNewSynthesis
         ? 1
         : Math.max((currentVersion.micro ?? 0) + 1, existingCopilotBoxes + 1);
-      const isCurrentlyBlank =
-        forceNewSynthesis ||
-        currentVersion.xml.includes('data-blank-canvas="true"') ||
-        currentVertexCount < 6;
-      const effectiveArchId =
-        loadedBlueprintId && loadedBlueprintId !== 'blank'
-          ? `canonical_${loadedBlueprintId}`
-          : 'custom_synthesized';
+      const effectiveArchId = `canonical_${loadedBlueprintId}`;
 
-      // Preliminary synthesis pass (used immediately for blank-canvas creation or as AST baseline for follow-up modifications)
+      // Preliminary AST mutation on the selected Canonical Blueprint
       let modResult = executeGcpPromptModification(
-        isCurrentlyBlank ? '' : currentVersion.xml,
+        currentVersion.xml,
         query,
         nextModStep,
-        isCurrentlyBlank ? 'blank' : effectiveArchId,
+        effectiveArchId,
         !isLight
       );
 
-      setAiPlanningStatus('Stage 2/4: Calling Live Gemini Architecture Co-Pilot & Synthesizing Grounded Multi-Tier Topology...');
+      setAiPlanningStatus(`Stage 2/4: Calling Live Gemini Architecture Co-Pilot on Blueprint #${loadedBlueprintId}...`);
 
       let healedXml = preflightVerifyAndHealXmlAcrossAll6Audits(
         modResult.updatedXml,
-        isCurrentlyBlank ? 'custom_synthesized' : effectiveArchId
+        effectiveArchId
       );
 
       const isCompositionalChainXml = healedXml.includes('data-compositional-chain="true"');
 
-      setAiPlanningStatus('Stage 3/4: Running Live Gemini Synthesis + Cross-Model Truthfulness Critic (gemini-3.8-flash + gemini-3.1-pro-preview)...');
+      setAiPlanningStatus('Stage 3/4: Running Live Gemini Synthesis + Cross-Model Truthfulness Critic (gemini-2.5-flash + gemini-2.5-pro)...');
 
       let apiDecision: GeminiArchitecturalDecision | null = null;
       let truthfulnessDossier: TruthfulnessGroundingDossier | null = null;
       let liveCopilotModification: any = null;
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), isCompositionalChainXml ? 5000 : 25000);
+      const timeoutId = setTimeout(
+        () => controller.abort(),
+        isCompositionalChainXml ? 12000 : 25000
+      );
       try {
         const res = await fetch('/api/architect-decision', {
           method: 'POST',
@@ -1727,9 +1640,7 @@ function DashboardContent() {
         console.warn('Gemini Architect API fast-path synthesis:', apiErr);
       }
 
-      // If this is a follow-up modification on a non-chain existing diagram and the live Gemini API returned a tailored component spec,
-      // re-apply executeGcpPromptModification with liveCopilotModification so the live Gemini output drives the rendered XML!
-      if (!isCurrentlyBlank && !isCompositionalChainXml && liveCopilotModification) {
+      if (!isCompositionalChainXml && liveCopilotModification) {
         modResult = executeGcpPromptModification(
           currentVersion.xml,
           query,
@@ -1755,9 +1666,9 @@ function DashboardContent() {
 
       const persona = modResult.newVersion.author || 'Lead Cloud Architect';
       const liveBadge = liveCopilotModification?.isLiveGeminiModification
-        ? `Live ${liveCopilotModification.modelUsed || 'gemini-3.8-flash'}`
-        : 'gemini-3.8-flash';
-      const modelUsed = `${liveBadge} → judged by gemini-3.1-pro-preview (${truthfulnessDossier.scores.overallCompositeScore}% Certified)`;
+        ? `Live ${liveCopilotModification.modelUsed || 'gemini-2.5-flash'}`
+        : 'gemini-2.5-flash';
+      const modelUsed = `${liveBadge} → judged by gemini-2.5-pro (${truthfulnessDossier.scores.overallCompositeScore}% Certified)`;
       const aiReasoning =
         `${modResult.newVersion.canvasDiff} ${modResult.newVersion.specDiff} ` +
         `[Truthfulness=${truthfulnessDossier.scores.truthfulnessAndReality}%, Standards Grounding=${truthfulnessDossier.scores.externalStandardsGrounding}%, Completeness=${truthfulnessDossier.scores.logicalMissionCompleteness}%]`;
@@ -1767,36 +1678,9 @@ function DashboardContent() {
           `Stage ${entry.stageNumber} (${entry.modelId}): ${entry.whatItDid}`
       );
 
-      const qLower = query.toLowerCase();
-      const isIncrementalEdit =
-        /^(add|insert|attach|upgrade|implement|enforce|integrate|configure|enable|remove|delete|drop|replace|swap|update|modify|connect|wire|include)\b/i.test(
-          query.trim()
-        );
-      const isFullCreationPrompt =
-        !isIncrementalEdit &&
-        (/^(please\s+)?(create|build|design|architect|generate|synthesize|show|draw)\b/i.test(query) ||
-          /\b(closed[- ]loop|digital[- ]twin|counterfactual)\b/i.test(qLower));
-
       let effectiveTitle = canvasTitle;
-      if (isCurrentlyBlank || (isFullCreationPrompt && !currentVersion.xml.includes('data-compositional-chain="true"')) || canvasTitle === 'Blank Architecture Canvas') {
-        const xmlDiagramNameMatch = healedXml.match(/<diagram\b[^>]*\bname="([^"]+)"/i);
-        const xmlDiagramTitle = xmlDiagramNameMatch?.[1]
-          ? xmlDiagramNameMatch[1].replace(/\s*\(v\d+\.\d+\.\d+\)\s*$/i, '').trim()
-          : '';
-        const cleanedQueryTitle = query
-          .replace(/^(please\s+)?(create|build|design|architect|generate|synthesize|show|draw)\s+(an?\s+|the\s+)?(architecture\s+diagram|diagram|architecture|blueprint|topology)?\s*(showing|for|of|with)?\s*/i, '')
-          .replace(/[.;]+$/, '')
-          .trim();
-        const wordSafeQueryTitle =
-          cleanedQueryTitle.length <= 84
-            ? cleanedQueryTitle
-            : cleanedQueryTitle.slice(0, 84).replace(/\s+\S*$/, '');
-        effectiveTitle =
-          apiDecision?.tailoredSpec?.diagramTitle ||
-          xmlDiagramTitle ||
-          (wordSafeQueryTitle.length > 4
-            ? `${wordSafeQueryTitle.charAt(0).toUpperCase()}${wordSafeQueryTitle.slice(1)}`
-            : 'Custom Enterprise Cloud Architecture');
+      if (apiDecision?.tailoredSpec?.diagramTitle) {
+        effectiveTitle = apiDecision.tailoredSpec.diagramTitle;
         setCanvasTitle(effectiveTitle);
       }
 
@@ -1807,14 +1691,14 @@ function DashboardContent() {
         isFromChip ? 'suggestion_chip' : 'ai_copilot',
         isFromChip ? 'Context Suggestion' : 'Live Gemini Co-Pilot + 3.1 Pro Critic',
         effectiveTitle,
-        modResult.newVersion.canvasDiff || `+ Integrated "${query}" into isolated session copy.`,
+        modResult.newVersion.canvasDiff || `+ Integrated "${query}" into Blueprint #${loadedBlueprintId} session copy.`,
         {
           persona,
           modelUsed,
           aiReasoning,
           plannedSteps,
           truthfulnessDossier,
-          resetSessionForNewSynthesis: forceNewSynthesis
+          resetSessionForNewSynthesis: forceNewSynthesis,
         }
       );
     } catch (err) {
@@ -2260,7 +2144,7 @@ function DashboardContent() {
         stageNumber: (baseDossier.provenanceLedger?.length || 4) + 1,
         stageName: 'Omni 1.1 & Gemini 3.8 Auto-Fix Remediation Gate',
         actorRole: 'Automated Security & 2D Geometry Remediator',
-        modelId: 'google-omni-1.1 + gemini-3.8-flash',
+        modelId: 'gemini-2.5-pro + gemini-2.5-flash',
         codeCitation: 'src/lib/preflightAuditEngine.ts :: applyOmniAndGeminiAutoFixRemediation()',
         timestampUtc: nowIso,
         durationMs: 42,
@@ -2304,7 +2188,7 @@ function DashboardContent() {
         `Remediated Security & Governance (Cloud KMS CMEK 90-day rotation + VPC-SC) and Visual Layout & Geometry (0 sibling overlaps) to 100% Certified.`,
         {
           persona: 'Omni 1.1 & Gemini Security/Geometry Remediator',
-          modelUsed: 'google-omni-1.1 + gemini-3.8-flash',
+          modelUsed: 'gemini-2.5-pro + gemini-2.5-flash',
           aiReasoning:
             'Applied deterministic 2D AABB leaf-card clearance verification, WCAG 2.1 AA contrast normalization, and Cloud KMS CMEK (90-Day Key Rotation) + Cloud Armor L7 WAF/IAP governance bar injection.',
           plannedSteps: [
@@ -2410,7 +2294,7 @@ function DashboardContent() {
               <p className={`text-[10.5px] font-semibold truncate ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 {isSessionForked
                   ? `Active Draft (${currentVersion.versionTag}) saved under Library → Drafts • Baseline #${loadedBlueprintId} remains untouched`
-                  : `Workflow: ① Pick Blueprint or Upload Image  →  ② Customize with Gemini AI or Draw.io  →  ③ Audit & Export to Google Slides / Docs`}
+                  : `Blueprint Studio: ① Select Certified Blueprint (#00–#98)  →  ② Mutate with Gemini AI Co-Pilot  →  ③ Export to Slides / Docs`}
               </p>
             </div>
           </div>
@@ -2504,7 +2388,7 @@ function DashboardContent() {
               onClick={() => setIsNewDiagramModalOpen(true)}
               data-testid="dashboard-new-diagram-btn"
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs transition shadow-md shadow-sky-500/25 cursor-pointer shrink-0 active:scale-95"
-              title="Create New Architecture Diagram (Select Input Method: Prompt AI, 40 Certified Blueprints, Image Decompile, Blank Canvas)"
+              title="Create New Architecture Diagram (40 Certified Blueprints, Pure Prompt-to-Diagram, or Image Decompile)"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>New Diagram</span>
@@ -2553,7 +2437,7 @@ function DashboardContent() {
                       ? 'bg-teal-600 text-white border-teal-700'
                       : 'bg-teal-600 text-white border-teal-500'
                   }`}
-                  title="Workflow 1: Start from one of 40 certified Google Cloud reference & infographic architectures"
+                  title="World 1 (Blueprint Studio): Mandatory certified template selection (#00–#98) before AI prompt mutation"
                 >
                   <span className="truncate">🏛️ Blueprint</span>
                   <span className="text-[8.5px] font-medium opacity-90 truncate">40 Certified</span>
@@ -2566,10 +2450,10 @@ function DashboardContent() {
                       ? 'bg-blue-50 hover:bg-blue-100 text-blue-900 border-blue-200 hover:border-blue-300'
                       : 'bg-slate-950 hover:bg-slate-800 text-slate-200 border-slate-800'
                   }`}
-                  title="Workflow 2: Freeform Prompt → Nano Banana Image → Editable Draw.io XML + Cross-Model LLM Judge"
+                  title="World 2 (Prompt to Diagram): Pure Prompt Only → Compound ELK Architecture Diagram (Zero Templates)"
                 >
-                  <span className="truncate">🍌 Prompt Lab</span>
-                  <span className={`text-[8.5px] font-medium truncate ${isLight ? 'text-blue-700' : 'text-slate-400'}`}>Nano → Draw.io</span>
+                  <span className="truncate">✨ Prompt Only</span>
+                  <span className={`text-[8.5px] font-medium truncate ${isLight ? 'text-blue-700' : 'text-slate-400'}`}>Freeform Studio</span>
                 </Link>
                 <Link
                   href="/vision"
@@ -2598,7 +2482,7 @@ function DashboardContent() {
               </div>
             </div>
 
-            {/* STEP 1: CHOOSE STARTING BLUEPRINT */}
+            {/* STEP 1: CHOOSE STARTING BLUEPRINT (MANDATORY IN BLUEPRINT STUDIO) */}
             <div
               className={`px-3 py-2.5 border-b space-y-1.5 shrink-0 ${
                 isLight ? 'bg-slate-50/70 border-slate-200' : 'bg-slate-900/70 border-slate-800'
@@ -2607,10 +2491,10 @@ function DashboardContent() {
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5 min-w-0">
                   <span className="px-1.5 py-0.5 rounded-md bg-teal-600 text-white font-mono font-black text-[9px] shrink-0">
-                    STEP 1
+                    STEP 1 • REQUIRED
                   </span>
                   <span className={`text-[11px] font-extrabold truncate ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
-                    Pick Starting Reference Architecture
+                    Select Certified Blueprint
                   </span>
                 </div>
                 <Link
@@ -2700,6 +2584,7 @@ function DashboardContent() {
                 <div className="relative blueprint-combobox-container">
                   <button
                     type="button"
+                    data-testid="dashboard-step1-blueprint-select"
                     onClick={() => {
                       setOpenBlueprintDropdown(!openBlueprintDropdown);
                       setOpenCategoryDropdown(false);
@@ -2781,7 +2666,7 @@ function DashboardContent() {
                   <div className="flex items-center gap-1.5 min-w-0">
                     <GitFork className={`w-3 h-3 shrink-0 ${isLight ? 'text-amber-700' : 'text-amber-400'}`} />
                     <span className="font-semibold leading-tight">
-                      Draft <strong className="font-mono">{currentVersion.versionTag}</strong> Auto-Saved &bull; Baseline #{loadedBlueprintId} intact
+                      Draft <strong className="font-mono">{currentVersion.versionTag}</strong>{' '}Auto-Saved &bull; Baseline #{loadedBlueprintId} intact
                     </span>
                   </div>
                   <Link
@@ -2798,7 +2683,7 @@ function DashboardContent() {
               )}
             </div>
 
-            {/* STEP 2: CUSTOMIZE WITH GEMINI AI OR 1-CLICK UPGRADES */}
+            {/* STEP 2: MUTATE SELECTED CERTIFIED BLUEPRINT */}
             <div
               className={`px-3 py-2.5 border-b space-y-2 shrink-0 ${
                 isLight
@@ -2812,7 +2697,7 @@ function DashboardContent() {
                     STEP 2
                   </span>
                   <span className={`text-[11px] font-extrabold truncate ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
-                    Customize with Gemini AI Co-Pilot
+                    Mutate Selected Blueprint #{selectedBlueprintObj.id}
                   </span>
                 </div>
                 <span
@@ -2829,7 +2714,11 @@ function DashboardContent() {
               </div>
 
               <p className={`text-[10px] leading-snug ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                Describe components to add, change regions, or build a new system from scratch:
+                Customize Blueprint #{selectedBlueprintObj.id} (add services, regions, security, or flows — or open{' '}
+                <Link href="/prompt-to-diagram" className="text-blue-600 font-bold hover:underline">
+                  Prompt Only
+                </Link>{' '}
+                for zero-template synthesis):
               </p>
 
               {/* Central Single Prompt Composer Input */}
@@ -3617,7 +3506,7 @@ function DashboardContent() {
                     Omni 1.1 &amp; Cross-Model Truthfulness, Grounding &amp; Provenance Dossier
                   </h3>
                   <p className="text-xs text-slate-500 font-medium">
-                    Generator: <code className="font-mono text-indigo-700">gemini-3.8-flash</code> &bull; Grounding: <code className="font-mono text-teal-700">deep-research-max-preview-04-2026</code> &bull; Judge: <code className="font-mono text-purple-700">gemini-3.1-pro-preview</code> &bull; AST QC: <code className="font-mono text-slate-700">google-omni-1.1</code>
+                    Generator: <code className="font-mono text-indigo-700">gemini-2.5-flash</code> &bull; Grounding: <code className="font-mono text-teal-700">gemini-2.5-pro</code> &bull; Judge: <code className="font-mono text-purple-700">gemini-2.5-pro</code> &bull; AST QC: <code className="font-mono text-slate-700">gemini-2.5-pro</code>
                   </p>
                 </div>
               </div>

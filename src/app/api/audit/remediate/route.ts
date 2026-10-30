@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       ).join('\n');
 
       const prompt = `
-You are Google Omni 1.1, Principal Cloud Security & Enterprise Systems Architect.
+You are Gemini 2.5 Pro, Principal Cloud Security & Enterprise Systems Architect.
 You are given an existing Draw.io XML architecture diagram.
 
 ### Task:

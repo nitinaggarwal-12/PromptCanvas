@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { listDiagrams, createDiagram, clearAllDiagrams, batchDeleteDiagrams } from '@/lib/db';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
-import { healStubOrOracleDiagramXml } from '@/lib/draftMicroVersionStore';
 
 // GET /api/diagrams - List diagrams (user-scoped or public seed, optionally filtered by ?studio=)
 export async function GET(request: Request) {
@@ -22,18 +21,13 @@ export async function GET(request: Request) {
       })
       .map((d: any) => {
         const rawXml = String(d.latest_xml || d.xml_content || '');
-        const healed = healStubOrOracleDiagramXml(rawXml, d.latest_prompt, d.name);
-        const resolvedTitle = (healed.canonicalTitle || d.name || '').replace(/&amp;/g, '&');
+        const resolvedTitle = String(d.name || '').replace(/&amp;/g, '&');
         return {
           ...d,
           name: resolvedTitle,
-          latest_prompt:
-            d.latest_prompt === 'DeepMind Gemini Multimodal Vision Decompilation' &&
-            resolvedTitle.includes('Oracle EBS R12.2')
-              ? 'Official Google Cloud Architecture Center (#78) Hub-and-Spoke Topology for Oracle E-Business Suite (EBS R12.2) & Oracle Database@Google Cloud (Exadata X10M)'
-              : (d.latest_prompt || '').replace(/&amp;/g, '&'),
-          latest_xml: d.latest_xml ? healed.xml : d.latest_xml,
-          xml_content: d.xml_content ? healed.xml : d.xml_content,
+          latest_prompt: String(d.latest_prompt || '').replace(/&amp;/g, '&'),
+          latest_xml: d.latest_xml,
+          xml_content: d.xml_content,
         };
       })
       .filter((d: any) => {
@@ -93,7 +87,7 @@ export async function POST(request: Request) {
 
     const effectiveArchType = architectureType || 'unified_system_view';
     const rawEffectiveXml = xml !== undefined ? xml : (getDefaultXmlForArchitecture(effectiveArchType, businessUsecase || prompt || name, prompt || name) || undefined);
-    const effectiveXml = rawEffectiveXml ? healStubOrOracleDiagramXml(String(rawEffectiveXml), prompt || businessUsecase, name).xml : rawEffectiveXml;
+    const effectiveXml = rawEffectiveXml ? String(rawEffectiveXml) : rawEffectiveXml;
 
     let user = await getAuthenticatedUser();
     if (!user || !user.id) {

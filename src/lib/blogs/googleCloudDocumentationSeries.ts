@@ -1373,7 +1373,7 @@ inventory_mcp_tools = MCPToolset(
 
 order_agent = LlmAgent(
     name="order_inventory_agent",
-    model="gemini-3.1-pro-preview",
+    model="gemini-2.5-pro",
     instruction="Check regional BigQuery warehouse stock via MCP and reserve safety stock.",
     tools=[inventory_mcp_tools],
 )`,

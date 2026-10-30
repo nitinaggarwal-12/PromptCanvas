@@ -19,7 +19,7 @@ User Prompt
                      ▼                 ▼
           [Template Backbone]    ┌──────────────────────────────┐
                                  │ Stage 2: Intent Classifier   │
-                                 │ (gemini-3.8-flash)           │
+                                 │ (gemini-2.5-flash)           │
                                  └──────────────┬───────────────┘
                                                 │
                                                 ▼
@@ -51,7 +51,7 @@ User Prompt
   - Bespoke flowchart prompts route to `generateLogicalFlowchartDrawioXml` (`src/lib/promptDrivenDiagramSynthesizer.ts`), dynamically populating `[1]`, `[1a]`, `[2] ◆ Decision Gate`, `[2b]`, `[3]`, `[3a]`, and Tier 1–3 swimlane headers.
 
 ### Stage 2: Architectural Decision Engine (`src/lib/geminiArchitecturalDecisionEngine.ts`)
-- Invokes `gemini-3.8-flash` (with fallback to `gemini-3.1-flash-live-preview`) with discrete `thinkingConfig: { thinkingLevel: 'LOW' | 'MEDIUM' | 'HIGH' }` (`Law 16 / Rule 55`) to classify perspective (`Conceptual`, `Logical`, `Technical`, `Process`), abstraction level (`L1`–`L4`), and recommended blueprint ID among the 26 production Google Cloud blueprints.
+- Invokes `gemini-2.5-flash` (with fallback to `gemini-2.5-flash`) with discrete `thinkingConfig: { thinkingLevel: 'LOW' | 'MEDIUM' | 'HIGH' }` (`Law 16 / Rule 55`) to classify perspective (`Conceptual`, `Logical`, `Technical`, `Process`), abstraction level (`L1`–`L4`), and recommended blueprint ID among the 26 production Google Cloud blueprints.
 - **Constraints & Thresholds**:
   - `TEMPLATE_CONFIDENCE_THRESHOLD = 0.8`
   - `FREEFORM_CONFIDENCE_THRESHOLD = 0.6`
@@ -69,11 +69,11 @@ User Prompt
 
 | Tier | Role & Engineering Surface | Canonical Model Identifier |
 | :--- | :--- | :--- |
-| **Tier 0** | Chief Architecture SME Director & Multimodal Forensic Audit Gate | `google-omni-1.1` |
-| **Tier 1** | Deep Reasoning, 6-Dimension Domain Research, Vision Decompilation & 16 Living Specs | `gemini-3.1-pro-preview` |
-| **Tier 2** | High-Speed Interactive Copilot, Intent Classifier (<2.5s), 4-Category Non-Mutation Gate & Prompt Enhancer | `gemini-3.8-flash` |
-| **Tier 3** | Real-Time Bidirectional Voice & Video Canvas Co-Pilot | `gemini-3.1-flash-live-preview` |
-| **Tier 4** | Generative Media & Vector Grounding (Video, Audio, Image, TTS, Embeddings) | `veo-3.1-generate-preview` • `lyria-3.5` • `gemini-3.1-flash-image-preview` • `gemini-3.1-flash-tts-preview` • `text-embedding-005` |
+| **Tier 0** | Chief Architecture SME Director & Multimodal Forensic Audit Gate | `gemini-2.5-pro` |
+| **Tier 1** | Deep Reasoning, 6-Dimension Domain Research, Vision Decompilation & 16 Living Specs | `gemini-2.5-pro` |
+| **Tier 2** | High-Speed Interactive Copilot, Intent Classifier (<2.5s), 4-Category Non-Mutation Gate & Prompt Enhancer | `gemini-2.5-flash` |
+| **Tier 3** | Real-Time Bidirectional Voice & Video Canvas Co-Pilot | `gemini-2.5-flash` |
+| **Tier 4** | Generative Media & Vector Grounding (Video, Audio, Image, TTS, Embeddings) | `veo-3.0-generate-preview` • `lyria-002` • `gemini-2.5-flash-image` • `gemini-2.5-flash-preview-tts` • `text-embedding-005` |
 
 ---
 

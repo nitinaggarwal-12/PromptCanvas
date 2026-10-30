@@ -2772,7 +2772,7 @@ function DocGenContent() {
                         5. Architectural Scope &amp; Topology Requirements Prompt
                       </label>
                       <span className="text-[10px] font-mono text-slate-500">
-                        Gemini 3.8 Flash &bull; Real-Time AST
+                        Gemini 2.5 Flash &bull; Real-Time AST
                       </span>
                     </div>
                     <textarea
@@ -2876,7 +2876,7 @@ function DocGenContent() {
                           setProjectName('Bio-Pharma Clinical Platform');
                           setUseCaseName('FDA 21 CFR Part 11 PV Platform');
                           setProjectTitle('Bio-Pharma Clinical Platform — FDA 21 CFR Part 11 PV Platform');
-                          setProjectScopePrompt('Automated pharmacovigilance adverse event triage with Gemini 3.8 Flash reasoning, GxP audit ledgers, and human-in-the-loop safety board review.');
+                          setProjectScopePrompt('Automated pharmacovigilance adverse event triage with Gemini 2.5 Flash reasoning, GxP audit ledgers, and human-in-the-loop safety board review.');
                         }}
                         className={`p-2 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
                           isLight ? 'bg-slate-50 hover:bg-teal-50 border-slate-200' : 'bg-slate-900 hover:bg-teal-950/30 border-slate-800'
@@ -3330,7 +3330,7 @@ function DocGenContent() {
                                   </div>
                                   <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
                                     <span>Inference &amp; Grounding</span>
-                                    <span>Gemini 3.8 Flash / 3.1 Pro</span>
+                                    <span>Gemini 2.5 Flash / 3.1 Pro</span>
                                     <span className="text-purple-600 font-bold">Toxicity &lt; 0.01</span>
                                   </div>
                                 </div>

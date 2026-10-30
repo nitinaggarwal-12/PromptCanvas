@@ -2,10 +2,10 @@
  * 🛡️ Multi-Model Truthfulness, Standards Grounding & Provenance Certification Engine
  *
  * Implements a 4-stage verification pipeline using the October 2026 Google Gemini 3.8 / 3.1 / Deep Research lineup:
- *   Stage 1: External Standards & Reality Grounding (`gemini-3.8-flash` + `googleSearch` / `deep-research-max-preview-04-2026`)
- *   Stage 2: Domain Topology Synthesis (`gemini-3.8-flash` + `buildUniversalClosedLoopDomainHarnessXml` / `buildCustomGcpEnterprise7TierXml`)
- *   Stage 3: Cross-Model LLM-as-a-Judge Truthfulness & Completeness Critic (`gemini-3.1-pro-preview`, judging `gemini-3.8-flash`)
- *   Stage 4: Omni 1.1 QC Chief Deterministic 2D AABB Geometry & XML Syntax Gate (`google-omni-1.1`)
+ *   Stage 1: External Standards & Reality Grounding (`gemini-2.5-flash` + `googleSearch` / `gemini-2.5-pro`)
+ *   Stage 2: Domain Topology Synthesis (`gemini-2.5-flash` + `buildUniversalClosedLoopDomainHarnessXml` / `buildCustomGcpEnterprise7TierXml`)
+ *   Stage 3: Cross-Model LLM-as-a-Judge Truthfulness & Completeness Critic (`gemini-2.5-pro`, judging `gemini-2.5-flash`)
+ *   Stage 4: Omni 1.1 QC Chief Deterministic 2D AABB Geometry & XML Syntax Gate (`gemini-2.5-pro`)
  *
  * Every stage produces an immutable Provenance Citation entry ("Who did What, When, and Why").
  */
@@ -13,12 +13,13 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import {
   DEEP_RESEARCH_MODEL_ID,
-  GEMINI_FALLBACK_FLASH_MODEL_ID,
   GEMINI_FLASH_MODEL_ID,
   OMNI_ORCHESTRATOR_ID,
   getDistinctJudgeModel,
   getEffectiveGeminiApiKey,
   getGenConfig,
+  resolveLatestDistinctJudgeChain,
+  resolveLatestGeminiModelChain,
 } from './geminiConfig';
 import { generateContentWithRetry } from './geminiRetryHelper';
 
@@ -763,8 +764,8 @@ export async function runTruthfulnessAndGroundingCertification(params: {
     domainContext.completenessChecklist
   );
 
-  const generatorModel = GEMINI_FLASH_MODEL_ID; // 'gemini-3.8-flash'
-  const criticJudgeModel = getDistinctJudgeModel(generatorModel); // 'gemini-3.1-pro-preview'
+  const generatorModel = GEMINI_FLASH_MODEL_ID; // 'gemini-2.5-flash'
+  const criticJudgeModel = getDistinctJudgeModel(generatorModel); // 'gemini-2.5-pro'
   const groundingModel = `${GEMINI_FLASH_MODEL_ID} (googleSearch) + ${DEEP_RESEARCH_MODEL_ID}`;
 
   let liveGroundingSummary = '';
@@ -796,7 +797,10 @@ export async function runTruthfulnessAndGroundingCertification(params: {
   // =========================================================================
   if (apiKey && !astInspection.isBlankCanvas && !astInspection.isStubOrSingleBox) {
     const ai = new GoogleGenAI({ apiKey });
-    const liveFlashModel = GEMINI_FALLBACK_FLASH_MODEL_ID || GEMINI_FLASH_MODEL_ID;
+    const liveFlashChain = await resolveLatestGeminiModelChain(ai, 'chat');
+    const liveFlashModel = liveFlashChain[0] || GEMINI_FLASH_MODEL_ID;
+    const liveCriticChain = await resolveLatestDistinctJudgeChain(ai, liveFlashModel);
+    const activeCriticModel = liveCriticChain[0] || criticJudgeModel;
 
     const stage1Promise =
       process.env.ENABLE_LIVE_GOOGLE_SEARCH_GROUNDING !== 'false'
@@ -843,8 +847,8 @@ Evaluate this user prompt for factual/scientific truthfulness and real-world eng
               const criticRes = await generateContentWithRetry(
                 ai,
                 {
-                  model: criticJudgeModel,
-                  contents: `You are the Independent Cross-Model Truthfulness, Standards Grounding & Completeness Critic (${criticJudgeModel}, auditing ${generatorModel}).
+                  model: activeCriticModel,
+                  contents: `You are the Independent Cross-Model Truthfulness, Standards Grounding & Completeness Critic (${activeCriticModel}, auditing ${liveFlashModel}).
 Evaluate the generated architecture for prompt: "${prompt}".
 Grounded standards context: ${domainContext.standardsSummary}
 Rendered XML stats: ${astInspection.componentVertexCount} component vertices, ${astInspection.edgeCount} edges.
@@ -963,7 +967,7 @@ Return JSON with:
       stageNumber: 2,
       stageName: 'Zero-Blueprint Compositional AST & Multi-Tier Topology Synthesis',
       actorRole: 'Lead Domain & Cloud Topology Synthesizer',
-      modelId: `${GEMINI_FLASH_MODEL_ID} (Gemini 3.8 Flash Stable)`,
+      modelId: `${GEMINI_FLASH_MODEL_ID} (Gemini 2.5 Flash Stable)`,
       codeCitation: 'src/lib/promptDrivenDiagramSynthesizer.ts#synthesizePromptDrivenDiagramXml',
       timestampUtc: tsStage2,
       durationMs: stage2DurationMs,
@@ -975,7 +979,7 @@ Return JSON with:
       verdict: stageVerdict === 'REFRAMED_SPECULATIVE_PREMISE' ? 'CERTIFIED' : stageVerdict,
       externalStandardsCited: [
         'Google Cloud Architecture Center Standards',
-        'Vertex AI Gemini 3.1 Pro / 3.8 Flash / Gemini Embedding 2',
+        'Vertex AI Gemini 3.1 Pro / 2.5 Flash / Gemini Embedding 2',
         domainContext.domainLabel,
       ],
     },

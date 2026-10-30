@@ -17,8 +17,8 @@ export function buildEcommerceRetailXml(): string {
           <mxGeometry x="65" y="32" width="1280" height="16" as="geometry"/>
         </mxCell>
         
-        <!-- Gemini 3.8 Flash Badge -->
-        <mxCell id="top_gemini_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#38BDF8;&quot;&gt;✨ Gemini 3.8 Flash&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#94A3B8;font-weight:600;&quot;&gt;Retail AI Core Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+        <!-- Gemini 2.5 Flash Badge -->
+        <mxCell id="top_gemini_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#38BDF8;&quot;&gt;✨ Gemini 2.5 Flash&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#94A3B8;font-weight:600;&quot;&gt;Retail AI Core Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="1380" y="8" width="195" height="42" as="geometry"/>
         </mxCell>
 
@@ -337,7 +337,7 @@ export function buildEcommerceRetailXml(): string {
 
         <!-- ==================== FOOTER LEGEND ==================== -->
         <!-- x = 25 .. 1575 (width = 1550, height = 36) -->
-        <mxCell id="footer_legend" value="&lt;table style=&quot;width:100%;font-size:7.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Retail Architecture Legend:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔵 &lt;b&gt;Omni-Channel Edge &amp;amp; Apigee&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟢 &lt;b&gt;Serverless Microservices&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟣 &lt;b&gt;Vertex AI &amp;amp; AlloyDB Vectors&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟡 &lt;b&gt;Data Platform (Spanner / BigQuery)&lt;/b&gt;&lt;/td&gt;&lt;td&gt;── &lt;b&gt;10/10 Protocol Connectors&lt;/b&gt;&lt;/td&gt;&lt;td&gt;✨ &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Gemini 3.8 Flash Engine&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="footer_legend" value="&lt;table style=&quot;width:100%;font-size:7.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Retail Architecture Legend:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔵 &lt;b&gt;Omni-Channel Edge &amp;amp; Apigee&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟢 &lt;b&gt;Serverless Microservices&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟣 &lt;b&gt;Vertex AI &amp;amp; AlloyDB Vectors&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟡 &lt;b&gt;Data Platform (Spanner / BigQuery)&lt;/b&gt;&lt;/td&gt;&lt;td&gt;── &lt;b&gt;10/10 Protocol Connectors&lt;/b&gt;&lt;/td&gt;&lt;td&gt;✨ &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Gemini 2.5 Flash Engine&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="25" y="785" width="1550" height="36" as="geometry"/>
         </mxCell>
 

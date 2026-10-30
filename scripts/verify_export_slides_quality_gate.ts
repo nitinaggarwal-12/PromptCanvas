@@ -1,5 +1,5 @@
 /**
- * Google Omni 1.1 Export & Slides/Docs Studio Quality Gate
+ * Gemini 2.5 Pro Export & Slides/Docs Studio Quality Gate
  * Verifies:
  * 1. Base64 style.image & inline <svg> icon extraction parity in editablePptxCompiler.ts
  * 2. Z-Order depth/area sorting & zero-deformity container/icon label placement in GoogleWorkspaceDirectOpenModal.tsx

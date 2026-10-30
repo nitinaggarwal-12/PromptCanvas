@@ -237,10 +237,10 @@ delta table against the last green run.
 prompt file under `src/prompts/` triggers the full `dev` sweep and **blocks merge**
 unless:
 - L2 assertion pass rate ≥ previous − 2pp, and
-- LLM-judge (`google-omni-1.1` / `gemini-3.1-pro-preview`) mean composite ≥ previous − 0.15, and
+- LLM-judge (`gemini-2.5-pro` / `gemini-2.5-pro`) mean composite ≥ previous − 0.15, and
 - validator first-pass rate ≥ previous − 3pp
 
-All models are centralized in `src/lib/geminiConfig.ts` (`google-omni-1.1`, `gemini-3.1-pro-preview`, `gemini-3.8-flash`, `gemini-3.1-flash-live-preview`, `veo-3.1-generate-preview`, `lyria-3.5`, `gemini-3.1-flash-image-preview`, `gemini-3.1-flash-tts-preview`, `text-embedding-005`). This gate converts any model bump into
+All models are centralized in `src/lib/geminiConfig.ts` (`gemini-2.5-pro`, `gemini-2.5-pro`, `gemini-2.5-flash`, `gemini-2.5-flash`, `veo-3.0-generate-preview`, `lyria-002`, `gemini-2.5-flash-image`, `gemini-2.5-flash-preview-tts`, `text-embedding-005`). This gate converts any model bump into
 a measured, deterministic decision — and is a core engineering artifact
 verified by `npm run quality-gate`.
 

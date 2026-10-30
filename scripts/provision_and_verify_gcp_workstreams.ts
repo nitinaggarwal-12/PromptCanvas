@@ -149,10 +149,10 @@ CREATE OR REPLACE TABLE \`${PROJECT_ID}.${DATASET_ID}.tenant_telemetry_spans\` (
 );
 
 INSERT INTO \`${PROJECT_ID}.${DATASET_ID}.tenant_telemetry_spans\` VALUES
-  ('sp-fv-001', CURRENT_TIMESTAMP(), 'finvault', 'ENTERPRISE_SOVEREIGN', 'Pattern B: Sovereign Silo', 'WS3.1', 'finvault_wealth_coordinator', 'gemini-3.1-pro-preview', 185000, 166500, 8192, 2400, 0.90, 84.7, 0.0412, 'projects/${PROJECT_ID}/locations/us-west1/keyRings/${KEYRING_ID}/cryptoKeys/finvault-silo-cmek', true),
-  ('sp-fv-002', CURRENT_TIMESTAMP(), 'finvault', 'ENTERPRISE_HYBRID', 'Pattern C: Hybrid PSC', 'WS4.1', 'finvault_wealth_coordinator', 'gemini-3.1-pro-preview', 185000, 166500, 8192, 2150, 0.90, 84.7, 0.0398, 'projects/${PROJECT_ID}/locations/us-west1/keyRings/${KEYRING_ID}/cryptoKeys/finvault-silo-cmek', true),
-  ('sp-rs-001', CURRENT_TIMESTAMP(), 'retailstream', 'COMMERCIAL_STANDARD', 'Pattern A: Pooled Shared Runtime', 'WS2.1', 'retailstream_ops_coordinator', 'gemini-3.8-flash', 185000, 166500, 4096, 1800, 0.90, 84.7, 0.0089, 'projects/${PROJECT_ID}/locations/us-west1/keyRings/${KEYRING_ID}/cryptoKeys/retailstream-silo-cmek', true),
-  ('sp-rs-002', CURRENT_TIMESTAMP(), 'retailstream', 'COMMERCIAL_STANDARD', 'Pattern A: Pooled Shared Runtime', 'WS2.1', 'retailstream_ops_coordinator', 'gemini-3.8-flash', 185000, 166500, 4096, 1650, 0.90, 84.7, 0.0084, 'projects/${PROJECT_ID}/locations/us-west1/keyRings/${KEYRING_ID}/cryptoKeys/retailstream-silo-cmek', true);
+  ('sp-fv-001', CURRENT_TIMESTAMP(), 'finvault', 'ENTERPRISE_SOVEREIGN', 'Pattern B: Sovereign Silo', 'WS3.1', 'finvault_wealth_coordinator', 'gemini-2.5-pro', 185000, 166500, 8192, 2400, 0.90, 84.7, 0.0412, 'projects/${PROJECT_ID}/locations/us-west1/keyRings/${KEYRING_ID}/cryptoKeys/finvault-silo-cmek', true),
+  ('sp-fv-002', CURRENT_TIMESTAMP(), 'finvault', 'ENTERPRISE_HYBRID', 'Pattern C: Hybrid PSC', 'WS4.1', 'finvault_wealth_coordinator', 'gemini-2.5-pro', 185000, 166500, 8192, 2150, 0.90, 84.7, 0.0398, 'projects/${PROJECT_ID}/locations/us-west1/keyRings/${KEYRING_ID}/cryptoKeys/finvault-silo-cmek', true),
+  ('sp-rs-001', CURRENT_TIMESTAMP(), 'retailstream', 'COMMERCIAL_STANDARD', 'Pattern A: Pooled Shared Runtime', 'WS2.1', 'retailstream_ops_coordinator', 'gemini-2.5-flash', 185000, 166500, 4096, 1800, 0.90, 84.7, 0.0089, 'projects/${PROJECT_ID}/locations/us-west1/keyRings/${KEYRING_ID}/cryptoKeys/retailstream-silo-cmek', true),
+  ('sp-rs-002', CURRENT_TIMESTAMP(), 'retailstream', 'COMMERCIAL_STANDARD', 'Pattern A: Pooled Shared Runtime', 'WS2.1', 'retailstream_ops_coordinator', 'gemini-2.5-flash', 185000, 166500, 4096, 1650, 0.90, 84.7, 0.0084, 'projects/${PROJECT_ID}/locations/us-west1/keyRings/${KEYRING_ID}/cryptoKeys/retailstream-silo-cmek', true);
 
 CREATE OR REPLACE TABLE \`${PROJECT_ID}.${DATASET_ID}.security_breach_audit_log\` (
   sim_id STRING,

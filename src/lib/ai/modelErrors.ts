@@ -78,7 +78,7 @@ export function parseUpstreamError(err: any): UpstreamErrorInfo {
 
   // 3) Last-resort heuristics for non-JSON transports.
   if (!httpStatus) {
-    const m = /\b(429|500|502|503|504)\b/.exec(rawMessage);
+    const m = /\b(404|429|500|502|503|504)\b/.exec(rawMessage);
     if (m) httpStatus = Number(m[1]);
   }
 

@@ -33,7 +33,12 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     xmlInput.includes('Google Cloud Multiagent AI System') ||
     xmlInput.includes('azure_landing_zone') ||
     xmlInput.includes('agentic_ai_architecture') ||
+    xmlInput.includes('data-nano-banana-decompiled="true"') ||
+    xmlInput.includes('nano_banana_vision_decompiled') ||
+    xmlInput.includes('data-compositional-chain="true"') ||
+    xmlInput.includes('data-compound-freeform="true"') ||
     (archType !== undefined && archType !== null && (
+      archType === 'compound_freeform' ||
       archType === 'vision_decompiled' ||
       archType === 'unified_system_view' ||
       archType === 'unified_flowchart' ||

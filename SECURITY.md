@@ -24,7 +24,7 @@ Welcome to the **PromptCanvas** Security Architecture Specification. This docume
                        ▼                                               ▼
 ┌─────────────────────────────────────────────┐ ┌─────────────────────────────────────────┐
 │     TRUST BOUNDARY 2: 5-TIER AI ENGINE      │ │       TRUST BOUNDARY 3: DATABASE        │
-│  Google Omni 1.1 · Gemini 3.1 Pro & 3.8     │ │  SQLite (dev.db) / PostgreSQL           │
+│  Gemini 2.5 Pro · Gemini 3.1 Pro & 3.8     │ │  SQLite (dev.db) / PostgreSQL           │
 │  • Centralized in src/lib/geminiConfig.ts   │ │  • Parameterized queries only           │
 │  • Output XML structure gating              │ │  • PRAGMA foreign_keys = ON             │
 │  • Zero deprecated / third-party LLM leaks  │ │  • Integer boolean type normalization   │

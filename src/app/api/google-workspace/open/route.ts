@@ -13,7 +13,6 @@ import {
   OFFICIAL_ARCH_CENTER_BLUEPRINTS,
   compileOfficialArchCenterDrawioXml,
 } from '@/lib/canonical/templateOfficialGcpArchCenterHubSpoke';
-import { buildUniversalClosedLoopDomainHarnessXml } from '@/lib/canonical/nasaMultiverseClosedLoopHarness';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,21 +20,7 @@ function resolveServerDiagramXmlAndTitle(rawKey: string, fallbackTitle?: string)
   const clean = String(rawKey || '').trim();
   const combined = `${clean} ${fallbackTitle || ''}`;
 
-  if (/nasa|multiverse|multi-universe|closed-loop/i.test(combined)) {
-    return {
-      xml: buildUniversalClosedLoopDomainHarnessXml({
-        prompt:
-          fallbackTitle ||
-          'NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness',
-        theme: 'light',
-      }),
-      title:
-        fallbackTitle ||
-        'NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness',
-    };
-  }
-
-  // 1. Check Official Arch Center variants (ws1-multi-tenant-taxonomy-overview, etc.)
+    // 1. Check Official Arch Center variants (ws1-multi-tenant-taxonomy-overview, etc.)
   const archBp = OFFICIAL_ARCH_CENTER_BLUEPRINTS.find((b) => b.id === clean);
   if (archBp) {
     return {

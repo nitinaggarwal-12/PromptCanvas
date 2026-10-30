@@ -3,7 +3,7 @@ import { executeGcpPromptModification } from '@/lib/gcpCoPilotModifier';
 import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
 import { ALL_GCP_DIALECT_A_ARCHITECTURES } from '@/lib/gcpDialectA';
 
-describe('GCP Architecture Co-Pilot Modifier & Quality Gates', () => {
+describe('Architecture Co-Pilot Spatial Modifier (Hijacker-Free)', () => {
   const baseArch = ALL_GCP_DIALECT_A_ARCHITECTURES[0];
   const baseXml = baseArch.generateXml(true);
 
@@ -18,175 +18,52 @@ describe('GCP Architecture Co-Pilot Modifier & Quality Gates', () => {
     expect(mutation.intent).toBe('mutation');
   });
 
-  it('prevents prompt inversion on negative / removal intent (e.g. "remove spanner")', () => {
-    const result = executeGcpPromptModification(
-      baseXml,
-      'Remove Cloud Spanner and decouple persistence',
-      1,
-      baseArch.id,
-      true
-    );
-
-    expect(result.assistantMessage.actionSummary?.canvasDiff).toContain('Decoupled');
-    expect(result.updatedXml).toContain('copilot_mod_decouple_');
-    expect(result.updatedXml).not.toContain('Cloud Spanner Active-Active nam3 Leader');
+  it('genuinely deletes matching vertex and connected edges on removal intent', () => {
+    const sampleXml = `<mxfile><diagram id="d1"><mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="db_spanner" value="Cloud Spanner" vertex="1" parent="1"><mxGeometry x="100" y="100" width="180" height="70" as="geometry"/></mxCell><mxCell id="api_gw" value="API Gateway" vertex="1" parent="1"><mxGeometry x="100" y="240" width="180" height="70" as="geometry"/></mxCell><mxCell id="e1" edge="1" parent="1" source="api_gw" target="db_spanner"><mxGeometry relative="1" as="geometry"/></mxCell></root></mxGraphModel></diagram></mxfile>`;
+    const result = executeGcpPromptModification(sampleXml, 'Remove Cloud Spanner', 1, 'blank', false);
+    expect(result.updatedXml).not.toContain('id="db_spanner"');
+    expect(result.updatedXml).not.toContain('target="db_spanner"');
+    expect(result.updatedXml).toContain('id="api_gw"');
   });
 
-  it('handles replacement intent cleanly (e.g. "replace spanner with cloud sql postgres")', () => {
-    const result = executeGcpPromptModification(
-      baseXml,
-      'Replace Spanner with Cloud SQL PostgreSQL HA cluster',
-      1,
-      baseArch.id,
-      true
-    );
-
-    expect(result.assistantMessage.actionSummary?.canvasDiff).toContain('Cloud SQL PostgreSQL');
-    expect(result.updatedXml).toContain('Cloud SQL Enterprise Plus (PostgreSQL 16)');
-    expect(result.updatedXml).toContain('copilot_mod_cloudsql_');
+  it('preserves user-requested multi-cloud vendor names instead of silently rewriting AWS to GCP', () => {
+    const s3Result = executeGcpPromptModification(baseXml, 'Add AWS S3 bucket for file uploads', 1, baseArch.id, false);
+    expect(s3Result.updatedXml).toContain('AWS S3 bucket');
+    expect(s3Result.updatedXml).not.toContain('STORAGE ADAPTER: GCS');
   });
 
-  it('translates cross-cloud vendor entities (AWS S3, DynamoDB, Lambda) to authentic GCP services', () => {
-    // AWS S3 -> Google Cloud Storage
-    const s3Result = executeGcpPromptModification(
-      baseXml,
-      'Add AWS S3 bucket for file uploads',
-      1,
-      baseArch.id,
-      true
-    );
-    expect(s3Result.assistantMessage.actionSummary?.canvasDiff).toContain('Google Cloud Storage');
-    expect(s3Result.updatedXml).toContain('STORAGE ADAPTER: GCS');
-
-    // DynamoDB -> Cloud Spanner
-    const dynamoResult = executeGcpPromptModification(
-      baseXml,
-      'Connect DynamoDB database',
-      2,
-      baseArch.id,
-      true
-    );
-    expect(dynamoResult.assistantMessage.actionSummary?.canvasDiff).toContain('Cloud Spanner');
-    expect(dynamoResult.updatedXml).toContain('DATABASE ADAPTER: SPANNER');
-
-    // Lambda -> Cloud Run
-    const lambdaResult = executeGcpPromptModification(
-      baseXml,
-      'Deploy serverless AWS Lambda workers',
-      3,
-      baseArch.id,
-      true
-    );
-    expect(lambdaResult.assistantMessage.actionSummary?.canvasDiff).toContain('Cloud Run');
-    expect(lambdaResult.updatedXml).toContain('COMPUTE ADAPTER: CLOUD RUN');
-  });
-
-  it('dynamically computes safe channel coordinates avoiding top banner collisions (y >= 640)', () => {
-    const result = executeGcpPromptModification(
-      baseXml,
-      'Integrate Apache Kafka event ingestion pipeline',
-      1,
-      baseArch.id,
-      true
-    );
-
-    // Coordinate must be in open bottom channel y >= 640
-    expect(result.updatedXml).toMatch(/<mxGeometry[^>]*y="6[0-9]{2}"/);
-    expect(result.updatedXml).toContain('edgeStyle=orthogonalEdgeStyle');
-    expect(result.updatedXml).toContain('Synthesized Link');
-  });
-
-  it('escapes raw HTML/XML injection characters preventing XML syntax corruption', () => {
-    const maliciousPrompt = 'Inject <script>alert("xss")</script> & "special" \'quotes\' > < symbols';
-    const result = executeGcpPromptModification(
-      baseXml,
-      maliciousPrompt,
-      1,
-      baseArch.id,
-      true
-    );
+  it('applies structured liveGeminiSpec faithfully and escapes HTML/XML injection characters', () => {
+    const maliciousPrompt = 'Inject <script>alert("xss")</script> & "special"';
+    const result = executeGcpPromptModification(baseXml, maliciousPrompt, 2, baseArch.id, false, 'Security Architect', {
+      titleText: 'WAF <Guard> & Shield',
+      badgeText: 'SECURITY',
+      descText: 'Blocks <script> payloads',
+      edgeLabel: 'Filtered HTTPS',
+      accentColor: '#DC2626',
+      fillColor: '#FEF2F2',
+      targetKeywords: ['gateway'],
+      canvasDiff: 'Added WAF Guard',
+      specDiff: 'Updated security controls',
+      isLiveGeminiModification: true,
+      modelUsed: 'gemini-2.5-pro',
+    });
 
     expect(result.updatedXml).not.toContain('<script>');
-    expect(result.updatedXml).toContain('&lt;script&gt;');
-    expect(result.updatedXml).toContain('&amp;');
-    expect(result.newVersion.versionTag).toBe('v1.0.2');
+    expect(result.updatedXml).toContain('WAF &amp;lt;Guard&amp;gt;');
+    expect(result.newVersion.versionTag).toBe('v1.2');
+    expect(result.newVersion.author).toBe('Security Architect');
   });
 
-  it('connects suggested prompts to real existing vertex IDs and upgrades nodes in-place on Canonical Blueprint #00', async () => {
-    const { generateUpgradedGcpGeBankingArchitectureXml } = await import('@/lib/canonical/upgradedGcpGeBankingAgentTemplate');
-    const bp00Xml = generateUpgradedGcpGeBankingArchitectureXml({ theme: 'light' });
-
-    const step1 = executeGcpPromptModification(
-      bp00Xml,
-      '+ Upgrade Cloud Spanner to Multi-Region Dual-Zone HA',
-      1,
-      'canonical_00',
-      false
-    );
-    expect(step1.updatedXml).toContain('target="db_spanner"');
-    expect(step1.updatedXml).toContain('Multi-Region nam3 HA');
-
-    const step2 = executeGcpPromptModification(
-      step1.updatedXml,
-      '+ Insert Vertex AI Model Armor Prompt-Injection Firewall',
-      2,
-      'canonical_00',
-      false
-    );
-    expect(step2.updatedXml).toContain('target="dlp_model_armor"');
-    expect(step2.updatedXml).toContain('Vertex AI Model Armor Prompt-Injection Firewall');
-
-    const step3 = executeGcpPromptModification(
-      step2.updatedXml,
-      '+ Attach BigQuery Cost Intelligence & Cloud Billing Anomaly Pipeline',
-      3,
-      'canonical_00',
-      false
-    );
-    expect(step3.updatedXml).toContain('target="obs_container"');
-    expect(step3.updatedXml).toContain('BigQuery Cost Intelligence &amp; Billing Anomaly AI');
-    expect(step3.updatedXml).not.toContain('&amp; Clou"');
-  });
-
-  it('normalizes British spelling "add model armour" to Model Armor in-place upgrade instead of generic custom box', async () => {
-    const { generateUpgradedGcpGeBankingArchitectureXml } = await import('@/lib/canonical/upgradedGcpGeBankingAgentTemplate');
-    const bp00Xml = generateUpgradedGcpGeBankingArchitectureXml({ theme: 'light' });
-
+  it('never hijacks aerospace or custom prompts into hardcoded Flight Director / multiverse templates', () => {
     const res = executeGcpPromptModification(
-      bp00Xml,
-      'add model armour',
+      baseXml,
+      'Add satellite telemetry receiver gateway',
       1,
-      'canonical_00',
+      baseArch.id,
       false
     );
-    expect(res.updatedXml).toContain('target="dlp_model_armor"');
-    expect(res.updatedXml).toContain('Vertex AI Model Armor Prompt-Injection Firewall');
-    expect(res.updatedXml).not.toContain('Synthesized &amp; connected by Google Cloud Architecture Co-Pilot');
-    expect(res.newVersion.author).toBe('CISO / Security Architect');
-  });
-
-  it('synthesizes full NASA Multi-Universe Satellite Launch Agentic Harness topology when prompted to build NASA satellite harness', async () => {
-    const { generateUpgradedGcpGeBankingArchitectureXml } = await import('@/lib/canonical/upgradedGcpGeBankingAgentTemplate');
-    const bp00Xml = generateUpgradedGcpGeBankingArchitectureXml({ theme: 'light' });
-
-    const res = executeGcpPromptModification(
-      bp00Xml,
-      '1. Build an agentic harness for Nasa launching satellights in the different universes',
-      1,
-      'canonical_00',
-      false
-    );
-
-    expect(res.updatedXml).toContain('Flight Director Coordinator');
-    expect(res.updatedXml).toContain('GNC &amp; Orbit FDS');
-    expect(res.updatedXml).toContain('Avionics');
-    expect(res.updatedXml).toContain('Parallel Multi-Universe Digital-Twin Sandbox');
-    expect(res.updatedXml).toContain('Cross-Universe Pareto Policy Distiller');
-    expect(res.updatedXml).toContain('CLOSED-LOOP 100Hz CCSDS 732.0-B AOS TELEMETRY RETURN HIGHWAY');
-    expect(res.updatedXml).not.toContain('Cheque book');
-    expect(res.updatedXml).not.toContain('eKYC update');
-    expect(res.newVersion.author).toBe('Mission Systems & Aerospace AI Lead');
+    expect(res.updatedXml).toContain('satellite telemetry receiver gateway');
+    expect(res.updatedXml).not.toContain('Flight Director Coordinator');
+    expect(res.updatedXml).not.toContain('CLOSED-LOOP 100Hz CCSDS');
   });
 });
-
-

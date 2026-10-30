@@ -2,7 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import { validateAndHealDrawioXml } from './xmlHealer';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from './preflightAuditEngine';
 import { injectUseCaseFlavor } from './diagramCleaner';
-import { GEMINI_MODEL_ID, getEffectiveGeminiApiKey } from './geminiConfig';
+import { GEMINI_MODEL_ID, getEffectiveGeminiApiKey, resolveLatestGeminiModelChain } from './geminiConfig';
 import { generateContentWithRetry } from './geminiRetryHelper';
 import { toUserFacingMessage } from './ai/modelErrors';
 
@@ -92,7 +92,7 @@ export async function customizeDiagramTemplateWithGemini(
   architectureType: string = 'conceptual_diagram',
   userApiKey?: string
 ): Promise<CustomizationResult> {
-  const modelName = process.env.GEMINI_MODEL_ID || GEMINI_MODEL_ID;
+  let modelName = GEMINI_MODEL_ID;
 
   if (!templateXml || typeof templateXml !== 'string') {
     throw new Error('Template XML is empty or invalid');
@@ -190,11 +190,18 @@ OUTPUT JSON SCHEMA:
 }`;
 
   try {
-    console.log(`[Gemini Customizer] Calling ${modelName} with Structured AST for prompt: "${userPrompt.slice(0, 60)}"...`);
     const ai = getAiClient(userApiKey);
-    const response = await generateContentWithRetry(ai, {
-      model: modelName,
-      contents: `### USER ARCHITECTURE PROMPT / REFINEMENT REQUEST:
+    const candidateModels = await resolveLatestGeminiModelChain(ai, 'latest');
+    let response: any = null;
+    let lastErr: unknown = null;
+
+    for (const candidateModel of candidateModels) {
+      try {
+        modelName = candidateModel;
+        console.log(`[Gemini Customizer] Calling ${modelName} with Structured AST for prompt: "${userPrompt.slice(0, 60)}"...`);
+        response = await generateContentWithRetry(ai, {
+          model: candidateModel,
+          contents: `### USER ARCHITECTURE PROMPT / REFINEMENT REQUEST:
 "${userPrompt}"
 
 ### ARCHITECTURE TYPE:
@@ -208,12 +215,18 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
   currentSubtitle: n.currentSubtitle,
   currentBadge: n.currentBadge
 })), null, 2)}`,
-      config: {
-        systemInstruction,
-        temperature: isIteration ? 0.35 : 0.2,
-        responseMimeType: 'application/json',
-      },
-    });
+          config: {
+            systemInstruction,
+            temperature: isIteration ? 0.35 : 0.2,
+            responseMimeType: 'application/json',
+          },
+        });
+        if (response?.text) break;
+      } catch (err) {
+        lastErr = err;
+      }
+    }
+    if (!response && lastErr) throw lastErr;
 
     const text = response.text || '{}';
     let data: any = {};

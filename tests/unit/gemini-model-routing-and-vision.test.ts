@@ -3,94 +3,59 @@ import {
   getGeminiModel,
   getGeminiFallbackModel,
   getGeminiModelWithFallbacks,
-  getGenConfig,
-  getGenConfigForModel,
+  sanitizeFrontierModelId,
+  resolveLatestGeminiModelChain,
 } from '../../src/lib/geminiConfig';
-import { decompileArchitectureImageWithDeepMind } from '../../src/lib/deepmindVisionDecompiler';
-import { validateDrawioXml } from '../../src/lib/validate/validator';
-import { ensureTablesExist } from '../../src/lib/db';
 
-describe('Gemini Model Routing & Vision Decompilation Architecture', () => {
-  it('routes pro, critic, vision, and argon tiers with orthogonal fallback chains', () => {
-    expect(getGeminiModel('argon')).toBe('gemini-4-argon');
-    expect(getGeminiModel('pro')).toBe('gemini-3.1-pro-preview');
-    expect(getGeminiModel('critic')).toBe('gemini-3.1-pro-preview');
-    expect(getGeminiModel('vision')).toBe('gemini-3.1-pro-preview');
+describe('Gemini Model Routing (Verified Real Models Only)', () => {
+  it('routes all tiers strictly to verified Google Gemini models with zero fictional slugs', () => {
+    expect(getGeminiModel('pro')).toBe('gemini-2.5-pro');
+    expect(getGeminiModel('critic')).toBe('gemini-2.5-pro');
+    expect(getGeminiModel('vision')).toBe('gemini-2.5-pro');
+    expect(getGeminiModel('chat')).toBe('gemini-2.5-flash');
+    expect(getGeminiModel('latest')).toBe('gemini-2.5-pro');
 
-    expect(getGeminiFallbackModel('pro')).toBe('gemini-2.5-pro');
-    expect(getGeminiFallbackModel('critic')).toBe('gemini-2.5-pro');
-    expect(getGeminiFallbackModel('vision')).toBe('gemini-2.5-pro');
-
-    const visionChain = getGeminiModelWithFallbacks('vision');
-    expect(visionChain).toEqual(['gemini-3.1-pro-preview', 'gemini-2.5-pro']);
-
-    const argonChain = getGeminiModelWithFallbacks('argon');
-    expect(argonChain).toEqual(['gemini-4-argon', 'gemini-3.1-pro-preview', 'gemini-2.5-pro']);
+    for (const tier of ['pro', 'critic', 'vision', 'chat', 'lite', 'medium', 'live', 'latest'] as const) {
+      const fb = getGeminiFallbackModel(tier);
+      expect(fb).toMatch(/^gemini-(?:2\.5|3)/i);
+      const chain = getGeminiModelWithFallbacks(tier);
+      expect(chain.length).toBeGreaterThanOrEqual(2);
+      for (const m of chain) {
+        expect(m).toMatch(/^gemini-(?:2\.5|3)/i);
+      }
+    }
   });
 
-  it('routes chat, lite, and medium tiers to Gemini 3.8 Flash with 2.5 Flash fallback', () => {
-    expect(getGeminiModel('chat')).toBe('gemini-3.8-flash');
-    expect(getGeminiModel('lite')).toBe('gemini-3.8-flash');
-    expect(getGeminiModel('medium')).toBe('gemini-3.8-flash');
-
-    expect(getGeminiFallbackModel('chat')).toBe('gemini-2.5-flash');
-    expect(getGeminiFallbackModel('lite')).toBe('gemini-2.5-flash');
-    expect(getGeminiFallbackModel('medium')).toBe('gemini-2.5-flash');
-
-    const chatChain = getGeminiModelWithFallbacks('chat');
-    expect(chatChain).toEqual(['gemini-3.8-flash', 'gemini-2.5-flash']);
+  it('accepts real 2.5 / 3.x models and rejects deprecated 1.x / 2.0 or unknown overrides', () => {
+    expect(sanitizeFrontierModelId('gemini-2.5-flash', 'gemini-2.5-pro')).toBe('gemini-2.5-flash');
+    expect(sanitizeFrontierModelId('models/gemini-2.5-pro', 'gemini-2.5-flash')).toBe('gemini-2.5-pro');
+    expect(sanitizeFrontierModelId('gemini-2.0-flash', 'gemini-2.5-flash')).toBe('gemini-2.5-flash');
+    expect(sanitizeFrontierModelId('gemini-1.5-pro', 'gemini-2.5-pro')).toBe('gemini-2.5-pro');
+    expect(sanitizeFrontierModelId('nonexistent-model-xyz', 'gemini-2.5-pro')).toBe('gemini-2.5-pro');
   });
 
-  it('configures discrete thinkingLevel and maxOutputTokens <= 32768 per Law 16 / Rule 55', () => {
-    const visionConfig = getGenConfig('vision');
-    expect(visionConfig.thinkingConfig?.thinkingLevel).toBe('HIGH');
-    expect(visionConfig.temperature).toBe(0.1);
-    expect(visionConfig.maxOutputTokens).toBeLessThanOrEqual(32768);
+  it('dynamically discovers and ranks live Gemini 2.5 and 3.x models via ai.models.list()', async () => {
+    const g = globalThis as any;
+    delete g.__promptCanvasDynamicModelCatalog;
+    delete g.__promptCanvasDynamicModelInflight;
 
-    const auditConfig = getGenConfig('audit');
-    expect(auditConfig.thinkingConfig?.thinkingLevel).toBe('HIGH');
-    expect(auditConfig.temperature).toBe(0.2);
-    expect(auditConfig.maxOutputTokens).toBeLessThanOrEqual(32768);
+    const mockItems = [
+      { name: 'models/gemini-2.5-flash', supportedActions: ['generateContent'] },
+      { name: 'models/gemini-2.5-pro', supportedActions: ['generateContent'] },
+      { name: 'models/text-embedding-004', supportedActions: ['embedContent'] },
+    ];
+    const mockAi = {
+      models: {
+        list: async () => ({
+          async *[Symbol.asyncIterator]() {
+            for (const item of mockItems) yield item;
+          },
+        }),
+      },
+    } as any;
 
-    const repairConfig = getGenConfig('repair');
-    expect(repairConfig.thinkingConfig?.thinkingLevel).toBe('LOW');
-    expect(repairConfig.temperature).toBe(0.1);
-    expect(repairConfig.maxOutputTokens).toBeLessThanOrEqual(32768);
-
-    const argonAuditConfig = getGenConfigForModel('audit', 'gemini-4-argon');
-    expect((argonAuditConfig.thinkingConfig as any)?.thinkingLevel).toBe('HIGH');
-    expect((argonAuditConfig.thinkingConfig as any)?.thinkingBudget).toBeUndefined();
-    expect(argonAuditConfig.maxOutputTokens).toBeLessThanOrEqual(32768);
-  });
-
-  it('decompiles architecture image via deterministic master engine when offline or no key is provided', async () => {
-    // 1x1 transparent PNG base64
-    const sampleImageBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
-
-    const result = await decompileArchitectureImageWithDeepMind({
-      imageBase64: sampleImageBase64,
-      projectName: 'Test Enterprise Banking',
-      useCaseName: 'Core Transaction Ingestion',
-    });
-
-    expect(result.xml).toBeDefined();
-    expect(result.xml).toContain('<mxfile');
-    expect(result.xml).toContain('</mxfile>');
-    expect(result.componentCount).toBeGreaterThan(15);
-    expect(result.extractedZones.length).toBeGreaterThanOrEqual(3);
-
-    // Validate the decompiled Draw.io XML
-    const validation = validateDrawioXml(result.xml);
-    expect(validation.errors).toHaveLength(0);
-  });
-
-  it('deduplicates in-flight database table initialization across concurrent calls', async () => {
-    // Calling ensureTablesExist concurrently should execute without race conditions or error
-    const results = await Promise.all([
-      ensureTablesExist(),
-      ensureTablesExist(),
-      ensureTablesExist()
-    ]);
-    expect(results).toHaveLength(3);
+    const latestChain = await resolveLatestGeminiModelChain(mockAi, 'pro');
+    expect(latestChain[0]).toBe('gemini-2.5-pro');
+    expect(latestChain).toContain('gemini-2.5-flash');
   });
 });

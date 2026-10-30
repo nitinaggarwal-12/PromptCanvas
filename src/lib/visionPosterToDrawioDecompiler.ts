@@ -2,10 +2,10 @@
  * Hybrid Gemini Vision Reference Poster -> Editable Draw.io & Google Slides Spatial Decompiler
  *
  * Implements the 2-stage Hybrid Visual-to-Vector Architecture Synthesis pipeline:
- *   Stage A: Reference Poster Generation (`gemini-nano-banana-2.1` / `imagen-3.0-generate-002`)
+ *   Stage A: Reference Poster Generation (`gemini-2.5-flash-image` / `imagen-3.0-generate-002`)
  *            synthesizes the canonical visual topology poster with swimlanes, hero logos,
  *            nested sub-cards, and directional arrows.
- *   Stage B: Multimodal Vision Spatial Decompilation (`gemini-3.8-flash` / `gemini-3.1-pro-preview`)
+ *   Stage B: Multimodal Vision Spatial Decompilation (`gemini-2.5-flash` / `gemini-2.5-pro`)
  *            extracts normalized [ymin, xmin, ymax, xmax] (0..1000) bounding boxes for every
  *            tier swimlane, component card, nested sub-card, and directional connector, then
  *            compiles them into 100% vector-editable Draw.io mxGraphModel XML (1600x585) and
@@ -13,7 +13,14 @@
  */
 
 import { GoogleGenAI } from '@google/genai';
-import { getEffectiveGeminiApiKey, getGeminiModel } from './geminiConfig';
+import {
+  getEffectiveGeminiApiKey,
+  getGeminiModel,
+  resolveLatestDistinctJudgeChain,
+  resolveLatestGeminiImageModelChain,
+  resolveLatestGeminiModelChain,
+} from './geminiConfig';
+import { generateContentWithRetry } from './geminiRetryHelper';
 import { GOOGLE_CLOUD_OFFICIAL_SVG } from './gcpOfficialSvgAssets';
 import { AWS_AND_VENDOR_OFFICIAL_SVG } from './awsOfficialSvgAssets';
 
@@ -895,7 +902,7 @@ export function normalizeVisionPosterSpecGeometry(rawSpec: VisionDecompiledPoste
 
   const numC = rawContainers.length;
   const marginX = 14;
-  const gapX = 34; // ~55px inter-tier routing corridor between containers (+44px inner card padding = ~125px total corridor)
+  const gapX = 42; // ~67px inter-tier routing corridor between containers (+70px inner card padding = ~137px total corridor)
   const totalAvailableW = 1000 - marginX * 2 - gapX * (numC - 1);
   const colW = Math.floor(totalAvailableW / numC);
 
@@ -926,7 +933,7 @@ export function normalizeVisionPosterSpecGeometry(rawSpec: VisionDecompiledPoste
 
   rawNodes.forEach((n, idx) => {
     const cleanedTitle = cleanArchitecturalTextTypos(n.title || `Component ${idx + 1}`);
-    const cleanedSubtitle = cleanArchitecturalTextTypos(n.subtitle || 'Managed Enterprise Cloud Service');
+    const cleanedSubtitle = cleanArchitecturalTextTypos(n.subtitle || '');
     const cleanedBadge = cleanArchitecturalTextTypos(n.badge || '').toUpperCase();
 
     const rawIdStr = String(n.id || cleanedTitle || `node_${idx + 1}`);
@@ -1010,9 +1017,9 @@ export function normalizeVisionPosterSpecGeometry(rawSpec: VisionDecompiledPoste
       nodeTierIndexMap.set(n.id, cIdx);
       normalizedNodes.push({
         id: n.id,
-        badge: String(n.badge || `TIER ${cIdx + 1} • SERVICE`).toUpperCase().slice(0, 38),
+        badge: String(n.badge || 'COMPONENT').toUpperCase().slice(0, 38),
         title: String(n.title || `Component ${cIdx + 1}.${rIdx + 1}`).trim().slice(0, 48),
-        subtitle: String(n.subtitle || 'Managed Enterprise Cloud Service').trim().slice(0, 64),
+        subtitle: String(n.subtitle || '').trim().slice(0, 64),
         box2d: [ymin, nXMin, ymax, nXMax],
         fillHex: '#FFFFFF',
         strokeHex: container.strokeHex || palette.strokeHex,
@@ -1064,27 +1071,39 @@ export function normalizeVisionPosterSpecGeometry(rawSpec: VisionDecompiledPoste
 
     if (/\bs3\b/.test(sText) && /\b(transfer|gcs|cloud storage)\b/.test(tText)) return 'S3 → GCS Sync';
     if (/\btransfer\b/.test(sText) && /\b(gcs|cloud storage)\b/.test(tText)) return 'GCS Object Sync';
-    if (/\b(rds|aurora|postgres|mysql|teradata|oracle)\b/.test(sText) && /\b(dms|migration)\b/.test(tText))
+    if (/\b(rds|aurora|postgres|mysql|teradata|oracle|spanner|cloud sql|alloydb)\b/.test(sText) && /\b(dms|migration|datastream)\b/.test(tText))
       return 'CDC Replication';
-    if (/\b(dms|migration)\b/.test(sText) && /\b(bigquery|alloydb|cloud sql|spanner)\b/.test(tText))
+    if (/\b(dms|migration|datastream)\b/.test(sText) && /\b(bigquery|biglake|alloydb|cloud sql|spanner|gcs|cloud storage)\b/.test(tText))
       return 'CDC Stream Load';
-    if (/\b(kinesis|msk|kafka)\b/.test(sText) && /\b(dataflow|pub\/?sub)\b/.test(tText)) return 'Event Stream';
-    if (/\bdataflow\b/.test(sText) && /\b(bigquery|feature store|vertex|gcs|cloud storage)\b/.test(tText))
+    if (/\b(kinesis|msk|kafka|pub\/?sub)\b/.test(sText) && /\b(dataflow|pub\/?sub|databricks)\b/.test(tText)) return 'Event Stream';
+    if (/\bdataflow\b/.test(sText) && /\b(bigquery|biglake|feature store|vertex|gcs|cloud storage|databricks)\b/.test(tText))
       return 'Beam ETL Stream';
+    if (/\b(gcs|cloud storage|delta|iceberg)\b/.test(sText) && /\b(databricks|photon|spark)\b/.test(tText))
+      return 'Delta / Iceberg IO';
+    if (/\b(gcs|cloud storage|delta|iceberg)\b/.test(sText) && /\bbiglake\b/.test(tText))
+      return 'Zero-Copy Table Mount';
+    if (/\bbiglake\b/.test(sText) && /\b(bigquery|databricks|vertex)\b/.test(tText))
+      return 'Open Table Read';
+    if (/\b(databricks|photon)\b/.test(sText) && /\b(bigquery|biglake)\b/.test(tText))
+      return 'Storage API / UniForm';
+    if (/\b(databricks|photon)\b/.test(sText) && /\b(vertex|gemini|looker)\b/.test(tText))
+      return 'Feature & ML Sync';
+    if (/\b(unity catalog|dataplex)\b/.test(sText) || /\b(unity catalog|dataplex)\b/.test(tText))
+      return 'Catalog Lineage';
     if (/\b(sagemaker|ec2|eks)\b/.test(sText) && /\b(artifact registry|container|vertex)\b/.test(tText))
       return 'ONNX / Image Push';
     if (/\bartifact registry\b/.test(sText) && /\b(vertex|training|pipeline|prediction|gke|cloud run)\b/.test(tText))
       return 'Container Image Pull';
     if (/\b(gcs|cloud storage)\b/.test(sText) && /\b(bigquery|vertex|dataflow)\b/.test(tText))
       return 'Dataset Ingestion';
-    if (/\bbigquery\b/.test(sText) && /\b(vertex|feature store|looker)\b/.test(tText)) return 'Feature & SQL Read';
+    if (/\bbigquery\b/.test(sText) && /\b(vertex|gemini|feature store|looker)\b/.test(tText)) return 'Feature & SQL Read';
     if (/\b(feature store)\b/.test(sText) && /\b(training|prediction|endpoint|vertex)\b/.test(tText))
       return 'Feature Vector Serve';
     if (/\b(training|pipeline)\b/.test(sText) && /\b(prediction|endpoint|registry|monitoring|vertex)\b/.test(tText))
       return 'Model Artifact Push';
     if (/\b(iam|kms)\b/.test(sText) || /\b(iam|kms)\b/.test(tText)) return 'IAM / CMEK Policy';
     if (/\b(armor|waf|apigee)\b/.test(sText) || /\b(armor|waf|apigee)\b/.test(tText)) return 'WAF / mTLS Ingress';
-    if (/\b(monitoring|audit|looker)\b/.test(tText)) return 'Metrics & Audit';
+    if (/\b(monitoring|audit|looker)\b/.test(tText)) return 'BI & Telemetry';
     return fallback;
   };
 
@@ -1095,15 +1114,17 @@ export function normalizeVisionPosterSpecGeometry(rawSpec: VisionDecompiledPoste
     const matchByRe = (re: RegExp) => candidates.find((c) => re.test(`${c.title} ${c.badge}`.toLowerCase()));
 
     if (/\bs3\b/.test(sText)) return matchByRe(/\b(storage transfer|cloud storage|gcs)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
-    if (/\bstorage transfer\b/.test(sText)) return matchByRe(/\b(cloud storage|gcs|bigquery)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
-    if (/\b(rds|aurora|postgres|mysql|teradata)\b/.test(sText)) return matchByRe(/\b(database migration|\bdms\b|bigquery|alloydb|cloud sql)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
-    if (/\b(database migration|\bdms\b)\b/.test(sText)) return matchByRe(/\b(bigquery|alloydb|cloud sql|spanner|feature store)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
-    if (/\b(kinesis|\bmsk\b|kafka)\b/.test(sText)) return matchByRe(/\b(dataflow|pub\/?sub|bigquery)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
-    if (/\bdataflow\b/.test(sText)) return matchByRe(/\b(bigquery|feature store|vertex|cloud storage|gcs)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
+    if (/\bstorage transfer\b/.test(sText)) return matchByRe(/\b(cloud storage|gcs|bigquery|biglake)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
+    if (/\b(rds|aurora|postgres|mysql|teradata)\b/.test(sText)) return matchByRe(/\b(database migration|\bdms\b|datastream|bigquery|alloydb|cloud sql)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
+    if (/\b(database migration|\bdms\b|datastream)\b/.test(sText)) return matchByRe(/\b(cloud storage|gcs|biglake|bigquery|alloydb|cloud sql|spanner)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
+    if (/\b(kinesis|\bmsk\b|kafka|pub\/?sub)\b/.test(sText)) return matchByRe(/\b(dataflow|databricks|cloud storage|bigquery)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
+    if (/\bdataflow\b/.test(sText)) return matchByRe(/\b(cloud storage|gcs|biglake|bigquery|databricks|feature store|vertex)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
     if (/\b(sagemaker|\beks\b|\bec2\b)\b/.test(sText)) return matchByRe(/\b(artifact registry|vertex|training|pipeline)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
     if (/\bartifact registry\b/.test(sText)) return matchByRe(/\b(vertex|training|pipeline|prediction|endpoint)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
-    if (/\b(cloud storage|\bgcs\b)\b/.test(sText)) return matchByRe(/\b(bigquery|vertex|training|feature store)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
-    if (/\bbigquery\b/.test(sText)) return matchByRe(/\b(feature store|vertex|training|looker)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
+    if (/\b(cloud storage|\bgcs\b)\b/.test(sText)) return matchByRe(/\b(biglake|databricks|bigquery|vertex|training|feature store)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
+    if (/\bbiglake\b/.test(sText)) return matchByRe(/\b(databricks|bigquery|vertex|looker)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
+    if (/\bdatabricks\b/.test(sText)) return matchByRe(/\b(bigquery|vertex|gemini|looker|dataplex)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
+    if (/\bbigquery\b/.test(sText)) return matchByRe(/\b(feature store|vertex|gemini|training|looker)\b/) || candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
 
     return candidates[Math.min(fallbackRowIdx, candidates.length - 1)];
   };
@@ -1305,8 +1326,16 @@ function renderOfficialGcpSvgAsset(iconKey: string, sz: number): string {
   return svg;
 }
 
-function matchSpecificVendorIconFromText(t: string): string | null {
-  // Cross-Cloud Migration & Transfer Services (checked first before source/target storage nouns)
+export function matchSpecificVendorIconFromText(t: string): string | null {
+  // 0. Explicit Multi-Cloud & Lakehouse Vendor Brands (checked BEFORE generic words like "spark", "governance", or "mlflow" so Title-First Icon Purity never hijacks vendor cards)
+  if (/\b(databricks|unity catalog|delta sharing|photon|dlt\b|delta live tables)\b/.test(t)) {
+    return 'vendor:databricks';
+  }
+  if (/\bsnowflake\b/.test(t)) return 'vendor:snowflake';
+  if (/\bteradata\b/.test(t)) return 'vendor:teradata';
+  if (/\b(h2o|mojo|driverless)\b/.test(t)) return 'vendor:h2o_ai';
+
+  // Cross-Cloud Migration & Transfer Services (checked before source/target storage nouns)
   if (/\b(aws dms|datasync|snowball|aws migration|application migration)\b/.test(t)) return 'aws:dms';
   if (
     /\b(storage transfer|transfer service|transfer appliance|database migration|\bdms\b|bq dts|datastream|migration service|migrate to virtual machines|migrate to containers)\b/.test(
@@ -1334,8 +1363,9 @@ function matchSpecificVendorIconFromText(t: string): string | null {
   if (/\b(cloudwatch|cloudtrail|x-ray|aws config)\b/.test(t)) return 'aws:cloudwatch';
 
   // 2. Official Google Cloud Product Icons (`GOOGLE_CLOUD_OFFICIAL_SVG` from `src/lib/gcpOfficialSvgAssets.ts`)
-  if (/\bbigquery\b/.test(t)) return 'gcp:bigquery';
-  if (/\b(cloud storage|\bgcs\b|gcs bucket)\b/.test(t)) return 'gcp:cloud_storage';
+  if (/\b(bigquery|biglake)\b/.test(t)) return 'gcp:bigquery';
+  if (/\bdataplex\b/.test(t)) return 'gcp:dataplex';
+  if (/\b(cloud storage|\bgcs\b|gcs bucket|delta lake|apache iceberg|iceberg|parquet)\b/.test(t)) return 'gcp:cloud_storage';
   if (
     /\b(vertex|gemini|agent builder|model registry|feature store|prediction|endpoint|pipelines|kubeflow|tensorboard|workbench|colab|ai platform|AutoML|pytorch|tensorflow|onnx|triton|mlflow|experiments)\b/i.test(
       t
@@ -1361,7 +1391,7 @@ function matchSpecificVendorIconFromText(t: string): string | null {
   }
   if (/\b(cloud armor|model armor|waf)\b/.test(t)) return 'gcp:cloud_armor';
   if (/\b(security command center|\bscc\b|chronicle)\b/.test(t)) return 'gcp:scc';
-  if (/\b(cloud iam|\biam\b|kms|cmek|secret manager|iap|dataplex|governance|policy|dlp|workload identity)\b/.test(t)) {
+  if (/\b(cloud iam|\biam\b|kms|cmek|secret manager|iap|governance|policy|dlp|workload identity)\b/.test(t)) {
     return 'gcp:cloud_iam';
   }
   if (/\b(cloud monitoring|monitoring|observability|cloud profiler|cloud trace)\b/.test(t)) return 'gcp:cloud_monitoring';
@@ -1372,10 +1402,6 @@ function matchSpecificVendorIconFromText(t: string): string | null {
   if (/\b(looker|bi\b|dashboard)\b/.test(t)) return 'gcp:looker';
 
   // 3. Enterprise Data, AI & Open-Source Vendor Icons
-  if (/\bteradata\b/.test(t)) return 'vendor:teradata';
-  if (/\bsnowflake\b/.test(t)) return 'vendor:snowflake';
-  if (/\bdatabricks\b/.test(t)) return 'vendor:databricks';
-  if (/\b(h2o|mojo|driverless)\b/.test(t)) return 'vendor:h2o_ai';
   if (/\b(postgres|postgresql|pgbouncer|prisma|mysql)\b/.test(t)) return 'vendor:postgresql';
   if (/\b(redis)\b/.test(t)) return 'vendor:redis';
   if (/\b(kafka)\b/.test(t)) return 'vendor:kafka';
@@ -1418,6 +1444,9 @@ function renderVisionNodeSvgIcon(n: VisionDecompiledNode, compact = false): stri
     const gcpKey = vendorId.slice(4);
     if (GOOGLE_CLOUD_OFFICIAL_SVG[gcpKey]) {
       return renderOfficialGcpSvgAsset(gcpKey, sz);
+    }
+    if (gcpKey === 'dataplex') {
+      return `<svg width="${sz}" height="${sz}" viewBox="0 0 48 48" fill="none" data-vendor-icon="gcp:dataplex" style="display:block;margin:0 auto 3px auto;"><polygon points="24,5 41,14.5 41,33.5 24,43 7,33.5 7,14.5" fill="#E8F0FE" stroke="#1A73E8" stroke-width="2.4"/><line x1="24" y1="13" x2="14" y2="29" stroke="#34A853" stroke-width="2.4"/><line x1="24" y1="13" x2="34" y2="29" stroke="#4285F4" stroke-width="2.4"/><line x1="14" y1="29" x2="34" y2="29" stroke="#FBBC04" stroke-width="2.4"/><circle cx="24" cy="13" r="4" fill="#EA4335"/><circle cx="14" cy="29" r="4" fill="#34A853"/><circle cx="34" cy="29" r="4" fill="#4285F4"/></svg>`;
     }
     if (gcpKey === 'dms_migration') {
       return `<svg width="${sz}" height="${sz}" viewBox="0 0 48 48" fill="none" data-vendor-icon="gcp:dms_migration" style="display:block;margin:0 auto 3px auto;"><rect x="4" y="6" width="40" height="36" rx="8" fill="#E6F4EA" stroke="#137333" stroke-width="2.4"/><ellipse cx="16" cy="17" rx="7" ry="3.2" fill="#34A853"/><path d="M9 17v13c0 2 3.1 3.5 7 3.5s7-1.5 7-3.5V17" fill="none" stroke="#137333" stroke-width="2.2"/><path d="M25 24h14m-4.5-4.5L39 24l-4.5 4.5" fill="none" stroke="#1A73E8" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -1489,9 +1518,9 @@ export function compileVisionPosterSpecToDrawioXml(rawSpec: VisionDecompiledPost
   const ph = spec.canvasHeight || 860;
   const cells: string[] = [];
 
-  // Top Header Lockup
+  // Top Header Lockup (responsive single-line fit with zero right-edge clipping)
   const gcpCloudLogoSvg =
-    `<svg width="32" height="24" viewBox="0 0 32 24" fill="none" style="vertical-align:middle;margin-right:10px;">` +
+    `<svg width="30" height="22" viewBox="0 0 32 24" fill="none" style="vertical-align:middle;margin-right:8px;flex-shrink:0;">` +
     `<path d="M25.2 10.2C24.4 5.6 20.4 2 15.5 2c-4.2 0-7.9 2.6-9.3 6.3C2.7 9 0 12.1 0 15.8 0 20 3.4 23.4 7.6 23.4h17.2c3.9 0 7.2-3.2 7.2-7.1 0-3.6-2.8-6.6-6.8-6.1z" fill="#E8F0FE"/>` +
     `<circle cx="10" cy="13" r="4.2" fill="#EA4335"/>` +
     `<circle cx="16.5" cy="10" r="4.8" fill="#4285F4"/>` +
@@ -1499,15 +1528,16 @@ export function compileVisionPosterSpecToDrawioXml(rawSpec: VisionDecompiledPost
     `<circle cx="15.5" cy="16.5" r="3.8" fill="#FBBC05"/>` +
     `</svg>`;
 
+  const titleFontPx = spec.posterTitle.length > 64 ? '15px' : '16.5px';
   const hdrHtml =
-    `<div style="width:${pw - 44}px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:4px 12px;font-family:Inter,system-ui,sans-serif;">` +
-    `<div style="display:flex;align-items:center;flex-wrap:nowrap;">` +
+    `<div style="width:${pw - 44}px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 12px;font-family:Inter,system-ui,sans-serif;">` +
+    `<div style="display:flex;align-items:center;min-width:0;flex:1;">` +
     gcpCloudLogoSvg +
-    `<span style="font-size:18px;font-weight:700;color:#475569;letter-spacing:-0.2px;">${escXml(spec.brandHeader)}</span>` +
-    `<span style="font-size:22px;font-weight:300;color:#CBD5E1;margin:0 12px;">|</span>` +
-    `<span style="font-size:19px;font-weight:800;color:#0F172A;letter-spacing:-0.3px;">${escXml(spec.posterTitle)}</span>` +
+    `<span style="font-size:14px;font-weight:700;color:#475569;letter-spacing:-0.15px;white-space:nowrap;flex-shrink:0;">${escXml(spec.brandHeader)}</span>` +
+    `<span style="font-size:18px;font-weight:300;color:#CBD5E1;margin:0 10px;flex-shrink:0;">|</span>` +
+    `<span style="font-size:${titleFontPx};font-weight:800;color:#0F172A;letter-spacing:-0.25px;line-height:1.2;">${escXml(spec.posterTitle)}</span>` +
     `</div>` +
-    `<div style="font-size:11px;font-weight:700;color:#1D4ED8;background:#EFF6FF;border:1px solid #BFDBFE;padding:3px 10px;border-radius:999px;">Nano Banana 2.1 → 1:1 Vector Draw.io</div>` +
+    `<div style="font-size:10.5px;font-weight:700;color:#1D4ED8;background:#EFF6FF;border:1px solid #BFDBFE;padding:3px 10px;border-radius:999px;white-space:nowrap;flex-shrink:0;">Zero-Template AI Synthesis • 1:1 Vector Draw.io</div>` +
     `</div>`;
 
   cells.push(
@@ -1522,7 +1552,7 @@ export function compileVisionPosterSpecToDrawioXml(rawSpec: VisionDecompiledPost
     const cHtml =
       `<div style="width:${rect.w - 4}px;box-sizing:border-box;font-family:Inter,system-ui,sans-serif;text-align:center;">` +
       `<div style="width:100%;box-sizing:border-box;background:${c.headerBgHex || c.strokeHex};color:#FFFFFF;padding:8px 10px;border-radius:6px 6px 0 0;">` +
-      `<div style="font-size:13.5px;font-weight:800;line-height:1.2;letter-spacing:0.1px;">${escXml(c.title)}</div>` +
+      `<div style="font-size:13px;font-weight:800;line-height:1.2;letter-spacing:0.1px;">${escXml(c.title)}</div>` +
       `</div>` +
       `</div>`;
     cells.push(
@@ -1561,13 +1591,13 @@ export function compileVisionPosterSpecToDrawioXml(rawSpec: VisionDecompiledPost
     const isCompactCard = rect.h < 108;
     const topPad = n.shape === 'cylinder' ? (isCompactCard ? '9px' : '11px') : isCompactCard ? '4px' : '6px';
     const maxTextW = Math.max(130, rect.w - 20);
-    const titleFontPx = isCompactCard ? '11.5px' : '12.5px';
+    const titleFontCardPx = isCompactCard ? '11.5px' : '12.5px';
     const subFontPx = isCompactCard ? '9px' : '9.8px';
     const nodeHtml =
       `<div style="padding:${topPad} 6px 4px 6px;text-align:center;font-family:Inter,system-ui,sans-serif;line-height:1.18;">` +
       renderVisionNodeSvgIcon(n, isCompactCard) +
       `<div style="font-size:8.5px;font-weight:800;color:${n.badgeColorHex || n.strokeHex};letter-spacing:0.35px;text-transform:uppercase;margin-bottom:1.5px;">${escXml(n.badge)}</div>` +
-      `<div style="font-size:${titleFontPx};font-weight:800;color:#0F172A;margin:0 auto;max-width:${maxTextW}px;">${escXml(n.title)}</div>` +
+      `<div style="font-size:${titleFontCardPx};font-weight:800;color:#0F172A;margin:0 auto;max-width:${maxTextW}px;">${escXml(n.title)}</div>` +
       (n.subtitle
         ? `<div style="font-size:${subFontPx};font-weight:500;color:#475569;margin:2px auto 0 auto;max-width:${maxTextW}px;line-height:1.15;">${escXml(n.subtitle)}</div>`
         : '') +
@@ -1695,21 +1725,57 @@ export function compileVisionPosterSpecToDrawioXml(rawSpec: VisionDecompiledPost
     }
   });
 
-  const placedLabelBoxes: Array<{ x: number; y: number; w: number; h: number }> = [];
+  const getPortCoords = (rect: { x: number; y: number; w: number; h: number }, side: string, port: number) => {
+    if (side === 'left') return { exitX: 0, exitY: port, px: rect.x, py: rect.y + rect.h * port };
+    if (side === 'right') return { exitX: 1, exitY: port, px: rect.x + rect.w, py: rect.y + rect.h * port };
+    if (side === 'top') return { exitX: port, exitY: 0, px: rect.x + rect.w * port, py: rect.y };
+    return { exitX: port, exitY: 1, px: rect.x + rect.w * port, py: rect.y + rect.h };
+  };
 
-  plans.forEach((p, planIdx) => {
-    const e = p.edge;
-    const s = nodeRectMap.get(e.source)!;
-    const t = nodeRectMap.get(e.target)!;
-    const stroke = e.strokeHex || '#1E293B';
+  interface PrecomputedEdgeGeometry {
+    sPort: { exitX: number; exitY: number; px: number; py: number };
+    tPort: { exitX: number; exitY: number; px: number; py: number };
+    isNearHorizontalAdjacent: boolean;
+    isStraightVerticalAdjacent: boolean;
+    edgeRoutingStyle: string;
+    waypoints: Array<{ x: number; y: number }>;
+    polyline: Array<{ x: number; y: number }>;
+    anchorX: number;
+    anchorY: number;
+    laneX?: number;
+  }
 
-    const getPortCoords = (rect: { x: number; y: number; w: number; h: number }, side: string, port: number) => {
-      if (side === 'left') return { exitX: 0, exitY: port, px: rect.x, py: rect.y + rect.h * port };
-      if (side === 'right') return { exitX: 1, exitY: port, px: rect.x + rect.w, py: rect.y + rect.h * port };
-      if (side === 'top') return { exitX: port, exitY: 0, px: rect.x + rect.w * port, py: rect.y };
-      return { exitX: port, exitY: 1, px: rect.x + rect.w * port, py: rect.y + rect.h };
-    };
+  const computePolylineMidAnchor = (pts: Array<{ x: number; y: number }>): { x: number; y: number } => {
+    if (pts.length === 0) return { x: 0, y: 0 };
+    if (pts.length === 1) return pts[0];
+    let totalLen = 0;
+    const segLens: number[] = [];
+    for (let i = 0; i < pts.length - 1; i++) {
+      const len = Math.hypot(pts[i + 1].x - pts[i].x, pts[i + 1].y - pts[i].y);
+      segLens.push(len);
+      totalLen += len;
+    }
+    if (totalLen <= 0.001) return pts[0];
+    const targetDist = totalLen / 2;
+    let walked = 0;
+    for (let i = 0; i < segLens.length; i++) {
+      const len = segLens[i];
+      if (walked + len >= targetDist && len > 0) {
+        const t = (targetDist - walked) / len;
+        return {
+          x: pts[i].x + (pts[i + 1].x - pts[i].x) * t,
+          y: pts[i].y + (pts[i + 1].y - pts[i].y) * t,
+        };
+      }
+      walked += len;
+    }
+    return pts[pts.length - 1];
+  };
 
+  const allRoutedSegments: Array<{ x1: number; y1: number; x2: number; y2: number; planIdx: number }> = [];
+  const edgeGeoms: PrecomputedEdgeGeometry[] = plans.map((p, planIdx) => {
+    const s = nodeRectMap.get(p.edge.source)!;
+    const t = nodeRectMap.get(p.edge.target)!;
     const sPort = getPortCoords(s, p.sSide, p.exitPort);
     const tPort = getPortCoords(t, p.tSide, p.entryPort);
 
@@ -1719,20 +1785,20 @@ export function compileVisionPosterSpecToDrawioXml(rawSpec: VisionDecompiledPost
     const isStraightVerticalAdjacent =
       p.isSameCol && Math.abs(p.sRow - p.tRow) === 1 && (p.sSide === 'top' || p.sSide === 'bottom');
 
-    let waypointsXml = '';
     let edgeRoutingStyle = '';
-    let labelMidX = (sPort.px + tPort.px) / 2;
-    let labelMidY = (sPort.py + tPort.py) / 2;
-    let labelOffsetY = 0;
+    let waypoints: Array<{ x: number; y: number }> = [];
+    let laneX: number | undefined;
 
     if (isNearHorizontalAdjacent || isStraightVerticalAdjacent) {
       edgeRoutingStyle = 'rounded=1;';
     } else if (p.isSameCol) {
       edgeRoutingStyle = 'edgeStyle=orthogonalEdgeStyle;rounded=1;';
       const gutterX = Math.round(s.x + s.w + 14);
-      waypointsXml = `<Array as="points"><mxPoint x="${gutterX}" y="${Math.round(sPort.py)}"/><mxPoint x="${gutterX}" y="${Math.round(tPort.py)}"/></Array>`;
-      labelMidX = gutterX;
-      labelMidY = (sPort.py + tPort.py) / 2;
+      waypoints = [
+        { x: gutterX, y: Math.round(sPort.py) },
+        { x: gutterX, y: Math.round(tPort.py) },
+      ];
+      laneX = gutterX;
     } else if (Math.abs(p.sCol - p.tCol) === 1) {
       edgeRoutingStyle = 'edgeStyle=orthogonalEdgeStyle;rounded=1;';
       const cKey = `${Math.min(p.sCol, p.tCol)}::${Math.max(p.sCol, p.tCol)}`;
@@ -1743,52 +1809,161 @@ export function compileVisionPosterSpecToDrawioXml(rawSpec: VisionDecompiledPost
       const leftNodeRightEdge = p.sCol < p.tCol ? s.x + s.w : t.x + t.w;
       const rightNodeLeftEdge = p.sCol < p.tCol ? t.x : s.x;
       const channelMidX = (leftNodeRightEdge + rightNodeLeftEdge) / 2;
-      const laneSpacing = groupCount <= 2 ? 18 : 14;
-      const laneX = Math.round(channelMidX + (laneIdx - (groupCount - 1) / 2) * laneSpacing);
-
-      waypointsXml = `<Array as="points"><mxPoint x="${laneX}" y="${Math.round(sPort.py)}"/><mxPoint x="${laneX}" y="${Math.round(tPort.py)}"/></Array>`;
-      labelMidX = laneX;
-      labelMidY = (sPort.py + tPort.py) / 2;
-
-      if (groupCount > 1) {
-        const staggerSteps = [-24, 24, -48, 48];
-        labelOffsetY = staggerSteps[laneIdx % staggerSteps.length];
-      }
+      const laneSpacing = groupCount <= 2 ? 20 : 16;
+      laneX = Math.round(channelMidX + (laneIdx - (groupCount - 1) / 2) * laneSpacing);
+      waypoints = [
+        { x: laneX, y: Math.round(sPort.py) },
+        { x: laneX, y: Math.round(tPort.py) },
+      ];
     } else {
       edgeRoutingStyle = 'edgeStyle=orthogonalEdgeStyle;rounded=1;';
       const corridorY = sPort.py < ph / 2 ? 156 : ph - 22;
-      waypointsXml = `<Array as="points"><mxPoint x="${Math.round(sPort.px)}" y="${corridorY}"/><mxPoint x="${Math.round(tPort.px)}" y="${corridorY}"/></Array>`;
-      labelMidX = (sPort.px + tPort.px) / 2;
-      labelMidY = corridorY;
+      waypoints = [
+        { x: Math.round(sPort.px), y: corridorY },
+        { x: Math.round(tPort.px), y: corridorY },
+      ];
     }
 
-    const estW = Math.min(132, e.label.length * 5.8 + 14);
-    const estH = 20;
-    for (let attempt = 0; attempt < 6; attempt++) {
-      const candidateY = labelMidY + labelOffsetY - estH / 2;
-      const candidateX = labelMidX - estW / 2;
-      const hit = placedLabelBoxes.some(
-        (b) =>
-          Math.min(candidateX + estW, b.x + b.w) - Math.max(candidateX, b.x) > 2 &&
-          Math.min(candidateY + estH, b.y + b.h) - Math.max(candidateY, b.y) > 2
-      );
-      if (!hit) break;
-      labelOffsetY += labelOffsetY >= 0 ? 24 : -24;
+    const polyline = [{ x: sPort.px, y: sPort.py }, ...waypoints, { x: tPort.px, y: tPort.py }];
+    for (let i = 0; i < polyline.length - 1; i++) {
+      allRoutedSegments.push({
+        x1: polyline[i].x,
+        y1: polyline[i].y,
+        x2: polyline[i + 1].x,
+        y2: polyline[i + 1].y,
+        planIdx,
+      });
     }
+    const anchor = computePolylineMidAnchor(polyline);
+    return {
+      sPort,
+      tPort,
+      isNearHorizontalAdjacent,
+      isStraightVerticalAdjacent,
+      edgeRoutingStyle,
+      waypoints,
+      polyline,
+      anchorX: anchor.x,
+      anchorY: anchor.y,
+      laneX,
+    };
+  });
+
+  const allNodeBoxes = Array.from(nodeRectMap.values());
+  const placedLabelBoxes: Array<{ x: number; y: number; w: number; h: number }> = [];
+
+  const rectIntersectsSegment = (
+    rx: number,
+    ry: number,
+    rw: number,
+    rh: number,
+    seg: { x1: number; y1: number; x2: number; y2: number }
+  ): boolean => {
+    const sxMin = Math.min(seg.x1, seg.x2) - 2;
+    const sxMax = Math.max(seg.x1, seg.x2) + 2;
+    const syMin = Math.min(seg.y1, seg.y2) - 2;
+    const syMax = Math.max(seg.y1, seg.y2) + 2;
+    return Math.min(rx + rw, sxMax) > Math.max(rx, sxMin) && Math.min(ry + rh, syMax) > Math.max(ry, syMin);
+  };
+
+  plans.forEach((p, planIdx) => {
+    const e = p.edge;
+    const g = edgeGeoms[planIdx];
+    const stroke = e.strokeHex || '#1E293B';
+
+    const estW = Math.min(138, e.label.length * 6.0 + 18);
+    const estH = 21;
+
+    const candidates: Array<{ dx: number; dy: number }> = [];
+    if (g.isNearHorizontalAdjacent) {
+      // Prefer keeping pill dead-center on its own horizontal shaft (dy = 0)
+      candidates.push(
+        { dx: 0, dy: 0 },
+        { dx: -16, dy: 0 },
+        { dx: 16, dy: 0 },
+        { dx: 0, dy: -22 },
+        { dx: 0, dy: 22 },
+        { dx: 0, dy: -40 },
+        { dx: 0, dy: 40 }
+      );
+    } else if (g.isStraightVerticalAdjacent) {
+      candidates.push({ dx: 0, dy: 0 }, { dx: 0, dy: -12 }, { dx: 0, dy: 12 });
+    } else if (g.laneX !== undefined) {
+      const yMin = Math.min(g.sPort.py, g.tPort.py);
+      const yMax = Math.max(g.sPort.py, g.tPort.py);
+      const span = yMax - yMin;
+      const baseDx = g.laneX - g.anchorX;
+      if (span >= 44) {
+        for (const ratio of [0.5, 0.3, 0.7, 0.2, 0.8, 0.4, 0.6]) {
+          const targetY = yMin + span * ratio;
+          candidates.push({ dx: baseDx, dy: targetY - g.anchorY });
+        }
+      }
+      for (const extraDy of [0, -24, 24, -44, 44, -64, 64]) {
+        candidates.push({ dx: baseDx, dy: extraDy });
+      }
+    } else {
+      candidates.push({ dx: 0, dy: 0 }, { dx: -40, dy: 0 }, { dx: 40, dy: 0 }, { dx: 0, dy: -22 }, { dx: 0, dy: 22 });
+    }
+
+    let bestDx = candidates[0].dx;
+    let bestDy = candidates[0].dy;
+    let bestScore = Infinity;
+
+    for (const cand of candidates) {
+      const bx = g.anchorX + cand.dx - estW / 2;
+      const by = g.anchorY + cand.dy - estH / 2;
+      let penalty = Math.abs(cand.dy) * 0.25 + Math.abs(cand.dx) * 0.15;
+
+      if (by < 142 || by + estH > ph - 12) penalty += 4000;
+
+      for (const prev of placedLabelBoxes) {
+        const ox = Math.min(bx + estW + 5, prev.x + prev.w) - Math.max(bx - 5, prev.x);
+        const oy = Math.min(by + estH + 5, prev.y + prev.h) - Math.max(by - 5, prev.y);
+        if (ox > 0 && oy > 0) penalty += 10000 + ox * oy;
+      }
+
+      for (const nb of allNodeBoxes) {
+        const ox = Math.min(bx + estW + 3, nb.x + nb.w) - Math.max(bx - 3, nb.x);
+        const oy = Math.min(by + estH + 3, nb.y + nb.h) - Math.max(by - 3, nb.y);
+        if (ox > 0 && oy > 0) penalty += 8000 + ox * oy;
+      }
+
+      for (const seg of allRoutedSegments) {
+        if (seg.planIdx === planIdx) continue;
+        if (rectIntersectsSegment(bx, by, estW, estH, seg)) {
+          penalty += 1800;
+        }
+      }
+
+      if (penalty < bestScore) {
+        bestScore = penalty;
+        bestDx = cand.dx;
+        bestDy = cand.dy;
+        if (penalty < 15) break;
+      }
+    }
+
     placedLabelBoxes.push({
-      x: labelMidX - estW / 2,
-      y: labelMidY + labelOffsetY - estH / 2,
+      x: g.anchorX + bestDx - estW / 2,
+      y: g.anchorY + bestDy - estH / 2,
       w: estW,
       h: estH,
     });
 
-    const portPart = `exitX=${sPort.exitX};exitY=${sPort.exitY};exitDx=0;exitDy=0;entryX=${tPort.exitX};entryY=${tPort.exitY};entryDx=0;entryDy=0;`;
-    const pillHtml = `<div style="display:inline-block;background:#FFFFFF;border:1.5px solid ${stroke};border-radius:10px;padding:1px 5px;font-family:Inter,system-ui,sans-serif;font-size:8.5px;font-weight:700;color:#0F172A;text-align:center;white-space:nowrap;line-height:1.15;">${escXml(e.label)}</div>`;
-    const offsetXml = labelOffsetY !== 0 ? `<mxPoint x="0" y="${Math.round(labelOffsetY)}" as="offset"/>` : '';
+    const waypointsXml =
+      g.waypoints.length > 0
+        ? `<Array as="points">${g.waypoints.map((pt) => `<mxPoint x="${pt.x}" y="${pt.y}"/>`).join('')}</Array>`
+        : '';
+    const portPart = `exitX=${g.sPort.exitX};exitY=${g.sPort.exitY};exitDx=0;exitDy=0;entryX=${g.tPort.exitX};entryY=${g.tPort.exitY};entryDx=0;entryDy=0;`;
+    const pillHtml = `<div style="display:inline-block;background:#FFFFFF;border:1.5px solid ${stroke};border-radius:10px;padding:1px 5px;font-family:Inter,system-ui,sans-serif;font-size:8.5px;font-weight:700;color:#0F172A;text-align:center;white-space:nowrap;line-height:1.15;"><span style="padding:0 2px;">${escXml(e.label)}</span></div>`;
+    const rDx = Math.round(bestDx);
+    const rDy = Math.round(bestDy);
+    const offsetXml = rDx !== 0 || rDy !== 0 ? `<mxPoint x="${rDx}" y="${rDy}" as="offset"/>` : '';
     const geomInner = `${waypointsXml}${offsetXml}`;
 
     cells.push(
-      `        <mxCell id="${e.id}" value="${escXml(pillHtml)}" style="${edgeRoutingStyle}${portPart}html=1;strokeColor=${stroke};strokeWidth=2.1;endArrow=block;endFill=1;fontSize=8.5;fontStyle=1;fontColor=#0F172A;labelBackgroundColor=none;labelBorderColor=none;" edge="1" parent="1" source="${e.source}" target="${e.target}"><mxGeometry relative="1" as="geometry">${geomInner}</mxGeometry></mxCell>`
+      `        <mxCell id="${e.id}" value="${escXml(pillHtml)}" style="${g.edgeRoutingStyle}${portPart}html=1;strokeColor=${stroke};strokeWidth=2.1;endArrow=block;endFill=1;fontSize=8.5;fontStyle=1;fontColor=#0F172A;labelBackgroundColor=none;labelBorderColor=none;" edge="1" parent="1" source="${e.source}" target="${e.target}"><mxGeometry relative="1" as="geometry">${geomInner}</mxGeometry></mxCell>`
     );
   });
 
@@ -2033,10 +2208,113 @@ export function auditVisionPosterDrawioXml(
 }
 
 /**
- * Step 1: Canonical 4-Tier Architecture Specification & Spell-Check (`gemini-3.8-flash`).
- * Synthesizes the exact 4 swimlane tiers, 12..16 spell-checked non-duplicate component nodes,
- * and directed protocol edges BEFORE calling Nano Banana so that BOTH the Nano Banana raster
- * poster and the vector Draw.io diagram share 100% 1:1 component & tier parity with zero typos.
+ * Deterministic Zero-Template 4-Tier Spec Builder (`buildDeterministicZeroTemplateVisionSpec`).
+ * Used when no canonical blueprint (#00..#98) is selected and a synchronous or offline baseline is needed
+ * without ever leaking unrelated NASA / orbital / counterfactual digital-twin templates.
+ */
+export function buildDeterministicZeroTemplateVisionSpec(
+  userPrompt: string,
+  explicitTitle?: string,
+  customSubsystems?: string[]
+): VisionDecompiledPosterSpec {
+  const raw = String(userPrompt || explicitTitle || 'Enterprise Cloud Architecture').trim();
+  const lower = raw.toLowerCase();
+
+  const cleanedTitleBase = String(explicitTitle || raw)
+    .replace(/^(please\s+)?((design|architect|build|create|deploy|synthesize|generate|draw|show)\s+)?(a\s+|an\s+|the\s+)?(full\s+|complete\s+|enterprise\s+)?(architecture\s+diagram|diagram|architecture|blueprint|topology)\s*(showing|for|of|with)?\s*/i, '')
+    .replace(/[.;]+$/, '')
+    .trim();
+  const safePosterTitle =
+    cleanedTitleBase.length > 3
+      ? `${cleanedTitleBase.charAt(0).toUpperCase()}${cleanedTitleBase.slice(1)}`.slice(0, 72)
+      : 'Enterprise Multi-Tier Cloud Architecture';
+
+  // Clause-driven structural fallback (only used when offline / missing API key; zero hardcoded vendor/domain presets)
+  const clauses =
+    Array.isArray(customSubsystems) && customSubsystems.length >= 6
+      ? customSubsystems.filter(Boolean)
+      : raw
+          .replace(/^(please\s+)?((design|architect|build|create|deploy|synthesize|generate|draw|show)\s+)?(a\s+|an\s+|the\s+)?/i, '')
+          .split(/(?:,|;|\+|→|->|\band\b|\bwith\b|\bvia\b|\busing\b|\binto\b|\bincluding\b)/i)
+          .map((s) => s.trim())
+          .filter((s) => s.length >= 3 && s.length <= 48);
+
+  const fallbackNodes = [
+    { badge: 'INGRESS & PRODUCERS', title: clauses[0] || 'Client & Source Ingress', subtitle: 'TLS 1.3 ingress & source producers' },
+    { badge: 'API & EDGE GATEWAY', title: clauses[1] || 'Edge Gateway & Auth', subtitle: 'OIDC / mTLS & rate limiting' },
+    { badge: 'EVENT STREAMING', title: clauses[2] || 'Event Streaming Bus', subtitle: 'Asynchronous messaging & CDC' },
+    { badge: 'COMPUTE RUNTIME', title: clauses[3] || 'Core Compute Services', subtitle: 'Autoscaling domain workloads' },
+    { badge: 'ORCHESTRATION', title: clauses[4] || 'Workflow & Stream Engine', subtitle: 'Stateful pipeline coordination' },
+    { badge: 'INTELLIGENCE PLANE', title: clauses[5] || 'AI & Analytical Compute', subtitle: 'Inference, features & processing' },
+    { badge: 'TRANSACTIONAL STATE', title: clauses[6] || 'Operational State Store', subtitle: 'ACID relational / KV persistence' },
+    { badge: 'OPEN OBJECT STORAGE', title: clauses[7] || 'Durable Object & Table Store', subtitle: 'Open columnar & object storage' },
+    { badge: 'ANALYTICAL ENGINE', title: clauses[8] || 'Analytical Query Store', subtitle: 'Low-latency SQL & aggregations' },
+    { badge: 'SECURITY & POLICY', title: clauses[9] || 'Zero-Trust IAM & KMS', subtitle: 'RBAC, ABAC & encryption keys' },
+    { badge: 'OBSERVABILITY', title: clauses[10] || 'OpenTelemetry & Audit', subtitle: 'Distributed traces, metrics & logs' },
+    { badge: 'SERVING & CONSUMERS', title: clauses[11] || 'Downstream Consumers & APIs', subtitle: 'Dashboards, apps & partner feeds' },
+  ];
+
+  const colRanges: Array<[number, number]> = [
+    [36, 210],
+    [296, 470],
+    [556, 730],
+    [814, 964],
+  ];
+  const rowRanges: Array<[number, number]> = [
+    [220, 410],
+    [460, 650],
+    [700, 900],
+  ];
+
+  const genNodes: VisionDecompiledNode[] = fallbackNodes.map((item, idx) => {
+    const colIdx = Math.floor(idx / 3);
+    const rowIdx = idx % 3;
+    const pal = TIER_PALETTES[colIdx];
+    return {
+      id: `zt_node_${idx + 1}`,
+      badge: item.badge,
+      title: item.title,
+      subtitle: item.subtitle,
+      box2d: [rowRanges[rowIdx][0], colRanges[colIdx][0], rowRanges[rowIdx][1], colRanges[colIdx][1]],
+      fillHex: '#FFFFFF',
+      strokeHex: pal.strokeHex,
+      badgeColorHex: pal.headerBgHex,
+      heroLogo: rowIdx === 0,
+    };
+  });
+
+  return normalizeVisionPosterSpecGeometry({
+    posterTitle: safePosterTitle,
+    brandHeader: '',
+    canvasWidth: 1600,
+    canvasHeight: 860,
+    containers: [
+      { id: 'zt_tier_1', title: 'Stage 1: Ingress & Data Sources', box2d: [110, 14, 972, 232], ...TIER_PALETTES[0] },
+      { id: 'zt_tier_2', title: 'Stage 2: Compute & Orchestration', box2d: [110, 274, 972, 492], ...TIER_PALETTES[1] },
+      { id: 'zt_tier_3', title: 'Stage 3: Stateful Storage & Analytics', box2d: [110, 534, 972, 752], ...TIER_PALETTES[2] },
+      { id: 'zt_tier_4', title: 'Stage 4: Governance, Telemetry & Serving', box2d: [110, 794, 972, 986], ...TIER_PALETTES[3] },
+    ],
+    nodes: genNodes,
+    edges: [
+      { id: 'e_zt_1', source: 'zt_node_1', target: 'zt_node_2', label: 'HTTPS / TLS 1.3', strokeHex: '#1E293B' },
+      { id: 'e_zt_2', source: 'zt_node_2', target: 'zt_node_4', label: 'Authenticated RPC', strokeHex: '#1E293B' },
+      { id: 'e_zt_3', source: 'zt_node_3', target: 'zt_node_5', label: 'Event Stream', strokeHex: '#1E293B' },
+      { id: 'e_zt_4', source: 'zt_node_4', target: 'zt_node_6', label: 'Compute Dispatch', strokeHex: '#1E293B' },
+      { id: 'e_zt_5', source: 'zt_node_4', target: 'zt_node_7', label: 'Transactional IO', strokeHex: '#1E293B' },
+      { id: 'e_zt_6', source: 'zt_node_5', target: 'zt_node_8', label: 'Object / Table Write', strokeHex: '#1E293B' },
+      { id: 'e_zt_7', source: 'zt_node_6', target: 'zt_node_9', label: 'Analytical Read', strokeHex: '#1E293B' },
+      { id: 'e_zt_8', source: 'zt_node_8', target: 'zt_node_9', label: 'Zero-Copy Scan', strokeHex: '#1E293B' },
+      { id: 'e_zt_9', source: 'zt_node_7', target: 'zt_node_10', label: 'IAM / KMS Policy', strokeHex: '#1E293B' },
+      { id: 'e_zt_10', source: 'zt_node_9', target: 'zt_node_11', label: 'OTel & Audit', strokeHex: '#1E293B' },
+      { id: 'e_zt_11', source: 'zt_node_9', target: 'zt_node_12', label: 'Governed Serve', strokeHex: '#1E293B' },
+    ],
+  });
+}
+
+/**
+ * Step 1: Live-Grounded Architecture Specification & Spell-Check (`resolveLatestGeminiModelChain`).
+ * Grounds the prompt via Google Search when online and synthesizes a spell-checked VisionDecompiledPosterSpec
+ * using MEDIUM/HIGH thinking without hardcoded domain presets.
  */
 export async function synthesizeCanonicalVisionSpecFromPrompt(params: {
   userPrompt: string;
@@ -2050,30 +2328,43 @@ export async function synthesizeCanonicalVisionSpecFromPrompt(params: {
   const t0 = Date.now();
   const ai = new GoogleGenAI({ apiKey });
 
-  const systemPrompt = `You are the Principal Enterprise Cloud Architecture Designer & Terminology Spell-Checker.
-Given the user's architecture prompt, design a canonical, spell-checked 4-Tier VisionDecompiledPosterSpec JSON object (1600x860) that will drive BOTH the Nano Banana reference image generator and the editable Draw.io vector compiler with 100% 1:1 fidelity.
+  let liveGroundingBrief = '';
+  if (apiKey && process.env.ENABLE_LIVE_GOOGLE_SEARCH_GROUNDING !== 'false') {
+    try {
+      const searchChain = await resolveLatestGeminiModelChain(ai, 'latest');
+      const gRes = await generateContentWithRetry(
+        ai,
+        {
+          model: searchChain[0],
+          contents: `Research the exact 2026 system architecture, real vendor/open-source components, wire protocols, and boundaries required for:\n"${params.userPrompt}"\nSummarize key architectural components, boundaries, and data flows concisely.`,
+          config: {
+            temperature: 0.1,
+            tools: [{ googleSearch: {} }],
+            thinkingConfig: { thinkingLevel: 'MEDIUM' } as any,
+          },
+        },
+        { maxRetries: 1, perAttemptTimeoutMs: 16_000, totalBudgetMs: 20_000, label: 'VisionSpecSearchGrounding' }
+      );
+      liveGroundingBrief = String(gRes.text || '').trim();
+    } catch {
+      // Proceed gracefully if search tool is unavailable
+    }
+  }
 
-STRICT ARCHITECTURAL & 1:1 PARITY RULES:
+  const systemPrompt = `You are a Principal Distributed Systems Architect & Terminology Spell-Checker.
+Given the user's architecture prompt (and live web research notes when available), design a complete, accurate, relevant, and faithful VisionDecompiledPosterSpec JSON object (1600x860) with zero hardcoded domain presets or filler.
+
+ARCHITECTURAL QUALITY RULES:
 1. NEVER use generic filler titles like "Step 1 Data Flow" or "High-Availability Domain Component", and NEVER echo the raw prompt sentence as a node title.
-2. Include EXACTLY 4 logical swimlane containers in "containers" spanning left-to-right across the 0..1000 normalized X axis:
-   - Container 1: [110, 16, 972, 240] (Blue #1D4ED8 — e.g., Tier 1: Source Systems & Legacy Estates)
-   - Container 2: [110, 268, 972, 492] (Green #15803D — e.g., Tier 2: Data & Model Migration / Ingestion Pipelines)
-   - Container 3: [110, 520, 972, 744] (Purple #6D28D9 — e.g., Tier 3: Target Cloud Data Warehouse & AI/ML Platform)
-   - Container 4: [110, 772, 972, 984] (Amber #B45309 — e.g., Tier 4: Security, Governance & Serving Consumers)
-3. Include 12 to 16 distinct, spell-checked architectural component nodes in "nodes" (EXACTLY 3 or 4 nodes per container column — ZERO duplicate node titles!):
-   - Every service, database, migration tool, and AI/ML platform implied by the prompt MUST be represented with its exact official product name (e.g., "AWS S3", "AWS RDS (PostgreSQL / MySQL)", "AWS EC2 / EKS", "AWS Kinesis / MSK", "AWS SageMaker", "Cloud Storage (GCS)", "Cloud Dataflow", "Database Migration Service", "BigQuery", "Vertex AI Training", "Vertex AI Feature Store", "Vertex AI Pipelines", "Vertex AI Prediction", "Cloud IAM & KMS", "Cloud Armor", "Looker BI").
-   - Set "shape" accurately: "cylinder" ONLY for databases, object storage buckets, data warehouses, and feature/model registries; "rhombus" for IAM/KMS/Armor/WAF/security gates; "rect" for compute, ML training/prediction, pipelines, migration services, and BI apps.
-   - Place each node's "box2d" [ymin, xmin, ymax, xmax] cleanly inside its container column's [xmin, xmax]:
-     * Column 1 nodes: xmin=36, xmax=220
-     * Column 2 nodes: xmin=288, xmax=472
-     * Column 3 nodes: xmin=540, xmax=724
-     * Column 4 nodes: xmin=792, xmax=964
-4. Include 14 to 18 directed "edges" connecting every node into a single connected end-to-end architecture graph with concise protocol labels (max 22 chars, e.g., "Storage Transfer", "CDC / DMS Stream", "Dataflow Beam ETL", "Feature Sync", "ONNX / Model Export", "gRPC Prediction", "IAM / CMEK Policy").
+2. Organize logical zones/containers in "containers" across the 0..1000 normalized coordinate space to reflect the genuine architecture of the requested system (zero forced vendor lock-in—use the exact cloud, multi-cloud, hybrid, or open-source technologies relevant to the prompt).
+3. Represent every required component in "nodes" with its exact official product/technology name, accurate "shape" ("cylinder" for storage/databases/warehouses, "rhombus" for policy/security gates, "rect" for compute/services/catalogs), and clean non-overlapping "box2d" [ymin, xmin, ymax, xmax] coordinates inside its parent container.
+4. Connect all nodes with directed "edges" carrying concise real wire-protocol / format labels (<= 22 chars).
+5. Keep "posterTitle" concise (<= 68 characters) and set "brandHeader" to "" (never stamp fake brand headers).
 
 Return strictly valid JSON with top-level keys:
 {
-  "posterTitle": "Clear Enterprise Architecture Title matching the prompt",
-  "brandHeader": "Google Cloud Architecture Center",
+  "posterTitle": "Clear Architecture Title matching the prompt",
+  "brandHeader": "",
   "canvasWidth": 1600,
   "canvasHeight": 860,
   "containers": [...],
@@ -2081,19 +2372,20 @@ Return strictly valid JSON with top-level keys:
   "edges": [...]
 }`;
 
-  const modelsToTry = ['gemini-3.8-flash', 'gemini-2.5-flash'];
+  const modelsToTry = await resolveLatestGeminiModelChain(ai, 'pro');
   for (const modelId of modelsToTry) {
     try {
-      const res = await ai.models.generateContent({
+      const groundingBlock = liveGroundingBrief
+        ? `\n\nLive Web Research Grounding:\n${liveGroundingBrief}\n`
+        : '';
+      const res = await generateContentWithRetry(ai, {
         model: modelId,
-        contents: `User Architecture Prompt:\n"${params.userPrompt}"\n\nSynthesize the canonical 4-tier VisionDecompiledPosterSpec JSON with 3 to 4 spell-checked nodes per tier.`,
+        contents: `User Architecture Prompt:\n"${params.userPrompt}"${groundingBlock}\n\nSynthesize the complete, accurate VisionDecompiledPosterSpec JSON.`,
         config: {
           systemInstruction: systemPrompt,
-          temperature: 0.1,
+          temperature: 0.15,
           responseMimeType: 'application/json',
-          thinkingConfig: modelId.includes('2.5-flash')
-            ? ({ thinkingLevel: 'LOW' } as any)
-            : ({ thinkingLevel: 'LOW' } as any),
+          thinkingConfig: { thinkingLevel: 'HIGH' } as any,
         },
       });
       const rawText = (res.text || '').replace(/```json/gi, '').replace(/```/g, '').trim();
@@ -2102,6 +2394,7 @@ Return strictly valid JSON with top-level keys:
         if (!parsed.posterTitle && !(parsed as any).title) {
           parsed.posterTitle = params.userPrompt;
         }
+        parsed.brandHeader = '';
         const normalized = normalizeVisionPosterSpecGeometry(parsed);
         return {
           spec: normalized,
@@ -2114,12 +2407,16 @@ Return strictly valid JSON with top-level keys:
     }
   }
 
-  throw new Error('Failed to synthesize canonical architecture specification.');
+  return {
+    spec: buildDeterministicZeroTemplateVisionSpec(params.userPrompt),
+    modelUsed: 'deterministic-zero-template-v2',
+    latencyMs: Date.now() - t0,
+  };
 }
 
 /**
- * Step 2: Calls Nano Banana (`gemini-2.5-flash-image`) to generate an accurate, spell-checked,
- * 1:1 matched reference architecture poster image locked to the canonical 4-tier specification.
+ * Step 2: Dynamically discovers the latest Gemini multimodal image model to generate an accurate,
+ * spell-checked, 1:1 matched reference architecture poster image.
  */
 export async function generateNanoBananaReferencePoster(
   userPrompt: string,
@@ -2144,7 +2441,6 @@ export async function generateNanoBananaReferencePoster(
     };
   }
 
-  // Group canonical nodes by their 4 containers so Nano Banana renders the EXACT same tiers & nodes
   let tierBlueprintText = '';
   if (canonicalSpec && canonicalSpec.containers.length > 0 && canonicalSpec.nodes.length > 0) {
     const lines: string[] = [];
@@ -2155,66 +2451,64 @@ export async function generateNanoBananaReferencePoster(
         const cx = (n.box2d[1] + n.box2d[3]) / 2;
         return cx >= cMinX - 10 && cx <= cMaxX + 10;
       });
-      const colorNames = ['Blue (#1D4ED8)', 'Green (#15803D)', 'Purple (#6D28D9)', 'Orange/Amber (#B45309)'];
       lines.push(
-        `- Column ${cIdx + 1} [${colorNames[cIdx % 4]} Header]: "${c.title}"\n  Render ONLY these ${tierNodes.length} distinct boxes top-to-bottom: ${tierNodes
-          .map((n, i) => `(${i + 1}) "${n.title}" [${n.shape === 'cylinder' ? '3D Cylinder icon' : 'Rectangular card with official cloud service icon'}]`)
+        `- Zone ${cIdx + 1}: "${c.title}"\n  Components: ${tierNodes
+          .map((n, i) => `(${i + 1}) "${n.title}" [${n.shape === 'cylinder' ? 'Cylinder' : 'Card'}]`)
           .join(', ')}`
       );
     });
-    tierBlueprintText = `\nEXACT 1:1 LOCKED TIER & COMPONENT BLUEPRINT (DO NOT ADD EXTRA BOXES OR DUPLICATE ANY BOX):\n${lines.join('\n')}\n`;
+    tierBlueprintText = `\nARCHITECTURAL ZONES & COMPONENTS:\n${lines.join('\n')}\n`;
   }
 
   const ai = new GoogleGenAI({ apiKey });
-  const imagePrompt = `Create a clean, high-resolution, publication-grade Enterprise Cloud Architecture Diagram poster (16:9 widescreen, executive light theme on a crisp white background) for:
+  const imagePrompt = `Create a clean, high-resolution, publication-grade Technical System Architecture Diagram (16:9 widescreen, crisp white background) for:
 Title: "${canonicalSpec?.posterTitle || userPrompt}"
 ${tierBlueprintText}
-STRICT TYPOGRAPHY, ICON & ZERO-SPELLING-MISTAKE RULES:
-1. Organize the diagram strictly from left to right into the 4 vertical swimlane columns listed above with solid colored top header bars (Blue, Green, Purple, Orange).
-2. Inside each card, render ONLY:
-   - The official AWS or Google Cloud vector icon at the top of the card.
-   - The EXACT bold English component title in large, high-contrast sans-serif typography (14pt+ equivalent).
-3. DO NOT write tiny multi-line paragraph subtitles or parentheses gibberish inside the cards—keep every card clean with ONLY the icon and the exact spell-checked component title so 100% of text is crystal-clear and spelled correctly!
-4. Never duplicate any box (every component title appears at most once).
-5. Connect the cards across columns with clean orthogonal directional arrows.`;
+VISUAL ACCURACY & TYPOGRAPHY GUIDELINES:
+1. Render clear architectural boundaries/zones, authentic technology icons, crisp sans-serif component titles, and labeled directional data/control arrows.
+2. Keep every label spelled accurately with high contrast and clean whitespace (zero gibberish subtext, zero duplicate boxes).`;
 
-  try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-image',
-      contents: imagePrompt,
-      config: {
-        responseModalities: ['TEXT', 'IMAGE'],
-      },
-    });
-    const parts = response?.candidates?.[0]?.content?.parts || [];
-    const imgPart = parts.find((p: any) => p?.inlineData?.data);
-    if (imgPart?.inlineData?.data) {
-      const mimeType = imgPart.inlineData.mimeType || 'image/png';
-      const b64 = imgPart.inlineData.data;
-      return {
-        imageBase64: b64,
-        mimeType,
-        imageDataUrl: `data:${mimeType};base64,${b64}`,
-        modelUsed: 'gemini-2.5-flash-image (Nano Banana)',
-        latencyMs: Date.now() - t0,
-      };
+  const imageModelsToTry = await resolveLatestGeminiImageModelChain(ai);
+  for (const imageModelId of imageModelsToTry) {
+    try {
+      const response = await generateContentWithRetry(ai, {
+        model: imageModelId,
+        contents: imagePrompt,
+        config: {
+          responseModalities: ['TEXT', 'IMAGE'],
+          imageConfig: { aspectRatio: '16:9' },
+        } as any,
+      });
+      const parts = response?.candidates?.[0]?.content?.parts || [];
+      const imgPart = parts.find((p: any) => p?.inlineData?.data);
+      if (imgPart?.inlineData?.data) {
+        const mimeType = imgPart.inlineData.mimeType || 'image/png';
+        const b64 = imgPart.inlineData.data;
+        return {
+          imageBase64: b64,
+          mimeType,
+          imageDataUrl: `data:${mimeType};base64,${b64}`,
+          modelUsed: imageModelId,
+          latencyMs: Date.now() - t0,
+        };
+      }
+    } catch (err) {
+      console.warn(`[generateNanoBananaReferencePoster] ${imageModelId} error:`, err);
     }
-  } catch (err) {
-    console.warn('[generateNanoBananaReferencePoster] gemini-2.5-flash-image error:', err);
   }
 
   return {
     imageBase64: null,
     mimeType: 'image/png',
     imageDataUrl: null,
-    modelUsed: 'gemini-2.5-flash-image (unavailable)',
+    modelUsed: `${imageModelsToTry[0] || getGeminiModel('vision')} (unavailable)`,
     latencyMs: Date.now() - t0,
   };
 }
 
 /**
- * Step 3: Multimodal Vision Spatial Decompiler (`gemini-3.8-flash` / `gemini-2.5-flash`)
- * Takes the Nano Banana generated reference image (`imageBase64`) + `userPrompt` (and optional `canonicalSpec`)
+ * Step 3: Multimodal Vision Spatial Decompiler (Dynamic Latest Frontier Vision Model)
+ * Takes the generated reference image (`imageBase64`) + `userPrompt` (and optional `canonicalSpec`)
  * and extracts/aligns the complete `VisionDecompiledPosterSpec` (`containers`, `nodes`, `edges` with `[ymin, xmin, ymax, xmax]`).
  */
 export async function decompilePosterAndPromptWithGeminiVision(params: {
@@ -2231,30 +2525,21 @@ export async function decompilePosterAndPromptWithGeminiVision(params: {
   const apiKey = getEffectiveGeminiApiKey(params.explicitApiKey);
   const t0 = Date.now();
 
-  // If we already synthesized a canonicalSpec in Step 1 and have the Nano Banana image from Step 2,
-  // verify and align the canonicalSpec against the Nano Banana image while preserving 100% spell-checked titles and 1:1 tier parity.
   const ai = new GoogleGenAI({ apiKey });
 
   const canonicalHint = params.canonicalSpec
-    ? `\nCANONICAL SPELL-CHECKED 4-TIER SPECIFICATION TO PRESERVE 1:1 (Use these exact spell-checked node titles, badges, and tier assignments while aligning to the visual layout, and NEVER introduce OCR typos or duplicate nodes):\n${JSON.stringify(params.canonicalSpec, null, 2)}\n`
+    ? `\nARCHITECTURAL PLAN REFERENCE (Preserve accurate component names while extracting faithful 2D spatial layout from the image):\n${JSON.stringify(params.canonicalSpec, null, 2)}\n`
     : '';
 
-  const systemPrompt = `You are the Principal Multimodal Vision-to-Draw.io Architecture Decompiler.
-Given the user's architecture prompt and the Nano Banana reference architecture diagram image, produce a 100% spell-checked, 1:1 faithful VisionDecompiledPosterSpec JSON object that will be compiled into an editable 1600x860 Draw.io diagram.
+  const systemPrompt = `You are a Principal Multimodal Vision-to-Draw.io Architecture Decompiler.
+Given the user's architecture prompt and the reference architecture diagram image, extract a 100% spell-checked, spatially faithful VisionDecompiledPosterSpec JSON object for Draw.io compilation.
 ${canonicalHint}
-STRICT ARCHITECTURAL & ANTI-TYPO RULES:
-1. NEVER copy raster diffusion typos (such as "PostgSglovm", "Mingation Seetlictve", "Peldine/Pidzines")—always use the exact, properly spelled official AWS / Google Cloud service names!
-2. NEVER create duplicate boxes in the same tier (each service appears once).
-3. Include 4 logical swimlane containers in "containers" spanning left-to-right across the 0..1000 normalized X axis:
-   - Container 1: [110, 16, 972, 240] (Tier 1: Source Systems & Ingress)
-   - Container 2: [110, 268, 972, 492] (Tier 2: Migration, Ingestion & Streaming Pipelines)
-   - Container 3: [110, 520, 972, 744] (Tier 3: Target Cloud Data Warehouse & AI/ML Platform)
-   - Container 4: [110, 772, 972, 984] (Tier 4: Security, Governance & Serving Consumers)
-4. Include 12 to 16 specific architectural component nodes in "nodes" (3 to 4 nodes per container column):
-   - Use "shape": "cylinder" ONLY for databases, object storage buckets (S3, GCS), data warehouses (BigQuery, Teradata, Redshift), and feature/model registries. Use "rect" for migration tools (Database Migration Service), compute (EC2/EKS), streaming (Kinesis, Dataflow), and ML training/prediction/pipelines. Use "rhombus" for IAM/KMS/Cloud Armor security gates.
-5. Include at least N directed "edges" (where N = number of nodes) connecting all nodes into a single connected graph with concise protocol labels (max 22 chars).`;
+GUIDELINES:
+1. Never copy raster diffusion typos—always output accurate, properly spelled official technology/service names.
+2. Faithfully extract the containers ("containers"), component nodes ("nodes"), and directed flows ("edges") with normalized [ymin, xmin, ymax, xmax] (0..1000) coordinates matching the reference image.
+3. Set "shape": "cylinder" for storage/databases/warehouses, "rhombus" for policy/decision gates, and "rect" for compute/services.`;
 
-  const modelsToTry = ['gemini-3.8-flash', 'gemini-2.5-flash'];
+  const modelsToTry = await resolveLatestGeminiModelChain(ai, 'vision');
   for (const modelId of modelsToTry) {
     try {
       const contents: any[] = [];
@@ -2267,24 +2552,23 @@ STRICT ARCHITECTURAL & ANTI-TYPO RULES:
         });
       }
       contents.push(
-        `User Architecture Prompt:\n"${params.userPrompt}"\n\nExtract the complete, spell-checked 1:1 VisionDecompiledPosterSpec JSON for this architecture.`
+        `User Architecture Prompt:\n"${params.userPrompt}"\n\nExtract the complete, spell-checked VisionDecompiledPosterSpec JSON from this architecture image.`
       );
 
-      const res = await ai.models.generateContent({
+      const res = await generateContentWithRetry(ai, {
         model: modelId,
         contents,
         config: {
           systemInstruction: systemPrompt,
           temperature: 0.1,
           responseMimeType: 'application/json',
-          thinkingConfig: modelId.includes('2.5-flash')
-            ? ({ thinkingLevel: 'LOW' } as any)
-            : ({ thinkingLevel: 'LOW' } as any),
+          thinkingConfig: { thinkingLevel: 'MEDIUM' } as any,
         },
       });
       const rawText = (res.text || '').replace(/```json/gi, '').replace(/```/g, '').trim();
       if (rawText) {
         const parsed = JSON.parse(rawText) as VisionDecompiledPosterSpec;
+        parsed.brandHeader = '';
         const normalized = normalizeVisionPosterSpecGeometry(parsed);
         return {
           spec: normalized,
@@ -2300,7 +2584,7 @@ STRICT ARCHITECTURAL & ANTI-TYPO RULES:
   if (params.canonicalSpec) {
     return {
       spec: normalizeVisionPosterSpecGeometry(params.canonicalSpec),
-      modelUsed: 'gemini-3.8-flash (Canonical Spec Lock)',
+      modelUsed: `${getGeminiModel('latest')} (Canonical Spec Lock)`,
       latencyMs: Date.now() - t0,
     };
   }
@@ -2310,13 +2594,8 @@ STRICT ARCHITECTURAL & ANTI-TYPO RULES:
 
 /**
  * Stage 4: Orthogonal Cross-Model LLM-as-a-Judge Evaluation
- * Calls a DIFFERENT model family (`gemini-3.1-pro-preview` / `gemini-2.5-pro`) from the Flash generator
- * to score the diagram on 5 mandatory dimensions:
- *   1. Accuracy (0-100)
- *   2. Completeness (0-100)
- *   3. Faithfulness (0-100)
- *   4. Relevance (0-100)
- *   5. No Visual Defects (0-100)
+ * Dynamically resolves a distinct latest-generation Judge model family from `generatorModelUsed`
+ * to score the diagram on Accuracy, Completeness, Faithfulness, Relevance, and Visual Clarity.
  */
 export async function evaluateWithCrossModelLlmJudge(params: {
   userPrompt: string;
@@ -2332,8 +2611,8 @@ export async function evaluateWithCrossModelLlmJudge(params: {
   const t0 = Date.now();
   const ai = new GoogleGenAI({ apiKey });
 
-  // Strict Cross-Model Separation: Generator is Flash -> Judge MUST be Pro (`gemini-3.1-pro-preview` or `gemini-2.5-pro`)
-  const judgeModels = ['gemini-3.1-pro-preview', 'gemini-2.5-pro'];
+  // Strict Cross-Model Separation via dynamic latest-frontier discovery
+  const judgeModels = await resolveLatestDistinctJudgeChain(ai, params.generatorModelUsed);
   const modText =
     params.modificationHistory && params.modificationHistory.length > 0
       ? `\nCumulative Follow-Up Modifications Requested by User:\n${params.modificationHistory.map((m, i) => `${i + 1}. "${m}"`).join('\n')}`
@@ -2377,7 +2656,7 @@ Score the diagram strictly and honestly across these 5 dimensions (0-100 each):
 2. "completeness": Are ALL source systems, target platforms, pipelines, and follow-up modifications from the user's request present and connected?
 3. "faithfulness": Does the diagram faithfully reflect the user's specific architecture without hallucinating unrelated domains or dropping core requirements?
 4. "relevance": Are all node titles, badges, subtitles, and edge labels specific and relevant to the prompt (zero generic filler)?
-5. "noVisualDefects": Clean swimlane organization, zero overlapping boxes, zero out-of-bounds nodes, balanced layout density, and clean orthogonal routing.
+5. "noVisualDefects": Clean organization, zero overlapping boxes, zero out-of-bounds nodes, balanced layout density, and clean orthogonal routing.
 
 Return strictly valid JSON matching:
 {
@@ -2395,15 +2674,13 @@ Return strictly valid JSON matching:
 
   for (const judgeModel of judgeModels) {
     try {
-      const res = await ai.models.generateContent({
+      const res = await generateContentWithRetry(ai, {
         model: judgeModel,
         contents: judgePrompt,
         config: {
           temperature: 0.1,
           responseMimeType: 'application/json',
-          thinkingConfig: judgeModel.includes('2.5-pro')
-            ? ({ thinkingLevel: 'LOW' } as any)
-            : ({ thinkingLevel: 'LOW' } as any),
+          thinkingConfig: { thinkingLevel: 'MEDIUM' } as any,
         },
       });
       const rawText = (res.text || '').replace(/```json/gi, '').replace(/```/g, '').trim();
@@ -2520,19 +2797,17 @@ Return strictly valid JSON with:
   "updatedSpec": { ...full VisionDecompiledPosterSpec... }
 }`;
 
-  const modelsToTry = ['gemini-3.8-flash', 'gemini-2.5-flash'];
+  const modelsToTry = await resolveLatestGeminiModelChain(ai, 'latest');
   for (const modelId of modelsToTry) {
     try {
-      const res = await ai.models.generateContent({
+      const res = await generateContentWithRetry(ai, {
         model: modelId,
         contents: `Original Architecture Prompt: "${params.userPrompt}"\nCurrent VisionDecompiledPosterSpec:\n${JSON.stringify(params.currentSpec, null, 2)}\n\nUser Follow-Up Modification Instruction:\n"${params.modificationPrompt}"`,
         config: {
           systemInstruction: modSystemPrompt,
           temperature: 0.15,
           responseMimeType: 'application/json',
-          thinkingConfig: modelId.includes('2.5-flash')
-            ? ({ thinkingLevel: 'LOW' } as any)
-            : ({ thinkingLevel: 'LOW' } as any),
+          thinkingConfig: { thinkingLevel: 'LOW' } as any,
         },
       });
       const rawText = (res.text || '').replace(/```json/gi, '').replace(/```/g, '').trim();
@@ -2622,19 +2897,17 @@ Return strictly valid JSON:
   "healedSpec": { ...full VisionDecompiledPosterSpec... }
 }`;
 
-  const modelsToTry = ['gemini-3.8-flash', 'gemini-2.5-flash'];
+  const modelsToTry = await resolveLatestGeminiModelChain(ai, 'latest');
   for (const modelId of modelsToTry) {
     try {
-      const res = await ai.models.generateContent({
+      const res = await generateContentWithRetry(ai, {
         model: modelId,
         contents: `User Prompt: "${params.userPrompt}"\nModification History: ${JSON.stringify(params.modificationHistory || [])}\nDefects & Missing Entities Flagged by Judge (${params.judgeReport.judgeModelUsed}):\n${JSON.stringify(semanticDefects, null, 2)}\n\nCurrent Spec:\n${JSON.stringify(deterministicallyHealed, null, 2)}`,
         config: {
           systemInstruction: fixSystemPrompt,
           temperature: 0.1,
           responseMimeType: 'application/json',
-          thinkingConfig: modelId.includes('2.5-flash')
-            ? ({ thinkingLevel: 'LOW' } as any)
-            : ({ thinkingLevel: 'LOW' } as any),
+          thinkingConfig: { thinkingLevel: 'LOW' } as any,
         },
       });
       const rawText = (res.text || '').replace(/```json/gi, '').replace(/```/g, '').trim();
@@ -2693,9 +2966,9 @@ export async function runNanoBananaPromptToDrawioPipeline(params: {
     }
   }
 
-  let posterModelUsed = posterDataUrl ? 'gemini-2.5-flash-image (Nano Banana Cached)' : 'none';
+  let posterModelUsed = posterDataUrl ? `${getGeminiModel('image')} (Cached)` : 'none';
   let posterLatencyMs = 0;
-  let decompilerModelUsed = 'gemini-3.8-flash';
+  let decompilerModelUsed = getGeminiModel('latest');
   let decompilerLatencyMs = 0;
   let spec: VisionDecompiledPosterSpec;
   let autoFixed = false;

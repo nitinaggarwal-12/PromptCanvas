@@ -1,5 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { parseUpstreamError } from './ai/modelErrors';
+import { resolveLatestGeminiModelChain } from './geminiConfig';
 
 interface GeminiRetryOptions {
   /** Total attempts, including the first. */
@@ -38,6 +39,31 @@ function withTimeout<T>(operation: Promise<T>, ms: number, label: string): Promi
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+function normalizeThinkingConfigForFrontierModel(modelId: string, config: any): any {
+  if (!config) return config;
+  const modelStr = String(modelId || '').toLowerCase();
+  if (/^gemini-[345]/i.test(modelStr) && config.thinkingConfig) {
+    return {
+      ...config,
+      maxOutputTokens: Math.min(config.maxOutputTokens || 32768, 32768),
+      thinkingConfig: {
+        thinkingLevel:
+          config.thinkingConfig.thinkingLevel &&
+          config.thinkingConfig.thinkingLevel !== 'MINIMAL'
+            ? config.thinkingConfig.thinkingLevel
+            : typeof config.thinkingConfig.thinkingBudget === 'number' &&
+                config.thinkingConfig.thinkingBudget >= 500
+              ? 'HIGH'
+              : typeof config.thinkingConfig.thinkingBudget === 'number' &&
+                  config.thinkingConfig.thinkingBudget <= 100
+                ? 'LOW'
+                : 'MEDIUM',
+      },
+    };
+  }
+  return config;
+}
+
 /**
  * Executes a Gemini `generateContent` call with exponential backoff + jitter.
  *
@@ -64,31 +90,18 @@ export async function generateContentWithRetry(
   const startedAt = Date.now();
   let lastError: any = null;
 
-  // Breaking Change 2A Guard: gemini-4-argon strictly rejects numeric `thinkingBudget` and `MINIMAL` with HTTP 400.
-  const modelStr = String(params?.model || '').toLowerCase();
-  const safeParams =
-    (modelStr.includes('4-argon') || modelStr.includes('argon')) && params?.config?.thinkingConfig
-      ? {
-          ...params,
-          config: {
-            ...params.config,
-            maxOutputTokens: Math.min(params.config.maxOutputTokens || 32768, 32768),
-            thinkingConfig: {
-              thinkingLevel:
-                params.config.thinkingConfig.thinkingLevel &&
-                params.config.thinkingConfig.thinkingLevel !== 'MINIMAL'
-                  ? params.config.thinkingConfig.thinkingLevel
-                  : typeof params.config.thinkingConfig.thinkingBudget === 'number' &&
-                      params.config.thinkingConfig.thinkingBudget >= 500
-                    ? 'HIGH'
-                    : typeof params.config.thinkingConfig.thinkingBudget === 'number' &&
-                        params.config.thinkingConfig.thinkingBudget <= 100
-                      ? 'LOW'
-                      : 'MEDIUM',
-            },
-          },
-        }
-      : params;
+  // Law 16 / Rule 55 Guard: Gemini 3+ frontier models use discrete `thinkingLevel` (`LOW` | `MEDIUM` | `HIGH`)
+  // and `maxOutputTokens <= 32768`, rejecting numeric `thinkingBudget` and `MINIMAL` with HTTP 400.
+  let activeParams = params?.config
+    ? {
+        ...params,
+        config: normalizeThinkingConfigForFrontierModel(String(params?.model || ''), params.config),
+      }
+    : params;
+
+  let strippedUnsupportedThinking = false;
+  let resolvedLiveFallbackModels: string[] | null = null;
+  let liveFallbackIdx = 0;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     const elapsed = Date.now() - startedAt;
@@ -96,15 +109,69 @@ export async function generateContentWithRetry(
     if (remaining <= 0) break;
 
     try {
-      return await withTimeout(
-        ai.models.generateContent(safeParams),
+      const response = await withTimeout(
+        ai.models.generateContent(activeParams),
         Math.min(perAttemptTimeoutMs, remaining),
         label
       );
+      if (response && typeof response === 'object' && activeParams?.model) {
+        try {
+          (response as any).__resolvedModelId = String(activeParams.model);
+        } catch {
+          // Ignore frozen response objects
+        }
+      }
+      return response;
     } catch (err: any) {
       lastError = err;
+      const errMsg = String(err?.message || '');
+
+      // If a newly released model rejects thinkingConfig with HTTP 400, strip thinkingConfig and retry immediately on the same latest model.
+      if (
+        !strippedUnsupportedThinking &&
+        activeParams?.config?.thinkingConfig &&
+        /thinking.?level|thinking.?config|thinking is not supported/i.test(errMsg)
+      ) {
+        strippedUnsupportedThinking = true;
+        const { thinkingConfig: _removed, ...restConfig } = activeParams.config;
+        activeParams = { ...activeParams, config: restConfig };
+        attempt--;
+        continue;
+      }
 
       const info = parseUpstreamError(err);
+
+      // If a caller supplied an unpublished/renamed model alias (HTTP 404 / NOT_FOUND) and live model discovery is available,
+      // automatically switch to the highest-ranked live Gemini frontier model in the matching tier without burning a backoff sleep.
+      if (
+        (info.httpStatus === 404 || info.upstreamStatus === 'NOT_FOUND') &&
+        typeof (ai as any)?.models?.list === 'function'
+      ) {
+        if (!resolvedLiveFallbackModels) {
+          const currentNorm = String(activeParams?.model || '').toLowerCase();
+          const preferredTier = currentNorm.includes('flash')
+            ? 'chat'
+            : currentNorm.includes('pro')
+              ? 'pro'
+              : 'latest';
+          const chain = await resolveLatestGeminiModelChain(ai, preferredTier);
+          resolvedLiveFallbackModels = chain.filter((m) => m.toLowerCase() !== currentNorm);
+        }
+        if (resolvedLiveFallbackModels && liveFallbackIdx < resolvedLiveFallbackModels.length) {
+          const nextLiveModel = resolvedLiveFallbackModels[liveFallbackIdx++];
+          activeParams = {
+            ...activeParams,
+            model: nextLiveModel,
+            ...(activeParams?.config
+              ? { config: normalizeThinkingConfigForFrontierModel(nextLiveModel, activeParams.config) }
+              : {}),
+          };
+          strippedUnsupportedThinking = false;
+          attempt--;
+          continue;
+        }
+      }
+
       // A per-attempt timeout is itself worth one more try if budget allows.
       const isAttemptTimeout = typeof err?.message === 'string'
         && err.message.includes('per-attempt budget');

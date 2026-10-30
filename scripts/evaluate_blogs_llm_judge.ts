@@ -97,7 +97,7 @@ Return ONLY valid JSON with keys:
       }
 
       const res = await fetch(
-        'https://aiplatform.googleapis.com/v1/projects/ramp-portal-dev/locations/global/publishers/google/models/gemini-3.1-pro-preview:generateContent',
+        'https://aiplatform.googleapis.com/v1/projects/ramp-portal-dev/locations/global/publishers/google/models/gemini-2.5-pro:generateContent',
         {
           method: 'POST',
           headers: {
@@ -123,7 +123,7 @@ Return ONLY valid JSON with keys:
         if (text) {
           const parsed = JSON.parse(text);
           return {
-            llmCritiqueSummary: parsed.llmCritiqueSummary || 'Evaluated via Gemini 3.8 Flash Multimodal Judge.',
+            llmCritiqueSummary: parsed.llmCritiqueSummary || 'Evaluated via Gemini 2.5 Flash Multimodal Judge.',
             llmSuggestedIssues: Array.isArray(parsed.llmSuggestedIssues) ? parsed.llmSuggestedIssues : [],
           };
         }

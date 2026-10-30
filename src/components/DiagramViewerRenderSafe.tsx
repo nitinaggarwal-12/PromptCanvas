@@ -6,7 +6,6 @@ import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { SupportedLanguage, translateDiagramXmlToLanguage } from '@/lib/i18n';
 import { localizeDrawioXmlDeep } from '@/lib/diagramLanguageLocalizer';
 import { sanitizeDrawioXmlAttributes } from '@/lib/diagramCleaner';
-import { healStubOrOracleDiagramXml } from '@/lib/draftMicroVersionStore';
 import { DiagramErrorBoundary } from './DiagramErrorBoundary';
 
 interface DiagramViewerRenderSafeProps {
@@ -93,14 +92,26 @@ export default function DiagramViewerRenderSafe({
     );
   }, [xml, diagramType]);
 
+  const isPromptToDiagramFreeform = React.useMemo(() => {
+    const rawStr = typeof xml === 'string' ? xml : String(xml || '');
+    return (
+      diagramType === 'compound_freeform' ||
+      rawStr.includes('data-prompt-to-diagram="true"') ||
+      rawStr.includes('data-compound-freeform="true"')
+    );
+  }, [xml, diagramType]);
+
   const sanitizedXml = React.useMemo(() => {
     if (isIntentionalBlankCanvas) {
       return typeof xml === 'string' && xml.trim().length > 0
         ? xml
         : `<mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0" data-blank-canvas="true"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel>`;
     }
+    if (isPromptToDiagramFreeform) {
+      return typeof xml === 'string' ? xml : String(xml || '');
+    }
     if (!xml) return getDefaultXmlForArchitecture(diagramType || 'unified_system_view') || '';
-    const rawStr = healStubOrOracleDiagramXml(typeof xml === 'string' ? xml : String(xml), description, useCaseName).xml;
+    const rawStr = typeof xml === 'string' ? xml : String(xml);
     try {
       const healed = validateAndHealDrawioXml(rawStr, diagramType);
       if (!healed.xml || healed.xml.length < 100) {
@@ -111,7 +122,7 @@ export default function DiagramViewerRenderSafe({
       console.error('[DiagramViewerRenderSafe] XML healing failed, using catalog fallback:', err);
       return getDefaultXmlForArchitecture(diagramType || 'unified_system_view') || '';
     }
-  }, [xml, diagramType, isIntentionalBlankCanvas, description, useCaseName]);
+  }, [xml, diagramType, isIntentionalBlankCanvas, isPromptToDiagramFreeform, description, useCaseName]);
 
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const scriptUrl = `${origin}/viewer-static.min.js`;
@@ -148,12 +159,14 @@ export default function DiagramViewerRenderSafe({
     sanitizedXml.includes('background="#0F172A"');
   const effectiveBgTheme = bgTheme === 'dark' || isXmlDark ? 'dark' : 'light';
   const bgColor = effectiveBgTheme === 'light' ? '#FFFFFF' : '#0F172A';
-  const translatedXml = sanitizeDrawioXmlAttributes(
-    localizeDrawioXmlDeep(
-      translateDiagramXmlToLanguage(sanitizedXml, currentLanguage || 'en'),
-      currentLanguage || 'en',
-    ),
-  );
+  const translatedXml = isPromptToDiagramFreeform
+    ? sanitizeDrawioXmlAttributes(sanitizedXml)
+    : sanitizeDrawioXmlAttributes(
+        localizeDrawioXmlDeep(
+          translateDiagramXmlToLanguage(sanitizedXml, currentLanguage || 'en'),
+          currentLanguage || 'en',
+        ),
+      );
   const aggressiveOverlayGuard = /ai_trism|llm_capacity|equipment_optimization|predictive_maintenance/i.test(
     `${diagramType || ''} ${diagramId || ''}`,
   );

@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
-import { getEffectiveGeminiApiKey, GEMINI_PRO_MODEL_ID, getDistinctJudgeModel } from '@/lib/geminiConfig';
+import {
+  getEffectiveGeminiApiKey,
+  GEMINI_PRO_MODEL_ID,
+  getDistinctJudgeModel,
+  resolveLatestGeminiModelChain,
+  resolveLatestDistinctJudgeChain,
+} from '@/lib/geminiConfig';
 import { enforceGeminiRouteGuard, checkConversationalOrNonMutationIntent } from '@/lib/geminiRouteGuard';
 import {
   BLOG_FORMATS,
@@ -76,7 +82,7 @@ export async function POST(req: NextRequest) {
     });
 
     const generatorModel = GEMINI_PRO_MODEL_ID;
-    const judgeModel = getDistinctJudgeModel(generatorModel);
+    let judgeModel = getDistinctJudgeModel(generatorModel);
     const apiKey = guard.effectiveApiKey || getEffectiveGeminiApiKey();
 
     if (!enhanceWithAi || !apiKey) {
@@ -114,11 +120,9 @@ Return a JSON object with string keys:
 5. "enhancedIntroMarkdown": 2-3 paragraphs of deeply technical markdown introducing the architecture, problem statement, and why this multi-agent pattern solves it without unprompted assumptions.
 6. "enhancedUseCaseMarkdown": 2-3 paragraphs explaining the end-to-end execution workflow across ${targetUseCase.rootAgentName} and its specialist sub-agents.`;
 
-      const fallbackModels = Array.from(
-        new Set([generatorModel, 'gemini-2.5-pro', 'gemini-2.5-flash'])
-      );
+      const fallbackModels = await resolveLatestGeminiModelChain(ai, 'pro');
       let rawText = '';
-      let activeModelUsed = generatorModel;
+      let activeModelUsed = fallbackModels[0] || generatorModel;
       for (const candidateModel of fallbackModels) {
         try {
           const result = await generateContentWithRetry(ai, {
@@ -132,6 +136,8 @@ Return a JSON object with string keys:
           if (result?.text) {
             rawText = result.text;
             activeModelUsed = candidateModel;
+            const judgeChain = await resolveLatestDistinctJudgeChain(ai, activeModelUsed);
+            if (judgeChain[0]) judgeModel = judgeChain[0];
             break;
           }
         } catch {

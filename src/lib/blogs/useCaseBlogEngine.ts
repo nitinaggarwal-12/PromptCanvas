@@ -1217,7 +1217,7 @@ function buildMultiTenantCaseStudyMarkdown(
 | **Execution Topology** | Shared Blue Routing Hub (\`#aecbfa\`) + Green Governance Hub (\`#ceead6\`) | **${bp.rightBoundaryLabel}** (\`${bp.rightZoneTitle}\`) or Dedicated Silo | **${bp.leftBoundaryLabel}** (\`${bp.leftZoneTitle}\`) |
 | **External Identity Provider (IdP)** | Google Cloud Workforce Identity Federation | **Google Workspace OIDC** (\`iss: accounts.google.com / finvault.com\`, Hardware MFA) | **Microsoft Entra ID** (\`iss: sts.windows.net/retail-tid/\`, SAML/OIDC) |
 | **Entitled ADK Agents (Entitlement Catalog)** | Full Admin & Diagnostic Catalog | \`${useCase.rootAgentName}\`, \`${sub1.name}\`, \`${sub2.name}\`, \`${sub3.name}\` | \`${useCase.rootAgentName}\`, \`${sub1.name}\`, \`${sub2.name}\` *(No privileged write/attestation agent)* |
-| **Foundation Model & Thinking Budget** | \`gemini-3.1-pro-preview\` + \`gemini-3.8-flash\` | **\`gemini-3.1-pro-preview\`** (\`thinking_budget: 8,192 tokens\`, 90% Prefix Cache) | **\`gemini-3.8-flash\`** (\`thinking_budget: 4,096 tokens\`, Valkey TPM Quota Cap) |
+| **Foundation Model & Thinking Budget** | \`gemini-2.5-pro\` + \`gemini-2.5-flash\` | **\`gemini-2.5-pro\`** (\`thinking_budget: 8,192 tokens\`, 90% Prefix Cache) | **\`gemini-2.5-flash\`** (\`thinking_budget: 4,096 tokens\`, Valkey TPM Quota Cap) |
 | **Primary Data Plane & RAG Scope** | BigQuery OTel Chargeback + SCC Findings | **${useCase.primaryDataStore}** (\`tenant_id = 'finvault'\` / Dedicated CMEK) | **${useCase.primaryDataStore}** (\`tenant_id = 'retailstream'\` / Shared RLS Pool) |
 | **MCP Connectors (2LO & 3LO)** | Internal SRE & Telemetry MCP Servers | \`${useCase.mcpResources[0]}\`, \`${useCase.mcpResources[1] || 'mcp://enterprise-vault/tools'}\` (3LO OBO) | \`${useCase.mcpResources[2] || useCase.mcpResources[0]}\` (Scoped 2LO + Entra 3LO) |
 | **Model Armor & Cloud SDP Guardrails** | Org-Wide Baseline Injection Shield | **Strict Regulatory Guardrails** + Zero-PII Masking + Cloud KMS HSM Signatures | **Standard Commercial Guardrails** + Automated PII Redaction |`;
@@ -1466,7 +1466,7 @@ In addition to the primary hub-and-spoke topology in **Figure 1**, the runtime s
 
 - **[Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview)**: Managed enterprise runtime to build, scale, govern, and evaluate multi-agent systems with **Sessions**, **Memory Bank**, and **Context Caching**.
 - **[Agent Development Kit (ADK)](https://google.github.io/adk-docs/)**: Open-source code-first framework for orchestrating hierarchical multi-agent systems (**${useCase.rootAgentName}**, **${sub1.name}**, **${sub2.name}**, **${sub3.name}**) with deterministic \`before_agent_callback\` and \`before_tool_callback\` guardrails.
-- **[Vertex AI and Gemini models](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models)**: Multimodal foundation models (\`gemini-3.8-flash\` for low-latency routing and \`gemini-3.1-pro-preview\` for complex reasoning with configurable \`thinking_budget\`).
+- **[Vertex AI and Gemini models](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models)**: Multimodal foundation models (\`gemini-2.5-flash\` for low-latency routing and \`gemini-2.5-pro\` for complex reasoning with configurable \`thinking_budget\`).
 - **[Model Armor](https://cloud.google.com/security/products/model-armor) & [Sensitive Data Protection (SDP)](https://cloud.google.com/sensitive-data-protection)**: Screens prompts, retrieved RAG context, and responses against prompt injection, jailbreaks, and sensitive data exfiltration.
 - **[Cloud Run](https://cloud.google.com/run)**: Serverless compute platform that hosts the frontend portal and tenant-isolated MCP tool servers inside **gVisor (\`runsc\`)** sandboxes.
 - **[Cloud Load Balancing](https://cloud.google.com/load-balancing/docs/https), [Google Cloud Armor](https://cloud.google.com/armor/docs/cloud-armor-overview) & [Identity-Aware Proxy (IAP)](https://cloud.google.com/iap/docs/concepts-overview)**: Edge routing and security layer that strips spoofed headers and validates user identity.
@@ -1523,7 +1523,7 @@ ${breachMatrixMd}
 
 ### Cost optimization
 - **90% ContextCacheConfig prefix caching**: Pin each tenant's invariant system instructions, compliance constitution, and MCP tool declarations (~17,500 tokens) in a tenant-scoped Vertex AI \`CachedContent\` resource (\`ttl="3600s"\`), reducing effective input-token COGS by **~84.7%** across multi-turn investigations.
-- **Tiered model routing & thinking budgets**: Route high-volume classification turns to \`gemini-3.8-flash\` (\`thinking_budget=4096\`) and reserve \`gemini-3.1-pro-preview\` (\`thinking_budget=8192\`) for complex multi-hop synthesis.
+- **Tiered model routing & thinking budgets**: Route high-volume classification turns to \`gemini-2.5-flash\` (\`thinking_budget=4096\`) and reserve \`gemini-2.5-pro\` (\`thinking_budget=8192\`) for complex multi-hop synthesis.
 
 ### Operational excellence & performance efficiency
 - **Zero-PII OpenTelemetry chargeback**: Emit sanitized OTel spans carrying \`tenant.id\`, \`gen_ai.usage.input_tokens\`, and \`gen_ai.usage.cached_read_tokens\` to **BigQuery** for automated per-tenant billing attribution.

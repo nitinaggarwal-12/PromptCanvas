@@ -14,11 +14,11 @@
  *  4. Scrubs 100% of any residual CLINICAL AI / Veeva Vault / Pharmacovigilance text.
  */
 
-import { generateUpgradedGcpGeBankingArchitectureXml } from './canonical/upgradedGcpGeBankingAgentTemplate';
 import {
-  buildUniversalClosedLoopDomainHarnessXml,
-  buildOfficialOracleEbsExadataArchCenter78Xml,
-} from './canonical/nasaMultiverseClosedLoopHarness';
+  buildDeterministicZeroTemplateVisionSpec,
+  compileVisionPosterSpecToDrawioXml,
+} from './visionPosterToDrawioDecompiler';
+import { generateUpgradedGcpGeBankingArchitectureXml } from './canonical/upgradedGcpGeBankingAgentTemplate';
 import { generateLogicalGcpAgentArchitectureXml } from './canonical/templateLogicalGcpAgentArchitecture';
 import { generateConceptualGcpAgentArchitectureXml } from './canonical/templateConceptualGcpAgentArch';
 import { generateProcessGcpAgentWorkflowXml } from './canonical/templateProcessGcpAgentWorkflow';
@@ -158,10 +158,7 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
   let templateRefLabel = `Google Cloud Reference Architecture • ${perspBadge} (${levelBadge})`;
   let domainMutations: Array<[RegExp, string]> = [];
 
-  const isVerticalStratumCrossSection =
-    explicitBpId === 'stratum_l4' ||
-    ((lower.includes('vllm') || lower.includes('h100') || lower.includes('honeycomb')) &&
-      (lower.includes('stratum') || lower.includes('vertical cross-section') || lower.includes('speculative decoding')));
+  const isVerticalStratumCrossSection = explicitBpId === 'stratum_l4';
 
   if (isVerticalStratumCrossSection) {
     return generateVerticalStratumCrossSectionXml(prompt, safeTitle);
@@ -201,7 +198,7 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
         [/Compliance Agent/gi, escHtml(truncateAtWord(t40.agents[6].name, 20))],
         [/Policy check, PII, regulatory compliance/gi, escHtml(truncateAtWord(t40.agents[6].role, 46))],
         [/1\.5 Pro \/ 1\.5 Flash/gi, escHtml(truncateAtWord(t40.models?.primaryPro || 'Gemini 3.1 Pro', 22))],
-        [/1\.5 Pro \(Vision\)/gi, escHtml(truncateAtWord(t40.models?.visionModel || 'Gemini 3.8 Flash', 22))],
+        [/1\.5 Pro \(Vision\)/gi, escHtml(truncateAtWord(t40.models?.visionModel || 'Gemini 2.5 Flash', 22))],
         [/Gemma/gi, escHtml(truncateAtWord(t40.models?.specializedModel || 'Gemma 3 27B', 18))],
         [/\(7B \/ 28B\)/gi, escHtml(truncateAtWord(t40.models?.specializedSub || '(Vertex TPU v5p)', 18))],
         [/Customer CRM/gi, escHtml(truncateAtWord(t40.enterpriseSystems?.[0] || 'Salesforce CRM', 18))],
@@ -213,7 +210,7 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
     }
     return [
       [/1\.5 Pro \/ 1\.5 Flash/gi, 'Gemini 3.1 Pro'],
-      [/1\.5 Pro \(Vision\)/gi, 'Gemini 3.8 Flash'],
+      [/1\.5 Pro \(Vision\)/gi, 'Gemini 2.5 Flash'],
     ];
   };
 
@@ -226,10 +223,6 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
       lower.includes('ebusiness') ||
       lower.includes('e-business') ||
       /\bebs\b/.test(lower);
-
-    if (paddedId === '78' && isOraclePrompt) {
-      return buildOfficialOracleEbsExadataArchCenter78Xml('light');
-    }
     if (paddedId === '00' || paddedId === '40') {
       if (options?.perspective === 'Logical') {
         return generateLogicalGcpAgentArchitectureXml({
@@ -316,7 +309,7 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
     modifiedXml = modifiedXml.replace(pattern, replacement);
   }
 
-  // Ensure any remaining Gemini 1.5 references in adapted templates use Gemini 3.1 Pro / 2.5 Flash
+  // Ensure any remaining Gemini 1.5 references in adapted templates use latest Gemini 3.1 Pro / 2.5 Flash labels
   modifiedXml = modifiedXml
     .replace(/Gemini 1\.5&lt;br\/&gt;Pro/gi, 'Gemini 3.1&lt;br/&gt;Pro')
     .replace(/Gemini 1\.5&lt;br\/&gt;Flash/gi, 'Gemini 3.8&lt;br/&gt;Flash')
@@ -1193,13 +1186,15 @@ export function synthesizeZeroTemplateCustomArchitectureXml(
   _level = 'L2',
   _perspective = 'Logical'
 ): string {
-  const effectivePrompt =
-    [prompt, title].filter(Boolean).join(' — ') ||
-    'NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness';
-  return buildUniversalClosedLoopDomainHarnessXml({
-    prompt: effectivePrompt,
-    theme: 'light',
-  });
+  const combinedSignal = [prompt, title, _domain].filter(Boolean).join(' — ');
+  if (!combinedSignal.trim() || false) {
+    const effectivePrompt =
+      [prompt, title].filter(Boolean).join(' — ') ||
+      'NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness';
+    return '';
+  }
+  const spec = buildDeterministicZeroTemplateVisionSpec(prompt, title, _customSubsystems);
+  return compileVisionPosterSpecToDrawioXml(spec);
 }
 
 /**

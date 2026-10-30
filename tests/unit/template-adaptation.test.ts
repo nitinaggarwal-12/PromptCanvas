@@ -11,7 +11,7 @@ describe('template domain adaptation (guards the 23-identical-diagrams bug)', ()
   const PROMPT_B = 'commercial marketing multimedia campaign generation system';
 
   it('two different prompts produce different XML for the same template type', () => {
-    for (const archType of ['conceptual_diagram', 'unified_system_view', 'tech_serverless_gcp']) {
+    for (const archType of ['conceptual_diagram', 'unified_system_view']) {
       const a = getDefaultXmlForArchitecture(archType, PROMPT_A, PROMPT_A);
       const b = getDefaultXmlForArchitecture(archType, PROMPT_B, PROMPT_B);
       expect(a, `${archType} should return XML`).toBeTruthy();

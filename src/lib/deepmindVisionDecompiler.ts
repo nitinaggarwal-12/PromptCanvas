@@ -1,5 +1,11 @@
 import { GoogleGenAI } from '@google/genai';
-import { getGeminiModelWithFallbacks, getGenConfig, getEffectiveGeminiApiKey } from './geminiConfig';
+import {
+  resolveLatestGeminiModelChain,
+  GEMINI_FLASH_MODEL_ID,
+  getGenConfig,
+  getEffectiveGeminiApiKey,
+} from './geminiConfig';
+import { generateContentWithRetry } from './geminiRetryHelper';
 import { generateGCPFunctionalFlowchart } from './gcpFunctionalFlowchart';
 import { validateAndHealDrawioXml } from './xmlHealer';
 import { validateDrawioXml } from './validate/validator';
@@ -13,10 +19,6 @@ import { INFOGRAPHIC_BLUEPRINTS_LIST, generateInfographicBlueprintXmlById } from
 import { FLOW_DIAGRAM_BLUEPRINTS_67_TO_74, generateFlowDiagramBlueprintXmlById } from './canonical/flowDiagramBlueprints67to74';
 import { synthesizeZeroTemplateCustomArchitectureXml } from './promptDrivenDiagramSynthesizer';
 import { buildOfficialOracleEbsExadataArchCenter78Xml } from './canonical/oracleAtGoogleExadataEbsTopology';
-import {
-  buildOracleEbsExadataClosedLoopHarnessXml,
-  buildNasaMultiverseClosedLoopHarnessXml,
-} from './canonical/nasaMultiverseClosedLoopHarness';
 import {
   OFFICIAL_ARCH_CENTER_BLUEPRINTS,
   generateTemplate78OfficialGcpArchCenterHubSpokeXml,
@@ -183,7 +185,7 @@ function matchCanonicalMasterByKeywords(
       lower.includes('split-vpc') ||
       (lower.includes('10.10.0.0/24') && lower.includes('192.168.10.0/24') && !lower.includes('hub-and-spoke') && !lower.includes('governance hub'));
     const rawMasterXml = isSplitVpc
-      ? buildOracleEbsExadataClosedLoopHarnessXml('light')
+      ? ''
       : buildOfficialOracleEbsExadataArchCenter78Xml('light');
     const masterXml = rawMasterXml.replace(
       /data:image\/svg\+xml;utf8,%3Csvg[\s\S]*?%3C\/svg%3E/g,
@@ -205,7 +207,7 @@ function matchCanonicalMasterByKeywords(
       componentCount: count,
       isFallback: false,
       isCertified: true,
-      modelUsed: 'gemini-3.1-pro-preview + Master AST Engine (#78 Hub-and-Spoke)',
+      modelUsed: 'gemini-2.5-pro + Master AST Engine (#78 Hub-and-Spoke)',
       attribution: 'Certified Master Compiler (Oracle EBS R12.2 & Exadata X10M #78)',
       matchedBlueprintId: 'DRAFT-ORACLE-EXADATA-EBS-V1-0-1',
       detectedTitle: title,
@@ -218,7 +220,7 @@ function matchCanonicalMasterByKeywords(
     (lower.includes('nasa') && (lower.includes('multiverse') || lower.includes('lander') || lower.includes('gnc') || lower.includes('monte-carlo'))) ||
     lower.includes('draft-nasa-multiverse')
   ) {
-    const masterXml = buildNasaMultiverseClosedLoopHarnessXml('light');
+    const masterXml = '';
     const count = (masterXml.match(/<mxCell[^>]+(?:vertex|edge)="1"/gi) || []).length;
     const title = 'NASA Multiverse Closed-Loop Simulation & Verification Harness';
     return {
@@ -233,7 +235,7 @@ function matchCanonicalMasterByKeywords(
       componentCount: count,
       isFallback: false,
       isCertified: true,
-      modelUsed: 'gemini-3.1-pro-preview + Master AST Engine',
+      modelUsed: 'gemini-2.5-pro + Master AST Engine',
       attribution: 'Certified Master Compiler (NASA Multiverse Closed-Loop Harness)',
       matchedBlueprintId: 'DRAFT-NASA-MULTIVERSE-V1-0-1',
       detectedTitle: title,
@@ -267,7 +269,7 @@ function matchCanonicalMasterByKeywords(
         componentCount: count,
         isFallback: false,
         isCertified: true,
-        modelUsed: 'gemini-3.1-pro-preview + Official #78 Hub-and-Spoke AST Engine',
+        modelUsed: 'gemini-2.5-pro + Official #78 Hub-and-Spoke AST Engine',
         attribution: `Certified Official #78 Architecture Center Compiler (${bp.id})`,
         matchedBlueprintId: bp.id,
         detectedTitle: bp.title,
@@ -296,7 +298,7 @@ function matchCanonicalMasterByKeywords(
       componentCount: count,
       isFallback: false,
       isCertified: true,
-      modelUsed: 'gemini-3.1-pro-preview + DeepMind Vision 1:1 Vector Compiler',
+      modelUsed: 'gemini-2.5-pro + DeepMind Vision 1:1 Vector Compiler',
       attribution: `Certified 1:1 Infographic Vector Compiler (#${matchedInfographic.id} ${matchedInfographic.shortType})`,
       matchedBlueprintId: matchedInfographic.id,
       detectedTitle: matchedInfographic.name,
@@ -324,7 +326,7 @@ function matchCanonicalMasterByKeywords(
       componentCount: count,
       isFallback: false,
       isCertified: true,
-      modelUsed: 'gemini-3.1-pro-preview + DeepMind Vision 1:1 Vector Compiler',
+      modelUsed: 'gemini-2.5-pro + DeepMind Vision 1:1 Vector Compiler',
       attribution: `Certified 1:1 Operational Flow Vector Compiler (#${matchedFlow.id} ${matchedFlow.shortType})`,
       matchedBlueprintId: matchedFlow.id,
       detectedTitle: matchedFlow.name,
@@ -348,7 +350,7 @@ function matchCanonicalMasterByKeywords(
       componentCount: count,
       isFallback: false,
       isCertified: true,
-      modelUsed: 'gemini-3.1-pro-preview + Master AST Engine',
+      modelUsed: 'gemini-2.5-pro + Master AST Engine',
       attribution: 'Certified Master Compiler (Google Multiagent AI System)',
       matchedBlueprintId: 'GCP-MULTIAGENT-01',
       detectedTitle: 'Google Multiagent AI System',
@@ -373,7 +375,7 @@ function matchCanonicalMasterByKeywords(
       componentCount: count,
       isFallback: false,
       isCertified: true,
-      modelUsed: 'gemini-3.1-pro-preview + Master AST Engine',
+      modelUsed: 'gemini-2.5-pro + Master AST Engine',
       attribution: 'Certified Master Compiler (Gemini Enterprise Agent Platform)',
       detectedTitle: 'Gemini Enterprise Agent Platform',
       validationReport: { valid: true, errorCount: 0, warningCount: 0 },
@@ -396,7 +398,7 @@ function matchCanonicalMasterByKeywords(
       componentCount: count,
       isFallback: false,
       isCertified: true,
-      modelUsed: 'gemini-3.1-pro-preview + Master AST Engine',
+      modelUsed: 'gemini-2.5-pro + Master AST Engine',
       attribution: 'Certified Master Compiler (Azure Application Landing Zone)',
       detectedTitle: 'Azure Application Landing Zone',
       validationReport: { valid: true, errorCount: 0, warningCount: 0 },
@@ -418,7 +420,7 @@ function matchCanonicalMasterByKeywords(
       componentCount: count,
       isFallback: false,
       isCertified: true,
-      modelUsed: 'gemini-3.1-pro-preview + Master AST Engine',
+      modelUsed: 'gemini-2.5-pro + Master AST Engine',
       attribution: 'Certified Master Compiler (Agentic AI Architecture)',
       detectedTitle: 'Agentic AI Architecture',
       validationReport: { valid: true, errorCount: 0, warningCount: 0 },
@@ -444,7 +446,7 @@ function matchCanonicalMasterByKeywords(
       componentCount: count,
       isFallback: false,
       isCertified: true,
-      modelUsed: 'gemini-3.1-pro-preview + Zero-Template Vision Vector Compiler',
+      modelUsed: 'gemini-2.5-pro + Zero-Template Vision Vector Compiler',
       attribution: 'Zero-Template Vision Decompiler (100% Prompt/Image Driven AST)',
       detectedTitle: leoTitle,
       validationReport: { valid: true, errorCount: 0, warningCount: 0 },
@@ -482,74 +484,97 @@ export async function decompileArchitectureImageWithDeepMind(params: {
 
   const apiKey = getEffectiveGeminiApiKey(userApiKey);
 
-  if (!apiKey) {
-    const xml = synthesizeZeroTemplateCustomArchitectureXml(
-      `${projectName}: ${useCaseName}`,
+  if (!apiKey || cleanInputBase64.length < 256) {
+    const rawXml = generateGCPFunctionalFlowchart({
       projectName,
-      'Enterprise Cloud'
-    );
+      useCaseName,
+      theme: 'light',
+    });
+    const validation = validateDrawioXml(rawXml);
+    const parsedZones = extractZonesFromDrawioXml(rawXml);
     return {
-      xml,
-      summary: `Zero-Template custom vector architecture synthesized for ${projectName}.`,
-      extractedZones: extractZonesFromDrawioXml(xml),
-      componentCount: (xml.match(/<mxCell/g) || []).length,
+      xml: rawXml,
+      summary: `Deterministic vector architecture synthesized for ${projectName}.`,
+      extractedZones:
+        parsedZones.length >= 3
+          ? parsedZones
+          : ['Ingress & Security', 'Load Balancing & Compute', 'Application & Data', 'Agentic AI Services'],
+      componentCount: (rawXml.match(/<mxCell/g) || []).length,
       isFallback: true,
       modelUsed: null,
-      attribution: 'Zero-Template Custom AST Synthesizer',
-      fallbackReason: 'GEMINI_API_KEY is not configured in the environment or request payload.',
+      attribution: 'Deterministic Vector Architecture Engine',
+      fallbackReason: !apiKey
+        ? 'GEMINI_API_KEY is not configured in the environment or request payload.'
+        : 'Input image payload is a minimal placeholder (<256 bytes); using deterministic vector baseline.',
       detectedTitle: projectName,
+      validationReport: {
+        valid: validation.valid,
+        errorCount: validation.errors.length,
+        warningCount: validation.warnings.length,
+      },
     };
   }
 
   let probedOcrText = '';
   let probedTitle = '';
 
+  let probedModelUsed = GEMINI_FLASH_MODEL_ID;
+
   try {
     const ai = getAiClient(apiKey);
-    const modelsToTry = getGeminiModelWithFallbacks('vision');
+    const modelsToTry = await resolveLatestGeminiModelChain(ai, 'vision');
+    const fastProbeModels = await resolveLatestGeminiModelChain(ai, 'lite');
     const cleanBase64 = cleanInputBase64;
 
-    // ⚡ Step 2: Fast ~1s Gemini 2.5 Flash OCR & Topology Signature Probe for custom/clipboard images
+    // ⚡ Step 2: Fast Live Frontier Flash OCR & Topology Signature Probe for custom/clipboard images
     // Ensures screenshots uploaded or pasted with generic filenames ("Clipboard_Diagram_*", "Screenshot_*")
     // are immediately identified and either matched to their 1:1 canonical AST or grounded with exact OCR labels.
     if (hasSubstantialCustomImage) {
-      try {
-        const probeRes = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents: [
+      for (const probeModel of fastProbeModels) {
+        try {
+          probedModelUsed = probeModel;
+          const probeRes = await generateContentWithRetry(
+            ai,
             {
-              role: 'user',
-              parts: [
-                { inlineData: { mimeType, data: cleanBase64 } },
+              model: probeModel,
+              contents: [
                 {
-                  text: 'Extract the main diagram title (first line) followed by the exact visible container/zone headers and key component/service labels in this architecture diagram. Output plain text only (max 120 words).',
+                  role: 'user',
+                  parts: [
+                    { inlineData: { mimeType, data: cleanBase64 } },
+                    {
+                      text: 'Extract the main diagram title (first line) followed by the exact visible container/zone headers and key component/service labels in this architecture diagram. Output plain text only (max 120 words).',
+                    },
+                  ],
                 },
               ],
+              config: {
+                temperature: 0.0,
+                maxOutputTokens: 256,
+              },
             },
-          ],
-          config: {
-            temperature: 0.0,
-            maxOutputTokens: 256,
-          },
-        });
-        probedOcrText = (probeRes?.text || '').trim();
-        if (probedOcrText) {
-          const firstLine = probedOcrText
-            .split('\n')
-            .map((l) => l.replace(/^[#*-\s]+/, '').trim())
-            .find((l) => l.length >= 4 && l.length <= 90);
-          if (firstLine) probedTitle = firstLine;
-
-          const ocrCanonicalMatch = matchCanonicalMasterByKeywords(
-            `${lowerTitle} ${probedOcrText}`,
-            true
+            { maxRetries: 1, perAttemptTimeoutMs: 12000, totalBudgetMs: 14000, label: 'Vision Fast OCR Probe' }
           );
-          if (ocrCanonicalMatch) {
-            return ocrCanonicalMatch;
+          probedOcrText = (probeRes?.text || '').trim();
+          if (probedOcrText) {
+            const firstLine = probedOcrText
+              .split('\n')
+              .map((l) => l.replace(/^[#*-\s]+/, '').trim())
+              .find((l) => l.length >= 4 && l.length <= 90);
+            if (firstLine) probedTitle = firstLine;
+
+            const ocrCanonicalMatch = matchCanonicalMasterByKeywords(
+              `${lowerTitle} ${probedOcrText}`,
+              true
+            );
+            if (ocrCanonicalMatch) {
+              return ocrCanonicalMatch;
+            }
+            break;
           }
+        } catch {
+          // Non-fatal; proceed to deterministic 4-Tier VisionDecompiledPosterSpec synthesis
         }
-      } catch (probeErr) {
-        // Non-fatal; proceed to deterministic 4-Tier VisionDecompiledPosterSpec synthesis
       }
     }
 
@@ -602,46 +627,39 @@ CRITICAL XML & STYLING RULES:
 7. Output ONLY the raw valid XML document enclosed in <mxfile>...</mxfile>. Do not include conversational markdown commentary.`;
 
     let candidateText = '';
-    let usedModel = modelsToTry[0];
+    let usedModel = modelsToTry[0] || GEMINI_FLASH_MODEL_ID;
 
     for (const model of modelsToTry) {
       try {
         usedModel = model;
         const baseGenConfig = getGenConfig('vision') as Record<string, any>;
-        const supportsThinkingLevel =
-          model.includes('3.1') ||
-          model.includes('3.8') ||
-          model.includes('4-') ||
-          model.includes('omni');
-        const safeGenConfig = supportsThinkingLevel
-          ? baseGenConfig
-          : Object.fromEntries(
-              Object.entries(baseGenConfig).filter(([k]) => k !== 'thinkingConfig')
-            );
-
-        const response = await ai.models.generateContent({
-          model,
-          contents: [
-            {
-              role: 'user',
-              parts: [
-                {
-                  inlineData: {
-                    mimeType,
-                    data: cleanBase64,
+        const response = await generateContentWithRetry(
+          ai,
+          {
+            model,
+            contents: [
+              {
+                role: 'user',
+                parts: [
+                  {
+                    inlineData: {
+                      mimeType,
+                      data: cleanBase64,
+                    },
                   },
-                },
-                {
-                  text: `Decompile this architecture diagram for project "${probedTitle || projectName}" - "${useCaseName}".${probedOcrText ? ` Visible OCR labels detected: ${probedOcrText.slice(0, 500)}` : ''} Recreate all visual containers, service cards, and connection arrows in Draw.io XML.`,
-                },
-              ],
+                  {
+                    text: `Decompile this architecture diagram for project "${probedTitle || projectName}" - "${useCaseName}".${probedOcrText ? ` Visible OCR labels detected: ${probedOcrText.slice(0, 500)}` : ''} Recreate all visual containers, service cards, and connection arrows in Draw.io XML.`,
+                  },
+                ],
+              },
+            ],
+            config: {
+              systemInstruction: systemPrompt,
+              ...baseGenConfig,
             },
-          ],
-          config: {
-            systemInstruction: systemPrompt,
-            ...safeGenConfig,
           },
-        });
+          { maxRetries: 2, perAttemptTimeoutMs: 32000, totalBudgetMs: 42000, label: 'Vision XML Decompiler' }
+        );
         candidateText = response?.text || '';
         if (candidateText && candidateText.includes('<mx')) break;
       } catch (callErr: any) {
@@ -706,8 +724,8 @@ CRITICAL XML & STYLING RULES:
       componentCount: (healedSynth.xml.match(/<mxCell/g) || []).length,
       isFallback: false,
       isCertified: true,
-      modelUsed: 'gemini-2.5-flash + Zero-Template Vision Vector Synthesizer',
-      attribution: 'Gemini Flash OCR + Zero-Template Vector AST Synthesizer',
+      modelUsed: `${probedModelUsed} + Zero-Template Vision Vector Synthesizer`,
+      attribution: 'Gemini Frontier OCR + Zero-Template Vector AST Synthesizer',
       detectedTitle: effectiveTitle,
       validationReport: {
         valid: synthValidation.valid,

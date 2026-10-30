@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI, Type } from '@google/genai';
 import {
   getEffectiveGeminiApiKey,
-  getGeminiModelWithFallbacks,
+  resolveLatestGeminiModelChain,
   GEMINI_FLASH_LIVE_MODEL_ID
 } from '@/lib/geminiConfig';
+import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import {
   enforceGeminiRouteGuard,
   checkConversationalOrNonMutationIntent
@@ -80,52 +81,56 @@ export async function POST(req: NextRequest) {
             ? 5
             : 6;
 
-        const sysPrompt = `You are Google Omni 1.1, Principal Cloud & Enterprise Infographic Architect.
+        const sysPrompt = `You are Gemini 2.5 Pro, Principal Cloud & Enterprise Infographic Architect.
 Customize Infographic Blueprint #${meta.id} ("${meta.shortType}") for the user's prompt at abstraction level ${level}.
 User Prompt: "${userPrompt}"
 Blueprint Structure: ${meta.subtitle}
 Generate exactly ${itemCount} high-impact items tailored specifically to "${userPrompt}".
 Do NOT use generic placeholder text. Use concrete technologies, metrics, SLAs, and domain-specific terms matching "${userPrompt}".`;
 
-        const candidateModels = getGeminiModelWithFallbacks('live');
+        const candidateModels = await resolveLatestGeminiModelChain(ai, 'latest');
         let parsed: any = null;
         for (const candidateModel of candidateModels) {
           try {
-            const response = await ai.models.generateContent({
-              model: candidateModel,
-              contents: sysPrompt,
-              config: {
-                responseMimeType: 'application/json',
-                responseSchema: {
-                  type: Type.OBJECT,
-                  properties: {
-                    title: { type: Type.STRING },
-                    subtitle: { type: Type.STRING },
-                    leftHeader: { type: Type.STRING },
-                    rightHeader: { type: Type.STRING },
-                    takeaway: { type: Type.STRING },
-                    items: {
-                      type: Type.ARRAY,
+            const response = await generateContentWithRetry(
+              ai,
+              {
+                model: candidateModel,
+                contents: sysPrompt,
+                config: {
+                  responseMimeType: 'application/json',
+                  responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                      title: { type: Type.STRING },
+                      subtitle: { type: Type.STRING },
+                      leftHeader: { type: Type.STRING },
+                      rightHeader: { type: Type.STRING },
+                      takeaway: { type: Type.STRING },
                       items: {
-                        type: Type.OBJECT,
-                        properties: {
-                          code: { type: Type.STRING },
-                          title: { type: Type.STRING },
-                          badge: { type: Type.STRING },
-                          description: { type: Type.STRING },
-                          secondaryTitle: { type: Type.STRING },
-                          secondaryBadge: { type: Type.STRING },
-                          secondaryDescription: { type: Type.STRING },
-                          metricOrScore: { type: Type.STRING }
-                        },
-                        required: ['code', 'title', 'badge', 'description']
+                        type: Type.ARRAY,
+                        items: {
+                          type: Type.OBJECT,
+                          properties: {
+                            code: { type: Type.STRING },
+                            title: { type: Type.STRING },
+                            badge: { type: Type.STRING },
+                            description: { type: Type.STRING },
+                            secondaryTitle: { type: Type.STRING },
+                            secondaryBadge: { type: Type.STRING },
+                            secondaryDescription: { type: Type.STRING },
+                            metricOrScore: { type: Type.STRING }
+                          },
+                          required: ['code', 'title', 'badge', 'description']
+                        }
                       }
-                    }
-                  },
-                  required: ['title', 'subtitle', 'takeaway', 'items']
+                    },
+                    required: ['title', 'subtitle', 'takeaway', 'items']
+                  }
                 }
-              }
-            });
+              },
+              { maxRetries: 2, perAttemptTimeoutMs: 25000, totalBudgetMs: 35000, label: 'Infographic Blueprint Synthesis' }
+            );
             parsed = JSON.parse(response.text || '{}');
             if (parsed && parsed.title && Array.isArray(parsed.items) && parsed.items.length > 0) {
               engineUsed = candidateModel.endsWith('-live') || candidateModel.includes('-live-')

@@ -6,10 +6,6 @@ import { preflightVerifyAndHealXmlAcrossAll6Audits } from './preflightAuditEngin
 import { applyBlueprintVisualSystem } from './blueprintVisualSystem';
 import { createDiagram, saveDiagramVersion, getLatestDiagramVersion, updateDiagramArchitectureType } from './db';
 import { researchAndCompileDomainInfographic } from './research/deepDomainResearcher';
-import {
-  shouldUseCompositionalChainCompiler,
-  compileCompositionalArchitectureChain,
-} from './compositionalChainCompiler';
 
 interface UnifiedDiagramRequest {
   prompt: string;
@@ -60,8 +56,7 @@ export async function executeUnifiedDiagramPipeline(
 
   const cleanPrompt = (prompt || '').trim();
   const isTrivialPrompt = !cleanPrompt || 
-    cleanPrompt.length < 5 || 
-    /^nitin\s*\d*$/i.test(cleanPrompt) || 
+    cleanPrompt.length < 5  || 
     /^canvas\s*\d*$/i.test(cleanPrompt) || 
     /^default$/i.test(cleanPrompt) ||
     cleanPrompt === effectiveArchType ||
@@ -151,23 +146,8 @@ export async function executeUnifiedDiagramPipeline(
   const isAestheticPrompt = /^(?:make it (?:look )?(?:beautiful|clean|better|nice|modern|pretty|gorgeous|good|clear|sharp|crisp)|beautify|clean up|polish|improve styling|style it|fix layout|clean|prettier|crisp)[!.\s]*$/i.test(cleanPrompt);
 
   let customResult: CustomizationResult;
-  const candidateExistingXml = req.existingXml || (targetXml?.includes('data-compositional-chain="true"') ? targetXml : '');
-  const chainCompiled =
-    !isTrivialPrompt && shouldUseCompositionalChainCompiler(candidateExistingXml, cleanPrompt)
-      ? compileCompositionalArchitectureChain(candidateExistingXml, cleanPrompt)
-      : null;
 
-  if (chainCompiled) {
-    customResult = {
-      xml: chainCompiled.xml,
-      reasoning: `${chainCompiled.canvasDiff} ${chainCompiled.specDiff}`,
-      businessUsecase: `Compositional Architecture Evolution (${chainCompiled.versionTag}) synthesized by ${chainCompiled.detectedPersona}.`,
-      technicalUsecase: `${chainCompiled.canvasDiff} (${chainCompiled.specDiff})`,
-      isFallback: false,
-      modelUsed: 'gemini-3.8-flash + CompositionalChainCompiler',
-      attribution: `CompositionalChainCompiler (${chainCompiled.versionTag})`,
-    };
-  } else if (effectiveArchType === 'dynamic_tiered_infographic' && !isTrivialPrompt) {
+  if (effectiveArchType === 'dynamic_tiered_infographic' && !isTrivialPrompt) {
     const researched = await researchAndCompileDomainInfographic(contextualPrompt);
     customResult = {
       xml: researched.xml,
@@ -176,7 +156,7 @@ export async function executeUnifiedDiagramPipeline(
       technicalUsecase: researched.dossier.standardsAndProtocols.join(' • ') || 'Zero-collision calibrated widescreen 1600x1050 4-tier infographic.',
       isFallback: !researched.isLiveResearched,
       modelUsed: researched.modelUsed,
-      attribution: `Google Omni 1.1 + ${researched.modelUsed} 6-Dimension Domain Researcher`,
+      attribution: `Gemini 2.5 Pro + ${researched.modelUsed} 6-Dimension Domain Researcher`,
     };
   } else if (
     isTrivialPrompt ||

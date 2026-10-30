@@ -16,7 +16,7 @@ export function buildDataLineageXml(): string {
         <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:11px;color:#475569;font-weight:600;&quot;&gt;End-to-End Traceability: Ingestion Raw $\rightarrow$ Dataform / dbt Staging $\rightarrow$ Curated Marts $\rightarrow$ BigQuery Column Tracking $\rightarrow$ Looker BI Metrics&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="65" y="34" width="1050" height="18" as="geometry"/>
         </mxCell>
-        <mxCell id="top_gemini_badge" value="&lt;b style=&quot;font-size:14px;color:#2563EB;&quot;&gt;Gemini 3.8 Flash&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Lineage Engine&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="top_gemini_badge" value="&lt;b style=&quot;font-size:14px;color:#2563EB;&quot;&gt;Gemini 2.5 Flash&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Lineage Engine&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="1220" y="10" width="140" height="36" as="geometry"/>
         </mxCell>
 
@@ -104,7 +104,7 @@ export function buildDataLineageXml(): string {
           <mxGeometry x="1035" y="115" width="310" height="85" as="geometry"/>
         </mxCell>
 
-        <mxCell id="node_gemini_rag_grounding" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Gemini 3.8 Flash RAG Grounding Engine&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Natural Language Text-to-SQL Interface&lt;br&gt;&lt;b style=&quot;color:#1D4ED8;&quot;&gt;Lineage Trace:&lt;/b&gt; Verified against Dataplex Catalog&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="node_gemini_rag_grounding" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Gemini 2.5 Flash RAG Grounding Engine&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8.5px;color:#475569;&quot;&gt;Natural Language Text-to-SQL Interface&lt;br&gt;&lt;b style=&quot;color:#1D4ED8;&quot;&gt;Lineage Trace:&lt;/b&gt; Verified against Dataplex Catalog&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="1035" y="235" width="310" height="85" as="geometry"/>
         </mxCell>
 
@@ -145,7 +145,7 @@ export function buildDataLineageXml(): string {
         </mxCell>
 
         <!-- Footer Legend -->
-        <mxCell id="footer_legend" value="&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;&lt;b&gt;Lineage Trace Matrix:&lt;/b&gt; 🔵 Raw Bronze Tables &amp;nbsp;|&amp;nbsp; 🟢 Dataform Cleaned Silver &amp;nbsp;|&amp;nbsp; 🟣 Curated Gold Marts &amp;nbsp;|&amp;nbsp; 🟡 Looker Metrics &amp;amp; Gemini 3.8 Flash RAG &amp;nbsp;|&amp;nbsp; ⚡ Powered by Gemini 3.8 Flash&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="footer_legend" value="&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;&lt;b&gt;Lineage Trace Matrix:&lt;/b&gt; 🔵 Raw Bronze Tables &amp;nbsp;|&amp;nbsp; 🟢 Dataform Cleaned Silver &amp;nbsp;|&amp;nbsp; 🟣 Curated Gold Marts &amp;nbsp;|&amp;nbsp; 🟡 Looker Metrics &amp;amp; Gemini 2.5 Flash RAG &amp;nbsp;|&amp;nbsp; ⚡ Powered by Gemini 2.5 Flash&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="25" y="655" width="1335" height="30" as="geometry"/>
         </mxCell>
 

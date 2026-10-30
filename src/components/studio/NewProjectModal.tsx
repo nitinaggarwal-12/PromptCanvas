@@ -73,7 +73,7 @@ const STARTER_BLUEPRINTS = [
     id: '41',
     name: 'GenAI RAG Hub & Foundation Model Engine',
     tag: 'AI & Vertex',
-    desc: 'Vertex Vector Search (ScaNN), Gemini 4 Argon / 3.8 Flash / 3.1 Pro engine, Model Armor guardrails, and Document AI.',
+    desc: 'Vertex Vector Search (ScaNN), Gemini 2.5 Pro / 2.5 Flash / 3.1 Pro engine, Model Armor guardrails, and Document AI.',
     icon: Cpu,
     color: 'from-purple-600 to-pink-600'
   },

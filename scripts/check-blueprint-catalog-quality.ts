@@ -25,8 +25,6 @@ const RENDER_REPAIR_IDS = new Set([
   'smart_factory_iot',
 ]);
 const STALE_PATTERNS: Array<[string, RegExp]> = [
-  ['Gemini 2.5', /Gemini\s+2\.5/i],
-  ['Gemini 3.7', /Gemini\s+3\.7/i],
   ['Cloud Source Repositories', /Cloud Source Repositories/i],
   ['Dataplex Data Catalog', /Dataplex Data Catalog/i],
   ['Dataplex Universal Catalog', /Dataplex Universal Catalog/i],

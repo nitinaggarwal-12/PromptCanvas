@@ -321,56 +321,12 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Vector Database/gi, 'Vertex AI Vector Search &amp; Knowledge Graph');
   }
 
-  // 1b. Domain-Aware Dynamic Enterprise Governance Header Engine
-  let dynPersonas = 'Enterprise Architect, AI Systems Engineer';
-  let dynStakeholders = 'Governance Board, Platform SRE';
-  let dynDefinition = 'Unified Logical Flow, Technology Stack, Security Boundaries, &amp; Operational Lifecycles';
-  let dynSla = 'SLA: 99.99% Uptime | Zero-Trust Perimeter';
-  let dynArchName = 'Enterprise Architecture System';
-
-  if (/energy|ev|charging|microgrid|solar|battery|bess|v2g|ocpp|grid|iot|sensor/i.test(promptLower)) {
-    dynPersonas = 'Grid Architect, IoT Fleet SRE, Power Trading Specialist';
-    dynStakeholders = 'ISO/RTO Grid Authority, Utility Operations, Sustainability Lead';
-    dynDefinition = 'Decentralized Smart EV Fast-Charging, Sub-50ms Dynamic Load Balancing &amp; Microgrid Energy Trading';
-    dynSla = 'SLA: 99.999% Grid Availability | Telemetry &lt;100ms';
-    dynArchName = 'Decentralized Smart Grid &amp; EV Fleet Architecture';
-  } else if (/payment|fintech|banking|pci|ledger|fraud/i.test(promptLower)) {
-    dynPersonas = 'Payment Operator, Risk Officer, Compliance Analyst';
-    dynStakeholders = 'Central Bank Ops, Clearing House, Security Lead';
-    dynDefinition = 'Real-Time Financial Settlement, Multi-Tier Fraud Detection, &amp; ISO 20022 Ledger Flow';
-    dynSla = 'SLA: 99.999% Uptime | Latency &lt;50ms';
-    dynArchName = 'FinTech Financial Settlement Architecture';
-  } else if (/supply|logistics|warehouse|fleet|inventory|chain/i.test(promptLower)) {
-    dynPersonas = 'Supply Chain Architect, Logistics Fleet SRE, Depot Ops';
-    dynStakeholders = 'Global Supply Chain Board, Carrier Partners, SRE Lead';
-    dynDefinition = 'Autonomous Multi-Node Supply Routing, Telemetry Tracking, &amp; Fleet Orchestration';
-    dynSla = 'SLA: Real-Time Telemetry | 99.9% Uptime';
-    dynArchName = 'Autonomous Supply Chain Topology';
-  } else if (/genomic|fastq|variant|dna|gatk|literature|clinical|pharma|cancer/i.test(promptLower)) {
-    dynPersonas = 'Bioinformatician, Clinical AI Engineer, Data Modeler';
-    dynStakeholders = 'Regulatory Review Board, Chief Medical Officer, SRE Lead';
-    dynDefinition = 'HIPAA-Governed Literature Mining, Genomic Pipeline &amp; Agentic RAG Discovery';
-    dynSla = 'SLA: HIPAA / SOC2 Governed | GKE Autopilot';
-    dynArchName = 'Clinical & Genomic Cognitive Architecture';
-  } else if (/devops|ci\/cd|pipeline|polyrepo|argocd|gitops|snyk|sonarqube/i.test(promptLower)) {
-    dynPersonas = 'DevSecOps Lead, Platform SRE, Security Auditor';
-    dynStakeholders = 'Engineering Leadership, Compliance & Audit Board';
-    dynDefinition = 'Polyrepo DevSecOps CI/CD Pipeline with Automated SAST & GitOps Canary Promotion';
-    dynSla = 'SLA: Zero-Downtime Canary | 100% Audit Trail';
-    dynArchName = 'DevSecOps Polyrepo CI/CD Architecture';
-  } else if (/erd|dimensional|fact|dimension|schema|database|table/i.test(promptLower)) {
-    dynPersonas = 'Data Architect, Database Modeler, Analytics Engineer';
-    dynStakeholders = 'Enterprise Data Governance, Business Intelligence Lead';
-    dynDefinition = 'Dimensional Enterprise Star &amp; Normalized Schema with PK/FK Integrity &amp; Lineage';
-    dynSla = 'SLA: ACID Consistent | Read-Replica HA';
-    dynArchName = 'Dimensional Data Model (ERD)';
-  } else if (/rag|agent|cognitive|llm|embedding|vector|pinecone|pgvector/i.test(promptLower)) {
-    dynPersonas = 'Cognitive Systems Engineer, AI Chief Architect, Prompt Modeler';
-    dynStakeholders = 'AI Safety Board, Enterprise Product Leadership, SRE Lead';
-    dynDefinition = 'Agentic RAG Cognitive Loop with Vector Indexing, Tool Calling, & HITL Review';
-    dynSla = 'SLA: p99 < 350ms | Guarded Inference';
-    dynArchName = 'Cognitive Agentic RAG Architecture';
-  }
+  // 1b. Domain-Neutral Governance Header Metadata (derived directly from topic without regex industry spoofing)
+  const dynPersonas = 'System Architect, Platform Engineer';
+  const dynStakeholders = 'Architecture Review, Operations SRE';
+  const dynDefinition = `${topic || 'Enterprise'} Logical Flow, Service Boundaries &amp; Operational Telemetry`;
+  let dynSla = 'SLA: 99.99% Availability | Zero-Trust Perimeter';
+  const dynArchName = `${topicClean || 'Enterprise'} Architecture`;
 
   // 1c. Dynamic CIDR Extraction & Network Topology Hydration Engine
   const cidrMatches = Array.from(((userPrompt || '') + ' ' + (topic || '')).matchAll(/\b(\d{1,3}\.\d{1,3})\.(\d{1,3})\.(\d{1,3})\/(\d{1,2})\b/g));
@@ -421,301 +377,22 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     dynSla = `${dynSla} &amp;nbsp;|&amp;nbsp; &lt;span style='color:#38BDF8;font-weight:bold;'&gt;🔒 VPC CIDR: ${userVpcCidr}&lt;/span&gt;`;
   }
 
-  // 1d. Multi-Pillar Cloud FinOps & Cost Optimization Engine (Token, Egress, Storage, DR)
-  const isAiOrCloudArch = /rag|agent|langgraph|vertex|gemini|llm|streaming|serverless|microservices|gcp|aws/i.test(promptLower);
-  if (isAiOrCloudArch) {
-    dynSla = `${dynSla} &amp;nbsp;|&amp;nbsp; &lt;span style='background:rgba(245,158,11,0.2);border:1px solid #F59E0B;color:#FBBF24;font-size:10px;padding:2px 6px;border-radius:8px;'&gt;⚡ Total FinOps: Context Cache (-90% Token) | CDN Edge Egress (-75%) | Autoclass Storage | HA Regional DR&lt;/span&gt;`;
-  }
-
   const dynDefinitionXml = escapeXml(dynDefinition);
   const dynPersonasXml = escapeXml(dynPersonas);
   const dynStakeholdersXml = escapeXml(dynStakeholders);
 
-  const dynamicEnterpriseHeaderHtml = `&lt;table style='width:100%;border-collapse:collapse;color:#FFFFFF;font-family:Helvetica,Arial,sans-serif;padding:2px 8px;table-layout:fixed;'&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:14px;font-weight:bold;color:#F8FAFC;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;span style='color:#38BDF8;margin-right:6px;'&gt;&#10070; USE CASE:&lt;/span&gt;${topicCleanXml}&lt;/td&gt;&lt;td style='text-align:right;font-size:13px;font-weight:bold;color:#F1F5F9;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;${dynArchName} &lt;span style='color:#93C5FD;font-weight:normal;'&gt;(v1.0.0)&lt;/span&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background:rgba(16,185,129,0.25);border:1px solid #10B981;color:#34D399;font-size:11px;padding:2px 8px;border-radius:10px;'&gt;🟢 Production Approved&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Definition:&lt;/b&gt; ${dynDefinitionXml}&lt;/td&gt;&lt;td style='text-align:right;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Personas:&lt;/b&gt; ${dynPersonasXml}&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;b style='color:#E2E8F0;'&gt;Stakeholders:&lt;/b&gt; ${dynStakeholdersXml}&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#38BDF8;font-weight:bold;'&gt;${dynSla}&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;`;
+  const dynamicEnterpriseHeaderHtml = `&lt;table style='width:100%;border-collapse:collapse;color:#FFFFFF;font-family:Helvetica,Arial,sans-serif;padding:2px 8px;table-layout:fixed;'&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:14px;font-weight:bold;color:#F8FAFC;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;span style='color:#38BDF8;margin-right:6px;'&gt;&#10070; USE CASE:&lt;/span&gt;${topicCleanXml}&lt;/td&gt;&lt;td style='text-align:right;font-size:13px;font-weight:bold;color:#F1F5F9;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.25);width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;${escapeXml(dynArchName)} &lt;span style='color:#93C5FD;font-weight:normal;'&gt;(v1.0.0)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Scope:&lt;/b&gt; ${dynDefinitionXml}&lt;/td&gt;&lt;td style='text-align:right;font-size:11px;color:#CBD5E1;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#E2E8F0;'&gt;Personas:&lt;/b&gt; ${dynPersonasXml}&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;b style='color:#E2E8F0;'&gt;Stakeholders:&lt;/b&gt; ${dynStakeholdersXml}&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#38BDF8;font-weight:bold;'&gt;${dynSla}&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;`;
 
   updatedXml = updatedXml
     .replace(/(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar|macro_hdr_title|top_header|header_title|main_title|main_title_banner)"\s+value=")[\s\S]*?("\s+style="[^"]*"[^>]*vertex="1"[^>]*>)/gi, `$1${dynamicEnterpriseHeaderHtml}$2`);
 
-  // 2. Adapt technical nodes if generic
-  const promptTextLower = (userPrompt || topic || '').toLowerCase();
-  const isEcommerce = /e-?commerce|retail|storefront|cart|checkout|catalog|shopper|merchant|omnichannel|product catalog/i.test(promptTextLower + ' ' + (topic || ''));
-  const isGenomicPrompt = promptTextLower.includes('genomic') || promptTextLower.includes('fastq') || promptTextLower.includes('variant') || promptTextLower.includes('gatk') || promptTextLower.includes('dna') || promptTextLower.includes('bwa');
-  const isLiteratureMiningPrompt = promptTextLower.includes('literature') || promptTextLower.includes('patent') || promptTextLower.includes('clinical trial') || promptTextLower.includes('nsclc') || promptTextLower.includes('target discovery') || promptTextLower.includes('langchain') || promptTextLower.includes('bioinformatician');
-  const isEarlyDiscoveryPrompt = promptLower.includes('discovery') || promptLower.includes('aiddison') || promptLower.includes('notebook') || promptLower.includes('biologist') || promptLower.includes('hypothesis');
-  const isFintechPrompt = !isEcommerce && (promptLower.includes('fintech') || promptLower.includes('payment') || promptLower.includes('fraud') || promptLower.includes('ledger') || promptLower.includes('banking') || promptLower.includes('iso 20022') || promptLower.includes('pci') || promptLower.includes('apexpay'));
-
-  if (isEcommerce) {
-    updatedXml = updatedXml
-      .replace(/Data Engineering/g, 'Event-Driven E-Commerce Pub/Sub Ingestion')
-      .replace(/Application Development/g, 'Next.js &amp; Spring Boot Microservices Core')
-      .replace(/MLOps/g, 'Vertex AI Agentic RAG &amp; Recommendation Core')
-      .replace(/Project Planning/g, 'PCI-DSS &amp; Global E-Commerce Compliance')
-      .replace(/Dimensional Data Modeling \(ERD\)/g, 'E-Commerce Dimensional Schema &amp; Order Lineage')
-      .replace(/TRACK 1: DATA ENGINEERING &amp; DIMENSIONAL MODELING FLOW \(DFD\/ERD Lifecycle\)/g, 'TRACK 1: REAL-TIME CLICKSTREAM &amp; ORDER INGESTION PIPELINE')
-      .replace(/TRACK 2: APPLICATION DEVELOPMENT &amp; COGNITIVE ARCHITECTURE FLOW \(App Code Flow\)/g, 'TRACK 2: VERTEX AI AGENTIC PRODUCT RECOMMENDATION &amp; SEARCH')
-      .replace(/TRACK 3: MLOps LIFECYCLE \(ML\/AI TRAINING FLOW\)/g, 'TRACK 3: REAL-TIME FRAUD DETECTION &amp; CART ABANDONMENT ML PIPELINE')
-      .replace(/GKE Containers/g, 'Spring Boot E-Commerce Microservices (GKE)')
-      .replace(/API Gateway/g, 'Apigee &amp; Cloud Armor Storefront Gateway')
-      .replace(/Canary deployment on GKE/g, 'Automated Blue/Green Storefront Deployment')
-      .replace(/Human-in-the-Loop Governance/g, 'High-Risk Order Review &amp; Fraud Gate')
-      // ERD Specific Replacements (Complete 1-to-1 E-Commerce Mapping)
-      .replace(/Dim_Patient/g, 'Dim_Customer')
-      .replace(/Patient Key/g, 'Customer Key (PK)')
-      .replace(/Patient ID/g, 'Customer ID')
-      .replace(/Patient Type/g, 'Customer Loyalty Tier (Gold/VIP)')
-      .replace(/Demographics/g, 'Demographics &amp; Shipping Region')
-      .replace(/Disease History/g, 'Purchase History &amp; Lifetime Value')
-      .replace(/Dim_Physician/g, 'Dim_Product')
-      .replace(/Physician Key/g, 'Product SKU Key (PK)')
-      .replace(/Physician ID/g, 'Product SKU')
-      .replace(/Specialization/g, 'Category &amp; Taxonomy')
-      .replace(/Affiliation/g, 'Brand &amp; Merchant ID')
-      .replace(/Ranking/g, 'Rating &amp; Review Score')
-      .replace(/Location/g, 'Warehouse Fulfillment Center')
-      .replace(/Dim_Payer/g, 'Dim_Payment_Method')
-      .replace(/Payer Key/g, 'Payment Method Key (PK)')
-      .replace(/Payer ID/g, 'Payment Gateway ID')
-      .replace(/Payer Name/g, 'Gateway (Stripe/Adyen/PayPal)')
-      .replace(/Type/g, 'Payment Type (Credit/ApplePay/BNPL)')
-      .replace(/Tier/g, 'PCI-DSS Compliance Tier')
-      .replace(/Dim_Oncology_Product/g, 'Dim_Store_Channel')
-      .replace(/Product Key/g, 'Channel Key (PK)')
-      .replace(/Product ID/g, 'Channel ID')
-      .replace(/Product Name/g, 'Channel Name (Web/Mobile/POS)')
-      .replace(/Therapy Area/g, 'Region (US/EU/APAC)')
-      .replace(/Fact_Patient_Encounters/g, 'Fact_Orders')
-      .replace(/Encounter ID/g, 'Order ID (PK)')
-      .replace(/Diagnosis ID/g, 'Cart Session ID')
-      .replace(/Physician ID/g, 'Product SKU (FK)')
-      .replace(/Payer ID/g, 'Payment Method ID (FK)')
-      .replace(/Patient ID/g, 'Customer ID (FK)')
-      .replace(/Fact_Oncology_Insights/g, 'Fact_Cart_Events')
-      .replace(/Fact_Competitive_Intel/g, 'Fact_Payment_Transactions')
-      .replace(/Insight Type/g, 'Cart Action (Add/Remove/Abandon)')
-      .replace(/Row-Level Security on Patient Data/g, 'Row-Level Security on Customer &amp; Payment Data (PCI-DSS &amp; GDPR Compliant)');
-  } else if (isFintechPrompt) {
-    updatedXml = updatedXml
-      .replace(/Data Engineering/g, 'ISO 20022 Ingestion (Swift/SEPA)')
-      .replace(/Application Development/g, 'ML Fraud Risk Scoring')
-      .replace(/MLOps/g, 'Cloud Spanner Ledger Core')
-      .replace(/Project Planning/g, 'PCI-DSS &amp; SOC2 Governance')
-      .replace(/Dimensional Data Modeling \(ERD\)/g, 'ISO 20022 Schema &amp; Ledger')
-      .replace(/TRACK 1: DATA ENGINEERING &amp; DIMENSIONAL MODELING FLOW \(DFD\/ERD Lifecycle\)/g, 'TRACK 1: REAL-TIME ISO 20022 PAYMENT CLEARING PIPELINE')
-      .replace(/TRACK 2: APPLICATION DEVELOPMENT &amp; COGNITIVE ARCHITECTURE FLOW \(App Code Flow\)/g, 'TRACK 2: SUB-50ms ML FRAUD DETECTION &amp; ANOMALY SCORING')
-      .replace(/TRACK 3: MLOps LIFECYCLE \(ML\/AI TRAINING FLOW\)/g, 'TRACK 3: CLOUD SPANNER ALGORITHMIC LEDGER &amp; SETTLEMENT')
-      .replace(/GKE Containers/g, 'Payment Pods &amp; WAF')
-      .replace(/API Gateway/g, 'ISO 20022 Gateway')
-      .replace(/Canary deployment on GKE/g, 'Settlement Rollout Gate')
-      .replace(/Human-in-the-Loop Governance/g, 'Fraud &amp; AML Gate')
-      .replace(/Dim_Patient/g, 'Dim_Customer_Account')
-      .replace(/Fact_Patient_Encounters/g, 'Fact_Account_Transactions')
-      .replace(/Dim_Physician/g, 'Dim_Merchant')
-      .replace(/Dim_Payer/g, 'Dim_Card_Issuer');
-  } else if (isEarlyDiscoveryPrompt) {
-    updatedXml = updatedXml
-      .replace(/Manual Data Sources Card/g, 'Internal Assay Notes, PDFs &amp; Lab Summaries')
-      .replace(/Raw Scientific Literature &amp; PPT Decks/g, 'Gemini Notebook Enterprise Ingestion')
-      .replace(/Analyst Workspace Portal/g, 'Scientist &amp; Computational Biologist Portal')
-      .replace(/Asset Analysis &amp; Query Interface/g, 'Biological Hypothesis &amp; Target Exploration')
-      .replace(/Multi-Functional Data Synthesis/g, 'Gemini Notebook Enterprise Synthesis')
-      .replace(/Genomic &amp; Clinical Correlation Engine/g, 'Scattered Findings &amp; Unified Target Dossier')
-      .replace(/Unstructured Content Analysis/g, 'AIDDISON on Vertex AI (Virtual Screening)')
-      .replace(/PubMed PDF &amp; PPT Chunking Engine/g, 'Chemical Screening &amp; Synthesis Routes')
-      .replace(/Strategic Chatbot Reasoning/g, 'Reusable Agent Designer Monitoring')
-      .replace(/ReAct Natural Language Agent Interface/g, 'Continuous Signal Alerts &amp; Literature Monitor')
-      // ERD Specific Replacements (Explicitly Mapped to 5 Early Discovery Workflow Steps)
-      .replace(/Dim_Patient/g, 'Dim_Biological_Target (Step 1)')
-      .replace(/Patient Key/g, 'Target ID (PK)')
-      .replace(/Patient Type/g, 'Gene Symbol &amp; Target Name')
-      .replace(/Demographics/g, 'Disease Association')
-      .replace(/Disease History/g, 'AIDDISON Screening Status')
-      .replace(/Dim_Physician/g, 'Dim_Lab_Assay_Notes (Step 3)')
-      .replace(/Physician Key/g, 'Lab Asset ID (PK)')
-      .replace(/Specialization/g, 'Assay Note / Lab PDF Type')
-      .replace(/Affiliation/g, 'Gemini Notebook Dossier ID')
-      .replace(/Ranking/g, 'Synthesis Status')
-      .replace(/Location/g, 'Lab Facility Location')
-      .replace(/Dim_Payer/g, 'Dim_Literature_Corpus (Step 2)')
-      .replace(/Payer Key/g, 'Doc DOI / Patent ID (PK)')
-      .replace(/Payer Name/g, 'Deep Research Source')
-      .replace(/Type/g, 'Doc Type (Paper/Patent/Abstract)')
-      .replace(/Tier/g, 'Scientific Impact Tier')
-      .replace(/Dim_Oncology_Product/g, 'Dim_Chemical_Compound (Step 4)')
-      .replace(/Product Key/g, 'Compound SMILES ID (PK)')
-      .replace(/Therapy Area/g, 'AIDDISON Affinity Score')
-      .replace(/Fact_Oncology_Insights/g, 'Fact_AIDDISON_Screening (Step 4)')
-      .replace(/Fact_Patient_Encounters/g, 'Fact_Virtual_Synthesis_Routes (Step 4)')
-      .replace(/Encounter ID/g, 'Synthesis Route ID')
-      .replace(/Diagnosis ID/g, 'Reaction Steps Count')
-      .replace(/Physician ID/g, 'Lab Asset ID')
-      .replace(/Payer ID/g, 'Doc DOI ID')
-      .replace(/Patient ID/g, 'Target ID')
-      .replace(/Fact_Competitive_Intel/g, 'Fact_Monitoring_Alerts (Step 5)')
-      .replace(/Insight Type/g, 'Agent Designer Signal Confidence')
-      .replace(/Row-Level Security on Patient Data/g, 'IP &amp; Target Molecule Protection')
-      // Product Vendor Model & Vendor Service Updates (Latest GCP & Enterprise LLM updates)
-      .replace(/Gemini 1\.5 Pro/g, 'Gemini 3.1 Pro')
-      .replace(/Gemini 3\.6 Pro/g, 'Gemini 3.1 Pro')
-      .replace(/Vertex AI Gemini API/g, 'Gemini 3.8 Flash LLM &amp; Notebook Enterprise')
-      .replace(/Anthos Service Mesh/gi, 'Google Cloud Service Mesh (Managed Istio)')
-      .replace(/Cloud Life Sciences API/gi, 'Genomics on Google Cloud Batch &amp; GKE Spot')
-      .replace(/Cloud Source Repositories/gi, 'GitHub Enterprise &amp; Cloud Build Triggers')
-      .replace(/Cloud SQL for PostgreSQL/gi, 'AlloyDB &amp; Cloud SQL HA PostgreSQL')
-      .replace(/AWS OpenSearch/gi, 'Amazon OpenSearch Serverless Vector Engine')
-      // Prompt & Callout Cleanliness (Flexible regex matching HTML entities and newlines)
-      .replace(/Compare market trends[\s\S]*?across functional silos/gi, 'Explore biological targets &amp; AIDDISON virtual synthesis')
-      .replace(/Oncology Trends/gi, 'Target Hypothesis &amp; Literature')
-      .replace(/Total Sales in Q1/gi, 'Virtual Chemical Screening &amp; Binding Affinity')
-      .replace(/Financial Analyst/gi, 'Research Scientist &amp; Computational Biologist')
-      .replace(/Tool 1: Enterprise Knowledge/gi, 'Tool 1: Deep Research &amp; Gemini Notebook')
-      .replace(/Tool 2: Business Analytics/gi, 'Tool 2: AIDDISON &amp; Agent Designer Engine')
-      .replace(/Execute SQL Queries/gi, 'Virtual Chemical Screening')
-      .replace(/Structured Data Access/gi, 'Predict Synthesis Routes &amp; Costs')
-      .replace(/Queries secured GCS Data Corpus/gi, 'Deep Research: Papers, Patents &amp; Abstracts')
-      .replace(/Automatic Embedding &amp; Retrieval/gi, 'Gemini Notebook Enterprise Dossier Synthesis')
-      // Sequence Diagram Specific Replacements for Early Discovery
-      .replace(/RLY IDENTIFIC ION PERSON SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM/g, 'EARLY DISCOVERY &amp; TARGET IDENTIFICATION SECURE MANAGED ECOSYSTEM')
-      .replace(/Rly Identific Ion Person Platform - RLY IDENTIFIC ION PERSON RLY IDENTIFIC ION PERSON COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM\./g, 'Early Discovery &amp; Target Identification — Complete End-to-End Macro Sequence Diagram')
-      .replace(/ITACS Integrated Insights Platform - COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM\./g, 'Early Discovery &amp; Target Identification — Complete End-to-End Macro Sequence Diagram')
-      .replace(/Early Discovery &amp; Target Identification Platform - Early Discovery &amp; Target Identification Early Discovery &amp; Target Identification COMPLETE END-TO-END DYNAMIC SEQUENCE DIAGRAM\./g, 'Early Discovery &amp; Target Identification — Complete End-to-End Macro Sequence Diagram')
-      .replace(/Sends single Oncology prompt:[\s\S]*?recent sales figures'/gi, "Sends biological target prompt:&lt;br&gt;&lt;span style='font-size:10px;font-weight:normal;'&gt;'Define NSCLC hypothesis &amp; explore target dossiers'&lt;/span&gt;")
-      .replace(/THOUGHT: 'I need multi-silo context.'/gi, "THOUGHT: 'Need PubMed, patents &amp; assay notes.'")
-      .replace(/ACTION: Call RAG Tool/gi, 'ACTION: Call Deep Research &amp; Notebook Enterprise')
-      .replace(/Send call with 'Automatic Embedding &amp; Ret Tool'[\s\S]*?centientext\)\)/gi, 'Executes Landscape Search &amp; Ingest (Scan millions of papers/patents &amp; synthesize assay notes)')
-      .replace(/THOUGHT: 'I have context, but need recent sales figures.'/gi, "THOUGHT: 'Have target dossier. Need AIDDISON screening.'")
-      .replace(/ACTION: Query BigQuery Analytics/gi, 'ACTION: Call AIDDISON Virtual Screening')
-      .replace(/Send call logs; ML Inference log def[\s\S]*?RAG query/gi, 'Executes AIDDISON Chemical Screening (Screen chemical possibilities &amp; predict synthesis routes)')
-      .replace(/Tool 1: Managed RAG[\s\S]*?Conv\)/gi, 'Tool 1: Deep Research &amp; Gemini Notebook')
-      .replace(/Tool 2: BigQuery Analytics[\s\S]*?\)/gi, 'Tool 2: AIDDISON &amp; Agent Designer')
-      .replace(/BigQuery Analytics \(SQL\)/gi, 'AIDDISON &amp; Agent Designer')
-      .replace(/GCS Secure Bucket[\s\S]*?Corpus\)/gi, 'GCS Lab Assay PDFs &amp; Target Corpus')
-      .replace(/Oncology Analyst/g, 'Research Scientist &amp; Bioinformatician')
-      .replace(/Deck Studio API/g, 'AIDDISON Virtual Screening API')
-      .replace(/Global Market Radar API/g, 'Deep Research Landscape API')
-      .replace(/Requests PPT deck/g, 'Frame biological research hypothesis &amp; target exploration')
-      .replace(/synthesized request and request flow/g, 'Deploy Deep Research agent across millions of papers &amp; patents')
-      .replace(/Generate PPT deck/g, 'Synthesize assay notes &amp; lab PDFs in Gemini Notebook Enterprise')
-      .replace(/interactive visualizabcn/g, 'Screen billions of chemicals &amp; predict synthesis routes in AIDDISON')
-      .replace(/pushes to interface/g, 'Deploy reusable Agent Designer literature monitoring agent')
-      // Data & AI Pipeline Specific Replacements for Early Discovery
-      .replace(/Rly Identific Ion Person - Data &amp; AI Pipeline/g, 'Early Discovery &amp; Target Identification — Data &amp; AI Pipeline')
-      .replace(/RLY IDENTIFIC ION PERSON SECURE GOVERNED CLOUD TENANT/g, 'EARLY DISCOVERY &amp; TARGET IDENTIFICATION SECURE GOVERNED CLOUD TENANT')
-      .replace(/Customer\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*Churn\s*Features/gi, 'Target Dossier &amp;&lt;br&gt;Binding Affinity Features')
-      .replace(/Sales\s*Prediction\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*Features/gi, 'AIDDISON Chemical&lt;br&gt;Screening Features')
-      .replace(/Funcriogy/g, 'Functional Research Areas')
-      .replace(/Salesforce\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*cloud\s*App/gi, 'PubMed REST API &amp;&lt;br&gt;Patent Ingest')
-      // Catch-all Generic Sales / Lead Scoring DFD Replacements for Early Discovery
-      .replace(/Lead Scoring &amp; Prioritization/gi, 'Target Prioritization &amp; Binding Affinity Engine')
-      .replace(/Business Rules Engine, Financial Impact Rating/gi, 'AIDDISON Virtual Screening &amp; Target Validation')
-      .replace(/AI\/ML Profiling Engine/gi, 'Literature &amp; Assay Target Extraction Engine')
-      .replace(/Predictive Scoring, Sentiment Analysis/gi, 'Gemini Notebook Enterprise Target Synthesis')
-      .replace(/Market Segmentation &amp; Analytics/gi, 'Target Landscape &amp; Deep Research Analytics')
-      .replace(/Cluster Analysis, Trend Scoring/gi, 'Patent &amp; Paper Signal Clustering')
-      .replace(/Manual Input &amp; CRM Feeds/gi, 'Lab Assay Notes &amp; Assay PDF Feeds')
-      .replace(/Salesforce &amp; User-Provided Data/gi, 'Internal GxP Assay Documents &amp; Lab Notes')
-      .replace(/Market Research, News, Social/gi, 'PubMed API, USPTO Patents &amp; Congress Abstracts')
-      // Secure Deployment Map Replacements for Early Discovery
-      .replace(/Google Cloud Project \(ITACS Platform Production\)/g, 'Google Cloud Project (Early Discovery &amp; Target Identification)')
-      .replace(/Rly Identific Ion Person Production Cloud Architecture/g, 'Google Cloud Project (Early Discovery &amp; Target Identification)')
-      .replace(/Rly Identific Ion Person Primary/gi, 'EARLY DISCOVERY &amp; TARGET IDENTIFICATION Primary')
-      .replace(/Rly Identific Ion Person Agent\s*<br\s*\/?>\s*Orchestrator\s*<br\s*\/?>\s*\(GKE Pod\)/gi, 'Scientific Discovery Orchestrator &amp;&lt;br&gt;Agent Designer&lt;br&gt;(GKE Cluster)')
-      .replace(/Rly Identific Ion Person/g, 'Early Discovery &amp; Target Identification')
-      .replace(/Zone 1: The Edge \(External Traffic\)/g, 'Zone 1: Scientific Web Edge &amp; Ingress (External)')
-      .replace(/Public Internet\s*<br\s*\/?>\s*Traffic/gi, 'Research Scientist &amp;&lt;br&gt;Bioinformatician Traffic')
-      .replace(/ITACS Primary VPC Network/g, 'Early Discovery Primary VPC Network')
-      .replace(/ITACS Agent Orchestrator \(GKE Pod\)/g, 'Scientific Discovery Orchestrator (GKE Cluster)')
-      .replace(/Vertex AI Vector Search Index/g, 'Vertex AI Vector Search (pgvector Target Embeddings)')
-      .replace(/Vertex AI Training Cluster/g, 'AIDDISON Virtual Screening Engine (Vertex AI)')
-      .replace(/Vertex AI Gemini API/g, 'Gemini 3.8 Flash LLM &amp; Notebook Enterprise')
-      // DevOps & CI/CD Pipeline Replacements for Early Discovery
-      .replace(/ITACS Governing Cloud Tenant \(Managed Services\)/g, 'Early Discovery &amp; Target Identification Cloud Tenant')
-      .replace(/Rly Identific Ion Person Governing Cloud Tenant/gi, 'Early Discovery &amp; Target Identification Cloud Tenant')
-      .replace(/ITACS SECURE MANAGED GEMINI ENTERPRISE ECOSYSTEM BOUNDARY/g, 'EARLY DISCOVERY SECURE MANAGED GEMINI ECOSYSTEM BOUNDARY')
-      .replace(/Project\s*<br\s*\/?>\s*Planning/gi, 'Hypothesis Framing &amp;&lt;br&gt;Target Goal Setting')
-      .replace(/Dimensional\s*<br\s*\/?>\s*Data Modeling\s*<br\s*\/?>\s*\(ERD\)/gi, 'Assay Data Model &amp;&lt;br&gt;Target Schema (ERD)')
-      .replace(/Data Engineering/g, 'Assay Data Ingestion Engine')
-      .replace(/Application\s*(?:<br\s*\/?>)?\s*Development/gi, 'AIDDISON Screening &amp;&lt;br&gt;Agent Designer')
-      .replace(/MLOps/g, 'MLOps Target &amp; Binding Affinity')
-      // Governance & State Machine Replacements for Early Discovery
-      .replace(/DATA VETTING/gi, 'ASSAY DATA VETTING')
-      .replace(/Ethical Sourcing/gi, 'GxP &amp; IP Sourcing')
-      .replace(/MODEL CREATED/gi, 'TARGET HYPOTHESIS CREATED')
-      .replace(/PROMPT DESIGNED/gi, 'TARGET DOSSIER DEFINED')
-      .replace(/MODEL REGISTRY/gi, 'TARGET &amp; COMPOUND REGISTRY')
-      .replace(/Bias &amp;amp;&lt;br&gt;Fairness Audit/g, 'AIDDISON Binding Affinity &amp;amp;&lt;br&gt;Safety Audit')
-      .replace(/Bias &amp;amp; Fair/g, 'AIDDISON Safety')
-      // Unified System View Replacements for Early Discovery
-      .replace(/ITACS Integrated Insights Platform/gi, 'EARLY DISCOVERY &amp; TARGET IDENTIFICATION PLATFORM')
-      .replace(/Rly Identific Ion Person Integrated Insights Platform/gi, 'EARLY DISCOVERY &amp; TARGET IDENTIFICATION PLATFORM')
-      .replace(/Dim_Patient/gi, 'Dim_Target')
-      .replace(/Fact_Clinical/gi, 'Fact_Assay_Binding');
-  }
-
-  const isECommercePrompt = promptLower.includes('e-commerce') || promptLower.includes('ecommerce') || promptLower.includes('supply chain') || promptLower.includes('fulfillment') || promptLower.includes('stripe') || promptLower.includes('inventory') || promptLower.includes('warehouse') || promptLower.includes('order');
-
-  if (isECommercePrompt) {
-    updatedXml = updatedXml
-      .replace(/Silo Analysts/g, 'Customer &amp; Operations')
-      .replace(/Google Workspace Connectors/g, 'API Gateway')
-      .replace(/GCS Secure Bucket/g, 'Inventory Service (Real-Time)')
-      .replace(/Airflow Scheduler/g, 'Event Stream / EventBridge')
-      .replace(/dbt Transformation/g, 'Autonomous Inventory Allocation')
-      .replace(/BigQuery Feature Store/g, 'Stripe Payment Gateway')
-      .replace(/ETL Audit Log/g, 'Fulfillment Audit Log')
-      .replace(/ML Engineer/g, 'Supply Chain Operations')
-      .replace(/Model Training \(Vertex AI\)/g, 'Predictive Reordering Service')
-      .replace(/Model Registry/g, 'Fulfillment Node Registry')
-      .replace(/Governance Board \(Human-in-the-Loop\)/g, 'Logistics Operations Board')
-      .replace(/GKE Inference Endpoint/g, 'GPS Telemetry Service')
-      .replace(/Monitoring/g, 'Carrier Delivery Monitor')
-      .replace(/ML Inference Log/g, 'Shipment &amp; GPS Telemetry Log')
-      .replace(/Oncology Analyst/g, 'Customer / Buyer')
-      .replace(/User Interface/g, 'E-Commerce Storefront App')
-      .replace(/Agent Orchestrator \(Vertex AI\)/g, 'Supply Chain Agent Orchestrator')
-      .replace(/Deck Studio API/g, 'Carrier Shipping API')
-      .replace(/Global Market Radar API/g, 'Real-Time GPS Tracking API')
-      .replace(/Requests PPT deck/g, 'Place E-Commerce Order')
-      .replace(/Requests request/g, 'Verify Stock &amp; Authorize Payment')
-      .replace(/Orchestrator calls Deck Studio API with synthesized report and request/g, 'Allocate Warehouse Stock &amp; Assign Logistics Node')
-      .replace(/Orchestrator calls Global Market Radar API, generates interactive visualization/g, 'Dispatch Shipment &amp; Stream GPS Telemetry')
-      .replace(/Analysts upload raw docs/g, 'Customer places order')
-      .replace(/Executes logic \(Clean, Normalize, Aggregate, Encode\)/g, 'Verify inventory &amp; allocate warehouse stock')
-      .replace(/Stores model-ready features/g, 'Authorize payment &amp; emit OrderPlaced event')
-      .replace(/Pushes metadata \(lineage, job status, row counts\)/g, 'Log order fulfillment &amp; audit status')
-      .replace(/Initiates training/g, 'Trigger predictive stock reorder')
-      .replace(/Pulls features from BigQuery/g, 'Query inventory levels &amp; lead times')
-      .replace(/Executes training, generates Metrics/g, 'Run Gemini predictive reorder analysis')
-      .replace(/Provides Human-in-the-Loop Approval/g, 'Approve purchase order for supplier')
-      .replace(/Deployment Pipeline pulls model/g, 'Dispatch purchase order to logistics')
-      .replace(/Logs inference and drift/g, 'Track carrier delivery SLA &amp; status')
-      .replace(/Pushes logs to ML Inference Log/g, 'Stream delivery status to BigQuery');
-  }
-
-  // Conceptual Diagram Specific Replacements
-  if (isLiteratureMiningPrompt || isGenomicPrompt || isEarlyDiscoveryPrompt) {
-    updatedXml = updatedXml
-      .replace(/Legacy SAP S\/4HANA/gi, 'PubMed REST API &amp; USPTO Patent Ingest')
-      .replace(/Veeva Vault Clinical/gi, 'Internal GxP Clinical Trial Repository')
-      .replace(/Azure API Management/gi, 'LangChain Agentic API Gateway')
-      .replace(/Ping Identity OAuth 2\.0/gi, 'IP Protection &amp; Data Encryption Vault')
-      .replace(/Drug Discovery Cluster/gi, 'Vertex AI Vector Search (pgvector Embeddings)')
-      .replace(/Clinical Trial &amp; Regulatory Cluster/gi, 'Literature Mining &amp; Document Summarization Engine')
-      .replace(/Commercial &amp; Supply Chain Cluster/gi, 'Target &amp; Pathway Consensus Identification Service')
-      .replace(/On-Prem GxP ERP/g, 'Scientific Literature &amp; Patent Ingest')
-      .replace(/eTMF &amp; Submissions Gateway/g, 'GxP Trial Protocol Gateway')
-      .replace(/GxP Part 11 Compliance Enforcement/g, 'LangChain Agentic API Router')
-      .replace(/HIPAA\/PKCE Anonymization/g, 'IP Protection &amp; Data Anonymization')
-      .replace(/Vertex AI, SAS 9\.4 Analytics/g, 'Vertex AI Vector Search &amp; Cosine Index')
-      .replace(/HealthLake, Veeva Connect/g, 'LLM Literature Summarization Engine')
-      .replace(/SAP Batch Reconciler/g, 'Pathway Consensus Identification')
-      .replace(/Genomic Data Lake/g, 'PubMed &amp; Patent Data Lake')
-      .replace(/Clinical Data Warehouse/g, 'NSCLC Clinical Target Repository');
-  } else {
-    const domainTitle = topic || 'Enterprise';
+  // 2. Domain-Neutral Legacy Template Placeholder Scrubber (zero hardcoded industry/vertical regex spoofing)
+  const domainTitle = escapeXml(topic || 'Enterprise');
+  const isHealthcareOrPharma = /\b(healthcare|patient|hospital|medical|pharma|oncology|clinical|biotech|drug discovery|clinical trial)\b/i.test(promptLower);
+  if (!isHealthcareOrPharma) {
     updatedXml = updatedXml
       .replace(/Legacy SAP S\/4HANA/gi, `${domainTitle} Core Systems &amp; API Ingress`)
       .replace(/Veeva Vault Clinical/gi, `${domainTitle} Data Repository &amp; Storage`)
-      .replace(/Azure API Management/gi, `${domainTitle} API Gateway &amp; Router`)
       .replace(/Ping Identity OAuth 2\.0/gi, `${domainTitle} Zero-Trust Identity &amp; Auth`)
       .replace(/Drug Discovery Cluster/gi, `${domainTitle} Core Processing &amp; AI Engine`)
       .replace(/Clinical Trial &amp; Regulatory Cluster/gi, `${domainTitle} Transaction &amp; Business Logic`)
@@ -733,265 +410,57 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/PubMed REST API/gi, `${domainTitle} Data Ingress API`)
       .replace(/PubMed &amp; Patent Data Lake/gi, `${domainTitle} Data Lake`)
       .replace(/NSCLC Clinical Target Repository/gi, `${domainTitle} Data Repository`)
-      .replace(/Oncology Scenario Planning/gi, `${domainTitle} Operations &amp; Strategy Planning`)
-      .replace(/Oncology Analyst/gi, `${domainTitle} Operations Analyst`)
-      .replace(/Review Drug Launch Strategy/gi, `Review ${domainTitle} Operational Strategy`)
-      .replace(/Drug Launch Strategy/gi, `${domainTitle} Operational Strategy`)
-      .replace(/Biomarker/gi, `Data Attribute`)
-      .replace(/Oncology/gi, domainTitle);
-  }
-
-  if (isLiteratureMiningPrompt) {
-    updatedXml = updatedXml
-      .replace(/\[1\]\s*User Client[^<]*/gi, '[1] Researcher Dashboard &amp; Query Portal (Bioinformatician UI)')
-      .replace(/\[1\]\s*External API Clients[^<]*/gi, '[1] PubMed REST API &amp; USPTO Patent Gateway')
-      .replace(/\[1\]\s*External Data Sources[^<]*/gi, '[1] PubMed, Patents &amp; Internal Clinical Trial Feeds')
-      .replace(/\[1\]\s*Developer Workstation[^<]*/gi, '[1] Lead Bioinformatician Workstation')
-      .replace(/\[2\]\s*Cloud Armor[^<]*/gi, '[2] Cloud Armor WAF (IP Protection &amp; Ingress Firewall)')
-      .replace(/\[2\]\s*Kinesis Data Streams[^<]*/gi, '[2] Literature &amp; Patent Ingestion Stream (Kinesis)')
-      .replace(/\[3\]\s*Global HTTPS Load Balancer[^<]*/gi, '[3] Global HTTPS Load Balancer (API Ingress Gateway)')
-      .replace(/\[3\]\s*AWS Lake Formation[^<]*/gi, '[3] GxP Data Lakehouse Governance (AWS Lake Formation)')
-      .replace(/\[4\]\s*Cloud CDN[^<]*/gi, '[4] Cloud CDN (Cached Literature Summaries)')
-      .replace(/\[4\]\s*S3 Landing Zone[^<]*/gi, '[4] S3 Raw Literature &amp; Patent Landing Zone')
-      .replace(/\[5\]\s*Cloud Run Frontend[^<]*/gi, '[5] Unstructured PDF &amp; Patent Document Chunking Engine')
-      .replace(/\[5\]\s*AWS Glue ETL Processing[^<]*/gi, '[5] Unstructured Text Summarization Engine (AWS Glue)')
-      .replace(/\[6\]\s*Cloud Run Backend API[^<]*/gi, '[6] LangChain Agentic Prompt Orchestrator &amp; ReAct Reasoner')
-      .replace(/\[6\]\s*S3 Processed Zone[^<]*/gi, '[6] S3 Processed Embeddings &amp; Vector Zone')
-      .replace(/\[7\]\s*Cloud SQL[^<]*/gi, '[7] Vertex AI Vector Search Index (pgvector / Cosine Embeddings)')
-      .replace(/\[7\]\s*S3 Curated Zone[^<]*/gi, '[7] S3 Curated Target &amp; Pathway Data Marts')
-      .replace(/\[8\]\s*Cloud Storage[^<]*/gi, '[8] Fine-Tuned Medical LLM (Gemini 3.8 Flash)')
-      .replace(/\[8\]\s*Glue Data Catalog[^<]*/gi, '[8] NSCLC Target Catalog (AWS Glue)')
-      .replace(/\[9\]\s*Secret Manager[^<]*/gi, '[9] Target &amp; Pathway Consensus Evaluation Engine')
-      .replace(/\[9\]\s*Amazon Athena[^<]*/gi, '[9] Amazon Athena (In-Silico Target Query Engine)')
-      .replace(/\[10\]\s*Cloud Pub\/Sub[^<]*/gi, '[10] Patent &amp; Literature Discrepancy Analysis Service')
-      .replace(/\[10\]\s*Redshift Spectrum[^<]*/gi, '[10] Redshift Data Warehouse (NSCLC Target Analytics)')
-      .replace(/\[11\]\s*Cloud Logging[^<]*/gi, '[11] Automated GxP Audit Trail Ledger (21 CFR Part 11 Compliance)')
-      .replace(/\[11\]\s*AWS IAM &amp; Policies[^<]*/gi, '[11] IP Protection &amp; IAM Access Control Policies')
-      .replace(/\[12\]\s*Cloud Trace[^<]*/gi, '[12] In-Silico Target Screening Strategy Evaluator')
-      .replace(/\[13\]\s*Cloud Security Command Center[^<]*/gi, '[13] Intellectual Property Protection &amp; Privacy Vault');
-  } else if (isGenomicPrompt) {
-    updatedXml = updatedXml
-      .replace(/\[1\]\s*User Client[^<]*/gi, '[1] Illumina NovaSeq Sequencing (RAW FASTQ Ingestion)')
-      .replace(/\[1\]\s*External API Clients[^<]*/gi, '[1] Illumina NovaSeq Sequencing (RAW FASTQ Ingestion)')
-      .replace(/\[1\]\s*Developer Workstation[^<]*/gi, '[1] Illumina NovaSeq Sequencing (RAW FASTQ Ingestion)')
-      .replace(/\[2\]\s*Cloud Armor[^<]*/gi, '[2] Cloud Armor WAF (Layer 7 DDoS Protection)')
-      .replace(/\[2\]\s*Source Code Repository[^<]*/gi, '[2] GCP Artifact Registry (FASTQ Raw Storage)')
-      .replace(/\[3\]\s*Global HTTPS Load Balancer[^<]*/gi, '[3] Global Load Balancer &amp; Ingress Gateway')
-      .replace(/\[3\]\s*CI\/CD Workflow Engine[^<]*/gi, '[3] Cloud Pub/Sub Event Orchestrator (FASTQ Triggers)')
-      .replace(/\[4\]\s*Cloud CDN[^<]*/gi, '[4] Cloud Pub/Sub Event Orchestrator (FASTQ Triggers)')
-      .replace(/\[4\]\s*Test &amp; Quality Cluster[^<]*/gi, '[4] GKE Quality Gate (FASTQ Validation &amp; QC)')
-      .replace(/\[5\]\s*Cloud Run Frontend[^<]*/gi, '[5] Cloud Storage RAW FASTQ Data Bucket (KMS Encrypted)')
-      .replace(/\[5\]\s*Security Scan Suite[^<]*/gi, '[5] SAST &amp; Trivy Scanner (Container &amp; Pipeline Guard)')
-      .replace(/\[6\]\s*Cloud Run Backend API[^<]*/gi, '[6] GKE Secondary Analysis Compute (BWA-MEM &amp; GATK)')
-      .replace(/\[6\]\s*Container Build &amp; Scan[^<]*/gi, '[6] GKE Secondary Analysis Compute (BWA-MEM &amp; GATK)')
-      .replace(/\[7\]\s*Cloud SQL[^<]*/gi, '[7] BigQuery Genomics Data Lakehouse (VCF &amp; Variant Store)')
-      .replace(/\[7\]\s*Container Registry[^<]*/gi, '[7] BigQuery Genomics Data Lakehouse (VCF &amp; Variant Store)')
-      .replace(/\[8\]\s*Cloud Storage[^<]*/gi, '[8] Cloud KMS (Customer-Managed Encryption Keys)')
-      .replace(/\[8\]\s*GitOps Deployment Sync[^<]*/gi, '[8] GitOps Controller (ArgoCD Pipeline Deployment)')
-      .replace(/\[9\]\s*Secret Manager[^<]*/gi, '[9] Google Secret Manager (API Credentials)')
-      .replace(/\[9\]\s*Staging Kubernetes Cluster[^<]*/gi, '[9] GKE Staging Sequencing Cluster')
-      .replace(/\[10\]\s*Cloud Pub\/Sub[^<]*/gi, '[10] Cloud Pub/Sub Secondary Event Queue')
-      .replace(/\[10\]\s*Production Kubernetes Cluster[^<]*/gi, '[10] GKE Production Variant Calling Cluster')
-      .replace(/\[11\]\s*Cloud Logging[^<]*/gi, '[11] Cloud Monitoring &amp; Automated Rollback Alert')
-      .replace(/\[11\]\s*Performance &amp; Canary Monitoring[^<]*/gi, '[11] Cloud Monitoring &amp; Automated Rollback Alert')
-      .replace(/\[12\]\s*Automated Rollback Trigger[^<]*/gi, '[12] Automated Rollback Trigger (Canary Health Workflow)');
-  } else {
-    updatedXml = updatedXml
-      .replace(/\[1\] External Data Sources/g, `[1] ${topic} Data Feeds`)
-      .replace(/\[2\] Kinesis Data Streams/g, `[2] ${topic} Kinesis Real-Time Stream`)
-      .replace(/\[3\] AWS Lake Formation/g, `[3] ${topic} Lakehouse Governance`)
-      .replace(/\[4\] S3 Landing Zone/g, `[4] ${topic} Raw S3 Landing`)
-      .replace(/\[5\] AWS Glue ETL Processing/g, `[5] ${topic} Glue ETL Engine`)
-      .replace(/\[6\] S3 Processed Zone/g, `[6] ${topic} Staged Processed Data`)
-      .replace(/\[7\] S3 Curated Zone/g, `[7] ${topic} Curated Data Marts`)
-      .replace(/\[8\] Glue Data Catalog/g, `[8] ${topic} Glue Data Catalog`)
-      .replace(/\[9\] Amazon Athena/g, `[9] ${topic} Athena Query Engine`)
-      .replace(/\[10\] Redshift Spectrum/g, `[10] ${topic} Redshift Data Warehouse`)
-      .replace(/\[11\] AWS IAM &amp; Policies/g, `[11] ${topic} IAM Access Control`)
-      .replace(/\[11\] AWS IAM & Policies/g, `[11] ${topic} IAM Access Control`)
-      .replace(/\[1\] Ingress \/ Client Portal/g, `[1] ${topic} Web &amp; Mobile Ingress`)
-      .replace(/\[1\] Client App \/ Web Portal/g, `[1] ${topic} Client Portal`)
-      .replace(/\[1\] Field IoT Gateway Devices/g, `[1] ${topic} Field IoT Devices`)
-      .replace(/\[1\] Public Internet Traffic/g, `[1] ${topic} Internet Ingress`)
-      .replace(/\[1\] Developer Push \/ PR Event/g, `[1] ${topic} Dev PR Event`)
-      .replace(/\[1\] User Client/g, `[1] ${topic} User Client`)
-      .replace(/\[1\] Customer Mobile App/g, `[1] ${topic} App Portal`)
-      .replace(/\[1\] AWS WAF &amp; Shield/g, `[1] ${topic} AWS WAF &amp; Shield`)
-      .replace(/\[1\] External API Clients/g, `[1] ${topic} External API Clients`)
-      .replace(/\[1\] Enterprise Data Repositories/g, `[1] ${topic} Data Repositories`)
-      .replace(/\[1\] Polyrepo Source Control/g, `[1] ${topic} Polyrepo Source Repos`);
-  }
-
-  const isBankingPrompt = promptLower.includes('bank') || promptLower.includes('fintech') || promptLower.includes('payment') || promptLower.includes('card') || promptLower.includes('loan') || promptLower.includes('wealth') || promptLower.includes('account') || promptLower.includes('credit') || promptLower.includes('ledger') || promptLower.includes('atm');
-
-  if (isBankingPrompt) {
-    updatedXml = updatedXml
-      .replace(/Manual Data Sources Card/g, 'Banking Ingress &amp; Channel Ingestion Card')
-      .replace(/Raw Scientific Literature &amp; PPT Decks/g, 'Mobile Apps, Web Banking &amp; ATM API Feeds')
-      .replace(/>PDFs</g, '>Mobile App<')
-      .replace(/>PPTs</g, '>Web Banking<')
-      .replace(/Unstructured\s*(?:&lt;|<)br\s*\/?(?:&gt;|>)\s*Documents/gi, 'ATM &amp; Branch&lt;br&gt;API Feeds')
-      .replace(/5 Functional Silos Ingestion/g, '5 Core Banking Functional Silos')
-      .replace(/Market Research/g, 'Accounts &amp; Deposits')
-      .replace(/Medical Affairs/g, 'Payments &amp; Transfers')
-      .replace(/Market Access/g, 'Loans &amp; Mortgages')
-      .replace(/Outcomes Research/g, 'Cards &amp; Fraud Alerts')
-      .replace(/Competitive Intelligence/g, 'Wealth &amp; Investment Portal')
-      .replace(/Researcher Node/g, 'Customer &amp; Operator Node')
-      .replace(/Analyst Workspace Portal/g, 'Mobile &amp; Web Banking Interface')
-      .replace(/Asset Analysis &amp; Query Interface/g, 'Transaction History &amp; Payment Gateway')
-      .replace(/Core ITACS Synthesis Engine/g, 'Core Banking &amp; Transaction Ledger')
-      .replace(/Core AI Synthesis Engine/g, 'Core Banking &amp; Transaction Ledger')
-      .replace(/Multi-Functional Data Synthesis/g, 'Real-Time Transaction Processing')
-      .replace(/Genomic &amp; Clinical Correlation Engine/g, 'Double-Entry Accounting &amp; Core Ledger')
-      .replace(/Unstructured Content Analysis/g, 'Real-Time Fraud &amp; AML Screening')
-      .replace(/PubMed PDF &amp; PPT Chunking Engine/g, 'Anti-Money Laundering &amp; Risk Scoring')
-      .replace(/Strategic Chatbot Reasoning/g, 'AI Financial Assistant &amp; Wealth Support')
-      .replace(/ReAct Natural Language Agent Interface/g, 'Conversational Banking &amp; Bill Pay Agent')
-      .replace(/Competitive Launch Simulation/g, 'Credit Scoring &amp; Loan Underwriting')
-      .replace(/Oncology Scenario Planning/g, 'Risk Profiling &amp; Loan Origination Models')
-      .replace(/OUTMANEUVER COMPETITION/g, 'SECURE REAL-TIME PAYMENTS')
-      .replace(/REACH PATIENTS FASTER/g, 'ZERO-TRUST FRAUD PREVENTION')
-      .replace(/STRATEGIC PLANNING &amp; ANALYSIS/g, 'REGULATORY &amp; COMPLIANCE REPORTING')
-      .replace(/Executive Strategy Dashboard/g, 'Executive Banking &amp; Risk Dashboard')
-      .replace(/Competitor Comparison View/g, 'Account &amp; Portfolio Summary View')
-      .replace(/Competitor X/g, 'Savings Account')
-      .replace(/Competitor Y/g, 'Credit Card')
-      .replace(/Q3 Launch/g, 'Active Balance')
-      .replace(/Phase 2b/g, 'Approved Limit')
-      .replace(/Q1 Market Lead/g, 'Primary Account')
-      .replace(/Oncology Analyst/g, 'Banking Customer / Operator')
-      .replace(/Review ITACS Oncology Operational Strategy/gi, 'Review Banking App Real-Time Fraud &amp; Compliance Strategy')
-      .replace(/Oncology Operational Strategy/gi, 'Banking Real-Time Compliance Strategy')
-      .replace(/STRATEGIC ADVISORY ALERT:[\s\S]*?Strategy/g, 'BANKING SECURITY ALERT: Real-Time Fraud &amp; Compliance Audit Active')
-      // ERD Specific Banking Replacements
-      .replace(/Dim_Customer_Entity/g, 'Dim_Customer_Account')
-      .replace(/Dim_Patient/g, 'Dim_Customer_Account')
-      .replace(/Patient Key/g, 'Account Key (PK)')
-      .replace(/Patient Type/g, 'Account Type (Checking/Savings)')
-      .replace(/Demographics/g, 'KYC Status &amp; Credit Score')
-      .replace(/Disease History/g, 'Account Standing &amp; Risk Rating')
-      .replace(/Dim_Provider_Service/g, 'Dim_Merchant')
-      .replace(/Dim_Physician/g, 'Dim_Merchant')
-      .replace(/Physician Key/g, 'Merchant Key (PK)')
-      .replace(/Specialization/g, 'Merchant Category Code (MCC)')
-      .replace(/Affiliation/g, 'Payment Network (Visa/MC)')
-      .replace(/Ranking/g, 'Risk Rating')
-      .replace(/Location/g, 'Terminal / Store Location')
-      .replace(/Dim_Billing_Channel/g, 'Dim_Card_Issuer')
-      .replace(/Dim_Payer/g, 'Dim_Card_Issuer')
-      .replace(/Payer Key/g, 'Issuer Key (PK)')
-      .replace(/Payer Name/g, 'Card Issuer / Bank')
-      .replace(/Dim_Oncology_Product/g, 'Dim_Banking_Product')
-      .replace(/Product Key/g, 'Product Key (PK)')
-      .replace(/Therapy Area/g, 'Product Line (Credit/Debit/Mortgage)')
-      .replace(/Fact_Oncology_Insights/g, 'Fact_Transaction_Insights')
-      .replace(/Fact_Patient_Encounters/g, 'Fact_Account_Transactions')
-      .replace(/Encounter ID/g, 'Transaction ID (PK)')
-      .replace(/Diagnosis ID/g, 'Auth Code / ISO 8583 Msg')
-      .replace(/Physician ID/g, 'Merchant Key (FK)')
-      .replace(/Payer ID/g, 'Issuer Key (FK)')
-      .replace(/Patient ID/g, 'Account Key (FK)')
-      .replace(/Row-Level Security on Patient Data/g, 'Row-Level Security on Account Data (PCI-DSS &amp; Banking Compliance)');
-  }
-
-  const isHealthcareOrPharma = !isEcommerce && !isFintechPrompt && /\b(healthcare|patient|hospital|medical|pharma|oncology|clinical|biotech|drug discovery|clinical trial)\b/i.test(promptLower);
-
-  // Universal Scrubber: Clean legacy ITACS/Oncology boilerplate out of templates for NON-healthcare/pharma diagrams
-  if (!isHealthcareOrPharma && !isEcommerce && !isFintechPrompt) {
-    updatedXml = updatedXml
-      .replace(/Raw Scientific Literature &amp; PPT Decks/g, `${topic} Data Ingress &amp; Client Docs`)
-      .replace(/Manual Data Sources Card/g, `${topic} Ingress Card`)
+      .replace(/Raw Scientific Literature &amp; PPT Decks/g, `${domainTitle} Data Ingress &amp; Client Docs`)
+      .replace(/Manual Data Sources Card/g, `${domainTitle} Ingress Card`)
       .replace(/Market Research/g, 'Client Gateway')
       .replace(/Medical Affairs/g, 'Core Operations')
       .replace(/Market Access/g, 'Integration APIs')
       .replace(/Outcomes Research/g, 'Analytics &amp; Metrics')
       .replace(/Competitive Intelligence/g, 'Business Intelligence')
       .replace(/Researcher Node/g, 'User &amp; Operator Node')
-      .replace(/Analyst Workspace Portal/g, `${topic} Application Portal`)
+      .replace(/Analyst Workspace Portal/g, `${domainTitle} Application Portal`)
       .replace(/Asset Analysis &amp; Query Interface/g, 'Data Analysis &amp; Query Interface')
       .replace(/Genomic &amp; Clinical Correlation Engine/g, 'Core Business Data Engine')
       .replace(/PubMed PDF &amp; PPT Chunking Engine/g, 'Document &amp; Stream Processing Engine')
-      .replace(/Oncology Scenario Planning/g, 'Scenario Planning &amp; Operations')
-      .replace(/Oncology Analyst/g, 'Operations Analyst')
-      .replace(/Oncology Trends/g, 'Performance Trends')
+      .replace(/Oncology Scenario Planning/gi, `${domainTitle} Scenario Planning &amp; Operations`)
+      .replace(/Oncology Analyst/gi, `${domainTitle} Operations Analyst`)
+      .replace(/Oncology Trends/gi, 'Performance Trends')
       .replace(/OUTMANEUVER COMPETITION/g, 'OPTIMIZE SYSTEM EFFICIENCY')
       .replace(/REACH PATIENTS FASTER/g, 'ACCELERATE TIME-TO-VALUE')
       .replace(/STRATEGIC PLANNING &amp; ANALYSIS/g, 'ENTERPRISE GOVERNANCE &amp; ANALYTICS')
-    const isRoboticsOceanDomain = /\b(auv|subsea|ocean|marine|maritime|sonar|bathymetry|drone|robot|telemetry|acoustic|vehicle|sensor|fleet)\b/i.test(promptLower);
-    if (isRoboticsOceanDomain) {
-      updatedXml = updatedXml
-        .replace(/Dim_Customer_Entity/g, 'Dim_AUV_Unit')
-        .replace(/Customer ID/g, 'Unit_ID (PK)')
-        .replace(/Entity Type/g, 'Vehicle_Class / Model')
-        .replace(/Account Tier/g, 'Depth_Rating (Meters)')
-        .replace(/Dim_Provider_Service/g, 'Dim_Survey_Grid')
-        .replace(/Provider ID/g, 'Grid_Cell_Key (PK)')
-        .replace(/Service Category/g, 'Acoustic_Bathymetry_Zone')
-        .replace(/Dim_Product_Catalog/g, 'Dim_Acoustic_Profile')
-        .replace(/Product Key/g, 'Profile_Key (PK)')
-        .replace(/Product ID/g, 'Profile_ID')
-        .replace(/Product Name/g, 'Sound_Velocity (m/s)')
-        .replace(/Dim_Functional_Silo/g, 'Dim_Mission_Objective')
-        .replace(/Fact_Business_Insights/g, 'Fact_Bathymetry_Pts')
-        .replace(/Fact_System_Transactions/g, 'Fact_Swarm_Telemetry_State')
-        .replace(/Fact_Competitive_Intel/g, 'Fact_Doppler_Velocity')
-        .replace(/Dim_Billing_Channel/g, 'Dim_Subsea_Asset')
-        .replace(/Dim_Intel_Source/g, 'Dim_Acoustic_Beacon')
-        .replace(/GenAI_Context_Corpus/g, '3D_Bathymetric_Octree_Corpus')
-        .replace(/GenAI_Vector_Index/g, 'Spatial_H3_Vector_Index')
-        .replace(/GenAI_Conversation_Log/g, 'Swarm_Acoustic_Relay_Log')
-        .replace(/ML_Feature_Store/g, 'Oceanographic_Feature_Store')
-        .replace(/ML_Inference_Log/g, 'Seabed_Segmentation_Inference_Log');
-    }
-
-    updatedXml = updatedXml
-      .replace(/Dim_Patient/g, 'Dim_Consignee_Shipper')
-      .replace(/Patient Key/g, 'Consignee Key (PK)')
-      .replace(/Patient ID/g, 'Consignee ID')
-      .replace(/Patient Type/g, 'Freight Account Type')
-      .replace(/Disease History/g, 'Shipment History')
-      .replace(/Dim_Physician/g, 'Dim_Carrier_Vessel')
-      .replace(/Physician Key/g, 'Vessel / Carrier Key (PK)')
-      .replace(/Physician ID/g, 'Carrier ID')
-      .replace(/Specialization/g, 'Fleet Type / IMO')
-      .replace(/Dim_Payer/g, 'Dim_Customs_Broker')
-      .replace(/Payer Key/g, 'Broker Key (PK)')
-      .replace(/Payer ID/g, 'Broker ID')
-      .replace(/Payer Name/g, 'Brokerage Firm')
-      .replace(/Fact_Patient_Encounters/g, 'Fact_Shipment_Events')
-      .replace(/Fact_Oncology_Insights/g, 'Fact_Logistics_Freight_Insights')
-      .replace(/Fact_Competitive_Intel/g, 'Fact_Port_Berth_Operations')
-      .replace(/Dim_Oncology_Product/g, 'Dim_Cargo_Container_Catalog')
-      .replace(/Product Key/g, 'Container SKU Key (PK)')
-      .replace(/Product ID/g, 'Container ID')
-      .replace(/Product Name/g, 'Cargo Description')
+      .replace(/Dim_Patient/g, `Dim_${shortBrand}_Entity`)
+      .replace(/Patient Key/g, 'Entity Key (PK)')
+      .replace(/Patient ID/g, 'Entity ID')
+      .replace(/Patient Type/g, 'Entity Tier')
+      .replace(/Disease History/g, 'Activity History')
+      .replace(/Dim_Physician/g, `Dim_${shortBrand}_Service`)
+      .replace(/Physician Key/g, 'Service Key (PK)')
+      .replace(/Physician ID/g, 'Service ID')
+      .replace(/Specialization/g, 'Service Category')
+      .replace(/Dim_Payer/g, `Dim_${shortBrand}_Channel`)
+      .replace(/Payer Key/g, 'Channel Key (PK)')
+      .replace(/Payer ID/g, 'Channel ID')
+      .replace(/Payer Name/g, 'Channel Provider')
+      .replace(/Fact_Patient_Encounters/g, `Fact_${shortBrand}_Transactions`)
+      .replace(/Fact_Oncology_Insights/g, `Fact_${shortBrand}_Insights`)
+      .replace(/Fact_Competitive_Intel/g, `Fact_${shortBrand}_Metrics`)
+      .replace(/Dim_Oncology_Product/g, `Dim_${shortBrand}_Catalog`)
       .replace(/Dim_Customer_Entity/g, `Dim_${shortBrand}_Entity`)
       .replace(/Dim_Provider_Service/g, `Dim_${shortBrand}_Service`)
       .replace(/Dim_Product_Catalog/g, `Dim_${shortBrand}_Catalog`)
       .replace(/Fact_Business_Insights/g, `Fact_${shortBrand}_Insights`)
       .replace(/Fact_System_Transactions/g, `Fact_${shortBrand}_Transactions`)
-      .replace(/Fact_Competitive_Intel/g, `Fact_${shortBrand}_Metrics`)
-      .replace(/Row-Level Security on Patient Data/g, 'Row-Level Security on Cargo Manifest Data')
-      .replace(/\bPatient\b/gi, 'Consignee')
-      .replace(/\bPhysician\b/gi, 'Carrier')
-      .replace(/\bPayer\b/gi, 'Broker')
-      .replace(/Oncology/gi, topic || 'Enterprise')
-      .replace(/PubMed/gi, `${topic} API`)
-      .replace(/ITACS/gi, topic || 'Enterprise');
-  } else if (isHealthcareOrPharma) {
-    // For Healthcare/Pharma prompts: preserve generic medical vocabulary, only clean ITACS brand boilerplate
+      .replace(/Row-Level Security on Patient Data/g, `Row-Level Security on ${domainTitle} Data`)
+      .replace(/\bPatient\b/gi, 'Entity')
+      .replace(/\bPhysician\b/gi, 'Provider')
+      .replace(/\bPayer\b/gi, 'Partner')
+      .replace(/Oncology/gi, domainTitle)
+      .replace(/PubMed/gi, `${domainTitle} API`)
+      .replace(/ITACS/gi, domainTitle);
+  } else {
     updatedXml = updatedXml
-      .replace(/Dim_Customer_Entity/g, 'Dim_Patient')
-      .replace(/Customer ID/g, 'Patient Key')
-      .replace(/Entity Type/g, 'Patient Type')
-      .replace(/Activity History/g, 'Medical History')
-      .replace(/Dim_Provider_Service/g, 'Dim_Physician')
-      .replace(/Provider ID/g, 'Physician Key')
-      .replace(/Dim_Billing_Channel/g, 'Dim_Payer')
-      .replace(/Fact_System_Transactions/g, 'Fact_Patient_Encounters')
-      .replace(/ITACS Oncology Platform/g, `${topic} Platform`)
-      .replace(/ITACS/gi, topic || 'Healthcare');
+      .replace(/ITACS Oncology Platform/g, `${domainTitle} Platform`)
+      .replace(/ITACS/gi, domainTitle);
   }
 
   // Universal Dynamic Entity & Workflow Step Extractor

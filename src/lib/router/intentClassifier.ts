@@ -3,10 +3,16 @@ import { z } from 'zod';
 import { ARCHITECTURE_TYPES } from '@/lib/architectureTypes';
 import { buildIntentClassificationPrompt } from '@/prompts/classifyIntent';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
-import { GEMINI_FLASH_MODEL_ID, getEffectiveGeminiApiKey } from '@/lib/geminiConfig';
+import {
+  GEMINI_FLASH_MODEL_ID,
+  getEffectiveGeminiApiKey,
+  sanitizeFrontierModelId,
+} from '@/lib/geminiConfig';
 
 export const CLASSIFIER_TIMEOUT_MS = 2500;
-export const CLASSIFIER_MODEL_ID = process.env.INTENT_CLASSIFIER_MODEL || process.env.GEMINI_MODEL_ID || GEMINI_FLASH_MODEL_ID;
+export const CLASSIFIER_MODEL_ID =
+  sanitizeFrontierModelId(process.env.INTENT_CLASSIFIER_MODEL, '') ||
+  sanitizeFrontierModelId(process.env.GEMINI_MODEL_ID, GEMINI_FLASH_MODEL_ID);
 
 export const IntentClassificationSchema = z.object({
   selectedType: z.string().nullable(),

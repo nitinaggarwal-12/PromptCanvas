@@ -9,11 +9,6 @@
  * - Upgraded 2026 GCP, Gemini Enterprise (GE), Google ADK, A2A, MCP, Model Armor/SDP & Open-Source stack
  */
 
-import {
-  buildNasaMultiverseClosedLoopHarnessXml,
-  buildUniversalClosedLoopDomainHarnessXml,
-  shouldUseUniversalClosedLoopHarness,
-} from './nasaMultiverseClosedLoopHarness';
 
 function escAttr(str: string): string {
   return str
@@ -299,19 +294,7 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
   const cells: string[] = [];
   const profile = resolveDomainProfile(options, ast?.metadata?.domain, ast?.metadata?.projectTitle);
 
-  const combinedSignal = `${options?.prompt || ''} ${options?.domain || ''} ${options?.projectTitle || ''} ${options?.useCaseName || ''} ${ast?.metadata?.domain || ''} ${ast?.metadata?.projectTitle || ''}`;
-  if (profile.uiTitle === 'NASA Mission Control UI') {
-    return buildNasaMultiverseClosedLoopHarnessXml(options?.theme || 'light');
-  }
-  if (shouldUseUniversalClosedLoopHarness(combinedSignal)) {
-    return buildUniversalClosedLoopDomainHarnessXml({
-      prompt: options?.prompt,
-      projectTitle: options?.projectTitle || ast?.metadata?.projectTitle,
-      domain: options?.domain || ast?.metadata?.domain,
-      theme: options?.theme || 'light',
-    });
-  }
-
+  
   const addVertex = (
     id: string,
     html: string,
@@ -606,7 +589,7 @@ export function generateUpgradedGcpGeBankingArchitectureXml(
     compactNodeHtml({
       leftIcon: ICONS.gemini,
       rightIcon: ICONS.agentCube,
-      title: 'Gemini 3.1 Pro / 3.8 Flash',
+      title: 'Gemini 3.1 Pro / 2.5 Flash',
       line1: '(Vertex AI • Deep Research Max)',
     }),
     930,

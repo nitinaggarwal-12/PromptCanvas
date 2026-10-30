@@ -6,15 +6,15 @@ PromptCanvas translates natural language architecture descriptions, raster archi
 
 ## 🧠 Canonical 5-Tier Google / Gemini / DeepMind Model Stack (`src/lib/geminiConfig.ts`)
 
-1. **Tier 0 — Multimodal Audit & Certification Gate (`google-omni-1.1`)**: Chief Architecture SME Director & Multimodal Visual Collision Auditor.
-2. **Tier 1 — Deep Reasoning, Vision Decompilation & 16 Living Specs (`gemini-3.1-pro-preview`)**: 6-Dimension Domain Research (`deepDomainResearcher.ts`), Vision Image-to-Draw.io XML Decompilation (`deepmindVisionDecompiler.ts`), and 16 Living Specifications (`livingSpecsGenerator.ts`).
-3. **Tier 2 — High-Speed Interactive Copilot & AST Graph Synthesis (`gemini-3.8-flash`)**: Sub-2.5s Intent Router, 4-Category Conversational Non-Mutation Gate, Prompt Enhancer, and Dynamic Clause-Driven Draw.io XML Synthesis.
-4. **Tier 3 — Real-Time Bidirectional Voice & Video Canvas Co-Pilot (`gemini-3.1-flash-live-preview`)**: Sub-second live blueprinting and interactive voice/canvas co-pilot.
+1. **Tier 0 — Multimodal Audit & Certification Gate (`gemini-2.5-pro`)**: Chief Architecture SME Director & Multimodal Visual Collision Auditor.
+2. **Tier 1 — Deep Reasoning, Vision Decompilation & 16 Living Specs (`gemini-2.5-pro`)**: 6-Dimension Domain Research (`deepDomainResearcher.ts`), Vision Image-to-Draw.io XML Decompilation (`deepmindVisionDecompiler.ts`), and 16 Living Specifications (`livingSpecsGenerator.ts`).
+3. **Tier 2 — High-Speed Interactive Copilot & AST Graph Synthesis (`gemini-2.5-flash`)**: Sub-2.5s Intent Router, 4-Category Conversational Non-Mutation Gate, Prompt Enhancer, and Dynamic Clause-Driven Draw.io XML Synthesis.
+4. **Tier 3 — Real-Time Bidirectional Voice & Video Canvas Co-Pilot (`gemini-2.5-flash`)**: Sub-second live blueprinting and interactive voice/canvas co-pilot.
 5. **Tier 4 — Generative Media & Vector Grounding**:
-   - **Video**: `veo-3.1-generate-preview` (Google DeepMind Veo 3.1)
-   - **Audio / Music**: `lyria-3.5` (DeepMind Lyria 3.5)
-   - **Image**: `gemini-3.1-flash-image-preview` (Google DeepMind Imagen 3 / Flash Image)
-   - **Neural TTS**: `gemini-3.1-flash-tts-preview` (Gemini 3.1 Flash TTS)
+   - **Video**: `veo-3.0-generate-preview` (Google DeepMind Veo 3.1)
+   - **Audio / Music**: `lyria-002` (DeepMind Lyria 2)
+   - **Image**: `gemini-2.5-flash-image` (Google DeepMind Imagen 3 / Flash Image)
+   - **Neural TTS**: `gemini-2.5-flash-preview-tts` (Gemini 3.1 Flash TTS)
    - **Embeddings**: `text-embedding-005` (Text Embedding 005)
 
 ---
@@ -23,10 +23,10 @@ PromptCanvas translates natural language architecture descriptions, raster archi
 
 Pipeline V2 replaces legacy LLM coordinate prediction with a deterministic **Graph-then-Layout Pipeline**:
 
-1. **Logical Graph Generation**: Gemini (`gemini-3.8-flash` & `gemini-3.1-pro-preview`) outputs a strict logical architecture JSON graph (WHAT exists and HOW it connects).
+1. **Logical Graph Generation**: Gemini (`gemini-2.5-flash` & `gemini-2.5-pro`) outputs a strict logical architecture JSON graph (WHAT exists and HOW it connects).
 2. **Deterministic Layout**: `elkjs` computes layered container and node coordinates (`(x, y, width, height)`) deterministically.
 3. **mxGraph XML Renderer**: Renders laid-out graphs into valid Draw.io XML with official cloud vendor logos (GCP, AWS, Azure, PostgreSQL, Redis, Kubernetes).
-4. **Pre-Render Validator & Repair Loop**: Automated multi-check validator with an LLM repair safety net audited by `google-omni-1.1`.
+4. **Pre-Render Validator & Repair Loop**: Automated multi-check validator with an LLM repair safety net audited by `gemini-2.5-pro`.
 
 ---
 
@@ -39,10 +39,10 @@ Add to `.env` or `.env.local`:
 LAYOUT_ENGINE_V2=true
 
 # Vertex AI / Gemini Model IDs (defaults in src/lib/geminiConfig.ts)
-GEMINI_PRO_MODEL=gemini-3.1-pro-preview
-GEMINI_FLASH_MODEL=gemini-3.8-flash
-GEMINI_LIVE_MODEL=gemini-3.1-flash-live-preview
-OMNI_MODEL_ID=google-omni-1.1
+GEMINI_PRO_MODEL=gemini-2.5-pro
+GEMINI_FLASH_MODEL=gemini-2.5-flash
+GEMINI_LIVE_MODEL=gemini-2.5-flash
+OMNI_MODEL_ID=gemini-2.5-pro
 
 # Server-Side Refresh-Token Google Workspace Bridge (src/lib/server/googleWorkspaceBridge.ts)
 GOOGLE_OAUTH_CLIENT_ID=<desktop-or-web-oauth-client-id>
@@ -109,9 +109,9 @@ npm run validate path/to/diagram.xml
 
 ### Parallel Prompt-to-Diagram Studio (`/prompt-to-diagram`), Official AWS & GCP Vector SVGs, 6-Gate Deterministic 2D AABB + Union-Find Auditor & Cross-Model Pro Judge
 - **5-Step Parallel Execution Pipeline (`src/app/api/prompt-to-diagram/route.ts` & `src/app/prompt-to-diagram/page.tsx`)**:
-  - **Step 1 (`step1_spec`)**: Generates a spelling-verified 4-Tier Canonical Architecture Spec via `gemini-3.8-flash` (with deterministic AWS-to-GCP AI/ML Migration seed topology when requested).
+  - **Step 1 (`step1_spec`)**: Generates a spelling-verified 4-Tier Canonical Architecture Spec via `gemini-2.5-flash` (with deterministic AWS-to-GCP AI/ML Migration seed topology when requested).
   - **Branch A (`step2_poster`, Parallel)**: Generates the 16:9 visual reference poster via Nano Banana (`gemini-2.5-flash-image`).
-  - **Branch B (`step3_compile_and_audit` $\rightarrow$ `step4_judge` $\rightarrow$ `step5_autofix`, Parallel)**: Compiles the 100% vector-editable Draw.io `mxGraphModel` XML with verbatim official AWS (`src/lib/awsOfficialSvgAssets.ts`, 36 `aws-icons@3.2.0` SVGs) and Google Cloud (`src/lib/gcpOfficialSvgAssets.ts`, `GOOGLE_CLOUD_OFFICIAL_SVG`) vector icons (`Title-First Icon Purity` via `resolveVendorIconIdForNode`), runs the `<5ms` 6-Gate Deterministic Mathematical Auditor (`auditVisionPosterDrawioXml`: 2D AABB Zero Overlap, Adaptive Swimlane Containment, Union-Find Connected Components, Zero Stub/Prompt-Echo, `100%` Official Vendor Icon Parity, and `mxGraphModel` Vector Parity), evaluates via the orthogonal Cross-Model Pro Judge (`gemini-3.1-pro-preview` / `gemini-2.5-pro`), and executes closed-loop `Auto-Fix` (`fixVisionPosterDiagramWithJudgeFeedback`) with whole-word protocol edge label compaction (`compactArchitecturalEdgeLabel`).
+  - **Branch B (`step3_compile_and_audit` $\rightarrow$ `step4_judge` $\rightarrow$ `step5_autofix`, Parallel)**: Compiles the 100% vector-editable Draw.io `mxGraphModel` XML with verbatim official AWS (`src/lib/awsOfficialSvgAssets.ts`, 36 `aws-icons@3.2.0` SVGs) and Google Cloud (`src/lib/gcpOfficialSvgAssets.ts`, `GOOGLE_CLOUD_OFFICIAL_SVG`) vector icons (`Title-First Icon Purity` via `resolveVendorIconIdForNode`), runs the `<5ms` 6-Gate Deterministic Mathematical Auditor (`auditVisionPosterDrawioXml`: 2D AABB Zero Overlap, Adaptive Swimlane Containment, Union-Find Connected Components, Zero Stub/Prompt-Echo, `100%` Official Vendor Icon Parity, and `mxGraphModel` Vector Parity), evaluates via the orthogonal Cross-Model Pro Judge (`gemini-2.5-pro` / `gemini-2.5-pro`), and executes closed-loop `Auto-Fix` (`fixVisionPosterDiagramWithJudgeFeedback`) with whole-word protocol edge label compaction (`compactArchitecturalEdgeLabel`).
   - **Live Progress Telemetry & Always-Visible H+V Scrollbars**: Displays real-time step status (`queued`/`running`/`completed`/`failed`), `% Complete`, `Elapsed`, `Est. Remaining`, and `.pc-always-scrollbars` (`overflow-x: scroll; overflow-y: scroll;`) across the prompt input, Nano Banana container, and Draw.io vector canvas:
 ```bash
 node scripts/verify_aws_gcp_aiml_parallel_scroll_e2e.mjs

@@ -97,7 +97,7 @@ const INITIAL_TEST_RESULTS: TestCaseResult[] = [
   { id: 't-7-03', pillar: 'pillar_7', suite: 'TypeScript & Next.js Build (tsc --noEmit)', name: 'Strict TypeScript compilation passes with 0 errors across all application routes', status: 'PASSED', durationMs: 2400, timestamp: '2026-10-05T00:00:00Z' },
 
   // Pillar 8: AI & Model Safety
-  { id: 't-8-01', pillar: 'pillar_8', suite: '5-Tier Model Router (modelRouter.test.ts)', name: 'Canonical routing across Google Omni 1.1, Gemini 3.1 Pro, Gemini 3.8 Flash, Veo 3.1 & Lyria 3.5', status: 'PASSED', durationMs: 11, timestamp: '2026-10-05T00:00:00Z' },
+  { id: 't-8-01', pillar: 'pillar_8', suite: '5-Tier Model Router (modelRouter.test.ts)', name: 'Canonical routing across Gemini 2.5 Pro, Gemini 3.1 Pro, Gemini 2.5 Flash, Veo 3.1 & Lyria 2', status: 'PASSED', durationMs: 11, timestamp: '2026-10-05T00:00:00Z' },
   { id: 't-8-02', pillar: 'pillar_8', suite: 'Zero-Mutation Passthrough (diagramCleaner.test.ts)', name: 'Canonical master architectures pass preflight geometry & label audits without corruption', status: 'PASSED', durationMs: 340, timestamp: '2026-10-05T00:00:00Z' },
   { id: 't-8-03', pillar: 'pillar_8', suite: 'Structural XML Envelopes (xmlNodesParser.test.ts)', name: 'Mandatory <mxfile><diagram><mxGraphModel> envelope & HTML entity balance verified', status: 'PASSED', durationMs: 120, timestamp: '2026-10-05T00:00:00Z' },
 

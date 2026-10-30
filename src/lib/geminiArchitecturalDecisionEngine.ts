@@ -2,9 +2,9 @@ import { GoogleGenAI } from '@google/genai';
 import { CANONICAL_TEMPLATES, CanonicalTemplate } from './canonical/canonicalTemplates';
 import type { GeminiHubSpoke78DynamicSpec } from './canonical/templateOfficialGcpArchCenterHubSpoke';
 import {
-  GEMINI_FALLBACK_FLASH_MODEL_ID,
-  GEMINI_FLASH_MODEL_ID,
   getEffectiveGeminiApiKey,
+  getGeminiModel,
+  resolveLatestGeminiModelChain,
 } from './geminiConfig';
 import { generateContentWithRetry } from './geminiRetryHelper';
 
@@ -132,7 +132,6 @@ export async function analyzePromptWithGeminiArchitect(
   }
 
   const apiKey = getEffectiveGeminiApiKey(explicitApiKey);
-  const modelName = GEMINI_FALLBACK_FLASH_MODEL_ID || process.env.GEMINI_MODEL_ID || GEMINI_FLASH_MODEL_ID;
 
   // Build compact catalog summary for Gemini so it can evaluate all canonical templates
   const catalogSummary = CANONICAL_TEMPLATES.map((t) => {
@@ -143,6 +142,8 @@ export async function analyzePromptWithGeminiArchitect(
   if (apiKey && cleanPrompt.length >= 4) {
     try {
       const ai = new GoogleGenAI({ apiKey });
+      const candidateModels = await resolveLatestGeminiModelChain(ai, 'latest');
+      const modelName = candidateModels[0] || getGeminiModel('latest');
       const systemInstruction = `You are the Principal Enterprise Cloud Architect & Blueprint Decision Engine for PromptCanvas.
 Never use naive keyword/regex guessing. Analyze the user's architecture prompt semantically and make a rigorous architectural decision:
 
@@ -490,7 +491,7 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
 
   return {
     prompt,
-    modelUsed: 'gemini-3.8-flash (cached/fallback)',
+    modelUsed: `${getGeminiModel('latest')} (cached/fallback)`,
     isLiveGeminiDecision: false,
     recommendedPerspective: 'Logical',
     perspectiveReasoning:
@@ -507,7 +508,7 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
       `Customize scope to "${cleanTitle}" on Google Cloud & Gemini Enterprise`,
       'Configure Edge Layer (Cloud Armor WAF, Apigee X, Envoy AI) & Identity Platform (Firebase Auth & Passkeys)',
       'Orchestrate Coordinator Agent & 3 Specialist Agents via Gemini Enterprise, Google ADK, LangGraph & A2A',
-      'Bind LLM Layer (Gemini 3.1 Pro / 2.5 Flash + Gemma 3 / Llama 4 on GKE vLLM), Vector Search 2.0 & Cloud Spanner/Bigtable/Firestore via MCP',
+      'Bind LLM Layer (Gemini 2.5 Pro / Gemini 3.1 Pro / Gemini 2.5 Flash + Gemma 3 on GKE vLLM), Vector Search 2.0 & Cloud Spanner/Bigtable/Firestore via MCP',
     ],
     topCandidates: [
       {
@@ -700,14 +701,21 @@ export async function synthesizeLiveGeminiCopilotModification(
   const apiKey = getEffectiveGeminiApiKey(explicitApiKey);
   if (!apiKey) return null;
 
-  const modelName = GEMINI_FALLBACK_FLASH_MODEL_ID || process.env.GEMINI_MODEL_ID || GEMINI_FLASH_MODEL_ID;
   try {
     const ai = new GoogleGenAI({ apiKey });
-    const response = await generateContentWithRetry(
-      ai,
-      {
-        model: modelName,
-        contents: `You are the Principal Google Cloud & Multi-Cloud L400 Architecture Synthesizer.
+    const candidateModels = await resolveLatestGeminiModelChain(ai, 'latest');
+    let response: any = null;
+    let modelName = candidateModels[0] || getGeminiModel('latest');
+    let lastErr: unknown = null;
+
+    for (const candidateModel of candidateModels) {
+      try {
+        modelName = candidateModel;
+        response = await generateContentWithRetry(
+          ai,
+          {
+            model: candidateModel,
+            contents: `You are the Principal Google Cloud & Multi-Cloud L400 Architecture Synthesizer.
 The user is modifying an active architecture diagram titled "${currentTitle}" with this follow-up instruction:
 "${cleanPrompt}"
 
@@ -724,14 +732,20 @@ Return strictly valid JSON with these fields:
   "canvasDiff": "1-sentence summary of what was added/modified on the canvas",
   "specDiff": "1-sentence summary of which architecture specifications and data contracts were updated"
 }`,
-        config: {
-          temperature: 0.15,
-          responseMimeType: 'application/json',
-          thinkingConfig: { thinkingLevel: 'LOW' } as any,
-        },
-      },
-      { maxRetries: 2, perAttemptTimeoutMs: 22000, totalBudgetMs: 28000, label: 'Gemini Live Co-Pilot Node Synthesis' }
-    );
+            config: {
+              temperature: 0.15,
+              responseMimeType: 'application/json',
+              thinkingConfig: { thinkingLevel: 'LOW' } as any,
+            },
+          },
+          { maxRetries: 2, perAttemptTimeoutMs: 22000, totalBudgetMs: 28000, label: 'Gemini Live Co-Pilot Node Synthesis' }
+        );
+        if (response?.text) break;
+      } catch (err) {
+        lastErr = err;
+      }
+    }
+    if (!response && lastErr) throw lastErr;
 
     const rawText = (response.text || '').replace(/```json/gi, '').replace(/```/g, '').trim();
     if (rawText) {

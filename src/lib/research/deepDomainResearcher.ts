@@ -3,7 +3,7 @@
  *
  * Eradicates the generic template string-interpolation blindspot (Rule 42).
  * Before generating a diagram for ANY brand-new domain or topic, this engine
- * invokes Google Omni 1.1 + Gemini 3.1 Pro (`gemini-3.1-pro-preview` / `gemini-3.8-flash`)
+ * invokes Gemini 2.5 Pro + Gemini 3.1 Pro (`gemini-2.5-pro` / `gemini-2.5-flash`)
  * to research and ground 6 mandatory architectural dimensions:
  *   1. True Domain Ontology & Canonical 4-Stage Lifecycle Spine (01..04)
  *   2. Authentic Wire Protocols, RFCs, File Formats & Regulatory Standards
@@ -16,10 +16,11 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import {
   getEffectiveGeminiApiKey,
-  getGeminiModelWithFallbacks,
+  resolveLatestGeminiModelChain,
   GEMINI_PRO_MODEL_ID,
   GEMINI_FLASH_MODEL_ID
 } from '../geminiConfig';
+import { generateContentWithRetry } from '../geminiRetryHelper';
 import {
   InfographicSpec,
   TierSpec,
@@ -55,19 +56,7 @@ interface DeepResearchInfographicResult {
  * to their latest authoritative 2026 nomenclature so diagrams and documentation never emit stale SKUs.
  */
 function normalizeLatestGoogleAndCloudNomenclature(text: string): string {
-  if (!text) return text;
-  return text
-    .replace(/\bCloud DLP\b/gi, 'Sensitive Data Protection')
-    .replace(/\bStackdriver\b/gi, 'Cloud Monitoring & Logging')
-    .replace(/\bContainer Registry\b/gi, 'Artifact Registry')
-    .replace(/\bAnthos Service Mesh\b/gi, 'Cloud Service Mesh')
-    .replace(/\bDataplex (?:Data|Universal) Catalog\b/gi, 'Dataplex Catalog')
-    .replace(/\bGlobal HTTPS Load Balancer\b/gi, 'Global External Application LB')
-    .replace(/\bGemini\s+(?:1\.5|2\.0|2\.5|3\.5|3\.6|3\.7)\s+Pro\b/gi, 'Gemini 3.1 Pro')
-    .replace(/\bGemini\s+(?:1\.5|2\.0|2\.5|3\.5|3\.6|3\.7)\s+Flash\b/gi, 'Gemini 3.8 Flash')
-    .replace(/\bgemini-(?:1\.5|2\.0|2\.5|3\.5|3\.6|3\.7)-flash[a-z0-9-]*\b/gi, 'gemini-3.8-flash')
-    .replace(/\bVeo\s+[12](?:\.0)?\b/gi, 'DeepMind Veo 3.1')
-    .replace(/\bLyria\s+[12](?:\.0)?\b/gi, 'DeepMind Lyria 3.5');
+  return text || '';
 }
 
 /**
@@ -84,14 +73,19 @@ async function fetchLiveGoogleSearchGroundingBrief(
     return { brief: '', sources: [] };
   }
   try {
-    const res = await ai.models.generateContent({
-      model: modelId,
-      contents: `Retrieve the latest 2026 technical facts, official product SKU names, wire protocols, architecture boundaries, and recent capability/bug-fix updates for: "${prompt}". Summarize in 5 concise bullet points.`,
-      config: {
-        temperature: 0.1,
-        tools: [{ googleSearch: {} }]
-      }
-    });
+    const res = await generateContentWithRetry(
+      ai,
+      {
+        model: modelId,
+        contents: `Retrieve the latest 2026 technical facts, official product SKU names, wire protocols, architecture boundaries, and recent capability/bug-fix updates for: "${prompt}". Summarize in 5 concise bullet points.`,
+        config: {
+          temperature: 0.1,
+          tools: [{ googleSearch: {} }],
+          thinkingConfig: { thinkingLevel: 'MEDIUM' } as any,
+        }
+      },
+      { maxRetries: 2, perAttemptTimeoutMs: 15000, totalBudgetMs: 20000, label: 'DeepResearch Grounding Brief' }
+    );
     const brief = normalizeLatestGoogleAndCloudNomenclature(res.text || '');
     const chunks = (res as any)?.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
     const sources: string[] = chunks
@@ -116,11 +110,6 @@ export async function researchAndCompileDomainInfographic(
 ): Promise<DeepResearchInfographicResult> {
   const normalizedPrompt = normalizeLatestGoogleAndCloudNomenclature(prompt);
   const apiKey = getEffectiveGeminiApiKey(customApiKey) || process.env.GOOGLE_API_KEY || '';
-  const candidateModels = Array.from(new Set([
-    ...getGeminiModelWithFallbacks('pro'),
-    GEMINI_FLASH_MODEL_ID,
-    ...getGeminiModelWithFallbacks('medium')
-  ]));
   let modelName = GEMINI_PRO_MODEL_ID;
 
   if (!apiKey) {
@@ -148,8 +137,9 @@ export async function researchAndCompileDomainInfographic(
 
   try {
     const ai = new GoogleGenAI({ apiKey });
+    const candidateModels = await resolveLatestGeminiModelChain(ai, 'pro');
 
-    const systemInstruction = `You are Google Omni 1.1, Chief Enterprise & Systems Architect.
+    const systemInstruction = `You are Gemini 2.5 Pro, Chief Enterprise & Systems Architect.
 Your task is to perform rigorous 6-Dimension Domain Engineering Research for the user's requested topic BEFORE compiling a 4-Tier Architectural Infographic.
 
 CRITICAL ANTI-GENERIC RULES (STRICT ZERO-PLACEHOLDER LAW):
@@ -239,7 +229,11 @@ CRITICAL ANTI-GENERIC RULES (STRICT ZERO-PLACEHOLDER LAW):
           required: ['headerTitle', 'headerSubtitle', 'footerText', 'dossier', 'tiers']
     };
 
-    const grounding = await fetchLiveGoogleSearchGroundingBrief(ai, normalizedPrompt);
+    const grounding = await fetchLiveGoogleSearchGroundingBrief(
+      ai,
+      normalizedPrompt,
+      candidateModels[0] || GEMINI_FLASH_MODEL_ID
+    );
     const groundingContext = grounding.brief
       ? `\n\nLIVE GOOGLE SEARCH GROUNDING BRIEF (2026 Latest Product/Feature/Bug-Fix Facts):\n${grounding.brief}`
       : '';
@@ -249,16 +243,21 @@ CRITICAL ANTI-GENERIC RULES (STRICT ZERO-PLACEHOLDER LAW):
     for (const candidateModel of candidateModels) {
       try {
         modelName = candidateModel;
-        const response = await ai.models.generateContent({
-          model: candidateModel,
-          contents: `Perform 6-Dimension Domain Architecture Research and compile a complete 4-Tier Architectural Infographic specification for:\n"${normalizedPrompt}"${groundingContext}`,
-          config: {
-            systemInstruction,
-            temperature: 0.25,
-            responseMimeType: 'application/json',
-            responseSchema: requestSchema
-          }
-        });
+        const response = await generateContentWithRetry(
+          ai,
+          {
+            model: candidateModel,
+            contents: `Perform 6-Dimension Domain Architecture Research and compile a complete 4-Tier Architectural Infographic specification for:\n"${normalizedPrompt}"${groundingContext}`,
+            config: {
+              systemInstruction,
+              temperature: 0.25,
+              thinkingConfig: { thinkingLevel: 'HIGH' } as any,
+              responseMimeType: 'application/json',
+              responseSchema: requestSchema
+            }
+          },
+          { maxRetries: 2, perAttemptTimeoutMs: 30000, totalBudgetMs: 42000, label: 'DeepDomainResearcher 4-Tier Synthesis' }
+        );
         rawText = response.text || '';
         if (rawText) break;
       } catch (err) {

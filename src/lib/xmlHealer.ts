@@ -199,6 +199,10 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('compositional_chain_architecture') ||
     inputXml.includes('data-compositional-chain="true"') ||
     inputXml.includes('PromptCanvas-CompositionalChainCompiler') ||
+    inputXml.includes('data-nano-banana-decompiled="true"') ||
+    inputXml.includes('nano_banana_vision_decompiled') ||
+    inputXml.includes('data-compound-freeform="true"') ||
+    archType === 'compound_freeform' ||
     archType === 'vision_decompiled'
   );
 

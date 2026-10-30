@@ -13,12 +13,12 @@ export function buildLegacyDataDependencyMapXml(): string {
         <mxCell id="main_title" value="&lt;b style=&quot;font-size:16.5px;color:#0F172A;letter-spacing:-0.2px;&quot;&gt;GOOGLE CLOUD DISCOVERY &amp;amp; ASSESSMENT: LEGACY SILOS TO MODERN MIGRATION WAVES&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="65" y="10" width="1050" height="22" as="geometry"/>
         </mxCell>
-        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:9px;color:#475569;font-weight:700;letter-spacing:0.1px;&quot;&gt;StratoZone Collector Appliance, Google Cloud Migration Center, Sensitive Data Protection (DLP), &amp;amp; Gemini 3.8 Flash Architecture Reasoning&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:9px;color:#475569;font-weight:700;letter-spacing:0.1px;&quot;&gt;StratoZone Collector Appliance, Google Cloud Migration Center, Sensitive Data Protection (DLP), &amp;amp; Gemini 2.5 Flash Architecture Reasoning&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="65" y="32" width="1050" height="16" as="geometry"/>
         </mxCell>
         
-        <!-- Gemini 3.8 Flash Badge -->
-        <mxCell id="top_gemini_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#38BDF8;&quot;&gt;✨ Gemini 3.8 Flash&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#94A3B8;font-weight:600;&quot;&gt;Discovery &amp;amp; Migration Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+        <!-- Gemini 2.5 Flash Badge -->
+        <mxCell id="top_gemini_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#38BDF8;&quot;&gt;✨ Gemini 2.5 Flash&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#94A3B8;font-weight:600;&quot;&gt;Discovery &amp;amp; Migration Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="1380" y="8" width="195" height="42" as="geometry"/>
         </mxCell>
 
@@ -169,8 +169,8 @@ export function buildLegacyDataDependencyMapXml(): string {
           <mxGeometry x="990" y="345" width="170" height="120" as="geometry"/>
         </mxCell>
 
-        <!-- 3.4 Gemini 3.8 Flash Architecture Reasoning -->
-        <mxCell id="card_gemini_reasoning" value="&lt;b style=&quot;font-size:10.5px;color:#2563EB;&quot;&gt;✨ Gemini 3.8 Flash&lt;br&gt;Architecture Reasoning&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;• Automated 6Rs Migration Track Classification&lt;br&gt;• Wave Schedule &amp;amp; Dependency Optimization&lt;br&gt;• Legacy Monolith Code Refactoring Plan&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
+        <!-- 3.4 Gemini 2.5 Flash Architecture Reasoning -->
+        <mxCell id="card_gemini_reasoning" value="&lt;b style=&quot;font-size:10.5px;color:#2563EB;&quot;&gt;✨ Gemini 2.5 Flash&lt;br&gt;Architecture Reasoning&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:7.5px;color:#475569;&quot;&gt;• Automated 6Rs Migration Track Classification&lt;br&gt;• Wave Schedule &amp;amp; Dependency Optimization&lt;br&gt;• Legacy Monolith Code Refactoring Plan&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=6;" vertex="1" parent="1">
           <mxGeometry x="790" y="485" width="370" height="275" as="geometry"/>
         </mxCell>
 
@@ -242,7 +242,7 @@ export function buildLegacyDataDependencyMapXml(): string {
 
         <!-- ==================== FOOTER LEGEND ==================== -->
         <!-- x = 25 .. 1575 (width = 1550, height = 36) -->
-        <mxCell id="footer_legend" value="&lt;table style=&quot;width:100%;font-size:7.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Migration Architecture Legend:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔴 &lt;b&gt;On-Prem Legacy Silos &amp;amp; Monoliths&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟠 &lt;b&gt;Legacy Non-Deterministic Monoliths&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟡 &lt;b&gt;Legacy Spaghetti Integration Matrix&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔵 &lt;b&gt;Sensitive Data Protection (DLP) &amp;amp; Discovery&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟢 &lt;b&gt;Clear, Optimized Transformation Waves&lt;/b&gt;&lt;/td&gt;&lt;td&gt;✨ &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Powered by Gemini 3.8 Flash&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="footer_legend" value="&lt;table style=&quot;width:100%;font-size:7.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Migration Architecture Legend:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔴 &lt;b&gt;On-Prem Legacy Silos &amp;amp; Monoliths&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟠 &lt;b&gt;Legacy Non-Deterministic Monoliths&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟡 &lt;b&gt;Legacy Spaghetti Integration Matrix&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔵 &lt;b&gt;Sensitive Data Protection (DLP) &amp;amp; Discovery&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟢 &lt;b&gt;Clear, Optimized Transformation Waves&lt;/b&gt;&lt;/td&gt;&lt;td&gt;✨ &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Powered by Gemini 2.5 Flash&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="25" y="785" width="1550" height="36" as="geometry"/>
         </mxCell>
 

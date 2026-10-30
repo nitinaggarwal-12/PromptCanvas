@@ -9,10 +9,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { mkdirSync } from 'fs';
 import type { Pool } from 'pg';
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
-import {
-  buildOracleEbsExadataClosedLoopHarnessXml,
-  buildUniversalClosedLoopDomainHarnessXml,
-} from './canonical/nasaMultiverseClosedLoopHarness';
 
 // Define TypeScript interfaces for our models
 export interface User {
@@ -1044,53 +1040,13 @@ async function doEnsureTablesExist(): Promise<void> {
     // Non-fatal cleanup
   }
 
-  // Seeding trigger: ensure both Oracle E-Business Suite (EBS R12.2) on Oracle Database@Google Cloud (Exadata X10M) Official Split-VPC and NASA Closed-Loop Harness exist!
   try {
-    const oracleCheck = isPostgres()
-      ? await getPgPool().query(
-          `SELECT COUNT(*) as count FROM diagrams WHERE name ILIKE '%Oracle E-Business Suite (EBS R12.2) on Oracle Database@Google Cloud%'`
-        )
-      : (getSqliteDb()
-          .prepare(`SELECT COUNT(*) as count FROM diagrams WHERE name LIKE '%Oracle E-Business Suite (EBS R12.2) on Oracle Database@Google Cloud%'`)
-          .get() as { count: number | bigint });
-    const oracleCount = isPostgres()
-      ? parseInt((oracleCheck as { rows: { count: string | number }[] }).rows[0].count.toString(), 10)
-      : Number((oracleCheck as { count: number | bigint }).count);
-
-    if (oracleCount === 0) {
-      await seedDiagram(
-        'Oracle E-Business Suite (EBS R12.2) on Oracle Database@Google Cloud (Exadata X10M) — Official Split-VPC Architecture',
-        buildOracleEbsExadataClosedLoopHarnessXml('light'),
-        'Canonical v1.0.1 — Official Google Cloud 4-Zone Split-VPC & Co-Located OCI Child Site Topology (Multi-Zone C3 WebLogic & PCP Cluster + Cloud Filestore/NetApp Volumes NFSv4.1 Shared APPL_TOP fs1/fs2/fs_ne + <0.5ms ODB Network Partner Interconnect Bridge + Delegated ODB Client & Backup Subnets + Exadata X10M RAC 100GbE RoCEv2 & Smart Scan Storage Cells + Active Data Guard RPO=0 + GoldenGate 23ai CDC to BigQuery Cortex)',
-        'Build the Oracle@Google Cloud E-Business Suite (EBS R12.2) running on Exadata X10M architecture diagram'
-      );
+    if (!isPostgres()) {
+      const db = getSqliteDb();
+      db.prepare(`DELETE FROM diagram_versions WHERE diagram_id IN (SELECT id FROM diagrams WHERE name LIKE '%NASA Closed-Loop Mission Control%' OR description LIKE '%Canonical v1.0.1%')`).run();
+      db.prepare(`DELETE FROM diagrams WHERE name LIKE '%NASA Closed-Loop Mission Control%' OR description LIKE '%Canonical v1.0.1%'`).run();
     }
-
-    const nasaCheck = isPostgres()
-      ? await getPgPool().query(
-          `SELECT COUNT(*) as count FROM diagrams WHERE name ILIKE '%NASA Closed-Loop Mission Control%'`
-        )
-      : (getSqliteDb()
-          .prepare(`SELECT COUNT(*) as count FROM diagrams WHERE name LIKE '%NASA Closed-Loop Mission Control%'`)
-          .get() as { count: number | bigint });
-    const nasaCount = isPostgres()
-      ? parseInt((nasaCheck as { rows: { count: string | number }[] }).rows[0].count.toString(), 10)
-      : Number((nasaCheck as { count: number | bigint }).count);
-
-    if (nasaCount === 0) {
-      await seedDiagram(
-        'NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness',
-        buildUniversalClosedLoopDomainHarnessXml({
-          domain: 'nasa_multiverse',
-          prompt: 'Design a NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness on Google Cloud',
-        }),
-        'Canonical v1.0.1 — Closed-Loop Semantic Shape Topology (Hexagon ADK Agents + 1:3 Parallel Counterfactual Fork/Join + Rhombus Safety Commit Gate + Cylinder3 Spanner/Bigtable + #0D9488 Return Highway)',
-        'Design a NASA Closed-Loop Mission Control & Parallel Multi-Universe Digital-Twin Agentic Harness on Google Cloud'
-      );
-    }
-  } catch (seedErr) {
-    console.error('Failed to seed default diagrams:', seedErr);
-  }
+  } catch {}
 
   tablesInitialized = true;
   globalForDb._tablesInitialized = true;

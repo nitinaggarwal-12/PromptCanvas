@@ -408,7 +408,7 @@ CREATE TABLE cfr11_electronic_signatures (
 
 | Model Tier | Vertex AI Model ID | Assigned Clinical / Operational Role | Token Budget & Throttling Policy |
 |---|---|---|---|
-| **Tier 1 Reasoning** | gemini-3.1-pro-preview | Complex clinical synthesis, multi-trial contradiction analysis | thinkingLevel: HIGH, max 16,384 output tokens, tenant quota cap |
+| **Tier 1 Reasoning** | gemini-2.5-pro | Complex clinical synthesis, multi-trial contradiction analysis | thinkingLevel: HIGH, max 16,384 output tokens, tenant quota cap |
 | **Tier 2 High-Speed** | gemini-2.5-flash | Inline PV adverse event screening, metadata routing | Low-latency streaming, < 450ms SLA, semantic cache first |
 | **Tier 3 Embeddings** | text-embedding-005 | 768/1536-dim dense clinical passage indexing | Batch quota throttling + content-SHA256 deduplication |
 

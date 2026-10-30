@@ -74,12 +74,6 @@ import GoogleWorkspaceDirectOpenModal from '@/components/GoogleWorkspaceDirectOp
 import DiagramInlineSlidesPreviewer, {
   openDiagramInGoogleWorkspace,
 } from '@/components/DiagramInlineSlidesPreviewer';
-import {
-  getAutoSavedDraftBlueprints,
-  healStubOrOracleDiagramXml,
-  markDraftDeleted,
-  normalizeToMicroVersionTag
-} from '@/lib/draftMicroVersionStore';
 
 interface DiagramVersionItem {
   id: string;
@@ -345,7 +339,7 @@ function ArchitectureLibraryContent() {
       const apiData: CanvasDiagramItem[] = res.ok ? await res.json() : [];
       const dbList: CanvasDiagramItem[] = (Array.isArray(apiData) ? apiData : []).map((d: any) => {
         const promptText = d.latest_prompt || d.prompt || d.technical_usecase || d.business_usecase || '';
-        const healed = healStubOrOracleDiagramXml(d.xml_content, promptText, d.name);
+        const healed = ({ xml: d.xml_content, healed: false, canonicalTitle: undefined });
         return {
           ...d,
           name: healed.canonicalTitle || d.name,
@@ -355,7 +349,7 @@ function ArchitectureLibraryContent() {
       });
 
       // Read auto-saved micro-version drafts (including NASA Closed-Loop Multi-Universe Harness v1.0.1 and sessionStorage drafts)
-      const autoDraftItems: CanvasDiagramItem[] = getAutoSavedDraftBlueprints().map((draft) => ({
+      const autoDraftItems: CanvasDiagramItem[] = ([] as any[]).map((draft) => ({
         id: draft.id,
         name: draft.name,
         architecture_type: draft.architecture_type || 'draft_canonical_00',
@@ -363,8 +357,7 @@ function ArchitectureLibraryContent() {
         is_private: true,
         created_at: draft.createdAt,
         updated_at: draft.updatedAt,
-        version_count: draft.versionCount || (Array.isArray(draft.versions) ? draft.versions.length : 2),
-        micro_version: draft.activeVersionTag || 'v1.0.1',
+        version_count: draft.versionCount || (Array.isArray(draft.versions) ? draft.versions.length : 1),
         latest_prompt: draft.prompt || draft.description,
         xml_content: draft.xml,
         versions: draft.versions as any,
@@ -392,13 +385,13 @@ function ArchitectureLibraryContent() {
                 const promptText =
                   item.prompt || item.description || fullPayload?.description || 'Saved from User Session Copy';
                 const rawXml = item.xml || fullPayload?.xml || '';
-                const healed = healStubOrOracleDiagramXml(rawXml, promptText, item.name);
+                const healed = ({ xml: rawXml, healed: false, canonicalTitle: undefined });
 
                 if (healed.healed) {
                   savedMutated = true;
                   if (fullPayload && Array.isArray(fullPayload.versions)) {
                     fullPayload.versions = fullPayload.versions.map((v: any, idx: number) => {
-                      const hv = healStubOrOracleDiagramXml(v?.xml, v?.prompt || promptText, v?.title || item.name);
+                      const hv = ({ xml: v?.xml, healed: false, canonicalTitle: undefined });
                       return idx === 0 || hv.healed
                         ? { ...v, xml: idx === 0 ? healed.xml : hv.xml, title: healed.canonicalTitle || v?.title }
                         : v;
@@ -424,11 +417,6 @@ function ArchitectureLibraryContent() {
                   created_at: item.createdAt || item.updatedAt || new Date().toISOString(),
                   updated_at: item.updatedAt || new Date().toISOString(),
                   version_count: fullPayload?.versions?.length || item.versionCount || 1,
-                  micro_version: item.activeVersionTag
-                    ? normalizeToMicroVersionTag(item.activeVersionTag)
-                    : isDraftItem
-                    ? 'v1.0.1'
-                    : undefined,
                   latest_prompt: promptText,
                   xml_content: healed.xml || rawXml,
                 };
@@ -503,7 +491,7 @@ function ArchitectureLibraryContent() {
     } catch (err) {
       console.error('Error fetching library canvases:', err);
       setDiagrams([
-        ...getAutoSavedDraftBlueprints().map((draft) => ({
+        ...([] as any[]).map((draft) => ({
           id: draft.id,
           name: draft.name,
           architecture_type: draft.architecture_type || 'draft_canonical_00',
@@ -511,8 +499,7 @@ function ArchitectureLibraryContent() {
           is_private: true,
           created_at: draft.createdAt,
           updated_at: draft.updatedAt,
-          version_count: draft.versionCount || 2,
-          micro_version: draft.activeVersionTag || 'v1.0.1',
+          version_count: draft.versionCount || 1,
           latest_prompt: draft.prompt || draft.description,
           xml_content: draft.xml,
         })),
@@ -533,7 +520,7 @@ function ArchitectureLibraryContent() {
     e?.stopPropagation();
     try {
       if (diagram.created_studio === 'draft' || diagram.id.startsWith('DRAFT-') || diagram.id.startsWith('draft_')) {
-        markDraftDeleted(diagram.id);
+        
       }
       if (diagram.id.startsWith('VIS-') || diagram.id.startsWith('GCP-') || diagram.created_studio === 'vision') {
         deleteCustomVisionBlueprint(diagram.id);
@@ -682,11 +669,7 @@ function ArchitectureLibraryContent() {
 
   // Open Preview Modal (with automatic self-healing of any cached 1-box stubs)
   const handleOpenPreviewModal = async (diagram: CanvasDiagramItem) => {
-    const healedDiagramMain = healStubOrOracleDiagramXml(
-      diagram.xml_content,
-      diagram.latest_prompt,
-      diagram.name
-    );
+    const healedDiagramMain = ({ xml: diagram.xml_content, healed: false, canonicalTitle: undefined });
     const resolvedDiagram: CanvasDiagramItem = {
       ...diagram,
       name: healedDiagramMain.canonicalTitle || diagram.name,
@@ -696,13 +679,13 @@ function ArchitectureLibraryContent() {
     setIsLoadingVersions(true);
     try {
       // 0. Check auto-saved drafts store first (includes DRAFT-NASA-MULTIVERSE-V1-0-1)
-      const matchedAutoDraft = getAutoSavedDraftBlueprints().find(
+      const matchedAutoDraft = ([] as any[]).find(
         (d) => d.id.toUpperCase() === resolvedDiagram.id.toUpperCase()
       );
       if (matchedAutoDraft && Array.isArray(matchedAutoDraft.versions) && matchedAutoDraft.versions.length > 0) {
         const total = matchedAutoDraft.versions.length;
         const mappedDraftVersions: DiagramVersionItem[] = matchedAutoDraft.versions.map((v: any, idx: number) => {
-          const hv = healStubOrOracleDiagramXml(v.xml, v.prompt || matchedAutoDraft.prompt, v.title || matchedAutoDraft.name);
+          const hv = ({ xml: v.xml, healed: false, canonicalTitle: undefined });
           return {
             id: v.id || `ver_${matchedAutoDraft.id}_${total - idx}`,
             diagram_id: resolvedDiagram.id,
@@ -729,11 +712,7 @@ function ArchitectureLibraryContent() {
             if (Array.isArray(parsedLocal?.versions) && parsedLocal.versions.length > 0) {
               const total = parsedLocal.versions.length;
               const mappedLocalVersions: DiagramVersionItem[] = parsedLocal.versions.map((v: any, idx: number) => {
-                const hv = healStubOrOracleDiagramXml(
-                  v.xml || resolvedDiagram.xml_content,
-                  v.prompt || resolvedDiagram.latest_prompt,
-                  v.title || resolvedDiagram.name
-                );
+                const hv = ({ xml: v.xml || resolvedDiagram.xml_content, healed: false, canonicalTitle: undefined });
                 return {
                   id: v.id || `ver_${resolvedDiagram.id}_${total - idx}`,
                   diagram_id: resolvedDiagram.id,
@@ -762,11 +741,7 @@ function ArchitectureLibraryContent() {
           const sorted = [...vers]
             .sort((a, b) => b.version_number - a.version_number)
             .map((v) => {
-              const hv = healStubOrOracleDiagramXml(
-                v.xml_content,
-                v.prompt || v.comment || resolvedDiagram.latest_prompt,
-                resolvedDiagram.name
-              );
+              const hv = ({ xml: v.xml_content, healed: false, canonicalTitle: undefined });
               return {
                 ...v,
                 xml_content: hv.xml || v.xml_content,
@@ -1778,7 +1753,7 @@ function ArchitectureLibraryContent() {
                     const cleanCanonicalId = diagram.id.replace(/^(bp_|canonical_)/i, '');
                     const studioBadgeConfigMap: Record<string, { label: string; style: string; btnStyle: string; actionLabel: string; route: string }> = {
                       drafts: {
-                        label: `📝 Draft • ${diagram.micro_version || 'v1.0.1'}`,
+                        label: '📝 Saved Draft',
                         style: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/40',
                         btnStyle: 'bg-amber-600 hover:bg-amber-500 text-white',
                         actionLabel: 'Open Draft in Dashboard',
