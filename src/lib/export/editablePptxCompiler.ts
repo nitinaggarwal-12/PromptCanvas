@@ -4224,19 +4224,28 @@ export async function exportDrawioToEditablePptx(
         primaryCodeLines.push(`    ${'}'.repeat(Math.max(0, openCurly))}${')'.repeat(Math.max(0, openParen))}`);
       }
     }
-    const codeBlockText = primaryCodeLines.map((line) => line.replace(/\t/g, '  ')).join('\n');
+    const codeRuns: PptxGenJS.TextProps[] = primaryCodeLines.map((rawLine, idx) => {
+      const preserved = rawLine.replace(/\t/g, '  ').replace(/^ +/, (m) => '\u00A0'.repeat(m.length));
+      return {
+        text: preserved,
+        options: {
+          fontFace: 'Roboto Mono',
+          fontSize: 6.8,
+          color: '188038',
+          breakLine: idx < primaryCodeLines.length - 1,
+        },
+      };
+    });
 
-    slideDeploy.addText(codeBlockText, {
+    slideDeploy.addText(codeRuns, {
       x: 0.96,
       y: 1.68,
       w: 11.40,
       h: 2.14,
-      fontSize: 6.9,
-      lineSpacingMultiple: 1.06,
-      color: '202124',
+      lineSpacingMultiple: 1.08,
       valign: 'top',
-      fontFace: 'Courier New',
-      fit: 'shrink',
+      fontFace: 'Roboto Mono',
+      margin: 0,
       wrap: true,
     });
 
@@ -4267,11 +4276,16 @@ export async function exportDrawioToEditablePptx(
     nextLinks.forEach((wItem, idx) => {
       nextRuns.push({
         text: `•  ${wItem.label}: `,
-        options: { bold: true, color: '1A73E8', fontSize: 8.0 },
+        options: { bold: true, color: '1A73E8', fontSize: 7.9 },
       });
       nextRuns.push({
-        text: `${truncateClean(wItem.description, 165)}${idx < nextLinks.length - 1 ? '\n' : ''}`,
-        options: { bold: false, color: '3C4043', fontSize: 7.8 },
+        text: truncateClean(wItem.description, 165),
+        options: {
+          bold: false,
+          color: '3C4043',
+          fontSize: 7.7,
+          breakLine: idx < nextLinks.length - 1,
+        },
       });
     });
     slideDeploy.addText(nextRuns, {
@@ -4279,9 +4293,10 @@ export async function exportDrawioToEditablePptx(
       y: 4.34,
       w: 11.54,
       h: 1.22,
-      lineSpacingMultiple: 1.18,
+      lineSpacingMultiple: 1.2,
       valign: 'top',
       fontFace: 'Arial',
+      margin: 0,
       wrap: true,
     });
 
@@ -4320,13 +4335,13 @@ export async function exportDrawioToEditablePptx(
 
     slideDeploy.addText(
       [
-        { text: `${licenseText}\n`, options: { bold: false, color: '5F6368', fontSize: 7.8 } },
-        { text: 'Authors: ', options: { bold: true, color: '202124', fontSize: 8.2 } },
-        { text: `${authorsLine}\n`, options: { bold: false, color: '3C4043', fontSize: 8.2 } },
-        { text: 'Other contributors: ', options: { bold: true, color: '202124', fontSize: 8.2 } },
-        { text: `${otherContribLine}\n`, options: { bold: false, color: '3C4043', fontSize: 8.2 } },
+        { text: licenseText, options: { bold: false, color: '5F6368', fontSize: 7.8, breakLine: true } },
+        { text: 'Authors: ', options: { bold: true, color: '202124', fontSize: 8.1 } },
+        { text: authorsLine, options: { bold: false, color: '3C4043', fontSize: 8.1, breakLine: true } },
+        { text: 'Other contributors: ', options: { bold: true, color: '202124', fontSize: 8.1 } },
+        { text: otherContribLine, options: { bold: false, color: '3C4043', fontSize: 8.1, breakLine: true } },
         {
-          text: `Last updated ${contribSec?.contributorsInfo?.lastUpdatedDate || '2026-10-15 UTC'}.`,
+          text: `Last updated ${contribSec?.contributorsInfo?.lastUpdatedDate || '2026-10-30 UTC'}.`,
           options: { italic: true, color: '5F6368', fontSize: 7.6 },
         },
       ],
@@ -4335,9 +4350,10 @@ export async function exportDrawioToEditablePptx(
         y: 6.02,
         w: 11.68,
         h: 1.14,
-        lineSpacingMultiple: 1.22,
+        lineSpacingMultiple: 1.24,
         valign: 'top',
         fontFace: 'Arial',
+        margin: 0,
         wrap: true,
       }
     );

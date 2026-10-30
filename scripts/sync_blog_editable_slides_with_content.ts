@@ -107,23 +107,24 @@ async function syncAllBlogEditableSlidesWithContent() {
     const pptxBuffer = Buffer.from(b64, 'base64');
     console.log(`   ✓ Compiled ${pptxBuffer.length.toLocaleString()} bytes (6 slides: 1 Editable Diagram + 5 Blog Content slides)`);
 
-    const localSlidesDir = '/Users/nitinagga/Documents/blogs/slides';
+    const localSlidesDir = path.resolve(__dirname, '../../blogs/slides');
     if (fs.existsSync(localSlidesDir)) {
       const docPptxPath = path.join(localSlidesDir, `${doc.docId.toLowerCase()}-editable-slides.pptx`);
       fs.writeFileSync(docPptxPath, pptxBuffer);
+      console.log(`   💾 Wrote ${docPptxPath}`);
     }
 
-    const entry = await uploadPptxBufferToGoogleSlides({
-      pptxBuffer,
-      title: `${doc.docId} — ${doc.title} (Editable Diagram #78 + Blog Guide)`,
-      cacheKey: doc.docId,
-      force: true,
-      accessTokenOverride: token,
-    });
-    console.log(`   ✅ Synced ${doc.docId} → Google Slides ID: ${entry.googleSlidesId}`);
-    console.log(`      URL: ${entry.googleSlidesEditUrl}`);
-
     if (token) {
+      const entry = await uploadPptxBufferToGoogleSlides({
+        pptxBuffer,
+        title: `${doc.docId} — ${doc.title} (Editable Diagram #78 + Blog Guide)`,
+        cacheKey: doc.docId,
+        force: true,
+        accessTokenOverride: token,
+      });
+      console.log(`   ✅ Synced ${doc.docId} → Google Slides ID: ${entry.googleSlidesId}`);
+      console.log(`      URL: ${entry.googleSlidesEditUrl}`);
+
       const legacyIds = LEGACY_PRESENTATION_IDS_BY_DOC[doc.docId] || [];
       for (const legId of legacyIds) {
         if (legId !== entry.googleSlidesId) {
@@ -135,20 +136,22 @@ async function syncAllBlogEditableSlidesWithContent() {
           );
         }
       }
-    }
 
-    const aliases = workstreamAliasByDocId[doc.docId] || [];
-    if (aliases.length > 0) {
-      const manifest = loadCloudViewerManifest();
-      for (const aliasKey of aliases) {
-        manifest.slides[aliasKey] = {
-          ...entry,
-          key: aliasKey,
-          title: `${aliasKey} — ${doc.title} (Editable Diagram #78 + Blog Guide)`,
-        };
-        console.log(`   🔗 Mapped alias ${aliasKey} → ${entry.googleSlidesId}`);
+      const aliases = workstreamAliasByDocId[doc.docId] || [];
+      if (aliases.length > 0) {
+        const manifest = loadCloudViewerManifest();
+        for (const aliasKey of aliases) {
+          manifest.slides[aliasKey] = {
+            ...entry,
+            key: aliasKey,
+            title: `${aliasKey} — ${doc.title} (Editable Diagram #78 + Blog Guide)`,
+          };
+          console.log(`   🔗 Mapped alias ${aliasKey} → ${entry.googleSlidesId}`);
+        }
+        saveCloudViewerManifest(manifest);
       }
-      saveCloudViewerManifest(manifest);
+    } else {
+      console.log(`   ℹ️ No local OAuth token on host; compiled local .pptx ready for gdrive CLI sync.`);
     }
   }
 
