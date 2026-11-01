@@ -1,0 +1,1 @@
+The canonical 34 visual-grammar atlas is maintained on this branch. See `visual-grammar-registry.md` for the row-by-row mapping and PNG links.
