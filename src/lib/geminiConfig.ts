@@ -134,10 +134,15 @@ interface CachedVertexToken {
   location: string;
 }
 
-function resolveVertexAccessTokenSync(): CachedVertexToken | null {
+export function invalidateVertexTokenCache(): void {
+  const g = globalThis as unknown as { __pcVertexTokenCache?: CachedVertexToken | null };
+  g.__pcVertexTokenCache = null;
+}
+
+function resolveVertexAccessTokenSync(forceRefresh = false): CachedVertexToken | null {
   if (typeof window !== 'undefined') return null;
   const g = globalThis as unknown as { __pcVertexTokenCache?: CachedVertexToken | null };
-  if (g.__pcVertexTokenCache && g.__pcVertexTokenCache.expiresAt > Date.now() + 60_000) {
+  if (!forceRefresh && g.__pcVertexTokenCache && g.__pcVertexTokenCache.expiresAt > Date.now() + 15_000) {
     return g.__pcVertexTokenCache;
   }
   const useVertex =
@@ -172,7 +177,8 @@ function resolveVertexAccessTokenSync(): CachedVertexToken | null {
     const location = (process.env.GOOGLE_CLOUD_LOCATION || 'us-central1').trim();
     const cached: CachedVertexToken = {
       token,
-      expiresAt: Date.now() + 45 * 60 * 1000,
+      // Keep local cache short (3 min) since gcloud CLI returns tokens with arbitrary remaining TTL
+      expiresAt: Date.now() + 3 * 60 * 1000,
       project,
       location,
     };

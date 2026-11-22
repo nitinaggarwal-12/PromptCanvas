@@ -155,6 +155,79 @@ describe('PromptCanvas Permanent Remediation Invariants', () => {
       const uniqueIcons = new Set(iconMatches);
       expect(uniqueIcons.size).toBeGreaterThanOrEqual(4);
     });
+
+    it('produces 0 validation errors on a dense 24-node 3-row multi-tier L300 graph with middle-row cross-tier edges', async () => {
+      const dense24Graph: ArchitectureGraph = {
+        title: 'Harness Engineering on Google Cloud (L300 — 24 Components)',
+        cloud: 'gcp',
+        tiers: [
+          { id: 't1', label: 'Ingress & Client', order: 1 },
+          { id: 't2', label: 'Compute & Orchestration', order: 2 },
+          { id: 't3', label: 'AI, Data & Security (3 Rows)', order: 3 },
+          { id: 't4', label: 'Observability & FinOps', order: 4 },
+        ],
+        nodes: [
+          { id: 'n1', label: 'Cloud Armor WAF', tier: 't1', type: 'security', product: 'cloud_armor' },
+          { id: 'n2', label: 'Cloud Load Balancing', tier: 't1', type: 'network', product: 'load_balancing' },
+          { id: 'n3', label: 'Developer CLI', tier: 't1', type: 'user', product: 'cli' },
+          { id: 'n4', label: 'Cloud Run Agent', tier: 't2', type: 'compute', product: 'cloud_run' },
+          { id: 'n5', label: 'Judge Worker', tier: 't2', type: 'compute', product: 'cloud_run' },
+          { id: 'n6', label: 'Cloud Build CI', tier: 't2', type: 'service', product: 'cloud_build' },
+          { id: 'n7', label: 'Cloud Deploy', tier: 't2', type: 'service', product: 'cloud_deploy' },
+          { id: 'n8', label: 'Cloud Pub/Sub', tier: 't2', type: 'queue', product: 'pubsub' },
+          { id: 'n9', label: 'GKE Autopilot', tier: 't2', type: 'compute', product: 'gke' },
+          { id: 'n10', label: 'API Gateway MCP', tier: 't2', type: 'gateway', product: 'api_gateway' },
+          // 11 nodes in t3 -> 3 rows (4 + 4 + 3), testing middle-row exits & entries!
+          { id: 'n11', label: 'BigQuery Warehouse', tier: 't3', type: 'analytics', product: 'bigquery' },
+          { id: 'n12', label: 'Memorystore Redis', tier: 't3', type: 'cache', product: 'redis' },
+          { id: 'n13', label: 'Gen AI Evaluation', tier: 't3', type: 'ai', product: 'vertex_ai' },
+          { id: 'n14', label: 'Cloud Storage', tier: 't3', type: 'storage', product: 'cloud_storage' },
+          { id: 'n15', label: 'Secret Manager', tier: 't3', type: 'security', product: 'secret_manager' },
+          { id: 'n16', label: 'Vector Search', tier: 't3', type: 'ai', product: 'vertex_ai' },
+          { id: 'n17', label: 'Cloud KMS', tier: 't3', type: 'security', product: 'kms' },
+          { id: 'n18', label: 'Cloud SQL Postgres', tier: 't3', type: 'database', product: 'cloud_sql' },
+          { id: 'n19', label: 'Vertex AI Gemini', tier: 't3', type: 'ai', product: 'vertex_ai' },
+          { id: 'n20', label: 'Model Armor', tier: 't3', type: 'security', product: 'model_armor' },
+          { id: 'n21', label: 'Cloud DLP', tier: 't3', type: 'security', product: 'dlp' },
+          { id: 'n22', label: 'Cloud Trace', tier: 't4', type: 'analytics', product: 'cloud_trace' },
+          { id: 'n23', label: 'Cloud Monitoring', tier: 't4', type: 'analytics', product: 'cloud_monitoring' },
+          { id: 'n24', label: 'Cloud Logging', tier: 't4', type: 'analytics', product: 'cloud_logging' },
+        ],
+        edges: [
+          { id: 'e1', source: 'n3', target: 'n2', label: '1. HTTPS', style: 'solid' },
+          { id: 'e2', source: 'n1', target: 'n2', label: '2. WAF', style: 'solid' },
+          { id: 'e3', source: 'n2', target: 'n4', label: '3. Route', style: 'solid' },
+          { id: 'e4', source: 'n4', target: 'n15', label: '4. Secrets (Middle Row)', style: 'solid' },
+          { id: 'e5', source: 'n9', target: 'n15', label: '5. Tool Creds (Middle Row)', style: 'solid' },
+          { id: 'e6', source: 'n4', target: 'n16', label: '6. Memory (Middle Row)', style: 'solid' },
+          { id: 'e7', source: 'n4', target: 'n18', label: '7. Prompts (Middle Row)', style: 'solid' },
+          { id: 'e8', source: 'n17', target: 'n14', label: '8. CMEK Storage', style: 'solid' },
+          { id: 'e9', source: 'n17', target: 'n18', label: '9. CMEK SQL', style: 'solid' },
+          { id: 'e10', source: 'n15', target: 'n24', label: '10. Audit Middle->Bottom', style: 'dashed' },
+          { id: 'e11', source: 'n19', target: 'n24', label: '11. LLM Logs', style: 'dashed' },
+          { id: 'e12', source: 'n4', target: 'n22', label: '12. OTel Spans', style: 'dashed' },
+          { id: 'e13', source: 'n24', target: 'n11', label: '13. Sink to BQ', style: 'solid' },
+          { id: 'e14', source: 'n22', target: 'n23', label: '14. SLO Metrics', style: 'solid' },
+          { id: 'e15', source: 'n3', target: 'n6', label: '15. CI Trigger', style: 'solid' },
+          { id: 'e16', source: 'n6', target: 'n7', label: '16. Verify', style: 'solid' },
+          { id: 'e17', source: 'n7', target: 'n4', label: '17. Canary', style: 'solid' },
+          { id: 'e18', source: 'n4', target: 'n8', label: '18. Pub/Sub', style: 'solid' },
+          { id: 'e19', source: 'n5', target: 'n8', label: '19. Sub', style: 'solid' },
+          { id: 'e20', source: 'n5', target: 'n13', label: '20. Eval', style: 'solid' },
+          { id: 'e21', source: 'n10', target: 'n9', label: '21. Sandbox', style: 'solid' },
+          { id: 'e22', source: 'n4', target: 'n10', label: '22. MCP', style: 'solid' },
+          { id: 'e23', source: 'n4', target: 'n12', label: '23. Cache', style: 'solid' },
+          { id: 'e24', source: 'n21', target: 'n20', label: '24. DLP->Armor', style: 'solid' },
+          { id: 'e25', source: 'n20', target: 'n19', label: '25. Safe LLM', style: 'solid' },
+        ],
+      };
+
+      const laidOut = await computeElkLayout(dense24Graph);
+      const xml = renderGraphToDrawioXml(laidOut);
+      const report = validateDrawioXml(xml);
+      expect(report.valid).toBe(true);
+      expect(report.errors).toHaveLength(0);
+    });
   });
 
   describe('4. Database graph_json Persistence on Create', () => {

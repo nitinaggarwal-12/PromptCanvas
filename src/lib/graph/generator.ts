@@ -318,12 +318,12 @@ export async function editLogicalGraph(
             systemInstruction: EDIT_GRAPH_SYSTEM_PROMPT,
             responseMimeType: 'application/json',
             temperature: 0.2,
-            maxOutputTokens: 8192,
+            maxOutputTokens: 16384,
             thinkingConfig: editCfg.thinkingConfig,
             responseSchema: buildArchitectureGraphResponseSchema(),
           },
         },
-        { maxRetries: 2, perAttemptTimeoutMs: 40_000, totalBudgetMs: 75_000, label: 'V2 Graph Edit' }
+        { maxRetries: 2, perAttemptTimeoutMs: 65_000, totalBudgetMs: 115_000, label: 'V2 Graph Edit' }
       );
 
       const responseText = (response.text || '').replace(/```json\s*|```/gi, '').trim();

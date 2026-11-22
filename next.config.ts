@@ -1,8 +1,19 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["node:sqlite"],
-  allowedDevOrigins: ["127.0.0.1", "localhost", "127.0.0.1:3000", "localhost:3000"],
+  turbopack: {
+    root: path.resolve(__dirname),
+  },
+  allowedDevOrigins: [
+    "127.0.0.1",
+    "localhost",
+    "127.0.0.1:3000",
+    "localhost:3000",
+    "nitinagga.c.googlers.com",
+    "*.proxy.googlers.com",
+  ],
   devIndicators: false,
   typescript: {
     ignoreBuildErrors: false,

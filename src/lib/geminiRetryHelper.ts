@@ -1,6 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { parseUpstreamError } from './ai/modelErrors';
-import { resolveLatestGeminiModelChain } from './geminiConfig';
+import { resolveLatestGeminiModelChain, invalidateVertexTokenCache } from './geminiConfig';
 
 interface GeminiRetryOptions {
   /** Total attempts, including the first. */
@@ -116,6 +116,7 @@ export async function generateContentWithRetry(
     : params;
 
   let strippedUnsupportedThinking = false;
+  let refreshedExpiredVertexToken = false;
   let resolvedLiveFallbackModels: string[] | null = null;
   let liveFallbackIdx = 0;
 
@@ -141,6 +142,17 @@ export async function generateContentWithRetry(
     } catch (err: any) {
       lastError = err;
       const errMsg = String(err?.message || '');
+
+      // If a cached gcloud/Vertex OAuth token expired mid-process, invalidate cache and retry immediately once.
+      if (
+        !refreshedExpiredVertexToken &&
+        (/401|UNAUTHENTICATED|Token expired|ACCESS_TOKEN_TYPE_UNSUPPORTED/i.test(errMsg))
+      ) {
+        refreshedExpiredVertexToken = true;
+        invalidateVertexTokenCache();
+        attempt--;
+        continue;
+      }
 
       // If a newly released model rejects thinkingConfig with HTTP 400, strip thinkingConfig and retry immediately on the same latest model.
       if (

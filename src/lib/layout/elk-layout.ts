@@ -5,7 +5,7 @@ const elk = new ELK();
 
 const MAX_NODES_PER_ROW = 4;
 const NODE_H_GAP = 84;
-const NODE_ROW_GAP = 46;
+const NODE_ROW_GAP = 64;
 const TIER_PAD_LEFT = 42;
 const TIER_PAD_RIGHT = 42;
 const TIER_HEADER_BAND = 48;
@@ -13,7 +13,7 @@ const TIER_PAD_BOTTOM = 28;
 const TIER_V_GAP = 80;
 const TITLE_TOP_Y = 24;
 const TITLE_HEIGHT = 54;
-const FIRST_TIER_Y = TITLE_TOP_Y + TITLE_HEIGHT + 28; // 106
+const FIRST_TIER_Y = TITLE_TOP_Y + TITLE_HEIGHT + 40; // 118
 
 /**
  * Calculates deterministic node width & height so multi-line descriptions and cylinder rims
@@ -160,6 +160,9 @@ export async function computeElkLayout(graph: ArchitectureGraph): Promise<Archit
     { absX: number; absY: number; width: number; height: number; tierIdx: number; rowIdx: number; colIdx: number; rowCount: number }
   >();
 
+  const tierRowGapBaseY = new Map<string, number>();
+  const tierRowGapLanes = new Map<string, number>();
+
   let currentTierY = FIRST_TIER_Y;
   for (let tIdx = 0; tIdx < sortedTiers.length; tIdx++) {
     const tier = sortedTiers[tIdx];
@@ -205,6 +208,9 @@ export async function computeElkLayout(graph: ArchitectureGraph): Promise<Archit
         cursorX += it.width + NODE_H_GAP;
       });
 
+      if (rIdx < rows.length - 1) {
+        tierRowGapBaseY.set(`${tIdx}:${rIdx}`, Math.round(currentTierY + rowY + row.rowHeight + 16));
+      }
       rowY += row.rowHeight + NODE_ROW_GAP;
     });
 
@@ -280,13 +286,44 @@ export async function computeElkLayout(graph: ArchitectureGraph): Promise<Archit
       };
     }
 
-    // Case B: Same tier, non-adjacent or different rows -> route cleanly through the empty gap directly below this tier
-    if (iu === iv) {
+    // Case B: Same tier, non-adjacent or adjacent rows -> route cleanly through empty inter-row or inter-tier gap (never crossing another row!)
+    if (iu === iv && Math.abs(src.rowIdx - tgt.rowIdx) <= 1) {
       const exitX = nextPortFraction(outPortUsed, outPortTotals, edge.source);
       const entryX = nextPortFraction(inPortUsed, inPortTotals, edge.target);
       const sx = Math.round(src.absX + src.width * exitX);
       const tx = Math.round(tgt.absX + tgt.width * entryX);
-      const corridorY = nextGapY(iu);
+
+      if (src.rowIdx !== tgt.rowIdx) {
+        const upperRow = Math.min(src.rowIdx, tgt.rowIdx);
+        const key = `${iu}:${upperRow}`;
+        const lane = tierRowGapLanes.get(key) || 0;
+        tierRowGapLanes.set(key, lane + 1);
+        const baseY = tierRowGapBaseY.get(key) ?? nextGapY(iu);
+        const corridorY = baseY + (lane % 3) * 12;
+        const goingDown = tgt.rowIdx > src.rowIdx;
+        return {
+          ...edge,
+          exitX,
+          exitY: goingDown ? 1 : 0,
+          entryX,
+          entryY: goingDown ? 0 : 1,
+          bendPoints: [
+            { x: sx, y: corridorY },
+            { x: tx, y: corridorY },
+          ],
+        };
+      }
+
+      // Same row, non-adjacent: use empty inter-row channel if a lower row exists, else inter-tier gap below tier
+      let corridorY: number;
+      if (src.rowIdx < src.rowCount - 1) {
+        const key = `${iu}:${src.rowIdx}`;
+        const lane = tierRowGapLanes.get(key) || 0;
+        tierRowGapLanes.set(key, lane + 1);
+        corridorY = (tierRowGapBaseY.get(key) ?? nextGapY(iu)) + (lane % 3) * 12;
+      } else {
+        corridorY = nextGapY(iu);
+      }
       return {
         ...edge,
         exitX,
@@ -344,11 +381,44 @@ export async function computeElkLayout(graph: ArchitectureGraph): Promise<Archit
     const sx = Math.round(src.absX + src.width * exitX);
     const tx = Math.round(tgt.absX + tgt.width * entryX);
 
-    // Choose empty corridors adjacent to src and tgt that NEVER pass through another row inside the tier
-    const srcExitBottom = !srcBlockedBelow;
-    const tgtEnterTop = !tgtBlockedAbove;
-    const outCorridorY = nextGapY(srcExitBottom ? iu : iu - 1);
-    const inCorridorY = nextGapY(tgtEnterTop ? iv - 1 : iv);
+    // Choose empty corridors adjacent to src and tgt that NEVER pass through another row inside the tier.
+    // Works for ANY row count (1, 2, 3, ..., K):
+    // - Top row (rowIdx === 0): exits/enters UP into inter-tier gap `tierIdx - 1` (or DOWN if single row)
+    // - Middle row (0 < rowIdx < rowCount - 1): exits DOWN into inter-row channel `tierIdx:rowIdx`, enters UP from `tierIdx:rowIdx-1`
+    // - Bottom row (rowIdx === rowCount - 1): exits/enters DOWN into inter-tier gap `tierIdx`
+    let srcExitBottom: boolean;
+    let outCorridorY: number;
+    if (!srcBlockedBelow) {
+      srcExitBottom = true;
+      outCorridorY = nextGapY(iu);
+    } else if (src.rowIdx === 0) {
+      srcExitBottom = false;
+      outCorridorY = nextGapY(iu - 1);
+    } else {
+      // Middle row in a 3+ row tier: exit cleanly down into the empty inter-row channel directly below this row
+      srcExitBottom = true;
+      const key = `${iu}:${src.rowIdx}`;
+      const lane = tierRowGapLanes.get(key) || 0;
+      tierRowGapLanes.set(key, lane + 1);
+      outCorridorY = (tierRowGapBaseY.get(key) ?? nextGapY(iu)) + (lane % 3) * 12;
+    }
+
+    let tgtEnterTop: boolean;
+    let inCorridorY: number;
+    if (!tgtBlockedAbove) {
+      tgtEnterTop = true;
+      inCorridorY = nextGapY(iv - 1);
+    } else if (tgt.rowIdx === tgt.rowCount - 1) {
+      tgtEnterTop = false;
+      inCorridorY = nextGapY(iv);
+    } else {
+      // Middle row in a 3+ row tier: enter cleanly from the empty inter-row channel directly above this row
+      tgtEnterTop = true;
+      const key = `${iv}:${tgt.rowIdx - 1}`;
+      const lane = tierRowGapLanes.get(key) || 0;
+      tierRowGapLanes.set(key, lane + 1);
+      inCorridorY = (tierRowGapBaseY.get(key) ?? nextGapY(iv - 1)) + (lane % 3) * 12;
+    }
 
     return {
       ...edge,
