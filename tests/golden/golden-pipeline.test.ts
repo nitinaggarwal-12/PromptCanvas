@@ -235,8 +235,9 @@ export async function runGoldenPipelineTests(): Promise<boolean> {
     const rootCells = parsedObj?.mxfile?.diagram?.mxGraphModel?.root?.mxCell || [];
     const cellCount = Array.isArray(rootCells) ? rootCells.length : 1;
 
-    // Expected cell count: 1 (cell 0) + 1 (cell 1) + tiers + nodes + edges
-    const expectedCellCount = 2 + t.graph.tiers.length + t.graph.nodes.length + t.graph.edges.length;
+    // Expected cell count: 1 (cell 0) + 1 (cell 1) + optional title banner + tiers + nodes + edges
+    const hasTitleBanner = Array.isArray(rootCells) && rootCells.some((c: any) => c?.['@_id'] === 'v2_canvas_title') ? 1 : 0;
+    const expectedCellCount = 2 + hasTitleBanner + t.graph.tiers.length + t.graph.nodes.length + t.graph.edges.length;
     if (cellCount !== expectedCellCount) {
       console.error(` ❌ Round-trip cell count mismatch for "${t.name}": expected ${expectedCellCount}, got ${cellCount}`);
       passed = false;

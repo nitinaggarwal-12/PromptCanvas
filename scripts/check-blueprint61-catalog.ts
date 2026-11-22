@@ -1,6 +1,6 @@
 import { inflateRawSync } from 'node:zlib';
 import { BLUEPRINT_KNOWLEDGE_MATRIX, getBlueprintMetadataById } from '../src/lib/blueprintKnowledgeMatrixCatalog';
-import { getArchitectureHierarchy } from '../src/lib/architectureHierarchyCatalog';
+import { getArchitectureHierarchy } from '../src/lib/architectureHierarchy';
 import { getDefaultXmlForArchitecture } from '../src/lib/architectureTypesCertified';
 
 const ID = 'enterprise_ai_document_assistant';

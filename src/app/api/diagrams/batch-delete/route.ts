@@ -2,10 +2,17 @@ import { NextResponse } from "next/server";
 import { batchDeleteDiagrams } from "@/lib/db";
 import { getAuthenticatedUser } from "@/lib/auth";
 
-// POST /api/diagrams/batch-delete - Delete multiple diagrams at once
+// POST /api/diagrams/batch-delete - Delete multiple diagrams at once (authenticated ownership/admin check)
 export async function POST(request: Request) {
   try {
     const user = await getAuthenticatedUser();
+    if (!user || !user.id) {
+      return NextResponse.json(
+        { error: "Unauthorized: Authentication required to batch delete diagrams." },
+        { status: 401 }
+      );
+    }
+    const isSuperAdmin = Boolean(user.is_super_admin || user.global_role === 'Super-Admin');
     const body = await request.json();
     const { ids } = body;
 
@@ -16,7 +23,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const deletedCount = await batchDeleteDiagrams(ids, user?.id, true);
+    const deletedCount = await batchDeleteDiagrams(ids, user.id, isSuperAdmin);
 
     return NextResponse.json({
       success: true,

@@ -67,7 +67,7 @@ interface AsdeHarnessContract {
     dualPolarityExploitVectors: Array<{
       vectorId: string;
       targetInvariant: string;
-      status: 'BLOCKED_AND_LOCKED_AS_REGRESSION_TEST' | 'UNVERIFIED_ON_STUB';
+      status: 'BLOCKED_AND_LOCKED_AS_REGRESSION_TEST' | 'VERIFIED_ON_AST' | 'UNVERIFIED_ON_STUB';
     }>;
   };
   phase5Day2TelemetryHighway: {
@@ -944,19 +944,21 @@ Return JSON with:
   const provenanceLedger: ProvenanceStageCitation[] = [
     {
       stageNumber: 1,
-      stageName: 'External Standards & Scientific Reality Grounding',
+      stageName: 'Domain Standards & Reality Check',
       actorRole: 'Domain Standards & Reality Auditor',
-      modelId: `${GEMINI_FLASH_MODEL_ID} (tools: googleSearch) + ${DEEP_RESEARCH_MODEL_ID}`,
+      modelId: isLiveModelEvaluated
+        ? `${groundingModel} (live googleSearch grounding)`
+        : 'Deterministic Standards Matcher (Offline — no live LLM call)',
       codeCitation: 'src/lib/truthfulnessGroundingEngine.ts#runTruthfulnessAndGroundingCertification (Stage 1)',
       timestampUtc: tsStage1,
       durationMs: stage1DurationMs,
       whatItDid: astInspection.failureDiagnosticSummary
         ? astInspection.failureDiagnosticSummary
         : hasSpeculativePremise
-          ? `Parsed user prompt ("${prompt}"), flagged speculative premise for scientific reframing into a 1:3 Parallel Counterfactual Digital-Twin & Monte Carlo Simulation ensemble, and retrieved authoritative domain standards (${domainContext.standardsSummary}).`
-          : `Parsed user prompt ("${prompt}") and grounded all architecture tiers in authoritative domain standards (${domainContext.standardsSummary}).`,
+          ? `Parsed user prompt ("${prompt}"), flagged speculative premise for engineering reframing, and mapped relevant domain standards (${domainContext.standardsSummary}).`
+          : `Parsed user prompt ("${prompt}") and matched domain standards (${domainContext.standardsSummary}).`,
       whyItDidIt:
-        'Prevents ungrounded, single-box stubs, or hallucinated labels from masquerading as certified engineering.',
+        'Prevents ungrounded, single-box stubs, or hallucinated labels from masquerading as verified engineering.',
       verdict: stageVerdict,
       externalStandardsCited: [
         ...domainContext.groundedStandards.map((s) => `${s.standardId} (${s.authority})`),
@@ -965,35 +967,36 @@ Return JSON with:
     },
     {
       stageNumber: 2,
-      stageName: 'Zero-Blueprint Compositional AST & Multi-Tier Topology Synthesis',
-      actorRole: 'Lead Domain & Cloud Topology Synthesizer',
-      modelId: `${GEMINI_FLASH_MODEL_ID} (Gemini 2.5 Flash Stable)`,
-      codeCitation: 'src/lib/promptDrivenDiagramSynthesizer.ts#synthesizePromptDrivenDiagramXml',
+      stageName: 'Draw.io XML Topology & Component Inventory Inspection',
+      actorRole: 'AST Topology Inspector',
+      modelId: isLiveModelEvaluated ? generatorModel : 'Deterministic Draw.io XML Parser (Offline)',
+      codeCitation: 'src/lib/truthfulnessGroundingEngine.ts#inspectDiagramXmlAst',
       timestampUtc: tsStage2,
       durationMs: stage2DurationMs,
       whatItDid: astInspection.failureDiagnosticSummary
         ? `Detected incomplete topology (${astInspection.componentVertexCount} component vertex/vertices, ${astInspection.edgeCount} edge(s)). Refused certification.`
-        : `Synthesized complete multi-tier topology (${astInspection.componentVertexCount} vertices, ${astInspection.edgeCount} orthogonal edges) grounded in ${domainContext.domainLabel}.`,
+        : `Verified Draw.io XML topology (${astInspection.componentVertexCount} component vertices, ${astInspection.edgeCount} connectors) against ${domainContext.domainLabel}.`,
       whyItDidIt:
         'Ensures every prompt produces a complete multi-tier architecture rather than a single disconnected box.',
       verdict: stageVerdict === 'REFRAMED_SPECULATIVE_PREMISE' ? 'CERTIFIED' : stageVerdict,
       externalStandardsCited: [
-        'Google Cloud Architecture Center Standards',
-        'Vertex AI Gemini 3.1 Pro / 2.5 Flash / Gemini Embedding 2',
+        'Draw.io mxGraph XML Specification',
         domainContext.domainLabel,
       ],
     },
     {
       stageNumber: 3,
-      stageName: 'Cross-Model LLM-as-a-Judge Truthfulness & Completeness Audit',
-      actorRole: 'Independent Cross-Model Truthfulness & Completeness Critic',
-      modelId: `${criticJudgeModel} (Gemini 3.1 Pro, thinkingLevel=HIGH, judging ${generatorModel})`,
+      stageName: 'Cross-Model Truthfulness & Completeness Audit',
+      actorRole: 'Independent Truthfulness & Completeness Critic',
+      modelId: isLiveModelEvaluated
+        ? `${criticJudgeModel} (live critic judging ${generatorModel})`
+        : 'Deterministic AST Completeness Heuristic (Offline — no live LLM judge executed)',
       codeCitation: 'src/lib/geminiConfig.ts#getDistinctJudgeModel & src/lib/truthfulnessGroundingEngine.ts (Stage 3)',
       timestampUtc: tsStage3,
       durationMs: stage3DurationMs,
-      whatItDid: `Conducted independent evaluation of the rendered XML (${astInspection.componentVertexCount} vertices, ${astInspection.edgeCount} edges) against the prompt and domain standards. Scored Truthfulness=${criticTruthfulnessScore}%, Standards Grounding=${criticGroundingScore}%, Mission Completeness=${criticCompletenessScore}%, and Prompt Relevance=${criticRelevanceScore}%.`,
+      whatItDid: `Evaluated the rendered XML (${astInspection.componentVertexCount} vertices, ${astInspection.edgeCount} edges) against the prompt and domain standards (${isLiveModelEvaluated ? 'live Gemini judge' : 'deterministic offline heuristic'}). Scored Truthfulness=${criticTruthfulnessScore}%, Standards Grounding=${criticGroundingScore}%, Mission Completeness=${criticCompletenessScore}%, and Prompt Relevance=${criticRelevanceScore}%.`,
       whyItDidIt:
-        'Enforces Cross-Model Generator-vs-Judge separation and fail-closed AST completeness verification so single-box or blank diagrams never receive a passing score.',
+        'Enforces Generator-vs-Judge separation and fail-closed AST completeness verification so single-box or blank diagrams never receive a passing score.',
       verdict: stageVerdict === 'REFRAMED_SPECULATIVE_PREMISE' ? 'CERTIFIED' : stageVerdict,
       externalStandardsCited: [
         'Cross-Model Judge Matrix (LLM_JUDGE_MATRIX)',
@@ -1002,17 +1005,17 @@ Return JSON with:
     },
     {
       stageNumber: 4,
-      stageName: 'Omni 1.1 QC Chief Deterministic 2D Geometry & AST Verification',
+      stageName: 'Deterministic 2D Geometry & Draw.io Validator Gate',
       actorRole: 'Deterministic Vector AST & Spatial Collision Auditor',
-      modelId: `${OMNI_ORCHESTRATOR_ID} (OmniQcChief + preflightVerifyAndHealXmlAcrossAll6Audits)`,
-      codeCitation: 'src/lib/omniDirector/OmniQcChief.ts#auditDiagramXml & src/lib/preflightAuditEngine.ts#preflightVerifyAndHealXmlAcrossAll6Audits',
+      modelId: 'Deterministic Draw.io Validator (src/lib/validate/validator.ts)',
+      codeCitation: 'src/lib/validate/validator.ts#validateDrawioXml & src/lib/preflightAuditEngine.ts#preflightVerifyAndHealXmlAcrossAll6Audits',
       timestampUtc: tsStage4,
       durationMs: stage4DurationMs,
       whatItDid: astInspection.failureDiagnosticSummary
         ? `Flagged insufficient component density (${astInspection.componentVertexCount} vertices, ${astInspection.edgeCount} edges).`
-        : 'Verified 100% well-formed Draw.io <mxGraphModel> XML, 0 sibling 2D AABB bounding-box collisions (overlapCount === 0), orthogonal 90° connector waypoints, and >= 4.5:1 WCAG AA contrast.',
+        : 'Inspected Draw.io <mxGraphModel> XML structure, bounding-box containment, connector orthogonality, and contrast compliance.',
       whyItDidIt:
-        'Guarantees mathematical layout perfection and 1-click export parity across Draw.io, PNG, PDF, Google Slides, and Google Docs.',
+        'Ensures layout integrity and clean export parity across Draw.io, PNG, PDF, and Google Slides.',
       verdict: stageVerdict === 'REFRAMED_SPECULATIVE_PREMISE' ? 'CERTIFIED' : stageVerdict,
       externalStandardsCited: [
         'Draw.io mxGraph XML Schema',
@@ -1056,13 +1059,13 @@ Return JSON with:
       escVersion: '2.0.0',
       phase1SpecContract: {
         dshGroundingVerified: !astInspection.isBlankCanvas,
-        adversarialCritiqueRounds: 2,
-        maxCritiqueRounds: 3,
-        criticPersona: 'egm-design (Principal Adversarial Systems Architect)',
-        simplifierPersona: 'egm-zoom-out (Radical Simplification & YAGNI Lead)',
+        adversarialCritiqueRounds: isLiveModelEvaluated ? 1 : 0,
+        maxCritiqueRounds: 2,
+        criticPersona: 'Automated Architecture Critic',
+        simplifierPersona: 'Deterministic Layout & Schema Simplifier',
         yagniSimplificationsApplied: [
-          'Collapsed intermediate broker hops into direct deterministic 2D AABB layout & Vertex-bound orthogonal connectors',
-          'Enforced single-pass Cross-Model Judge evaluation without unbounded recursive prompt loops',
+          'Enforced single canonical ArchitectureGraph IR shared across Draw.io and Google Slides export',
+          'Enforced bounded validation and deterministic orthogonal layout without unbounded raw-XML LLM loops',
         ],
         verdict:
           astInspection.isBlankCanvas || astInspection.isStubOrSingleBox
@@ -1070,45 +1073,37 @@ Return JSON with:
             : 'PASS_ZERO_FATAL_GAPS',
       },
       phase2CasgCapsuleRbac: {
-        capsuleIsolationMode: 'borg_ephemeral_capsule_unprivileged',
+        capsuleIsolationMode: 'runtime_process_standard',
         jwtTtlSeconds: 300,
         stageRbacMatrix: [
-          { stage: 'Stage 0-2: DSH Grounding & Adversarial Critic', mode: 'READ_ONLY', allowedScopes: ['fs:read', 'standards:search'] },
-          { stage: 'Stage 3-4: AST Synthesis & Wound-Wait Layout', mode: 'SCOPED_WRITE', allowedScopes: ['ast:synthesize', 'xml:heal'] },
-          { stage: 'Stage 5-7: Cross-Model Judge & 3-Arm Audit', mode: 'READ_ONLY', allowedScopes: ['ast:inspect', 'wcag:verify'] },
+          { stage: 'Stage 1: Standards Grounding', mode: 'READ_ONLY', allowedScopes: ['standards:search'] },
+          { stage: 'Stage 2: Graph & XML Validation', mode: 'SCOPED_WRITE', allowedScopes: ['ast:validate'] },
+          { stage: 'Stage 3: Truthfulness Audit', mode: 'READ_ONLY', allowedScopes: ['ast:inspect'] },
         ],
       },
       phase3DualContractsLock: {
         dbSchemaDdlLocked: true,
         wireContractOpenApiLocked: true,
-        woundWaitLeasesGranted: true,
+        woundWaitLeasesGranted: false,
       },
       phase4RedTeamRegressionGate: {
         sastClean: !astInspection.isBlankCanvas && !astInspection.isStubOrSingleBox,
         dualPolarityExploitVectors: [
           {
-            vectorId: 'REDTEAM-01-BLANK-OR-SINGLE-BOX-STUB-BYPASS',
-            targetInvariant: 'INV-01: Zero Blank Canvas or Single-Box Stub Certification',
+            vectorId: 'INV-01-BLANK-OR-SINGLE-BOX-STUB-GUARD',
+            targetInvariant: 'Zero Blank Canvas or Single-Box Stub Certification',
             status:
               astInspection.isBlankCanvas || astInspection.isStubOrSingleBox
                 ? 'UNVERIFIED_ON_STUB'
-                : 'BLOCKED_AND_LOCKED_AS_REGRESSION_TEST',
+                : 'VERIFIED_ON_AST',
           },
           {
-            vectorId: 'REDTEAM-02-AABB-SIBLING-COLLISION-INJECTION',
-            targetInvariant: 'INV-02: Zero Sibling 2D Bounding-Box Overlaps (overlapCount === 0)',
+            vectorId: 'INV-02-AABB-SIBLING-COLLISION-GUARD',
+            targetInvariant: 'Zero Sibling 2D Bounding-Box Overlaps',
             status:
               astInspection.isBlankCanvas || astInspection.isStubOrSingleBox
                 ? 'UNVERIFIED_ON_STUB'
-                : 'BLOCKED_AND_LOCKED_AS_REGRESSION_TEST',
-          },
-          {
-            vectorId: 'REDTEAM-03-SPECULATIVE-PREMISE-HALLUCINATION',
-            targetInvariant: 'INV-03: Scientific Reality Check & Counterfactual Digital-Twin Reframing',
-            status:
-              astInspection.isBlankCanvas || astInspection.isStubOrSingleBox
-                ? 'UNVERIFIED_ON_STUB'
-                : 'BLOCKED_AND_LOCKED_AS_REGRESSION_TEST',
+                : 'VERIFIED_ON_AST',
           },
         ],
       },
@@ -1116,7 +1111,7 @@ Return JSON with:
         threeArmReviewVerdict:
           astInspection.isBlankCanvas || astInspection.isStubOrSingleBox ? 'REJECTED' : 'APPROVED',
         monarchSloBurnRateThreshold: 2.0,
-        incidentToEscReturnHighwayArmed: true,
+        incidentToEscReturnHighwayArmed: false,
       },
     },
   };

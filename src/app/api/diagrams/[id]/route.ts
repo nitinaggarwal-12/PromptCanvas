@@ -354,13 +354,20 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/diagrams/[id] - Delete a diagram from the user's library
+// DELETE /api/diagrams/[id] - Delete a diagram from the authenticated user's library (strict ownership/admin check)
 export async function DELETE(request: Request, { params }: RouteParams) {
   try {
     const user = await getAuthenticatedUser();
+    if (!user || !user.id) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Authentication required to delete a diagram.' },
+        { status: 401 }
+      );
+    }
     const { id } = await params;
+    const isSuperAdmin = Boolean(user.is_super_admin || user.global_role === 'Super-Admin');
 
-    await deleteDiagram(id, user?.id, true);
+    await deleteDiagram(id, user.id, isSuperAdmin);
 
     return NextResponse.json({ success: true, message: `Diagram ${id} deleted successfully` });
   } catch (error) {

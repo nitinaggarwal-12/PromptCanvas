@@ -202,7 +202,7 @@ Return strictly valid JSON matching this structure:
   "levelReasoning": "string",
   "recommendedDirection": "LR" | "TD",
   "recommendedDomain": "enterprise" | "fintech" | "healthcare" | "biopharma" | "saas" | "retail" | "manufacturing" | "cybersecurity",
-  "recommendedBlueprintId": "string (2-digit ID from the 26 production blueprints: '00', '78', '35'..'50', '67'..'74')",
+  "recommendedBlueprintId": "string (exact valid 2-digit ID from the AVAILABLE CANONICAL BLUEPRINTS list above)",
   "blueprintReasoning": "string",
   "plannedModificationsSummary": ["string", "string", "string", "string"],
   "topCandidates": [

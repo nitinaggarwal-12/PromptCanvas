@@ -1,11 +1,13 @@
-import { GoogleGenAI, Type } from '@google/genai';
+import { Type } from '@google/genai';
 import { z } from 'zod';
 import { ARCHITECTURE_TYPES } from '@/lib/architectureTypes';
 import { buildIntentClassificationPrompt } from '@/prompts/classifyIntent';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import {
   GEMINI_FLASH_MODEL_ID,
+  createGeminiClient,
   getEffectiveGeminiApiKey,
+  hasLiveGeminiBackend,
   sanitizeFrontierModelId,
 } from '@/lib/geminiConfig';
 
@@ -27,45 +29,50 @@ export type IntentClassification = z.infer<typeof IntentClassificationSchema>;
 const validArchitectureIds = new Set(ARCHITECTURE_TYPES.map(t => t.id));
 
 async function executeSingleAttempt(prompt: string): Promise<IntentClassification | null> {
-  const apiKey = getEffectiveGeminiApiKey();
-  if (!apiKey) {
-    console.warn('[IntentClassifier] GEMINI_API_KEY is missing, skipping classification');
+  const ai = createGeminiClient();
+  if (!ai) {
+    console.warn('[IntentClassifier] No Gemini API key or Vertex AI credentials, skipping classification');
     return null;
   }
 
-  const ai = new GoogleGenAI({ apiKey });
   const systemPrompt = buildIntentClassificationPrompt(prompt);
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), CLASSIFIER_TIMEOUT_MS);
-
   try {
-    const response = await generateContentWithRetry(ai, {
-      model: CLASSIFIER_MODEL_ID,
-      contents: systemPrompt,
-      config: {
-        responseMimeType: 'application/json',
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            selectedType: { type: Type.STRING, nullable: true },
-            confidence: { type: Type.NUMBER },
-            reasoning: { type: Type.STRING },
-            assumptions: {
-              type: Type.ARRAY,
-              items: { type: Type.STRING }
+    const response = await generateContentWithRetry(
+      ai,
+      {
+        model: CLASSIFIER_MODEL_ID,
+        contents: systemPrompt,
+        config: {
+          temperature: 0.1,
+          thinkingConfig: { thinkingBudget: 0 },
+          responseMimeType: 'application/json',
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              selectedType: { type: Type.STRING, nullable: true },
+              confidence: { type: Type.NUMBER },
+              reasoning: { type: Type.STRING },
+              assumptions: {
+                type: Type.ARRAY,
+                items: { type: Type.STRING }
+              },
+              alternativeTypes: {
+                type: Type.ARRAY,
+                items: { type: Type.STRING }
+              }
             },
-            alternativeTypes: {
-              type: Type.ARRAY,
-              items: { type: Type.STRING }
-            }
-          },
-          required: ['selectedType', 'confidence', 'reasoning', 'assumptions', 'alternativeTypes']
+            required: ['selectedType', 'confidence', 'reasoning', 'assumptions', 'alternativeTypes']
+          }
         }
+      },
+      {
+        maxRetries: 1,
+        perAttemptTimeoutMs: CLASSIFIER_TIMEOUT_MS,
+        totalBudgetMs: CLASSIFIER_TIMEOUT_MS + 500,
+        label: 'IntentClassifier',
       }
-    });
-
-    clearTimeout(timeoutId);
+    );
 
     const rawText = response.text || '';
     if (!rawText.trim()) {
@@ -95,18 +102,13 @@ async function executeSingleAttempt(prompt: string): Promise<IntentClassificatio
 
     return classification;
   } catch (err: any) {
-    clearTimeout(timeoutId);
-    if (err?.name === 'AbortError' || controller.signal.aborted) {
-      console.warn(`[IntentClassifier] Timeout (> ${CLASSIFIER_TIMEOUT_MS}ms) during classification`);
-    } else {
-      console.warn('[IntentClassifier] Execution error:', err?.message || err);
-    }
+    console.warn('[IntentClassifier] Execution error:', err?.message || err);
     return null;
   }
 }
 
 export async function classifyIntent(prompt: string): Promise<IntentClassification | null> {
-  if (!process.env.GEMINI_API_KEY) {
+  if (!getEffectiveGeminiApiKey() && !hasLiveGeminiBackend()) {
     return null;
   }
 
@@ -116,7 +118,7 @@ export async function classifyIntent(prompt: string): Promise<IntentClassificati
     return result;
   }
 
-  // Single retry on failure if API key is present
+  // Single retry on failure if credentials are present
   console.log('[IntentClassifier] Retrying classification once...');
   result = await executeSingleAttempt(prompt);
   return result;

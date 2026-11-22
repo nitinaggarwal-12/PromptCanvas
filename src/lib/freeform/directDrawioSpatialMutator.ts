@@ -1,7 +1,7 @@
-import { GoogleGenAI } from '@google/genai';
 import { XMLParser } from 'fast-xml-parser';
 import {
-  getEffectiveGeminiApiKey,
+  createGeminiClient,
+  getGenConfigForModel,
   resolveLatestGeminiModelChain,
 } from '@/lib/geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
@@ -299,7 +299,7 @@ function extractJsonBlock(rawText: string): any {
   }
 }
 
-function serializeSpatialStateToDrawioXml(state: ParsedDrawioSpatialState): string {
+export function serializeSpatialStateToDrawioXml(state: ParsedDrawioSpatialState): string {
   const containers = state.cells
     .filter((c) => c.isContainer)
     .sort((a, b) => b.w * b.h - a.w * a.h);
@@ -430,11 +430,12 @@ function computeSimpleOrthogonalEdgeStyle(
   }
 
   const stroke = sanitizeHex(opts.strokeHex, '#475569');
+  const routingParts =
+    points.length > 0
+      ? ['edgeStyle=none', 'rounded=1']
+      : ['edgeStyle=orthogonalEdgeStyle', 'rounded=1', 'orthogonalLoop=1', 'jettySize=auto'];
   const styleParts = [
-    'edgeStyle=orthogonalEdgeStyle',
-    'rounded=1',
-    'orthogonalLoop=1',
-    'jettySize=auto',
+    ...routingParts,
     'html=1',
     `strokeColor=${stroke}`,
     'strokeWidth=1.6',
@@ -460,6 +461,65 @@ function computeSimpleOrthogonalEdgeStyle(
   return { style: `${styleParts.join(';')};`, points };
 }
 
+export function computeSpatialAuditMetrics(state: ParsedDrawioSpatialState): {
+  groupCount: number;
+  nodeCount: number;
+  edgeCount: number;
+  maxNestingDepth: number;
+  siblingOverlaps: number;
+  childContainmentViolations: number;
+} {
+  const byId = new Map(state.cells.map((c) => [c.id, c]));
+  const containers = state.cells.filter((c) => c.isContainer);
+  const leaves = state.cells.filter((c) => !c.isContainer);
+
+  let siblingOverlaps = 0;
+  for (let i = 0; i < leaves.length; i++) {
+    for (let j = i + 1; j < leaves.length; j++) {
+      const a = leaves[i];
+      const b = leaves[j];
+      const ix = Math.max(0, Math.min(a.absX + a.w, b.absX + b.w) - Math.max(a.absX, b.absX));
+      const iy = Math.max(0, Math.min(a.absY + a.h, b.absY + b.h) - Math.max(a.absY, b.absY));
+      if (ix * iy > 16) siblingOverlaps++;
+    }
+  }
+
+  let childContainmentViolations = 0;
+  for (const c of state.cells) {
+    if (!c.parent || c.parent === '1' || c.parent === '0') continue;
+    const p = byId.get(c.parent);
+    if (!p) continue;
+    if (
+      c.absX < p.absX - 2 ||
+      c.absY < p.absY - 2 ||
+      c.absX + c.w > p.absX + p.w + 2 ||
+      c.absY + c.h > p.absY + p.h + 2
+    ) {
+      childContainmentViolations++;
+    }
+  }
+
+  const depthOf = (c: SpatialCellRecord, seen = new Set<string>()): number => {
+    if (!c.parent || c.parent === '1' || c.parent === '0' || seen.has(c.id)) return 1;
+    seen.add(c.id);
+    const p = byId.get(c.parent);
+    return p ? 1 + depthOf(p, seen) : 1;
+  };
+  const maxNestingDepth = containers.reduce(
+    (mx, c) => Math.max(mx, depthOf(c)),
+    containers.length > 0 ? 1 : 0
+  );
+
+  return {
+    groupCount: containers.length,
+    nodeCount: leaves.length,
+    edgeCount: state.edges.length,
+    maxNestingDepth,
+    siblingOverlaps,
+    childContainmentViolations,
+  };
+}
+
 /**
  * Surgically mutates an existing Draw.io XML diagram in place (`action: 'modify'`)
  * while preserving 100% of untouched `<mxCell>` styles, colors, dimensions, and connectors.
@@ -481,17 +541,18 @@ export async function mutateDrawioXmlDirectly(params: {
     nodeCount: number;
     edgeCount: number;
     maxNestingDepth: number;
+    siblingOverlaps: number;
+    childContainmentViolations: number;
   };
 }> {
-  const apiKey = getEffectiveGeminiApiKey(params.explicitApiKey);
-  if (!apiKey) {
-    throw new Error('Missing Gemini API key for direct Draw.io spatial update.');
+  const ai = createGeminiClient(params.explicitApiKey);
+  if (!ai) {
+    throw new Error('Missing Gemini API key or Vertex AI credentials for direct Draw.io spatial update.');
   }
 
-  const ai = new GoogleGenAI({ apiKey });
   const state = parseDrawioXmlSpatialState(params.currentXml);
-  const modelChain = await resolveLatestGeminiModelChain(ai, 'pro');
-  const modelToUse = modelChain[0] || 'gemini-2.5-pro';
+  const modelChain = await resolveLatestGeminiModelChain(ai, 'chat');
+  const modelToUse = modelChain[0] || 'gemini-2.5-flash';
 
   const compactZones = state.cells
     .filter((c) => c.isContainer)
@@ -557,7 +618,9 @@ Given the live Draw.io canvas inventory (containers, leaf nodes, edges with exac
       "newLabel": "optional renamed label",
       "newSublabel": "optional sublabel",
       "fillHex": "optional #RRGGBB",
-      "strokeHex": "optional #RRGGBB"
+      "strokeHex": "optional #RRGGBB",
+      "movePlacement": "optional: below | above | right_of | left_of | inside",
+      "moveAnchorId": "optional target node or zone id when moving this cell"
     }
   ],
   "addEdges": [
@@ -604,7 +667,7 @@ STRICT RULES:
         responseMimeType: 'application/json',
         temperature: 0.15,
         maxOutputTokens: 16384,
-        thinkingConfig: { thinkingLevel: 'MEDIUM' as any },
+        thinkingConfig: getGenConfigForModel('edit', modelToUse).thinkingConfig,
       },
     },
     { label: 'Stage Modify: Direct Spatial Draw.io Mutation', perAttemptTimeoutMs: 45_000, totalBudgetMs: 65_000 }
@@ -632,6 +695,8 @@ export function applySpatialMutationPlan(
     nodeCount: number;
     edgeCount: number;
     maxNestingDepth: number;
+    siblingOverlaps: number;
+    childContainmentViolations: number;
   };
 } {
   const state: ParsedDrawioSpatialState = {
@@ -836,7 +901,39 @@ export function applySpatialMutationPlan(
     });
   }
 
-  // 4. Modify existing cells in place (preserving geometry & untouched styles)
+  // Helper to recursively expand ancestor containers so child moves/additions never escape parent bounds
+  const expandAncestorsToContain = (cell: SpatialCellRecord) => {
+    let curr: SpatialCellRecord | undefined = cell;
+    const visited = new Set<string>();
+    while (curr && curr.parent && curr.parent !== '1' && curr.parent !== '0' && !visited.has(curr.parent)) {
+      visited.add(curr.parent);
+      const p = findCell(curr.parent);
+      if (!p) break;
+      const neededRight = curr.absX + curr.w + 18;
+      const neededBottom = curr.absY + curr.h + 18;
+      if (curr.absX < p.absX + 12) {
+        const shiftLeft = p.absX + 12 - curr.absX;
+        p.absX = Math.max(16, p.absX - shiftLeft);
+        p.relX = p.parent === '1' ? p.absX : p.relX - shiftLeft;
+        p.w += shiftLeft;
+      }
+      if (curr.absY < p.absY + 38) {
+        curr.absY = p.absY + 40;
+      }
+      if (neededRight > p.absX + p.w) {
+        p.w = Math.ceil(neededRight - p.absX);
+      }
+      if (neededBottom > p.absY + p.h) {
+        p.h = Math.ceil(neededBottom - p.absY);
+      }
+      curr.relX = Math.round(curr.absX - p.absX);
+      curr.relY = Math.round(curr.absY - p.absY);
+      curr = p;
+    }
+  };
+
+  // 4. Modify existing cells in place (including movePlacement / moveAnchorId + edge waypoint refresh!)
+  const movedCellIds = new Set<string>();
   for (const mOp of plan.modifyCells || []) {
     const target = findCell(mOp.id);
     if (!target) continue;
@@ -862,6 +959,126 @@ export function applySpatialMutationPlan(
       target.style = /strokeColor=[^;]+/.test(target.style)
         ? target.style.replace(/strokeColor=[^;]+/, `strokeColor=${s}`)
         : `${target.style}strokeColor=${s};`;
+    }
+
+    // Spatial movePlacement / moveAnchorId implementation
+    if (mOp.movePlacement) {
+      const anchor = mOp.moveAnchorId ? findCell(mOp.moveAnchorId) : undefined;
+      const gap = 28;
+      let newAbsX = target.absX;
+      let newAbsY = target.absY;
+      let newParentId = target.parent;
+
+      if (anchor && anchor.id !== target.id) {
+        if (mOp.movePlacement === 'right_of') {
+          newAbsX = Math.round(anchor.absX + anchor.w + gap);
+          newAbsY = Math.round(anchor.absY + (anchor.h - target.h) / 2);
+          if (!target.isContainer && anchor.parent && anchor.parent !== '0') {
+            newParentId = anchor.parent;
+          }
+        } else if (mOp.movePlacement === 'left_of') {
+          newAbsX = Math.max(24, Math.round(anchor.absX - target.w - gap));
+          newAbsY = Math.round(anchor.absY + (anchor.h - target.h) / 2);
+          if (!target.isContainer && anchor.parent && anchor.parent !== '0') {
+            newParentId = anchor.parent;
+          }
+        } else if (mOp.movePlacement === 'below') {
+          newAbsX = Math.round(anchor.absX + (anchor.w - target.w) / 2);
+          newAbsY = Math.round(anchor.absY + anchor.h + gap);
+          if (!target.isContainer && anchor.parent && anchor.parent !== '0') {
+            newParentId = anchor.parent;
+          }
+        } else if (mOp.movePlacement === 'above') {
+          newAbsX = Math.round(anchor.absX + (anchor.w - target.w) / 2);
+          newAbsY = Math.max(24, Math.round(anchor.absY - target.h - gap));
+          if (!target.isContainer && anchor.parent && anchor.parent !== '0') {
+            newParentId = anchor.parent;
+          }
+        } else if (mOp.movePlacement === 'inside') {
+          newParentId = anchor.id;
+          const existingKids = state.cells.filter((c) => c.parent === anchor.id && c.id !== target.id && !c.isContainer);
+          if (existingKids.length > 0) {
+            const rightmost = existingKids.reduce((best, k) => (k.absX + k.w > best.absX + best.w ? k : best), existingKids[0]);
+            newAbsX = Math.round(rightmost.absX + rightmost.w + 22);
+            newAbsY = Math.round(rightmost.absY);
+          } else {
+            newAbsX = Math.round(anchor.absX + 20);
+            newAbsY = Math.round(anchor.absY + 46);
+          }
+        }
+      } else {
+        // Fallback directional shift when anchor is omitted
+        if (mOp.movePlacement === 'right_of') newAbsX += target.w + gap;
+        else if (mOp.movePlacement === 'left_of') newAbsX = Math.max(24, newAbsX - target.w - gap);
+        else if (mOp.movePlacement === 'below') newAbsY += target.h + gap;
+        else if (mOp.movePlacement === 'above') newAbsY = Math.max(24, newAbsY - target.h - gap);
+      }
+
+      // Collision-avoidance nudge against other leaf cells
+      if (!target.isContainer) {
+        for (let guard = 0; guard < 10; guard++) {
+          const hit = state.cells.find(
+            (c) =>
+              c.id !== target.id &&
+              !c.isContainer &&
+              newAbsX < c.absX + c.w + 10 &&
+              newAbsX + target.w + 10 > c.absX &&
+              newAbsY < c.absY + c.h + 10 &&
+              newAbsY + target.h + 10 > c.absY
+          );
+          if (!hit) break;
+          newAbsX = Math.round(hit.absX + hit.w + 18);
+        }
+      }
+
+      const deltaX = newAbsX - target.absX;
+      const deltaY = newAbsY - target.absY;
+      target.absX = newAbsX;
+      target.absY = newAbsY;
+      target.parent = newParentId;
+      const parentObj = newParentId && newParentId !== '1' ? findCell(newParentId) : undefined;
+      target.relX = parentObj ? Math.round(target.absX - parentObj.absX) : target.absX;
+      target.relY = parentObj ? Math.round(target.absY - parentObj.absY) : target.absY;
+
+      // If moving a container, translate its descendants' absolute coordinates in lockstep
+      if (target.isContainer && (deltaX !== 0 || deltaY !== 0)) {
+        const shiftDescendants = (parentId: string) => {
+          for (const kid of state.cells) {
+            if (kid.parent === parentId) {
+              kid.absX += deltaX;
+              kid.absY += deltaY;
+              movedCellIds.add(kid.id);
+              if (kid.isContainer) shiftDescendants(kid.id);
+            }
+          }
+        };
+        shiftDescendants(target.id);
+      }
+
+      movedCellIds.add(target.id);
+      expandAncestorsToContain(target);
+    }
+  }
+
+  // Re-route any edges incident to moved cells so waypoints never point to stale coordinates
+  if (movedCellIds.size > 0) {
+    for (const edge of state.edges) {
+      if (movedCellIds.has(edge.source) || movedCellIds.has(edge.target)) {
+        const src = findCell(edge.source);
+        const tgt = findCell(edge.target);
+        if (src && tgt) {
+          const isDashed = edge.style.includes('dashed=1');
+          const isBidir = edge.style.includes('startArrow=') && !edge.style.includes('startArrow=none');
+          const strokeMatch = edge.style.match(/strokeColor=(#[0-9a-fA-F]{6})/);
+          const recomputed = computeSimpleOrthogonalEdgeStyle(src, tgt, {
+            dashed: isDashed,
+            bidirectional: isBidir,
+            strokeHex: strokeMatch?.[1],
+          });
+          edge.style = recomputed.style;
+          edge.points = recomputed.points;
+        }
+      }
     }
   }
 
@@ -890,23 +1107,21 @@ export function applySpatialMutationPlan(
     });
   }
 
-  // Expand canvas bounds if any added cell exceeded pageWidth/pageHeight
+  // Ensure every cell's ancestor containers enclose it cleanly before serializing
+  for (const c of state.cells) {
+    if (c.parent && c.parent !== '1' && c.parent !== '0') {
+      expandAncestorsToContain(c);
+    }
+  }
+
+  // Expand canvas bounds if any added/moved cell exceeded pageWidth/pageHeight
   for (const c of state.cells) {
     if (c.absX + c.w + 32 > state.canvasW) state.canvasW = Math.ceil(c.absX + c.w + 32);
     if (c.absY + c.h + 32 > state.canvasH) state.canvasH = Math.ceil(c.absY + c.h + 32);
   }
 
   const updatedXml = serializeSpatialStateToDrawioXml(state);
-
-  const depthOf = (c: SpatialCellRecord, seen = new Set<string>()): number => {
-    if (!c.parent || c.parent === '1' || c.parent === '0' || seen.has(c.id)) return 1;
-    seen.add(c.id);
-    const p = findCell(c.parent);
-    return p ? 1 + depthOf(p, seen) : 1;
-  };
-  const containers = state.cells.filter((c) => c.isContainer);
-  const leaves = state.cells.filter((c) => !c.isContainer);
-  const maxNestingDepth = containers.reduce((mx, c) => Math.max(mx, depthOf(c)), containers.length > 0 ? 1 : 0);
+  const stats = computeSpatialAuditMetrics(state);
 
   return {
     xml: updatedXml,
@@ -914,11 +1129,6 @@ export function applySpatialMutationPlan(
     summaryOfChanges:
       plan.summaryOfChanges || `Updated Draw.io diagram directly for: "${modificationPrompt}"`,
     modelUsed: actualModel,
-    stats: {
-      groupCount: containers.length,
-      nodeCount: leaves.length,
-      edgeCount: state.edges.length,
-      maxNestingDepth,
-    },
+    stats,
   };
 }

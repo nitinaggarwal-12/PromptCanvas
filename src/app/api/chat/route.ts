@@ -204,17 +204,18 @@ export async function POST(request: NextRequest) {
 
     const apiKey = guard.effectiveApiKey || getEffectiveGeminiApiKey();
 
-    // Fallback deterministic response if no API key
-    if (!apiKey) {
-      console.warn('[API/Chat] No GEMINI_API_KEY detected, using deterministic architecture analysis.');
+    const { createGeminiClient } = await import('@/lib/geminiConfig');
+    const ai = createGeminiClient(apiKey);
+
+    // Fallback deterministic response if no API key or Vertex AI backend
+    if (!ai) {
+      console.warn('[API/Chat] No Gemini credentials detected, using deterministic architecture analysis.');
       const fallback = generateDeterministicAdvisory(prompt, diagramName, architectureType, parsedNodes);
       return NextResponse.json({
         ...fallback,
         latencyMs: Date.now() - startTime
       });
     }
-
-    const ai = new GoogleGenAI({ apiKey });
 
     const systemPrompt = `You are a Principal Cloud Solutions Architect, Enterprise Systems Reviewer, and Google Cloud Fellow.
 You are embedded directly inside an interactive architecture design studio called PromptCanvas.
@@ -262,10 +263,17 @@ Return JSON adhering strictly to:
   "identifiedGaps": ["List of critical gaps identified, if any"]
 }`;
 
+    const recentHistoryText = Array.isArray(conversationHistory) && conversationHistory.length > 0
+      ? `\n\n### RECENT CONVERSATION HISTORY:\n${conversationHistory
+          .slice(-6)
+          .map((m: any) => `${String(m?.sender || m?.role || 'user').toUpperCase()}: ${String(m?.text || m?.content || '').slice(0, 400)}`)
+          .join('\n')}`
+      : '';
+
     const contents = [
       {
         role: 'user',
-        parts: [{ text: `${systemPrompt}\n\nUSER QUESTION: "${prompt}"` }]
+        parts: [{ text: `${systemPrompt}${recentHistoryText}\n\nUSER QUESTION: "${prompt}"` }]
       }
     ];
 

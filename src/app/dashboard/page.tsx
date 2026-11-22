@@ -1640,7 +1640,44 @@ function DashboardContent() {
         console.warn('Gemini Architect API fast-path synthesis:', apiErr);
       }
 
-      if (!isCompositionalChainXml && liveCopilotModification) {
+      // First try real spatial XML mutation via /api/prompt-to-diagram so edits modify the
+      // actual Draw.io topology (add/move/rename/connect/remove) instead of only appending 1 box!
+      let spatialModified = false;
+      if (!isCompositionalChainXml && !forceNewSynthesis && currentVersion.xml.includes('<mxCell')) {
+        try {
+          const spRes = await fetch('/api/prompt-to-diagram', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'modify',
+              userPrompt: canvasTitle || query,
+              modificationPrompt: query,
+              currentXml: currentVersion.xml,
+            }),
+          });
+          if (spRes.ok) {
+            const spData = await spRes.json();
+            if (spData?.success && typeof spData?.xml === 'string' && spData.xml.includes('<mxCell')) {
+              healedXml = spData.xml;
+              spatialModified = true;
+              modResult = {
+                ...modResult,
+                updatedXml: spData.xml,
+                newVersion: {
+                  ...modResult.newVersion,
+                  xml: spData.xml,
+                  canvasDiff: spData.summaryOfChanges || `Applied spatial edit for "${query.slice(0, 60)}"`,
+                  specDiff: spData.summaryOfChanges || modResult.newVersion.specDiff,
+                },
+              };
+            }
+          }
+        } catch {
+          // Graceful fallback to architect-decision + executeGcpPromptModification
+        }
+      }
+
+      if (!spatialModified && !isCompositionalChainXml && liveCopilotModification) {
         modResult = executeGcpPromptModification(
           currentVersion.xml,
           query,
@@ -1665,10 +1702,16 @@ function DashboardContent() {
       }
 
       const persona = modResult.newVersion.author || 'Lead Cloud Architect';
-      const liveBadge = liveCopilotModification?.isLiveGeminiModification
-        ? `Live ${liveCopilotModification.modelUsed || 'gemini-2.5-flash'}`
-        : 'gemini-2.5-flash';
-      const modelUsed = `${liveBadge} → judged by gemini-2.5-pro (${truthfulnessDossier.scores.overallCompositeScore}% Certified)`;
+      const isLiveJudge = Boolean(truthfulnessDossier.isLiveModelEvaluated);
+      const liveBadge = spatialModified
+        ? 'Live Spatial XML Mutator'
+        : liveCopilotModification?.isLiveGeminiModification
+          ? `Live ${liveCopilotModification.modelUsed || 'gemini-2.5-flash'}`
+          : 'Deterministic AST Modifier (Offline)';
+      const judgeBadge = isLiveJudge
+        ? `judged by ${truthfulnessDossier.criticJudgeModel || 'gemini-2.5-pro'}`
+        : 'AST Heuristic Check (Offline)';
+      const modelUsed = `${liveBadge} → ${judgeBadge} (${truthfulnessDossier.scores.overallCompositeScore}%)`;
       const aiReasoning =
         `${modResult.newVersion.canvasDiff} ${modResult.newVersion.specDiff} ` +
         `[Truthfulness=${truthfulnessDossier.scores.truthfulnessAndReality}%, Standards Grounding=${truthfulnessDossier.scores.externalStandardsGrounding}%, Completeness=${truthfulnessDossier.scores.logicalMissionCompleteness}%]`;
@@ -1819,8 +1862,9 @@ function DashboardContent() {
 
       if (saveRes && saveRes.ok) {
         const savedDb = await saveRes.json().catch(() => null);
-        if (savedDb?.id) {
-          finalProjectId = savedDb.id;
+        const persistedId = savedDb?.diagram?.id || savedDb?.id;
+        if (persistedId) {
+          finalProjectId = persistedId;
         }
       }
 

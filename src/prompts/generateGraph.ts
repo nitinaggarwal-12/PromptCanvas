@@ -5,36 +5,38 @@ A deterministic 2D layout and styling engine computes physical coordinates and r
 
 CORE ARCHITECTURAL RULES:
 1. STRICT JSON ONLY: Output valid JSON matching the schema with NO markdown wrapping, code blocks, or commentary.
-2. SYSTEMATIC TIER TAXONOMY (Ordered Left-to-Right / Top-to-Bottom):
-   - 'tier_clients': Users, External Clients, Mobile/Web, Edge Devices, Third-Party Systems
-   - 'tier_ingress': API Gateways (Apigee/Kong), Cloud Armor, WAF, TLS Termination, CDN
-   - 'tier_orchestration': Event Brokers (Pub/Sub, Kafka), Workflows, Sagas, Task Queues
-   - 'tier_compute': Application Microservices, Cloud Run, GKE/EKS Pods, Serverless Functions
-   - 'tier_ai': LLMs (Gemini 3.1 Pro, Gemini 2.5 Flash), Agent Runtimes, Embedding Models, Vector Retrievers, Guardrails
-   - 'tier_data': Databases (Spanner, Cloud SQL, DynamoDB), Lakehouse (BigQuery, BigLake), Caches (Redis), Storage (GCS, S3)
-   - 'tier_governance': IAM/STS, Secret Manager, OpenTelemetry, Cloud Logging/Monitoring, Audit Ledgers
-   Only instantiate tiers relevant to the user request.
+2. STRICT CLOUD & DOMAIN VENDOR FIDELITY (ZERO HALLUCINATED VENDORS):
+   - Match 'cloud' strictly to the user prompt: "aws" for AWS, "azure" for Azure, "gcp" for Google Cloud, "hybrid" for multi-cloud/on-prem+cloud, and "generic" for open-source, protocol, IoT, blockchain, or vendor-neutral prompts.
+   - NEVER inject Google Cloud products into an AWS, Azure, or generic/OSS architecture, and NEVER omit any specific technology, service, or component explicitly named in the user prompt!
+3. SYSTEMATIC TIER TAXONOMY (1-based order: 1, 2, 3... Top-to-Bottom, STRICTLY 3–4 balanced widescreen tiers, MAX 5):
+   - Combine related horizontal stages into 3–4 cohesive tiers so the diagram fits a wide 16:9 presentation frame (2–4 nodes per tier):
+     * Tier 1 ('tier_ingress'): Users/Clients, Edge Devices/On-Prem Sources, WAF, Load Balancers, API Gateways
+     * Tier 2 ('tier_compute'): Event Brokers/Streaming (Kafka, Kinesis, EMQX), Microservices/Functions (Lambda, GKE, Flink), Interface Engines
+     * Tier 3 ('tier_ai' or 'tier_data'): ML/AI Endpoints (SageMaker, Azure OpenAI, PyTorch, Vector Search), Caches (Redis), Databases, Data Lakes/Warehouses
+     * Tier 4 ('tier_governance', optional): Security (KMS, DLP, Auth0), Observability/BI/Alerting (Grafana, Looker, Application Insights)
+   - NEVER create 6+ skinny single-node tiers stacked vertically like a totem pole! Always start tier 'order' at 1 (never 0).
 
-3. NUMBERED SEQUENTIAL DATA FLOWS (Mandatory on Edges):
-   - Every edge label MUST start with a sequential numbered step reflecting the chronological execution flow:
-     e.g., "1. Ingestion: Webhook", "2. Buffer: Async Pub/Sub", "3. Transform: Real-Time Beam", "4. Query: Vector Search", "5. Synthesis: LLM Gen", "6. Audit: Immutable Log".
-   - Set 'protocol' to explicit industry protocols (e.g. "gRPC / TLS 1.3", "REST / JSON", "Kafka / Avro", "ISO GQL", "Postgres Wire", "CDC / Debezium").
-   - Set 'style' to "solid" for synchronous blocking calls, and "dashed" for asynchronous/eventual/telemetry flows.
+4. COMPLETE CONNECTIVITY & NUMBERED DATA FLOWS (ZERO ORPHAN NODES):
+   - EVERY SINGLE node MUST have at least 1 connected edge (incoming or outgoing). Zero isolated/orphan nodes!
+   - Keep edge labels crisp and short (<= 38 chars), starting with a sequential number:
+     e.g., "1. HTTPS Payment API", "2. Publish to Kinesis", "3. Score Fraud (gRPC)", "4. Write Ledger", "5. KMS Encrypt".
+   - Set 'protocol' to explicit industry protocols (e.g. "HTTPS / TLS 1.3", "gRPC / mTLS", "Kafka / Avro", "MQTT", "HL7v2 / FHIR", "SQL / JDBC").
+   - Set 'style' to "solid" for synchronous calls and "dashed" for async/event/telemetry/security flows.
 
-4. ACCURATE PRODUCT NAMING & ICON SLUGS:
-   - 'label': Clear, official product title (e.g. "Cloud Spanner (Multi-Region)", "BigQuery Lakehouse", "Vertex AI / Gemini 2.5 Flash", "Apache Kafka Cluster").
-   - 'subtitle': 1-line technical role summary (e.g. "99.999% SLA Distributed RDBMS", "Peta-scale Vector & Analytical Mart").
-   - 'product': Standard cloud slug matching the vendor ("bigquery", "spanner", "vertex ai", "cloud run", "pubsub", "gcs", "gke", "postgres", "redis", "kafka", "s3", "lambda", "dynamodb", "databricks", "biglake").
-   - 'type': Categorical enum ("compute", "database", "storage", "queue", "cache", "network", "security", "ai", "analytics", "user", "external", "gateway", "service").
+5. ACCURATE PRODUCT NAMING & CONCISE SUBTITLES:
+   - 'label': Exact official product/component name requested by user (<= 34 chars).
+   - 'subtitle': Crisp 1-line role summary (<= 56 chars, e.g. "Multi-region active-active NoSQL store").
+   - 'description': Concise 1-sentence technical responsibility (<= 95 chars).
+   - 'product': Standard product slug matching the component (e.g. "kinesis", "lambda", "dynamodb", "sagemaker", "kms", "azure openai", "cosmos db", "gke", "spanner", "bigquery", "biglake", "kafka", "redis", "postgres", "mqtt", "timescaledb", "pytorch", "grafana", "auth0", "react").
+   - 'type': MUST be one of: "compute", "database", "storage", "queue", "cache", "network", "security", "ai", "analytics", "user", "external", "gateway", "service".
 
-5. BALANCED COMPONENT DENSITY:
-   - Target 10–22 well-curated nodes for standard prompts.
-   - If user requests many redundant worker nodes, cluster them into a single representative service node with member roles listed in subtitle.
-   - Assign clean sequential IDs: node_1, node_2, edge_1, edge_2.
+6. BALANCED COMPONENT DENSITY:
+   - Target 7–16 well-curated, prompt-faithful nodes with 2–4 nodes per tier where natural so the diagram forms a compact, readable grid rather than a skinny vertical pole.
+   - Assign clean sequential IDs: node_1, node_2, ..., edge_1, edge_2, ...
 
-6. ARCHITECTURAL NARRATIVE:
-   - 'reasoning': Defense-in-depth security, high-availability multi-zone layout, SLA/SLO justification, and decoupling rationale.
-   - 'businessUsecase': Business value proposition, target personas, operational efficiency gains, and ROI.
-   - 'technicalUsecase': Complete end-to-end trace from ingress to storage, disaster recovery failover, and fault tolerance handling.
+7. ARCHITECTURAL NARRATIVE:
+   - 'reasoning': Defense-in-depth security, high availability, and decoupling rationale.
+   - 'businessUsecase': Business value proposition and target personas.
+   - 'technicalUsecase': End-to-end data/control trace from ingress to storage and observability.
 `;
 

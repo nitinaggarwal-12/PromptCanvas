@@ -37,73 +37,28 @@ interface TestCaseResult {
   pillar: string;
   suite: string;
   name: string;
-  status: 'PASSED' | 'FAILED';
+  status: 'PASSED' | 'FAILED' | 'CLI_ONLY';
   durationMs: number;
   timestamp: string;
   details?: string;
 }
 
 const TEST_PILLARS = [
-  { id: 'all', name: 'All 9 Pillars', icon: Layers },
-  { id: 'pillar_1', name: '1. Product & Business', icon: BarChart3 },
-  { id: 'pillar_2', name: '2. Functional & App', icon: FileCheck },
-  { id: 'pillar_3', name: '3. UI, UX & a11y', icon: Sparkles },
-  { id: 'pillar_4', name: '4. Non-Functional & Perf', icon: Zap },
-  { id: 'pillar_5', name: '5. Security & Privacy', icon: Lock },
-  { id: 'pillar_6', name: '6. Operations & Cloud', icon: Server },
-  { id: 'pillar_7', name: '7. Release & Pipeline', icon: Workflow },
-  { id: 'pillar_8', name: '8. AI & Model Safety', icon: Cpu },
-  { id: 'pillar_9', name: '9. Governance & UAT', icon: Award },
+  { id: 'all', name: 'All Checks', icon: Layers },
+  { id: 'runtime_probes', name: 'Live Runtime Probes', icon: Activity },
+  { id: 'cli_suites', name: 'CLI Vitest & Quality Gates', icon: Terminal },
 ];
 
 const INITIAL_TEST_RESULTS: TestCaseResult[] = [
-  // Pillar 1: Product & Business
-  { id: 't-1-01', pillar: 'pillar_1', suite: 'FinOps Pricing Catalog (finopsConsistency.test.ts)', name: 'Unified GCP / AWS / Azure cloud resource cost estimator & CUD discount modeling', status: 'PASSED', durationMs: 6, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-1-02', pillar: 'pillar_1', suite: '13 Enterprise Industry Domains (domainPresets.test.ts)', name: 'Domain flavor XML injection across Healthcare, FinTech, BioPharma, Telecom & Defense', status: 'PASSED', durationMs: 14, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-1-03', pillar: 'pillar_1', suite: 'Navigation & Badge Parity (verify_nav_badge_counts.mjs)', name: 'Sidebar badge counts match 40 Certified Blueprints & 8 Document Archetypes with zero dead links', status: 'PASSED', durationMs: 18, timestamp: '2026-10-05T00:00:00Z' },
+  // Live runtime HTTP probes (actually executed in-browser when "Run Live Probes" is clicked!)
+  { id: 'probe-health', pillar: 'runtime_probes', suite: 'GET /api/health', name: 'Server health, uptime & runtime status probe', status: 'CLI_ONLY', durationMs: 0, timestamp: 'Not yet run' },
+  { id: 'probe-diagrams', pillar: 'runtime_probes', suite: 'GET /api/diagrams', name: 'Diagrams persistence database read probe', status: 'CLI_ONLY', durationMs: 0, timestamp: 'Not yet run' },
+  { id: 'probe-oauth', pillar: 'runtime_probes', suite: 'GET /api/google-workspace/oauth-config', name: 'Google Workspace OAuth config & zero-token-leak probe', status: 'CLI_ONLY', durationMs: 0, timestamp: 'Not yet run' },
+  { id: 'probe-changelog', pillar: 'runtime_probes', suite: 'GET /api/changelog', name: 'Governance changelog API probe', status: 'CLI_ONLY', durationMs: 0, timestamp: 'Not yet run' },
 
-  // Pillar 2: Functional & App
-  { id: 't-2-01', pillar: 'pillar_2', suite: '40 Certified Blueprints (canonicalTemplates.test.ts)', name: '40 canonical master blueprints x 13 domains x Light/Dark themes generate valid Draw.io XML', status: 'PASSED', durationMs: 1240, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-2-02', pillar: 'pillar_2', suite: '8 Consolidated Document Archetypes (livingSpecsGenerator.test.ts)', name: '8 Lean Master Document Archetypes & 16 Living Specs synthesize grounded architecture dossiers', status: 'PASSED', durationMs: 410, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-2-03', pillar: 'pillar_2', suite: 'AST Section Editor (docSectionEngine.test.ts)', name: 'Interactive AST Promote, Demote, Move, Clone & Insert section hierarchy operations', status: 'PASSED', durationMs: 45, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-2-04', pillar: 'pillar_2', suite: 'Export & Cloud Bridge (exportGenerators.test.ts)', name: '16:9 PPTX Slide Decks, DOCX, Draw.io XML & Google Workspace Cloud Bridge exports', status: 'PASSED', durationMs: 180, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-2-05', pillar: 'pillar_2', suite: 'Version Snapshot Engine (docVersionEngine.test.ts)', name: 'Immutable version snapshot history, semantic tag bumping & diff rollback', status: 'PASSED', durationMs: 12, timestamp: '2026-10-05T00:00:00Z' },
-
-  // Pillar 3: UI, UX & Accessibility
-  { id: 't-3-01', pillar: 'pillar_3', suite: 'WCAG Contrast Guard (blueprintVisualSystem.test.ts)', name: 'Dark Mode & Light Mode canvas text contrast ratios exceed WCAG 2.1 AA/AAA thresholds', status: 'PASSED', durationMs: 22, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-3-02', pillar: 'pillar_3', suite: 'Zero-Overlap Geometry (visualCollisionDetector.test.ts)', name: 'Zero node-box overlaps, zero slanted arrows, and strict 90-degree orthogonal routing', status: 'PASSED', durationMs: 95, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-3-03', pillar: 'pillar_3', suite: 'W3C Vector Renderer (DiagramViewerRenderSafe)', name: 'Render-safe SVG compilation with accessible ARIA labels and multi-sheet tab switching', status: 'PASSED', durationMs: 45, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-3-04', pillar: 'pillar_3', suite: 'Cross-Viewport Layout (audit_responsive_viewports.mjs)', name: 'Responsive layout balance verified across Mobile (390px), Tablet (834px) & Desktop (1600px)', status: 'PASSED', durationMs: 65, timestamp: '2026-10-05T00:00:00Z' },
-
-  // Pillar 4: Non-Functional & Performance
-  { id: 't-4-01', pillar: 'pillar_4', suite: 'DOM Node Budgets (audit_dom_and_payload_budgets.mjs)', name: 'Peak canvas cell density 311 cells (within 1,500 cell budget)', status: 'PASSED', durationMs: 120, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-4-02', pillar: 'pillar_4', suite: 'Payload Footprints (audit_dom_and_payload_budgets.mjs)', name: 'Peak XML payload 180.5 KB (within 350 KB payload budget)', status: 'PASSED', durationMs: 80, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-4-03', pillar: 'pillar_4', suite: 'Concurrent Synthesis Stress (stress_test_concurrent.mjs)', name: '50 parallel synthetic document & diagram compilations executed in <10ms', status: 'PASSED', durationMs: 8, timestamp: '2026-10-05T00:00:00Z' },
-
-  // Pillar 5: Security & Privacy
-  { id: 't-5-01', pillar: 'pillar_5', suite: 'Session & BYOK Auth Guard (auth.test.ts)', name: 'Session token verification, guest-to-account migration & AES-256-GCM BYOK key encryption', status: 'PASSED', durationMs: 16, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-5-02', pillar: 'pillar_5', suite: 'SAST Security Scanner (audit_security_sast.mjs)', name: 'Zero unescaped innerHTML, zero hardcoded secrets & strict SVG attribute sanitization', status: 'PASSED', durationMs: 15, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-5-03', pillar: 'pillar_5', suite: 'STRIDE Threat Model Engine (strideThreatGenerator.test.ts)', name: 'Automated STRIDE threat matrix & NIST SP 800-53r5 / CIS GCP v3.0 control mapping', status: 'PASSED', durationMs: 19, timestamp: '2026-10-05T00:00:00Z' },
-
-  // Pillar 6: Operations & Cloud
-  { id: 't-6-01', pillar: 'pillar_6', suite: 'Composite SLA Calculator (slaCalculator.test.ts)', name: 'Serial & parallel composite availability computation against declared RTO/RPO targets', status: 'PASSED', durationMs: 9, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-6-02', pillar: 'pillar_6', suite: 'Diagrams Persistence API (/api/diagrams)', name: 'PostgreSQL / SQLite dual-engine diagram persistence & version history retrieval', status: 'PASSED', durationMs: 5, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-6-03', pillar: 'pillar_6', suite: '2-Way Governance Changelog API (/api/changelog)', name: 'Bidirectional UI <-> Google Sheets governance tracker & RBAC audit log sync', status: 'PASSED', durationMs: 6, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-6-04', pillar: 'pillar_6', suite: 'Container Health & Telemetry (/api/health)', name: 'Cloud Run container health check endpoint returns 200 OK with memory & uptime telemetry', status: 'PASSED', durationMs: 4, timestamp: '2026-10-05T00:00:00Z' },
-
-  // Pillar 7: Release & Pipeline
-  { id: 't-7-01', pillar: 'pillar_7', suite: 'Database Schema Guard (audit_database_schema.mjs)', name: 'SQLite & PostgreSQL DDL parity, foreign key integrity & idempotent migration guard', status: 'PASSED', durationMs: 14, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-7-02', pillar: 'pillar_7', suite: '11-Gate Master Quality Suite (runQualityGate.ts)', name: 'All 11 automated architecture, security, geometry & governance gates pass 100%', status: 'PASSED', durationMs: 950, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-7-03', pillar: 'pillar_7', suite: 'TypeScript & Next.js Build (tsc --noEmit)', name: 'Strict TypeScript compilation passes with 0 errors across all application routes', status: 'PASSED', durationMs: 2400, timestamp: '2026-10-05T00:00:00Z' },
-
-  // Pillar 8: AI & Model Safety
-  { id: 't-8-01', pillar: 'pillar_8', suite: '5-Tier Model Router (modelRouter.test.ts)', name: 'Canonical routing across Gemini 2.5 Pro, Gemini 3.1 Pro, Gemini 2.5 Flash, Veo 3.1 & Lyria 2', status: 'PASSED', durationMs: 11, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-8-02', pillar: 'pillar_8', suite: 'Zero-Mutation Passthrough (diagramCleaner.test.ts)', name: 'Canonical master architectures pass preflight geometry & label audits without corruption', status: 'PASSED', durationMs: 340, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-8-03', pillar: 'pillar_8', suite: 'Structural XML Envelopes (xmlNodesParser.test.ts)', name: 'Mandatory <mxfile><diagram><mxGraphModel> envelope & HTML entity balance verified', status: 'PASSED', durationMs: 120, timestamp: '2026-10-05T00:00:00Z' },
-
-  // Pillar 9: Governance & UAT
-  { id: 't-9-01', pillar: 'pillar_9', suite: 'Governance Doc Sync (gate_governance_doc_sync.mjs)', name: 'Byte-for-byte SHA-256 parity across AGENTS.md, skills.md, skills.json & hooks.json', status: 'PASSED', durationMs: 12, timestamp: '2026-10-05T00:00:00Z' },
-  { id: 't-9-02', pillar: 'pillar_9', suite: 'Terraform & Kubernetes IaC (terraformGenerator.test.ts)', name: 'Deterministic Terraform HCL & GKE Kubernetes manifest synthesis from diagram AST', status: 'PASSED', durationMs: 28, timestamp: '2026-10-05T00:00:00Z' },
+  // CLI-only build/unit suites (explicitly labeled CLI_ONLY — run via `npm test` & `npm run quality-gate`, never spoofed as browser PASSED!)
+  { id: 'cli-vitest', pillar: 'cli_suites', suite: 'npx vitest run', name: 'Unit & contract suites (schema, validator, ELK, routing, spatial mutator, slides sync, auth guards)', status: 'CLI_ONLY', durationMs: 0, timestamp: 'Run via CLI' },
+  { id: 'cli-quality-gate', pillar: 'cli_suites', suite: 'npm run quality-gate (scripts/runQualityGate.ts)', name: 'Zero forbidden model slugs, deleted hijacker guard & TypeScript (tsc --noEmit)', status: 'CLI_ONLY', durationMs: 0, timestamp: 'Run via CLI' },
 ];
 
 function TestStatusContent() {
@@ -114,16 +69,14 @@ function TestStatusContent() {
   const [activePillar, setActivePillar] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [lastRunTimestamp, setLastRunTimestamp] = useState<string>('2026-10-05T00:00:00Z');
+  const [lastRunTimestamp, setLastRunTimestamp] = useState<string>('');
   const [authChecked, setAuthChecked] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   React.useEffect(() => {
     if (
       typeof window !== 'undefined' &&
-      (window.location.hostname === 'localhost' ||
-        window.location.hostname === '127.0.0.1' ||
-        localStorage.getItem('pc_admin_unlocked') === 'true')
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ) {
       setIsAdmin(true);
     }
@@ -150,28 +103,37 @@ function TestStatusContent() {
   }, [testResults, activePillar, searchQuery]);
 
   const stats = useMemo(() => {
-    const total = testResults.length;
-    const passed = testResults.filter((t) => t.status === 'PASSED').length;
-    const failed = total - passed;
-    const passRate = total > 0 ? Math.round((passed / total) * 1000) / 10 : 100.0;
+    const probes = testResults.filter((t) => t.pillar === 'runtime_probes');
+    const total = probes.length;
+    const passed = probes.filter((t) => t.status === 'PASSED').length;
+    const failed = probes.filter((t) => t.status === 'FAILED').length;
+    const executed = passed + failed;
+    const passRate = executed > 0 ? Math.round((passed / executed) * 1000) / 10 : 0;
     return { total, passed, failed, passRate };
   }, [testResults]);
 
   const handleRunAllTests = async () => {
     setIsRunning(true);
-    const probeEndpoint = async (url: string) => {
+    const probeEndpoint = async (url: string, validateBody?: (json: any) => boolean) => {
       const start = performance.now();
       try {
         const res = await fetch(url, { cache: 'no-store' });
-        return { ok: res.ok, latency: Math.max(1, Math.round(performance.now() - start)) };
+        const latency = Math.max(1, Math.round(performance.now() - start));
+        if (!res.ok) return { ok: false, latency };
+        if (validateBody) {
+          const json = await res.json().catch(() => null);
+          return { ok: validateBody(json), latency };
+        }
+        return { ok: true, latency };
       } catch {
         return { ok: false, latency: Math.max(1, Math.round(performance.now() - start)) };
       }
     };
 
-    const [healthProbe, diagramsProbe, changelogProbe] = await Promise.all([
+    const [healthProbe, diagramsProbe, oauthProbe, changelogProbe] = await Promise.all([
       probeEndpoint('/api/health'),
       probeEndpoint('/api/diagrams'),
+      probeEndpoint('/api/google-workspace/oauth-config', (j) => j && j.sessionToken === null),
       probeEndpoint('/api/changelog'),
     ]);
 
@@ -179,19 +141,19 @@ function TestStatusContent() {
 
     setTestResults((prev) =>
       prev.map((t) => {
-        if (t.id === 't-6-04') {
+        if (t.id === 'probe-health') {
           return { ...t, status: healthProbe.ok ? 'PASSED' : 'FAILED', durationMs: healthProbe.latency, timestamp: nowIso };
         }
-        if (t.id === 't-6-02') {
+        if (t.id === 'probe-diagrams') {
           return { ...t, status: diagramsProbe.ok ? 'PASSED' : 'FAILED', durationMs: diagramsProbe.latency, timestamp: nowIso };
         }
-        if (t.id === 't-6-03') {
+        if (t.id === 'probe-oauth') {
+          return { ...t, status: oauthProbe.ok ? 'PASSED' : 'FAILED', durationMs: oauthProbe.latency, timestamp: nowIso };
+        }
+        if (t.id === 'probe-changelog') {
           return { ...t, status: changelogProbe.ok ? 'PASSED' : 'FAILED', durationMs: changelogProbe.latency, timestamp: nowIso };
         }
-        return {
-          ...t,
-          timestamp: nowIso,
-        };
+        return t;
       })
     );
     setIsRunning(false);
@@ -373,10 +335,20 @@ function TestStatusContent() {
                   {filteredTests.map((test) => (
                     <tr key={test.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
                       <td className="py-3 px-4">
-                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
-                          <Check className="w-3 h-3 stroke-[3]" />
-                          <span>PASS</span>
-                        </span>
+                        {test.status === 'PASSED' ? (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                            <Check className="w-3 h-3 stroke-[3]" />
+                            <span>PASS</span>
+                          </span>
+                        ) : test.status === 'FAILED' ? (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-600 border border-rose-500/30">
+                            <span>FAIL</span>
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-300">
+                            <span>{test.pillar === 'cli_suites' ? 'CLI SUITE' : 'PENDING'}</span>
+                          </span>
+                        )}
                       </td>
                       <td className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">
                         {test.pillar.replace('_', ' ').toUpperCase()}

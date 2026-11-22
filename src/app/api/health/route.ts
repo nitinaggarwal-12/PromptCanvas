@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
 import { checkDatabaseHealth, isPostgres, purgeExpiredGuestSessionsAndDiagrams } from '@/lib/db';
-import { GEMINI_MODEL_ID, GEMINI_PRO_MODEL_ID, GEMINI_FLASH_MODEL_ID } from '@/lib/geminiConfig';
+import {
+  GEMINI_MODEL_ID,
+  GEMINI_PRO_MODEL_ID,
+  GEMINI_FLASH_MODEL_ID,
+  hasLiveGeminiBackend,
+} from '@/lib/geminiConfig';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,6 +28,7 @@ export async function GET(request: Request) {
     const dbHealth = await checkDatabaseHealth();
     const dbMode = isPostgres() ? 'postgres' : 'sqlite';
     const hasGeminiKey = Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim() !== '');
+    const hasGeminiBackend = hasGeminiKey || hasLiveGeminiBackend();
 
     const memoryUsage = process.memoryUsage();
     const memoryMb = {
@@ -50,7 +56,8 @@ export async function GET(request: Request) {
         },
         maintenance: maintenanceStats || { status: 'idle', lastRun: new Date(lastAutoMaintenance).toISOString() },
         aiEngine: {
-          configured: hasGeminiKey,
+          configured: hasGeminiBackend,
+          backend: hasGeminiKey ? 'api_key' : hasGeminiBackend ? 'vertex_adc' : 'unconfigured',
           defaultModel: GEMINI_MODEL_ID,
           proModel: GEMINI_PRO_MODEL_ID,
           flashModel: GEMINI_FLASH_MODEL_ID,

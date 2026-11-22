@@ -3,6 +3,7 @@ import {
   loadCloudViewerManifest,
   normalizeManifestKey,
   resolveFallbackWorkstreamKey,
+  sha256Text,
   uploadHtmlOrDocxToGoogleDocs,
   uploadPptxBufferToGoogleSlides,
 } from '@/lib/server/googleWorkspaceBridge';
@@ -188,9 +189,16 @@ export async function POST(req: NextRequest) {
     }
 
     // 2. Default: Google Slides or PDF mode
+    const hasCustomXmlPayload = typeof body.xmlContent === 'string' && body.xmlContent.includes('<mxCell');
+    const incomingXmlSha = hasCustomXmlPayload ? sha256Text(String(body.xmlContent)) : undefined;
+
     const existingSlide =
-      manifest.slides[normalizedKey] || (fbWsKey && !body.base64Pptx ? manifest.slides[fbWsKey] : undefined);
-    if (!force && existingSlide && existingSlide.googleSlidesId && !body.base64Pptx) {
+      manifest.slides[normalizedKey] ||
+      (fbWsKey && !body.base64Pptx && !hasCustomXmlPayload ? manifest.slides[fbWsKey] : undefined);
+    const cacheFreshForXml =
+      !incomingXmlSha || (Boolean(existingSlide?.xmlSha256) && existingSlide?.xmlSha256 === incomingXmlSha);
+
+    if (!force && existingSlide && existingSlide.googleSlidesId && !body.base64Pptx && cacheFreshForXml) {
       const slideKey = existingSlide.key || normalizedKey;
       const pdfRoute = `/api/google-workspace/pdf?key=${encodeURIComponent(slideKey)}&mode=slides`;
       const targetUrl = mode === 'pdf' ? pdfRoute : existingSlide.googleSlidesEditUrl;
@@ -209,7 +217,7 @@ export async function POST(req: NextRequest) {
     }
 
     const resolved = resolveServerDiagramXmlAndTitle(rawKey, body.title);
-    const xmlToUse = String(body.xmlContent || '').includes('<mxCell') ? String(body.xmlContent) : resolved.xml;
+    const xmlToUse = hasCustomXmlPayload ? String(body.xmlContent) : resolved.xml;
     const titleToUse = String(body.title || resolved.title).trim();
 
     let pptxBuffer: Buffer;
@@ -219,7 +227,7 @@ export async function POST(req: NextRequest) {
       const b64 = (await exportDrawioToEditablePptx(xmlToUse, titleToUse, normalizedKey, {
         returnBase64: true,
         masterImageSrc: body.masterImageSrc,
-        includeArchCenterGuideSlides: true,
+        includeArchCenterGuideSlides: body.includeGuideSlides !== false,
         markdownContent: body.markdownContent,
         docId: body.docId || rawKey,
       })) as string;
@@ -230,7 +238,9 @@ export async function POST(req: NextRequest) {
       pptxBuffer,
       title: titleToUse,
       cacheKey: normalizedKey,
-      force,
+      xmlSha256: incomingXmlSha,
+      force: force || Boolean(incomingXmlSha && existingSlide?.xmlSha256 !== incomingXmlSha),
+      targetFileId: typeof body.targetFileId === 'string' ? body.targetFileId.trim() || undefined : undefined,
       accessTokenOverride,
     });
 

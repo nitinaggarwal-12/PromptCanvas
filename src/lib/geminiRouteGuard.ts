@@ -6,7 +6,11 @@ import { initRequestGeminiKeyContext, setActiveRequestGeminiApiKey } from '@/lib
 function isGuestUser(user: { email?: string; is_guest?: number | boolean } | null): boolean {
   if (!user) return true;
   if (user.is_guest === 1 || user.is_guest === true) return true;
-  if (typeof user.email === 'string' && user.email.toLowerCase().endsWith('@guest.promptcanvas.local')) {
+  const emailLower = typeof user.email === 'string' ? user.email.toLowerCase() : '';
+  if (
+    emailLower.endsWith('@guest.promptcanvas.local') ||
+    emailLower.endsWith('@promptcanvas.guest')
+  ) {
     return true;
   }
   return false;
@@ -192,8 +196,9 @@ export function checkConversationalOrNonMutationIntent(prompt: string): Conversa
   ]);
   const identityPhrases = [
     'who are you', 'who r you', 'who r u', 'who are u', 'what are you',
-    'what is this', 'what can you do', 'what do you do', 'what is your name', 'help', 'introduce yourself'
+    'what is this', 'what can you do', 'what do you do', 'what is your name', 'introduce yourself'
   ];
+  const standaloneHelpPhrases = new Set(['help', 'help me', 'need help', 'how do i use this', 'how does this work']);
   const courtesyPhrases = new Set([
     'thanks', 'thank you', 'thx', 'thank u', 'appreciate it', 'many thanks',
     'ok', 'okay', 'cool', 'great', 'awesome', 'nice', 'good', 'perfect', 'got it', 'sounds good', 'bye', 'goodbye'
@@ -202,19 +207,31 @@ export function checkConversationalOrNonMutationIntent(prompt: string): Conversa
     'fast', 'scale', 'blue', 'red', 'green', 'big', 'small', 'test', 'yes', 'no', 'maybe', 'more', 'less'
   ]);
 
+  const hasArchitectureActionVerb =
+    /\b(design|architect|build|create|draw|generate|add|insert|connect|remove|delete|move|update|migrate|deploy|refactor|configure|diagram|system|platform|pipeline|cluster|database|cache|api|gateway|aws|azure|gcp|gke|eks|kafka|redis|spanner|bigquery|kubernetes|oauth|fhir|iot)\b/i.test(
+      clean
+    );
+
   if (greetings.has(clean) || (words.length <= 2 && (words[0] === 'hi' || words[0] === 'hello' || words[0] === 'hey'))) {
     return {
       isNonMutation: true,
       category: 'greeting',
-      replyMessage: "👋 Hello! I'm your PromptCanvas Architecture Co-Pilot (powered by Gemini 2.5 Pro, Gemini 2.5 Pro, Gemini 3.1 Pro & Gemini 2.5 Flash). Tell me what system, cloud topology, or domain infographic you'd like to design or refine!"
+      replyMessage: "👋 Hello! I'm your PromptCanvas Architecture Co-Pilot (powered by Gemini 2.5 Pro & Gemini 2.5 Flash). Tell me what system, cloud topology, or workflow you'd like to design or refine!"
     };
   }
 
-  if (identityPhrases.some(p => clean === p || clean.startsWith(p + ' ')) || (clean.startsWith('who') && (clean.includes('you') || clean.includes(' u')))) {
+  const isStandaloneHelp = standaloneHelpPhrases.has(clean) && !hasArchitectureActionVerb;
+  const isIdentityQuery =
+    !hasArchitectureActionVerb &&
+    (isStandaloneHelp ||
+      identityPhrases.some(p => clean === p || clean.startsWith(p + ' ')) ||
+      (clean.startsWith('who') && (clean.includes('you') || clean.includes(' u'))));
+
+  if (isIdentityQuery) {
     return {
       isNonMutation: true,
       category: 'identity',
-      replyMessage: "🏛️ I am the PromptCanvas Architecture & Infographic Engine, orchestrated by Gemini 2.5 Pro with Gemini 2.5 Pro, Gemini 3.1 Pro, Gemini 2.5 Flash, and Gemini Flash Live. I synthesize collision-free Draw.io XML blueprints, 6-Dimension Domain Research Infographics, and 19-Section Architecture Specifications."
+      replyMessage: "🏛️ I am PromptCanvas, an LLM-powered Architecture Diagram Generator backed by Gemini 2.5 Pro and Gemini 2.5 Flash. I synthesize editable Draw.io XML diagrams, preserve manual Draw.io edits, and export/sync with Google Slides."
     };
   }
 

@@ -1282,7 +1282,7 @@ export async function updateDiagramPrivacy(diagramId: string, isPrivate: boolean
   }
 }
 
-// Helper: Create a new diagram with an optional initial XML and userId
+// Helper: Create a new diagram with an optional initial XML, userId, and canonical graph_json
 export async function createDiagram(
   name: string,
   initialXml?: string,
@@ -1294,7 +1294,8 @@ export async function createDiagram(
   userId?: string | null,
   architectureType?: string | null,
   isPrivate?: boolean,
-  createdStudio: string = 'studio1'
+  createdStudio: string = 'studio1',
+  graphJson?: string | null
 ): Promise<{ diagram: Diagram; version: DiagramVersion | null }> {
   await ensureTablesExist();
   const diagramId = uuidv4();
@@ -1312,8 +1313,8 @@ export async function createDiagram(
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
         await client.query(`
-          INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+          INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type, graph_json)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         `, [
           versionId,
           diagramId,
@@ -1325,7 +1326,8 @@ export async function createDiagram(
           aiReasoning || null,
           businessUsecase || null,
           technicalUsecase || null,
-          architectureType || 'conceptual_diagram'
+          architectureType || 'conceptual_diagram',
+          graphJson ?? null
         ]);
         const getVer = await client.query('SELECT * FROM diagram_versions WHERE id = $1', [versionId]);
         version = getVer.rows[0] as DiagramVersion;
@@ -1350,8 +1352,8 @@ export async function createDiagram(
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
         const insertVersion = db.prepare(`
-          INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type, graph_json)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
         insertVersion.run(
           versionId,
@@ -1364,7 +1366,8 @@ export async function createDiagram(
           aiReasoning || null,
           businessUsecase || null,
           technicalUsecase || null,
-          architectureType || 'conceptual_diagram'
+          architectureType || 'conceptual_diagram',
+          graphJson ?? null
         );
         const getVersion = db.prepare('SELECT * FROM diagram_versions WHERE id = ?');
         version = getVersion.get(versionId) as unknown as DiagramVersion;

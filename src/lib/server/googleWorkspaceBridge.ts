@@ -12,6 +12,7 @@ interface CloudSlidesManifestEntry {
   title: string;
   pptxPath?: string;
   sha256: string;
+  xmlSha256?: string;
   sizeBytes?: number;
   googleSlidesId: string;
   googleSlidesEditUrl: string;
@@ -43,15 +44,21 @@ export interface CloudViewerManifest {
   docs: Record<string, CloudDocsManifestEntry>;
 }
 
+const HOME_DIR = os.homedir();
 const REPO_MANIFEST_PATH = path.join(/*turbopackIgnore: true*/ process.cwd(), 'src', 'data', 'cloud_viewer_manifest.json');
 const TMP_MANIFEST_PATH = path.join(os.tmpdir(), 'promptcanvas_cloud_viewer_manifest.json');
-const BLOGS_MANIFEST_PATH = '/Users/nitinagga/Documents/blogs/slides/cloud_viewer_manifest.json';
+const BLOGS_MANIFEST_PATH = path.join(/*turbopackIgnore: true*/ HOME_DIR, 'Documents', 'blogs', 'slides', 'cloud_viewer_manifest.json');
 
-const TOKEN_CANDIDATE_PATHS = [
-  path.join(/*turbopackIgnore: true*/ process.cwd(), '.gsheet_oauth_token.json'),
-  '/Users/nitinagga/Documents/blogs/.gsheet_oauth_token.json',
-  '/Users/nitinagga/Documents/gantry-pulse/.gsheet_oauth_token.json',
-];
+const TOKEN_CANDIDATE_PATHS = Array.from(
+  new Set([
+    path.join(/*turbopackIgnore: true*/ process.cwd(), '.gsheet_oauth_token.json'),
+    path.join(/*turbopackIgnore: true*/ HOME_DIR, 'Documents', 'gantry-pulse', '.gsheet_oauth_token.json'),
+    path.join(/*turbopackIgnore: true*/ HOME_DIR, 'Documents', 'blogs', '.gsheet_oauth_token.json'),
+    path.join(/*turbopackIgnore: true*/ HOME_DIR, 'Documents', 'PromptCanvas', '.gsheet_oauth_token.json'),
+    '/Users/nitinagga/Documents/blogs/.gsheet_oauth_token.json',
+    '/Users/nitinagga/Documents/gantry-pulse/.gsheet_oauth_token.json',
+  ])
+);
 
 declare global {
   // eslint-disable-next-line no-var
@@ -305,6 +312,10 @@ function sha256Buffer(buf: Buffer): string {
   return crypto.createHash('sha256').update(buf).digest('hex');
 }
 
+export function sha256Text(text: string): string {
+  return crypto.createHash('sha256').update(text, 'utf8').digest('hex');
+}
+
 /**
  * Uploads a compiled .pptx buffer to Google Drive with mimeType = application/vnd.google-apps.presentation,
  * converting it into a 100% native editable Google Slides presentation and caching it in cloud_viewer_manifest.json.
@@ -315,6 +326,7 @@ export async function uploadPptxBufferToGoogleSlides(params: {
   pptxBuffer: Buffer;
   title: string;
   cacheKey: string;
+  xmlSha256?: string;
   force?: boolean;
   targetFileId?: string;
   accessTokenOverride?: string | null;
@@ -324,11 +336,14 @@ export async function uploadPptxBufferToGoogleSlides(params: {
   const sha = sha256Buffer(params.pptxBuffer);
   const existing = manifest.slides[normalizedKey];
 
+  const isReservedWorkstream = ['WS1', 'WS2', 'WS3', 'WS4', 'WS5', 'ALL'].includes(normalizedKey);
+  const xmlUnchanged = !params.xmlSha256 || existing?.xmlSha256 === params.xmlSha256;
+
   if (
     !params.force &&
     existing &&
     existing.googleSlidesId &&
-    (existing.sha256 === sha || ['WS1', 'WS2', 'WS3', 'WS4', 'WS5', 'ALL'].includes(normalizedKey))
+    ((existing.sha256 === sha && xmlUnchanged) || (isReservedWorkstream && !params.xmlSha256))
   ) {
     return existing;
   }
@@ -424,6 +439,7 @@ export async function uploadPptxBufferToGoogleSlides(params: {
     key: normalizedKey,
     title: params.title,
     sha256: sha,
+    ...(params.xmlSha256 ? { xmlSha256: params.xmlSha256 } : {}),
     sizeBytes: params.pptxBuffer.length,
     googleSlidesId: fid,
     googleSlidesEditUrl: `https://docs.google.com/presentation/d/${fid}/edit?authuser=${encodedEmail}`,
@@ -561,4 +577,403 @@ export async function exportGoogleFilePdfBytes(fileId: string): Promise<Buffer> 
   }
   const arr = await res.arrayBuffer();
   return Buffer.from(arr);
+}
+
+// ============================================================================
+// BIDIRECTIONAL GOOGLE SLIDES -> DRAW.IO XML SYNC ENGINE
+// Reads live shapes, text edits, moves/resizes, and newly added shapes from a
+// Google Slides presentation via Slides API v1 and merges them back into Draw.io XML.
+// ============================================================================
+
+const EMU_PER_INCH = 914400;
+
+interface SlidesSyncManifestCell {
+  id: string;
+  label: string;
+  subtitle?: string;
+  isContainer: boolean;
+  sx: number;
+  sy: number;
+  sw: number;
+  sh: number;
+}
+
+interface SlidesSyncManifest {
+  v: number;
+  diagramTitle?: string;
+  blueprintId?: string;
+  transform: {
+    effMinX: number;
+    effMinY: number;
+    scaleX: number;
+    scaleY: number;
+    offsetX: number;
+    offsetY: number;
+  };
+  cells: SlidesSyncManifestCell[];
+}
+
+export interface GoogleSlidesSyncDiffResult {
+  xml: string;
+  presentationId: string;
+  presentationTitle: string;
+  matchedSlideObjectId: string | null;
+  renamedCells: Array<{ id: string; from: string; to: string }>;
+  movedCells: Array<{ id: string; label: string; dx: number; dy: number }>;
+  addedCells: Array<{ id: string; label: string }>;
+  totalChanges: number;
+  summary: string;
+}
+
+export function extractPresentationIdFromInput(input: string): string | null {
+  const clean = String(input || '').trim();
+  if (!clean) return null;
+  const urlMatch = clean.match(/\/presentation\/d\/([a-zA-Z0-9_-]{12,})/);
+  if (urlMatch) return urlMatch[1];
+  if (/^[a-zA-Z0-9_-]{16,120}$/.test(clean)) return clean;
+  return null;
+}
+
+function extractTextFromGoogleSlideElement(el: any): { fullText: string; lines: string[] } {
+  const textElements = el?.shape?.text?.textElements;
+  if (!Array.isArray(textElements)) return { fullText: '', lines: [] };
+  let raw = '';
+  for (const te of textElements) {
+    if (typeof te?.textRun?.content === 'string') {
+      raw += te.textRun.content;
+    }
+  }
+  const lines = raw
+    .split(/\r?\n/)
+    .map((l) => l.replace(/\s+/g, ' ').trim())
+    .filter(Boolean);
+  return { fullText: lines.join(' — '), lines };
+}
+
+function extractSlideNotesText(slide: any): string {
+  const notesElements = slide?.slideProperties?.notesPage?.pageElements;
+  if (!Array.isArray(notesElements)) return '';
+  let out = '';
+  for (const el of notesElements) {
+    const t = el?.shape?.text?.textElements;
+    if (!Array.isArray(t)) continue;
+    for (const te of t) {
+      if (typeof te?.textRun?.content === 'string') {
+        out += te.textRun.content;
+      }
+    }
+  }
+  return out;
+}
+
+function extractSlideElementBoxInches(el: any): { x: number; y: number; w: number; h: number } | null {
+  const size = el?.size;
+  const transform = el?.transform;
+  if (!size || !transform) return null;
+  const unitFactor = (u?: string) => (u === 'PT' ? 1 / 72 : 1 / EMU_PER_INCH);
+  const rawW = Number(size.width?.magnitude || 0) * unitFactor(size.width?.unit);
+  const rawH = Number(size.height?.magnitude || 0) * unitFactor(size.height?.unit);
+  const scaleX = typeof transform.scaleX === 'number' ? Math.abs(transform.scaleX) : 1;
+  const scaleY = typeof transform.scaleY === 'number' ? Math.abs(transform.scaleY) : 1;
+  const tx = Number(transform.translateX || 0) * unitFactor(transform.unit);
+  const ty = Number(transform.translateY || 0) * unitFactor(transform.unit);
+  const w = rawW * scaleX;
+  const h = rawH * scaleY;
+  if (w <= 0.05 || h <= 0.05) return null;
+  return { x: tx, y: ty, w, h };
+}
+
+function parseSlidesSyncManifest(notesText: string): SlidesSyncManifest | null {
+  const marker = 'PROMPTCANVAS_SLIDES_SYNC_V1:';
+  const idx = notesText.indexOf(marker);
+  if (idx === -1) return null;
+  const jsonSlice = notesText.slice(idx + marker.length).trim();
+  const start = jsonSlice.indexOf('{');
+  const end = jsonSlice.lastIndexOf('}');
+  if (start === -1 || end <= start) return null;
+  try {
+    const parsed = JSON.parse(jsonSlice.slice(start, end + 1)) as SlidesSyncManifest;
+    if (parsed && parsed.transform && Array.isArray(parsed.cells)) {
+      return parsed;
+    }
+  } catch {
+    // ignore malformed notes JSON
+  }
+  return null;
+}
+
+/**
+ * Pure, deterministic bidirectional merge engine: reconciles a Google Slides API v1
+ * Presentation JSON against a base Draw.io XML string, propagating renames, moves/resizes,
+ * and newly added shapes back into Draw.io XML while preserving untouched styles and edges.
+ */
+export async function applyGoogleSlidesPresentationToDrawioXml(
+  baseXml: string,
+  presentation: any,
+  presentationId: string
+): Promise<GoogleSlidesSyncDiffResult> {
+  const {
+    parseDrawioXmlSpatialState,
+    serializeSpatialStateToDrawioXml,
+    buildCardValueHtml,
+  } = await import('@/lib/freeform/directDrawioSpatialMutator');
+  const { resolveFreeformIconDataUri } = await import('@/lib/freeform/freeformIconRegistry');
+
+  const slides: any[] = Array.isArray(presentation?.slides) ? presentation.slides : [];
+  if (slides.length === 0) {
+    throw new Error('Google Slides presentation contains no slides.');
+  }
+
+  let targetSlide: any = null;
+  let manifest: SlidesSyncManifest | null = null;
+  for (const s of slides) {
+    const notes = extractSlideNotesText(s);
+    const parsed = parseSlidesSyncManifest(notes);
+    if (parsed) {
+      targetSlide = s;
+      manifest = parsed;
+      break;
+    }
+  }
+  if (!targetSlide) {
+    targetSlide = slides.length >= 2 ? slides[1] : slides[0];
+  }
+
+  const state = parseDrawioXmlSpatialState(baseXml);
+  const cellById = new Map(state.cells.map((c) => [c.id, c]));
+
+  const renamedCells: Array<{ id: string; from: string; to: string }> = [];
+  const movedCells: Array<{ id: string; label: string; dx: number; dy: number }> = [];
+  const addedCells: Array<{ id: string; label: string }> = [];
+
+  const slideElements: any[] = Array.isArray(targetSlide?.pageElements) ? targetSlide.pageElements : [];
+  const candidateShapes = slideElements
+    .map((el) => {
+      const box = extractSlideElementBoxInches(el);
+      const text = extractTextFromGoogleSlideElement(el);
+      return {
+        objectId: String(el?.objectId || ''),
+        shapeType: String(el?.shape?.shapeType || ''),
+        box,
+        title: text.lines[0] || '',
+        subtitle: text.lines.slice(1).join(' — '),
+        fullText: text.fullText,
+      };
+    })
+    .filter((s) => {
+      if (!s.box) return false;
+      // Ignore slide chrome (outer DevSite sheet, breadcrumb header/footer, Figure 1 banner/caption)
+      if (s.box.w > 11.5 && s.box.h > 5.8) return false;
+      if (s.box.y < 0.72 || s.box.y > 6.68) return false;
+      if (/^figure\s*1\b|^cloud architecture center|^promptcanvas architecture studio/i.test(s.title)) {
+        return false;
+      }
+      return s.title.length > 0;
+    });
+
+  const matchedManifestIds = new Set<string>();
+  const matchedShapeObjectIds = new Set<string>();
+
+  if (manifest && manifest.cells.length > 0) {
+    const tf = manifest.transform;
+    const fromSlideX = (sx: number) => Math.round(tf.effMinX + (sx - tf.offsetX) / (tf.scaleX || 1));
+    const fromSlideY = (sy: number) => Math.round(tf.effMinY + (sy - tf.offsetY) / (tf.scaleY || 1));
+
+    const applyMatchedShape = (
+      mCell: SlidesSyncManifestCell,
+      drawioCell: (typeof state.cells)[number],
+      bestShape: (typeof candidateShapes)[number]
+    ) => {
+      if (!bestShape.box) return;
+      matchedManifestIds.add(mCell.id);
+      matchedShapeObjectIds.add(bestShape.objectId);
+
+      // 1a. Detect text rename in Google Slides
+      const normOld = mCell.label.replace(/\s+/g, ' ').trim();
+      const normNew = bestShape.title.replace(/\s+/g, ' ').trim();
+      if (normNew && normOld && normNew.toLowerCase() !== normOld.toLowerCase()) {
+        renamedCells.push({ id: drawioCell.id, from: normOld, to: normNew });
+        drawioCell.plainLabel = normNew;
+        if (!drawioCell.isContainer) {
+          const iconUri = resolveFreeformIconDataUri(normNew);
+          drawioCell.value = buildCardValueHtml(normNew, bestShape.subtitle || mCell.subtitle, iconUri, 11);
+        } else {
+          drawioCell.value = `<b style="color:#1E3A8A;font-size:11.5px;letter-spacing:0.6px;">${normNew
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .toUpperCase()}</b>`;
+        }
+      }
+
+      // 1b. Detect significant move in Google Slides (> 0.20" shift)
+      const moveDistInches = Math.hypot(bestShape.box.x - mCell.sx, bestShape.box.y - mCell.sy);
+      if (moveDistInches > 0.2 && !drawioCell.isContainer) {
+        const nextAbsX = Math.max(24, fromSlideX(bestShape.box.x));
+        const nextAbsY = Math.max(24, fromSlideY(bestShape.box.y));
+        const dx = nextAbsX - drawioCell.absX;
+        const dy = nextAbsY - drawioCell.absY;
+        if (Math.abs(dx) >= 12 || Math.abs(dy) >= 12) {
+          movedCells.push({ id: drawioCell.id, label: drawioCell.plainLabel, dx, dy });
+          drawioCell.absX = nextAbsX;
+          drawioCell.absY = nextAbsY;
+          const parentCell =
+            drawioCell.parent && drawioCell.parent !== '1' ? cellById.get(drawioCell.parent) : undefined;
+          drawioCell.relX = parentCell ? Math.round(drawioCell.absX - parentCell.absX) : drawioCell.absX;
+          drawioCell.relY = parentCell ? Math.round(drawioCell.absY - parentCell.absY) : drawioCell.absY;
+        }
+      }
+    };
+
+    // Pass 1A: Exact label matches FIRST (prevents a moved shape from being stolen by a nearby cell)
+    for (const mCell of manifest.cells) {
+      const drawioCell = cellById.get(mCell.id);
+      if (!drawioCell) continue;
+      const mCx = mCell.sx + mCell.sw / 2;
+      const mCy = mCell.sy + mCell.sh / 2;
+      const normOldLower = mCell.label.replace(/\s+/g, ' ').trim().toLowerCase();
+
+      let bestShape: (typeof candidateShapes)[number] | null = null;
+      let bestDist = Infinity;
+      for (const sh of candidateShapes) {
+        if (matchedShapeObjectIds.has(sh.objectId) || !sh.box) continue;
+        const shLower = sh.title.replace(/\s+/g, ' ').trim().toLowerCase();
+        if (shLower !== normOldLower) continue;
+        const dist = Math.hypot(sh.box.x + sh.box.w / 2 - mCx, sh.box.y + sh.box.h / 2 - mCy);
+        if (dist <= 4.5 && dist < bestDist) {
+          bestDist = dist;
+          bestShape = sh;
+        }
+      }
+      if (bestShape) {
+        applyMatchedShape(mCell, drawioCell, bestShape);
+      }
+    }
+
+    // Pass 1B: Geometric proximity match for in-place renames (within 0.55" center radius)
+    for (const mCell of manifest.cells) {
+      if (matchedManifestIds.has(mCell.id)) continue;
+      const drawioCell = cellById.get(mCell.id);
+      if (!drawioCell) continue;
+      const mCx = mCell.sx + mCell.sw / 2;
+      const mCy = mCell.sy + mCell.sh / 2;
+
+      let bestShape: (typeof candidateShapes)[number] | null = null;
+      let bestDist = Infinity;
+      for (const sh of candidateShapes) {
+        if (matchedShapeObjectIds.has(sh.objectId) || !sh.box) continue;
+        const dist = Math.hypot(sh.box.x + sh.box.w / 2 - mCx, sh.box.y + sh.box.h / 2 - mCy);
+        if (dist <= 0.55 && dist < bestDist) {
+          bestDist = dist;
+          bestShape = sh;
+        }
+      }
+      if (bestShape) {
+        applyMatchedShape(mCell, drawioCell, bestShape);
+      }
+    }
+
+    // Pass 2: Any unmatched substantive shape drawn inside the diagram figure box becomes a new Draw.io card!
+    const existingLabelsLower = new Set(state.cells.map((c) => c.plainLabel.toLowerCase()));
+    const existingEdgeLabelsLower = new Set(state.edges.map((e) => e.plainLabel.toLowerCase()));
+    for (const sh of candidateShapes) {
+      if (matchedShapeObjectIds.has(sh.objectId) || !sh.box) continue;
+      if (sh.box.w < 0.65 || sh.box.h < 0.28) continue; // skip tiny edge pills/step circles
+      const lblLower = sh.title.toLowerCase();
+      if (existingLabelsLower.has(lblLower) || existingEdgeLabelsLower.has(lblLower)) continue;
+
+      const absX = Math.max(40, fromSlideX(sh.box.x));
+      const absY = Math.max(40, fromSlideY(sh.box.y));
+      const w = Math.max(180, Math.min(320, Math.round(sh.box.w / (tf.scaleX || 1))));
+      const h = Math.max(68, Math.min(130, Math.round(sh.box.h / (tf.scaleY || 1))));
+      const newId = `slides_added_${sh.objectId.replace(/[^a-zA-Z0-9_]/g, '').slice(-10) || addedCells.length + 1}`;
+      const iconUri = resolveFreeformIconDataUri(sh.title);
+
+      state.cells.push({
+        id: newId,
+        parent: '1',
+        value: buildCardValueHtml(sh.title, sh.subtitle || undefined, iconUri, 11),
+        plainLabel: sh.title,
+        style: 'rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;',
+        isContainer: false,
+        relX: absX,
+        relY: absY,
+        absX,
+        absY,
+        w,
+        h,
+      });
+      addedCells.push({ id: newId, label: sh.title });
+      existingLabelsLower.add(lblLower);
+    }
+  }
+
+  for (const c of state.cells) {
+    if (c.absX + c.w + 40 > state.canvasW) state.canvasW = Math.ceil(c.absX + c.w + 40);
+    if (c.absY + c.h + 40 > state.canvasH) state.canvasH = Math.ceil(c.absY + c.h + 40);
+  }
+
+  let syncedXml = serializeSpatialStateToDrawioXml(state);
+  if (!syncedXml.includes('data-slides-synced="true"')) {
+    syncedXml = syncedXml.replace('<mxfile ', '<mxfile data-slides-synced="true" ');
+  }
+
+  const totalChanges = renamedCells.length + movedCells.length + addedCells.length;
+  const summaryParts: string[] = [];
+  if (renamedCells.length > 0) summaryParts.push(`${renamedCells.length} renamed`);
+  if (movedCells.length > 0) summaryParts.push(`${movedCells.length} moved`);
+  if (addedCells.length > 0) summaryParts.push(`${addedCells.length} added`);
+
+  return {
+    xml: syncedXml,
+    presentationId,
+    presentationTitle: String(presentation?.title || state.title),
+    matchedSlideObjectId: targetSlide?.objectId ? String(targetSlide.objectId) : null,
+    renamedCells,
+    movedCells,
+    addedCells,
+    totalChanges,
+    summary:
+      totalChanges > 0
+        ? `Synced ${totalChanges} Google Slides edit(s) back to Draw.io XML (${summaryParts.join(', ')}).`
+        : 'Checked Google Slides presentation — diagram is already in sync with Draw.io XML (0 diffs).',
+  };
+}
+
+/**
+ * Live server-side Google Slides -> Draw.io XML sync via Google Slides API v1 (`presentations.get`).
+ */
+export async function pullGoogleSlidesEditsToDrawioXml(params: {
+  presentationIdOrUrl: string;
+  baseXml: string;
+  accessTokenOverride?: string | null;
+}): Promise<GoogleSlidesSyncDiffResult> {
+  const presentationId = extractPresentationIdFromInput(params.presentationIdOrUrl);
+  if (!presentationId) {
+    throw new Error('Invalid Google Slides presentation ID or URL.');
+  }
+
+  const token = params.accessTokenOverride || (await getServerDriveAccessToken());
+  if (!token) {
+    throw new Error(
+      'No Google Workspace OAuth token available on server to read Google Slides. Ensure local OAuth credentials are configured.'
+    );
+  }
+
+  const res = await fetch(
+    `https://slides.googleapis.com/v1/presentations/${encodeURIComponent(presentationId)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'x-goog-user-project': QUOTA_PROJECT,
+      },
+      signal: AbortSignal.timeout(30_000),
+    }
+  );
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Google Slides API read failed (${res.status}): ${errText}`);
+  }
+  const presentation = await res.json();
+  return applyGoogleSlidesPresentationToDrawioXml(params.baseXml, presentation, presentationId);
 }

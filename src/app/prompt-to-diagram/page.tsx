@@ -24,6 +24,9 @@ import {
   ExternalLink,
   ChevronDown,
   ChevronUp,
+  Save,
+  Presentation,
+  RefreshCw,
 } from 'lucide-react';
 import AppHeader, { btnClass } from '@/components/AppHeader';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
@@ -75,6 +78,14 @@ export default function PurePromptToDiagramPage() {
   const [showPlanDetails, setShowPlanDetails] = useState(false);
 
   const [isDrawioEditorOpen, setIsDrawioEditorOpen] = useState(false);
+  const [savedDiagramId, setSavedDiagramId] = useState<string | null>(null);
+  const [isSavingDb, setIsSavingDb] = useState(false);
+  const [isExportingSlides, setIsExportingSlides] = useState(false);
+  const [isSyncingFromSlides, setIsSyncingFromSlides] = useState(false);
+  const [linkedSlidesId, setLinkedSlidesId] = useState<string | null>(null);
+  const [linkedSlidesUrl, setLinkedSlidesUrl] = useState<string | null>(null);
+  const [statusNotice, setStatusNotice] = useState<string | null>(null);
+  const [synthesisEngine, setSynthesisEngine] = useState<'v2_fast' | 'visual_4stage'>('v2_fast');
   const drawioIframeRef = useRef<HTMLIFrameElement | null>(null);
   const startRef = useRef<number | null>(null);
   const autoTriggeredRef = useRef(false);
@@ -82,12 +93,69 @@ export default function PurePromptToDiagramPage() {
 
   const activeResult = historyState.present?.payload || null;
 
-  // Hydrate last 15 saved Undo/Redo changes from localStorage on mount (unless ?prompt=... overrides)
+  const countXmlInventory = (rawXml: string) => {
+    const vertexMatches = rawXml.match(/<mxCell\b[^>]*\bvertex="1"[^>]*>/g) || [];
+    const edgeMatches = rawXml.match(/<mxCell\b[^>]*\bedge="1"[^>]*>/g) || [];
+    const containerCount = vertexMatches.filter((m) => m.includes('container=1') || m.includes('swimlane')).length;
+    return {
+      groupCount: containerCount,
+      nodeCount: Math.max(0, vertexMatches.length - containerCount),
+      edgeCount: edgeMatches.length,
+    };
+  };
+
+  // Hydrate by ?id= from DB, or ?prompt=, or last 15 saved Undo/Redo changes from localStorage
   useEffect(() => {
     if (hydratedStorageRef.current || typeof window === 'undefined') return;
     hydratedStorageRef.current = true;
 
     const params = new URLSearchParams(window.location.search);
+    const incomingId = params.get('id')?.trim();
+    if (incomingId) {
+      setSavedDiagramId(incomingId);
+      fetch(`/api/diagrams/${encodeURIComponent(incomingId)}`, { cache: 'no-store' })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          if (data?.xml_content && String(data.xml_content).includes('<mxCell')) {
+            const inv = countXmlInventory(data.xml_content);
+            const loadedPayload: CompoundPromptToDiagramResult = {
+              success: true,
+              action: 'create',
+              mutationMode: 'direct_drawio_xml_update',
+              userPrompt: data.latest_prompt || data.name || 'Saved Architecture',
+              modificationHistory: [],
+              summaryOfChanges: `Loaded saved diagram "${data.name || incomingId}" from Library`,
+              xml: data.xml_content,
+              graph: {
+                title: data.name || 'Saved Architecture',
+                reasoning: data.ai_reasoning || 'Loaded persisted Draw.io XML from database.',
+                groups: [],
+                nodes: [],
+                edges: [],
+              },
+              audit: {
+                ...inv,
+                maxNestingDepth: inv.groupCount > 0 ? 1 : 0,
+                siblingOverlaps: 0,
+                childContainmentViolations: 0,
+              },
+              modelUsed: 'Persisted Library DB',
+              latencyMs: 0,
+            };
+            setUserPrompt(loadedPayload.userPrompt);
+            setHistoryState((prev) =>
+              pushUndoRedoChange(prev, {
+                label: loadedPayload.graph.title,
+                xml: loadedPayload.xml,
+                payload: loadedPayload,
+              })
+            );
+          }
+        })
+        .catch(() => {});
+      return;
+    }
+
     const incomingPrompt = params.get('prompt')?.trim();
     if (incomingPrompt) {
       autoTriggeredRef.current = true;
@@ -164,10 +232,12 @@ export default function PurePromptToDiagramPage() {
     return () => clearInterval(timer);
   }, [isGenerating]);
 
-  // Embedded Draw.io postMessage bridge — sync manual XML edits into the 15-change Undo/Redo buffer
+  // Embedded Draw.io postMessage bridge — strict origin validation + live inventory refresh + DB persistence
   useEffect(() => {
     if (!isDrawioEditorOpen) return;
+    const DRAWIO_ORIGIN = 'https://embed.diagrams.net';
     const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== DRAWIO_ORIGIN) return;
       if (!event.data || typeof event.data !== 'string') return;
       try {
         const msg = JSON.parse(event.data);
@@ -178,25 +248,46 @@ export default function PurePromptToDiagramPage() {
               xml: activeResult.xml,
               autosave: 1,
             }),
-            '*'
+            DRAWIO_ORIGIN
           );
         } else if (msg.event === 'save' && typeof msg.xml === 'string') {
-          const updatedXml = msg.xml;
+          const taggedXml = msg.xml.includes('data-user-drawio="true"')
+            ? msg.xml
+            : msg.xml.replace('<mxfile ', '<mxfile data-user-drawio="true" ');
+          const inv = countXmlInventory(taggedXml);
           setHistoryState((prev) => {
             if (!prev.present || !prev.present.payload) return prev;
-            if (prev.present.xml === updatedXml) return prev;
+            if (prev.present.xml === taggedXml) return prev;
             const nextPayload: CompoundPromptToDiagramResult = {
               ...prev.present.payload,
-              xml: updatedXml,
+              xml: taggedXml,
               mutationMode: 'direct_drawio_xml_update',
               summaryOfChanges: 'Manual edit in Draw.io Vector Editor',
+              audit: {
+                ...prev.present.payload.audit,
+                groupCount: inv.groupCount,
+                nodeCount: inv.nodeCount,
+                edgeCount: inv.edgeCount,
+              },
             };
             return pushUndoRedoChange(prev, {
               label: 'Manual Draw.io Edit',
-              xml: updatedXml,
+              xml: taggedXml,
               payload: nextPayload,
             });
           });
+          if (savedDiagramId) {
+            fetch(`/api/diagrams/${encodeURIComponent(savedDiagramId)}/versions`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                xmlContent: taggedXml,
+                comment: 'Manual edit in Draw.io Vector Editor',
+                createdBy: 'Draw.io Editor',
+              }),
+            }).catch(() => {});
+          }
+          setStatusNotice('Saved Draw.io edit to history' + (savedDiagramId ? ' & Database.' : '.'));
           setIsDrawioEditorOpen(false);
         } else if (msg.event === 'exit') {
           setIsDrawioEditorOpen(false);
@@ -207,7 +298,158 @@ export default function PurePromptToDiagramPage() {
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [isDrawioEditorOpen, activeResult?.xml]);
+  }, [isDrawioEditorOpen, activeResult?.xml, savedDiagramId]);
+
+  async function handleSaveToLibraryDb(xmlOverride?: string, commentOverride?: string): Promise<string | null> {
+    const xmlToSave = xmlOverride || activeResult?.xml;
+    if (!xmlToSave) return null;
+    setIsSavingDb(true);
+    setErrorMsg(null);
+    try {
+      const title = activeResult?.graph?.title || userPrompt.slice(0, 60) || 'PromptCanvas Architecture';
+      if (savedDiagramId) {
+        const res = await fetch(`/api/diagrams/${encodeURIComponent(savedDiagramId)}/versions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            xmlContent: xmlToSave,
+            comment: commentOverride || activeResult?.summaryOfChanges || 'Saved snapshot from Prompt-to-Diagram',
+            createdBy: 'User',
+          }),
+        });
+        if (!res.ok) throw new Error('Failed to save new version to Database.');
+        setStatusNotice(`Saved new version to Library (${savedDiagramId.slice(0, 8)}…).`);
+        return savedDiagramId;
+      } else {
+        const res = await fetch('/api/diagrams', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: title,
+            xml: xmlToSave,
+            comment: commentOverride || 'Saved from Prompt-to-Diagram',
+            prompt: userPrompt || activeResult?.userPrompt || title,
+            aiReasoning: activeResult?.graph?.reasoning || activeResult?.summaryOfChanges || '',
+            architectureType: 'v2_freeform',
+            createdStudio: 'prompt_to_diagram',
+          }),
+        });
+        const data = await res.json();
+        const newId = data?.diagram?.id || data?.id;
+        if (!res.ok || !newId) throw new Error(data?.error || 'Failed to save diagram to Database.');
+        setSavedDiagramId(newId);
+        if (typeof window !== 'undefined') {
+          const url = new URL(window.location.href);
+          url.searchParams.set('id', newId);
+          window.history.replaceState({}, '', url.toString());
+        }
+        setStatusNotice(`Saved to Library Database (ID: ${newId.slice(0, 8)}…).`);
+        return newId;
+      }
+    } catch (err: any) {
+      setErrorMsg(err?.message || 'Database save failed.');
+      return null;
+    } finally {
+      setIsSavingDb(false);
+    }
+  }
+
+  async function handleExportToGoogleSlides() {
+    if (!activeResult?.xml) return;
+    setIsExportingSlides(true);
+    setErrorMsg(null);
+    try {
+      const title = activeResult.graph?.title || userPrompt.slice(0, 60) || 'Architecture Diagram';
+      const cacheKey = savedDiagramId ? `CUSTOM_${savedDiagramId.replace(/[^A-Za-z0-9]/g, '').slice(0, 24)}` : `CUSTOM_${title.replace(/[^A-Za-z0-9]+/g, '_').toUpperCase().slice(0, 32)}`;
+      const res = await fetch('/api/google-workspace/open', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          key: cacheKey,
+          title,
+          mode: 'slides',
+          xmlContent: activeResult.xml,
+          targetFileId: linkedSlidesId || undefined,
+          force: true,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data?.ok) {
+        throw new Error(data?.error || 'Google Slides export failed.');
+      }
+      const slidesId = data?.entry?.googleSlidesId || null;
+      const editUrl = data?.editUrl || data?.url || null;
+      if (slidesId) setLinkedSlidesId(slidesId);
+      if (editUrl) {
+        setLinkedSlidesUrl(editUrl);
+        window.open(editUrl, '_blank', 'noopener,noreferrer');
+      }
+      setStatusNotice(
+        linkedSlidesId
+          ? 'Updated linked Google Slides deck in-place with latest Draw.io edits.'
+          : 'Exported editable vector deck to Google Slides. Edit in Slides and click "Sync from Slides" to pull changes back!'
+      );
+    } catch (err: any) {
+      setErrorMsg(err?.message || 'Google Slides export failed.');
+    } finally {
+      setIsExportingSlides(false);
+    }
+  }
+
+  async function handleSyncFromGoogleSlides() {
+    if (!activeResult?.xml) return;
+    let targetRef = linkedSlidesId || linkedSlidesUrl || '';
+    if (!targetRef && typeof window !== 'undefined') {
+      targetRef = window.prompt('Paste the Google Slides URL or Presentation ID to sync edits back into Draw.io XML:') || '';
+    }
+    if (!targetRef.trim()) return;
+
+    setIsSyncingFromSlides(true);
+    setErrorMsg(null);
+    try {
+      const res = await fetch('/api/google-workspace/sync-from-slides', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          presentationId: targetRef.trim(),
+          diagramId: savedDiagramId || undefined,
+          baseXml: activeResult.xml,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data?.ok) {
+        throw new Error(data?.error || 'Failed to pull edits from Google Slides.');
+      }
+      if (data.presentationId) setLinkedSlidesId(data.presentationId);
+      if (data.totalChanges > 0 && typeof data.xml === 'string') {
+        const inv = countXmlInventory(data.xml);
+        const nextPayload: CompoundPromptToDiagramResult = {
+          ...activeResult,
+          xml: data.xml,
+          mutationMode: 'direct_drawio_xml_update',
+          summaryOfChanges: data.summary,
+          audit: {
+            ...activeResult.audit,
+            groupCount: inv.groupCount,
+            nodeCount: inv.nodeCount,
+            edgeCount: inv.edgeCount,
+          },
+        };
+        setHistoryState((prev) =>
+          pushUndoRedoChange(prev, {
+            label: `Google Slides Sync (${data.totalChanges} edit${data.totalChanges === 1 ? '' : 's'})`,
+            xml: data.xml,
+            payload: nextPayload,
+          })
+        );
+      }
+      setStatusNotice(data.summary || 'Synced from Google Slides.');
+    } catch (err: any) {
+      setErrorMsg(err?.message || 'Google Slides sync-back failed.');
+    } finally {
+      setIsSyncingFromSlides(false);
+    }
+  }
 
   async function executeSynthesis(action: 'create' | 'modify', explicitPrompt?: string) {
     setErrorMsg(null);
@@ -231,6 +473,91 @@ export default function PurePromptToDiagramPage() {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 175_000);
+
+      // Fast Structured Graph V2 Create Mode (direct JSON IR -> deterministic layout -> Draw.io XML + DB save)
+      if (action === 'create' && synthesisEngine === 'v2_fast') {
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            prompt: basePrompt,
+            layoutEngineV2: true,
+          }),
+        });
+        clearTimeout(timeoutId);
+        const data = await res.json();
+        if (!res.ok || !data?.xml) {
+          throw new Error(data?.error || data?.replyMessage || 'Failed to synthesize diagram.');
+        }
+        const inv = countXmlInventory(data.xml);
+        const newDiagramId = data?.diagram?.id || null;
+        if (newDiagramId) {
+          setSavedDiagramId(newDiagramId);
+          if (typeof window !== 'undefined') {
+            const url = new URL(window.location.href);
+            url.searchParams.set('id', newDiagramId);
+            window.history.replaceState({}, '', url.toString());
+          }
+        }
+        const v2Payload: CompoundPromptToDiagramResult = {
+          success: true,
+          action: 'create',
+          mutationMode: 'direct_drawio_xml_update',
+          userPrompt: basePrompt,
+          modificationHistory: [],
+          summaryOfChanges: data.reasoning || 'Synthesized structured multi-tier architecture via V2 Graph Engine.',
+          xml: data.xml,
+          graph: {
+            title: data.graph?.title || data.diagram?.name || basePrompt.slice(0, 60),
+            reasoning: data.reasoning || '',
+            groups: (data.graph?.tiers || []).map((t: any) => ({
+              id: t.id,
+              label: t.label,
+              parentId: null,
+              fillHex: '#F8FAFC',
+              strokeHex: '#CBD5E1',
+            })),
+            nodes: (data.graph?.nodes || []).map((n: any) => ({
+              id: n.id,
+              label: n.label,
+              subtitle: n.subtitle || n.description,
+              parentId: n.tier || null,
+              shape: n.type === 'database' ? 'cylinder' : 'rounded',
+              fillHex: '#FFFFFF',
+              strokeHex: '#CBD5E1',
+            })),
+            edges: (data.graph?.edges || []).map((e: any) => ({
+              id: e.id,
+              source: e.source,
+              target: e.target,
+              label: e.label,
+              dashed: e.style === 'dashed',
+            })),
+          },
+          audit: {
+            ...inv,
+            maxNestingDepth: inv.groupCount > 0 ? 1 : 0,
+            siblingOverlaps: 0,
+            childContainmentViolations: 0,
+          },
+          modelUsed: data.telemetry?.modelId || 'gemini-2.5-flash',
+          latencyMs: data.telemetry?.latencyMs || Date.now() - (startRef.current || Date.now()),
+        };
+        setSessionRefImageUrl(null);
+        setLinkedSlidesId(null);
+        setLinkedSlidesUrl(null);
+        setStatusNotice(newDiagramId ? `Generated & auto-saved to Library (${newDiagramId.slice(0, 8)}…).` : 'Generated diagram.');
+        setHistoryState((prev) =>
+          pushUndoRedoChange(prev, {
+            label: v2Payload.graph.title,
+            xml: v2Payload.xml,
+            payload: v2Payload,
+          })
+        );
+        return;
+      }
+
       const res = await fetch('/api/prompt-to-diagram', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -380,6 +707,16 @@ export default function PurePromptToDiagramPage() {
               <>
                 <button
                   type="button"
+                  onClick={() => void handleSaveToLibraryDb()}
+                  disabled={isSavingDb}
+                  className={btnClass('neutral')}
+                  data-testid="btn-save-library-db"
+                >
+                  {isSavingDb ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                  <span>{savedDiagramId ? 'Save Version' : 'Save to Library'}</span>
+                </button>
+                <button
+                  type="button"
                   onClick={() => setIsDrawioEditorOpen(true)}
                   className={btnClass('primary')}
                   data-testid="btn-open-drawio-editor"
@@ -389,12 +726,33 @@ export default function PurePromptToDiagramPage() {
                 </button>
                 <button
                   type="button"
+                  onClick={() => void handleExportToGoogleSlides()}
+                  disabled={isExportingSlides}
+                  className={btnClass('neutral')}
+                  data-testid="btn-export-google-slides"
+                >
+                  {isExportingSlides ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Presentation className="w-3.5 h-3.5 text-amber-600" />}
+                  <span>{linkedSlidesId ? 'Update Slides' : 'Google Slides'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleSyncFromGoogleSlides()}
+                  disabled={isSyncingFromSlides}
+                  className={btnClass('neutral')}
+                  data-testid="btn-sync-from-google-slides"
+                  title="Pull edits made in Google Slides back into Draw.io XML & version history"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 text-emerald-600 ${isSyncingFromSlides ? 'animate-spin' : ''}`} />
+                  <span>Sync from Slides</span>
+                </button>
+                <button
+                  type="button"
                   onClick={handleDownloadDrawio}
                   className={btnClass('neutral')}
                   data-testid="btn-download-drawio"
                 >
                   <Download className="w-3.5 h-3.5" />
-                  <span>Download .drawio</span>
+                  <span>.drawio</span>
                 </button>
               </>
             )}
@@ -443,6 +801,31 @@ export default function PurePromptToDiagramPage() {
                 className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 outline-none resize-y leading-relaxed font-medium"
               />
 
+              <div className="mt-2 flex items-center gap-1.5 text-[10px]">
+                <button
+                  type="button"
+                  onClick={() => setSynthesisEngine('v2_fast')}
+                  className={`flex-1 py-1 px-2 rounded-lg font-bold border transition cursor-pointer ${
+                    synthesisEngine === 'v2_fast'
+                      ? 'bg-blue-50 text-blue-700 border-blue-300'
+                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  Structured Graph (Fast + DB)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSynthesisEngine('visual_4stage')}
+                  className={`flex-1 py-1 px-2 rounded-lg font-bold border transition cursor-pointer ${
+                    synthesisEngine === 'visual_4stage'
+                      ? 'bg-blue-50 text-blue-700 border-blue-300'
+                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  4-Stage Vision Render
+                </button>
+              </div>
+
               <button
                 type="button"
                 data-testid="btn-generate-prompt-diagram"
@@ -453,7 +836,11 @@ export default function PurePromptToDiagramPage() {
                 {isGenerating && activeAction === 'create' ? (
                   <>
                     <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
-                    <span className="truncate">{describeCreateStageProgress(elapsedSec)}</span>
+                    <span className="truncate">
+                      {synthesisEngine === 'v2_fast'
+                        ? `Synthesizing Graph → Layout → Draw.io XML (${elapsedSec}s)...`
+                        : describeCreateStageProgress(elapsedSec)}
+                    </span>
                   </>
                 ) : (
                   <>
@@ -463,6 +850,16 @@ export default function PurePromptToDiagramPage() {
                 )}
               </button>
             </div>
+
+            {statusNotice && (
+              <div
+                data-testid="prompt-status-banner"
+                className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-semibold flex items-start gap-2"
+              >
+                <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600" />
+                <span>{statusNotice}</span>
+              </div>
+            )}
 
             {errorMsg && (
               <div

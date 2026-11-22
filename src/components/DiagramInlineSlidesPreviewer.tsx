@@ -381,21 +381,12 @@ export async function openDiagramInGoogleWorkspace(
   const dEntry = activeManifest.docs?.[normKey];
 
   const isStaticPrewarmedKey = STATIC_BLOG_AND_WS_KEYS.has(normKey);
-  const entryTitleMatches =
-    !params.xmlContent ||
-    isStaticPrewarmedKey ||
-    (sEntry?.title &&
-      params.title &&
-      sEntry.title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '')
-        .slice(0, 24) ===
-        params.title
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, '')
-          .slice(0, 24));
+  const hasLiveEditableXml = Boolean(params.xmlContent && params.xmlContent.includes('<mxCell'));
+  // Only short-circuit to cached URL for static prewarmed keys or when no fresh xmlContent was supplied;
+  // when live xmlContent is provided for custom/edited diagrams, always let the server verify xmlSha256 & PATCH in-place!
+  const canUseClientCache = !params.forceSync && (!hasLiveEditableXml || isStaticPrewarmedKey);
 
-  if (!params.forceSync && entryTitleMatches) {
+  if (canUseClientCache) {
     if (params.mode === 'slides' && sEntry?.googleSlidesEditUrl) {
       if (typeof window !== 'undefined') {
         window.open(sEntry.googleSlidesEditUrl, '_blank', 'noopener,noreferrer');
@@ -420,18 +411,23 @@ export async function openDiagramInGoogleWorkspace(
   }
 
   const popup = typeof window !== 'undefined' ? window.open('about:blank', '_blank') : null;
-  if (popup && popup.document) {
-    popup.document.write(
-      '<!DOCTYPE html><html><body style="background:#131314;color:#e8eaed;font-family:-apple-system,BlinkMacSystemFont,Roboto,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">' +
-        '<div style="text-align:center;padding:32px;border:1px solid #444746;border-radius:14px;background:#202124;max-width:480px;">' +
-        '<div style="font-size:18px;font-weight:700;color:#fbbc04;margin-bottom:8px;">☁️ Syncing to Google Workspace (' +
-        params.mode.toUpperCase() +
-        ')...</div>' +
-        '<div style="font-size:13px;color:#9aa0a6;line-height:1.5;">Converting <strong>' +
-        params.title.replace(/</g, '&lt;') +
-        '</strong> into a 100% native editable file in Google Drive (nitinagga@google.com)...</div>' +
-        '</div></body></html>'
-    );
+  if (popup && popup.document && popup.document.body) {
+    // Safe DOM construction (zero document.write / innerHTML) + Light Theme progress card
+    popup.document.title = `Syncing to Google Workspace (${params.mode.toUpperCase()})`;
+    popup.document.body.style.cssText =
+      'background:#F8FAFC;color:#0F172A;font-family:-apple-system,BlinkMacSystemFont,Roboto,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;';
+    const card = popup.document.createElement('div');
+    card.style.cssText =
+      'text-align:center;padding:32px;border:1px solid #CBD5E1;border-radius:14px;background:#FFFFFF;max-width:480px;box-shadow:0 4px 16px rgba(15,23,42,0.08);';
+    const heading = popup.document.createElement('div');
+    heading.style.cssText = 'font-size:18px;font-weight:700;color:#1D4ED8;margin-bottom:8px;';
+    heading.textContent = `Syncing to Google Workspace (${params.mode.toUpperCase()})...`;
+    const desc = popup.document.createElement('div');
+    desc.style.cssText = 'font-size:13px;color:#475569;line-height:1.5;';
+    desc.textContent = `Converting "${params.title}" into an editable Google ${params.mode === 'docs' ? 'Docs' : 'Slides'} file...`;
+    card.appendChild(heading);
+    card.appendChild(desc);
+    popup.document.body.replaceChildren(card);
   }
 
   try {

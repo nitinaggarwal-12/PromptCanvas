@@ -1,8 +1,8 @@
-import type { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI } from '@google/genai';
 
 /**
  * Ensures stale environment variables pointing to previous-generation models
- * (Gemini 1.x / 2.0 / 2.5) or unpublished fictional slugs never pollute runtime routing.
+ * (Gemini 1.x / 2.0) or unpublished fictional slugs never pollute runtime routing.
  */
 export function sanitizeFrontierModelId(envValue: string | undefined, defaultModel: string): string {
   const cleaned = String(envValue || '')
@@ -125,6 +125,104 @@ export function getEffectiveGeminiApiKey(explicitKey?: string | null): string {
     return scopedKey;
   }
   return process.env.GEMINI_API_KEY || '';
+}
+
+interface CachedVertexToken {
+  token: string;
+  expiresAt: number;
+  project: string;
+  location: string;
+}
+
+function resolveVertexAccessTokenSync(): CachedVertexToken | null {
+  if (typeof window !== 'undefined') return null;
+  const g = globalThis as unknown as { __pcVertexTokenCache?: CachedVertexToken | null };
+  if (g.__pcVertexTokenCache && g.__pcVertexTokenCache.expiresAt > Date.now() + 60_000) {
+    return g.__pcVertexTokenCache;
+  }
+  const useVertex =
+    process.env.GOOGLE_GENAI_USE_VERTEXAI === 'true' ||
+    process.env.PROMPTCANVAS_USE_VERTEXAI === 'true' ||
+    Boolean(process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT);
+  // In unit tests (Vitest) without explicit opt-in, never shell out to gcloud so offline fallback tests stay fast & hermetic.
+  if (process.env.VITEST && !process.env.PROMPTCANVAS_ENABLE_LIVE_VERTEX_IN_TESTS) {
+    return null;
+  }
+  if (!useVertex && process.env.NODE_ENV === 'test') {
+    return null;
+  }
+  try {
+    const childProc = eval('require')('node:child_process') as typeof import('child_process');
+    const project = (
+      process.env.GOOGLE_CLOUD_PROJECT ||
+      process.env.GCLOUD_PROJECT ||
+      childProc.execSync('gcloud config get-value project 2>/dev/null', {
+        encoding: 'utf8',
+        timeout: 3000,
+      })
+    ).trim();
+    if (!project || project === '(unset)') return null;
+    const token = childProc
+      .execSync('gcloud auth print-access-token 2>/dev/null', {
+        encoding: 'utf8',
+        timeout: 4000,
+      })
+      .trim();
+    if (!token || token.length < 20) return null;
+    const location = (process.env.GOOGLE_CLOUD_LOCATION || 'us-central1').trim();
+    const cached: CachedVertexToken = {
+      token,
+      expiresAt: Date.now() + 45 * 60 * 1000,
+      project,
+      location,
+    };
+    g.__pcVertexTokenCache = cached;
+    return cached;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Returns true if any live Gemini backend is available (BYOK / GEMINI_API_KEY / Vertex AI ADC).
+ */
+export function hasLiveGeminiBackend(explicitKey?: string | null): boolean {
+  if (getEffectiveGeminiApiKey(explicitKey)) return true;
+  return Boolean(resolveVertexAccessTokenSync());
+}
+
+/**
+ * Unified Gemini client factory used across ALL pipelines (V2, Prompt-to-Diagram, Spatial Mutator,
+ * Intent Classifier, Chat, Decision Engine). Supports BYOK -> GEMINI_API_KEY -> Vertex AI ADC/gcloud.
+ */
+export function createGeminiClient(
+  explicitKey?: string | null,
+  options?: { location?: string }
+): GoogleGenAI | null {
+  const apiKey = getEffectiveGeminiApiKey(explicitKey);
+  if (apiKey) {
+    return new GoogleGenAI({ apiKey });
+  }
+  const vertex = resolveVertexAccessTokenSync();
+  if (!vertex) return null;
+  const location = options?.location || vertex.location;
+  return new GoogleGenAI({
+    vertexai: true,
+    project: vertex.project,
+    location,
+    googleAuthOptions: {
+      authClient: {
+        getAccessToken: async () => {
+          const fresh = resolveVertexAccessTokenSync() || vertex;
+          return { token: fresh.token };
+        },
+        getRequestHeaders: async () => {
+          const fresh = resolveVertexAccessTokenSync() || vertex;
+          return new Headers({ Authorization: `Bearer ${fresh.token}` });
+        },
+      } as any,
+    },
+  });
 }
 
 export type ModelTier =
@@ -378,7 +476,7 @@ export async function resolveLatestGeminiImageModelChain(ai: GoogleGenAI): Promi
     return sorted.map((m) => m.id);
   }
   return Array.from(
-    new Set(['gemini-3-pro-image-preview', DEEPMIND_IMAGEN_MODEL_ID, 'gemini-2.5-flash-image'])
+    new Set([DEEPMIND_IMAGEN_MODEL_ID, 'gemini-2.5-flash-image'])
   );
 }
 
@@ -545,8 +643,30 @@ export function getGenConfig(kind: GenConfigKind) {
   }
 }
 
-export function getGenConfigForModel(kind: GenConfigKind, _modelId?: string) {
+export function getGenConfigForModel(kind: GenConfigKind, modelId?: string) {
   const base = getGenConfig(kind);
+  const modelStr = String(modelId || '').toLowerCase();
+  const isGemini25 = /^gemini-2\.5/i.test(modelStr) || !/^gemini-[345]/i.test(modelStr);
+  if (isGemini25 && base.thinkingConfig) {
+    const level = String((base.thinkingConfig as any).thinkingLevel || 'LOW').toUpperCase();
+    const budgetByKind: Record<GenConfigKind, number> = {
+      repair: 512,
+      edit: 1024,
+      narrative: 512,
+      generate: 1024,
+      audit: 2048,
+      vision: 2048,
+    };
+    const numericBudget =
+      budgetByKind[kind] ?? (level === 'HIGH' ? 2048 : level === 'MEDIUM' ? 1024 : 512);
+    return {
+      ...base,
+      thinkingConfig: {
+        thinkingBudget: numericBudget,
+      },
+      maxOutputTokens: Math.min(base.maxOutputTokens || 16384, 32768),
+    };
+  }
   return {
     ...base,
     maxOutputTokens: Math.min(base.maxOutputTokens || 32768, 32768),

@@ -1004,11 +1004,12 @@ export function compileVisionSceneToDrawioXml(params: {
     );
 
     const stroke = sanitizeHex(e.strokeHex, '#475569');
+    const routingStyle =
+      waypoints.length > 0
+        ? ['edgeStyle=none', 'rounded=1']
+        : ['edgeStyle=orthogonalEdgeStyle', 'rounded=1', 'orthogonalLoop=1', 'jettySize=auto'];
     const style = [
-      'edgeStyle=orthogonalEdgeStyle',
-      'rounded=1',
-      'orthogonalLoop=1',
-      'jettySize=auto',
+      ...routingStyle,
       'html=1',
       `strokeColor=${stroke}`,
       'strokeWidth=1.5',
@@ -1161,20 +1162,53 @@ export async function runCompoundPromptToDiagram(params: {
   explicitApiKey?: string;
 }): Promise<CompoundPromptToDiagramResult> {
   const startedAt = Date.now();
-  const apiKey = getEffectiveGeminiApiKey(params.explicitApiKey);
-  if (!apiKey) {
-    throw new Error('No Gemini API key configured. Provide GEMINI_API_KEY or sign in with BYOK.');
+  const { createGeminiClient } = await import('@/lib/geminiConfig');
+  const ai = createGeminiClient(params.explicitApiKey);
+  if (!ai) {
+    throw new Error('No Gemini API key or Vertex AI credentials configured. Provide GEMINI_API_KEY or sign in with BYOK.');
   }
 
   // Subsequent prompts: surgical in-place Draw.io XML spatial mutation
   if (params.action === 'modify' && params.currentXml && params.modificationPrompt) {
+    const { parseDrawioXmlSpatialState } = await import('./directDrawioSpatialMutator');
     const mutated = await mutateDrawioXmlDirectly({
       currentXml: params.currentXml,
       userPrompt: params.userPrompt,
       modificationPrompt: params.modificationPrompt,
       modificationHistory: params.modificationHistory,
-      explicitApiKey: apiKey,
+      explicitApiKey: params.explicitApiKey,
     });
+
+    // Re-parse the mutated XML so graph.groups, graph.nodes, graph.edges & audit metrics reflect live truth
+    const parsedMutated = parseDrawioXmlSpatialState(mutated.xml);
+    const nextGroups = parsedMutated.cells
+      .filter((c) => c.isContainer)
+      .map((c) => ({
+        id: c.id,
+        label: c.plainLabel,
+        parentId: c.parent === '1' ? null : c.parent,
+        fillHex: c.style.match(/fillColor=(#[0-9a-fA-F]{6})/)?.[1] || '#F8FAFC',
+        strokeHex: c.style.match(/strokeColor=(#[0-9a-fA-F]{6})/)?.[1] || '#CBD5E1',
+        dashed: c.style.includes('dashed=1'),
+      }));
+    const nextNodes = parsedMutated.cells
+      .filter((c) => !c.isContainer)
+      .map((c) => ({
+        id: c.id,
+        label: c.plainLabel,
+        parentId: c.parent === '1' ? null : c.parent,
+        shape: (c.style.includes('cylinder') ? 'cylinder' : c.style.includes('rhombus') ? 'diamond' : 'rounded') as any,
+        fillHex: c.style.match(/fillColor=(#[0-9a-fA-F]{6})/)?.[1] || '#FFFFFF',
+        strokeHex: c.style.match(/strokeColor=(#[0-9a-fA-F]{6})/)?.[1] || '#CBD5E1',
+      }));
+    const nextEdges = parsedMutated.edges.map((e) => ({
+      id: e.id,
+      source: e.source,
+      target: e.target,
+      label: e.plainLabel || undefined,
+      dashed: e.style.includes('dashed=1'),
+      bidirectional: e.style.includes('startArrow=') && !e.style.includes('startArrow=none'),
+    }));
 
     const nextHistory = [...(params.modificationHistory || []), params.modificationPrompt];
     return {
@@ -1189,17 +1223,17 @@ export async function runCompoundPromptToDiagram(params: {
         title: mutated.title,
         subtitle: params.currentGraph?.subtitle,
         reasoning: mutated.summaryOfChanges,
-        groups: params.currentGraph?.groups || [],
-        nodes: params.currentGraph?.nodes || [],
-        edges: params.currentGraph?.edges || [],
+        groups: nextGroups,
+        nodes: nextNodes,
+        edges: nextEdges,
       },
       audit: {
         groupCount: mutated.stats.groupCount,
         nodeCount: mutated.stats.nodeCount,
         edgeCount: mutated.stats.edgeCount,
         maxNestingDepth: mutated.stats.maxNestingDepth,
-        siblingOverlaps: 0,
-        childContainmentViolations: 0,
+        siblingOverlaps: mutated.stats.siblingOverlaps,
+        childContainmentViolations: mutated.stats.childContainmentViolations,
       },
       modelUsed: mutated.modelUsed,
       latencyMs: Date.now() - startedAt,
@@ -1207,7 +1241,6 @@ export async function runCompoundPromptToDiagram(params: {
   }
 
   // Initial prompt: Pure 4-Stage Research -> Plan -> 16:9 Image -> 1:1 Image-to-Draw.io XML
-  const ai = new GoogleGenAI({ apiKey });
 
   // Stage 1: Live Google Search Web Grounding
   const research = await groundPromptWithGoogleSearch(ai, params.userPrompt);

@@ -515,9 +515,30 @@ function StudioMain() {
   const commitDrawioEditToCanvasAndHistory = useCallback(
     (savedXml: string, editSourceLabel: string) => {
       if (!savedXml || !savedXml.includes('<mxGraphModel')) return;
-      setXml(savedXml);
-      latestInlineXmlRef.current = savedXml;
+      const taggedXml = savedXml.includes('data-user-drawio="true"')
+        ? savedXml
+        : savedXml.replace('<mxfile ', '<mxfile data-user-drawio="true" ');
+      setXml(taggedXml);
+      latestInlineXmlRef.current = taggedXml;
       setIsInlineDrawioEdit(false);
+
+      // Persist manual Draw.io edits to DB version history whenever linked to a persisted diagram
+      const isPersistedId =
+        Boolean(sessionId) &&
+        !sessionId.startsWith('ses_') &&
+        !sessionId.startsWith('proj_') &&
+        !sessionId.startsWith('tab_');
+      if (isPersistedId) {
+        fetch(`/api/diagrams/${encodeURIComponent(sessionId)}/versions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            xmlContent: taggedXml,
+            comment: editSourceLabel,
+            createdBy: 'Draw.io Editor',
+          }),
+        }).catch(() => {});
+      }
 
       setVersions((prev) => {
         const nextMinor = prev.length;
@@ -529,7 +550,7 @@ function StudioMain() {
           {
             id: `msg_drawio_sync_${Date.now()}`,
             sender: 'assistant',
-            text: `🔄 [${nextTag} • ${editSourceLabel}]: Diagram XML synced back to Studio Canvas. Full prompt & diagram version history updated (${prev.length + 1} versions stored).`,
+            text: `🔄 [${nextTag} • ${editSourceLabel}]: Diagram XML synced back to Studio Canvas & persisted (${prev.length + 1} versions stored).`,
             timestamp: nowStr,
           },
         ]);
@@ -541,13 +562,13 @@ function StudioMain() {
             author: editSourceLabel,
             actionSummary: `[${editSourceLabel}] • ${selectedDiagramMode.toUpperCase()} (${selectedAbstractionLevel}${selectedDiagramMode === 'flowchart' ? ' • ' + selectedFlowDirection : ''})`,
             ast,
-            xml: savedXml,
+            xml: taggedXml,
           },
           ...prev,
         ];
       });
     },
-    [ast, selectedDiagramMode, selectedAbstractionLevel, selectedFlowDirection]
+    [ast, sessionId, selectedDiagramMode, selectedAbstractionLevel, selectedFlowDirection]
   );
 
   // Listen for live saves from the New Tab Draw.io Editor (/drawio-editor) AND Inline Draw.io iframe
@@ -2631,24 +2652,30 @@ function StudioMain() {
     handleExecutePrompt(prompt);
   };
 
-  // Re-Ground Architecture Brain
-  const handleAutoHeal = () => {
+  // Validate & Heal current diagram XML in-place (NEVER wipe user's diagram to a static GCP template!)
+  const handleAutoHeal = async () => {
     setIsHealing(true);
-    setTimeout(() => {
-      setXml(generateGcpNativeArchitectureXml());
+    try {
+      const { validateAndHealDrawioXml } = await import('@/lib/xmlHealer');
+      const healed = validateAndHealDrawioXml(xml, 'custom');
+      if (healed.xml && healed.xml.includes('<mxGraphModel')) {
+        setXml(healed.xml);
+      }
+    } finally {
       setIsHealing(false);
       setIsBrainModalOpen(false);
-    }, 1000);
+    }
   };
 
   // Open in Full-Screen Bidirectional Draw.io Editor Tab (/drawio-editor)
-  // Edits saved in this tab automatically sync back to the Studio Canvas and append a new Version Snapshot!
+  // Edits saved in this tab automatically sync back to the Studio Canvas, DB, and Version History!
   const handleOpenDiagramsNet = () => {
     try {
       localStorage.setItem(
         'promptcanvas_drawio_active_session',
         JSON.stringify({
           xml,
+          diagramId: sessionId,
           projectTitle: ast.metadata.projectTitle || 'Enterprise Architecture',
           versionTag: activeVersionTag,
         })
@@ -2656,7 +2683,8 @@ function StudioMain() {
     } catch {
       // ignore storage errors
     }
-    window.open('/drawio-editor', '_blank');
+    const qs = sessionId && !sessionId.startsWith('ses_') ? `?diagramId=${encodeURIComponent(sessionId)}` : '';
+    window.open(`/drawio-editor${qs}`, '_blank');
   };
 
   // Export 10-Spec Markdown Bundle

@@ -1,11 +1,20 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import {
   ArchitectureGraph,
+  CLOUD_VALUES,
+  NODE_TYPE_VALUES,
+  normalizeRawLlmGraphPayload,
+  stripLayoutFromGraph,
   validateGraphJson,
 } from './schema';
 import { GENERATE_GRAPH_SYSTEM_PROMPT } from '../../prompts/generateGraph';
 import { EDIT_GRAPH_SYSTEM_PROMPT, buildEditGraphPrompt } from '../../prompts/editGraph';
-import { GEMINI_MODEL_ID, getEffectiveGeminiApiKey } from '../geminiConfig';
+import {
+  GEMINI_FLASH_MODEL_ID,
+  GEMINI_MODEL_ID,
+  createGeminiClient,
+  getGenConfigForModel,
+} from '../geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 
 function buildFallbackArchitectureGraph(userPrompt: string): ArchitectureGraph {
@@ -93,95 +102,164 @@ function buildFallbackArchitectureGraph(userPrompt: string): ArchitectureGraph {
   };
 }
 
+function healOrphanNodesInGraph(graph: ArchitectureGraph): ArchitectureGraph {
+  const connectedIds = new Set<string>();
+  for (const e of graph.edges) {
+    connectedIds.add(e.source);
+    connectedIds.add(e.target);
+  }
+  const orphans = graph.nodes.filter((n) => !connectedIds.has(n.id));
+  if (orphans.length === 0 || graph.nodes.length < 2) return graph;
+
+  const sortedTiers = [...graph.tiers].sort((a, b) => a.order - b.order);
+  const tierOrderMap = new Map(sortedTiers.map((t) => [t.id, t.order]));
+  const existingEdgeIds = new Set(graph.edges.map((e) => e.id));
+  const extraEdges = [...graph.edges];
+  let nextIdx = extraEdges.length + 1;
+
+  for (const orphan of orphans) {
+    const oOrder = tierOrderMap.get(orphan.tier) ?? 1;
+    // Prefer connecting to a connected node in the closest preceding or same tier
+    const candidates = graph.nodes.filter((n) => n.id !== orphan.id && connectedIds.has(n.id));
+    const anchor =
+      candidates.sort((a, b) => {
+        const da = Math.abs((tierOrderMap.get(a.tier) ?? 1) - oOrder);
+        const db = Math.abs((tierOrderMap.get(b.tier) ?? 1) - oOrder);
+        return da - db;
+      })[0] || graph.nodes.find((n) => n.id !== orphan.id);
+
+    if (!anchor) continue;
+    let eid = `edge_auto_${nextIdx++}`;
+    while (existingEdgeIds.has(eid)) eid = `edge_auto_${nextIdx++}`;
+    existingEdgeIds.add(eid);
+
+    const anchorOrder = tierOrderMap.get(anchor.tier) ?? 1;
+    const isGovernanceOrObs = orphan.type === 'security' || orphan.type === 'analytics';
+    const source = anchorOrder <= oOrder ? anchor.id : orphan.id;
+    const target = anchorOrder <= oOrder ? orphan.id : anchor.id;
+    extraEdges.push({
+      id: eid,
+      source,
+      target,
+      label: isGovernanceOrObs ? `${nextIdx - 1}. Security & Telemetry` : `${nextIdx - 1}. Data Flow`,
+      style: isGovernanceOrObs ? 'dashed' : 'solid',
+      protocol: isGovernanceOrObs ? 'TLS / Audit' : 'HTTPS',
+    });
+    connectedIds.add(orphan.id);
+  }
+
+  return {
+    ...graph,
+    edges: extraEdges,
+  };
+}
+
+function buildArchitectureGraphResponseSchema() {
+  const T = Type || {
+    OBJECT: 'OBJECT',
+    STRING: 'STRING',
+    ARRAY: 'ARRAY',
+    INTEGER: 'INTEGER',
+  };
+  return {
+    type: T.OBJECT,
+    required: ['title', 'cloud', 'tiers', 'nodes', 'edges'],
+    properties: {
+      title: { type: T.STRING },
+      cloud: { type: T.STRING, enum: [...CLOUD_VALUES] },
+      tiers: {
+        type: T.ARRAY,
+        items: {
+          type: T.OBJECT,
+          required: ['id', 'label', 'order'],
+          properties: {
+            id: { type: T.STRING },
+            label: { type: T.STRING },
+            order: { type: T.INTEGER },
+          },
+        },
+      },
+      nodes: {
+        type: T.ARRAY,
+        items: {
+          type: T.OBJECT,
+          required: ['id', 'label', 'tier', 'type'],
+          properties: {
+            id: { type: T.STRING },
+            label: { type: T.STRING },
+            subtitle: { type: T.STRING },
+            tier: { type: T.STRING },
+            type: { type: T.STRING, enum: [...NODE_TYPE_VALUES] },
+            product: { type: T.STRING },
+            description: { type: T.STRING },
+          },
+        },
+      },
+      edges: {
+        type: T.ARRAY,
+        items: {
+          type: T.OBJECT,
+          required: ['id', 'source', 'target', 'label'],
+          properties: {
+            id: { type: T.STRING },
+            source: { type: T.STRING },
+            target: { type: T.STRING },
+            label: { type: T.STRING },
+            style: { type: T.STRING, enum: ['solid', 'dashed'] },
+            protocol: { type: T.STRING },
+          },
+        },
+      },
+      narrative: {
+        type: T.OBJECT,
+        required: ['reasoning', 'businessUsecase', 'technicalUsecase'],
+        properties: {
+          reasoning: { type: T.STRING },
+          businessUsecase: { type: T.STRING },
+          technicalUsecase: { type: T.STRING },
+        },
+      },
+    },
+  };
+}
+
 export async function generateLogicalGraph(
   userPrompt: string,
-  modelId: string = GEMINI_MODEL_ID,
+  modelId: string = GEMINI_FLASH_MODEL_ID,
   aiClient?: GoogleGenAI
 ): Promise<ArchitectureGraph> {
-  const apiKey = getEffectiveGeminiApiKey();
-  if (!aiClient && !apiKey) {
+  const ai = aiClient || createGeminiClient();
+  if (!ai) {
     return buildFallbackArchitectureGraph(userPrompt);
   }
-  const ai = aiClient || new GoogleGenAI({ apiKey: apiKey || undefined });
 
   let attempts = 0;
   let lastErrorText = '';
   let currentContents = `USER REQUEST:\n${userPrompt}`;
+  const effectiveModel = modelId || GEMINI_FLASH_MODEL_ID;
+  const genCfg = getGenConfigForModel('generate', effectiveModel);
 
   while (attempts < 2) {
     attempts++;
     try {
-      const response = await generateContentWithRetry(ai, {
-        model: modelId,
-        contents: currentContents,
-        config: {
-          systemInstruction: GENERATE_GRAPH_SYSTEM_PROMPT,
-          responseMimeType: 'application/json',
-          maxOutputTokens: 8192,
-          responseSchema: {
-            type: Type.OBJECT,
-            required: ['title', 'cloud', 'tiers', 'nodes', 'edges'],
-            properties: {
-              title: { type: Type.STRING },
-              cloud: { type: Type.STRING, enum: ['gcp', 'aws', 'azure', 'hybrid', 'generic'] },
-              tiers: {
-                type: Type.ARRAY,
-                items: {
-                  type: Type.OBJECT,
-                  required: ['id', 'label', 'order'],
-                  properties: {
-                    id: { type: Type.STRING },
-                    label: { type: Type.STRING },
-                    order: { type: Type.INTEGER },
-                  },
-                },
-              },
-              nodes: {
-                type: Type.ARRAY,
-                items: {
-                  type: Type.OBJECT,
-                  required: ['id', 'label', 'tier', 'type'],
-                  properties: {
-                    id: { type: Type.STRING },
-                    label: { type: Type.STRING },
-                    subtitle: { type: Type.STRING },
-                    tier: { type: Type.STRING },
-                    type: { type: Type.STRING, enum: ['compute', 'database', 'storage', 'queue', 'cache', 'network', 'security', 'ai', 'analytics', 'user', 'external', 'gateway', 'service'] },
-                    product: { type: Type.STRING },
-                    description: { type: Type.STRING },
-                  },
-                },
-              },
-              edges: {
-                type: Type.ARRAY,
-                items: {
-                  type: Type.OBJECT,
-                  required: ['id', 'source', 'target', 'label'],
-                  properties: {
-                    id: { type: Type.STRING },
-                    source: { type: Type.STRING },
-                    target: { type: Type.STRING },
-                    label: { type: Type.STRING },
-                    style: { type: Type.STRING, enum: ['solid', 'dashed'] },
-                    protocol: { type: Type.STRING },
-                  },
-                },
-              },
-              narrative: {
-                type: Type.OBJECT,
-                required: ['reasoning', 'businessUsecase', 'technicalUsecase'],
-                properties: {
-                  reasoning: { type: Type.STRING },
-                  businessUsecase: { type: Type.STRING },
-                  technicalUsecase: { type: Type.STRING },
-                },
-              },
-            },
+      const response = await generateContentWithRetry(
+        ai,
+        {
+          model: effectiveModel,
+          contents: currentContents,
+          config: {
+            systemInstruction: GENERATE_GRAPH_SYSTEM_PROMPT,
+            responseMimeType: 'application/json',
+            temperature: 0.2,
+            maxOutputTokens: 8192,
+            thinkingConfig: genCfg.thinkingConfig,
+            responseSchema: buildArchitectureGraphResponseSchema(),
           },
         },
-      });
+        { maxRetries: 2, perAttemptTimeoutMs: 40_000, totalBudgetMs: 75_000, label: 'V2 Graph Generate' }
+      );
 
-      const responseText = response.text || '';
+      const responseText = (response.text || '').replace(/```json\s*|```/gi, '').trim();
       let parsed: unknown;
       try {
         parsed = JSON.parse(responseText);
@@ -191,9 +269,10 @@ export async function generateLogicalGraph(
         continue;
       }
 
-      const val = validateGraphJson(parsed);
+      const normalized = normalizeRawLlmGraphPayload(parsed);
+      const val = validateGraphJson(normalized);
       if (val.valid && val.graph) {
-        return val.graph;
+        return healOrphanNodesInGraph(val.graph);
       } else {
         lastErrorText = val.errors.join('; ');
         currentContents = `USER REQUEST:\n${userPrompt}\n\nPREVIOUS ATTEMPT FAILED SCHEMA VALIDATION:\n${lastErrorText}\nPLEASE FIX THE ERRORS AND RETURN VALID JSON MATCHING THE SCHEMA.`;
@@ -211,12 +290,17 @@ export async function generateLogicalGraph(
 export async function editLogicalGraph(
   currentGraph: ArchitectureGraph,
   userChangePrompt: string,
-  modelId: string = GEMINI_MODEL_ID,
+  modelId: string = GEMINI_FLASH_MODEL_ID,
   aiClient?: GoogleGenAI
 ): Promise<ArchitectureGraph> {
-  const apiKey = getEffectiveGeminiApiKey();
-  const ai = aiClient || new GoogleGenAI({ apiKey: apiKey || undefined });
-  const currentGraphJson = JSON.stringify(currentGraph, null, 2);
+  const ai = aiClient || createGeminiClient();
+  if (!ai) {
+    throw new Error('No Gemini API key or Vertex AI credentials available for graph editing.');
+  }
+  const compactGraph = stripLayoutFromGraph(currentGraph);
+  const currentGraphJson = JSON.stringify(compactGraph, null, 2);
+  const effectiveModel = modelId || GEMINI_MODEL_ID;
+  const editCfg = getGenConfigForModel('edit', effectiveModel);
 
   let attempts = 0;
   let lastErrorText = '';
@@ -225,16 +309,24 @@ export async function editLogicalGraph(
   while (attempts < 2) {
     attempts++;
     try {
-      const response = await generateContentWithRetry(ai, {
-        model: modelId,
-        contents: currentContents,
-        config: {
-          systemInstruction: EDIT_GRAPH_SYSTEM_PROMPT,
-          responseMimeType: 'application/json',
+      const response = await generateContentWithRetry(
+        ai,
+        {
+          model: effectiveModel,
+          contents: currentContents,
+          config: {
+            systemInstruction: EDIT_GRAPH_SYSTEM_PROMPT,
+            responseMimeType: 'application/json',
+            temperature: 0.2,
+            maxOutputTokens: 8192,
+            thinkingConfig: editCfg.thinkingConfig,
+            responseSchema: buildArchitectureGraphResponseSchema(),
+          },
         },
-      });
+        { maxRetries: 2, perAttemptTimeoutMs: 40_000, totalBudgetMs: 75_000, label: 'V2 Graph Edit' }
+      );
 
-      const responseText = response.text || '';
+      const responseText = (response.text || '').replace(/```json\s*|```/gi, '').trim();
       let parsed: unknown;
       try {
         parsed = JSON.parse(responseText);
@@ -244,9 +336,10 @@ export async function editLogicalGraph(
         continue;
       }
 
-      const val = validateGraphJson(parsed);
+      const normalized = normalizeRawLlmGraphPayload(parsed);
+      const val = validateGraphJson(normalized);
       if (val.valid && val.graph) {
-        return val.graph;
+        return healOrphanNodesInGraph(val.graph);
       } else {
         lastErrorText = val.errors.join('; ');
         currentContents = `${buildEditGraphPrompt(currentGraphJson, userChangePrompt)}\n\nPREVIOUS ATTEMPT FAILED SCHEMA VALIDATION:\n${lastErrorText}\nPLEASE FIX THE ERRORS AND RETURN VALID JSON MATCHING THE SCHEMA.`;

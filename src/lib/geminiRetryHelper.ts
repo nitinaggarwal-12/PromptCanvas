@@ -61,6 +61,22 @@ function normalizeThinkingConfigForFrontierModel(modelId: string, config: any): 
       },
     };
   }
+  // Gemini 2.5 models reject discrete `thinkingLevel` with HTTP 400 and expect numeric `thinkingBudget`.
+  if (/^gemini-2\.5/i.test(modelStr) && config.thinkingConfig?.thinkingLevel) {
+    const lvl = String(config.thinkingConfig.thinkingLevel).toUpperCase();
+    const numericBudget =
+      typeof config.thinkingConfig.thinkingBudget === 'number'
+        ? config.thinkingConfig.thinkingBudget
+        : lvl === 'HIGH'
+          ? 2048
+          : lvl === 'MEDIUM'
+            ? 1024
+            : 512;
+    return {
+      ...config,
+      thinkingConfig: { thinkingBudget: numericBudget },
+    };
+  }
   return config;
 }
 

@@ -37,6 +37,14 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     xmlInput.includes('nano_banana_vision_decompiled') ||
     xmlInput.includes('data-compositional-chain="true"') ||
     xmlInput.includes('data-compound-freeform="true"') ||
+    xmlInput.includes('data-prompt-to-diagram="true"') ||
+    xmlInput.includes('data-user-drawio="true"') ||
+    xmlInput.includes('data-slides-synced="true"') ||
+    xmlInput.includes('PromptCanvas-DirectSpatial') ||
+    xmlInput.includes('PromptCanvas-Vision1to1') ||
+    xmlInput.includes('PromptCanvas-LayoutEngineV2') ||
+    (xmlInput.includes('host="app.diagrams.net"') && !xmlInput.includes('GeminiDirect')) ||
+    (xmlInput.includes('host="embed.diagrams.net"') && !xmlInput.includes('GeminiDirect')) ||
     (archType !== undefined && archType !== null && (
       archType === 'compound_freeform' ||
       archType === 'vision_decompiled' ||

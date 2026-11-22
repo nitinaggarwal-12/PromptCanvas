@@ -301,7 +301,7 @@ function normalizeSvgDimensions(svgStr: string, widthPx: number, heightPx: numbe
  * Renders an inline <svg> string OR data:image URL into a high-resolution transparent PNG data URL
  * so PowerPoint / Google Slides can display crisp vector icons on every card.
  */
-async function renderInlineSvgToPngDataUrl(
+export async function renderInlineSvgToPngDataUrl(
   svgOrDataUrl: string,
   widthPx: number = 128,
   heightPx: number = 128
@@ -1091,12 +1091,22 @@ function buildDynamicDocGuideFromDiagramXml(
       c.height >= 28
   );
 
+  // Identify cells that have children so V2 `tier_*` and freeform `z_*` containers are always classified as zones
+  const dynamicParentIds = new Set<string>();
+  for (const c of cells) {
+    if (c.parent && c.parent !== '0' && c.parent !== '1') {
+      dynamicParentIds.add(c.parent);
+    }
+  }
+
   const containerZones = vertices
     .filter(
       (c) =>
+        c.style?.container === '1' ||
+        dynamicParentIds.has(c.id) ||
         (c.width >= 480 && c.height >= 180) ||
         (c.width >= 300 && c.height >= 400) ||
-        /_tier_|_zone|_subnet|_stage|_loop|_cluster_box/i.test(c.id)
+        /_tier_|^tier_|^z_|_zone|_subnet|_stage|_loop|_cluster_box/i.test(c.id)
     )
     .map((c) => {
       const parsed = cleanHtmlToPlainText(c.value);
@@ -1199,10 +1209,16 @@ function buildDynamicDocGuideFromDiagramXml(
         return z.title.replace(/^ZONE\s*\d+\s*[:—-]\s*/i, '').slice(0, 54);
       }
     }
-    if (cardY < 220) return '1. Ingress, Directives & Safety Gate';
-    if (cardY < 450) return '2. Agentic Orchestration & Parallel Simulation';
-    if (cardY < 680) return '3. Stateful Persistence & Policy Distillation';
-    return '4. Physical Actuation & Closed-Loop Telemetry';
+    if (isNasaClosedLoop) {
+      if (cardY < 220) return '1. Ingress, Directives & Safety Gate';
+      if (cardY < 450) return '2. Agentic Orchestration & Parallel Simulation';
+      if (cardY < 680) return '3. Stateful Persistence & Policy Distillation';
+      return '4. Physical Actuation & Closed-Loop Telemetry';
+    }
+    if (cardY < 220) return '1. Client & Edge Ingress Tier';
+    if (cardY < 450) return '2. Processing & Orchestration Tier';
+    if (cardY < 680) return '3. Data & Persistence Tier';
+    return '4. Security, Governance & Observability Tier';
   };
 
   const flatComponentRows = (
@@ -1211,48 +1227,40 @@ function buildDynamicDocGuideFromDiagramXml(
       : [
           {
             id: 'c1',
-            title: 'Operator Directive & Control Console',
-            subtitle: 'Mission command ingress, telemetry visualization, and real-time human-in-the-loop override.',
+            title: 'Client & Edge Ingress',
+            subtitle: 'Authenticated traffic entry, TLS termination, and request routing.',
             x: 0,
             y: 100,
             shape: '',
           },
           {
             id: 'c2',
-            title: 'Deterministic Commit & Safety Gate',
-            subtitle: 'Evaluates policy invariants and safety thresholds ([GO] vs. [NO-GO / ABORT] quarantine sink).',
+            title: 'API Gateway & Security Policy',
+            subtitle: 'Schema validation, rate limiting, and authorization enforcement.',
             x: 0,
             y: 200,
             shape: '',
           },
           {
             id: 'c3',
-            title: 'Autonomous Coordinator & Specialist Agents',
-            subtitle: 'Orchestrates domain specialist agents via A2A protocol and Model Context Protocol (MCP) tools.',
+            title: 'Core Application & Orchestration Services',
+            subtitle: 'Domain processing, asynchronous event streaming, and workflow coordination.',
             x: 0,
             y: 300,
             shape: '',
           },
           {
             id: 'c4',
-            title: '1:3 Parallel Digital-Twin Simulation Sandbox',
-            subtitle: 'Executes parallel counterfactual rollouts (Alpha, Beta, Gamma) with Pareto policy distillation.',
-            x: 0,
-            y: 400,
-            shape: '',
-          },
-          {
-            id: 'c5',
-            title: 'Transactional & GraphRAG State Persistence',
-            subtitle: 'Persists immutable state ledgers in Cloud Spanner, Bigtable telemetry streams, and Vector Search 2.0.',
+            title: 'Transactional & Analytical Data Tier',
+            subtitle: 'Durable state persistence, caching, and analytical querying.',
             x: 0,
             y: 550,
             shape: '',
           },
           {
-            id: 'c6',
-            title: 'Closed-Loop Telemetry Return Highway',
-            subtitle: 'Streams high-frequency execution telemetry back to the top operator console for continuous state reconciliation.',
+            id: 'c5',
+            title: 'Observability, Encryption & Audit Controls',
+            subtitle: 'Distributed tracing, metrics, key management, and compliance logging.',
             x: 0,
             y: 720,
             shape: '',
@@ -1624,6 +1632,12 @@ def verify_architecture_readiness(health_endpoint: str) -> dict:
     assert payload.get("status") in ("READY", "PASS", "HEALTHY")
     return {"verified_components": len(COMPONENTS), "topology": "${cleanTitle}"}`;
 
+  const isGcpSpecificDynamic =
+    isOracleExadataEbs ||
+    /\b(google cloud|bigquery|cloud spanner|vertex ai|cloud armor|cloud run|gke|alloydb|pub\/sub)\b/i.test(
+      `${cleanTitle} ${flatComponentRows.map((r) => `${r.serviceName} ${r.description}`).join(' ')}`
+    );
+
   return {
     docId: derivedDocId,
     partNumber: 1,
@@ -1636,17 +1650,22 @@ def verify_architecture_readiness(health_endpoint: str) -> dict:
     title: cleanTitle,
     subtitle,
     overviewParagraphs,
-    lastReviewed: '2026-10-16',
-    readTimeMinutes: 10,
+    lastReviewed: new Date().toISOString().slice(0, 10),
+    readTimeMinutes: 8,
     useCasePresetId: blueprintId || 'custom-architecture',
     primaryBlueprintVariantId: blueprintId || 'custom-architecture',
-    authors: [
-      'Google Cloud Principal Systems & Agentic Architecture Team',
-      'Enterprise Topology & Reliability Engineering',
-    ],
+    authors: isGcpSpecificDynamic
+      ? [
+          'Google Cloud Principal Systems & Agentic Architecture Team',
+          'Enterprise Topology & Reliability Engineering',
+        ]
+      : [
+          'PromptCanvas Systems Architecture Team',
+          'Enterprise Topology & Reliability Engineering',
+        ],
     contributors: [
-      'Mission-Critical Control Systems & Safety Verification Group',
-      'Distributed Data Plane & Observability Engineering',
+      'Distributed Systems & Reliability Engineering',
+      'Security, Data Plane & Observability Architecture',
     ],
     sections: [
       {
@@ -1679,7 +1698,9 @@ def verify_architecture_readiness(health_endpoint: str) -> dict:
         id: 'products_used',
         heading: 'Products used',
         leadParagraphs: [
-          `The ${cleanTitle} reference implementation integrates the following core subsystems and Google Cloud services:`,
+          isGcpSpecificDynamic
+            ? `The ${cleanTitle} reference implementation integrates the following core subsystems and Google Cloud services:`
+            : `The ${cleanTitle} architecture integrates the following core services and technology components:`,
         ],
         productsUsedItems,
       },
@@ -1706,7 +1727,9 @@ def verify_architecture_readiness(health_endpoint: str) -> dict:
         id: 'design_considerations',
         heading: 'Design considerations',
         leadParagraphs: [
-          `This architecture aligns with Google Cloud Well-Architected Framework principles for security, reliability, and performance:`,
+          isGcpSpecificDynamic
+            ? `This architecture aligns with Google Cloud Well-Architected Framework principles for security, reliability, and performance:`
+            : `This architecture aligns with Well-Architected Framework principles for security, reliability, scalability, and observability:`,
         ],
         designConsiderationsSubSections,
       },
@@ -1729,7 +1752,7 @@ def verify_architecture_readiness(health_endpoint: str) -> dict:
         whatsNextLinks: [
           {
             label: 'Inspect Interactive Figure 1 Topology (Slide 2)',
-            description: `Review all ${uniqueCards.length || 18} native vector shapes, semantic gates, and protocol connectors for ${cleanTitle}.`,
+            description: `Review all ${uniqueCards.length || 12} native vector shapes, zone boundaries, and protocol connectors for ${cleanTitle}.`,
           },
           {
             label: 'Validate Component & Flow Responsibilities (Slide 3)',
@@ -1737,7 +1760,9 @@ def verify_architecture_readiness(health_endpoint: str) -> dict:
           },
           {
             label: 'Execute Reference Verification Harness (Slide 6)',
-            description: `Run ${codeFilename} to verify safety gates, parallel simulation rollouts, and telemetry watermarks.`,
+            description: isNasaClosedLoop
+              ? `Run ${codeFilename} to verify safety gates, parallel simulation rollouts, and telemetry watermarks.`
+              : `Run ${codeFilename} to verify component health endpoints, failover paths, and observability telemetry.`,
           },
         ],
       },
@@ -1745,18 +1770,23 @@ def verify_architecture_readiness(health_endpoint: str) -> dict:
         id: 'contributors',
         heading: 'Contributors',
         leadParagraphs: [
-          'Except as otherwise noted, the content of this page is licensed under the Creative Commons Attribution 4.0 License, and code samples are licensed under the Apache 2.0 License.',
+          'Generated by PromptCanvas Architecture Studio with editable vector parity across Draw.io and Google Slides.',
         ],
         contributorsInfo: {
-          authors: [
-            'Google Cloud Principal Systems & Agentic Architecture Team',
-            'Enterprise Topology & Reliability Engineering',
-          ],
+          authors: isGcpSpecificDynamic
+            ? [
+                'Google Cloud Principal Systems & Agentic Architecture Team',
+                'Enterprise Topology & Reliability Engineering',
+              ]
+            : [
+                'PromptCanvas Systems Architecture Team',
+                'Enterprise Topology & Reliability Engineering',
+              ],
           otherContributors: [
-            'Mission-Critical Control Systems & Safety Verification Group',
-            'Distributed Data Plane & Observability Engineering',
+            'Distributed Systems & Reliability Engineering',
+            'Security, Data Plane & Observability Architecture',
           ],
-          lastUpdatedDate: '2026-10-16 UTC',
+          lastUpdatedDate: `${new Date().toISOString().slice(0, 10)} UTC`,
         },
       },
     ],
@@ -2276,17 +2306,13 @@ export async function exportDrawioToEditablePptx(
     editableOverrides?: Record<string, { title?: string; subtitle?: string; label?: string; role?: string }>;
   }
 ): Promise<Blob | string | void> {
-  const pptx = new PptxGenJS();
-  pptx.layout = 'LAYOUT_WIDE'; // 13.333 x 7.5 inches widescreen 16:9
-  pptx.author = 'Google Cloud Architecture Center • PromptCanvas Vision Decompiler';
-  pptx.company = 'Google Cloud';
-  pptx.title = `${diagramName} (${blueprintId})`;
-
-  const SLIDE_W = 13.333;
-  const SLIDE_H = 7.5;
-  const HEADER_H = 0.68;
-
   const shouldIncludeGuide = Boolean(options?.includeArchCenterGuideSlides || options?.markdownContent);
+  const matchedOfficialBlog = resolveDocGuideForSlideDeck(
+    blueprintId,
+    diagramName,
+    options?.markdownContent,
+    options?.docId
+  );
   const docGuide = resolveOrSynthesizeDocGuideForDiagram(
     xmlContent,
     diagramName,
@@ -2294,6 +2320,30 @@ export async function exportDrawioToEditablePptx(
     options?.markdownContent,
     options?.docId
   );
+
+  const isOfficialGcpArchCenter = Boolean(
+    matchedOfficialBlog ||
+    docGuide?.docId?.startsWith('DOC-') ||
+    docGuide?.docId === 'ARCH-ORA-EBS-01' ||
+    xmlContent.includes('gcp_outer') ||
+    xmlContent.includes('zone_routing_hub') ||
+    xmlContent.includes('oracle_ebs_exadata')
+  );
+  const guideBrandRoot = isOfficialGcpArchCenter
+    ? 'Cloud Architecture Center'
+    : 'PromptCanvas Architecture Studio';
+
+  const pptx = new PptxGenJS();
+  pptx.layout = 'LAYOUT_WIDE'; // 13.333 x 7.5 inches widescreen 16:9
+  pptx.author = isOfficialGcpArchCenter
+    ? 'Google Cloud Architecture Center • PromptCanvas'
+    : 'PromptCanvas Architecture Studio';
+  pptx.company = isOfficialGcpArchCenter ? 'Google Cloud' : 'PromptCanvas';
+  pptx.title = `${diagramName} (${blueprintId})`;
+
+  const SLIDE_W = 13.333;
+  const SLIDE_H = 7.5;
+  const HEADER_H = 0.68;
 
 
   // Clean 1:1 Single-Column White DevSite <article> Sheet Chrome (matching UI excluding left/right palettes)
@@ -2315,7 +2365,7 @@ export async function exportDrawioToEditablePptx(
     });
 
     if (breadcrumbSection && docGuide) {
-      s.addText(`Cloud Architecture Center  ›  ${docGuide.partBadge}  ›  ${breadcrumbSection}`, {
+      s.addText(`${guideBrandRoot}  ›  ${docGuide.partBadge}  ›  ${breadcrumbSection}`, {
         x: 0.82,
         y: 0.34,
         w: 8.6,
@@ -2354,8 +2404,8 @@ export async function exportDrawioToEditablePptx(
     const slideOverview = pptx.addSlide();
     addDevSiteArticleSheet(slideOverview);
 
-    // Top row: Left Breadcrumb ("Cloud Architecture Center › Part X of 6 • ...")
-    slideOverview.addText(`Cloud Architecture Center   ›   ${docGuide.partBadge}`, {
+    // Top row: Left Breadcrumb
+    slideOverview.addText(`${guideBrandRoot}   ›   ${docGuide.partBadge}`, {
       x: 0.88,
       y: 0.48,
       w: 7.4,
@@ -2529,7 +2579,9 @@ export async function exportDrawioToEditablePptx(
   const rawFigCaptionText =
     archSecForFig?.inlineDiagram?.caption ||
     docGuide?.subtitle ||
-    `${diagramName} — Official Google Cloud Architecture Center Hub-and-Spoke (#78).`;
+    (isOfficialGcpArchCenter
+      ? `${diagramName} — Official Google Cloud Architecture Center Hub-and-Spoke (#78).`
+      : `${diagramName} — Editable Vector Architecture Diagram.`);
   const figCaptionText = rawFigCaptionText.replace(/^Figure\s*\d+\s*[:.]\s*/i, '').trim();
 
   if (docGuide || isArchCenter78 || shouldIncludeGuide) {
@@ -3478,6 +3530,40 @@ export async function exportDrawioToEditablePptx(
     });
   }
 
+  // Embed deterministic 1:1 bidirectional sync manifest in Slide 2 speaker notes so edits made in
+  // Google Slides (renames, moves, resizes, new shapes) map cleanly back to Draw.io <mxCell> IDs!
+  try {
+    const syncManifest = {
+      v: 1,
+      diagramTitle: diagramName,
+      blueprintId,
+      transform: {
+        effMinX: Number(effMinX.toFixed(2)),
+        effMinY: Number(effMinY.toFixed(2)),
+        scaleX: Number(scaleX.toFixed(6)),
+        scaleY: Number(scaleY.toFixed(6)),
+        offsetX: Number(offsetX.toFixed(4)),
+        offsetY: Number(offsetY.toFixed(4)),
+      },
+      cells: [...backgroundVertices, ...foregroundVertices].slice(0, 140).map((n) => {
+        const parsed = cleanHtmlToPlainText(n.value);
+        return {
+          id: n.id,
+          label: parsed.title || '',
+          subtitle: parsed.subtitle || '',
+          isContainer: parentIds.has(n.id) || n.style?.container === '1',
+          sx: toSlideX(n.absX),
+          sy: toSlideY(n.absY),
+          sw: toSlideW(n.width),
+          sh: toSlideH(n.height),
+        };
+      }),
+    };
+    slide2.addNotes(`PROMPTCANVAS_SLIDES_SYNC_V1:${JSON.stringify(syncManifest)}`);
+  } catch {
+    // Non-fatal if notes exceed limits
+  }
+
   // ============================================================================
   // ASSOCIATED GOOGLE CLOUD ARCHITECTURE CENTER BLOG CONTENT SLIDES (SLIDES 3–6)
   // (1:1 Single-Column White DevSite <article> UI Layout — Zero Bento Sidebars or Rainbow Cards)
@@ -3751,7 +3837,9 @@ export async function exportDrawioToEditablePptx(
       truncateClean(
         deduplicateParentheticalEchoes(
           (prodSec?.leadParagraphs || [])[0] ||
-            'This reference architecture uses the following Google Cloud products and services:'
+            (isOfficialGcpArchCenter
+              ? 'This reference architecture uses the following Google Cloud products and services:'
+              : 'This architecture integrates the following core services and components:')
         ),
         195
       ),
@@ -4327,10 +4415,16 @@ export async function exportDrawioToEditablePptx(
       'Except as otherwise noted, the content of this page is licensed under the Creative Commons Attribution 4.0 License, and code samples are licensed under the Apache 2.0 License.';
     const authorsLine = (contribSec?.contributorsInfo?.authors || docGuide.authors).join(' • ');
     const otherContribLine = (
-      contribSec?.contributorsInfo?.otherContributors || [
-        'Principal AI Architect & Field Deployment Engineering',
-        'Google Cloud Architecture Center Engineering Team',
-      ]
+      contribSec?.contributorsInfo?.otherContributors ||
+      (isOfficialGcpArchCenter
+        ? [
+            'Principal AI Architect & Field Deployment Engineering',
+            'Google Cloud Architecture Center Engineering Team',
+          ]
+        : [
+            'Distributed Systems & Cloud Architecture Engineering',
+            'PromptCanvas Vector & Slides Compiler',
+          ])
     ).join(' • ');
 
     slideDeploy.addText(

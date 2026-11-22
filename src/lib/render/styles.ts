@@ -1,4 +1,5 @@
 import { CloudEnum, NodeTypeEnum } from '../graph/schema';
+import { resolveFreeformIconDataUri } from '../freeform/freeformIconRegistry';
 
 interface StyleToken {
   fillColor: string;
@@ -47,6 +48,7 @@ export const NODE_TYPE_STYLES_LIGHT: Record<NodeTypeEnum, StyleToken> = {
   ai: { fillColor: '#FFFFFF', strokeColor: '#7C3AED', fontColor: '#0F172A', badgeBg: '#F5F3FF' },
   analytics: { fillColor: '#FFFFFF', strokeColor: '#2563EB', fontColor: '#0F172A', badgeBg: '#EFF6FF' },
   gateway: { fillColor: '#FFFFFF', strokeColor: '#475569', fontColor: '#0F172A', badgeBg: '#F8FAFC' },
+  service: { fillColor: '#FFFFFF', strokeColor: '#2563EB', fontColor: '#0F172A', badgeBg: '#EFF6FF' },
 };
 
 export const NODE_TYPE_STYLES_DARK: Record<NodeTypeEnum, StyleToken> = {
@@ -62,6 +64,7 @@ export const NODE_TYPE_STYLES_DARK: Record<NodeTypeEnum, StyleToken> = {
   ai: { fillColor: '#1E293B', strokeColor: '#A78BFA', fontColor: '#F8FAFC', badgeBg: '#4C1D95' },
   analytics: { fillColor: '#1E293B', strokeColor: '#60A5FA', fontColor: '#F8FAFC', badgeBg: '#1E3A8A' },
   gateway: { fillColor: '#1E293B', strokeColor: '#94A3B8', fontColor: '#F8FAFC', badgeBg: '#334155' },
+  service: { fillColor: '#1E293B', strokeColor: '#60A5FA', fontColor: '#F8FAFC', badgeBg: '#1E3A8A' },
 };
 
 export const NODE_TYPE_STYLES = NODE_TYPE_STYLES_LIGHT;
@@ -145,9 +148,35 @@ const ICON_MAP: Record<string, string> = {
   'pinecone': OFFLINE_DB_ICON,
 };
 
-export function getProductIconUrl(product: string, cloud: CloudEnum): string {
-  const p = (product || '').toLowerCase();
+const TYPE_FALLBACK_ICONS: Record<NodeTypeEnum, string> = {
+  user: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.8" fill="#FEF3C7" stroke="#D97706" stroke-width="1.8"/><path d="M5 19.5C5 16.2 8.13 14 12 14C15.87 14 19 16.2 19 19.5" stroke="#D97706" stroke-width="1.8" stroke-linecap="round"/></svg>`),
+  external: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" fill="#F1F5F9" stroke="#475569" stroke-width="1.7"/><path d="M3.5 12H20.5M12 3.5C14.5 6 15.8 8.9 15.8 12C15.8 15.1 14.5 18 12 20.5C9.5 18 8.2 15.1 8.2 12C8.2 8.9 9.5 6 12 3.5Z" stroke="#475569" stroke-width="1.4"/></svg>`),
+  network: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="2.3" fill="#E0F2FE" stroke="#0284C7" stroke-width="1.7"/><circle cx="6" cy="18" r="2.3" fill="#E0F2FE" stroke="#0284C7" stroke-width="1.7"/><circle cx="18" cy="18" r="2.3" fill="#E0F2FE" stroke="#0284C7" stroke-width="1.7"/><path d="M12 7.5V12M12 12L7.5 16M12 12L16.5 16" stroke="#0284C7" stroke-width="1.7" stroke-linecap="round"/></svg>`),
+  security: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M12 3L19 6V11.5C19 16.1 15.9 19.9 12 21C8.1 19.9 5 16.1 5 11.5V6L12 3Z" fill="#FEF2F2" stroke="#DC2626" stroke-width="1.7"/><path d="M9.5 12L11.2 13.7L14.8 10" stroke="#DC2626" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`),
+  compute: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="#EEF2FF" stroke="#4F46E5" stroke-width="1.7"/><rect x="9.5" y="9.5" width="5" height="5" rx="1" fill="#4F46E5"/><path d="M9 3V6M15 3V6M9 18V21M15 18V21M3 9H6M3 15H6M18 9H21M18 15H21" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg>`),
+  database: OFFLINE_DB_ICON,
+  storage: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="5" rx="1.5" fill="#F0FDFA" stroke="#0D9488" stroke-width="1.7"/><rect x="4" y="14" width="16" height="5" rx="1.5" fill="#F0FDFA" stroke="#0D9488" stroke-width="1.7"/><circle cx="7.5" cy="7.5" r="1" fill="#0D9488"/><circle cx="7.5" cy="16.5" r="1" fill="#0D9488"/></svg>`),
+  queue: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="7" r="2.4" fill="#FEF3C7" stroke="#D97706" stroke-width="1.7"/><circle cx="6" cy="17" r="2.4" fill="#FEF3C7" stroke="#D97706" stroke-width="1.7"/><circle cx="18" cy="12" r="2.7" fill="#FEF3C7" stroke="#D97706" stroke-width="1.7"/><path d="M8.5 7.8L15.3 11M8.5 16.2L15.3 13" stroke="#D97706" stroke-width="1.7" stroke-linecap="round"/></svg>`),
+  cache: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><polygon points="13,2 4,14 11,14 10,22 20,10 13,10" fill="#FFEDD5" stroke="#EA580C" stroke-width="1.7" stroke-linejoin="round"/></svg>`),
+  ai: OFFLINE_GEMINI_ICON,
+  analytics: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.7"/><rect x="7" y="12" width="2.5" height="5.5" rx="0.8" fill="#2563EB"/><rect x="11" y="9" width="2.5" height="8.5" rx="0.8" fill="#3B82F6"/><rect x="15" y="6.5" width="2.5" height="11" rx="0.8" fill="#60A5FA"/></svg>`),
+  gateway: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" fill="#F1F5F9" stroke="#475569" stroke-width="1.7"/><path d="M8 12H16M13 9L16 12L13 15" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`),
+  service: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M12 3L20 7.5V16.5L12 21L4 16.5V7.5L12 3Z" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.7"/><circle cx="12" cy="12" r="3" fill="#2563EB"/></svg>`),
+};
 
+export function getProductIconUrl(product: string, cloud: CloudEnum, nodeType?: NodeTypeEnum): string {
+  // 1. Unified per-service official SVG registry (GCP, AWS, OSS, DB, Stream, Security, BI, Actors)
+  const officialUri = resolveFreeformIconDataUri(product || '', undefined);
+  if (officialUri) {
+    return officialUri;
+  }
+
+  // 2. Semantic node-type distinct icon (so every tier/role is visually distinct, never 9 identical vendor logos!)
+  if (nodeType && TYPE_FALLBACK_ICONS[nodeType]) {
+    return TYPE_FALLBACK_ICONS[nodeType];
+  }
+
+  const p = (product || '').toLowerCase();
   for (const [key, iconUrl] of Object.entries(ICON_MAP)) {
     if (p.includes(key)) {
       return iconUrl;

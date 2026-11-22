@@ -4,9 +4,12 @@ import { computeElkLayout } from '../layout/elk-layout';
 import { renderGraphToDrawioXml } from '../render/drawio-xml';
 import { validateDrawioXml, ValidationResult } from '../validate/validator';
 import { ArchitectureGraph } from '../graph/schema';
-import { REPAIR_XML_SYSTEM_PROMPT, buildRepairXmlPrompt } from '../../prompts/repairXml';
-import { GEMINI_MODEL_ID, getDistinctJudgeModel, getGenConfigForModel } from '../geminiConfig';
-import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import {
+  GEMINI_FLASH_MODEL_ID,
+  GEMINI_MODEL_ID,
+  createGeminiClient,
+  getDistinctJudgeModel,
+} from '../geminiConfig';
 
 interface V2PipelineTelemetry {
   modelId: string;
@@ -28,82 +31,110 @@ interface V2PipelineResult {
   telemetry: V2PipelineTelemetry;
 }
 
-export async function runV2Pipeline(
-  userPrompt: string,
-  modelId: string = GEMINI_MODEL_ID,
-  aiClient?: GoogleGenAI
-): Promise<V2PipelineResult> {
-  const startTime = Date.now();
-  const ai = aiClient || new GoogleGenAI({});
-  const repairModelId = getDistinctJudgeModel(modelId);
-
+/**
+ * Repairs structural validation issues at the compact ArchitectureGraph IR level (never by asking
+ * an LLM to rewrite 25KB of raw Draw.io XML with inline base64/SVG data URIs), then deterministically
+ * recomputes layout and re-renders XML.
+ */
+async function repairGraphIfInvalid(
+  initialGraph: ArchitectureGraph,
+  initialXml: string,
+  initialValidation: ValidationResult,
+  repairModelId: string,
+  ai: GoogleGenAI | null
+): Promise<{
+  graph: ArchitectureGraph;
+  xml: string;
+  validation: ValidationResult;
+  repairAttempts: number;
+}> {
+  let graph = initialGraph;
+  let xml = initialXml;
+  let validation = initialValidation;
   let repairAttempts = 0;
 
-  // 1. Generate Logical Graph JSON
-  const logicalGraph = await generateLogicalGraph(userPrompt, modelId, ai);
+  if (validation.valid || validation.errors.length === 0) {
+    return { graph, xml, validation, repairAttempts };
+  }
 
-  // 2. Compute ELK.js Layout
-  const laidOutGraph = await computeElkLayout(logicalGraph);
-
-  // 3. Render Draw.io XML
-  let currentXml = renderGraphToDrawioXml(laidOutGraph);
-
-  // 4. Pre-Render Validation
-  let validation = validateDrawioXml(currentXml);
-
-  // 5. Automated Cross-Model Repair Loop (if invalid, max 2 attempts via distinct judge/repair model)
-  if (!validation.valid) {
-    while (repairAttempts < 2 && !validation.valid) {
-      repairAttempts++;
-      const repairPrompt = buildRepairXmlPrompt(
-        JSON.stringify(validation.errors, null, 2),
-        currentXml
+  // Only attempt compact IR-level repair when an AI client is available (1 fast bounded pass)
+  if (ai) {
+    repairAttempts++;
+    const errorSummary = validation.errors
+      .slice(0, 8)
+      .map((e) => `${e.code}: ${e.detail}`)
+      .join('\n');
+    try {
+      const repairedLogical = await editLogicalGraph(
+        graph,
+        `Fix these structural graph validation errors while preserving all user-requested components:\n${errorSummary}`,
+        repairModelId,
+        ai
       );
-
-      try {
-        const response = await generateContentWithRetry(ai, {
-          model: repairModelId,
-          contents: repairPrompt,
-          config: {
-            systemInstruction: REPAIR_XML_SYSTEM_PROMPT,
-            ...getGenConfigForModel('repair', repairModelId),
-          },
-        });
-
-        let repairedText = response.text || '';
-        const match = repairedText.match(/```xml\s*([\s\S]*?)\s*```/) || repairedText.match(/```\s*([\s\S]*?)\s*```/);
-        if (match && match[1]) {
-          repairedText = match[1].trim();
-        }
-
-        if (repairedText && repairedText.includes('<mxfile')) {
-          const testValidation = validateDrawioXml(repairedText);
-          currentXml = repairedText;
-          validation = testValidation;
-        }
-      } catch (repairErr) {
-        console.error(`[Pipeline V2 Repair Attempt ${repairAttempts} Failed]:`, repairErr);
+      const relaid = await computeElkLayout(repairedLogical);
+      const rerendered = renderGraphToDrawioXml(relaid);
+      const reval = validateDrawioXml(rerendered);
+      if (reval.errors.length <= validation.errors.length) {
+        graph = relaid;
+        xml = rerendered;
+        validation = reval;
       }
+    } catch (repairErr) {
+      console.warn('[Pipeline V2 IR Repair Failed]:', repairErr);
     }
   }
 
+  return { graph, xml, validation, repairAttempts };
+}
+
+export async function runV2Pipeline(
+  userPrompt: string,
+  modelId: string = GEMINI_FLASH_MODEL_ID,
+  aiClient?: GoogleGenAI
+): Promise<V2PipelineResult> {
+  const startTime = Date.now();
+  const effectiveModel = modelId || GEMINI_FLASH_MODEL_ID;
+  const ai = aiClient || createGeminiClient();
+  const repairModelId = getDistinctJudgeModel(effectiveModel);
+
+  // 1. Generate Logical Graph JSON (uses unified client or clean deterministic fallback if offline)
+  const logicalGraph = await generateLogicalGraph(userPrompt, effectiveModel, ai || undefined);
+
+  // 2. Compute Deterministic Uniform-Tier Layout + Collision-Free Orthogonal Edge Waypoints
+  const laidOutGraph = await computeElkLayout(logicalGraph);
+
+  // 3. Render Draw.io XML (Light Theme, per-service official SVGs, zero inline JS)
+  const renderedXml = renderGraphToDrawioXml(laidOutGraph);
+
+  // 4. Pre-Render Validation
+  const initialValidation = validateDrawioXml(renderedXml);
+
+  // 5. Compact IR-level repair ONLY if hard validation errors exist (zero 180s raw-XML timeout loops)
+  const repaired = await repairGraphIfInvalid(
+    laidOutGraph,
+    renderedXml,
+    initialValidation,
+    repairModelId,
+    ai
+  );
+
   const latencyMs = Date.now() - startTime;
   const telemetry: V2PipelineTelemetry = {
-    modelId,
+    modelId: effectiveModel,
     repairModelId,
     latencyMs,
-    validationPassed: validation.valid,
-    repairAttempts,
-    errorsCount: validation.errors.length,
-    warningsCount: validation.warnings.length,
+    validationPassed: repaired.validation.valid,
+    repairAttempts: repaired.repairAttempts,
+    errorsCount: repaired.validation.errors.length,
+    warningsCount: repaired.validation.warnings.length,
   };
 
   console.log('[Pipeline V2 Telemetry]:', telemetry);
 
   return {
-    xml: currentXml,
-    graph: laidOutGraph,
-    validationReport: validation,
+    xml: repaired.xml,
+    graph: repaired.graph,
+    validationReport: repaired.validation,
     telemetry,
   };
 }
@@ -115,74 +146,46 @@ export async function runV2EditPipeline(
   aiClient?: GoogleGenAI
 ): Promise<V2PipelineResult> {
   const startTime = Date.now();
-  const ai = aiClient || new GoogleGenAI({});
-  const repairModelId = getDistinctJudgeModel(modelId);
+  const effectiveModel = modelId || GEMINI_FLASH_MODEL_ID;
+  const ai = aiClient || createGeminiClient();
+  const repairModelId = getDistinctJudgeModel(effectiveModel);
 
-  let repairAttempts = 0;
+  // 1. Edit Logical Graph JSON (layout coords automatically stripped inside editLogicalGraph)
+  const updatedGraph = await editLogicalGraph(currentGraph, userChangePrompt, effectiveModel, ai || undefined);
 
-  // 1. Edit Logical Graph JSON
-  const updatedGraph = await editLogicalGraph(currentGraph, userChangePrompt, modelId, ai);
-
-  // 2. Re-layout with ELK
+  // 2. Re-layout deterministically
   const laidOutGraph = await computeElkLayout(updatedGraph);
 
   // 3. Render Draw.io XML
-  let currentXml = renderGraphToDrawioXml(laidOutGraph);
+  const renderedXml = renderGraphToDrawioXml(laidOutGraph);
 
   // 4. Pre-Render Validation
-  let validation = validateDrawioXml(currentXml);
+  const initialValidation = validateDrawioXml(renderedXml);
 
-  // 5. Automated Cross-Model Repair Loop if needed
-  if (!validation.valid) {
-    while (repairAttempts < 2 && !validation.valid) {
-      repairAttempts++;
-      const repairPrompt = buildRepairXmlPrompt(
-        JSON.stringify(validation.errors, null, 2),
-        currentXml
-      );
-
-      try {
-        const response = await generateContentWithRetry(ai, {
-          model: repairModelId,
-          contents: repairPrompt,
-          config: {
-            systemInstruction: REPAIR_XML_SYSTEM_PROMPT,
-            ...getGenConfigForModel('repair', repairModelId),
-          },
-        });
-
-        let repairedText = response.text || '';
-        const match = repairedText.match(/```xml\s*([\s\S]*?)\s*```/) || repairedText.match(/```\s*([\s\S]*?)\s*```/);
-        if (match && match[1]) {
-          repairedText = match[1].trim();
-        }
-
-        if (repairedText && repairedText.includes('<mxfile')) {
-          const testValidation = validateDrawioXml(repairedText);
-          currentXml = repairedText;
-          validation = testValidation;
-        }
-      } catch (repairErr) {
-        console.error(`[Pipeline V2 Repair Attempt ${repairAttempts} Failed]:`, repairErr);
-      }
-    }
-  }
+  // 5. Compact IR-level repair ONLY if hard validation errors remain
+  const repaired = await repairGraphIfInvalid(
+    laidOutGraph,
+    renderedXml,
+    initialValidation,
+    repairModelId,
+    ai
+  );
 
   const latencyMs = Date.now() - startTime;
   const telemetry: V2PipelineTelemetry = {
-    modelId,
+    modelId: effectiveModel,
     repairModelId,
     latencyMs,
-    validationPassed: validation.valid,
-    repairAttempts,
-    errorsCount: validation.errors.length,
-    warningsCount: validation.warnings.length,
+    validationPassed: repaired.validation.valid,
+    repairAttempts: repaired.repairAttempts,
+    errorsCount: repaired.validation.errors.length,
+    warningsCount: repaired.validation.warnings.length,
   };
 
   return {
-    xml: currentXml,
-    graph: laidOutGraph,
-    validationReport: validation,
+    xml: repaired.xml,
+    graph: repaired.graph,
+    validationReport: repaired.validation,
     telemetry,
   };
 }

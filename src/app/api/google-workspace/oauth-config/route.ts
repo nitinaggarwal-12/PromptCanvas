@@ -32,15 +32,12 @@ function getSessionMap(): Map<string, StoredDriveSession> {
 }
 
 /**
- * Extracts the authenticated user's email from Google BeyondCorp / Cloud IAP headers
- * (`x-goog-authenticated-user-email: accounts.google.com:user@google.com`) or persistent cookie.
+ * Extracts the authenticated user's email strictly from Google BeyondCorp / Cloud IAP header
+ * (`x-goog-authenticated-user-email: accounts.google.com:user@google.com`) or cookie
+ * (never trusting spoofable generic `x-forwarded-email`).
  */
 export function extractAuthenticatedGoogleEmail(req: NextRequest): string | undefined {
-  const rawIapHeader =
-    req.headers.get('x-goog-authenticated-user-email') ||
-    req.headers.get('x-forwarded-email') ||
-    req.headers.get('x-authenticated-user-email') ||
-    '';
+  const rawIapHeader = req.headers.get('x-goog-authenticated-user-email') || '';
   if (rawIapHeader) {
     const cleaned = rawIapHeader.replace(/^accounts\.google\.com:/i, '').trim();
     if (cleaned.includes('@')) return cleaned;
@@ -201,53 +198,36 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // 3. Validate token expiry or auto-refresh via server-side refresh_token
+  // Security: NEVER return raw server-side OAuth access tokens to browser clients over GET!
+  // Server-side Slides/Docs API calls use `getServerDriveAccessToken()` strictly on the server.
+  // Only check whether a server bridge token is available and expose a boolean flag (`hasServerBridge`).
+  let hasServerBridge = false;
+  let effectiveEmail = storedSession?.email || iapEmail || '';
+
   if (storedSession && storedSession.expiresAt - 60_000 > Date.now()) {
-    sessionToken = {
-      accessToken: storedSession.accessToken,
-      expiresAt: storedSession.expiresAt,
-      clientId: storedSession.clientId,
-      email: storedSession.email || iapEmail,
-    };
-  } else if (clientId) {
-    const refreshed = await tryRefreshAccessToken(
-      clientId,
-      storedSession?.refreshToken,
-      storedSession?.email || iapEmail
-    );
-    if (refreshed) {
-      getSessionMap().set(key, refreshed);
-      void saveSessionToGcs(key, refreshed);
-      sessionToken = {
-        accessToken: refreshed.accessToken,
-        expiresAt: refreshed.expiresAt,
-        clientId: refreshed.clientId,
-        email: refreshed.email || iapEmail,
-      };
-    } else {
+    hasServerBridge = true;
+  } else {
+    try {
       const { getServerDriveAccessToken, DEFAULT_USER_EMAIL } = await import('@/lib/server/googleWorkspaceBridge');
       const serverToken = await getServerDriveAccessToken();
       if (serverToken) {
-        sessionToken = {
-          accessToken: serverToken,
-          expiresAt: Date.now() + 50 * 60 * 1000,
-          clientId,
-          email: iapEmail || DEFAULT_USER_EMAIL,
-        };
+        hasServerBridge = true;
+        if (!effectiveEmail) effectiveEmail = DEFAULT_USER_EMAIL;
       }
+    } catch {
+      hasServerBridge = false;
     }
   }
-
-  const effectiveEmail = sessionToken?.email || storedSession?.email || iapEmail || 'nitinagga@google.com';
 
   const response = NextResponse.json(
     {
       configured: clientId.length > 0,
       clientId,
       scopes: GOOGLE_OAUTH_SCOPES,
-      flow: 'google-identity-services-token-client',
-      iapEmail: effectiveEmail,
-      sessionToken,
+      flow: 'server-bridge-or-gis-token-client',
+      iapEmail: effectiveEmail || undefined,
+      hasServerBridge,
+      sessionToken: null,
     },
     { headers: { 'Cache-Control': 'no-store' } }
   );

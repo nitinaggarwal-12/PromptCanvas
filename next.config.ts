@@ -36,15 +36,15 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: data: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://viewer.diagrams.net https://*",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*",
-              "font-src 'self' https://fonts.gstatic.com data: https://*",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: data: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://viewer.diagrams.net https://accounts.google.com https://apis.google.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: blob: https:",
-              "frame-src 'self' blob: data: https://embed.diagrams.net https://app.diagrams.net https://viewer.diagrams.net https://*",
+              "frame-src 'self' blob: data: https://embed.diagrams.net https://app.diagrams.net https://viewer.diagrams.net https://docs.google.com https://drive.google.com https://accounts.google.com",
               "frame-ancestors 'self' https://embed.diagrams.net https://app.diagrams.net https://docs.google.com https://drive.google.com https://*.google.com https://*.googleusercontent.com",
               "child-src 'self' blob: data:",
               "worker-src 'self' blob: data:",
-              "connect-src 'self' ws: wss: https://*.proxy.googlers.com https://generativelanguage.googleapis.com https://api.iconify.design https://raw.githubusercontent.com https://*"
+              "connect-src 'self' ws: wss: https://*.proxy.googlers.com https://generativelanguage.googleapis.com https://*.googleapis.com https://api.iconify.design https://raw.githubusercontent.com"
             ].join('; ')
           }
         ]
@@ -90,7 +90,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/compare-diagrams',
-        destination: '/gcp',
+        destination: '/studio',
         permanent: true,
       },
       {

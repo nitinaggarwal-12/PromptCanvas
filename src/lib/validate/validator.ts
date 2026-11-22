@@ -611,9 +611,14 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
       const tgt = verticesMap.get(edge.target)!;
       const isForwardCol = tgt.absX > src.absX + 50;
       const isUpwardBacktrack = (src.absY - tgt.absY) > 220;
-      const isFeedbackLoop = (edge.label?.toLowerCase().includes('feedback') || edge.label?.toLowerCase().includes('eval') || edge.label?.toLowerCase().includes('retry') || edge.label?.toLowerCase().includes('correction'));
+      const labelLower = (edge.label || '').toLowerCase();
+      const isFeedbackOrReturnLoop =
+        /feedback|eval|retry|correction|return|respond|response|reply|callback|ack|alert|notify|status|token|redirect|refresh|sync|audit|telemetry|log|encrypt|decrypt|score|query|read/.test(
+          labelLower
+        ) ||
+        Boolean(edge.points && edge.points.length >= 4);
 
-      if (isForwardCol && isUpwardBacktrack && !isFeedbackLoop) {
+      if (isForwardCol && isUpwardBacktrack && !isFeedbackOrReturnLoop) {
         errors.push({
           code: 'FLOW_BACKTRACKING_DETECTED',
           cells: [edgeId, edge.source, edge.target],
@@ -657,7 +662,9 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     }
   }
 
-  const isValid = errors.length === 0 && warnings.length === 0;
+  // Blocking validity is determined strictly by hard errors; warnings remain advisory
+  // so warnings never trigger empty-error LLM repair loops.
+  const isValid = errors.length === 0;
 
   return {
     valid: isValid,

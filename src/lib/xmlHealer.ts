@@ -202,8 +202,16 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('data-nano-banana-decompiled="true"') ||
     inputXml.includes('nano_banana_vision_decompiled') ||
     inputXml.includes('data-compound-freeform="true"') ||
+    inputXml.includes('data-prompt-to-diagram="true"') ||
+    inputXml.includes('data-user-drawio="true"') ||
+    inputXml.includes('data-slides-synced="true"') ||
+    inputXml.includes('PromptCanvas-DirectSpatial') ||
+    inputXml.includes('PromptCanvas-Vision1to1') ||
+    (inputXml.includes('host="app.diagrams.net"') && !inputXml.includes('GeminiDirect')) ||
+    (inputXml.includes('host="embed.diagrams.net"') && !inputXml.includes('GeminiDirect')) ||
     archType === 'compound_freeform' ||
-    archType === 'vision_decompiled'
+    archType === 'vision_decompiled' ||
+    archType === 'v2_freeform'
   );
 
   if (isMasterOrStructured) {

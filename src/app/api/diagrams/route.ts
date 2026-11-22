@@ -11,17 +11,10 @@ export async function GET(request: Request) {
     const user = await getAuthenticatedUser();
     let diagrams = await listDiagrams(user?.id);
 
-    const seenNormalizedTitles = new Set<string>();
+    const seenIds = new Set<string>();
     diagrams = diagrams
-      .filter((d: any) => {
-        const text = `${d.id || ''} ${d.name || ''} ${d.latest_prompt || ''}`;
-        return !/novacura|^add\s+\d+\s+more\s+components|clinical\s+ai\s+-|vis-9745|vis-agentic-01|tailored\s+for:\s+add\s+the\s+right\s+components/i.test(
-          text
-        );
-      })
       .map((d: any) => {
-        const rawXml = String(d.latest_xml || d.xml_content || '');
-        const resolvedTitle = String(d.name || '').replace(/&amp;/g, '&');
+        const resolvedTitle = String(d.name || '').replace(/&amp;/g, '&').trim() || 'Untitled Architecture';
         return {
           ...d,
           name: resolvedTitle,
@@ -31,10 +24,9 @@ export async function GET(request: Request) {
         };
       })
       .filter((d: any) => {
-        const normTitle = String(d.name || '').trim().toLowerCase();
-        if (!normTitle) return false;
-        if (seenNormalizedTitles.has(normTitle)) return false;
-        seenNormalizedTitles.add(normTitle);
+        const idKey = String(d.id || '').trim();
+        if (!idKey || seenIds.has(idKey)) return false;
+        seenIds.add(idKey);
         return true;
       });
 
@@ -135,6 +127,13 @@ export async function POST(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const user = await getAuthenticatedUser();
+    if (!user || !user.id) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Authentication required to delete diagrams.' },
+        { status: 401 }
+      );
+    }
+    const isSuperAdmin = Boolean(user.is_super_admin || user.global_role === 'Super-Admin');
     const { searchParams } = new URL(request.url);
     const idsParam = searchParams.get('ids');
     const studioParam = searchParams.get('studio');
@@ -154,7 +153,7 @@ export async function DELETE(request: Request) {
     }
 
     if (idsToDelete.length > 0) {
-      const deletedCount = await batchDeleteDiagrams(idsToDelete, user?.id, true);
+      const deletedCount = await batchDeleteDiagrams(idsToDelete, user.id, isSuperAdmin);
       return NextResponse.json({
         success: true,
         deletedCount,
@@ -164,7 +163,7 @@ export async function DELETE(request: Request) {
 
     if (studioParam) {
       const targetStudio = studioParam.toLowerCase();
-      const allDiagrams = await listDiagrams(user?.id);
+      const allDiagrams = await listDiagrams(user.id);
       const studioIds = allDiagrams
         .filter((d) => {
           const itemStudio = (d.created_studio || 'studio1').toLowerCase();
@@ -176,7 +175,7 @@ export async function DELETE(request: Request) {
         .map((d) => d.id);
 
       const deletedCount = studioIds.length > 0
-        ? await batchDeleteDiagrams(studioIds, user?.id, true)
+        ? await batchDeleteDiagrams(studioIds, user.id, isSuperAdmin)
         : 0;
       return NextResponse.json({
         success: true,
@@ -185,9 +184,7 @@ export async function DELETE(request: Request) {
       });
     }
 
-    if (user && user.id) {
-      await clearAllDiagrams(user.id);
-    }
+    await clearAllDiagrams(user.id);
     return NextResponse.json({ success: true, message: 'All diagram history cleared successfully' });
   } catch (error) {
     console.error('Failed to delete diagrams:', error);

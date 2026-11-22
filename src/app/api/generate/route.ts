@@ -89,6 +89,50 @@ export async function POST(request: Request) {
     if (isV2) {
       if (diagramId) {
         const latest = await getLatestDiagramVersion(diagramId, architectureType);
+        const wasManuallyEdited =
+          Boolean(latest?.xml_content) &&
+          (!latest?.graph_json ||
+            /draw\.io|slides|user|manual/i.test(String(latest?.created_by || '')));
+
+        // If the latest version was edited in Draw.io or synced from Google Slides, mutate the
+        // live Draw.io XML spatially in-place so manual edits are NEVER clobbered by stale graph_json!
+        if (wasManuallyEdited && latest?.xml_content && latest.xml_content.includes('<mxCell')) {
+          try {
+            const { mutateDrawioXmlDirectly } = await import('@/lib/freeform/directDrawioSpatialMutator');
+            const mutated = await mutateDrawioXmlDirectly({
+              currentXml: latest.xml_content,
+              userPrompt: latest.prompt || prompt,
+              modificationPrompt: prompt,
+              explicitApiKey: guard.effectiveApiKey || undefined,
+            });
+            const comment = `AI Spatial Update (Preserved Draw.io/Slides Edits): "${prompt.slice(0, 40)}"`;
+            const version = await saveDiagramVersion(
+              diagramId,
+              mutated.xml,
+              comment,
+              'AI-Spatial',
+              prompt,
+              mutated.summaryOfChanges,
+              latest.business_usecase || 'Preserved manual edits while applying prompt update.',
+              latest.technical_usecase || 'Direct Draw.io XML spatial mutation.',
+              latest.architecture_type || 'v2_freeform',
+              null
+            );
+            return NextResponse.json({
+              version,
+              refreshed: true,
+              isStale: false,
+              xml: mutated.xml,
+              reasoning: mutated.summaryOfChanges,
+              businessUsecase: latest.business_usecase || '',
+              technicalUsecase: latest.technical_usecase || '',
+              mutationMode: 'direct_drawio_xml_update',
+            });
+          } catch (spatialErr) {
+            console.warn('[V2 Spatial Edit Fallback] Falling back to graph/unified edit:', spatialErr);
+          }
+        }
+
         if (latest?.architecture_type === 'v2_freeform' && latest?.graph_json) {
           try {
             const prevGraph = JSON.parse(latest.graph_json);
@@ -196,7 +240,12 @@ export async function POST(request: Request) {
         if (!hasExplicitTemplateKeyword) {
           const classification = await classifyIntent(prompt);
           if (classification) {
-            if (classification.confidence < 0.6) {
+            // Only return disambiguation when the classifier actually suggested concrete template alternatives;
+            // when selectedType is null and alternativeTypes is empty, proceed directly to V2 freeform graph synthesis!
+            const hasConcreteDisambiguation =
+              Boolean(classification.selectedType) ||
+              (Array.isArray(classification.alternativeTypes) && classification.alternativeTypes.length > 0);
+            if (classification.confidence < 0.6 && hasConcreteDisambiguation) {
               const fallbackArchType =
                 classification.selectedType ||
                 classification.alternativeTypes?.[0] ||
@@ -244,7 +293,7 @@ export async function POST(request: Request) {
             }
           }
 
-          // Freeform prompt with LayoutEngineV2 -> run V2 Pipeline with resilient fallback
+          // Freeform prompt with LayoutEngineV2 -> run V2 Pipeline and persist canonical graph_json in DB!
           try {
             const v2Result = await runV2Pipeline(prompt, GEMINI_MODEL_ID);
             const diagramName = name || (prompt.length > 45 ? `${prompt.slice(0, 40)}...` : prompt);
@@ -262,7 +311,9 @@ export async function POST(request: Request) {
               technicalUsecase,
               user?.id || null,
               'v2_freeform',
-              Boolean(isPrivate)
+              Boolean(isPrivate),
+              'studio1',
+              JSON.stringify(v2Result.graph)
             );
 
             return NextResponse.json({

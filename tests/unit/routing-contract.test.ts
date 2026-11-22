@@ -185,7 +185,9 @@ describe('V2 Pipeline & Architecture Routing Contract Tests', () => {
       expect.any(String),
       expect.anything(),
       'v2_freeform',
-      expect.any(Boolean)
+      expect.any(Boolean),
+      'studio1',
+      expect.any(String)
     );
   });
 

@@ -1,5 +1,4 @@
 import { CANONICAL_TEMPLATES } from '../src/lib/canonical/canonicalTemplates';
-import { OmniQcChief } from '../src/lib/omniDirector/OmniQcChief';
 
 export function runDiagramQualityGate(options: { fullScan?: boolean; targetId?: string } = {}): {
   success: boolean;

@@ -1,5 +1,5 @@
-import { BLUEPRINT_KNOWLEDGE_MATRIX, BlueprintKnowledgeItem } from './blueprintKnowledgeMatrix';
-import { normalizeArchitectureId } from './architectureTypes';
+import { BLUEPRINT_KNOWLEDGE_MATRIX, BlueprintKnowledgeItem } from './blueprintKnowledgeMatrixCatalog';
+import { normalizeArchitectureId } from './architectureTypesCertified';
 
 export interface ArchitectureHierarchyDomain {
   id: string;

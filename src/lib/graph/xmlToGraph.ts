@@ -63,7 +63,7 @@ const KNOWN_CELL_NAMES: Record<string, string> = {
   sw3_can_gke: 'Canary Deployment (GKE)',
   sw3_obs_box: 'Continuous Observability & Drift Monitoring',
   sw3_archival: 'Model & Prompt Archival Registry',
-  sw1_erd_t1: 'Silence Schema Entity',
+  sw1_erd_t1: 'Core Schema Entity',
   sw1_erd_t2: 'Source Data Entity',
   sw1_erd_t3: 'Staging Table Entity',
   sw1_erd_t4: 'Transformation Layer Entity',
@@ -107,14 +107,9 @@ function isNoiseLabel(label: string): boolean {
     upper.includes('CONTROL FLOW') ||
     upper.includes('KEY:') ||
     upper.includes('LINE DESCRIPTION') ||
-    upper.includes('LINE DEVELOPMENTA') ||
     upper.includes('MONITORING & OBSERVABILITY') ||
-    upper.includes('INTERANED SRANDAN') ||
-    upper.includes('DATA MANIEING') ||
     upper.includes('PRIVATE APPLICATION CONTAINER') ||
-    upper.includes('LINE ASNNTRIPTION') ||
-    upper.includes('SECURE BOUNDARY') ||
-    upper.includes('BERMANON INTERNAL')
+    upper.includes('SECURE BOUNDARY')
   );
 }
 
