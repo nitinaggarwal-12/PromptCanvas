@@ -546,7 +546,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
     midGovLabel: ['Real-time COGS &', 'security telemetry'],
     leftBoundaryLabel: 'Triad Pillar 2 (High Density): Pattern A Pooled FinOps & COGS Engine',
     leftZoneTitle: 'Pattern A: Pooled Unit Economics',
-    leftZoneSub: 'Lowest COGS ($) • 84.7% Net Input Token Savings',
+    leftZoneSub: 'Lowest COGS (Tier 1) • 84.7% Net Input Token Savings',
     leftCards: {
       modelArmor: { icon: 'valkey_cache', title: 'Valkey Rate Bulkhead', sub: '120 RPM Std / 600 RPM Ent' },
       llm: { icon: 'gemini_agent_platform', title: 'ContextCacheConfig', sub: '90% Discount on 32k Prefix' },
@@ -559,7 +559,7 @@ export const OFFICIAL_ARCH_CENTER_BLUEPRINTS: OfficialArchCenterBlueprintConfig[
       ragLabel: ['Zero Cache', 'Bleed'],
       toolLabel: ['Storage-Engine', 'RLS Policy'],
     },
-    rightBoundaryLabel: 'Triad Pillar 2 (Regulated Scale): Pattern B Silos ($$$) & Pattern C Hybrid ($$)',
+    rightBoundaryLabel: 'Triad Pillar 2 (Regulated Scale): Pattern B Silos (Tier 3) & Pattern C Hybrid (Tier 2)',
     rightZoneTitle: 'Pattern B Silos & Pattern C PSC Spokes',
     rightZoneSub: 'Zero Blast Radius + Zero-Downtime Tier Promotion',
     rightCards: {
