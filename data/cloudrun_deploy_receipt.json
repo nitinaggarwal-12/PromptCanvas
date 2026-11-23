@@ -5,29 +5,30 @@
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "promptcanvas-00069-q2p",
-  "latestCreatedRevisionName": "promptcanvas-00069-q2p",
+  "latestReadyRevisionName": "promptcanvas-00070-9cx",
+  "latestCreatedRevisionName": "promptcanvas-00070-9cx",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/promptcanvas:v20261122-193502-remediation",
-  "imageDigest": "sha256:e984b3feecc5658904dbeccd00a13a81779db17abcad82c93f10924d66548142",
-  "gitCommit": "8b2f5a9a",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/promptcanvas:v20261123-225326-foster-fix",
+  "imageDigest": "sha256:044c0ee331fea37620063e4cd6a37dc21f01ead44b8451305a020349d956d50b",
+  "gitCommit": "7d770b12",
   "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"promptcanvas-1\" on port 8080.",
+  "beyondCorpHttpStatus": 302,
   "liveHttpVerification": {
-    "verifiedAt": "2026-11-22T19:35:36.499Z",
+    "verifiedAt": "2026-11-23T22:54:06.994Z",
     "verificationMode": "cloud_run_revision_pre_traffic_live_http_dom_probe",
     "project": "ramp-portal-dev",
     "region": "us-west1",
     "service": "promptcanvas",
-    "revision": "promptcanvas-00069-q2p",
+    "revision": "promptcanvas-00070-9cx",
     "overallPassed": true,
     "routes": [
       {
         "path": "/blogs",
         "httpStatus": 200,
-        "responseBytes": 11595,
-        "bodySha256Short": "1309c5bf45bc67f4",
-        "latencyMs": 8864,
+        "responseBytes": 10745,
+        "bodySha256Short": "3318ff42ad1b9996",
+        "latencyMs": 2987,
         "markersMatched": [
           "Architecture",
           "blogs"
@@ -40,8 +41,8 @@
         "path": "/api/blogs/gcp-verify",
         "httpStatus": 200,
         "responseBytes": 1117569,
-        "bodySha256Short": "7579afc578c9ad35",
-        "latencyMs": 166,
+        "bodySha256Short": "1b682b3b9c60987b",
+        "latencyMs": 197,
         "markersMatched": [
           "ramp-portal-dev",
           "bbar-138hf0"
@@ -52,7 +53,7 @@
       }
     ]
   },
-  "verifiedAt": "2026-11-22T19:35:37Z",
+  "verifiedAt": "2026-11-23T22:54:07Z",
   "canonicalBlueprintsCount": 40,
   "leanDocArchetypesCount": 8
 }
