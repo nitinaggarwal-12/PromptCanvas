@@ -1,8 +1,8 @@
 /**
  * Blueprint 50 — Enterprise MCP Gateway on Google Cloud
  *
- * Phase 3.1C rebuild.
- * Visual contract: approved five-stage MCP gateway reference.
+ * Visual contract: five-stage widescreen MCP gateway reference with clean gutters,
+ * zero border-touching copy, aligned server-to-tool rows, and non-crossing governance connectors.
  * Technical contract:
  * - MCP clients invoke remote MCP servers over HTTP/Streamable HTTP.
  * - Custom remote MCP servers can run on authenticated Cloud Run services.
@@ -67,9 +67,9 @@ const lane = (
   fill: string,
 ): string =>
   [
-    cell(id, '', `rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accent};strokeWidth=1.5;shadow=0;`, x, y, width, height),
-    cell(`${id}_number`, String(number), `ellipse;whiteSpace=wrap;html=1;fillColor=${accent};strokeColor=${accent};fontColor=#FFFFFF;fontStyle=1;fontSize=13;align=center;verticalAlign=middle;`, x + 12, y + 12, 32, 32),
-    cell(`${id}_title`, `<b>${title}</b><br><span style="font-size:10px;color:#64748B">${subtitle}</span>`, `text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=${accent};fontSize=15;`, x + 54, y + 7, width - 64, 44),
+    cell(id, '', `rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accent};strokeWidth=1.5;shadow=0;`, x, y, width, height),
+    cell(`${id}_number`, String(number), `ellipse;whiteSpace=wrap;html=1;fillColor=${accent};strokeColor=${accent};fontColor=#FFFFFF;fontStyle=1;fontSize=13;align=center;verticalAlign=middle;`, x + 12, y + 14, 30, 30),
+    cell(`${id}_title`, `<b>${title}</b><br><span style="font-size:9.5px;color:#64748B">${subtitle}</span>`, `text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=${accent};fontSize=13.5;spacingLeft=2;spacingRight=4;`, x + 48, y + 8, width - 56, 54),
   ].join('\n');
 
 const card = (
@@ -84,8 +84,8 @@ const card = (
   accent: string,
   fill = '#FFFFFF',
 ): string => {
-  const html = `<table style="width:100%;height:100%;border-collapse:collapse"><tr><td style="width:42px;text-align:center;vertical-align:middle"><img src="${icon}" width="30" height="30"/></td><td style="text-align:left;vertical-align:middle"><b style="font-size:12px;color:#0F172A">${title}</b><br/><span style="font-size:10px;color:#475569">${subtitle}</span></td></tr></table>`;
-  return cell(id, html, `rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accent};strokeWidth=1.1;align=center;verticalAlign=middle;spacing=4;`, x, y, width, height);
+  const html = `<table style="width:100%;height:100%;border-collapse:collapse"><tr><td style="width:40px;text-align:center;vertical-align:middle;padding-right:4px"><img src="${icon}" width="28" height="28"/></td><td style="text-align:left;vertical-align:middle;line-height:1.25"><b style="font-size:11.5px;color:#0F172A">${title}</b><br/><span style="font-size:9.5px;color:#475569">${subtitle}</span></td></tr></table>`;
+  return cell(id, html, `rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accent};strokeWidth=1.1;align=center;verticalAlign=middle;spacing=6;`, x, y, width, height);
 };
 
 const edge = (
@@ -99,15 +99,23 @@ const edge = (
   entryX = 0,
   entryY = 0.5,
   points: Array<[number, number]> = [],
+  labelOffset: { x?: number; y?: number } = {},
 ): string => {
   const cfg =
     kind === 'request'
       ? { stroke: '#2563EB', dashed: 0, pattern: '6 4', arrow: 'block', width: 2 }
       : kind === 'response'
         ? { stroke: '#64748B', dashed: 1, pattern: '6 4', arrow: 'block', width: 1.7 }
-        : { stroke: '#188038', dashed: 1, pattern: '2 4', arrow: 'open', width: 1.6 };
+        : { stroke: '#188038', dashed: 1, pattern: '3 4', arrow: 'open', width: 1.6 };
   const pts = points.length ? `<Array as="points">${points.map(([x, y]) => `<mxPoint x="${x}" y="${y}"/>`).join('')}</Array>` : '';
-  return `<mxCell id="${id}" value="${esc(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${cfg.stroke};strokeWidth=${cfg.width};dashed=${cfg.dashed};dashPattern=${cfg.pattern};endArrow=${cfg.arrow};endFill=${cfg.arrow === 'block' ? 1 : 0};fontColor=#334155;fontSize=10;labelBackgroundColor=#FFFFFF;labelBorderColor=none;exitX=${exitX};exitY=${exitY};exitDx=0;exitDy=0;entryX=${entryX};entryY=${entryY};entryDx=0;entryDy=0;" edge="1" parent="1" source="${source}" target="${target}"><mxGeometry relative="1" as="geometry">${pts}</mxGeometry></mxCell>`;
+  const geomAttrs = [
+    labelOffset.x !== undefined ? `x="${labelOffset.x}"` : '',
+    labelOffset.y !== undefined ? `y="${labelOffset.y}"` : '',
+    'relative="1"',
+    'as="geometry"',
+  ].filter(Boolean).join(' ');
+  const offsetXml = labelOffset.y !== undefined ? `<mxPoint as="offset"/>` : '';
+  return `<mxCell id="${id}" value="${esc(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${cfg.stroke};strokeWidth=${cfg.width};dashed=${cfg.dashed};dashPattern=${cfg.pattern};endArrow=${cfg.arrow};endFill=${cfg.arrow === 'block' ? 1 : 0};fontColor=#334155;fontSize=9.5;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=none;exitX=${exitX};exitY=${exitY};exitDx=0;exitDy=0;entryX=${entryX};entryY=${entryY};entryDx=0;entryDy=0;" edge="1" parent="1" source="${source}" target="${target}"><mxGeometry ${geomAttrs}>${pts}${offsetXml}</mxGeometry></mxCell>`;
 };
 
 export function buildMcpContextGatewayXml(): string {
@@ -115,93 +123,94 @@ export function buildMcpContextGatewayXml(): string {
     '<mxCell id="0"/>',
     '<mxCell id="1" parent="0"/>',
 
-    lane('hosts', 1, 'AI HOSTS & AGENTS', 'MCP clients live in the host/agent runtime', 20, 20, 225, 685, '#6D28D9', '#FAF5FF'),
-    lane('client', 2, 'MCP CLIENT LAYER', 'Discovery, request construction, normalization', 265, 20, 225, 685, '#1A73E8', '#EFF6FF'),
-    lane('gateway', 3, 'ENTERPRISE MCP GATEWAY', 'Central policy, authentication, routing & audit', 510, 20, 430, 685, '#1669C1', '#F8FBFF'),
-    lane('servers', 4, 'REMOTE MCP SERVERS', 'Google-managed or enterprise-hosted endpoints', 960, 20, 265, 685, '#7E57C2', '#FAF5FF'),
-    lane('tools', 5, 'ENTERPRISE TOOLS & DATA', 'Systems reached through MCP tools/resources', 1245, 20, 315, 685, '#1A73E8', '#F8FBFF'),
+    // 5 Primary Architecture Lanes (generous 40px inter-lane gutters for clean edge labels)
+    lane('hosts', 1, 'AI HOSTS & AGENTS', 'Host & agent runtimes embedding MCP clients', 20, 20, 236, 720, '#6D28D9', '#FAF5FF'),
+    lane('client', 2, 'MCP CLIENT LAYER', 'Discovery, request framing & normalization', 296, 20, 236, 720, '#1A73E8', '#EFF6FF'),
+    lane('gateway', 3, 'ENTERPRISE MCP GATEWAY', 'Central policy, auth, routing & audit plane', 574, 20, 456, 720, '#1669C1', '#F8FBFF'),
+    lane('servers', 4, 'REMOTE MCP SERVERS', 'Google-managed & Cloud Run MCP endpoints', 1072, 20, 276, 720, '#7E57C2', '#FAF5FF'),
+    lane('tools', 5, 'ENTERPRISE TOOLS & DATA', 'Downstream systems exposed via MCP tools', 1390, 20, 310, 720, '#1A73E8', '#F8FBFF'),
 
-    // Hosts
-    card('host_gemini', 'Gemini Enterprise / Gemini App', 'Enterprise AI experience hosting MCP-capable clients where supported', ICON.gemini, 38, 85, 190, 86, '#6D28D9'),
-    card('host_agent_engine', 'Vertex AI Agent Engine', 'Managed production agent runtime', ICON.agent, 38, 188, 190, 82, '#6D28D9'),
-    card('host_adk', 'ADK / Custom Agents', 'Agent Development Kit or custom host', ICON.agent, 38, 287, 190, 82, '#6D28D9'),
-    card('host_ide', 'IDE / Developer Assistants', 'Developer tools with remote MCP client support', ICON.code, 38, 386, 190, 82, '#6D28D9'),
-    card('host_apps', 'Enterprise Applications', 'Business apps embedding MCP-enabled agents', ICON.app, 38, 485, 190, 82, '#6D28D9'),
+    // Lane 1: Hosts (5 evenly spaced cards filling y=96..686)
+    card('host_gemini', 'Gemini Enterprise / App', 'Enterprise AI host with MCP client support', ICON.gemini, 36, 96, 204, 102, '#6D28D9'),
+    card('host_agent_engine', 'Vertex AI Agent Engine', 'Managed production agent runtime', ICON.agent, 36, 218, 204, 102, '#6D28D9'),
+    card('host_adk', 'ADK / Custom Agents', 'Agent Development Kit & custom hosts', ICON.agent, 36, 340, 204, 102, '#6D28D9'),
+    card('host_ide', 'IDE / Dev Assistants', 'Developer tools with remote MCP clients', ICON.code, 36, 462, 204, 102, '#6D28D9'),
+    card('host_apps', 'Enterprise Applications', 'Business apps embedding MCP agents', ICON.app, 36, 584, 204, 102, '#6D28D9'),
 
-    // Client
-    card('client_discovery', 'Tool Discovery & Registry', 'list_tools / capabilities and endpoint configuration', ICON.search, 283, 85, 190, 82, '#1A73E8'),
-    card('client_cache', 'Capability Cache & Metadata', 'Client-side capability metadata; do not centralize conversational state here', ICON.cache, 283, 184, 190, 82, '#1A73E8'),
-    card('client_builder', 'MCP / JSON-RPC Request Builder', 'Streamable HTTP request construction and transport handling', ICON.code, 283, 283, 190, 90, '#1A73E8'),
-    card('client_normalize', 'Response Normalization', 'Normalize tool results/errors into the host runtime', ICON.normalize, 283, 390, 190, 82, '#1A73E8'),
-    card('client_context', 'Client-Owned Session Context', 'Conversation/session context remains with the host/client by default', ICON.session, 283, 489, 190, 90, '#1A73E8'),
+    // Lane 2: Client (5 evenly spaced cards filling y=96..686)
+    card('client_discovery', 'Tool Discovery & Registry', 'list_tools capabilities & endpoint config', ICON.search, 312, 96, 204, 102, '#1A73E8'),
+    card('client_cache', 'Capability Cache', 'Client-side schema cache (no shared state)', ICON.cache, 312, 218, 204, 102, '#1A73E8'),
+    card('client_builder', 'MCP JSON-RPC Builder', 'Streamable HTTP transport & framing', ICON.code, 312, 340, 204, 102, '#1A73E8'),
+    card('client_normalize', 'Response Normalization', 'Normalizes tool results & errors for host', ICON.normalize, 312, 462, 204, 102, '#1A73E8'),
+    card('client_context', 'Client Session Context', 'Conversation state stays with host/client', ICON.session, 312, 584, 204, 102, '#1A73E8'),
 
-    // Gateway front door
-    card('gateway_ingress', 'Cloud Run Gateway Service / Optional Enterprise API Front Door', 'Authenticated HTTPS entry; preserve MCP Streamable HTTP semantics', ICON.run, 530, 80, 390, 76, '#1669C1', '#FFFFFF'),
-    card('gateway_auth', 'OAuth / OIDC Authentication', 'Validate client identity and token audience; use supported MCP authorization patterns', ICON.auth, 530, 172, 185, 82, '#188038'),
-    card('gateway_identity', 'IAM / Workload Identity Federation', 'Google Cloud IAM and federated workload identity for authorized callers', ICON.auth, 735, 172, 185, 82, '#188038'),
-    card('gateway_policy', 'Policy / Tool Allowlist', 'Authorize server, tool, tenant, environment and action scope', ICON.shield, 530, 270, 185, 82, '#188038'),
-    card('gateway_toolauth', 'Tenant / Tool Authorization', 'Least privilege and resource-level authorization before invocation', ICON.key, 735, 270, 185, 82, '#188038'),
-    card('gateway_quota', 'Rate Limits / Quotas / Backpressure', 'Protect endpoints; handle retries, timeouts and overload deliberately', ICON.monitor, 530, 368, 185, 82, '#188038'),
-    card('gateway_armor', 'Model Armor / Content Inspection', 'Optional prompt/tool-call/response protection where supported or explicitly integrated', ICON.shield, 735, 368, 185, 82, '#188038'),
-    card('gateway_route', 'Request Routing & Orchestration', 'Route only to approved remote MCP endpoints; preserve protocol errors', ICON.route, 530, 466, 390, 72, '#1669C1'),
-    card('gateway_audit', 'Protocol / Header Management + Audit', 'Correlation IDs, safe headers, structured logs and audit evidence', ICON.log, 530, 552, 390, 72, '#1669C1'),
+    // Lane 3: Gateway Control Plane (generous heights, zero border-touching text)
+    card('gateway_ingress', 'Cloud Run Gateway / Enterprise API Front Door', 'Authenticated HTTPS ingress preserving Streamable HTTP', ICON.run, 592, 92, 420, 74, '#1669C1', '#FFFFFF'),
+    card('gateway_auth', 'OAuth / OIDC Auth', 'Validate caller identity & token audience', ICON.auth, 592, 180, 202, 90, '#188038'),
+    card('gateway_identity', 'IAM & Workload Identity', 'Federated GCP IAM for authorized callers', ICON.auth, 810, 180, 202, 90, '#188038'),
+    card('gateway_policy', 'Policy / Tool Allowlist', 'Authorize server, tool, tenant & action scope', ICON.shield, 592, 284, 202, 90, '#188038'),
+    card('gateway_toolauth', 'Tenant / Tool AuthZ', 'Least-privilege resource checks pre-call', ICON.key, 810, 284, 202, 90, '#188038'),
+    card('gateway_quota', 'Rate Limits & Quotas', 'Backpressure, retries & timeout guards', ICON.monitor, 592, 388, 202, 90, '#188038'),
+    card('gateway_armor', 'Model Armor Inspection', 'Optional prompt & tool payload protection', ICON.shield, 810, 388, 202, 90, '#188038'),
+    card('gateway_route', 'Request Routing & Orchestration', 'Route only to approved remote MCP endpoints; preserve protocol errors', ICON.route, 592, 496, 420, 74, '#1669C1'),
+    card('gateway_audit', 'Protocol Headers & Structured Audit', 'Correlation IDs, safe headers, structured logs & audit evidence', ICON.log, 592, 580, 420, 74, '#1669C1'),
+    cell('transport_note', '<b>STATELESS, STREAMABLE HTTP REQUEST / RESPONSE</b><br><span style="font-size:9.5px;color:#475569">Gateway nodes remain stateless and never act as a server-side memory store.</span>', 'rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.4;dashed=1;dashPattern=4 4;fontColor=#1D4ED8;fontSize=10.5;align=center;verticalAlign=middle;', 592, 666, 420, 56),
 
-    // Servers
-    card('srv_google', 'Google / Google Cloud Remote MCP', 'Managed MCP endpoints where available', ICON.cloud, 978, 82, 228, 74, '#7E57C2'),
-    card('srv_db', 'Database MCP Server', 'Enterprise-controlled data access facade', ICON.db, 978, 170, 228, 74, '#7E57C2'),
-    card('srv_devops', 'GitHub / DevOps MCP Server', 'Repository, CI/CD and issue/tool access', ICON.github, 978, 258, 228, 74, '#7E57C2'),
-    card('srv_saas', 'Enterprise SaaS MCP Servers', 'Salesforce, ServiceNow, SAP or approved SaaS endpoints', ICON.building, 978, 346, 228, 84, '#7E57C2'),
-    card('srv_custom', 'Custom MCP Servers on Cloud Run', 'Authenticated remote MCP services using HTTP/Streamable HTTP', ICON.run, 978, 444, 228, 84, '#7E57C2'),
-    card('srv_other', 'Other Approved MCP Endpoints', 'Regional/global endpoints registered through enterprise governance', ICON.route, 978, 542, 228, 74, '#7E57C2'),
+    // Lane 4: Remote MCP Servers (6 rows y=96..692 aligned 1:1 with Tools)
+    card('srv_google', 'Google Cloud Remote MCP', 'Managed Google MCP endpoints where available', ICON.cloud, 1088, 96, 244, 86, '#7E57C2'),
+    card('srv_db', 'Database MCP Server', 'Enterprise-controlled SQL & analytics facade', ICON.db, 1088, 198, 244, 86, '#7E57C2'),
+    card('srv_devops', 'GitHub / DevOps MCP', 'Repository, CI/CD & issue tool access', ICON.github, 1088, 300, 244, 86, '#7E57C2'),
+    card('srv_saas', 'Enterprise SaaS MCPs', 'Salesforce, ServiceNow & SAP endpoints', ICON.building, 1088, 402, 244, 86, '#7E57C2'),
+    card('srv_custom', 'Custom MCP on Cloud Run', 'Authenticated Streamable HTTP MCP services', ICON.run, 1088, 504, 244, 86, '#7E57C2'),
+    card('srv_other', 'Approved Partner MCPs', 'Governed regional & third-party endpoints', ICON.route, 1088, 606, 244, 86, '#7E57C2'),
 
-    // Tools/data
-    card('tool_bq', 'BigQuery / Analytics', 'Governed analytical queries and metadata', ICON.cloud, 1263, 82, 280, 68, '#1A73E8'),
-    card('tool_db', 'AlloyDB / Cloud SQL / Databases', 'Transactional and relational tools through least-privilege interfaces', ICON.db, 1263, 163, 280, 74, '#1A73E8'),
-    card('tool_storage', 'Cloud Storage / Content Repositories', 'Objects, documents and governed enterprise content', ICON.cloud, 1263, 250, 280, 74, '#1A73E8'),
-    card('tool_github', 'GitHub / DevOps Platforms', 'Code, pull requests, issues and pipelines', ICON.github, 1263, 337, 280, 74, '#1A73E8'),
-    card('tool_saas', 'Salesforce / ServiceNow / SAP', 'Business systems exposed only through approved tools', ICON.building, 1263, 424, 280, 82, '#1A73E8'),
-    card('tool_gcp', 'Google Cloud APIs & Enterprise Apps', 'Managed APIs and custom internal business capabilities', ICON.cloud, 1263, 519, 280, 82, '#1A73E8'),
+    // Lane 5: Enterprise Tools & Data (aligned 1:1 horizontally with Lane 4 rows!)
+    card('tool_bq', 'BigQuery / Analytics', 'Governed analytical queries & metadata', ICON.cloud, 1406, 96, 278, 86, '#1A73E8'),
+    card('tool_db', 'AlloyDB / Cloud SQL', 'Transactional relational tools via least privilege', ICON.db, 1406, 198, 278, 86, '#1A73E8'),
+    card('tool_github', 'GitHub / DevOps Platforms', 'Code, pull requests, issues & pipelines', ICON.github, 1406, 300, 278, 86, '#1A73E8'),
+    card('tool_saas', 'Salesforce / ServiceNow / SAP', 'Business systems behind approved tools', ICON.building, 1406, 402, 278, 86, '#1A73E8'),
+    card('tool_gcp', 'Google Cloud APIs & Apps', 'Managed APIs & internal enterprise services', ICON.cloud, 1406, 504, 278, 86, '#1A73E8'),
+    card('tool_storage', 'Cloud Storage & Content', 'Objects, documents & governed knowledge', ICON.cloud, 1406, 606, 278, 86, '#1A73E8'),
 
-    // Stateless transport note
-    cell('transport_note', '<b>STATELESS, STREAMABLE HTTP REQUEST / RESPONSE</b><br><span style="font-size:9.5px;color:#475569">Gateway nodes should not become a server-side memory store.</span>', 'rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.4;dashed=1;dashPattern=4 4;fontColor=#1D4ED8;fontSize=11;align=center;verticalAlign=middle;', 530, 634, 390, 56),
+    // Cross-Cutting Governance Band (y=776..972, leaving clean 36px bus corridor y=740..776)
+    lane('governance', 0, 'CROSS-CUTTING GOVERNANCE & OPERATIONS', 'Applied continuously across hosts, clients, gateway, servers & downstream tools', 20, 776, 1680, 196, '#188038', '#F0FDF4'),
+    card('gov_iam', 'IAM & Least Privilege', 'Caller, server & resource authorization', ICON.auth, 38, 848, 222, 104, '#188038'),
+    card('gov_armor', 'Model Armor / Safety', 'Prompt & tool-payload sanitization', ICON.shield, 274, 848, 222, 104, '#188038'),
+    card('gov_secret', 'Secret Manager / KMS', 'Credentials kept out of prompts & logs', ICON.key, 510, 848, 222, 104, '#188038'),
+    card('gov_logging', 'Cloud Logging & Audit', 'Policy decisions & correlation traces', ICON.log, 746, 848, 222, 104, '#188038'),
+    card('gov_monitor', 'Cloud Monitoring', 'Latency, error & saturation alerts', ICON.monitor, 982, 848, 222, 104, '#188038'),
+    card('gov_policy', 'Org Policy Guardrails', 'Approved projects, regions & VPC-SC', ICON.shield, 1218, 848, 222, 104, '#188038'),
+    card('gov_resilience', 'Retries & Circuit Breakers', 'Bounded retries & timeout budgets', ICON.monitor, 1454, 848, 228, 104, '#188038'),
 
-    // Governance band
-    lane('governance', 0, 'CROSS-CUTTING GOVERNANCE & OPERATIONS', 'Apply across hosts, clients, gateway, servers and downstream tools', 20, 725, 1540, 180, '#188038', '#F0FDF4'),
-    card('gov_iam', 'IAM & Least Privilege', 'Caller, server and downstream resource authorization', ICON.auth, 45, 790, 205, 86, '#188038'),
-    card('gov_armor', 'Model Armor / Safety', 'Supported MCP sanitization or explicit custom integration', ICON.shield, 265, 790, 205, 86, '#188038'),
-    card('gov_secret', 'Secret Manager / KMS', 'Credential and secret material stays out of prompts and logs', ICON.key, 485, 790, 205, 86, '#188038'),
-    card('gov_logging', 'Cloud Logging & Audit', 'Invocation, policy decision, tool result status and correlation', ICON.log, 705, 790, 205, 86, '#188038'),
-    card('gov_monitor', 'Cloud Monitoring & Alerting', 'Latency, errors, availability, saturation and abuse signals', ICON.monitor, 925, 790, 205, 86, '#188038'),
-    card('gov_policy', 'Organization Policy / Guardrails', 'Approved endpoints, projects, regions and data-boundary controls', ICON.shield, 1145, 790, 185, 86, '#188038'),
-    card('gov_resilience', 'Retries / Timeouts / Circuit Breakers', 'Bounded retries and resilient failure handling', ICON.monitor, 1345, 790, 190, 86, '#188038'),
+    // Primary Request Path (clean staggered gutter routing, zero label overlap)
+    edge('e_host_client', 'host_agent_engine', 'client_discovery', 'MCP client', 'request', 1, 0.35, 0, 0.5, [[274, 254], [274, 147]]),
+    edge('e_client_gateway', 'client_builder', 'gateway_ingress', 'Streamable HTTP', 'request', 1, 0.35, 0, 0.4, [[548, 376], [548, 122]], { x: -0.15 }),
+    edge('e_gateway_server', 'gateway_route', 'srv_custom', 'Approved Tool', 'request', 1, 0.38, 0, 0.23, [], { y: -12 }),
+    edge('e_server_tool', 'srv_custom', 'tool_gcp', 'Backend API', 'request', 1, 0.30, 0, 0.30, [], { y: -12 }),
 
-    // Main request path
-    edge('e_host_client', 'host_agent_engine', 'client_discovery', 'MCP client', 'request'),
-    edge('e_client_gateway', 'client_builder', 'gateway_ingress', 'Streamable HTTP', 'request'),
-    edge('e_gateway_server', 'gateway_route', 'srv_custom', 'Approved Tool', 'request'),
-    edge('e_server_tool', 'srv_custom', 'tool_gcp', 'Backend API', 'request'),
+    // Response Path (cleanly separated from request lines)
+    edge('e_tool_server_resp', 'tool_gcp', 'srv_custom', 'Tool Result', 'response', 0, 0.72, 1, 0.72, [], { y: 12 }),
+    edge('e_server_gateway_resp', 'srv_custom', 'gateway_route', 'MCP Result', 'response', 0, 0.62, 1, 0.82, [], { y: 12 }),
+    edge('e_gateway_client_resp', 'gateway_ingress', 'client_normalize', 'MCP response', 'response', 0, 0.80, 1, 0.5, [[558, 151], [558, 513]], { x: 0.25 }),
+    edge('e_client_host_resp', 'client_normalize', 'host_agent_engine', 'Normalized result', 'response', 0, 0.5, 1, 0.75, [[278, 513], [278, 295]]),
 
-    // Responses
-    edge('e_tool_server_resp', 'tool_gcp', 'srv_custom', 'Tool Result', 'response', 0, 0.7, 1, 0.7),
-    edge('e_server_gateway_resp', 'srv_custom', 'gateway_route', 'MCP Result', 'response', 0, 0.72, 1, 0.72),
-    edge('e_gateway_client_resp', 'gateway_ingress', 'client_normalize', 'MCP response', 'response', 0, 0.72, 1, 0.72),
-    edge('e_client_host_resp', 'client_normalize', 'host_agent_engine', 'Normalized result', 'response', 0, 0.72, 1, 0.72),
-
-    // Additional mapped server/tool examples
+    // Direct 1:1 horizontal server-to-tool mappings (zero crossings)
+    edge('e_srv_google_tool', 'srv_google', 'tool_bq', '', 'request'),
     edge('e_srv_db_tool', 'srv_db', 'tool_db', '', 'request'),
     edge('e_srv_devops_tool', 'srv_devops', 'tool_github', '', 'request'),
     edge('e_srv_saas_tool', 'srv_saas', 'tool_saas', '', 'request'),
-    edge('e_srv_google_tool', 'srv_google', 'tool_bq', '', 'request'),
+    edge('e_srv_other_tool', 'srv_other', 'tool_storage', '', 'request'),
 
-    // Governance overlay - dotted green through major stages
-    edge('e_gov_hosts', 'gov_iam', 'hosts', '', 'governance', 0.5, 0, 0.5, 1, [[148, 714]]),
-    edge('e_gov_gateway', 'gov_policy', 'gateway', '', 'governance', 0.5, 0, 0.5, 1, [[1238, 714], [725, 714]]),
-    edge('e_gov_servers', 'gov_logging', 'servers', '', 'governance', 0.5, 0, 0.5, 1, [[808, 714], [1092, 714]]),
-    edge('e_gov_tools', 'gov_monitor', 'tools', '', 'governance', 0.5, 0, 0.5, 1, [[1028, 714], [1400, 714]]),
+    // Governance overlay — clean vertical arrows from TOP EDGE of governance band straight up into each lane (zero text crossing!)
+    edge('e_gov_hosts', 'governance', 'hosts', '', 'governance', 0.070, 0, 0.5, 1),
+    edge('e_gov_client', 'governance', 'client', '', 'governance', 0.235, 0, 0.5, 1),
+    edge('e_gov_gateway', 'governance', 'gateway', '', 'governance', 0.465, 0, 0.5, 1),
+    edge('e_gov_servers', 'governance', 'servers', '', 'governance', 0.708, 0, 0.5, 1),
+    edge('e_gov_tools', 'governance', 'tools', '', 'governance', 0.908, 0, 0.5, 1),
 
     // Legend
-    cell('legend', '<b>FLOW LEGEND</b>&nbsp;&nbsp;&nbsp; <span style="color:#2563EB">━━▶ MCP request / tool invocation</span>&nbsp;&nbsp;&nbsp; <span style="color:#64748B">- - -▶ MCP response / result</span>&nbsp;&nbsp;&nbsp; <span style="color:#188038">····▷ governance / security / observability</span>', 'rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#334155;fontSize=11;align=center;verticalAlign=middle;', 20, 928, 1540, 48),
+    cell('legend', '<b>FLOW LEGEND</b>&nbsp;&nbsp;&nbsp; <span style="color:#2563EB">━━▶ MCP request / tool invocation</span>&nbsp;&nbsp;&nbsp; <span style="color:#64748B">- - -▶ MCP response / result</span>&nbsp;&nbsp;&nbsp; <span style="color:#188038">····▷ governance / security / observability</span>', 'rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#334155;fontSize=11;align=center;verticalAlign=middle;', 20, 992, 1680, 48),
   ];
 
-  return `<mxfile host="app.diagrams.net" modified="2026-08-20T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device"><diagram id="enterprise_mcp_gateway" name="Enterprise MCP Gateway on Google Cloud"><mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1580" pageHeight="1000" background="#FFFFFF"><root>${cells.join('\n')}</root></mxGraphModel></diagram></mxfile>`;
+  return `<mxfile host="app.diagrams.net" modified="2026-11-23T00:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device"><diagram id="enterprise_mcp_gateway" name="Enterprise MCP Gateway on Google Cloud"><mxGraphModel dx="1740" dy="1060" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1720" pageHeight="1060" background="#FFFFFF"><root>${cells.join('\n')}</root></mxGraphModel></diagram></mxfile>`;
 }

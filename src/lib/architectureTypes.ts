@@ -21,6 +21,7 @@ import {
   getBenchmarkTechnicalArchitectureSpec
 } from './diagramCompiler';
 import { injectUseCaseFlavor } from './diagramCleaner';
+import { normalizeLeafCardVerticalAlignment } from './leafVerticalAlignment';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from './preflightAuditEngine';
 import {
   getExactSixRsMigrationMatrixXml,
@@ -650,7 +651,11 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
       xml = injectUseCaseFlavor(xml, effectiveContext, userPrompt);
       xml = preflightVerifyAndHealXmlAcrossAll6Audits(xml, canonicalMatch.id);
     }
-    return xml ? xml.replace(/&amp;amp;/g, '&amp;').replace(/&amp;quot;/g, '&quot;').replace(/&amp;lt;/g, '&lt;').replace(/&amp;gt;/g, '&gt;') : null;
+    return xml
+      ? normalizeLeafCardVerticalAlignment(
+          xml.replace(/&amp;amp;/g, '&amp;').replace(/&amp;quot;/g, '&quot;').replace(/&amp;lt;/g, '&lt;').replace(/&amp;gt;/g, '&gt;')
+        ).xml
+      : null;
   }
 
   const id = normalizeArchitectureId(archId);
@@ -809,5 +814,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = preflightVerifyAndHealXmlAcrossAll6Audits(xml, id);
   }
 
-  return xml ? xml.replace(/&amp;amp;/g, '&amp;').replace(/&amp;quot;/g, '&quot;').replace(/&amp;lt;/g, '&lt;').replace(/&amp;gt;/g, '&gt;') : null;
+  return xml
+    ? normalizeLeafCardVerticalAlignment(
+        xml.replace(/&amp;amp;/g, '&amp;').replace(/&amp;quot;/g, '&quot;').replace(/&amp;lt;/g, '&lt;').replace(/&amp;gt;/g, '&gt;')
+      ).xml
+    : null;
 }

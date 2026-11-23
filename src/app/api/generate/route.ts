@@ -234,11 +234,13 @@ export async function POST(request: Request) {
           });
         }
 
+        const forceV2Freeform = Boolean(body.forceV2Freeform || body.bypassTemplateClassifier);
         const hasExplicitTemplateKeyword =
+          !forceV2Freeform &&
           /entity relationship diagram|\berd\b|sequence diagram|system context|c4 context|c4 container|data pipeline|zero trust/i.test(promptLower);
 
         if (!hasExplicitTemplateKeyword) {
-          const classification = await classifyIntent(prompt);
+          const classification = forceV2Freeform ? null : await classifyIntent(prompt);
           if (classification) {
             // Only return disambiguation when the classifier actually suggested concrete template alternatives;
             // when selectedType is null and alternativeTypes is empty, proceed directly to V2 freeform graph synthesis!
@@ -324,6 +326,7 @@ export async function POST(request: Request) {
               businessUsecase,
               technicalUsecase,
               graph: v2Result.graph,
+              validationReport: v2Result.validationReport,
               telemetry: v2Result.telemetry
             }, { status: 201 });
           } catch (v2Err) {

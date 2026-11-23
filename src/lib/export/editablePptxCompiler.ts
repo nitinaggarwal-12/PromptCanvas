@@ -12,6 +12,7 @@
 import PptxGenJS from 'pptxgenjs';
 import JSZip from 'jszip';
 import { XMLParser } from 'fast-xml-parser';
+import { normalizeLeafCardVerticalAlignment } from '../leafVerticalAlignment';
 import {
   GOOGLE_CLOUD_DOCUMENTATION_SERIES,
   type CanonicalDocGuide,
@@ -385,7 +386,7 @@ export async function renderInlineSvgToPngDataUrl(
   });
 }
 
-export function parseDrawioXmlForPptx(xmlContent: string): {
+export function parseDrawioXmlForPptx(rawXmlContent: string): {
   cells: ParsedMxCell[];
   minX: number;
   minY: number;
@@ -394,6 +395,7 @@ export function parseDrawioXmlForPptx(xmlContent: string): {
   isDarkDiagram: boolean;
   diagramBgHex: string;
 } {
+  const xmlContent = normalizeLeafCardVerticalAlignment(rawXmlContent || '').xml;
   const cellMap = new Map<string, ParsedMxCell>();
   let detectedBgHex = '';
 
@@ -2782,8 +2784,9 @@ export async function exportDrawioToEditablePptx(
 
     const isContainer =
       parentIds.has(node.id) ||
-      style.verticalAlign === 'top' ||
-      (node.width >= 260 && node.height >= 160 && layout.kind === 'standard');
+      style.container === '1' ||
+      style.swimlane === '1' ||
+      style.verticalAlign === 'top';
 
     if (!isContainer && !isTextCallout) {
       occupiedSlide2Boxes.push({ x: bx, y: by, w: bw, h: bh });

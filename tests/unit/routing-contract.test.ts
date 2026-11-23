@@ -306,6 +306,38 @@ describe('V2 Pipeline & Architecture Routing Contract Tests', () => {
     expect(data.needsDisambiguation).toBe(true);
     expect(data.suggestedTypes).toEqual(['sequence_diagram', 'tech_serverless_gcp']);
   });
+
+  it('(ix) forceV2Freeform=true (used by /prompt-to-diagram) bypasses Intent Router template hijacking and calls runV2Pipeline directly', async () => {
+    const intentClassifierModule = await import('@/lib/router/intentClassifier');
+    const spy = vi.spyOn(intentClassifierModule, 'classifyIntent').mockResolvedValueOnce({
+      selectedType: 'mcp_context_gateway',
+      confidence: 0.96,
+      reasoning: 'Matches MCP gateway preset',
+      assumptions: [],
+      alternativeTypes: [],
+    });
+
+    const request = new Request('http://localhost:3001/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt: 'mcp agentic application on gCP',
+        layoutEngineV2: true,
+        forceV2Freeform: true,
+      }),
+    });
+
+    const res = await POST(request);
+    expect(res.status).toBe(201);
+    expect(spy).not.toHaveBeenCalled();
+    expect(v2PipelineModule.runV2Pipeline).toHaveBeenCalledWith(
+      'mcp agentic application on gCP',
+      expect.any(String)
+    );
+    const data = await res.json();
+    expect(data.validationReport).toBeDefined();
+    expect(data.classifiedType).toBeUndefined();
+  });
 });
 
 export function runRoutingContractTests() {

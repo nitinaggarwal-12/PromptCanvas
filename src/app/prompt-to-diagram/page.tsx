@@ -475,6 +475,7 @@ export default function PurePromptToDiagramPage() {
       const timeoutId = setTimeout(() => controller.abort(), 175_000);
 
       // Fast Structured Graph V2 Create Mode (direct JSON IR -> deterministic layout -> Draw.io XML + DB save)
+      // Strictly independent of preset templates per AGENTS.md (forceV2Freeform: true).
       if (action === 'create' && synthesisEngine === 'v2_fast') {
         const res = await fetch('/api/generate', {
           method: 'POST',
@@ -483,6 +484,7 @@ export default function PurePromptToDiagramPage() {
           body: JSON.stringify({
             prompt: basePrompt,
             layoutEngineV2: true,
+            forceV2Freeform: true,
           }),
         });
         clearTimeout(timeoutId);
@@ -538,8 +540,16 @@ export default function PurePromptToDiagramPage() {
           audit: {
             ...inv,
             maxNestingDepth: inv.groupCount > 0 ? 1 : 0,
-            siblingOverlaps: 0,
-            childContainmentViolations: 0,
+            siblingOverlaps: Array.isArray(data?.validationReport?.errors)
+              ? data.validationReport.errors.filter((e: any) => e?.code === 'OVERLAP_NODE').length
+              : 0,
+            childContainmentViolations: Array.isArray(data?.validationReport?.errors)
+              ? data.validationReport.errors.filter(
+                  (e: any) =>
+                    e?.code === 'TEXT_OVERFLOW_HEIGHT' ||
+                    e?.code === 'HTML_FOSTER_PARENTING_IN_TABLE'
+                ).length
+              : 0,
           },
           modelUsed: data.telemetry?.modelId || 'gemini-2.5-flash',
           latencyMs: data.telemetry?.latencyMs || Date.now() - (startRef.current || Date.now()),
@@ -936,7 +946,9 @@ export default function PurePromptToDiagramPage() {
                     >
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                       {activeResult.mutationMode === 'direct_drawio_xml_update'
-                        ? 'Direct Draw.io Spatial Update'
+                        ? activeResult.action === 'create'
+                          ? 'Structured Graph V2 (ELK + Validator)'
+                          : 'Direct Draw.io Spatial Update'
                         : '4-Stage Research → Image → 1:1 XML'}
                     </span>
                     <span className="font-mono text-[10px] text-slate-500 shrink-0">

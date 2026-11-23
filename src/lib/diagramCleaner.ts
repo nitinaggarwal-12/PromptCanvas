@@ -1,4 +1,6 @@
 import { applyBlueprintSemanticIcons } from './blueprintSemanticIcons';
+import { normalizeLeafCardVerticalAlignment } from './leafVerticalAlignment';
+import { healFosterParentedHtmlInXml } from './htmlTableSanitizer';
 
 /**
  * 🏷️ Injects active Use-Case domain flavor (e.g. Prior Authorization, ITACS Oncology, Claims Engine)
@@ -608,6 +610,12 @@ export function sanitizeDrawioXmlAttributes(xml: string): string {
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
     .replace(/javascript\s*:/gi, 'blocked_script:')
     .replace(/\son[a-zA-Z]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)/gi, '');
+
+  // 4. Strip illegal HTML5 foster-parenting elements directly inside <tr> outside <td>/<th>
+  cleaned = healFosterParentedHtmlInXml(cleaned).xml;
+
+  // 5. Universal Leaf-Card Vertical Centering: prevent tall non-container leaf shapes from pinning text to the top edge
+  cleaned = normalizeLeafCardVerticalAlignment(cleaned).xml;
 
   return cleaned;
 }

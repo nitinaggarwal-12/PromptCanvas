@@ -1,6 +1,8 @@
 import { XMLParser, XMLBuilder } from 'fast-xml-parser';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import { sanitizeDrawioXmlAttributes } from '@/lib/diagramCleaner';
+import { normalizeLeafCardVerticalAlignment } from './leafVerticalAlignment';
+import { healFosterParentedHtmlInXml } from './htmlTableSanitizer';
 import { buildCompleteWellArchitectedGcpDrMasterXml } from './masterBuilders/master_builder';
 import { getDefaultXmlForArchitecture } from './architectureTypes';
 
@@ -216,12 +218,22 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
 
   if (isMasterOrStructured) {
     const safeXml = workingXml.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
+    const fosterHealed = healFosterParentedHtmlInXml(safeXml);
+    const aligned = normalizeLeafCardVerticalAlignment(fosterHealed.xml);
+    const healedFlag = isHealed || fosterHealed.healedCount > 0 || aligned.normalizedCount > 0;
+    const extraLog: string[] = [];
+    if (fosterHealed.healedCount > 0) {
+      extraLog.push(`Removed foster-parented HTML inside <tr> on ${fosterHealed.healedCount} cell(s).`);
+    }
+    if (aligned.normalizedCount > 0) {
+      extraLog.push(`Centered vertical alignment on ${aligned.normalizedCount} leaf card(s).`);
+    }
     return {
       isValid: true,
-      isHealed,
-      xml: safeXml,
-      healingLog: isHealed 
-        ? [...healingLog, 'Protected master/canonical blueprint passed through without geometric mutation.']
+      isHealed: healedFlag,
+      xml: aligned.xml,
+      healingLog: healedFlag
+        ? [...healingLog, ...extraLog, 'Protected master/canonical blueprint passed through without geometric mutation.']
         : ['Protected master/canonical blueprint passed through without geometric mutation.']
     };
   }

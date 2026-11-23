@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
+import { healFosterParentedHtmlInXml } from '@/lib/htmlTableSanitizer';
 import { getDefaultXmlForArchitecture, getTemplateTitle } from '@/lib/architectureTypes';
 import { getArchitectureMeta } from '@/lib/architectureMetadata';
 import { SupportedLanguage, translateDiagramXmlToLanguage } from '@/lib/i18n';
@@ -90,7 +91,7 @@ export default function DiagramViewer({
       rawStr = String(xml);
     }
     if (isPromptToDiagramFreeform) {
-      return rawStr;
+      return healFosterParentedHtmlInXml(rawStr).xml;
     }
     if (!rawStr.includes('vertex="1"') && rawStr.includes('data-blank-canvas="true"')) {
       return rawStr;

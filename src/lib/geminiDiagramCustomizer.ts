@@ -1,10 +1,9 @@
 import { GoogleGenAI } from '@google/genai';
-import { validateAndHealDrawioXml } from './xmlHealer';
-import { preflightVerifyAndHealXmlAcrossAll6Audits } from './preflightAuditEngine';
 import { injectUseCaseFlavor } from './diagramCleaner';
 import { GEMINI_MODEL_ID, getEffectiveGeminiApiKey, resolveLatestGeminiModelChain } from './geminiConfig';
 import { generateContentWithRetry } from './geminiRetryHelper';
 import { toUserFacingMessage } from './ai/modelErrors';
+import { healFosterParentedHtmlInXml, normalizeModernGcpCopy } from './htmlTableSanitizer';
 
 export interface CustomizationResult {
   xml: string;
@@ -25,20 +24,84 @@ function getAiClient(customKey?: string): GoogleGenAI {
   return new GoogleGenAI({ apiKey });
 }
 
-interface ParsedNodeContext {
+export type CustomizerNodeRole = 'card' | 'lane_header' | 'note' | 'edge_label' | 'label';
+
+export interface ParsedNodeContext {
   id: string;
+  role: CustomizerNodeRole;
   currentTitle: string;
   currentSubtitle: string;
   currentBadge: string;
   logoUrl: string;
   isCard: boolean;
+  hasBadgeSlot: boolean;
+  allowBullets: boolean;
+  width: number;
+  height: number;
+  maxTitleChars: number;
+  maxSubtitleChars: number;
 }
 
-function parseNodeValue(id: string, rawVal: string): ParsedNodeContext {
+function clampAtWordBoundary(text: string, maxChars: number): string {
+  const clean = (text || '').replace(/\s+/g, ' ').trim();
+  if (!clean || clean.length <= maxChars) return clean;
+  const sliced = clean.slice(0, Math.max(12, maxChars));
+  const lastSpace = sliced.lastIndexOf(' ');
+  const candidate = lastSpace > Math.floor(maxChars * 0.55) ? sliced.slice(0, lastSpace) : sliced;
+  return candidate
+    .replace(/[,;:\-–—/(&\s]+$/, '')
+    .replace(/\s+(?:and|or|&|for|of|with|to|in|on|via)$/i, '')
+    .replace(/[,;:\-–—/(&\s]+$/, '')
+    .trim();
+}
+
+function sanitizeSubtitleForBox(
+  rawSubtitle: string,
+  meta: ParsedNodeContext
+): string {
+  if (!rawSubtitle) return '';
+  let text = normalizeModernGcpCopy(rawSubtitle);
+
+  if (!meta.allowBullets) {
+    // Flatten LLM bullet lists (`• A<br/>• B`) into concise inline prose so compact cards never overflow.
+    const parts = text
+      .split(/<br\s*\/?>|\r?\n/gi)
+      .map((p) => p.replace(/^[\s•·\-–—*]+/, '').trim())
+      .filter(Boolean);
+    text = parts.join('; ');
+    return clampAtWordBoundary(text, meta.maxSubtitleChars);
+  }
+
+  // When bullets ARE allowed on tall cards, keep at most 2 concise lines within budget.
+  const lines = text
+    .split(/<br\s*\/?>|\r?\n/gi)
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .slice(0, 2);
+  const perLineMax = Math.max(24, Math.floor(meta.maxSubtitleChars / Math.max(1, lines.length)));
+  return lines.map((l) => clampAtWordBoundary(l, perLineMax)).join('<br/>');
+}
+
+function parseCellMetadata(
+  id: string,
+  rawVal: string,
+  cellAttrs: string,
+  geomTag: string
+): ParsedNodeContext | null {
+  const isEdge = /\bedge="1"/i.test(cellAttrs);
+  const styleMatch = cellAttrs.match(/\bstyle="([^"]*)"/i);
+  const style = styleMatch ? styleMatch[1] : '';
+
+  const widthMatch = geomTag.match(/\bwidth="([0-9.]+)"/i);
+  const heightMatch = geomTag.match(/\bheight="([0-9.]+)"/i);
+  const width = widthMatch ? Number(widthMatch[1]) : 200;
+  const height = heightMatch ? Number(heightMatch[1]) : 80;
+
   let currentTitle = '';
   let currentSubtitle = '';
   let currentBadge = '';
-  let logoUrl = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='5' fill='%234285F4'/><circle cx='12' cy='12' r='5' fill='%23ffffff'/></svg>";
+  let logoUrl =
+    "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='5' fill='%234285F4'/><circle cx='12' cy='12' r='5' fill='%23ffffff'/></svg>";
   let isCard = false;
 
   const unescaped = (rawVal || '')
@@ -48,42 +111,340 @@ function parseNodeValue(id: string, rawVal: string): ParsedNodeContext {
     .replace(/&gt;/g, '>')
     .replace(/&amp;/g, '&');
 
+  const plainText = unescaped.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!plainText) return null;
+
+  // Skip structural/ornamental cells that should never be rewritten by Gemini
   if (
+    id === '0' ||
+    id === '1' ||
+    id === 'legend' ||
+    id.startsWith('frame_') ||
+    id.endsWith('_number') ||
+    (id.startsWith('col_') && id.endsWith('_bg')) ||
+    /^\d{1,2}$/.test(plainText)
+  ) {
+    return null;
+  }
+
+  const hasExistingBadge =
+    /<span\b[^>]*border-radius:/i.test(unescaped) ||
+    /<span\b[^>]*background:/i.test(unescaped);
+  const hasIcon = /<img\b|<svg\b/i.test(unescaped);
+  const hasExistingBullets = /(?:•|&#8226;|&bull;)/.test(unescaped);
+
+  let role: CustomizerNodeRole = 'label';
+  if (isEdge) {
+    role = 'edge_label';
+    currentTitle = plainText;
+  } else if (
     unescaped.includes('<table') ||
-    unescaped.includes('&lt;table') ||
     unescaped.includes('<svg') ||
     unescaped.includes('font-weight:700') ||
     unescaped.includes('font-size:11.5px') ||
     unescaped.includes('font-size:11px')
   ) {
     isCard = true;
+    role = 'card';
     const logoMatch = unescaped.match(/src=["']([^"']+)["']/i);
     if (logoMatch) logoUrl = logoMatch[1];
 
     const titleMatch =
-      unescaped.match(/<b[^>]*>(.*?)<\/b>/i) ||
-      unescaped.match(/<div[^>]*font-weight:\s*700[^>]*>(.*?)<\/div>/i) ||
-      unescaped.match(/<div[^>]*font-size:\s*(?:1[1-4]|2[0-9])px[^>]*>(.*?)<\/div>/i);
+      unescaped.match(/<b[^>]*>([\s\S]*?)<\/b>/i) ||
+      unescaped.match(/<div[^>]*font-weight:\s*700[^>]*>([\s\S]*?)<\/div>/i) ||
+      unescaped.match(/<div[^>]*font-size:\s*(?:1[1-4]|2[0-9])px[^>]*>([\s\S]*?)<\/div>/i);
     if (titleMatch) currentTitle = titleMatch[1].replace(/<[^>]+>/g, '').trim();
 
-    const badgeMatch = unescaped.match(/<span[^>]*style="[^"]*background:[^"]*"[^>]*>(.*?)<\/span>/i);
+    const badgeMatch = unescaped.match(/<span[^>]*style="[^"]*(?:border-radius|background):[^"]*"[^>]*>([\s\S]*?)<\/span>/i);
     if (badgeMatch) currentBadge = badgeMatch[1].replace(/<[^>]+>/g, '').trim();
 
     const subMatch =
-      unescaped.match(/<div[^>]*font-size:\s*8\.5px[^>]*>(.*?)<\/div>/i) ||
-      unescaped.match(/<div[^>]*color:\s*#5F6368[^>]*>(.*?)<\/div>/i) ||
-      unescaped.match(/<span[^>]*color:[^"]*334155[^"]*"[^>]*>(.*?)<\/span>/i) ||
-      unescaped.match(/<br\s*\/?>\s*<span[^>]*>(.*?)<\/span>/i);
+      unescaped.match(/<div[^>]*font-size:\s*8\.5px[^>]*>([\s\S]*?)<\/div>/i) ||
+      unescaped.match(/<div[^>]*color:\s*#5F6368[^>]*>([\s\S]*?)<\/div>/i) ||
+      unescaped.match(/<span[^>]*color:[^"]*(?:334155|475569|5F6368|64748B)[^"]*"[^>]*>([\s\S]*?)<\/span>/i) ||
+      unescaped.match(/<br\s*\/?>\s*<span[^>]*>([\s\S]*?)<\/span>/i);
     if (subMatch) currentSubtitle = subMatch[1].replace(/<br\s*\/?>/gi, ' | ').replace(/<[^>]+>/g, '').trim();
+  } else if (id.endsWith('_title') || (style.includes('text;') && height <= 68)) {
+    role = 'lane_header';
+    const titleMatch = unescaped.match(/<b[^>]*>([\s\S]*?)<\/b>/i);
+    const subMatch = unescaped.match(/<span[^>]*>([\s\S]*?)<\/span>/i);
+    currentTitle = titleMatch ? titleMatch[1].replace(/<[^>]+>/g, '').trim() : plainText;
+    currentSubtitle = subMatch ? subMatch[1].replace(/<[^>]+>/g, '').trim() : '';
+  } else if (id.includes('note') || (style.includes('dashed=1') && height <= 72)) {
+    role = 'note';
+    const titleMatch = unescaped.match(/<b[^>]*>([\s\S]*?)<\/b>/i);
+    const subMatch = unescaped.match(/<span[^>]*>([\s\S]*?)<\/span>/i);
+    currentTitle = titleMatch ? titleMatch[1].replace(/<[^>]+>/g, '').trim() : plainText;
+    currentSubtitle = subMatch ? subMatch[1].replace(/<[^>]+>/g, '').trim() : '';
   } else {
-    currentTitle = unescaped.replace(/<[^>]+>/g, '').trim();
+    role = 'label';
+    currentTitle = plainText;
   }
 
   if (!currentTitle) {
-    currentTitle = unescaped.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 40);
+    currentTitle = plainText.slice(0, 40);
   }
 
-  return { id, currentTitle, currentSubtitle, currentBadge, logoUrl, isCard };
+  // Compute strict geometry-derived text budgets so customized copy NEVER overflows fixed boxes
+  let maxTitleChars = 36;
+  let maxSubtitleChars = 56;
+  if (role === 'edge_label') {
+    maxTitleChars = 24;
+    maxSubtitleChars = 0;
+  } else if (role === 'lane_header') {
+    const usableW = Math.max(120, width - 8);
+    // Allow 1 full line for wide lanes (up to 72 chars) or 1.4 lines for narrow lanes (up to 32 chars)
+    const singleLineTitleChars = Math.floor(usableW / 7.8);
+    maxTitleChars = width >= 400
+      ? Math.min(72, Math.max(36, singleLineTitleChars))
+      : Math.min(34, Math.max(20, Math.floor(singleLineTitleChars * 1.45)));
+    const subLines = height >= 50 ? 2 : 1.4;
+    maxSubtitleChars = Math.min(96, Math.max(32, Math.floor((usableW / 5.2) * subLines)));
+  } else if (role === 'note') {
+    const usableW = Math.max(200, width - 20);
+    maxTitleChars = Math.min(54, Math.max(24, Math.floor(usableW / 7.2)));
+    maxSubtitleChars = Math.min(82, Math.max(36, Math.floor(usableW / 5.2)));
+  } else if (role === 'card') {
+    const usableW = Math.max(100, width - (hasIcon ? 56 : 18));
+    const titleCharsPerLine = Math.max(14, Math.floor(usableW / 6.9));
+    const subCharsPerLine = Math.max(18, Math.floor(usableW / 5.4));
+    const maxTitleLines = height >= 76 ? 2 : 1;
+    // Reserve ~14px top/bottom padding + title height; remaining vertical space dictates subtitle line budget
+    const titleHeightPx = maxTitleLines === 2 ? 28 : 16;
+    const availSubPx = Math.max(14, height - 18 - titleHeightPx);
+    const maxSubLines = Math.max(1, Math.min(3, Math.floor(availSubPx / 13.5)));
+    maxTitleChars = Math.min(48, Math.max(18, Math.floor(titleCharsPerLine * (maxTitleLines === 2 ? 1.75 : 1))));
+    maxSubtitleChars = Math.min(92, Math.max(28, Math.floor(subCharsPerLine * maxSubLines)));
+  }
+
+  return {
+    id,
+    role,
+    currentTitle,
+    currentSubtitle,
+    currentBadge,
+    logoUrl,
+    isCard,
+    hasBadgeSlot: role === 'card' && hasExistingBadge,
+    allowBullets: role === 'card' && hasExistingBullets && height >= 115,
+    width,
+    height,
+    maxTitleChars,
+    maxSubtitleChars,
+  };
+}
+
+export function extractCustomizableNodes(templateXml: string): ParsedNodeContext[] {
+  const nodes: ParsedNodeContext[] = [];
+  // Match both `<mxCell ...><mxGeometry .../></mxCell>` and self-closing `<mxCell .../>`
+  const cellBlockRe = /<mxCell\b([^>]*?)(?:\/>|>([\s\S]*?)<\/mxCell>)/gi;
+  let m: RegExpExecArray | null;
+  while ((m = cellBlockRe.exec(templateXml)) !== null) {
+    const attrs = m[1] || '';
+    const inner = m[2] || '';
+    const idMatch = attrs.match(/\bid="([^"]+)"/i);
+    const valMatch = attrs.match(/\bvalue="([^"]*)"/i);
+    if (!idMatch || !valMatch || !valMatch[1].trim()) continue;
+    const geomMatch = inner.match(/<mxGeometry\b[^>]*>/i);
+    const parsed = parseCellMetadata(idMatch[1], valMatch[1], attrs, geomMatch ? geomMatch[0] : '');
+    if (parsed) {
+      nodes.push(parsed);
+    }
+  }
+  return nodes;
+}
+
+/**
+ * Pure deterministic applier for structured customization JSON against Draw.io XML.
+ * Guarantees:
+ * - Zero HTML5 foster-parenting injections (`<span>` outside `<td>` inside `<tr>`)
+ * - Zero unsolicited pill badges appended to lane headers, notes, edge labels, or initial-pass cards
+ * - Strict box-geometry-derived title/subtitle length clamping
+ * - Modern GCP product naming (`Gemini Enterprise`, never `Agentspace`; `Quotas`, never `Quotes`)
+ */
+export function applyStructuredCustomizationsToTemplateXml(
+  templateXml: string,
+  data: {
+    headerTitle?: string;
+    headerSubtitle?: string;
+    customizations?: Record<string, { title?: string; subtitle?: string; badge?: string } | string>;
+  },
+  nodesToCustomize: ParsedNodeContext[],
+  options: { isIteration?: boolean } = {}
+): string {
+  const isIteration = Boolean(options.isIteration);
+  let customizedXml = templateXml;
+
+  if (data.headerTitle) {
+    const cleanHdrTitle = normalizeModernGcpCopy(data.headerTitle);
+    customizedXml = customizedXml.replace(
+      /(<mxCell\s+id="hdr_title_[^"]*"\s+value=")[^"]*(")/gi,
+      `$1${escapeXmlText(cleanHdrTitle)}$2`
+    );
+    customizedXml = customizedXml.replace(
+      /(<mxCell\s+id="header_title"\s+value=")([^"]*)(")/i,
+      `$1${escapeXmlText(cleanHdrTitle)}$3`
+    );
+  }
+  if (data.headerSubtitle) {
+    const cleanHdrSub = normalizeModernGcpCopy(data.headerSubtitle);
+    customizedXml = customizedXml.replace(
+      /(<mxCell\s+id="hdr_sub_[^"]*"\s+value=")[^"]*(")/gi,
+      `$1${escapeXmlText(cleanHdrSub)}$2`
+    );
+    customizedXml = customizedXml.replace(
+      /(<mxCell\s+id="header_subtitle"\s+value=")([^"]*)(")/i,
+      `$1${escapeXmlText(cleanHdrSub)}$3`
+    );
+  }
+
+  const nodeMetaById = new Map<string, ParsedNodeContext>();
+  for (const n of nodesToCustomize) {
+    nodeMetaById.set(n.id, n);
+  }
+
+  if (data.customizations && typeof data.customizations === 'object') {
+    for (const [nodeId, custom] of Object.entries<any>(data.customizations)) {
+      if (!custom) continue;
+      const nodeMeta = nodeMetaById.get(nodeId);
+      // Skip cells intentionally excluded from customization (legend, numbered circles, frames)
+      if (!nodeMeta) continue;
+
+      const escapedId = nodeId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const nodeRegex = new RegExp(`(<mxCell\\b[^>]*\\bid="${escapedId}"[^>]*\\bvalue=")([^"]*)(")`, 'i');
+      const match = nodeRegex.exec(customizedXml);
+      if (!match) continue;
+
+      const existingVal = match[2] || '';
+      const rawTitleInput = typeof custom === 'string' ? custom : (custom.title || '');
+      const dedupedTitle = normalizeModernGcpCopy(rawTitleInput).replace(
+        /\b(Agent|Router|Gateway|Pipeline|Engine|Memory|Store|Lakehouse|Service|DB|Output|Worker|Swarm|Platform|Monitoring|Extraction|Orchestrator)\s+\1\b/gi,
+        '$1'
+      );
+      const title = clampAtWordBoundary(dedupedTitle, nodeMeta.maxTitleChars);
+
+      const rawSubInput = typeof custom === 'string' ? '' : (custom.subtitle || '');
+      const subtitle =
+        nodeMeta.role === 'edge_label'
+          ? ''
+          : sanitizeSubtitleForBox(rawSubInput, nodeMeta);
+
+      const rawBadgeInput = typeof custom === 'string' ? '' : (custom.badge || '');
+      const badge = clampAtWordBoundary(normalizeModernGcpCopy(rawBadgeInput), 22);
+
+      // Edge labels are plain short strings only — never inject HTML or badges
+      if (nodeMeta.role === 'edge_label') {
+        if (title) {
+          customizedXml = customizedXml.replace(nodeRegex, `$1${escapeXmlText(title)}$3`);
+        }
+        continue;
+      }
+
+      const isHeaderOrText = !existingVal.includes('&lt;b') && !existingVal.includes('<b');
+      let newVal = existingVal;
+
+      if (title) {
+        if (/(&lt;b(?:[^&]*)?&gt;)(.*?)(&lt;\/b&gt;)/i.test(newVal)) {
+          newVal = newVal.replace(/(&lt;b(?:[^&]*)?&gt;)(.*?)(&lt;\/b&gt;)/i, `$1${escapeXmlText(title)}$3`);
+        } else if (/<b\b[^>]*>(.*?)<\/b>/i.test(newVal)) {
+          newVal = newVal.replace(/(<b\b[^>]*>)(.*?)(<\/b>)/i, `$1${escapeXmlText(title)}$3`);
+        } else if (
+          /(&lt;div[^&]*?(?:font-weight:\s*(?:[6-9]00|bold)|font-size:\s*(?:1[0-9]|2[0-9])(?:\.[0-9]+)?px)[^&]*?&gt;)(.*?)(&lt;\/div&gt;)/i.test(
+            newVal
+          )
+        ) {
+          newVal = newVal.replace(
+            /(&lt;div[^&]*?(?:font-weight:\s*(?:[6-9]00|bold)|font-size:\s*(?:1[0-9]|2[0-9])(?:\.[0-9]+)?px)[^&]*?&gt;)(.*?)(&lt;\/div&gt;)/i,
+            `$1${escapeXmlText(title)}$3`
+          );
+        } else if (
+          /(<div[^>]*?(?:font-weight:\s*(?:[6-9]00|bold)|font-size:\s*(?:1[0-9]|2[0-9])(?:\.[0-9]+)?px)[^>]*?>)(.*?)(<\/div>)/i.test(
+            newVal
+          )
+        ) {
+          newVal = newVal.replace(
+            /(<div[^>]*?(?:font-weight:\s*(?:[6-9]00|bold)|font-size:\s*(?:1[0-9]|2[0-9])(?:\.[0-9]+)?px)[^>]*?>)(.*?)(<\/div>)/i,
+            `$1${escapeXmlText(title)}$3`
+          );
+        } else if (isHeaderOrText) {
+          newVal = escapeXmlText(title);
+        }
+      }
+
+      if (subtitle) {
+        if (/(&lt;span\b[^&]*?color:[^&]*?(?:334155|64748B|5F6368|475569)[^&]*?&gt;)(.*?)(&lt;\/span&gt;)/i.test(newVal)) {
+          newVal = newVal.replace(
+            /(&lt;span\b[^&]*?color:[^&]*?(?:334155|64748B|5F6368|475569)[^&]*?&gt;)(.*?)(&lt;\/span&gt;)/i,
+            `$1${escapeXmlText(subtitle)}$3`
+          );
+        } else if (/<span\b[^>]*?color:[^>]*?(?:334155|64748B|5F6368|475569)[^>]*?>(.*?)<\/span>/i.test(newVal)) {
+          newVal = newVal.replace(
+            /(<span\b[^>]*?color:[^>]*?(?:334155|64748B|5F6368|475569)[^>]*?>)(.*?)(<\/span>)/i,
+            `$1${escapeXmlText(subtitle)}$3`
+          );
+        } else if (
+          /(&lt;div[^&]*?(?:font-size:\s*(?:6|7|8|9|10)(?:\.[0-9]+)?px|color:\s*#(?:5F6368|64748B|475569|137333|0D9488))[^&]*?&gt;)(.*?)(&lt;\/div&gt;)/i.test(
+            newVal
+          )
+        ) {
+          newVal = newVal.replace(
+            /(&lt;div[^&]*?(?:font-size:\s*(?:6|7|8|9|10)(?:\.[0-9]+)?px|color:\s*#(?:5F6368|64748B|475569|137333|0D9488))[^&]*?&gt;)(.*?)(&lt;\/div&gt;)/i,
+            `$1${escapeXmlText(subtitle)}$3`
+          );
+        } else if (
+          /(<div[^>]*?(?:font-size:\s*(?:6|7|8|9|10)(?:\.[0-9]+)?px|color:\s*#(?:5F6368|64748B|475569|137333|0D9488))[^>]*?>)(.*?)(<\/div>)/i.test(
+            newVal
+          )
+        ) {
+          newVal = newVal.replace(
+            /(<div[^>]*?(?:font-size:\s*(?:6|7|8|9|10)(?:\.[0-9]+)?px|color:\s*#(?:5F6368|64748B|475569|137333|0D9488))[^>]*?>)(.*?)(<\/div>)/i,
+            `$1${escapeXmlText(subtitle)}$3`
+          );
+        }
+      }
+
+      // Badge update rules (STRICT — ZERO HTML5 foster parenting, ZERO header suffix bloat):
+      // 1. NEVER attach badges to lane headers, callout notes, edge labels, or generic labels.
+      // 2. If a card ALREADY has a styled badge span (`border-radius:`), replace its inner text in-place.
+      // 3. ONLY during explicit iterative refinements (`isIteration === true`) on a card without a badge slot,
+      //    insert a valid inline badge INSIDE the last `<td>...</td>` (NEVER before `</tr>`!).
+      if (badge && nodeMeta.role === 'card') {
+        if (/(&lt;span\b[^&]*?border-radius:[^&]*?&gt;)(.*?)(&lt;\/span&gt;)/i.test(newVal)) {
+          newVal = newVal.replace(
+            /(&lt;span\b[^&]*?border-radius:[^&]*?&gt;)(.*?)(&lt;\/span&gt;)/i,
+            `$1${escapeXmlText(badge)}$3`
+          );
+        } else if (/<span\b[^>]*?border-radius:[^>]*?>(.*?)<\/span>/i.test(newVal)) {
+          newVal = newVal.replace(
+            /(<span\b[^>]*?border-radius:[^>]*?>)(.*?)(<\/span>)/i,
+            `$1${escapeXmlText(badge)}$3`
+          );
+        } else if (isIteration) {
+          const validInlinePillEsc = `&lt;div style=&quot;margin-top:2px;&quot;&gt;&lt;span style=&quot;font-size:8px;padding:1px 5px;border-radius:4px;background:#E0F2FE;color:#0369A1;font-weight:700;&quot;&gt;${escapeXmlText(badge)}&lt;/span&gt;&lt;/div&gt;`;
+          const validInlinePillRaw = `<div style="margin-top:2px;"><span style="font-size:8px;padding:1px 5px;border-radius:4px;background:#E0F2FE;color:#0369A1;font-weight:700;">${escapeXmlText(badge)}</span></div>`;
+          const lastTdEscIdx = newVal.toLowerCase().lastIndexOf('&lt;/td&gt;');
+          const lastTdRawIdx = newVal.toLowerCase().lastIndexOf('</td>');
+          if (lastTdEscIdx !== -1) {
+            newVal = `${newVal.slice(0, lastTdEscIdx)}${validInlinePillEsc}${newVal.slice(lastTdEscIdx)}`;
+          } else if (lastTdRawIdx !== -1) {
+            newVal = `${newVal.slice(0, lastTdRawIdx)}${validInlinePillRaw}${newVal.slice(lastTdRawIdx)}`;
+          }
+        }
+      }
+
+      if (newVal === existingVal && (title || subtitle || (badge && nodeMeta.hasBadgeSlot))) {
+        newVal = mutateNodeValueStructurally(existingVal, {
+          title,
+          subtitle,
+          badge: nodeMeta.hasBadgeSlot || (isIteration && nodeMeta.role === 'card') ? badge : '',
+        });
+      }
+
+      customizedXml = customizedXml.replace(nodeRegex, `$1${newVal}$3`);
+    }
+  }
+
+  return healFosterParentedHtmlInXml(customizedXml).xml;
 }
 
 export async function customizeDiagramTemplateWithGemini(
@@ -99,10 +460,11 @@ export async function customizeDiagramTemplateWithGemini(
   }
 
   const cleanPrompt = (userPrompt || '').trim();
-  const isTrivialPrompt = !cleanPrompt || 
-    cleanPrompt.length < 5 || 
-    /^nitin\s*\d*$/i.test(cleanPrompt) || 
-    /^canvas\s*\d*$/i.test(cleanPrompt) || 
+  const isTrivialPrompt =
+    !cleanPrompt ||
+    cleanPrompt.length < 5 ||
+    /^nitin\s*\d*$/i.test(cleanPrompt) ||
+    /^canvas\s*\d*$/i.test(cleanPrompt) ||
     /^default$/i.test(cleanPrompt) ||
     cleanPrompt === architectureType ||
     cleanPrompt.startsWith('WBS');
@@ -115,7 +477,7 @@ export async function customizeDiagramTemplateWithGemini(
       technicalUsecase: `Calibrated widescreen 1400x800 zero-collision 2D layout.`,
       isFallback: false,
       modelUsed: null,
-      attribution: 'Canonical Architecture Blueprint (Pristine Reference)'
+      attribution: 'Canonical Architecture Blueprint (Pristine Reference)',
     };
   }
 
@@ -134,57 +496,54 @@ export async function customizeDiagramTemplateWithGemini(
       isFallback: true,
       modelUsed: null,
       attribution: 'Deterministic Template Customizer (injectUseCaseFlavor)',
-      fallbackReason: 'No GEMINI_API_KEY provided in environment or user profile.'
+      fallbackReason: 'No GEMINI_API_KEY provided in environment or user profile.',
     };
   }
 
-  // 1. Extract all node IDs and parse clean structured context from templateXml
-  const nodeMatches = templateXml.matchAll(/<mxCell\s+id="([^"]+)"\s+value="([^"]*)"/gi);
-  const nodesToCustomize: ParsedNodeContext[] = [];
+  // 1. Extract customizable nodes with exact box dimensions & strict text budgets
+  const nodesToCustomize = extractCustomizableNodes(templateXml);
 
-  for (const m of nodeMatches) {
-    const id = m[1];
-    const val = m[2];
-    if (id === '0' || id === '1' || id.startsWith('frame_') || (id.startsWith('col_') && id.endsWith('_bg'))) continue;
-    if (val && val.trim().length > 0) {
-      nodesToCustomize.push(parseNodeValue(id, val));
-    }
-  }
-
-  const isIteration = userPrompt.includes('Specific Refinement Request:') || 
-                      /add|remove|replace|change|improve|modify|accuracy|fix|update|refine|integrate|connect|switch|cache|guard/i.test(userPrompt);
+  const isIteration =
+    userPrompt.includes('Specific Refinement Request:') ||
+    /\b(add|remove|replace|change|improve|modify|accuracy|fix|update|refine|integrate|connect|switch|cache|guard)\b/i.test(
+      userPrompt
+    );
 
   const systemInstruction = `You are a Principal Enterprise Cloud Architect.
-You are updating a Draw.io architecture diagram based on a user prompt.
+You are updating a fixed-geometry Draw.io architecture diagram based on a user prompt.
 
-${isIteration ? `### MODE: ITERATIVE REFINEMENT & ARCHITECTURAL EVOLUTION
+${
+  isIteration
+    ? `### MODE: ITERATIVE REFINEMENT & ARCHITECTURAL EVOLUTION
 The user is requesting an incremental modification or refinement to the existing architecture.
 CRITICAL RULES:
-1. You MUST actively modify, upgrade, or replace components to directly fulfill the user's specific refinement request (e.g. adding Accuracy Verification, Fact Checking Core, Grounding Citations, Redundant Fallbacks, Caching, etc.).
-2. Do NOT simply return the previous nodes unchanged. Directly incorporate the new components and capabilities requested.
-3. For cards that you modify or add, assign high-impact badges such as "Added", "Refined", "Accuracy Engine", "Verification Core", "Enhanced", or "Active Guard".
-4. Update the "headerSubtitle" to reflect the evolution (e.g. "Iteration: Added Chain-of-Verification & Grounding Citation Core").` 
-: `### MODE: INITIAL ENTERPRISE BLUEPRINT CUSTOMIZATION
+1. Actively modify, upgrade, or replace components to directly fulfill the user's specific refinement request.
+2. Only emit a short "badge" (<= 18 chars) on modified "card" nodes; NEVER emit a "badge" on "lane_header", "note", "edge_label", or "label" nodes.
+3. Update "headerSubtitle" to reflect the evolution.`
+    : `### MODE: INITIAL ENTERPRISE BLUEPRINT CUSTOMIZATION
 Customizing an enterprise architecture blueprint for a new domain use case.
 CRITICAL RULES:
-1. Map each provided node ID to authentic, domain-specific architecture titles, subtitles, and badges.
-2. For cards, write clear, realistic enterprise components with concise bullet points in "subtitle" (use "<br/>" for line breaks).`}
+1. Map each provided node ID to authentic, domain-specific architecture titles and concise subtitles strictly within each node's maxTitleChars and maxSubtitleChars limits.
+2. ONLY emit "badge" when the node has "hasBadgeSlot": true. Leave "badge" as "" when "hasBadgeSlot" is false! NEVER add badges to lane_header, note, edge_label, or compact cards.
+3. ONLY use "<br/>" bullet lists when "allowBullets" is true. When "allowBullets" is false, write a single concise phrase (NO bullets, NO "<br/>") so text NEVER overflows the fixed box height!
+4. Use current official GCP product names: "Gemini Enterprise" (NEVER deprecated "Agentspace"), "Vertex AI Agent Engine", "Google ADK", "Cloud Run", "Model Armor", "Quotas" (NEVER "Quotes").`
+}
 
 OUTPUT JSON SCHEMA:
 {
   "reasoning": "string (executive summary of architectural design & changes made)",
-  "summary": "string (one-line review summary of changes made, e.g. 'Configured Cloud Armor WAF & Adaptive Protection')",
-  "targetTier": "string (primary architecture tier affected, e.g. 'Ingress & Security (Tier 1)')",
+  "summary": "string (one-line review summary of changes made)",
+  "targetTier": "string (primary architecture tier affected)",
   "changedComponents": ["string", "string", "string"],
   "businessUsecase": "string (business value & operational impact)",
   "technicalUsecase": "string (technical implementation details & protocols)",
   "headerTitle": "string (clear, professional architecture title)",
-  "headerSubtitle": "string (concise subtitle explaining the architecture and version changes)",
+  "headerSubtitle": "string (concise subtitle explaining the architecture)",
   "customizations": {
     "<node_id>": {
-      "title": "string (enterprise component name, e.g. 'Chain-of-Verification & Grounding Engine')",
-      "subtitle": "string (1-2 concise bullet points using <br/> for line breaks)",
-      "badge": "string (short status/role badge, e.g. 'Verification Core', 'Active Target', 'Ingress')"
+      "title": "string (strictly <= maxTitleChars)",
+      "subtitle": "string (strictly <= maxSubtitleChars; empty string for edge_label; NO <br/> bullets when allowBullets=false)",
+      "badge": "string (ONLY when hasBadgeSlot=true or modified card in iteration mode; otherwise empty string)"
     }
   }
 }`;
@@ -198,7 +557,9 @@ OUTPUT JSON SCHEMA:
     for (const candidateModel of candidateModels) {
       try {
         modelName = candidateModel;
-        console.log(`[Gemini Customizer] Calling ${modelName} with Structured AST for prompt: "${userPrompt.slice(0, 60)}"...`);
+        console.log(
+          `[Gemini Customizer] Calling ${modelName} with Structured AST for prompt: "${userPrompt.slice(0, 60)}"...`
+        );
         response = await generateContentWithRetry(ai, {
           model: candidateModel,
           contents: `### USER ARCHITECTURE PROMPT / REFINEMENT REQUEST:
@@ -207,14 +568,22 @@ OUTPUT JSON SCHEMA:
 ### ARCHITECTURE TYPE:
 "${architectureType}"
 
-### CURRENT NODES IN DIAGRAM TO UPDATE:
-${JSON.stringify(nodesToCustomize.map(n => ({
-  id: n.id,
-  type: n.isCard ? 'Card Node' : 'Header / Label',
-  currentTitle: n.currentTitle,
-  currentSubtitle: n.currentSubtitle,
-  currentBadge: n.currentBadge
-})), null, 2)}`,
+### CURRENT NODES IN DIAGRAM TO UPDATE (OBEY maxTitleChars, maxSubtitleChars, hasBadgeSlot, allowBullets):
+${JSON.stringify(
+  nodesToCustomize.map((n) => ({
+    id: n.id,
+    role: n.role,
+    currentTitle: n.currentTitle,
+    currentSubtitle: n.currentSubtitle,
+    currentBadge: n.currentBadge,
+    hasBadgeSlot: n.hasBadgeSlot,
+    allowBullets: n.allowBullets,
+    maxTitleChars: n.maxTitleChars,
+    maxSubtitleChars: n.maxSubtitleChars,
+  })),
+  null,
+  2
+)}`,
           config: {
             systemInstruction,
             temperature: isIteration ? 0.35 : 0.2,
@@ -236,7 +605,7 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
         .replace(/```/g, '')
         .trim();
       data = JSON.parse(cleanJson);
-    } catch (parseErr) {
+    } catch {
       try {
         const jsonMatch = text.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
@@ -248,112 +617,48 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
       }
     }
 
-    let customizedXml = templateXml;
+    const customizedXml = applyStructuredCustomizationsToTemplateXml(
+      templateXml,
+      data,
+      nodesToCustomize,
+      { isIteration }
+    );
 
-    // 1. Replace Header Title & Subtitle if present
-    if (data.headerTitle) {
-      customizedXml = customizedXml.replace(/(<mxCell\s+id="hdr_title_[^"]*"\s+value=")[^"]*(")/gi, `$1${escapeXmlText(data.headerTitle)}$2`);
-    }
-    if (data.headerSubtitle) {
-      customizedXml = customizedXml.replace(/(<mxCell\s+id="hdr_sub_[^"]*"\s+value=")[^"]*(")/gi, `$1${escapeXmlText(data.headerSubtitle)}$2`);
-    }
-
-    // Map existing node logos for fast lookup
-    const logoMap = new Map<string, string>();
-    for (const node of nodesToCustomize) {
-      logoMap.set(node.id, node.logoUrl);
-    }
-
-    // 2. Replace each node's value while strictly keeping XML geometry and logos
-    if (data.customizations && typeof data.customizations === 'object') {
-      for (const [nodeId, custom] of Object.entries<any>(data.customizations)) {
-        if (!custom) continue;
-        
-        const nodeRegex = new RegExp(`(<mxCell\\s+id="${nodeId}"\\s+value=")([^"]*)(")`, 'i');
-        const match = nodeRegex.exec(customizedXml);
-        if (!match) continue;
-
-        const existingVal = match[2] || '';
-        const rawTitle = custom.title || (typeof custom === 'string' ? custom : '');
-        // 🧹 Deduplicate stuttered category words (e.g., 'Agent Agent' -> 'Agent', 'Router Router' -> 'Router')
-        const title = rawTitle.replace(/\b(Agent|Router|Gateway|Pipeline|Engine|Memory|Store|Lakehouse|Service|DB|Output|Worker|Swarm|Platform|Monitoring|Extraction|Orchestrator)\s+\1\b/gi, '$1');
-        const subtitle = custom.subtitle || '';
-        const isHeaderOrText = !existingVal.includes('&lt;b') && !existingVal.includes('<b');
-        
-        let newVal = existingVal;
-        if (title) {
-          if (/(&lt;b(?:[^&]*)?&gt;)(.*?)(&lt;\/b&gt;)/i.test(newVal)) {
-            newVal = newVal.replace(/(&lt;b(?:[^&]*)?&gt;)(.*?)(&lt;\/b&gt;)/i, `$1${escapeXmlText(title)}$3`);
-          } else if (/<b\b[^>]*>(.*?)<\/b>/i.test(newVal)) {
-            newVal = newVal.replace(/(<b\b[^>]*>)(.*?)(<\/b>)/i, `$1${escapeXmlText(title)}$3`);
-          } else if (/(&lt;div[^&]*?(?:font-weight:\s*(?:[6-9]00|bold)|font-size:\s*(?:1[0-9]|2[0-9])(?:\.[0-9]+)?px)[^&]*?&gt;)(.*?)(&lt;\/div&gt;)/i.test(newVal)) {
-            newVal = newVal.replace(/(&lt;div[^&]*?(?:font-weight:\s*(?:[6-9]00|bold)|font-size:\s*(?:1[0-9]|2[0-9])(?:\.[0-9]+)?px)[^&]*?&gt;)(.*?)(&lt;\/div&gt;)/i, `$1${escapeXmlText(title)}$3`);
-          } else if (/(<div[^>]*?(?:font-weight:\s*(?:[6-9]00|bold)|font-size:\s*(?:1[0-9]|2[0-9])(?:\.[0-9]+)?px)[^>]*?>)(.*?)(<\/div>)/i.test(newVal)) {
-            newVal = newVal.replace(/(<div[^>]*?(?:font-weight:\s*(?:[6-9]00|bold)|font-size:\s*(?:1[0-9]|2[0-9])(?:\.[0-9]+)?px)[^>]*?>)(.*?)(<\/div>)/i, `$1${escapeXmlText(title)}$3`);
-          } else if (isHeaderOrText) {
-            newVal = escapeXmlText(title);
-          }
-        }
-        if (subtitle) {
-          if (/(&lt;span\b[^&]*?color:[^&]*?(?:334155|64748B|5F6368|475569)[^&]*?&gt;)(.*?)(&lt;\/span&gt;)/i.test(newVal)) {
-            newVal = newVal.replace(/(&lt;span\b[^&]*?color:[^&]*?(?:334155|64748B|5F6368|475569)[^&]*?&gt;)(.*?)(&lt;\/span&gt;)/i, `$1${escapeXmlText(subtitle)}$3`);
-          } else if (/<span\b[^>]*?color:[^>]*?(?:334155|64748B|5F6368|475569)[^>]*?>(.*?)<\/span>/i.test(newVal)) {
-            newVal = newVal.replace(/(<span\b[^>]*?color:[^>]*?(?:334155|64748B|5F6368|475569)[^>]*?>)(.*?)(<\/span>)/i, `$1${escapeXmlText(subtitle)}$3`);
-          } else if (/(&lt;div[^&]*?(?:font-size:\s*(?:6|7|8|9|10)(?:\.[0-9]+)?px|color:\s*#(?:5F6368|64748B|475569|137333|0D9488))[^&]*?&gt;)(.*?)(&lt;\/div&gt;)/i.test(newVal)) {
-            newVal = newVal.replace(/(&lt;div[^&]*?(?:font-size:\s*(?:6|7|8|9|10)(?:\.[0-9]+)?px|color:\s*#(?:5F6368|64748B|475569|137333|0D9488))[^&]*?&gt;)(.*?)(&lt;\/div&gt;)/i, `$1${escapeXmlText(subtitle)}$3`);
-          } else if (/(<div[^>]*?(?:font-size:\s*(?:6|7|8|9|10)(?:\.[0-9]+)?px|color:\s*#(?:5F6368|64748B|475569|137333|0D9488))[^>]*?>)(.*?)(<\/div>)/i.test(newVal)) {
-            newVal = newVal.replace(/(<div[^>]*?(?:font-size:\s*(?:6|7|8|9|10)(?:\.[0-9]+)?px|color:\s*#(?:5F6368|64748B|475569|137333|0D9488))[^>]*?>)(.*?)(<\/div>)/i, `$1${escapeXmlText(subtitle)}$3`);
-          }
-        }
-        const badge = custom.badge || '';
-        if (badge) {
-          if (/(&lt;span\b[^&]*?border-radius:[^&]*?&gt;)(.*?)(&lt;\/span&gt;)/i.test(newVal)) {
-            newVal = newVal.replace(/(&lt;span\b[^&]*?border-radius:[^&]*?&gt;)(.*?)(&lt;\/span&gt;)/i, `$1${escapeXmlText(badge)}$3`);
-          } else if (/<span\b[^>]*?border-radius:[^>]*?>(.*?)<\/span>/i.test(newVal)) {
-            newVal = newVal.replace(/(<span\b[^>]*?border-radius:[^>]*?>)(.*?)(<\/span>)/i, `$1${escapeXmlText(badge)}$3`);
-          } else if (newVal.includes('&lt;/tr&gt;')) {
-            newVal = newVal.replace('&lt;/tr&gt;', `&lt;span style=&quot;font-size:8px;padding:2px 4px;border-radius:4px;background:#38bdf8;color:#0f172a;font-weight:bold;&quot;&gt;${escapeXmlText(badge)}&lt;/span&gt;&lt;/tr&gt;`);
-          } else if (newVal.includes('</tr>')) {
-            newVal = newVal.replace('</tr>', `<span style="font-size:8px;padding:2px 4px;border-radius:4px;background:#38bdf8;color:#0f172a;font-weight:bold;">${escapeXmlText(badge)}</span></tr>`);
-          } else {
-            newVal = `${newVal} &lt;span&gt;${escapeXmlText(badge)}&lt;/span&gt;`;
-          }
-        }
-        if (newVal === existingVal && (title || subtitle || badge)) {
-          // Defensive fallback: Structural AST mutation
-          newVal = mutateNodeValueStructurally(existingVal, { title, subtitle, badge });
-        }
-        customizedXml = customizedXml.replace(nodeRegex, `$1${newVal}$3`);
-      }
-    }
-
-    if (data.headerTitle) {
-      customizedXml = customizedXml.replace(/(<mxCell\s+id="header_title"\s+value=")([^"]*)(")/i, `$1${escapeXmlText(data.headerTitle)}$3`);
-    }
-    if (data.headerSubtitle) {
-      customizedXml = customizedXml.replace(/(<mxCell\s+id="header_subtitle"\s+value=")([^"]*)(")/i, `$1${escapeXmlText(data.headerSubtitle)}$3`);
-    }
-
-    const reasoning = data.reasoning || `Architected using Gemini ${modelName} strictly tailored for "${userPrompt.slice(0, 50)}".`;
-    const summary = data.summary || `Synthesized architecture updates for "${userPrompt.slice(0, 50)}"`;
+    const reasoning = normalizeModernGcpCopy(
+      data.reasoning || `Architected using Gemini ${modelName} strictly tailored for "${userPrompt.slice(0, 50)}".`
+    );
+    const summary = normalizeModernGcpCopy(
+      data.summary || `Synthesized architecture updates for "${userPrompt.slice(0, 50)}"`
+    );
     const targetTier = data.targetTier || 'Target Cloud Architecture Tier';
-    const changedComponents = Array.isArray(data.changedComponents) && data.changedComponents.length > 0
-      ? data.changedComponents
-      : Object.values<any>(data.customizations || {}).map((c: any) => c.title || '').filter(Boolean).slice(0, 5);
-    const businessUsecase = data.businessUsecase || `Enterprise cloud architecture tailored for ${userPrompt.slice(0, 50)}.`;
-    const technicalUsecase = data.technicalUsecase || `Zero-collision 1400x800 high-availability architecture deployed on Google Cloud.`;
+    const changedComponents =
+      Array.isArray(data.changedComponents) && data.changedComponents.length > 0
+        ? data.changedComponents
+        : Object.values<any>(data.customizations || {})
+            .map((c: any) => c.title || '')
+            .filter(Boolean)
+            .slice(0, 5);
+    const businessUsecase = normalizeModernGcpCopy(
+      data.businessUsecase || `Enterprise cloud architecture tailored for ${userPrompt.slice(0, 50)}.`
+    );
+    const technicalUsecase = normalizeModernGcpCopy(
+      data.technicalUsecase || `Zero-collision widescreen high-availability architecture deployed on Google Cloud.`
+    );
 
     return {
       xml: customizedXml,
       reasoning,
       summary,
       targetTier,
-      changedComponents: changedComponents.length > 0 ? changedComponents : ['Edge Security & Ingress', 'Compute Workloads', 'Data Storage Layer'],
+      changedComponents:
+        changedComponents.length > 0
+          ? changedComponents
+          : ['Edge Security & Ingress', 'Compute Workloads', 'Data Storage Layer'],
       businessUsecase,
       technicalUsecase,
       isFallback: false,
       modelUsed: modelName,
-      attribution: `Google Gemini API (${modelName})`
+      attribution: `Google Gemini API (${modelName})`,
     };
   } catch (err: any) {
     console.error('[Gemini Customizer] Error during structured AI customization, falling back to flavor injection:', err);
@@ -369,13 +674,10 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
       isFallback: true,
       modelUsed: null,
       attribution: 'Deterministic Template Customizer (injectUseCaseFlavor)',
-      // `err.message` from @google/genai is a raw JSON envelope and this field
-      // is rendered in the UI, so it must be sanitized before it escapes.
-      fallbackReason: toUserFacingMessage(err, 'Gemini customization')
+      fallbackReason: toUserFacingMessage(err, 'Gemini customization'),
     };
   }
 }
-
 
 function unescapeXmlText(str: string): string {
   if (!str) return '';
@@ -388,8 +690,8 @@ function unescapeXmlText(str: string): string {
 }
 
 /**
- * 🛡️ Defensive Structural AST Node Replacer
- * Guarantees 100% mutation fidelity even if HTML markup or font weights differ.
+ * Defensive Structural AST Node Replacer
+ * Guarantees valid HTML table/card markup with zero foster-parenting elements.
  */
 function mutateNodeValueStructurally(
   existingXmlValue: string,
@@ -400,7 +702,6 @@ function mutateNodeValueStructurally(
   const newSubtitle = mutation.subtitle || '';
   const newBadge = mutation.badge || '';
 
-  // Extract existing icon (SVG or Emoji or image)
   let iconHtml = '';
   const svgMatch = rawHtml.match(/<svg[\s\S]*?<\/svg>/i);
   if (svgMatch) {
@@ -415,32 +716,38 @@ function mutateNodeValueStructurally(
     }
   }
 
-  // If it's a simple text header/label
   if (!rawHtml.includes('<div') && !rawHtml.includes('<table')) {
     return escapeXmlText(newTitle);
   }
 
   const isLeftAlign = rawHtml.includes('text-align:left') || rawHtml.includes('text-align: left');
-  const isDark = rawHtml.includes('color:#F8FAFC') || rawHtml.includes('color: #F8FAFC') || rawHtml.includes('color:#fff');
+  const isDark =
+    rawHtml.includes('color:#F8FAFC') || rawHtml.includes('color: #F8FAFC') || rawHtml.includes('color:#fff');
   const titleColor = isDark ? '#F8FAFC' : '#202124';
   const subColor = isDark ? '#94A3B8' : '#5F6368';
 
   let mutatedHtml = '';
   if (isLeftAlign) {
-    mutatedHtml = `<div style="padding:10px 12px;text-align:left;font-family:'Google Sans',Roboto,system-ui,sans-serif;">` +
+    mutatedHtml =
+      `<div style="padding:8px 10px;text-align:left;font-family:'Google Sans',Roboto,system-ui,sans-serif;">` +
       `<table style="width:100%;border-collapse:collapse;"><tr>` +
-      (iconHtml ? `<td style="width:24px;vertical-align:middle;padding-right:8px;">${iconHtml}</td>` : '') +
+      (iconHtml ? `<td style="width:28px;vertical-align:middle;padding-right:8px;">${iconHtml}</td>` : '') +
       `<td style="vertical-align:middle;text-align:left;"><span style="font-size:11.5px;font-weight:700;color:${titleColor};">${newTitle}</span></td>` +
-      (newBadge ? `<td style="vertical-align:middle;text-align:right;white-space:nowrap;padding-left:8px;"><span style="font-size:8px;font-weight:700;background:#E8F0FE;color:#1A73E8;padding:2px 6px;border-radius:4px;border:1px solid #DADCE0;">${newBadge}</span></td>` : '') +
+      (newBadge
+        ? `<td style="vertical-align:middle;text-align:right;white-space:nowrap;padding-left:6px;"><span style="font-size:8px;font-weight:700;background:#E8F0FE;color:#1A73E8;padding:2px 6px;border-radius:4px;border:1px solid #DADCE0;">${newBadge}</span></td>`
+        : '') +
       `</tr></table>` +
-      (newSubtitle ? `<div style="font-size:8.5px;color:${subColor};margin-top:4px;">${newSubtitle}</div>` : '') +
+      (newSubtitle ? `<div style="font-size:9px;color:${subColor};margin-top:3px;">${newSubtitle}</div>` : '') +
       `</div>`;
   } else {
-    mutatedHtml = `<div style="padding:10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Google Sans',Roboto,system-ui,sans-serif;">` +
+    mutatedHtml =
+      `<div style="padding:8px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Google Sans',Roboto,system-ui,sans-serif;">` +
       (iconHtml ? `${iconHtml}` : '') +
       `<div style="font-size:11.5px;font-weight:700;color:${titleColor};margin-top:4px;">${newTitle}</div>` +
-      (newSubtitle ? `<div style="font-size:8.5px;color:${subColor};">${newSubtitle}</div>` : '') +
-      (newBadge ? `<div style="margin-top:3px;"><span style="font-size:8px;font-weight:700;background:#E8F0FE;color:#1A73E8;padding:2px 6px;border-radius:4px;border:1px solid #DADCE0;">${newBadge}</span></div>` : '') +
+      (newSubtitle ? `<div style="font-size:9px;color:${subColor};">${newSubtitle}</div>` : '') +
+      (newBadge
+        ? `<div style="margin-top:3px;"><span style="font-size:8px;font-weight:700;background:#E8F0FE;color:#1A73E8;padding:2px 6px;border-radius:4px;border:1px solid #DADCE0;">${newBadge}</span></div>`
+        : '') +
       `</div>`;
   }
 

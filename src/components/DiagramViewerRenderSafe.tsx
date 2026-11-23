@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
+import { healFosterParentedHtmlInXml } from '@/lib/htmlTableSanitizer';
 import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { SupportedLanguage, translateDiagramXmlToLanguage } from '@/lib/i18n';
 import { localizeDrawioXmlDeep } from '@/lib/diagramLanguageLocalizer';
@@ -108,7 +109,8 @@ export default function DiagramViewerRenderSafe({
         : `<mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0" data-blank-canvas="true"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel>`;
     }
     if (isPromptToDiagramFreeform) {
-      return typeof xml === 'string' ? xml : String(xml || '');
+      const rawFreeform = typeof xml === 'string' ? xml : String(xml || '');
+      return healFosterParentedHtmlInXml(rawFreeform).xml;
     }
     if (!xml) return getDefaultXmlForArchitecture(diagramType || 'unified_system_view') || '';
     const rawStr = typeof xml === 'string' ? xml : String(xml);

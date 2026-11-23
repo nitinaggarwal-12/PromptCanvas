@@ -24,6 +24,7 @@ CORE ARCHITECTURAL RULES:
    - Set 'style' to "solid" for synchronous calls and "dashed" for async/event/telemetry/security flows.
 
 5. ACCURATE PRODUCT NAMING & CONCISE SUBTITLES:
+   - Use current official GCP product names whenever cloud is "gcp" or "hybrid": "Gemini Enterprise" (NEVER deprecated "Agentspace"), "Vertex AI Agent Engine", "Google ADK", "Cloud Run", "Apigee", "Model Armor", "Cloud IAM / WIF", "Quotas" (NEVER "Quotes").
    - 'label': Exact official product/component name requested by user (<= 34 chars).
    - 'subtitle': Crisp 1-line role summary (<= 56 chars, e.g. "Multi-region active-active NoSQL store").
    - 'description': Concise 1-sentence technical responsibility (<= 95 chars).

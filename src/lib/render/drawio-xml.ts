@@ -107,7 +107,7 @@ export function renderGraphToDrawioXml(graph: ArchitectureGraph, theme: 'light' 
     const shapeStyle = isCylinder
       ? 'shape=cylinder3;whiteSpace=wrap;boundedLbl=1;backgroundOutline=1;size=12;spacingTop=12;'
       : 'arcSize=10;';
-    const nodeStyle = `rounded=1;whiteSpace=wrap;html=1;${shapeStyle}fillColor=${styleToken.fillColor};strokeColor=${styleToken.strokeColor};fontColor=${styleToken.fontColor};strokeWidth=1.5;shadow=0;`;
+    const nodeStyle = `rounded=1;whiteSpace=wrap;html=1;verticalAlign=middle;${shapeStyle}fillColor=${styleToken.fillColor};strokeColor=${styleToken.strokeColor};fontColor=${styleToken.fontColor};strokeWidth=1.5;shadow=0;`;
 
     const iconBoxBg = isDark ? '#0F172A' : (styleToken.badgeBg || '#EFF6FF');
     const iconBoxBorder = isDark ? '#334155' : styleToken.strokeColor;

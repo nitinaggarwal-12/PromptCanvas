@@ -1,4 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
+import { findTopAlignedLeafCardIds } from '../leafVerticalAlignment';
+import { findFosterParentedTableCells } from '../htmlTableSanitizer';
 
 export type ErrorCode =
   | 'XML_INVALID'
@@ -20,7 +22,9 @@ export type ErrorCode =
   | 'DECISION_GATE_INCOMPLETE'
   | 'CDN_CACHE_INVERTED_ROUTING'
   | 'UNCONNECTED_LOAD_BALANCER'
-  | 'RELATIONAL_REPLICATION_PIPELINE';
+  | 'RELATIONAL_REPLICATION_PIPELINE'
+  | 'LEAF_TOP_ALIGNED_EMPTY_SPACE'
+  | 'HTML_FOSTER_PARENTING_IN_TABLE';
 
 export interface ValidationError {
   code: ErrorCode;
@@ -660,6 +664,29 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
         });
       }
     }
+  }
+
+  // 6. LEAF_TOP_ALIGNED_EMPTY_SPACE RULE (Advisory warning so tall leaf cards never pin text to the top edge)
+  const topAlignedLeafIds = findTopAlignedLeafCardIds(xmlString, 80);
+  if (topAlignedLeafIds.length > 0) {
+    warnings.push({
+      code: 'LEAF_TOP_ALIGNED_EMPTY_SPACE',
+      cells: topAlignedLeafIds,
+      detail: `${topAlignedLeafIds.length} non-container leaf card(s) use verticalAlign=top (${topAlignedLeafIds.slice(0, 5).join(', ')}), leaving empty bottom space. Use verticalAlign=middle for leaf shapes.`,
+    });
+  }
+
+  // 7. HTML_FOSTER_PARENTING_IN_TABLE RULE (Hard error: illegal elements inside <tr> outside <td>/<th>)
+  const fosterViolations = findFosterParentedTableCells(xmlString);
+  if (fosterViolations.length > 0) {
+    errors.push({
+      code: 'HTML_FOSTER_PARENTING_IN_TABLE',
+      cells: fosterViolations.map((v) => v.cellId),
+      detail: `${fosterViolations.length} table cell(s) contain illegal elements directly inside <tr> outside <td>/<th> (triggers HTML5 foster-parenting overflow above cards): ${fosterViolations
+        .slice(0, 4)
+        .map((v) => v.cellId)
+        .join(', ')}`,
+    });
   }
 
   // Blocking validity is determined strictly by hard errors; warnings remain advisory
