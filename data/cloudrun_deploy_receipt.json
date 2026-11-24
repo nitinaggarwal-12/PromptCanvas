@@ -5,25 +5,25 @@
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "promptcanvas-00073-2b9",
-  "latestCreatedRevisionName": "promptcanvas-00073-2b9",
+  "latestReadyRevisionName": "promptcanvas-00074-852",
+  "latestCreatedRevisionName": "promptcanvas-00074-852",
   "readyStatus": "True",
   "trafficPercent": 100,
   "gcsStateBucket": "ramp-portal-dev-promptcanvas-state",
-  "gitCommit": "f841864f",
+  "gitCommit": "d126e97b",
   "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"promptcanvas-1\" on port 8080.",
   "beyondCorpHttpStatus": 302,
   "liveHttpVerification": {
-    "verifiedAt": "2026-11-24T01:48:00.854325Z",
+    "verifiedAt": "2026-11-24T05:57:38.270626Z",
     "verificationMode": "cloud_run_revision_pre_traffic_live_http_dom_probe",
-    "revision": "promptcanvas-00073-2b9",
+    "revision": "promptcanvas-00074-852",
     "routes": [
       {
         "path": "/blogs",
         "httpStatus": 200,
         "responseBytes": 10745,
-        "bodySha256Short": "02ad113c95bb4f84",
-        "latencyMs": 3518,
+        "bodySha256Short": "74b286b363740ba8",
+        "latencyMs": 5096,
         "markersMatched": [
           "Architecture",
           "blogs"
@@ -36,8 +36,8 @@
         "path": "/api/blogs/gcp-verify",
         "httpStatus": 200,
         "responseBytes": 1117569,
-        "bodySha256Short": "0fbc7ceadd1db3ae",
-        "latencyMs": 164,
+        "bodySha256Short": "3e83d1966c8f13da",
+        "latencyMs": 292,
         "markersMatched": [
           "ramp-portal-dev",
           "bbar-138hf0"
@@ -49,10 +49,10 @@
     ],
     "overallPassed": true
   },
-  "verifiedAt": "2026-11-24T01:48:00Z",
+  "verifiedAt": "2026-11-24T05:57:38Z",
   "canonicalBlueprintsCount": 41,
   "leanDocArchetypesCount": 8,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/promptcanvas:v20261124-014700-cleanup-ws1-l400",
-  "imageDigest": "sha256:853308536fab0fec583811bf995cf53b70c2b74ce91f3e2413413bc5bbd50b84",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/promptcanvas:v20261124-055640-l100-l400-nlp",
+  "imageDigest": "sha256:aec5308628ec054514533c460af350384afb8fd497c0e80ea10fbff0beb7580a",
   "nextjsVersion": "16.4.6"
 }
