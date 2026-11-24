@@ -5,25 +5,25 @@
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "promptcanvas-00074-852",
-  "latestCreatedRevisionName": "promptcanvas-00074-852",
+  "latestReadyRevisionName": "promptcanvas-00075-fvh",
+  "latestCreatedRevisionName": "promptcanvas-00075-fvh",
   "readyStatus": "True",
   "trafficPercent": 100,
   "gcsStateBucket": "ramp-portal-dev-promptcanvas-state",
-  "gitCommit": "d126e97b",
+  "gitCommit": "911f92e3",
   "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"promptcanvas-1\" on port 8080.",
   "beyondCorpHttpStatus": 302,
   "liveHttpVerification": {
-    "verifiedAt": "2026-11-24T05:57:38.270626Z",
+    "verifiedAt": "2026-11-24T20:05:52.565911Z",
     "verificationMode": "cloud_run_revision_pre_traffic_live_http_dom_probe",
-    "revision": "promptcanvas-00074-852",
+    "revision": "promptcanvas-00075-fvh",
     "routes": [
       {
         "path": "/blogs",
         "httpStatus": 200,
-        "responseBytes": 10745,
-        "bodySha256Short": "74b286b363740ba8",
-        "latencyMs": 5096,
+        "responseBytes": 10497,
+        "bodySha256Short": "8c6bf4d1b152ec36",
+        "latencyMs": 2888,
         "markersMatched": [
           "Architecture",
           "blogs"
@@ -36,8 +36,8 @@
         "path": "/api/blogs/gcp-verify",
         "httpStatus": 200,
         "responseBytes": 1117569,
-        "bodySha256Short": "3e83d1966c8f13da",
-        "latencyMs": 292,
+        "bodySha256Short": "609b5b896f9f9ea6",
+        "latencyMs": 186,
         "markersMatched": [
           "ramp-portal-dev",
           "bbar-138hf0"
@@ -49,10 +49,10 @@
     ],
     "overallPassed": true
   },
-  "verifiedAt": "2026-11-24T05:57:38Z",
+  "verifiedAt": "2026-11-24T20:05:52Z",
   "canonicalBlueprintsCount": 41,
   "leanDocArchetypesCount": 8,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/promptcanvas:v20261124-055640-l100-l400-nlp",
-  "imageDigest": "sha256:aec5308628ec054514533c460af350384afb8fd497c0e80ea10fbff0beb7580a",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/promptcanvas:v20261124-200458-cuj-purge",
+  "imageDigest": "sha256:2ea734ff8c4db865741c29378ee4885b2c84c58b298bed010c94795a3644f470",
   "nextjsVersion": "16.4.6"
 }
