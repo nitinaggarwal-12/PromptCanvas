@@ -8,11 +8,14 @@ import {
   generateTemplate84L400OracleEbsExadataArchCenter78Xml,
 } from './templateL100L400AgenticWorkspaceBlueprints';
 
+export type BlueprintDepthLevel = 'L100' | 'L200' | 'L300' | 'L400';
+
 export interface CanonicalTemplate {
   id: string; // e.g. "00", "52" ... "99"
   name: string;
   family: 'Infographic' | 'Understand' | 'Process' | 'Whiteboard' | 'Paper' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: 'L1' | 'L2' | 'L3';
+  depthLevel: BlueprintDepthLevel;
   theme?: 'light' | 'dark';
   tags?: string[];
   primaryPurpose: string;
@@ -27,6 +30,80 @@ export interface CanonicalTemplate {
   keyComponents: string[];
   generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => string;
 }
+
+export const CANONICAL_DEPTH_LEVELS = [
+  'All',
+  'L100',
+  'L200',
+  'L300',
+  'L400',
+] as const;
+
+export const DEPTH_LEVEL_META: Record<
+  BlueprintDepthLevel,
+  { id: BlueprintDepthLevel; label: string; shortLabel: string; description: string }
+> = {
+  L100: {
+    id: 'L100',
+    label: 'L100 — Executive & Conceptual',
+    shortLabel: 'L100',
+    description: 'High-level executive overview, system context boundaries, and visual infographics.',
+  },
+  L200: {
+    id: 'L200',
+    label: 'L200 — Logical & Process',
+    shortLabel: 'L200',
+    description: 'Logical architecture, BPMN swimlanes, multi-persona journeys, use cases, ERDs, and ADR trade-offs.',
+  },
+  L300: {
+    id: 'L300',
+    label: 'L300 — Reference & Component',
+    shortLabel: 'L300',
+    description: 'Production cloud reference topologies, C4 components, operational flows, DFDs, physical schemas, and runbooks.',
+  },
+  L400: {
+    id: 'L400',
+    label: 'L400 — Deep Physical & Hardened (Most Detailed)',
+    shortLabel: 'L400',
+    description: 'Most detailed & comprehensive: physical CIDRs, multi-tenant Pool/Hybrid/Silo isolation, SPIFFE/DPoP, VPC-SC, HSM CMEK & implementation specs.',
+  },
+};
+
+export const CANONICAL_DEPTH_LEVEL_BY_ID: Record<string, BlueprintDepthLevel> = {
+  // L100 — Executive / Conceptual Context & High-Level Infographics (17)
+  '00': 'L100',
+  '85': 'L100',
+  '52': 'L100', '53': 'L100', '54': 'L100', '55': 'L100', '56': 'L100',
+  '57': 'L100', '58': 'L100', '59': 'L100', '60': 'L100', '61': 'L100',
+  '62': 'L100', '63': 'L100', '64': 'L100', '65': 'L100', '66': 'L100',
+  // L200 — Logical, Process, Journey, Use Case & ADR Trade-Offs (6)
+  '12': 'L200',
+  '14': 'L200',
+  '86': 'L200',
+  '87': 'L200',
+  '88': 'L200',
+  '89': 'L200',
+  // L300 — Cloud Reference Architecture, Components, Operational Flows, DFDs & Runbooks (9)
+  '78': 'L300',
+  '03': 'L300',
+  '29': 'L300',
+  '67': 'L300',
+  '69': 'L300',
+  '90': 'L300',
+  '91': 'L300',
+  '92': 'L300',
+  '93': 'L300',
+  // L400 — Most Detailed & Comprehensive Physical, Multi-Tenant & Security-Hardened Specs (9)
+  '99': 'L400',
+  '79': 'L400',
+  '81': 'L400',
+  '84': 'L400',
+  '94': 'L400',
+  '95': 'L400',
+  '96': 'L400',
+  '97': 'L400',
+  '98': 'L400',
+};
 
 export const CANONICAL_TAGS = [
   'All',
@@ -109,6 +186,7 @@ interface RawCanonicalTemplate {
   name: string;
   family: 'Infographic' | 'Understand' | 'Process' | 'Whiteboard' | 'Paper' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: 'L1' | 'L2' | 'L3';
+  depthLevel?: BlueprintDepthLevel;
   theme?: 'light' | 'dark';
   tags?: string[];
   primaryPurpose: string;
@@ -1452,8 +1530,19 @@ const ALL_RAW_CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => 
         .replace(/\bGPT-6\s+Astra\b/gi, 'Frontier Agent');
   const cleanName = decodeCanonicalMetadataText(rawCleanName);
   const isSketchBp = t.id === '76' || t.id === '77' || isNewArchBp || isFlowBp;
+  const resolvedDepthLevel: BlueprintDepthLevel =
+    t.depthLevel ||
+    CANONICAL_DEPTH_LEVEL_BY_ID[t.id] ||
+    (t.tags?.some((tag) => /L400/i.test(tag))
+      ? 'L400'
+      : t.level === 'L3'
+      ? 'L300'
+      : t.level === 'L2'
+      ? 'L200'
+      : 'L100');
   return {
     ...t,
+    depthLevel: resolvedDepthLevel,
     name: cleanName,
     primaryPurpose: decodeCanonicalMetadataText(t.primaryPurpose),
     examples: decodeCanonicalMetadataText(t.examples),

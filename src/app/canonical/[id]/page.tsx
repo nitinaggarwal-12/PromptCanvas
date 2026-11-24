@@ -57,6 +57,7 @@ export default function CanonicalTemplateDetailPage() {
   const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const [isComposeOpen, setIsComposeOpen] = useState<boolean>(false);
+  const [isCreatingInstance, setIsCreatingInstance] = useState<boolean>(false);
   const [isSideBySide, setIsSideBySide] = useState<boolean>(
     searchParams.get('sbs') === '1'
   );
@@ -142,6 +143,37 @@ export default function CanonicalTemplateDetailPage() {
     }
   };
 
+  const handleUseThisBlueprint = async () => {
+    if (!activeTemplate || isCreatingInstance) return;
+    setIsCreatingInstance(true);
+    try {
+      const res = await fetch('/api/diagrams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: activeTemplate.name,
+          xml: currentXml,
+          comment: `Created new editable instance from Blueprint #${activeTemplate.id} (${activeTemplate.depthLevel})`,
+          prompt: activeTemplate.primaryPurpose,
+          aiReasoning: `Instantiated from Certified Blueprint #${activeTemplate.id} (${activeTemplate.depthLevel} • ${activeTemplate.family}) with 2-way Prompt & Draw.io sync.`,
+          architectureType: `canonical_${activeTemplate.id}`,
+          createdStudio: 'dashboard',
+        }),
+      });
+      const data = await res.json();
+      const newId = data?.diagram?.id || data?.id;
+      if (res.ok && newId) {
+        router.push(`/dashboard?id=${encodeURIComponent(newId)}&blueprint=${activeTemplate.id}`);
+        return;
+      }
+      router.push(`/dashboard?blueprint=${activeTemplate.id}&domain=${selectedDomain}`);
+    } catch {
+      router.push(`/dashboard?blueprint=${activeTemplate.id}&domain=${selectedDomain}`);
+    } finally {
+      setIsCreatingInstance(false);
+    }
+  };
+
   const handleDownloadXml = () => {
     const blob = new Blob([currentXml], { type: 'application/xml' });
     const url = URL.createObjectURL(blob);
@@ -191,6 +223,18 @@ export default function CanonicalTemplateDetailPage() {
                   }`}>
                     {activeTemplate.name}
                   </h1>
+                  <span
+                    data-testid="canonical-detail-depth-badge"
+                    className={`inline-flex items-center text-[10px] font-black uppercase px-2 py-0.5 rounded-full border shrink-0 ${
+                      activeTemplate.depthLevel === 'L400'
+                        ? 'bg-indigo-600 text-white border-indigo-600'
+                        : isDark
+                        ? 'bg-sky-500/15 text-sky-300 border-sky-500/30'
+                        : 'bg-sky-50 text-sky-700 border-sky-200'
+                    }`}
+                  >
+                    {activeTemplate.depthLevel}
+                  </span>
                   {activeTemplate.tags?.map((tag) => (
                     <span
                       key={tag}
@@ -285,15 +329,18 @@ export default function CanonicalTemplateDetailPage() {
                   </select>
                 </div>
 
-                {/* Open in Home Dashboard */}
-                <Link
-                  href={`/dashboard?blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
-                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-sm shadow-teal-500/20 transition-all shrink-0"
-                  title="Open in Home Dashboard"
+                {/* Use This Blueprint -> Mint New Unique Instance ID with 2-Way Prompt + Draw.io Sync */}
+                <button
+                  type="button"
+                  onClick={() => void handleUseThisBlueprint()}
+                  disabled={isCreatingInstance}
+                  data-testid="btn-canonical-detail-use-blueprint"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-teal-600 hover:bg-teal-500 text-white shadow-sm shadow-teal-500/20 transition-all shrink-0 cursor-pointer disabled:opacity-60"
+                  title="Create a brand-new diagram instance (New ID) from this blueprint with 2-way Prompt & Draw.io sync"
                 >
                   <Sparkles className="w-3.5 h-3.5 fill-current" />
-                  <span>Studio</span>
-                </Link>
+                  <span>{isCreatingInstance ? 'Creating ID…' : 'Use Blueprint (New ID)'}</span>
+                </button>
 
                 {/* Generate Docs Button */}
                 <button
@@ -536,6 +583,9 @@ export default function CanonicalTemplateDetailPage() {
               <div className="flex items-center gap-3 min-w-0 flex-wrap">
                 <span className="px-2.5 py-1 rounded-lg bg-sky-50 text-sky-700 border border-sky-200 font-mono text-xs font-black shrink-0">
                   Blueprint #{activeTemplate.id} • {activeTemplate.family}
+                </span>
+                <span className="px-2.5 py-1 rounded-lg bg-slate-900 text-white font-mono text-[11px] font-black uppercase shrink-0">
+                  Level: {activeTemplate.depthLevel}
                 </span>
                 {activeTemplate.tags?.map((tag) => (
                   <span

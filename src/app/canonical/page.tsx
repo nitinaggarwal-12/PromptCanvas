@@ -7,6 +7,8 @@ import {
   CANONICAL_TEMPLATES,
   CANONICAL_FAMILIES,
   CANONICAL_TAGS,
+  CANONICAL_DEPTH_LEVELS,
+  DEPTH_LEVEL_META,
   DOMAIN_PRESETS,
   CanonicalTemplate,
   getCanonicalTemplateById,
@@ -66,9 +68,12 @@ function CanonicalContent() {
   const themeMode: 'light' | 'dark' = theme;
 
   const [selectedFamily, setSelectedFamily] = useState<string>('All');
-  const [selectedLevel, setSelectedLevel] = useState<string>('All');
+  const [selectedLevel, setSelectedLevel] = useState<string>(
+    searchParams.get('depth') || searchParams.get('level') || 'All'
+  );
   const [selectedTag, setSelectedTag] = useState<string>(searchParams.get('tag') || 'All');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [creatingBlueprintId, setCreatingBlueprintId] = useState<string | null>(null);
   const [selectedDomain, setSelectedDomain] = useState<string>('enterprise');
   const [customPrompt, setCustomPrompt] = useState<string>('');
 
@@ -187,18 +192,54 @@ function CanonicalContent() {
     const q = searchQuery.toLowerCase().trim();
     return CANONICAL_TEMPLATES.filter((tpl) => {
       const matchFamily = selectedFamily === 'All' || tpl.family === selectedFamily;
-      const matchLevel = selectedLevel === 'All' || tpl.level === selectedLevel;
+      const matchLevel =
+        selectedLevel === 'All' ||
+        tpl.depthLevel === selectedLevel ||
+        tpl.level === selectedLevel;
       const matchTag = selectedTag === 'All' || Boolean(tpl.tags?.includes(selectedTag));
       const matchSearch =
         !q ||
         tpl.name.toLowerCase().includes(q) ||
         tpl.id.includes(q) ||
+        tpl.depthLevel.toLowerCase().includes(q) ||
         tpl.primaryPurpose.toLowerCase().includes(q) ||
         tpl.examples.toLowerCase().includes(q) ||
         Boolean(tpl.tags?.some((t) => t.toLowerCase().includes(q)));
       return matchFamily && matchLevel && matchTag && matchSearch;
     });
   }, [selectedFamily, selectedLevel, selectedTag, searchQuery]);
+
+  // Mint a brand-new unique Diagram Instance ID from a blueprint template and launch 2-way Studio
+  const handleUseBlueprintInstance = async (tpl: CanonicalTemplate) => {
+    setCreatingBlueprintId(tpl.id);
+    try {
+      const xml = tpl.generateXml(selectedDomain, themeMode);
+      const res = await fetch('/api/diagrams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: `${tpl.name}`,
+          xml,
+          comment: `Created new editable instance from Blueprint #${tpl.id} (${tpl.depthLevel})`,
+          prompt: tpl.primaryPurpose,
+          aiReasoning: `Instantiated from Certified Blueprint #${tpl.id} (${tpl.depthLevel} • ${tpl.family}) for 2-way Prompt & Draw.io editing.`,
+          architectureType: `canonical_${tpl.id}`,
+          createdStudio: 'dashboard',
+        }),
+      });
+      const data = await res.json();
+      const newId = data?.diagram?.id || data?.id;
+      if (res.ok && newId) {
+        router.push(`/dashboard?id=${encodeURIComponent(newId)}&blueprint=${tpl.id}`);
+        return;
+      }
+      router.push(`/dashboard?blueprint=${tpl.id}&domain=${selectedDomain}`);
+    } catch {
+      router.push(`/dashboard?blueprint=${tpl.id}&domain=${selectedDomain}`);
+    } finally {
+      setCreatingBlueprintId(null);
+    }
+  };
 
   // Open Adapt Modal
   const handleOpenAdapt = (tpl: CanonicalTemplate) => {
@@ -366,7 +407,7 @@ function CanonicalContent() {
                     {activeTemplate.name}
                   </h2>
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-50 text-sky-700 border border-sky-200">
-                    {activeTemplate.family} • {activeTemplate.level}
+                    {activeTemplate.family} • {activeTemplate.depthLevel}
                   </span>
                   {activeTemplate.tags?.map((tag) => (
                     <span
@@ -542,33 +583,45 @@ function CanonicalContent() {
                 )}
               </div>
 
-              {/* Abstraction Level Filters */}
-              <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0">
-                {[
-                  { id: 'All', label: 'All Levels', count: CANONICAL_TEMPLATES.length },
-                  { id: 'L1', label: 'L1 Conceptual', count: CANONICAL_TEMPLATES.filter((t) => t.level === 'L1').length },
-                  { id: 'L2', label: 'L2 Logical', count: CANONICAL_TEMPLATES.filter((t) => t.level === 'L2').length },
-                  { id: 'L3', label: 'L3 Physical / Technical', count: CANONICAL_TEMPLATES.filter((t) => t.level === 'L3').length }
-                ].map(({ id, label, count }) => (
-                  <button
-                    key={id}
-                    onClick={() => setSelectedLevel(id)}
-                    className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-bold transition-all ${
-                      selectedLevel === id
-                        ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs'
-                        : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
-                    }`}
-                  >
-                    <span>{label}</span>
-                    <span className={`px-1.5 py-0.2 rounded text-[9px] font-extrabold ${
-                      selectedLevel === id
-                        ? 'bg-sky-100 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300'
-                        : 'bg-slate-200/70 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
-                    }`}>
-                      {count}
-                    </span>
-                  </button>
-                ))}
+              {/* Architecture Depth Level Filters (L100 -> L400) */}
+              <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0 flex-wrap">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 px-2">
+                  Level:
+                </span>
+                {CANONICAL_DEPTH_LEVELS.map((lvl) => {
+                  const count =
+                    lvl === 'All'
+                      ? CANONICAL_TEMPLATES.length
+                      : CANONICAL_TEMPLATES.filter((t) => t.depthLevel === lvl).length;
+                  const meta = lvl === 'All' ? null : DEPTH_LEVEL_META[lvl];
+                  return (
+                    <button
+                      key={lvl}
+                      type="button"
+                      data-testid={`canonical-depth-filter-${lvl.toLowerCase()}`}
+                      onClick={() => setSelectedLevel(lvl)}
+                      title={meta ? `${meta.label}: ${meta.description}` : 'Show all levels (L100–L400)'}
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+                        selectedLevel === lvl
+                          ? lvl === 'L400'
+                            ? 'bg-indigo-600 text-white shadow-xs'
+                            : 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900 dark:hover:text-slate-200'
+                      }`}
+                    >
+                      <span>{lvl === 'All' ? 'All Levels' : lvl}</span>
+                      <span className={`px-1.5 py-0.2 rounded text-[9px] font-extrabold ${
+                        selectedLevel === lvl
+                          ? lvl === 'L400'
+                            ? 'bg-white/20 text-white'
+                            : 'bg-sky-100 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300'
+                          : 'bg-slate-200/70 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                      }`}>
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -702,11 +755,19 @@ function CanonicalContent() {
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-1 shrink-0">
-                        <span className="px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-white/90 text-slate-700 border border-slate-200 shadow-2xs">
-                          {template.level === 'L1' ? 'L1 Conceptual' :
-                           template.level === 'L2' ? 'L2 Logical' :
-                           template.level === 'L3' ? 'L3 Physical' :
-                           template.level}
+                        <span
+                          data-testid={`canonical-tile-depth-${template.id}`}
+                          className={`px-2 py-0.5 rounded-md text-[9.5px] font-black uppercase border shadow-2xs ${
+                            template.depthLevel === 'L400'
+                              ? 'bg-indigo-600 text-white border-indigo-600'
+                              : template.depthLevel === 'L300'
+                              ? 'bg-sky-50 text-sky-800 border-sky-200'
+                              : template.depthLevel === 'L200'
+                              ? 'bg-amber-50 text-amber-800 border-amber-200'
+                              : 'bg-white/90 text-slate-700 border-slate-200'
+                          }`}
+                        >
+                          {template.depthLevel}
                         </span>
                         {template.tags?.map((tag) => (
                           <span
@@ -771,13 +832,25 @@ function CanonicalContent() {
                     className="relative z-10 pt-3.5 mt-3.5 border-t border-slate-200/80 grid grid-cols-3 gap-1.5"
                     onClick={(e) => e.stopPropagation()}
                   >
+                    <button
+                      type="button"
+                      onClick={() => void handleUseBlueprintInstance(template)}
+                      disabled={creatingBlueprintId === template.id}
+                      data-testid={`canonical-use-blueprint-${template.id}`}
+                      className="flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-sm shadow-teal-500/20 transition-all hover:scale-[1.02] cursor-pointer disabled:opacity-60"
+                      title="Create a new editable instance (New ID) from this blueprint with 2-way Prompt & Draw.io sync"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>{creatingBlueprintId === template.id ? 'Creating…' : 'Use'}</span>
+                    </button>
+
                     <Link
                       href={`/canonical/${template.id}?domain=${selectedDomain}`}
                       className="flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white shadow-sm shadow-sky-500/20 transition-all hover:scale-[1.02]"
-                      title="Open full-screen blueprint template page"
+                      title="Open full-screen blueprint template preview"
                     >
                       <Maximize2 className="w-3.5 h-3.5" />
-                      <span>Full Page</span>
+                      <span>Preview</span>
                     </Link>
 
                     <button
@@ -786,20 +859,11 @@ function CanonicalContent() {
                         setCurrentXml(template.generateXml(selectedDomain, themeMode));
                         setIsComposeOpen(true);
                       }}
-                      className="flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sm shadow-sky-500/20 transition-all hover:scale-[1.02] cursor-pointer"
+                      className="flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-all cursor-pointer"
                       title="Generate BRD, PRD, SDD (HLD), FDD, TDD (LLD) from this blueprint"
                     >
-                      <FileText className="w-3.5 h-3.5" />
+                      <FileText className="w-3.5 h-3.5 text-indigo-500" />
                       <span>Docs</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleOpenAdapt(template)}
-                      className="flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-all cursor-pointer"
-                      title="Adapt blueprint for your custom prompt"
-                    >
-                      <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                      <span>Adapt</span>
                     </button>
                   </div>
 
@@ -835,7 +899,7 @@ function CanonicalContent() {
                                 </span>
                                 <span className="text-slate-300">•</span>
                                 <span className="text-[10px] font-extrabold text-indigo-600">
-                                  {template.level} Blueprint
+                                  {template.depthLevel} Blueprint
                                 </span>
                                 {template.tags?.map((tag) => (
                                   <span
@@ -888,18 +952,20 @@ function CanonicalContent() {
                         className="relative z-10 pt-3 mt-3 border-t border-slate-200 flex items-center justify-between gap-2"
                         onClick={(e) => e.stopPropagation()}
                       >
+                        <button
+                          type="button"
+                          onClick={() => void handleUseBlueprintInstance(template)}
+                          disabled={creatingBlueprintId === template.id}
+                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black bg-teal-600 hover:bg-teal-500 text-white shadow-md shadow-teal-500/20 transition-all cursor-pointer"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>{creatingBlueprintId === template.id ? 'Creating Instance…' : 'Use Blueprint (New ID)'}</span>
+                        </button>
                         <Link
                           href={`/canonical/${template.id}?domain=${selectedDomain}`}
-                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-md shadow-sky-500/20 transition-all"
+                          className="px-3.5 py-2.5 rounded-xl text-xs font-extrabold bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all"
                         >
-                          <Maximize2 className="w-3.5 h-3.5" />
-                          <span>Open Full-Screen Stable Page</span>
-                        </Link>
-                        <Link
-                          href={`/dashboard?blueprint=${template.id}&domain=${selectedDomain}`}
-                          className="px-3.5 py-2.5 rounded-xl text-xs font-extrabold bg-teal-500 hover:bg-teal-400 text-slate-950 transition-all"
-                        >
-                          Home Dashboard
+                          Preview
                         </Link>
                       </div>
                     </div>

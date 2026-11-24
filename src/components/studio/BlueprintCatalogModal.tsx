@@ -19,6 +19,7 @@ import {
 import {
   CANONICAL_TEMPLATES,
   CANONICAL_FAMILIES,
+  CANONICAL_DEPTH_LEVELS,
   DOMAIN_PRESETS,
   CanonicalTemplate,
   ARCHITECTURE_DOCUMENT_BINDINGS
@@ -35,6 +36,10 @@ interface BlueprintCatalogModalProps {
 }
 
 function getLevelFullLabel(level: string): string {
+  if (level === 'L100') return 'L100 Conceptual';
+  if (level === 'L200') return 'L200 Logical';
+  if (level === 'L300') return 'L300 Reference';
+  if (level === 'L400') return 'L400 Deep Physical';
   if (level === 'L1') return 'L1 Conceptual';
   if (level === 'L2') return 'L2 Logical';
   if (level === 'L3') return 'L3 Physical';
@@ -64,6 +69,7 @@ export function BlueprintCatalogModal({
       t.id.toLowerCase().includes(q) ||
       t.name.toLowerCase().includes(q) ||
       t.family.toLowerCase().includes(q) ||
+      t.depthLevel.toLowerCase().includes(q) ||
       t.primaryPurpose.toLowerCase().includes(q) ||
       t.keyComponents.some((c) => c.toLowerCase().includes(q)) ||
       Boolean(t.tags?.some((tag) => tag.toLowerCase().includes(q)))
@@ -76,7 +82,7 @@ export function BlueprintCatalogModal({
     for (const fam of CANONICAL_FAMILIES) {
       map[fam] = CANONICAL_TEMPLATES.filter((t) => {
         const matchFam = fam === 'All' || t.family === fam;
-        const matchLvl = selectedLevel === 'All' || t.level === selectedLevel;
+        const matchLvl = selectedLevel === 'All' || t.depthLevel === selectedLevel;
         return matchFam && matchLvl && matchesQuery(t, searchQuery);
       }).length;
     }
@@ -85,10 +91,10 @@ export function BlueprintCatalogModal({
 
   const levelCounts = useMemo(() => {
     const map: Record<string, number> = {};
-    for (const lvl of ['All', 'L1', 'L2', 'L3']) {
+    for (const lvl of CANONICAL_DEPTH_LEVELS) {
       map[lvl] = CANONICAL_TEMPLATES.filter((t) => {
         const matchFam = selectedFamily === 'All' || t.family === selectedFamily;
-        const matchLvl = lvl === 'All' || t.level === lvl;
+        const matchLvl = lvl === 'All' || t.depthLevel === lvl;
         return matchFam && matchLvl && matchesQuery(t, searchQuery);
       }).length;
     }
@@ -99,7 +105,7 @@ export function BlueprintCatalogModal({
   const filteredTemplates = useMemo(() => {
     const exact = CANONICAL_TEMPLATES.filter((t) => {
       const matchFamily = selectedFamily === 'All' || t.family === selectedFamily;
-      const matchLevel = selectedLevel === 'All' || t.level === selectedLevel;
+      const matchLevel = selectedLevel === 'All' || t.depthLevel === selectedLevel;
       return matchFamily && matchLevel && matchesQuery(t, searchQuery);
     });
     if (exact.length > 0) return exact;
@@ -217,7 +223,7 @@ export function BlueprintCatalogModal({
             {/* Level Filter with Dynamic Facet Hiding (0-result levels hidden) */}
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1">Level:</span>
-              {(['All', 'L1', 'L2', 'L3'] as const)
+              {CANONICAL_DEPTH_LEVELS
                 .filter((lvl) => lvl === 'All' || (levelCounts[lvl] ?? 0) > 0)
                 .map((lvl) => (
                   <button
@@ -225,13 +231,15 @@ export function BlueprintCatalogModal({
                     onClick={() => setSelectedLevel(lvl)}
                     className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition cursor-pointer flex items-center gap-1 ${
                       selectedLevel === lvl
-                        ? 'bg-blue-600 text-white shadow-xs'
+                        ? lvl === 'L400'
+                          ? 'bg-indigo-600 text-white shadow-xs'
+                          : 'bg-blue-600 text-white shadow-xs'
                         : isDark
                         ? 'bg-slate-800 text-slate-300 hover:bg-slate-700'
                         : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                   >
-                    <span>{lvl === 'All' ? 'All Levels' : getLevelFullLabel(lvl)}</span>
+                    <span>{lvl === 'All' ? 'All Levels' : lvl}</span>
                     <span className="text-[10px] opacity-80 font-mono">({levelCounts[lvl] ?? 0})</span>
                   </button>
                 ))}
@@ -290,7 +298,7 @@ export function BlueprintCatalogModal({
             {filteredTemplates.map((template) => {
               const isCurrent = currentBlueprintId === template.id;
               const boundDocs = getBoundDocs(template.id);
-              const levelBadgeLabel = getLevelFullLabel(template.level);
+              const levelBadgeLabel = getLevelFullLabel(template.depthLevel);
 
               return (
                 <div
@@ -310,11 +318,13 @@ export function BlueprintCatalogModal({
                         </span>
                         <span
                           className={`text-[10.5px] font-bold px-2 py-0.5 rounded-md font-mono border ${
-                            template.level === 'L1'
-                              ? 'bg-purple-50 text-purple-700 border-purple-200'
-                              : template.level === 'L2'
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                              : 'bg-amber-50 text-amber-800 border-amber-200'
+                            template.depthLevel === 'L400'
+                              ? 'bg-indigo-600 text-white border-indigo-600'
+                              : template.depthLevel === 'L300'
+                              ? 'bg-sky-50 text-sky-800 border-sky-200'
+                              : template.depthLevel === 'L200'
+                              ? 'bg-amber-50 text-amber-800 border-amber-200'
+                              : 'bg-purple-50 text-purple-700 border-purple-200'
                           }`}
                         >
                           {levelBadgeLabel}

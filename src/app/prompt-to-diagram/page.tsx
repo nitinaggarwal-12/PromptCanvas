@@ -28,9 +28,24 @@ import {
   Presentation,
   RefreshCw,
   Link2,
+  Lock,
+  Eye,
+  Brain,
+  Tag,
+  Check,
 } from 'lucide-react';
 import AppHeader, { btnClass } from '@/components/AppHeader';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
+import {
+  CANONICAL_DEPTH_LEVELS,
+  DEPTH_LEVEL_META,
+  getCanonicalTemplateById,
+} from '@/lib/canonical/canonicalTemplates';
+import type {
+  NlpBlueprintRecommendation,
+  NlpRecommendationResponse,
+  PreferredDepthFilter,
+} from '@/lib/nlpBlueprintRecommender';
 import type {
   CompoundPromptToDiagramResult,
 } from '@/lib/freeform/compoundPromptToDiagramEngine';
@@ -92,6 +107,15 @@ export default function PurePromptToDiagramPage() {
   const [statusNotice, setStatusNotice] = useState<string | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
   const [synthesisEngine, setSynthesisEngine] = useState<'v2_fast' | 'visual_4stage'>('v2_fast');
+
+  // NLP Blueprint Recommendation & Deferred-ID Selection State
+  const [preferredLevel, setPreferredLevel] = useState<PreferredDepthFilter>('All');
+  const [isEvaluatingNlp, setIsEvaluatingNlp] = useState(false);
+  const [nlpResult, setNlpResult] = useState<NlpRecommendationResponse | null>(null);
+  const [previewedRecId, setPreviewedRecId] = useState<string | null>(null);
+  const [selectedRecMeta, setSelectedRecMeta] = useState<NlpBlueprintRecommendation | null>(null);
+  const [isChoosingTemplateId, setIsChoosingTemplateId] = useState<string | null>(null);
+  const [resumableStoredId, setResumableStoredId] = useState<string | null>(null);
 
   const syncDiagramIdToUrl = useCallback((id: string | null) => {
     setSavedDiagramId(id);
@@ -195,23 +219,18 @@ export default function PurePromptToDiagramPage() {
     if (incomingPrompt) {
       autoTriggeredRef.current = true;
       setUserPrompt(incomingPrompt);
-      void executeSynthesis('create', incomingPrompt);
+      void evaluatePromptWithNlp(incomingPrompt, 'All');
       return;
     }
 
-    const restored = loadUndoRedoStateFromStorage<CompoundPromptToDiagramResult>(P2D_UNDO_REDO_STORAGE_KEY);
-    if (restored.present) {
-      setHistoryState(restored);
-      if (restored.present.payload?.userPrompt) {
-        setUserPrompt(restored.present.payload.userPrompt);
+    // Do NOT auto-assign an old diagram ID on a fresh visit without ?id=;
+    // surface an optional "Resume previous diagram" shortcut instead so IDs are only assigned when chosen.
+    try {
+      const storedId = localStorage.getItem(P2D_SAVED_ID_STORAGE_KEY)?.trim();
+      if (storedId) {
+        setResumableStoredId(storedId);
       }
-      try {
-        const storedId = localStorage.getItem(P2D_SAVED_ID_STORAGE_KEY)?.trim();
-        if (storedId) {
-          syncDiagramIdToUrl(storedId);
-        }
-      } catch {}
-    }
+    } catch {}
     try {
       const savedImg = sessionStorage.getItem(P2D_REF_IMAGE_SESSION_KEY);
       if (savedImg) setSessionRefImageUrl(savedImg);
@@ -291,7 +310,7 @@ export default function PurePromptToDiagramPage() {
             }),
             DRAWIO_ORIGIN
           );
-        } else if (msg.event === 'save' && typeof msg.xml === 'string') {
+        } else if ((msg.event === 'save' || msg.event === 'autosave') && typeof msg.xml === 'string') {
           const taggedXml = msg.xml.includes('data-user-drawio="true"')
             ? msg.xml
             : msg.xml.replace('<mxfile ', '<mxfile data-user-drawio="true" ');
@@ -303,7 +322,10 @@ export default function PurePromptToDiagramPage() {
               ...prev.present.payload,
               xml: taggedXml,
               mutationMode: 'direct_drawio_xml_update',
-              summaryOfChanges: 'Manual edit in Draw.io Vector Editor',
+              summaryOfChanges:
+                msg.event === 'autosave'
+                  ? '2-Way Auto-Synced edit from Draw.io Vector Editor'
+                  : 'Manual edit in Draw.io Vector Editor (2-Way Synced)',
               audit: {
                 ...prev.present.payload.audit,
                 groupCount: inv.groupCount,
@@ -312,7 +334,7 @@ export default function PurePromptToDiagramPage() {
               },
             };
             return pushUndoRedoChange(prev, {
-              label: 'Manual Draw.io Edit',
+              label: msg.event === 'autosave' ? 'Draw.io Auto-Sync' : 'Manual Draw.io Edit',
               xml: taggedXml,
               payload: nextPayload,
             });
@@ -323,13 +345,18 @@ export default function PurePromptToDiagramPage() {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 xmlContent: taggedXml,
-                comment: 'Manual edit in Draw.io Vector Editor',
-                createdBy: 'Draw.io Editor',
+                comment:
+                  msg.event === 'autosave'
+                    ? '2-Way Auto-Sync edit from Draw.io Editor'
+                    : 'Manual edit in Draw.io Vector Editor',
+                createdBy: 'Draw.io Editor (2-Way Sync)',
               }),
             }).catch(() => {});
           }
-          setStatusNotice('Saved Draw.io edit to history' + (savedDiagramId ? ' & Database.' : '.'));
-          setIsDrawioEditorOpen(false);
+          if (msg.event === 'save') {
+            setStatusNotice('2-Way Synced Draw.io edit to history' + (savedDiagramId ? ` & Instance ${savedDiagramId.slice(0, 8)}….` : '.'));
+            setIsDrawioEditorOpen(false);
+          }
         } else if (msg.event === 'exit') {
           setIsDrawioEditorOpen(false);
         }
@@ -489,18 +516,149 @@ export default function PurePromptToDiagramPage() {
     }
   }
 
+  // =========================================================================
+  // STAGE 1: NLP PROMPT EVALUATION -> TOP 1..3 BLUEPRINTS (ZERO ID ASSIGNED!)
+  // =========================================================================
+  async function evaluatePromptWithNlp(
+    explicitPrompt?: string,
+    explicitLevel?: PreferredDepthFilter
+  ) {
+    const promptToEval = (explicitPrompt !== undefined ? explicitPrompt : userPrompt).trim();
+    const levelToUse = explicitLevel !== undefined ? explicitLevel : preferredLevel;
+    if (!promptToEval || promptToEval.length < 3) {
+      setErrorMsg('Enter an architecture prompt (at least 3 characters) for NLP blueprint evaluation.');
+      return;
+    }
+
+    setErrorMsg(null);
+    setStatusNotice(null);
+    setIsEvaluatingNlp(true);
+    setPreviewedRecId(null);
+    // Clear active instance selection when re-evaluating a prompt so NO ID is assigned & mutation stays LOCKED until chosen!
+    setSelectedRecMeta(null);
+    setHistoryState(createEmptyUndoRedoState<CompoundPromptToDiagramResult>());
+    syncDiagramIdToUrl(null);
+
+    try {
+      const res = await fetch('/api/blueprints/recommend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: promptToEval,
+          preferredLevel: levelToUse,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data?.ok || !Array.isArray(data?.recommendations)) {
+        throw new Error(data?.error || 'Failed to evaluate prompt recommendations.');
+      }
+      setNlpResult(data as NlpRecommendationResponse);
+      setStatusNotice(
+        `NLP evaluated prompt (${data.isLiveNlp ? data.modelUsed : 'semantic fallback'}) — choose one of Top 1–3 blueprints to mint an Instance ID & unlock mutations.`
+      );
+    } catch (err: any) {
+      setErrorMsg(err?.message || 'NLP prompt evaluation failed.');
+    } finally {
+      setIsEvaluatingNlp(false);
+    }
+  }
+
+  // =========================================================================
+  // STAGE 2: USER CHOOSES BLUEPRINT -> MINT UNIQUE ID & UNLOCK 2-WAY MUTATION
+  // =========================================================================
+  async function handleChooseRecommendedBlueprint(rec: NlpBlueprintRecommendation) {
+    if (isChoosingTemplateId) return;
+    setIsChoosingTemplateId(rec.templateId);
+    setErrorMsg(null);
+
+    try {
+      const tpl = getCanonicalTemplateById(rec.templateId);
+      const baseXml = tpl.generateXml('enterprise', 'light');
+      const instanceTitle = `${tpl.name}`;
+      const res = await fetch('/api/diagrams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: instanceTitle,
+          xml: baseXml,
+          comment: `Instantiated Blueprint #${tpl.id} (${tpl.depthLevel}) — NLP Rank #${rec.rank}`,
+          prompt: userPrompt.trim() || tpl.primaryPurpose,
+          aiReasoning: `NLP Rank #${rec.rank} (${rec.matchScore}% match): ${rec.reasoning}`,
+          architectureType: `canonical_${tpl.id}`,
+          createdStudio: 'prompt_to_diagram',
+        }),
+      });
+      const data = await res.json();
+      const newId = data?.diagram?.id || data?.id;
+      if (!res.ok || !newId) {
+        throw new Error(data?.error || 'Failed to create unique instance ID for selected blueprint.');
+      }
+
+      const inv = countXmlInventory(baseXml);
+      const chosenPayload: CompoundPromptToDiagramResult = {
+        success: true,
+        action: 'create',
+        mutationMode: 'direct_drawio_xml_update',
+        userPrompt: userPrompt.trim() || tpl.primaryPurpose,
+        modificationHistory: [],
+        summaryOfChanges: `Selected Blueprint #${tpl.id} (${tpl.depthLevel}) • NLP Rank #${rec.rank} (${rec.matchScore}%): ${rec.reasoning}`,
+        xml: baseXml,
+        graph: {
+          title: instanceTitle,
+          subtitle: `Blueprint #${tpl.id} • ${tpl.depthLevel} • 2-Way Sync (Prompt ↔ Draw.io)`,
+          reasoning: rec.reasoning,
+          groups: [],
+          nodes: [],
+          edges: [],
+        },
+        audit: {
+          ...inv,
+          maxNestingDepth: inv.groupCount > 0 ? 1 : 0,
+          siblingOverlaps: 0,
+          childContainmentViolations: 0,
+        },
+        modelUsed: nlpResult?.modelUsed || 'gemini-nlp',
+        latencyMs: nlpResult?.latencyMs || 0,
+      };
+
+      setSelectedRecMeta(rec);
+      setPreviewedRecId(null);
+      syncDiagramIdToUrl(newId);
+      setHistoryState(
+        pushUndoRedoChange(createEmptyUndoRedoState<CompoundPromptToDiagramResult>(), {
+          label: `Blueprint #${tpl.id} (${tpl.depthLevel})`,
+          xml: baseXml,
+          payload: chosenPayload,
+        })
+      );
+      setStatusNotice(
+        `Assigned Unique ID (${newId.slice(0, 8)}…) to Blueprint #${tpl.id} (${tpl.depthLevel}). Subsequent Prompt & Draw.io 2-way mutation is now UNLOCKED.`
+      );
+    } catch (err: any) {
+      setErrorMsg(err?.message || 'Could not instantiate selected blueprint.');
+    } finally {
+      setIsChoosingTemplateId(null);
+    }
+  }
+
   async function executeSynthesis(action: 'create' | 'modify', explicitPrompt?: string) {
     setErrorMsg(null);
     const basePrompt = (explicitPrompt !== undefined ? explicitPrompt : userPrompt).trim();
-    const modInstruction = followUpPrompt.trim();
+    const modInstruction = (action === 'modify' && explicitPrompt !== undefined ? explicitPrompt : followUpPrompt).trim();
 
     if (action === 'create' && !basePrompt) {
       setErrorMsg('Enter an architecture prompt to generate a diagram.');
       return;
     }
-    if (action === 'modify' && !modInstruction) {
-      setErrorMsg('Enter a follow-up change instruction.');
-      return;
+    if (action === 'modify') {
+      if (!savedDiagramId || !activeResult?.xml) {
+        setErrorMsg('Choose a blueprint template first to assign an Instance ID and unlock mutations.');
+        return;
+      }
+      if (!modInstruction) {
+        setErrorMsg('Enter a follow-up change instruction.');
+        return;
+      }
     }
 
     startRef.current = Date.now();
@@ -726,6 +884,9 @@ export default function PurePromptToDiagramPage() {
       sessionStorage.removeItem(P2D_REF_IMAGE_SESSION_KEY);
     } catch {}
     setFollowUpPrompt('');
+    setNlpResult(null);
+    setPreviewedRecId(null);
+    setSelectedRecMeta(null);
     setErrorMsg(null);
     setStatusNotice(null);
     setCanvasViewMode('drawio');
@@ -756,7 +917,7 @@ export default function PurePromptToDiagramPage() {
         icon={Sparkles}
         tone="blue"
         title="Prompt to Diagram"
-        badge="Independent AI Synthesis • Research → Plan → Image → 1:1 Draw.io XML"
+        badge="NLP Top 1–3 Blueprint Ranking • Deferred Instance ID • 2-Way Prompt ↔ Draw.io Sync"
         actions={
           <div className="flex items-center gap-2">
             <Link
@@ -796,20 +957,18 @@ export default function PurePromptToDiagramPage() {
                 </button>
               </div>
             )}
-            {activeResult?.xml && (
+            {activeResult?.xml && savedDiagramId && (
               <>
-                {savedDiagramId && (
-                  <button
-                    type="button"
-                    onClick={handleCopyPermanentUrl}
-                    className="px-2.5 py-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-800 text-[11px] font-mono font-bold inline-flex items-center gap-1.5 cursor-pointer transition"
-                    data-testid="btn-copy-diagram-url"
-                    title={`Permanent Diagram ID: ${savedDiagramId} — Click to copy shareable URL`}
-                  >
-                    <Link2 className="w-3.5 h-3.5 text-blue-600" />
-                    <span>{copiedLink ? 'Copied URL!' : `ID: ${savedDiagramId.slice(0, 8)}`}</span>
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={handleCopyPermanentUrl}
+                  className="px-2.5 py-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-800 text-[11px] font-mono font-bold inline-flex items-center gap-1.5 cursor-pointer transition"
+                  data-testid="btn-copy-diagram-url"
+                  title={`Permanent Diagram ID: ${savedDiagramId} — Click to copy shareable URL`}
+                >
+                  <Link2 className="w-3.5 h-3.5 text-blue-600" />
+                  <span>{copiedLink ? 'Copied URL!' : `ID: ${savedDiagramId.slice(0, 8)}`}</span>
+                </button>
                 <button
                   type="button"
                   onClick={() => void handleSaveToLibraryDb()}
@@ -818,7 +977,7 @@ export default function PurePromptToDiagramPage() {
                   data-testid="btn-save-library-db"
                 >
                   {isSavingDb ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-                  <span>{savedDiagramId ? 'Save Version' : 'Save to Library'}</span>
+                  <span>Save Version</span>
                 </button>
                 <button
                   type="button"
@@ -827,7 +986,7 @@ export default function PurePromptToDiagramPage() {
                   data-testid="btn-open-drawio-editor"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
-                  <span>Edit in Draw.io</span>
+                  <span>Edit in Draw.io (2-Way)</span>
                 </button>
                 <button
                   type="button"
@@ -877,7 +1036,7 @@ export default function PurePromptToDiagramPage() {
                 >
                   Architecture Prompt
                 </label>
-                {activeResult && (
+                {(activeResult || nlpResult) && (
                   <button
                     type="button"
                     onClick={handleResetNewPrompt}
@@ -893,67 +1052,90 @@ export default function PurePromptToDiagramPage() {
               <textarea
                 id="pure-prompt-textarea"
                 data-testid="input-freeform-user-prompt"
-                rows={5}
+                rows={4}
                 value={userPrompt}
                 onChange={(e) => setUserPrompt(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
                     e.preventDefault();
-                    void executeSynthesis('create');
+                    void evaluatePromptWithNlp();
                   }
                 }}
-                placeholder="Describe any system, protocol, multi-cloud platform, hardware topology, or workflow..."
+                placeholder="Describe your architecture, security posture, multi-tenancy, workflows, or GCP topology (modify anytime to re-rank Top 1–3 templates)..."
                 className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 outline-none resize-y leading-relaxed font-medium"
               />
 
-              <div className="mt-2 flex items-center gap-1.5 text-[10px]">
-                <button
-                  type="button"
-                  onClick={() => setSynthesisEngine('v2_fast')}
-                  className={`flex-1 py-1 px-2 rounded-lg font-bold border transition cursor-pointer ${
-                    synthesisEngine === 'v2_fast'
-                      ? 'bg-blue-50 text-blue-700 border-blue-300'
-                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-                  }`}
-                >
-                  Structured Graph (Fast + DB)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSynthesisEngine('visual_4stage')}
-                  className={`flex-1 py-1 px-2 rounded-lg font-bold border transition cursor-pointer ${
-                    synthesisEngine === 'visual_4stage'
-                      ? 'bg-blue-50 text-blue-700 border-blue-300'
-                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-                  }`}
-                >
-                  4-Stage Vision Render
-                </button>
+              {/* ARCHITECTURE DEPTH LEVEL FILTER (All | L100 | L200 | L300 | L400) */}
+              <div className="mt-2 p-2 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <div className="flex items-center justify-between text-[10px]">
+                  <span className="font-extrabold uppercase tracking-wider text-slate-600">
+                    Target Level (Optional)
+                  </span>
+                  <span className="font-semibold text-indigo-600">L400 = Most Detailed</span>
+                </div>
+                <div className="grid grid-cols-5 gap-1">
+                  {CANONICAL_DEPTH_LEVELS.map((lvl) => {
+                    const isActive = preferredLevel === lvl;
+                    const meta = lvl === 'All' ? null : DEPTH_LEVEL_META[lvl];
+                    return (
+                      <button
+                        key={lvl}
+                        type="button"
+                        data-testid={`p2d-level-filter-${lvl.toLowerCase()}`}
+                        onClick={() => {
+                          setPreferredLevel(lvl);
+                          if (userPrompt.trim().length >= 3 && !savedDiagramId) {
+                            void evaluatePromptWithNlp(userPrompt, lvl);
+                          }
+                        }}
+                        title={meta ? `${meta.label}: ${meta.description}` : 'Let Gemini NLP infer the best level (L100–L400)'}
+                        className={`py-1 px-1 rounded-lg text-[10px] font-extrabold border transition cursor-pointer ${
+                          isActive
+                            ? lvl === 'L400'
+                              ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                              : 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300'
+                        }`}
+                      >
+                        {lvl}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               <button
                 type="button"
-                data-testid="btn-generate-prompt-diagram"
-                disabled={isGenerating || !userPrompt.trim()}
-                onClick={() => void executeSynthesis('create')}
+                data-testid="btn-evaluate-nlp-blueprints"
+                disabled={isEvaluatingNlp || isGenerating || !userPrompt.trim()}
+                onClick={() => void evaluatePromptWithNlp()}
                 className="mt-2.5 w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-500 text-white text-xs font-extrabold shadow-xs transition flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
               >
-                {isGenerating && activeAction === 'create' ? (
+                {isEvaluatingNlp ? (
                   <>
                     <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
-                    <span className="truncate">
-                      {synthesisEngine === 'v2_fast'
-                        ? `Synthesizing Graph → Layout → Draw.io XML (${elapsedSec}s)...`
-                        : describeCreateStageProgress(elapsedSec)}
-                    </span>
+                    <span className="truncate">Running Gemini NLP Evaluation (Top 1–3)...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>Generate Diagram</span>
+                    <Brain className="w-3.5 h-3.5" />
+                    <span>{nlpResult || savedDiagramId ? 'Re-Evaluate Prompt (Top 1–3 NLP)' : 'Evaluate Prompt → Top 3 Blueprints (NLP)'}</span>
                   </>
                 )}
               </button>
+
+              {resumableStoredId && !savedDiagramId && !nlpResult && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    window.location.href = `/prompt-to-diagram?id=${encodeURIComponent(resumableStoredId)}`;
+                  }}
+                  className="mt-2 w-full py-1.5 px-3 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-[11px] font-semibold text-slate-700 flex items-center justify-between cursor-pointer"
+                >
+                  <span>Resume last saved diagram</span>
+                  <span className="font-mono text-[10px] text-blue-700">{resumableStoredId.slice(0, 8)} →</span>
+                </button>
+              )}
             </div>
 
             {statusNotice && (
@@ -976,20 +1158,38 @@ export default function PurePromptToDiagramPage() {
               </div>
             )}
 
-            {/* DIRECT DRAW.IO XML UPDATE BOX (SUBSEQUENT PROMPTS) */}
-            {activeResult && (
-              <div className="pt-3 border-t border-slate-200 space-y-2">
+            {/* DIRECT DRAW.IO XML UPDATE BOX — LOCKED UNTIL USER CHOOSES A TEMPLATE & ID IS ASSIGNED */}
+            {activeResult && savedDiagramId ? (
+              <div className="pt-3 border-t border-slate-200 space-y-2" data-testid="p2d-mutation-unlocked-panel">
                 <div className="flex items-center justify-between">
                   <label
                     htmlFor="followup-prompt-textarea"
                     className="text-xs font-extrabold text-slate-900"
                   >
-                    Update Draw.io Directly
+                    Mutate Instance (2-Way Sync)
                   </label>
                   <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
-                    In-Place Spatial XML
+                    Prompt ↔ Draw.io
                   </span>
                 </div>
+                {selectedRecMeta && selectedRecMeta.suggestedMutations.length > 0 && (
+                  <div className="flex flex-col gap-1">
+                    {selectedRecMeta.suggestedMutations.map((mut, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        disabled={isGenerating}
+                        onClick={() => {
+                          setFollowUpPrompt(mut);
+                        }}
+                        className="w-full text-left px-2.5 py-1 rounded-lg bg-blue-50/80 hover:bg-blue-100 border border-blue-200 text-[10px] font-semibold text-blue-800 cursor-pointer truncate block"
+                        title={mut}
+                      >
+                        + {mut}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <textarea
                   id="followup-prompt-textarea"
                   data-testid="input-followup-prompt"
@@ -1002,7 +1202,7 @@ export default function PurePromptToDiagramPage() {
                       void executeSynthesis('modify');
                     }
                   }}
-                  placeholder="Add, move, connect, or remove components directly in the current Draw.io diagram..."
+                  placeholder="Add, move, connect, or remove components directly in your diagram instance..."
                   className="w-full rounded-xl border border-slate-300 bg-slate-50/70 focus:bg-white px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-blue-600 outline-none resize-none leading-relaxed font-medium"
                 />
                 <button
@@ -1025,6 +1225,24 @@ export default function PurePromptToDiagramPage() {
                   )}
                 </button>
               </div>
+            ) : (
+              <div
+                data-testid="p2d-mutation-locked-panel"
+                className="pt-3 border-t border-slate-200 space-y-2"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-extrabold text-slate-500 flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Mutation &amp; Draw.io Locked</span>
+                  </span>
+                  <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded">
+                    No ID Yet
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 leading-relaxed bg-slate-50 border border-slate-200 rounded-xl p-2.5">
+                  Evaluate your prompt and <strong>choose one of the Top 1–3 NLP Blueprints</strong> on the right. Only after you pick a template will a unique Diagram ID be assigned and 2-way Prompt + Draw.io mutation be enabled.
+                </p>
+              </div>
             )}
 
             {/* PIPELINE PROVENANCE, GROUNDING SOURCES & LAST 15 SAVED CHANGES (UNDO/REDO) */}
@@ -1042,7 +1260,9 @@ export default function PurePromptToDiagramPage() {
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                       {activeResult.mutationMode === 'direct_drawio_xml_update'
                         ? activeResult.action === 'create'
-                          ? 'Structured Graph V2 (ELK + Validator)'
+                          ? selectedRecMeta
+                            ? `NLP Blueprint #${selectedRecMeta.templateId} (2-Way Sync)`
+                            : 'Persisted Diagram (2-Way Sync)'
                           : 'Direct Draw.io Spatial Update'
                         : '4-Stage Research → Image → 1:1 XML'}
                     </span>
@@ -1231,9 +1451,9 @@ export default function PurePromptToDiagramPage() {
           </div>
         </aside>
 
-        {/* RIGHT FULL-HEIGHT VECTOR DRAW.IO CANVAS (+ REFERENCE IMAGE / SPLIT COMPARE) */}
+        {/* RIGHT FULL-HEIGHT VECTOR DRAW.IO CANVAS OR NLP TOP 1–3 BLUEPRINT SELECTION STAGE */}
         <section className="p-4 flex flex-col min-w-0 bg-slate-50">
-          {activeResult?.xml ? (
+          {activeResult?.xml && savedDiagramId ? (
             <div className="flex-1 bg-white rounded-2xl border border-slate-200 shadow-xs flex flex-col overflow-hidden min-h-[640px]">
               <div className="px-4 py-2.5 border-b border-slate-200 bg-slate-50/70 flex items-center justify-between gap-3 flex-wrap">
                 <div className="min-w-0">
@@ -1407,23 +1627,315 @@ export default function PurePromptToDiagramPage() {
                 </div>
               )}
             </div>
+          ) : nlpResult ? (
+            <div
+              data-testid="nlp-blueprint-selection-stage"
+              className="flex-1 flex flex-col gap-4 min-h-[600px]"
+            >
+              {/* NLP Semantic Analysis Summary Header */}
+              <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center shrink-0">
+                      <Brain className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h2 className="text-sm font-black text-slate-900">
+                          Top 1–3 NLP-Ranked Blueprint Recommendations
+                        </h2>
+                        <span
+                          data-testid="nlp-engine-badge"
+                          className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${
+                            nlpResult.isLiveNlp
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              : 'bg-amber-50 text-amber-800 border-amber-200'
+                          }`}
+                        >
+                          {nlpResult.isLiveNlp ? `Gemini NLP • ${nlpResult.modelUsed}` : 'Semantic Vector Fallback'}
+                        </span>
+                        <span className="text-[10px] font-mono font-black px-2 py-0.5 rounded-full bg-indigo-600 text-white">
+                          Inferred Level: {nlpResult.inferredLevel}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-600 mt-0.5">{nlpResult.promptSummary}</p>
+                    </div>
+                  </div>
+
+                  <span className="inline-flex items-center gap-1.5 text-[10.5px] font-bold px-2.5 py-1 rounded-xl bg-amber-50 text-amber-800 border border-amber-200">
+                    <Lock className="w-3 h-3 text-amber-600" />
+                    <span>No ID Assigned Yet — Pick a Template Below</span>
+                  </span>
+                </div>
+
+                {nlpResult.detectedConcepts.length > 0 && (
+                  <div className="flex items-center gap-1.5 flex-wrap pt-1 border-t border-slate-100">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      Detected Intent:
+                    </span>
+                    {nlpResult.detectedConcepts.map((concept, idx) => (
+                      <span
+                        key={`${concept}-${idx}`}
+                        className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-semibold border border-slate-200"
+                      >
+                        {concept}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* TOP 1, #2, #3 RANKED BLUEPRINT CARDS */}
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+                {nlpResult.recommendations.map((rec) => {
+                  const isPreviewOpen = previewedRecId === rec.templateId;
+                  const isChoosing = isChoosingTemplateId === rec.templateId;
+                  const rankColors =
+                    rec.rank === 1
+                      ? 'bg-gradient-to-r from-teal-600 to-indigo-600 text-white'
+                      : rec.rank === 2
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-slate-700 text-white';
+
+                  return (
+                    <div
+                      key={rec.templateId}
+                      data-testid={`nlp-rec-card-${rec.rank}`}
+                      className={`bg-white rounded-2xl border p-4 flex flex-col justify-between gap-3 transition shadow-xs ${
+                        rec.rank === 1
+                          ? 'border-indigo-400 ring-2 ring-indigo-500/15 shadow-md'
+                          : 'border-slate-200 hover:border-blue-300'
+                      }`}
+                    >
+                      <div className="space-y-3">
+                        {/* Rank + Confidence + Depth Level */}
+                        <div className="flex items-center justify-between gap-2 flex-wrap">
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10.5px] font-black uppercase tracking-wider ${rankColors}`}>
+                            #{rec.rank} {rec.rank === 1 ? 'Best Match' : rec.rank === 2 ? 'Strong Match' : 'Alternative'}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <span
+                              className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase ${
+                                rec.depthLevel === 'L400'
+                                  ? 'bg-indigo-600 text-white'
+                                  : 'bg-sky-50 text-sky-800 border border-sky-200'
+                              }`}
+                            >
+                              {rec.depthLevel}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                              {rec.matchScore}% match
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Blueprint Title & Tags */}
+                        <div>
+                          <div className="flex items-center gap-1.5 flex-wrap mb-1">
+                            <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.2 rounded">
+                              Blueprint #{rec.templateId}
+                            </span>
+                            <span className="text-[10px] font-bold uppercase text-slate-500">
+                              {rec.family}
+                            </span>
+                            {rec.tags.map((tag) => (
+                              <span
+                                key={tag}
+                                className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-black uppercase bg-indigo-50 text-indigo-700 border border-indigo-200"
+                              >
+                                <Tag className="w-2.5 h-2.5" />
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                          <h3 className="text-xs font-extrabold text-slate-900 leading-snug">
+                            {rec.name}
+                          </h3>
+                        </div>
+
+                        {/* Real Certified Preview Thumbnail */}
+                        <div className="w-full h-40 rounded-xl border border-slate-200 bg-slate-50/70 overflow-hidden flex items-center justify-center p-1.5">
+                          <img
+                            src={rec.previewImage}
+                            alt={rec.name}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+
+                        {/* NLP Reasoning Callout */}
+                        <div
+                          data-testid={`nlp-rec-reasoning-${rec.rank}`}
+                          className="p-2.5 rounded-xl bg-indigo-50/60 border border-indigo-200/80 space-y-1"
+                        >
+                          <div className="text-[10px] font-black uppercase tracking-wider text-indigo-800 flex items-center gap-1">
+                            <Brain className="w-3 h-3 text-indigo-600" />
+                            <span>Why Chosen (NLP Reasoning)</span>
+                          </div>
+                          <p className="text-[11px] text-slate-700 leading-relaxed font-medium">
+                            {rec.reasoning}
+                          </p>
+                        </div>
+
+                        {/* Suggested Follow-Up Mutations */}
+                        {rec.suggestedMutations.length > 0 && (
+                          <div className="space-y-1">
+                            <div className="text-[9.5px] font-bold uppercase tracking-wider text-slate-400">
+                              Next Mutations After Selection
+                            </div>
+                            <ul className="space-y-0.5 text-[10.5px] text-slate-600">
+                              {rec.suggestedMutations.slice(0, 2).map((mut, mIdx) => (
+                                <li key={mIdx} className="truncate" title={mut}>
+                                  • {mut}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Actions: Read-Only Preview vs. Choose & Assign ID */}
+                      <div className="pt-2.5 border-t border-slate-100 flex flex-col gap-1.5">
+                        <button
+                          type="button"
+                          data-testid={`btn-choose-recommended-${rec.templateId}`}
+                          disabled={Boolean(isChoosingTemplateId)}
+                          onClick={() => void handleChooseRecommendedBlueprint(rec)}
+                          className={`w-full py-2 px-3 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60 ${
+                            rec.rank === 1
+                              ? 'bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 text-white shadow-sm'
+                              : 'bg-slate-900 hover:bg-slate-800 text-white'
+                          }`}
+                        >
+                          {isChoosing ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              <span>Minting New ID…</span>
+                            </>
+                          ) : (
+                            <>
+                              <Check className="w-3.5 h-3.5" />
+                              <span>Choose Blueprint #{rec.templateId} (Assign ID)</span>
+                            </>
+                          )}
+                        </button>
+                        <button
+                          type="button"
+                          data-testid={`btn-preview-recommended-${rec.templateId}`}
+                          onClick={() => setPreviewedRecId(isPreviewOpen ? null : rec.templateId)}
+                          className="w-full py-1.5 px-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[11px] font-bold flex items-center justify-center gap-1 cursor-pointer"
+                        >
+                          <Eye className="w-3 h-3" />
+                          <span>{isPreviewOpen ? 'Hide Read-Only Preview' : 'Inspect Vector Preview (No ID)'}</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Optional Read-Only Interactive Preview of a Recommended Template (Still NO ID Assigned) */}
+              {previewedRecId && (() => {
+                const previewRec = nlpResult.recommendations.find((r) => r.templateId === previewedRecId);
+                if (!previewRec) return null;
+                const previewXml = getCanonicalTemplateById(previewRec.templateId).generateXml('enterprise', 'light');
+                return (
+                  <div
+                    data-testid="nlp-readonly-preview-panel"
+                    className="bg-white rounded-2xl border-2 border-indigo-300 shadow-sm overflow-hidden flex flex-col"
+                  >
+                    <div className="px-4 py-2.5 bg-indigo-50 border-b border-indigo-200 flex items-center justify-between gap-3 flex-wrap">
+                      <div className="flex items-center gap-2 text-xs font-extrabold text-indigo-950">
+                        <Eye className="w-4 h-4 text-indigo-600" />
+                        <span>
+                          Read-Only Preview: Blueprint #{previewRec.templateId} — {previewRec.name} ({previewRec.depthLevel})
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => void handleChooseRecommendedBlueprint(previewRec)}
+                          disabled={Boolean(isChoosingTemplateId)}
+                          className="px-3 py-1 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-[11px] font-extrabold cursor-pointer"
+                        >
+                          Use This Blueprint (Assign New ID)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPreviewedRecId(null)}
+                          className="p-1 rounded-lg hover:bg-indigo-100 text-indigo-700 cursor-pointer"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="h-[520px] p-2 bg-white">
+                      <DiagramViewerRenderSafe
+                        xml={previewXml}
+                        diagramType={`canonical_${previewRec.templateId}`}
+                        bgTheme="light"
+                        minHeight={500}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
           ) : (
             <div
               data-testid="prompt-empty-canvas-state"
-              className="flex-1 bg-white rounded-2xl border border-dashed border-slate-300 flex flex-col items-center justify-center text-center p-8 min-h-[600px]"
+              className="flex-1 bg-white rounded-2xl border border-dashed border-slate-300 flex flex-col items-center justify-center text-center p-8 min-h-[600px] space-y-4"
             >
-              <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center mb-3">
-                <Sparkles className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center">
+                <Brain className="w-6 h-6" />
               </div>
-              <h2 className="text-sm font-extrabold text-slate-900 mb-1">
-                Independent Prompt-to-Diagram Studio
-              </h2>
-              <p className="text-xs text-slate-500 max-w-lg leading-relaxed">
-                Enter any prompt on the left. On initial synthesis, the studio executes live web
-                research, plans the topology, generates a 16:9 reference architecture image, and
-                decompiles it 1:1 into editable Draw.io XML. Subsequent prompts surgically update
-                Draw.io XML in-place, keeping the last 15 changes saved for Undo and Redo.
-              </p>
+              <div className="space-y-1.5 max-w-xl">
+                <h2 className="text-base font-black text-slate-900">
+                  NLP-Guided Prompt-to-Diagram Studio
+                </h2>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Enter any architecture prompt on the left. Gemini NLP evaluates your intent,
+                  depth (<strong className="text-indigo-700">L100–L400</strong>), and technical
+                  requirements to rank the <strong>Top 1–3 relevant certified blueprints</strong>{' '}
+                  with clear reasoning. Refine your prompt as many times as you like — a unique
+                  Diagram ID and 2-way Prompt ↔ Draw.io mutation unlock{' '}
+                  <strong>only when you choose a blueprint</strong>.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 max-w-2xl w-full pt-2 text-left">
+                {[
+                  {
+                    label: 'L400 Multi-Tenant 5-Hop GCP Agent Platform',
+                    prompt:
+                      'Design an L400 GCP multi-tenant agentic AI platform with Pool, Hybrid /28 PSC spokes, and Sovereign HSM CMEK Silos behind an 80% shared 5-Hop control plane with STS DPoP and Model Armor',
+                  },
+                  {
+                    label: 'L400 Principal Sequence (OIDC + SPIFFE + MCP)',
+                    prompt:
+                      'Create a detailed L400 runtime sequence diagram showing OIDC JWT, SPIFFE mTLS, Agent Gateway delegation, A2A subagent calls, MCP tools, and HITL review gates',
+                  },
+                  {
+                    label: 'L300 Physical AlloyDB + ScaNN ERD Schema',
+                    prompt:
+                      'Show a physical PostgreSQL AlloyDB database schema and ERD with row-level security, monthly partitioning, and ScaNN vector indexes for an AI platform',
+                  },
+                ].map((sample, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      setUserPrompt(sample.prompt);
+                      void evaluatePromptWithNlp(sample.prompt, preferredLevel);
+                    }}
+                    className="p-3 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-indigo-50/50 hover:border-indigo-300 transition text-left space-y-1 cursor-pointer"
+                  >
+                    <div className="text-[11px] font-extrabold text-slate-900">{sample.label}</div>
+                    <div className="text-[10px] text-slate-500 line-clamp-2 leading-snug">
+                      {sample.prompt}
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </section>

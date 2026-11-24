@@ -53,7 +53,8 @@ import {
   Save,
   MessageSquare,
   Presentation,
-  Printer
+  Printer,
+  Link2
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -70,6 +71,9 @@ import {
 import {
   CANONICAL_TEMPLATES,
   CANONICAL_FAMILIES,
+  CANONICAL_DEPTH_LEVELS,
+  DEPTH_LEVEL_META,
+  BlueprintDepthLevel,
   CanonicalTemplate
 } from '@/lib/canonical/canonicalTemplates';
 import { AppHeader } from '@/components/AppHeader';
@@ -301,8 +305,12 @@ function DashboardContent() {
   const [openBlueprintDropdown, setOpenBlueprintDropdown] = useState<boolean>(false);
   const [blueprintSearchQuery, setBlueprintSearchQuery] = useState<string>('');
 
-  // 3. STEP 3: DETAIL LEVEL (L1, L2, L3, L4)
+  // 3. STEP 3: DETAIL LEVEL (L1, L2, L3, L4) + DEPTH LEVEL FILTER (L100..L400) + ACTIVE PERSISTED INSTANCE ID
   const [selectedLevel, setSelectedLevel] = useState<AbstractionDetailLevel>('L3');
+  const [selectedDepthLevel, setSelectedDepthLevel] = useState<'All' | BlueprintDepthLevel>('All');
+  const [activeInstanceId, setActiveInstanceId] = useState<string | null>(null);
+  const [isCreatingInstance, setIsCreatingInstance] = useState<boolean>(false);
+  const [copiedInstanceLink, setCopiedInstanceLink] = useState<boolean>(false);
   const [openLevelDropdown, setOpenLevelDropdown] = useState<boolean>(false);
   const [levelSearchQuery, setLevelSearchQuery] = useState<string>('');
 
@@ -383,9 +391,65 @@ function DashboardContent() {
 
       try {
         const params = new URLSearchParams(window.location.search);
+        const incomingInstanceId = params.get('id')?.trim();
         const draftParam = params.get('draft');
         const bpParam = params.get('blueprint');
+        const depthParam = params.get('depth')?.trim().toUpperCase();
         const importParam = params.get('import');
+
+        if (depthParam === 'L100' || depthParam === 'L200' || depthParam === 'L300' || depthParam === 'L400') {
+          setSelectedDepthLevel(depthParam);
+        }
+
+        if (incomingInstanceId) {
+          setActiveInstanceId(incomingInstanceId);
+          fetch(`/api/diagrams/${encodeURIComponent(incomingInstanceId)}`, { cache: 'no-store' })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((data) => {
+              if (data?.xml_content && String(data.xml_content).includes('<mxCell')) {
+                const archType = String(data.architecture_type || '');
+                const bpMatch = archType.match(/^canonical_(\d+)$/);
+                const matchedBpId = bpMatch ? bpMatch[1].padStart(2, '0') : (bpParam || '99');
+                const matchedTpl = CANONICAL_TEMPLATES.find((t) => t.id === matchedBpId);
+                if (matchedTpl) {
+                  setSelectedBlueprintId(matchedTpl.id);
+                  setLoadedBlueprintId(matchedTpl.id);
+                  setSelectedDepthLevel(matchedTpl.depthLevel);
+                }
+                setCanvasTitle(data.name || matchedTpl?.name || 'Saved Architecture Instance');
+                setIsSessionForked(true);
+                setHasUnsavedSessionChanges(false);
+                setVersionHistory([
+                  {
+                    id: `ver_db_${incomingInstanceId}_${Date.now()}`,
+                    versionTag: `v${data.max_version || data.version_count || 1}.0`,
+                    major: Number(data.max_version || data.version_count || 1),
+                    minor: 0,
+                    micro: 0,
+                    title: data.name || matchedTpl?.name || 'Saved Architecture Instance',
+                    prompt: data.latest_prompt || matchedTpl?.primaryPurpose || DEFAULT_DASHBOARD_PROMPT,
+                    source: 'initial_load',
+                    sourceLabel: 'Persisted Instance (2-Way Sync)',
+                    diffSummary: data.ai_reasoning || `Loaded persisted diagram instance ${incomingInstanceId.slice(0, 8)}… with 2-way Prompt & Draw.io sync.`,
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    xml: data.xml_content,
+                    blueprintId: matchedTpl?.id || '99',
+                    level: 'L3',
+                    perspective: 'Technical',
+                    status: 'draft',
+                    perspectiveXmlMap: { Technical: data.xml_content },
+                  },
+                ]);
+                setActiveVersionIndex(0);
+              } else {
+                setActiveInstanceId(null);
+              }
+            })
+            .catch(() => {
+              setActiveInstanceId(null);
+            });
+          return;
+        }
 
         const targetDraftId =
           draftParam ||
@@ -1103,10 +1167,14 @@ function DashboardContent() {
     );
   }, [levelSearchQuery]);
 
-  // Filter blueprints
+  // Filter blueprints by Category + Architecture Depth Level (L100..L400) + Search
   const filteredTemplates = useMemo(() => {
     const activeCategory = CATEGORY_GROUPS.find((c) => c.id === selectedCategory);
     let list = CANONICAL_TEMPLATES;
+
+    if (selectedDepthLevel !== 'All') {
+      list = list.filter((t) => t.depthLevel === selectedDepthLevel);
+    }
 
     if (activeCategory && activeCategory.familyFilter) {
       list = list.filter((t) => t.family === activeCategory.familyFilter);
@@ -1119,10 +1187,27 @@ function DashboardContent() {
       (t) =>
         t.name.toLowerCase().includes(q) ||
         t.id.includes(q) ||
+        t.depthLevel.toLowerCase().includes(q) ||
         t.family.toLowerCase().includes(q) ||
-        t.primaryPurpose.toLowerCase().includes(q)
+        t.primaryPurpose.toLowerCase().includes(q) ||
+        Boolean(t.tags?.some((tag) => tag.toLowerCase().includes(q)))
     );
-  }, [selectedCategory, blueprintSearchQuery]);
+  }, [selectedCategory, selectedDepthLevel, blueprintSearchQuery]);
+
+  const depthLevelCounts = useMemo(() => {
+    const activeCategory = CATEGORY_GROUPS.find((c) => c.id === selectedCategory);
+    const catList =
+      activeCategory && activeCategory.familyFilter
+        ? CANONICAL_TEMPLATES.filter((t) => t.family === activeCategory.familyFilter)
+        : CANONICAL_TEMPLATES;
+    return {
+      All: catList.length,
+      L100: catList.filter((t) => t.depthLevel === 'L100').length,
+      L200: catList.filter((t) => t.depthLevel === 'L200').length,
+      L300: catList.filter((t) => t.depthLevel === 'L300').length,
+      L400: catList.filter((t) => t.depthLevel === 'L400').length,
+    };
+  }, [selectedCategory]);
 
   const selectedCategoryObj = useMemo(() => {
     return CATEGORY_GROUPS.find((c) => c.id === selectedCategory) || CATEGORY_GROUPS[0];
@@ -1191,8 +1276,16 @@ function DashboardContent() {
     setIsSessionForked(false);
     setHasUnsavedSessionChanges(false);
     setSessionCopyId(null);
+    setActiveInstanceId(null);
     setConversationalReply(null);
     setAiPlanningStatus(null);
+    if (typeof window !== 'undefined') {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('id');
+        window.history.replaceState({}, '', url.toString());
+      } catch {}
+    }
 
     setSelectedBlueprintId(bp.id);
     setLoadedBlueprintId(bp.id);
@@ -1301,6 +1394,109 @@ function DashboardContent() {
       showToast('📥 External Draw.io XML loaded successfully!');
       return;
     }
+  };
+
+  // Switch Depth Level (L100 | L200 | L300 | L400) & auto-select first tagged blueprint in that level
+  const handleSelectDepthLevel = (lvl: 'All' | BlueprintDepthLevel) => {
+    setSelectedDepthLevel(lvl);
+    const activeCategory = CATEGORY_GROUPS.find((c) => c.id === selectedCategory);
+    let pool = CANONICAL_TEMPLATES;
+    if (lvl !== 'All') {
+      pool = pool.filter((t) => t.depthLevel === lvl);
+    }
+    if (activeCategory && activeCategory.familyFilter) {
+      const catPool = pool.filter((t) => t.family === activeCategory.familyFilter);
+      if (catPool.length > 0) pool = catPool;
+      else setSelectedCategory('all');
+    }
+    if (pool.length > 0 && !pool.some((t) => t.id === loadedBlueprintId)) {
+      loadPristineCanonicalBlueprint(pool[0].id, canvasPerspective);
+    }
+  };
+
+  // Explicit "Use This Blueprint" CTA: Mints a brand-new unique Diagram ID (SQLite + GCS)
+  // and unlocks 2-Way Sync between Subsequent Prompt Mutations and Draw.io Editor!
+  const handleUseSelectedBlueprint = async (targetBp?: CanonicalTemplate) => {
+    const bp = targetBp || selectedBlueprintObj;
+    if (!bp || isCreatingInstance) return;
+    setIsCreatingInstance(true);
+    try {
+      const xmlToInstantiate =
+        loadedBlueprintId === bp.id && activeCanvasXml && activeCanvasXml.includes('<mxCell')
+          ? activeCanvasXml
+          : bp.generateXml('enterprise', isLight ? 'light' : 'dark');
+
+      const res = await fetch('/api/diagrams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: `${bp.name}`,
+          xml: xmlToInstantiate,
+          comment: `Created new editable instance from Blueprint #${bp.id} (${bp.depthLevel})`,
+          prompt: bp.primaryPurpose,
+          aiReasoning: `Instantiated from Certified Blueprint #${bp.id} (${bp.depthLevel} • ${bp.family}). Two-way Prompt & Draw.io sync enabled.`,
+          architectureType: `canonical_${bp.id}`,
+          createdStudio: 'dashboard',
+        }),
+      });
+      const data = await res.json();
+      const newId = data?.diagram?.id || data?.id;
+      if (!res.ok || !newId) {
+        throw new Error(data?.error || 'Could not create new blueprint instance.');
+      }
+
+      setActiveInstanceId(newId);
+      setLoadedBlueprintId(bp.id);
+      setSelectedBlueprintId(bp.id);
+      setIsSessionForked(true);
+      setHasUnsavedSessionChanges(false);
+
+      if (typeof window !== 'undefined') {
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.set('id', newId);
+          url.searchParams.set('blueprint', bp.id);
+          window.history.replaceState({}, '', url.toString());
+        } catch {}
+      }
+
+      setVersionHistory([
+        {
+          id: `ver_inst_${newId}_${Date.now()}`,
+          versionTag: 'v1.0',
+          major: 1,
+          minor: 0,
+          micro: 0,
+          title: bp.name,
+          prompt: bp.primaryPurpose,
+          source: 'initial_load',
+          sourceLabel: `Instance ${newId.slice(0, 8)} (${bp.depthLevel})`,
+          diffSummary: `Created new editable instance (ID: ${newId.slice(0, 8)}…) from Blueprint #${bp.id}. Mutate via Prompt or Draw.io in 2-way sync.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          xml: xmlToInstantiate,
+          blueprintId: bp.id,
+          level: bp.depthLevel === 'L400' ? 'L4' : bp.depthLevel === 'L300' ? 'L3' : bp.depthLevel === 'L200' ? 'L2' : 'L1',
+          perspective: canvasPerspective,
+          status: 'draft',
+          perspectiveXmlMap: { [canvasPerspective]: xmlToInstantiate },
+        },
+      ]);
+      setActiveVersionIndex(0);
+      showToast(`✨ Created new Instance ID ${newId.slice(0, 8)}… from Blueprint #${bp.id} (${bp.depthLevel}). Prompt & Draw.io 2-way sync unlocked!`);
+    } catch (err: any) {
+      showToast(`❌ ${err?.message || 'Failed to instantiate blueprint.'}`);
+    } finally {
+      setIsCreatingInstance(false);
+    }
+  };
+
+  const handleCopyInstanceUrl = () => {
+    if (typeof window === 'undefined' || !activeInstanceId) return;
+    const shareUrl = `${window.location.origin}/dashboard?id=${encodeURIComponent(activeInstanceId)}`;
+    navigator.clipboard?.writeText(shareUrl).catch(() => {});
+    setCopiedInstanceLink(true);
+    setTimeout(() => setCopiedInstanceLink(false), 1800);
+    showToast(`🔗 Copied Instance URL (?id=${activeInstanceId.slice(0, 8)}…)`);
   };
 
   // Immediate Category Selection (after no unsaved changes or after modal resolution)
@@ -1445,8 +1641,26 @@ function DashboardContent() {
       return nextHistory;
     });
     setActiveVersionIndex(0);
+
+    // 2-Way Sync Persistence: auto-persist every Prompt Mutation and Draw.io Manual Edit to DB + GCS
+    if (activeInstanceId) {
+      fetch(`/api/diagrams/${encodeURIComponent(activeInstanceId)}/versions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          xmlContent: newXml,
+          comment: summaryText.slice(0, 180),
+          createdBy: source === 'manual_drawio' ? 'Draw.io Editor (2-Way Sync)' : 'Gemini Prompt Co-Pilot',
+          prompt: promptText,
+          aiReasoning: aiMeta?.aiReasoning || summaryText,
+        }),
+      }).catch(() => {});
+    }
+
     showToast(
-      isZeroTemplateBp
+      activeInstanceId
+        ? `⚡ 2-Way Synced (${nextChangeNum}/15) → Instance ${activeInstanceId.slice(0, 8)}…`
+        : isZeroTemplateBp
         ? `⚡ Saved change (${nextChangeNum}/15 for Undo/Redo)`
         : `⚡ Saved change (${nextChangeNum}/15 for Undo/Redo) • Canonical Blueprint #${effectiveBpId} untouched`
     );
@@ -1458,6 +1672,9 @@ function DashboardContent() {
   const handleSwitchPerspective = (newPerspective: ArchitecturePerspective) => {
     if (newPerspective === canvasPerspective) return;
     setCanvasPerspective(newPerspective);
+    if (newPerspective === 'Technical') {
+      showToast('⚙️ Technical Mode active — choose a Level (L100, L200, L300, or L400) to filter tagged blueprints, then click Use Blueprint.');
+    }
 
     const baseline = getCanonicalBaselineForPerspective(loadedBlueprintId, newPerspective, isLight);
     setCanvasTitle(baseline.title);
@@ -1538,6 +1755,12 @@ function DashboardContent() {
     );
     if (!hasSelectedTemplate) {
       showToast('🏛️ Select one of the 41 Certified Blueprints in Step 1 before applying AI mutations (or use Prompt Only for no-template generation).');
+      return;
+    }
+
+    // Require explicit "Use This Blueprint" instance creation before mutating
+    if (!activeInstanceId) {
+      showToast('✨ Click "Use Blueprint" in Step 1 first to mint a unique Instance ID and unlock 2-way Prompt + Draw.io mutations.');
       return;
     }
 
@@ -2010,10 +2233,13 @@ function DashboardContent() {
   };
 
   // =========================================================================
-  // CORE ACTION: Draw.io Inline Edit PostMessage Listener
+  // CORE ACTION: Draw.io Inline Edit PostMessage Listener (2-Way Sync)
   // =========================================================================
   useEffect(() => {
+    if (!isInlineEditOpen) return;
+    const DRAWIO_ORIGIN = 'https://embed.diagrams.net';
     const handleDrawioMessage = (evt: MessageEvent) => {
+      if (evt.origin !== DRAWIO_ORIGIN) return;
       if (!evt.data || typeof evt.data !== 'string') return;
       try {
         const msg = JSON.parse(evt.data);
@@ -2024,22 +2250,24 @@ function DashboardContent() {
               autosave: 1,
               xml: activeCanvasXml
             }),
-            '*'
+            DRAWIO_ORIGIN
           );
-        } else if ((msg.event === 'save' || msg.event === 'exit') && typeof msg.xml === 'string') {
-          if (msg.xml && msg.xml.includes('<mxCell')) {
+        } else if ((msg.event === 'save' || msg.event === 'autosave' || msg.event === 'exit') && typeof msg.xml === 'string') {
+          if (msg.xml && msg.xml.includes('<mxCell') && msg.xml !== activeCanvasXml) {
             recordNewVersion(
               msg.xml,
-              'Manual changes in Draw.io inline canvas editor',
+              msg.event === 'autosave' ? 'Auto-synced changes from Draw.io vector editor' : 'Manual changes in Draw.io inline canvas editor',
               'manual_drawio',
-              'Draw.io Manual Edit',
+              'Draw.io 2-Way Sync',
               canvasTitle,
-              'Manual geometry and node style modifications saved.'
+              'Synced Draw.io canvas modifications back to PromptCanvas instance.'
             );
           }
-          if (msg.event === 'exit') {
+          if (msg.event === 'exit' || msg.event === 'save') {
             setIsInlineEditOpen(false);
           }
+        } else if (msg.event === 'exit') {
+          setIsInlineEditOpen(false);
         }
       } catch {
         // Ignore non-JSON
@@ -2048,7 +2276,7 @@ function DashboardContent() {
 
     window.addEventListener('message', handleDrawioMessage);
     return () => window.removeEventListener('message', handleDrawioMessage);
-  }, [activeCanvasXml, canvasTitle]);
+  }, [isInlineEditOpen, activeCanvasXml, canvasTitle, activeInstanceId]);
 
   // =========================================================================
   // CORE ACTION: Download PDF & PNG Exports
@@ -2336,14 +2564,26 @@ function DashboardContent() {
                 )}
               </h1>
               <p className={`text-[10.5px] font-semibold truncate ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                {isSessionForked
-                  ? `Active Draft (${currentVersion.versionTag}) saved under Library → Drafts • Baseline #${loadedBlueprintId} remains untouched`
-                  : `Blueprint Studio: ① Select Certified Blueprint (#00–#98)  →  ② Mutate with Gemini AI Co-Pilot  →  ③ Export to Slides / Docs`}
+                {activeInstanceId
+                  ? `Editable Instance (${activeInstanceId.slice(0, 8)}…) • 2-Way Sync Active (Prompt ↔ Draw.io) • Source Blueprint #${loadedBlueprintId} (${selectedBlueprintObj.depthLevel})`
+                  : `Blueprint Studio: ① Choose Level (L100–L400) & Blueprint (#00–#99)  →  ② Use Blueprint (New ID)  →  ③ 2-Way Prompt & Draw.io Sync`}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            {activeInstanceId && (
+              <button
+                type="button"
+                data-testid="dashboard-instance-id-badge"
+                onClick={handleCopyInstanceUrl}
+                title={`Unique Instance ID: ${activeInstanceId} — Click to copy shareable URL`}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 font-mono font-bold text-[11px] whitespace-nowrap transition cursor-pointer shrink-0"
+              >
+                <Link2 className="w-3 h-3 text-blue-600" />
+                <span>{copiedInstanceLink ? 'Copied URL!' : `ID: ${activeInstanceId.slice(0, 8)}`}</span>
+              </button>
+            )}
             {/* Session Copy Direct Actions: Save as Project & Discard */}
             {isSessionForked && (
               <>
@@ -2481,7 +2721,7 @@ function DashboardContent() {
                       ? 'bg-teal-600 text-white border-teal-700'
                       : 'bg-teal-600 text-white border-teal-500'
                   }`}
-                  title="World 1 (Blueprint Studio): Mandatory certified template selection (#00–#98) before AI prompt mutation"
+                  title="World 1 (Blueprint Studio): Choose Level (L100–L400) & Certified Blueprint (#00–#99), then create a new editable instance"
                 >
                   <span className="truncate">🏛️ Blueprint</span>
                   <span className="text-[8.5px] font-medium opacity-90 truncate">41 Certified</span>
@@ -2538,7 +2778,7 @@ function DashboardContent() {
                     STEP 1 • REQUIRED
                   </span>
                   <span className={`text-[11px] font-extrabold truncate ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
-                    Select Certified Blueprint
+                    Choose Level &amp; Blueprint
                   </span>
                 </div>
                 <Link
@@ -2550,6 +2790,65 @@ function DashboardContent() {
                   <span>Browse All {CANONICAL_TEMPLATES.length}</span>
                   <ArrowRight className="w-2.5 h-2.5" />
                 </Link>
+              </div>
+
+              {/* ARCHITECTURE DEPTH LEVEL SELECTOR (L100 | L200 | L300 | L400) */}
+              <div
+                data-testid="dashboard-depth-level-selector"
+                className={`p-2 rounded-xl border space-y-1.5 ${
+                  canvasPerspective === 'Technical'
+                    ? isLight
+                      ? 'bg-indigo-50/70 border-indigo-200'
+                      : 'bg-indigo-950/30 border-indigo-500/30'
+                    : isLight
+                    ? 'bg-white border-slate-200'
+                    : 'bg-slate-950 border-slate-800'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-1">
+                  <span className={`text-[9.5px] font-black uppercase tracking-wider ${
+                    canvasPerspective === 'Technical'
+                      ? isLight ? 'text-indigo-800' : 'text-indigo-300'
+                      : isLight ? 'text-slate-600' : 'text-slate-400'
+                  }`}>
+                    {canvasPerspective === 'Technical'
+                      ? 'Technical Depth Level (Choose L100–L400)'
+                      : 'Blueprint Level Filter (L100–L400)'}
+                  </span>
+                  <span className="text-[9px] font-semibold text-indigo-600 dark:text-indigo-300">
+                    L400 = Most Detailed
+                  </span>
+                </div>
+                <div className="grid grid-cols-5 gap-1">
+                  {CANONICAL_DEPTH_LEVELS.map((lvl) => {
+                    const count = depthLevelCounts[lvl];
+                    const isActive = selectedDepthLevel === lvl;
+                    const meta = lvl === 'All' ? null : DEPTH_LEVEL_META[lvl];
+                    return (
+                      <button
+                        key={lvl}
+                        type="button"
+                        data-testid={`dashboard-level-btn-${lvl.toLowerCase()}`}
+                        onClick={() => handleSelectDepthLevel(lvl)}
+                        title={meta ? `${meta.label}: ${meta.description}` : 'Show blueprints across all levels (L100–L400)'}
+                        className={`py-1 px-1 rounded-lg text-[10px] font-extrabold transition flex flex-col items-center justify-center border cursor-pointer ${
+                          isActive
+                            ? lvl === 'L400'
+                              ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                              : 'bg-teal-600 text-white border-teal-600 shadow-xs'
+                            : isLight
+                            ? 'bg-white text-slate-700 border-slate-200 hover:border-indigo-300'
+                            : 'bg-slate-900 text-slate-300 border-slate-700 hover:border-indigo-500'
+                        }`}
+                      >
+                        <span>{lvl}</span>
+                        <span className={`text-[8.5px] font-mono ${isActive ? 'text-white/85' : 'text-slate-400'}`}>
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="grid grid-cols-[106px_minmax(0,1fr)] gap-1.5">
@@ -2688,7 +2987,15 @@ function DashboardContent() {
                             }`}
                           >
                             <span className="truncate">#{bp.id} {bp.name}</span>
-                            <span className="text-[9px] font-mono text-slate-400">{bp.level}</span>
+                            <span
+                              className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded shrink-0 ml-1 ${
+                                bp.depthLevel === 'L400'
+                                  ? 'bg-indigo-100 text-indigo-800'
+                                  : 'bg-slate-100 text-slate-600'
+                              }`}
+                            >
+                              {bp.depthLevel}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -2696,6 +3003,52 @@ function DashboardContent() {
                   )}
                 </div>
               </div>
+
+              {/* EXPLICIT "USE THIS BLUEPRINT" CTA -> CREATES NEW UNIQUE INSTANCE ID & UNLOCKS 2-WAY SYNC */}
+              {!activeInstanceId ? (
+                <button
+                  type="button"
+                  data-testid="btn-use-selected-blueprint"
+                  disabled={isCreatingInstance}
+                  onClick={() => void handleUseSelectedBlueprint(selectedBlueprintObj)}
+                  className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 disabled:opacity-60 text-white text-xs font-extrabold shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  {isCreatingInstance ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Minting New Instance ID…</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Use Blueprint #{selectedBlueprintObj.id} ({selectedBlueprintObj.depthLevel}) — New ID</span>
+                    </>
+                  )}
+                </button>
+              ) : (
+                <div
+                  data-testid="dashboard-active-instance-bar"
+                  className={`px-2.5 py-1.5 rounded-xl border text-[10.5px] flex items-center justify-between gap-2 ${
+                    isLight
+                      ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                      : 'bg-emerald-500/15 border-emerald-500/40 text-emerald-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span className="font-bold truncate">
+                      Instance <code className="font-mono">{activeInstanceId.slice(0, 8)}</code> &bull; Prompt ↔ Draw.io Sync
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCopyInstanceUrl}
+                    className="px-2 py-0.5 rounded-md bg-white border border-emerald-300 text-emerald-800 hover:bg-emerald-100 font-bold text-[10px] shrink-0 cursor-pointer"
+                  >
+                    {copiedInstanceLink ? 'Copied!' : 'Copy URL'}
+                  </button>
+                </div>
+              )}
 
               {/* Session Copy Notice Banner inside Left Panel when Forked */}
               {isSessionForked && (
@@ -2765,15 +3118,37 @@ function DashboardContent() {
                 for zero-template synthesis):
               </p>
 
-              {/* Central Single Prompt Composer Input */}
+              {/* Central Single Prompt Composer Input (Locked until "Use Blueprint" mints an Instance ID) */}
+              {!activeInstanceId && (
+                <div
+                  data-testid="dashboard-step2-locked-banner"
+                  className={`p-2.5 rounded-xl border text-[10.5px] flex items-center justify-between gap-2 ${
+                    isLight
+                      ? 'bg-amber-50/90 border-amber-200 text-amber-900'
+                      : 'bg-amber-500/10 border-amber-500/30 text-amber-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <Lock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                    <span className="font-semibold leading-snug">
+                      Template Preview Mode — click <strong>Use Blueprint #{selectedBlueprintObj.id}</strong> above to assign a new Instance ID and unlock 2-way Prompt &amp; Draw.io mutation.
+                    </span>
+                  </div>
+                </div>
+              )}
               <div
-                className={`relative rounded-2xl border-2 border-teal-500/40 focus-within:border-teal-500 focus-within:ring-2 focus-within:ring-teal-500/20 shadow-xs p-2 transition-all ${
-                  isLight ? 'bg-white' : 'bg-slate-950'
+                className={`relative rounded-2xl border-2 shadow-xs p-2 transition-all ${
+                  !activeInstanceId
+                    ? 'opacity-55 pointer-events-none border-slate-200 bg-slate-50 dark:bg-slate-900/50 dark:border-slate-800'
+                    : isLight
+                    ? 'bg-white border-teal-500/40 focus-within:border-teal-500 focus-within:ring-2 focus-within:ring-teal-500/20'
+                    : 'bg-slate-950 border-teal-500/40 focus-within:border-teal-500 focus-within:ring-2 focus-within:ring-teal-500/20'
                 }`}
               >
                 <textarea
                   id="dashboard-prompt-composer-input"
                   rows={2}
+                  disabled={!activeInstanceId}
                   value={activeComposerPrompt}
                   onChange={(e) => setActiveComposerPrompt(e.target.value)}
                   onKeyDown={(e) => {
@@ -2898,7 +3273,7 @@ function DashboardContent() {
                         id={`dashboard-suggestion-chip-${idx}`}
                         type="button"
                         onClick={() => handleExecutePrompt(suggestion)}
-                        disabled={isProcessingAi}
+                        disabled={!activeInstanceId || isProcessingAi}
                         title={suggestion}
                         className={`text-left px-2 py-1 rounded-lg border text-[10px] font-semibold transition-all flex items-center gap-1 group cursor-pointer shadow-2xs ${
                           isLight
@@ -2944,13 +3319,20 @@ function DashboardContent() {
                 <div className="grid grid-cols-4 gap-1">
                   <button
                     type="button"
-                    onClick={() => setIsInlineEditOpen(true)}
-                    className={`px-1.5 py-1 rounded-lg border text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer ${
-                      isLight
-                        ? 'bg-slate-50 hover:bg-teal-50 text-slate-800 border-slate-200 hover:border-teal-300'
-                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                    disabled={!activeInstanceId}
+                    onClick={() => activeInstanceId && setIsInlineEditOpen(true)}
+                    className={`px-1.5 py-1 rounded-lg border text-[10px] font-bold flex items-center justify-center gap-1 transition ${
+                      !activeInstanceId
+                        ? 'opacity-50 cursor-not-allowed bg-slate-100 text-slate-400 border-slate-200'
+                        : isLight
+                        ? 'cursor-pointer bg-slate-50 hover:bg-teal-50 text-slate-800 border-slate-200 hover:border-teal-300'
+                        : 'cursor-pointer bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
                     }`}
-                    title="Open interactive Draw.io diagram editor"
+                    title={
+                      activeInstanceId
+                        ? `Open interactive Draw.io editor (2-Way Sync • Instance ${activeInstanceId.slice(0, 8)}…)`
+                        : 'Click "Use Blueprint" in Step 1 first to mint an Instance ID'
+                    }
                   >
                     <Edit3 className="w-3 h-3 text-teal-600 shrink-0" />
                     <span className="truncate">Draw.io</span>
@@ -3168,6 +3550,43 @@ function DashboardContent() {
                   ))}
                 </div>
 
+                {/* Inline Technical Level Prompt Strip when Technical View Mode is active */}
+                {canvasPerspective === 'Technical' && (
+                  <>
+                    <div className={`h-4 w-px ${isLight ? 'bg-slate-300' : 'bg-slate-700'}`} />
+                    <div
+                      data-testid="canvas-technical-level-bar"
+                      className={`flex items-center gap-1 p-0.5 rounded-xl border shadow-2xs ${
+                        isLight ? 'bg-indigo-50/90 border-indigo-200' : 'bg-indigo-950/40 border-indigo-500/30'
+                      }`}
+                    >
+                      <span className="text-[9.5px] font-black uppercase tracking-wider px-1.5 text-indigo-700 dark:text-indigo-300">
+                        Level:
+                      </span>
+                      {(['L100', 'L200', 'L300', 'L400'] as BlueprintDepthLevel[]).map((lvl) => (
+                        <button
+                          key={lvl}
+                          type="button"
+                          data-testid={`canvas-tech-level-${lvl.toLowerCase()}`}
+                          onClick={() => handleSelectDepthLevel(selectedDepthLevel === lvl ? 'All' : lvl)}
+                          title={`${DEPTH_LEVEL_META[lvl].label} — ${DEPTH_LEVEL_META[lvl].description}`}
+                          className={`px-2 py-1 rounded-lg text-[10px] font-extrabold transition cursor-pointer ${
+                            selectedDepthLevel === lvl
+                              ? lvl === 'L400'
+                                ? 'bg-indigo-600 text-white shadow-xs'
+                                : 'bg-teal-600 text-white shadow-xs'
+                              : isLight
+                              ? 'text-indigo-800 hover:bg-white'
+                              : 'text-indigo-200 hover:bg-slate-800'
+                          }`}
+                        >
+                          {lvl}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+
                 <div className={`h-4 w-px ${isLight ? 'bg-slate-300' : 'bg-slate-700'}`} />
 
                 {/* Zoom Controls */}
@@ -3231,20 +3650,35 @@ function DashboardContent() {
                     </button>
                   )}
 
-                  {/* 1. Edit Inline */}
-                  <button
-                    type="button"
-                    onClick={() => setIsInlineEditOpen(true)}
-                    title="Edit diagram visually in embedded Draw.io editor"
-                    className={`px-2.5 py-1 rounded-xl font-bold text-[11px] flex items-center gap-1 transition cursor-pointer ${
-                      isLight
-                        ? 'bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700'
-                        : 'bg-slate-800 hover:bg-teal-500/20 hover:text-teal-300 text-slate-200'
-                    }`}
-                  >
-                    <Edit3 className={`w-3.5 h-3.5 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
-                    <span>Edit in Draw.io</span>
-                  </button>
+                  {/* 1. Use Blueprint OR Edit Inline in Draw.io (2-Way Sync) */}
+                  {!activeInstanceId ? (
+                    <button
+                      type="button"
+                      data-testid="toolbar-use-blueprint-btn"
+                      disabled={isCreatingInstance}
+                      onClick={() => void handleUseSelectedBlueprint(selectedBlueprintObj)}
+                      title="Create a new editable instance (New ID) from this blueprint before editing in Draw.io"
+                      className="px-2.5 py-1 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-extrabold text-[11px] flex items-center gap-1 transition cursor-pointer shadow-xs"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>{isCreatingInstance ? 'Creating ID…' : 'Use Blueprint (New ID)'}</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      data-testid="toolbar-edit-drawio-btn"
+                      onClick={() => setIsInlineEditOpen(true)}
+                      title={`2-Way Sync Draw.io Editor (Instance ${activeInstanceId.slice(0, 8)}…)`}
+                      className={`px-2.5 py-1 rounded-xl font-bold text-[11px] flex items-center gap-1 transition cursor-pointer ${
+                        isLight
+                          ? 'bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200'
+                          : 'bg-teal-500/20 hover:bg-teal-500/30 text-teal-200 border border-teal-500/30'
+                      }`}
+                    >
+                      <Edit3 className={`w-3.5 h-3.5 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
+                      <span>Edit in Draw.io (2-Way)</span>
+                    </button>
+                  )}
 
                   {/* 3. Audit Button */}
                   {(() => {

@@ -17,7 +17,7 @@ import {
   FileUp,
   LayoutGrid,
 } from 'lucide-react';
-import { CANONICAL_TEMPLATES, CanonicalTemplate } from '@/lib/canonical/canonicalTemplates';
+import { CANONICAL_TEMPLATES, CANONICAL_DEPTH_LEVELS, CanonicalTemplate } from '@/lib/canonical/canonicalTemplates';
 import { useTheme } from '@/lib/themeContext';
 
 export interface NewDiagramSelectionResult {
@@ -54,6 +54,7 @@ export function NewDiagramInputSelectionModal({
   // Blueprint Mode State
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedDepthLevel, setSelectedDepthLevel] = useState<string>('All');
   const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>('78');
 
   // Pure Prompt-to-Diagram Handoff State (navigates to World 2: /prompt-to-diagram)
@@ -73,6 +74,9 @@ export function NewDiagramInputSelectionModal({
 
   const filteredBlueprints = useMemo(() => {
     let list = CANONICAL_TEMPLATES;
+    if (selectedDepthLevel !== 'All') {
+      list = list.filter((t) => t.depthLevel === selectedDepthLevel);
+    }
     if (selectedCategory === 'L400 GCP') {
       list = list.filter((t) => Boolean(t.tags?.includes('L400 GCP')));
     } else if (selectedCategory !== 'all') {
@@ -84,13 +88,14 @@ export function NewDiagramInputSelectionModal({
         (t) =>
           t.name.toLowerCase().includes(q) ||
           t.id.toLowerCase().includes(q) ||
+          t.depthLevel.toLowerCase().includes(q) ||
           t.primaryPurpose.toLowerCase().includes(q) ||
           (t.examples && t.examples.toLowerCase().includes(q)) ||
           Boolean(t.tags?.some((tag) => tag.toLowerCase().includes(q)))
       );
     }
     return list;
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, selectedDepthLevel, searchQuery]);
 
   if (!isOpen) return null;
 
@@ -370,6 +375,38 @@ export function NewDiagramInputSelectionModal({
                   />
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0 flex-wrap w-full">
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mr-0.5">
+                    Level:
+                  </span>
+                  {CANONICAL_DEPTH_LEVELS.map((lvl) => {
+                    const cnt =
+                      lvl === 'All'
+                        ? CANONICAL_TEMPLATES.length
+                        : CANONICAL_TEMPLATES.filter((t) => t.depthLevel === lvl).length;
+                    return (
+                      <button
+                        key={lvl}
+                        type="button"
+                        data-testid={`new-modal-level-${lvl.toLowerCase()}`}
+                        onClick={() => setSelectedDepthLevel(lvl)}
+                        className={`px-2 py-1 rounded-lg text-[10.5px] font-bold transition shrink-0 cursor-pointer border ${
+                          selectedDepthLevel === lvl
+                            ? lvl === 'L400'
+                              ? 'bg-indigo-600 text-white border-indigo-600'
+                              : isLight
+                              ? 'bg-teal-600 text-white border-teal-600'
+                              : 'bg-teal-500 text-slate-950 border-teal-500'
+                            : isLight
+                            ? 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
+                            : 'bg-slate-900 text-slate-300 border-slate-700 hover:border-slate-600'
+                        }`}
+                      >
+                        {lvl === 'All' ? `All (${cnt})` : `${lvl} (${cnt})`}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0 flex-wrap w-full">
                   {['all', 'L400 GCP', 'Reference Architectures', 'Infographic', 'Flow'].map((f) => (
                     <button
                       key={f}
@@ -423,6 +460,17 @@ export function NewDiagramInputSelectionModal({
                               }`}
                             >
                               #{bp.id} • {bp.family}
+                            </span>
+                            <span
+                              className={`text-[9.5px] font-mono font-black uppercase px-1.5 py-0.5 rounded border ${
+                                bp.depthLevel === 'L400'
+                                  ? 'bg-indigo-600 text-white border-indigo-600'
+                                  : isLight
+                                  ? 'bg-sky-50 text-sky-800 border-sky-200'
+                                  : 'bg-sky-500/15 text-sky-300 border-sky-500/30'
+                              }`}
+                            >
+                              {bp.depthLevel}
                             </span>
                             {bp.tags?.map((tag) => (
                               <span
