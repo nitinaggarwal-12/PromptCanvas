@@ -73,7 +73,9 @@ export function NewDiagramInputSelectionModal({
 
   const filteredBlueprints = useMemo(() => {
     let list = CANONICAL_TEMPLATES;
-    if (selectedCategory !== 'all') {
+    if (selectedCategory === 'L400 GCP') {
+      list = list.filter((t) => Boolean(t.tags?.includes('L400 GCP')));
+    } else if (selectedCategory !== 'all') {
       list = list.filter((t) => t.family === selectedCategory);
     }
     if (searchQuery.trim()) {
@@ -83,7 +85,8 @@ export function NewDiagramInputSelectionModal({
           t.name.toLowerCase().includes(q) ||
           t.id.toLowerCase().includes(q) ||
           t.primaryPurpose.toLowerCase().includes(q) ||
-          (t.examples && t.examples.toLowerCase().includes(q))
+          (t.examples && t.examples.toLowerCase().includes(q)) ||
+          Boolean(t.tags?.some((tag) => tag.toLowerCase().includes(q)))
       );
     }
     return list;
@@ -367,22 +370,26 @@ export function NewDiagramInputSelectionModal({
                   />
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0 flex-wrap w-full">
-                  {['all', 'Reference Architectures', 'Infographic', 'Flow'].map((f) => (
+                  {['all', 'L400 GCP', 'Reference Architectures', 'Infographic', 'Flow'].map((f) => (
                     <button
                       key={f}
                       type="button"
                       onClick={() => setSelectedCategory(f)}
                       className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition shrink-0 cursor-pointer ${
                         selectedCategory === f
-                          ? isLight
-                            ? 'bg-teal-100 text-teal-900 border border-teal-300'
-                            : 'bg-teal-500/20 text-teal-300 border border-teal-500/40'
+                          ? f === 'L400 GCP'
+                            ? isLight
+                              ? 'bg-indigo-100 text-indigo-900 border border-indigo-300'
+                              : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40'
+                            : isLight
+                              ? 'bg-teal-100 text-teal-900 border border-teal-300'
+                              : 'bg-teal-500/20 text-teal-300 border border-teal-500/40'
                           : isLight
                             ? 'bg-slate-100 text-slate-600 hover:text-slate-900'
                             : 'bg-slate-800/60 text-slate-400 hover:text-slate-200'
                       }`}
                     >
-                      {f === 'all' ? `All (${CANONICAL_TEMPLATES.length})` : f}
+                      {f === 'all' ? `All (${CANONICAL_TEMPLATES.length})` : f === 'L400 GCP' ? `Tag: L400 GCP` : f}
                     </button>
                   ))}
                 </div>
@@ -406,16 +413,30 @@ export function NewDiagramInputSelectionModal({
                       }`}
                     >
                       <div>
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span
-                            className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${
-                              isLight
-                                ? 'bg-white text-teal-800 border-teal-200'
-                                : 'bg-slate-800 text-teal-300 border-slate-700'
-                            }`}
-                          >
-                            #{bp.id} • {bp.family}
-                          </span>
+                        <div className="flex items-center justify-between gap-1.5 mb-1.5 flex-wrap">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span
+                              className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${
+                                isLight
+                                  ? 'bg-white text-teal-800 border-teal-200'
+                                  : 'bg-slate-800 text-teal-300 border-slate-700'
+                              }`}
+                            >
+                              #{bp.id} • {bp.family}
+                            </span>
+                            {bp.tags?.map((tag) => (
+                              <span
+                                key={tag}
+                                className={`text-[9.5px] font-mono font-extrabold uppercase px-1.5 py-0.5 rounded border ${
+                                  isLight
+                                    ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                                    : 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30'
+                                }`}
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
                           {isSelected && (
                             <div className="w-4 h-4 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold">
                               <Check className="w-2.5 h-2.5 stroke-[3]" />

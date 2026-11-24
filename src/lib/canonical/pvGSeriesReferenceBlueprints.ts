@@ -756,7 +756,7 @@ export function generateTemplate89G06AdrTradeoffMatrixXml(): string {
         { id: 'optA_n1', x: 88, y: 204, label: 'Google Kubernetes\nEngine (GKE)', icon: 'gke' as const },
         { id: 'optA_n2', x: 300, y: 204, label: 'Cloud SQL\nPostgres', icon: 'cloud_sql' as const },
       ],
-      metrics1: '📊 P99: 55ms | Throughput: 1.5k RPS',
+      metrics1: 'Latency P99: 55ms | Throughput: 1.5k RPS',
       metrics2: 'RPO: 5m / RTO: 20m | High Blast Radius | FinOps: $4.8k/mo',
     },
     {
@@ -772,7 +772,7 @@ export function generateTemplate89G06AdrTradeoffMatrixXml(): string {
         { id: 'optB_n2', x: 698, y: 204, label: 'Cloud Pub/Sub\nOutbox', icon: 'pubsub' as const },
         { id: 'optB_n3', x: 840, y: 204, label: 'AlloyDB AI ScaNN\n+ Gemini ADK', icon: 'alloydb' as const },
       ],
-      metrics1: '📊 P99: 78ms | Throughput: 30k RPS',
+      metrics1: 'Latency P99: 78ms | Throughput: 30k RPS',
       metrics2: '✅ RPO < 1s / RTO < 60s | GxP Isolated | FinOps: $8.6k/mo',
     },
     {
@@ -787,7 +787,7 @@ export function generateTemplate89G06AdrTradeoffMatrixXml(): string {
         { id: 'optC_n1', x: 1074, y: 204, label: 'Multi-Region\nGKE Mesh', icon: 'gke' as const },
         { id: 'optC_n2', x: 1296, y: 204, label: 'Cloud Spanner\nReplication', icon: 'spanner' as const },
       ],
-      metrics1: '📈 P99: 140ms | Throughput: 90k RPS | RPO = 0 / RTO < 5s',
+      metrics1: 'Latency P99: 140ms | Throughput: 90k RPS | RPO = 0 / RTO < 5s',
       metrics2: '🔥 High GxP CSV Validation Overhead | FinOps: $32.5k/mo',
     },
   ];

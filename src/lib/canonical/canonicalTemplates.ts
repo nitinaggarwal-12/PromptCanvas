@@ -9,11 +9,12 @@ import {
 } from './templateL100L400AgenticWorkspaceBlueprints';
 
 export interface CanonicalTemplate {
-  id: string; // e.g. "00", "52" ... "84"
+  id: string; // e.g. "00", "52" ... "99"
   name: string;
   family: 'Infographic' | 'Understand' | 'Process' | 'Whiteboard' | 'Paper' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: 'L1' | 'L2' | 'L3';
   theme?: 'light' | 'dark';
+  tags?: string[];
   primaryPurpose: string;
   examples: string;
   defaultDomain: string;
@@ -26,6 +27,11 @@ export interface CanonicalTemplate {
   keyComponents: string[];
   generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => string;
 }
+
+export const CANONICAL_TAGS = [
+  'All',
+  'L400 GCP',
+] as const;
 
 export const CANONICAL_FAMILIES = [
   'All',
@@ -96,6 +102,7 @@ import {
   generateTemplate97G04L400UmlUseCaseSodXml,
   generateTemplate98G08L400StateMachineSlaXml,
 } from "./pvGSeriesL400Blueprints";
+import { generateTemplate99Ws1FiveHopMultiTenantGcpXml } from "./template99Ws1FiveHopMultiTenantGcp";
 
 interface RawCanonicalTemplate {
   id: string;
@@ -103,6 +110,7 @@ interface RawCanonicalTemplate {
   family: 'Infographic' | 'Understand' | 'Process' | 'Whiteboard' | 'Paper' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: 'L1' | 'L2' | 'L3';
   theme?: 'light' | 'dark';
+  tags?: string[];
   primaryPurpose: string;
   examples: string;
   defaultDomain: string;
@@ -133,7 +141,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Roles, activities, decisions, and handoffs across operational departments with SLA timers and approval gates',
     examples: 'Adverse event triage, clinical onboarding, approval gates, cross-department handoffs',
     defaultDomain: 'Clinical Trials & Regulatory Operations',
-    previewImage: '/templates/incident_triage_swimlane.png',
+    previewImage: '/templates/canonical_03.png',
     keyComponents: ['Department Swimlanes', 'Hand-off Triggers', 'Approval Decision Gates', 'Audit Milestones'],
     generateXml: generateTemplate03SwimlaneXml
   },
@@ -146,7 +154,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Discrete entity lifecycle states (S0..S9), trigger events (E1..E8), transition guard conditions, and analytical cards',
     examples: 'ICSR case states, AI agent execution lifecycle, clinical protocol approval workflows',
     defaultDomain: 'Clinical Study Protocol Intelligence State Machine',
-    previewImage: '/templates/governance_state_machine.png',
+    previewImage: '/templates/canonical_12.png',
     keyComponents: ['S0..S9 States', 'E1..E8 Triggers', 'Guardrail Failure Branches', '4 Analytical Cards'],
     generateXml: generateTemplate12StateMachineXml
   },
@@ -159,7 +167,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     primaryPurpose: 'Database entities, tables, attributes, primary/foreign keys, and Crow’s Foot cardinalities across 7 core enterprise domains',
     examples: 'Relational data model, lakehouse star schema, biopharma enterprise semantic ontology',
     defaultDomain: 'Bio-Pharma Enterprise Entity Model & Relational Schema',
-    previewImage: '/templates/erd.png',
+    previewImage: '/templates/canonical_14.png',
     keyComponents: ['24 Entities / Tables', '7 Core Domains', 'Crow’s Foot Cardinality', '4 Analytical Panels'],
     generateXml: generateTemplate14DataModelErdXml
   },
@@ -220,6 +228,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     family: 'Reference Architectures',
     level: 'L3',
     theme: 'light',
+    tags: ['L400 GCP'],
     primaryPurpose: 'L400 physical network, subnet CIDR, BGP ASN 64512, WAF policy (mt-prod-waf-v4), PSC attachment (10.200.1.0/28), and VPC-SC perimeter specification for Multi-Tenant Hub-and-Spoke Agentic AI',
     examples: 'Hub VPC 10.100.0.0/16, BGP ASN 64512, Global Ext ALB VIP 34.120.55.10, Tenant Pool Shared VPC 10.110.0.0/20, Dedicated Sovereign Silo Spoke VPC 10.200.0.0/20, p-finvault-silo',
     defaultDomain: 'L400 Multi-Tenant Hub-and-Spoke Network & VPC-SC Specification',
@@ -233,6 +242,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     family: 'Flow',
     level: 'L3',
     theme: 'light',
+    tags: ['L400 GCP'],
     primaryPurpose: 'Principal L400 sequence diagram (P3-APP-L-10) detailing 16 governed runtime interactions across User/Requestor, Gemini Enterprise, Coordinator Agent, Agent Gateway, Retrieval Specialist, Analytics Specialist, and Enterprise Data & Tools with grounded retrieval, governed analytics, and HITL review',
     examples: 'L400 Principal Sequence, OIDC JWT, SPIFFE mTLS, A2A Delegation, MCP Tool Execution, Grounded Retrieval, Governed Analytics, HITL Review Gate',
     defaultDomain: 'L400 Principal Sequence — A2A & MCP Runtime Governance',
@@ -246,6 +256,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     family: 'Reference Architectures',
     level: 'L3',
     theme: 'light',
+    tags: ['L400 GCP'],
     primaryPurpose: 'Official Google Cloud Architecture Center #78 (L400) reference implementation for Oracle E-Business Suite (EBS R12.2) on Google Cloud GCE C3 HA WebLogic & Cloud Filestore Enterprise NFSv4.1 connected via <0.5ms Dual 100GbE ODB Partner Interconnect to Co-Located OCI Child Site Exadata X10M 2-Node RAC, Smart Scan & Active Data Guard',
     examples: 'Oracle EBS R12.2 on Google Cloud, Oracle Database@Google Cloud Exadata X10M, ODB Partner Interconnect (<0.5ms), GCE C3 WebLogic & PCP, Cloud Filestore NFSv4.1 ADOP fs1/fs2, GoldenGate 23ai to BigQuery Cortex',
     defaultDomain: 'Oracle EBS R12.2 on Oracle Database@Google Cloud (Exadata X10M L400)',
@@ -376,6 +387,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     family: 'Structure',
     level: 'L3',
     theme: 'light',
+    tags: ['L400 GCP'],
     primaryPurpose: 'L400 physical & security-hardened C4 Level 1 System Context diagram detailing OAuth 2.1 DPoP, mTLS 1.3, BeyondCorp FIDO2 WebAuthn, VPC-SC restricted.googleapis.com, Model Armor, Gemini 2.5 Pro ADK, OPA Rego XSD validation, Enterprise Regulatory Vault SoR commit, AS2 MDN E2B(R3), Cloud Monitoring Alerting, and SecOps Chronicle WORM retention',
     examples: 'L400 C4 Level 1 System Context, VPC-SC restricted.googleapis.com, FIDO2 WebAuthn 21 CFR Part 11, AS2 MDN E2B(R3)',
     defaultDomain: 'L400 Pharmacovigilance & Adverse Event (AE) AI Platform Context',
@@ -389,6 +401,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     family: 'Process',
     level: 'L3',
     theme: 'light',
+    tags: ['L400 GCP'],
     primaryPurpose: 'L400 BPMN 2.0 dual-pool swimlane contrasting As-Is Legacy Manual ICSR Workflow (P99 Cycle: 7.4 Days, Touch Time: 185m, Error Rate: 14.2%, 38% Rework) against To-Be Gemini Enterprise ADK Automated Workflow (P99 Cycle: 9.8s, STP: 92.4%, Error Rate: 0.08%)',
     examples: 'L400 BPMN 2.0 Swimlane, P99 7.4d vs 9.8s Cycle Compression, 92.4% STP vs 7.6% QPPV HITL Boundary Timer',
     defaultDomain: 'L400 BPMN 2.0 As-Is vs. To-Be ICSR Adverse Event Lifecycle',
@@ -402,6 +415,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     family: 'Process',
     level: 'L3',
     theme: 'light',
+    tags: ['L400 GCP'],
     primaryPurpose: 'L400 5-stage multi-persona user journey and OpenTelemetry touchpoint blueprint across Patient/HCP Reporter, Drug Safety Associate (DSA), QPPV Medical Reviewer, Frontstage Edge & API Mesh, and Backstage Gemini ADK & OpenTelemetry with p99 latency budgets',
     examples: 'L400 Multi-Persona User Journey, W3C traceparent Propagation, EC-P384 KMS Signing, BigQuery OTel FinOps Sink',
     defaultDomain: 'L400 Multi-Persona User Journey & OpenTelemetry Touchpoint Blueprint',
@@ -415,6 +429,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     family: 'Flow',
     level: 'L3',
     theme: 'light',
+    tags: ['L400 GCP'],
     primaryPurpose: 'L400 UML 2.5 Use Case & Separation-of-Duties (SoD) security boundary mapping 5 IAM/SPIFFE principals across 4 VPC-SC zones and an OPA Rego & GCP IAM CEL Policy Enforcement Point (PEP)',
     examples: 'L400 UML Use Case Diagram, SPIFFE Agent Identity SoD, OPA Rego & GCP IAM CEL Policy Enforcement Point (PEP)',
     defaultDomain: 'L400 UML Use Case, IAM/PAM & SPIFFE Agent Identity SoD Boundary',
@@ -428,12 +443,27 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     family: 'Process',
     level: 'L3',
     theme: 'light',
+    tags: ['L400 GCP'],
     primaryPurpose: 'L400 Hierarchical UML 2.5 ICSR Statechart detailing composite AGENTIC_PROCESSING sub-states, transition guard conditions, error/exception escalations, and the Synchronized Regulatory SLA Clock Formula & State Bar',
     examples: 'L400 UML 2.5 Hierarchical Statechart, Guard Conditions, Regulatory SLA Clock Formula & 4-Zone State Bar',
     defaultDomain: 'L400 UML 2.5 Hierarchical ICSR Statechart & Regulatory SLA Clock',
     previewImage: '/templates/canonical_98.png',
     keyComponents: ['Initial [*] -> INGESTED (initSLATimer) -> VALIDATED (fhirValid && dlpTokenized && modelArmorSafe)', 'Composite AGENTIC_PROCESSING (1. DOC_AI_OCR -> 2. ALLOYDB_SCANN_MEDDRA_RAG -> 3. GEMINI_3_CAUSALITY_EVAL -> 4. OPA_E2B_R3_XSD_CHECK)', 'Terminal & Escalation States (AUTO_SUBMITTED_E2B, WAITING_CLINICAL_HITL, SLA_ESCALATED_QPPV, QPPV_SIGNED_SUBMITTED, NULLIFIED_COMPENSATED, DLQ_QUARANTINED)', 'Synchronized Regulatory SLA Clock Formula & 4-Zone State Bar (Green 0-80%, Yellow Paused Clock-Stop, Amber 80% Soft Warning, Red 100% Breach)'],
     generateXml: () => generateTemplate98G08L400StateMachineSlaXml()
+  },
+  {
+    id: '99',
+    name: 'WS1: Shared 5-Hop Multi-Tenant Agent Platform Architecture (Pool / Hybrid / Silo)',
+    family: 'Reference Architectures',
+    level: 'L3',
+    theme: 'light',
+    tags: ['L400 GCP'],
+    primaryPurpose: 'L400 Google Cloud 5-Hop multi-tenant agentic platform architecture spanning Caller Tiers (Pool / Hybrid / Silo), 80% shared Governance & Control Plane (<42ms p95 overhead), Edge PEP & STS DPoP, dual Agent Gateways, Cloud Run Gen2 gVisor ADK Runtime, Valkey sessions, FinOps rate bulkhead, and 20% per-tier Hop 5 data isolation (AlloyDB FORCE RLS / /28 PSC Spokes / HSM CMEK Silo)',
+    examples: 'L400 GCP, WS1 5-Hop Control Plane, Multi-Tenant Agent Platform, RFC 8693 OBO & RFC 9449 DPoP, Agent Registry ARD, AlloyDB FORCE RLS, /28 PSC Spoke VPCs, HSM CMEK Sovereign Silo',
+    defaultDomain: 'Google Cloud Multi-Tenant Agent Platform (WS1 · L400 GCP)',
+    previewImage: '/templates/canonical_99.png',
+    keyComponents: ['Caller Tiers (Pool / Hybrid / Silo)', 'Hop 1–2 Auth Manager, STS DPoP & ARD PDP', 'Hop 2 & Hop 4 Dual Agent Gateways + Model Armor DLP', 'Hop 3 ADK Runtime (Cloud Run Gen2 gVisor + Valkey + FinOps)', 'Hop 5 Targets (AlloyDB FORCE RLS / /28 PSC / HSM CMEK Silo)', 'AI Observability & Fail-Closed Circuit Breakers (HTTP 401/403/429/422)'],
+    generateXml: () => generateTemplate99Ws1FiveHopMultiTenantGcpXml()
   }
 ];
 
@@ -1256,6 +1286,7 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
     out.includes('official_gcp_arch_center') ||
     out.includes('id="bp79_') ||
     out.includes('oracle_exadata_ebs_topology') ||
+    out.includes('id="ws1-5hop-governance-baseline"') ||
     /id="g(?:0[1-9]|10)_root"/.test(out)
   ) {
     return out;
@@ -1265,6 +1296,7 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
 
 export const ACTIVE_CANONICAL_BLUEPRINT_IDS: readonly string[] = [
   '78',
+  '99',
   '79',
   '81',
   '84',
@@ -1307,6 +1339,9 @@ export const ACTIVE_CANONICAL_BLUEPRINT_IDS: readonly string[] = [
 ] as const;
 
 export const G_SERIES_TO_CANONICAL_ID_MAP: Record<string, string> = {
+  'WS1': '99',
+  'WS1-5HOP': '99',
+  'L400-WS1': '99',
   'G-01': '85',
   'G01': '85',
   'G-02': '86',
@@ -1407,7 +1442,7 @@ const ALL_RAW_CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => 
   const paddedId = t.id.padStart(2, '0');
   const isFlowBp = Number(t.id) >= 67 && Number(t.id) <= 69;
   const isInfographicBp = Number(t.id) >= 52 && Number(t.id) <= 66;
-  const isNewArchBp = Number(t.id) >= 78 && Number(t.id) <= 98;
+  const isNewArchBp = Number(t.id) >= 78 && Number(t.id) <= 99;
   const rawCleanName = t.id === '00'
     ? '2026 Upgraded GCP & Gemini Enterprise Native Architecture'
     : isNewArchBp || isFlowBp || isInfographicBp

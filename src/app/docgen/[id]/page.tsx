@@ -397,7 +397,7 @@ function DocDetailPageContent() {
       const primaryXml = primaryTpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
 
       const domainPreset = DOMAIN_PRESETS.find((d) => d.id === selectedDomain);
-      const domainName = domainPreset ? domainPreset.name : 'Bio-Pharma Precision Oncology & Regulatory AI';
+      const domainName = domainPreset ? domainPreset.name : 'Enterprise Cloud Architecture & Systems Engineering';
 
       const res = await fetch('/api/compose', {
         method: 'POST',

@@ -84,8 +84,9 @@ if (
   console.log('✅ Obsolete Route Guard: Zero retired studio links or route directories (/workspace, /studio1, /gcp)');
 }
 
-// Legacy & Purged Tier 1/2/3 Template Guard: public/templates must only contain the 40 active blueprints (7 core #78,#79,#81,#84,#00,#67,#69 + 14 G-Series #85..#98 + 4 restored #03,#12,#14,#29 + 15 Infographic #52–#66 -> 66 files)
+// Legacy & Purged Tier 1/2/3 Template Guard: public/templates must contain zero purged legacy files AND every active canonical blueprint must have its certified canonical_<id>.png preview
 const pubTemplates = fs.readdirSync('public/templates');
+const pubTemplateSet = new Set(pubTemplates);
 const RESTORED_CANONICAL_PNGS = new Set([
   'canonical_03.png',
   'canonical_12.png',
@@ -100,11 +101,13 @@ const forbiddenLegacyFiles = pubTemplates.filter((f) =>
   f === '40.svg' ||
   f === 'ge_equipment_optimization_gemini.png'
 );
-if (forbiddenLegacyFiles.length > 0 || pubTemplates.length !== 67) {
-  console.error(`❌ Legacy Template Purge Guard: Found ${forbiddenLegacyFiles.length} purged legacy files in public/templates/ (total=${pubTemplates.length}, expected 67): ${forbiddenLegacyFiles.join(', ')}`);
+const activeIds = activeBlockMatch ? (activeBlockMatch[1].match(/\d{2}/g) || []) : [];
+const missingActivePreviews = activeIds.filter((id) => !pubTemplateSet.has(`canonical_${id}.png`));
+if (forbiddenLegacyFiles.length > 0 || missingActivePreviews.length > 0) {
+  console.error(`❌ Legacy Template Purge Guard: forbidden=${forbiddenLegacyFiles.length} [${forbiddenLegacyFiles.join(', ')}], missingActivePreviews=${missingActivePreviews.length} [${missingActivePreviews.join(', ')}]`);
   failed++;
 } else {
-  console.log(`✅ Legacy Template Purge Guard: 0 purged Tier 1/2/3 or legacy files in public/templates/ (${pubTemplates.length} clean files)`);
+  console.log(`✅ Legacy Template Purge Guard: 0 purged legacy files and all ${activeIds.length}/${activeIds.length} active canonical PNG previews verified in public/templates/ (${pubTemplates.length} clean files)`);
 }
 
 // Root & Public Images Legacy Purge Guard: images/ and public/images/ must contain only the 1 active reference PNG (00.png)
@@ -185,17 +188,24 @@ const multiCloudAllowedFiles = new Set([
   'src/lib/awsOfficialSvgAssets.ts',
   'src/lib/visionPosterToDrawioDecompiler.ts',
 ]);
+const gemini25TranslatorFiles = new Set([
+  'src/lib/geminiConfig.ts',
+  'src/lib/geminiRetryHelper.ts',
+]);
 for (const f of allSrcFiles) {
   const rel = path.relative(ROOT, f);
   const txt = fs.readFileSync(f, 'utf8');
   if (txt.includes('api.iconify.design')) {
     srcViolations.push(`${rel}: contains external api.iconify.design URL`);
   }
-  if (/thinkingBudget\s*:/.test(txt)) {
+  if (!gemini25TranslatorFiles.has(rel) && /thinkingBudget\s*:/.test(txt)) {
     srcViolations.push(`${rel}: contains numeric thinkingBudget (violates Law 16 / Rule 55)`);
   }
   if (/window\.(prompt|alert|confirm)\s*\(/.test(txt)) {
     srcViolations.push(`${rel}: contains thread-blocking window.prompt/alert/confirm (violates Law 10 / Rule 25J)`);
+  }
+  if (/railway\.app/i.test(txt)) {
+    srcViolations.push(`${rel}: contains obsolete railway.app reference`);
   }
   if (!multiCloudAllowedFiles.has(rel) && /\b(Anthropic|Claude|Snowflake)\b/i.test(txt)) {
     srcViolations.push(`${rel}: contains banned Anthropic/Claude/Snowflake vendor reference (violates Rule 53)`);
@@ -220,7 +230,7 @@ const crossPageTargets = [
   'src/app/test-status/page.tsx',
   'README.md',
 ];
-const staleBlueprintRegex = /\b(?:7|8|18|19|22|23|26|29|77)\s+(?:Official\s+Google\s+Cloud\s+Reference\s+(?:&\s+Infographic\s+)?Blueprints|curated\s+Google\s+Cloud\s+reference\s+(?:&\s+infographic\s+)?blueprints|Production\s+Blueprints|Certified\s+Blueprints|Certified|certified\s+reference\s+architectures|Reference\s+Blueprints|Blueprints|blueprints|Canonical\s+Blueprints|canonical\s+master\s+blueprints|production\s+Google\s+Cloud\s+blueprints)\b/;
+const staleBlueprintRegex = /\b(?:7|8|18|19|22|23|26|29|40|77)\s+(?:Official\s+Google\s+Cloud\s+Reference\s+(?:&\s+Infographic\s+)?Blueprints|curated\s+Google\s+Cloud\s+reference\s+(?:&\s+infographic\s+)?blueprints|Production\s+Blueprints|Certified\s+Blueprints|Certified|certified\s+reference\s+architectures|Reference\s+Blueprints|Blueprints|blueprints|Canonical\s+Blueprints|canonical\s+master\s+blueprints|production\s+Google\s+Cloud\s+blueprints)\b/;
 for (const rel of crossPageTargets) {
   const content = read(rel);
   const m = staleBlueprintRegex.exec(content);

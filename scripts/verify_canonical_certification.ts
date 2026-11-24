@@ -24,7 +24,7 @@ interface AuditResult {
 
 function runCanonicalCertificationAudit(): { summary: { total: number; certified: number; passRate: string }; results: AuditResult[] } {
   console.log("================================================================================");
-  console.log("🏛️  STARTING CANONICAL BLUEPRINT QUALITY & CERTIFICATION GATEWAY (01–40)");
+  console.log(`🏛️  STARTING CANONICAL BLUEPRINT QUALITY & CERTIFICATION GATEWAY (${CANONICAL_TEMPLATES.length} Certified Blueprints)`);
   console.log("================================================================================\n");
 
   const results: AuditResult[] = [];

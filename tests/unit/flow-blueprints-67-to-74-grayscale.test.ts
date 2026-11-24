@@ -48,19 +48,24 @@ const ALLOWED_GOOGLE_BRAND_LIGHT_HEXES = new Set([
   '#B31412',
 ]);
 
-describe('40 Canonical Blueprints (7 Core #78,#79,#81,#84,#00,#67,#69 + 14 G-Series #85–#98 + 4 Restored #03,#12,#14,#29 + 15 Infographic #52–#66), Permanent Purge of #38, #42, #44, #68, #80, #82, #83 & 9-Guide Diagram Parity', () => {
-  it('retains strictly the 40 canonical blueprints and permanently purges #35–#50, #68, #70–#74, #80, #82, #83', () => {
+describe('41 Canonical Blueprints (8 Core #78,#99,#79,#81,#84,#00,#67,#69 + 14 G-Series #85–#98 + 4 Restored #03,#12,#14,#29 + 15 Infographic #52–#66), Permanent Purge of #38, #42, #44, #68, #80, #82, #83 & 9-Guide Diagram Parity', () => {
+  it('retains strictly the 41 canonical blueprints (including #99 WS1 L400 GCP) and permanently purges #35–#50, #68, #70–#74, #80, #82, #83', () => {
     expect(ACTIVE_CANONICAL_BLUEPRINT_IDS).toEqual([
-      '78', '79', '81', '84',
+      '78', '99', '79', '81', '84',
       '85', '86', '87', '88', '89', '90', '91', '92', '93',
       '94', '95', '96', '97', '98',
       '00', '03', '12', '14', '29',
       '67', '69',
       '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66',
     ]);
-    expect(CANONICAL_TEMPLATES.length).toBe(40);
+    expect(CANONICAL_TEMPLATES.length).toBe(41);
 
-    for (const id of ['78', '79', '81', '84', '85', '86', '87', '88', '89', '90', '91', '92', '93', '94', '95', '96', '97', '98', '03', '12', '14', '29', '67', '69']) {
+    const bp99 = CANONICAL_TEMPLATES.find((t) => t.id === '99');
+    expect(bp99).toBeDefined();
+    expect(bp99?.tags).toContain('L400 GCP');
+    expect(bp99?.generateXml('enterprise', 'light')).toContain('id="ws1-5hop-governance-baseline"');
+
+    for (const id of ['78', '99', '79', '81', '84', '85', '86', '87', '88', '89', '90', '91', '92', '93', '94', '95', '96', '97', '98', '03', '12', '14', '29', '67', '69']) {
       expect(ACTIVE_CANONICAL_BLUEPRINT_IDS.includes(id)).toBe(true);
       const bp = CANONICAL_TEMPLATES.find((t) => t.id === id);
       expect(bp).toBeDefined();

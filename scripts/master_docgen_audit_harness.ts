@@ -52,7 +52,7 @@ async function runMasterAuditHarness() {
   // ============================================================================
   // SUITE 1: ALL 40 CANONICAL TEMPLATES x 5 DOMAINS x 2 THEMES x 3 FUZZ TITLES (1,200 TESTS)
   // ============================================================================
-  console.log('📌 SUITE 1: All 40 Canonical Diagrams x 5 Domains x 2 Themes Stress Test (1,200 Combinations)');
+  console.log(`📌 SUITE 1: All ${CANONICAL_TEMPLATES.length} Canonical Diagrams x 5 Domains x 2 Themes Stress Test`);
   const domains = ['biopharma', 'fintech', 'retail', 'manufacturing', 'saas'];
   const themes = ['light', 'dark'] as const;
   const fuzzTitles = [

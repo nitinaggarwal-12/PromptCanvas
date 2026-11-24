@@ -82,8 +82,8 @@ Pass `layoutEngineV2: true` (or `false`) in the `POST /api/generate` request bod
 
 ## 🧪 Testing & Validation CLI
 
-### Master Omni 1.1 Architecture Quality Gate (40 Certified Blueprints & Lean 8 Document Studio)
-Executes the comprehensive quality verification gate covering render safety, master catalog quality (40 Certified Blueprints: 7 Core `#78`, `#79`, `#81`, `#84`, `#00`, `#67`, `#69` + 14 G-Series `#85`–`#98` + 4 Restored `#03`, `#12`, `#14`, `#29` + 15 Infographics `#52`–`#66`), Lean 8 Pharma Regulatory Rigor Document Studio (`DOC 01 • BRD`, `DOC 02 • PRD`, `DOC 03 • SDD`, `DOC 05 • TDD`, `DOC 13 • AI System Card`, `DOC 07 • STRIDE`, `DOC 09 • GRC Package`, `DOC 17 • SRE & Ops Spec`), canvas generator self-healing, hooks schema validation, governance doc sync, and 5-tier model stack verification:
+### Master Omni 1.1 Architecture Quality Gate (41 Certified Blueprints & Lean 8 Document Studio)
+Executes the comprehensive quality verification gate covering render safety, master catalog quality (41 Certified Blueprints: 8 Core `#78`, `#99` [WS1 L400 GCP], `#79`, `#81`, `#84`, `#00`, `#67`, `#69` + 14 G-Series `#85`–`#98` + 4 Restored `#03`, `#12`, `#14`, `#29` + 15 Infographics `#52`–`#66`), Lean 8 Pharma Regulatory Rigor Document Studio (`DOC 01 • BRD`, `DOC 02 • PRD`, `DOC 03 • SDD`, `DOC 05 • TDD`, `DOC 13 • AI System Card`, `DOC 07 • STRIDE`, `DOC 09 • GRC Package`, `DOC 17 • SRE & Ops Spec`), canvas generator self-healing, hooks schema validation, governance doc sync, and 5-tier model stack verification:
 ```bash
 npm run quality-gate
 ```

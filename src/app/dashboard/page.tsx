@@ -1537,7 +1537,7 @@ function DashboardContent() {
         CANONICAL_TEMPLATES.some((t) => t.id === loadedBlueprintId)
     );
     if (!hasSelectedTemplate) {
-      showToast('🏛️ Select one of the 40 Certified Blueprints in Step 1 before applying AI mutations (or use Prompt Only for no-template generation).');
+      showToast('🏛️ Select one of the 41 Certified Blueprints in Step 1 before applying AI mutations (or use Prompt Only for no-template generation).');
       return;
     }
 
@@ -2432,7 +2432,7 @@ function DashboardContent() {
               onClick={() => setIsNewDiagramModalOpen(true)}
               data-testid="dashboard-new-diagram-btn"
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs transition shadow-md shadow-sky-500/25 cursor-pointer shrink-0 active:scale-95"
-              title="Create New Architecture Diagram (40 Certified Blueprints, Pure Prompt-to-Diagram, or Image Decompile)"
+              title="Create New Architecture Diagram (41 Certified Blueprints, Pure Prompt-to-Diagram, or Image Decompile)"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>New Diagram</span>
@@ -2484,7 +2484,7 @@ function DashboardContent() {
                   title="World 1 (Blueprint Studio): Mandatory certified template selection (#00–#98) before AI prompt mutation"
                 >
                   <span className="truncate">🏛️ Blueprint</span>
-                  <span className="text-[8.5px] font-medium opacity-90 truncate">40 Certified</span>
+                  <span className="text-[8.5px] font-medium opacity-90 truncate">41 Certified</span>
                 </button>
                 <Link
                   href="/prompt-to-diagram"

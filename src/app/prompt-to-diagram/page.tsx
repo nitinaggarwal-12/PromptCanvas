@@ -85,6 +85,8 @@ export default function PurePromptToDiagramPage() {
   const [isSavingDb, setIsSavingDb] = useState(false);
   const [isExportingSlides, setIsExportingSlides] = useState(false);
   const [isSyncingFromSlides, setIsSyncingFromSlides] = useState(false);
+  const [isSlidesSyncModalOpen, setIsSlidesSyncModalOpen] = useState(false);
+  const [slidesSyncInput, setSlidesSyncInput] = useState('');
   const [linkedSlidesId, setLinkedSlidesId] = useState<string | null>(null);
   const [linkedSlidesUrl, setLinkedSlidesUrl] = useState<string | null>(null);
   const [statusNotice, setStatusNotice] = useState<string | null>(null);
@@ -430,13 +432,15 @@ export default function PurePromptToDiagramPage() {
     }
   }
 
-  async function handleSyncFromGoogleSlides() {
+  async function handleSyncFromGoogleSlides(explicitRef?: string) {
     if (!activeResult?.xml) return;
-    let targetRef = linkedSlidesId || linkedSlidesUrl || '';
-    if (!targetRef && typeof window !== 'undefined') {
-      targetRef = window.prompt('Paste the Google Slides URL or Presentation ID to sync edits back into Draw.io XML:') || '';
+    const targetRef = (explicitRef ?? linkedSlidesId ?? linkedSlidesUrl ?? '').trim();
+    if (!targetRef) {
+      setSlidesSyncInput('');
+      setIsSlidesSyncModalOpen(true);
+      return;
     }
-    if (!targetRef.trim()) return;
+    setIsSlidesSyncModalOpen(false);
 
     setIsSyncingFromSlides(true);
     setErrorMsg(null);
@@ -761,7 +765,7 @@ export default function PurePromptToDiagramPage() {
               data-testid="back-to-blueprint-studio-link"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Blueprint Studio (40 Templates)</span>
+              <span>Blueprint Studio</span>
             </Link>
             {(undoAvailable || redoAvailable || activeResult?.xml) && (
               <div
@@ -1424,6 +1428,60 @@ export default function PurePromptToDiagramPage() {
           )}
         </section>
       </main>
+
+      {/* INLINE REACT MODAL FOR GOOGLE SLIDES SYNC (ZERO window.prompt) */}
+      {isSlidesSyncModalOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-slate-900/50 flex items-center justify-center p-4"
+          data-testid="modal-sync-from-slides"
+        >
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-md p-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-extrabold text-slate-900">Sync Edits from Google Slides</h3>
+              <button
+                type="button"
+                onClick={() => setIsSlidesSyncModalOpen(false)}
+                className="p-1 rounded-lg hover:bg-slate-100 text-slate-500 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Paste a Google Slides URL or Presentation ID to pull text and layout edits back into your Draw.io XML.
+            </p>
+            <input
+              type="text"
+              value={slidesSyncInput}
+              onChange={(e) => setSlidesSyncInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && slidesSyncInput.trim()) {
+                  void handleSyncFromGoogleSlides(slidesSyncInput.trim());
+                }
+              }}
+              placeholder="https://docs.google.com/presentation/d/..."
+              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 outline-none"
+              autoFocus
+            />
+            <div className="flex items-center justify-end gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setIsSlidesSyncModalOpen(false)}
+                className={btnClass('neutral')}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={!slidesSyncInput.trim() || isSyncingFromSlides}
+                onClick={() => void handleSyncFromGoogleSlides(slidesSyncInput.trim())}
+                className={btnClass('primary')}
+              >
+                Sync from Slides
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* EMBEDDED INTERACTIVE DRAW.IO VECTOR EDITOR MODAL */}
       {isDrawioEditorOpen && activeResult?.xml && (

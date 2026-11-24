@@ -62,7 +62,7 @@ interface NavGroup {
  * works. It also removes the old "Canvas > Design Canvas" parent/child stutter:
  * Design Canvas is now a peer under CREATE.
  *
- * NOTE ON BADGE COUNTS: '77' and '17' are literals rather than
+ * NOTE ON BADGE COUNTS: '41' and '8' are literals rather than
  * CANONICAL_TEMPLATES.length / DOC_ARCHETYPES_META.length on purpose — this
  * component renders on every route, and importing those modules would pull
  * ~130KB of template and archetype source into every client bundle for the sake
@@ -87,7 +87,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: 'Library & Blueprints',
     items: [
       { id: 'library', name: 'Saved Architectures', icon: LayoutGrid, href: '/library', badge: 'SAVED', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
-      { id: 'canonical', name: 'Blueprint Catalog', icon: Network, href: '/canonical', badge: '40' },
+      { id: 'canonical', name: 'Blueprint Catalog', icon: Network, href: '/canonical', badge: '41' },
     ],
   },
   {

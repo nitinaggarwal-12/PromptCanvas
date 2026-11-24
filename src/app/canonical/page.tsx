@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import {
   CANONICAL_TEMPLATES,
   CANONICAL_FAMILIES,
+  CANONICAL_TAGS,
   DOMAIN_PRESETS,
   CanonicalTemplate,
   getCanonicalTemplateById,
@@ -46,7 +47,8 @@ import {
   Compass,
   Menu,
   Plus,
-  BarChart3
+  BarChart3,
+  Tag
 } from 'lucide-react';
 import { ComposeModal } from '@/components/workspace/ComposeModal';
 import { UserProfileModal } from '@/components/UserProfileModal';
@@ -65,6 +67,7 @@ function CanonicalContent() {
 
   const [selectedFamily, setSelectedFamily] = useState<string>('All');
   const [selectedLevel, setSelectedLevel] = useState<string>('All');
+  const [selectedTag, setSelectedTag] = useState<string>(searchParams.get('tag') || 'All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedDomain, setSelectedDomain] = useState<string>('enterprise');
   const [customPrompt, setCustomPrompt] = useState<string>('');
@@ -181,17 +184,21 @@ function CanonicalContent() {
 
   // Filter templates
   const filteredTemplates = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
     return CANONICAL_TEMPLATES.filter((tpl) => {
       const matchFamily = selectedFamily === 'All' || tpl.family === selectedFamily;
       const matchLevel = selectedLevel === 'All' || tpl.level === selectedLevel;
+      const matchTag = selectedTag === 'All' || Boolean(tpl.tags?.includes(selectedTag));
       const matchSearch =
-        tpl.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        tpl.id.includes(searchQuery) ||
-        tpl.primaryPurpose.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        tpl.examples.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchFamily && matchLevel && matchSearch;
+        !q ||
+        tpl.name.toLowerCase().includes(q) ||
+        tpl.id.includes(q) ||
+        tpl.primaryPurpose.toLowerCase().includes(q) ||
+        tpl.examples.toLowerCase().includes(q) ||
+        Boolean(tpl.tags?.some((t) => t.toLowerCase().includes(q)));
+      return matchFamily && matchLevel && matchTag && matchSearch;
     });
-  }, [selectedFamily, selectedLevel, searchQuery]);
+  }, [selectedFamily, selectedLevel, selectedTag, searchQuery]);
 
   // Open Adapt Modal
   const handleOpenAdapt = (tpl: CanonicalTemplate) => {
@@ -361,6 +368,15 @@ function CanonicalContent() {
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-50 text-sky-700 border border-sky-200">
                     {activeTemplate.family} • {activeTemplate.level}
                   </span>
+                  {activeTemplate.tags?.map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center gap-1 text-[10px] font-extrabold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200"
+                    >
+                      <Tag className="w-2.5 h-2.5" />
+                      {tag}
+                    </span>
+                  ))}
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
                     Full-Screen Stable Blueprint
                   </span>
@@ -556,45 +572,86 @@ function CanonicalContent() {
               </div>
             </div>
 
-            {/* Bottom Row: Visual Families Category Badges */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin max-w-full">
-              {CANONICAL_FAMILIES.map((family) => {
-                const count =
-                  family === 'All'
-                    ? CANONICAL_TEMPLATES.length
-                    : CANONICAL_TEMPLATES.filter((t) => t.family === family).length;
-                return (
-                  <button
-                    key={family}
-                    onClick={() => setSelectedFamily(family)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all border shrink-0 ${
-                      selectedFamily === family
-                        ? 'bg-sky-600 text-white border-sky-600 shadow-xs'
-                        : isDark
-                        ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
-                        : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 shadow-xs'
-                    }`}
-                  >
-                    <span>{family}</span>
-                    <span
-                      className={`px-1.5 py-0.2 rounded text-[9px] ${
+              {/* Bottom Row: Visual Families & Tag Filter Badges */}
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-1">
+              <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-thin max-w-full">
+                {CANONICAL_FAMILIES.map((family) => {
+                  const count =
+                    family === 'All'
+                      ? CANONICAL_TEMPLATES.length
+                      : CANONICAL_TEMPLATES.filter((t) => t.family === family).length;
+                  return (
+                    <button
+                      key={family}
+                      onClick={() => setSelectedFamily(family)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all border shrink-0 cursor-pointer ${
                         selectedFamily === family
-                          ? 'bg-white/20 text-white'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                          ? 'bg-sky-600 text-white border-sky-600 shadow-xs'
+                          : isDark
+                          ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                          : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 shadow-xs'
                       }`}
                     >
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
+                      <span>{family}</span>
+                      <span
+                        className={`px-1.5 py-0.2 rounded text-[9px] ${
+                          selectedFamily === family
+                            ? 'bg-white/20 text-white'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                        }`}
+                      >
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Blueprint Tag Filters (e.g. L400 GCP) */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                  <Tag className="w-3 h-3 text-indigo-500" />
+                  Tag:
+                </span>
+                {CANONICAL_TAGS.map((tag) => {
+                  const count =
+                    tag === 'All'
+                      ? CANONICAL_TEMPLATES.length
+                      : CANONICAL_TEMPLATES.filter((t) => t.tags?.includes(tag)).length;
+                  return (
+                    <button
+                      key={tag}
+                      data-testid={`canonical-tag-filter-${tag.toLowerCase().replace(/\s+/g, '-')}`}
+                      onClick={() => setSelectedTag(tag)}
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all border shrink-0 cursor-pointer ${
+                        selectedTag === tag
+                          ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                          : isDark
+                          ? 'bg-slate-900 border-indigo-500/30 text-indigo-300 hover:border-indigo-400'
+                          : 'bg-indigo-50/70 border-indigo-200 text-indigo-700 hover:bg-indigo-100/70'
+                      }`}
+                    >
+                      <span>{tag}</span>
+                      <span
+                        className={`px-1.5 py-0.2 rounded text-[9px] ${
+                          selectedTag === tag
+                            ? 'bg-white/20 text-white'
+                            : 'bg-white/80 dark:bg-slate-800 text-indigo-600 dark:text-indigo-300'
+                        }`}
+                      >
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
-          {/* 40 CERTIFIED BLUEPRINTS GRID WITH REAL THUMBNAILS BEHIND TILES & BIGGER HOVER CARDS */}
+          {/* CERTIFIED BLUEPRINTS GRID WITH REAL THUMBNAILS BEHIND TILES & BIGGER HOVER CARDS */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 pt-2">
             {filteredTemplates.map((template, idx) => {
-              const isHighlighted = ['78', '00', '67'].includes(template.id);
+              const isHighlighted = ['78', '99', '00', '67'].includes(template.id);
               const thumbSrc = template.previewImage || `/templates/canonical_${template.id.padStart(2, '0')}.png`;
               const isHovered = hoveredTemplateId === template.id;
               // Determine horizontal alignment of the bigger hover card so edge columns never clip
@@ -651,6 +708,16 @@ function CanonicalContent() {
                            template.level === 'L3' ? 'L3 Physical' :
                            template.level}
                         </span>
+                        {template.tags?.map((tag) => (
+                          <span
+                            key={tag}
+                            data-testid={`canonical-tile-tag-${template.id}`}
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-indigo-50 text-indigo-700 border border-indigo-200 shadow-2xs"
+                          >
+                            <Tag className="w-2.5 h-2.5" />
+                            {tag}
+                          </span>
+                        ))}
                         <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Certified
                         </span>
@@ -762,7 +829,7 @@ function CanonicalContent() {
                               #{template.id}
                             </span>
                             <div>
-                              <div className="flex items-center gap-1.5">
+                              <div className="flex items-center gap-1.5 flex-wrap">
                                 <span className="text-[10px] font-black uppercase tracking-wider text-sky-600">
                                   {template.family}
                                 </span>
@@ -770,6 +837,15 @@ function CanonicalContent() {
                                 <span className="text-[10px] font-extrabold text-indigo-600">
                                   {template.level} Blueprint
                                 </span>
+                                {template.tags?.map((tag) => (
+                                  <span
+                                    key={tag}
+                                    className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-black uppercase bg-indigo-50 text-indigo-700 border border-indigo-200"
+                                  >
+                                    <Tag className="w-2.5 h-2.5" />
+                                    {tag}
+                                  </span>
+                                ))}
                               </div>
                               <h4 className="text-lg font-black text-slate-900 leading-snug">
                                 {template.name}
@@ -960,7 +1036,7 @@ export default function CanonicalPage() {
       <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center text-slate-900">
         <div className="flex items-center gap-2 font-mono text-xs text-sky-600">
           <RefreshCw className="w-4 h-4 animate-spin" />
-          <span>Loading 22 Certified Production Blueprints...</span>
+          <span>Loading {CANONICAL_TEMPLATES.length} Certified Production Blueprints...</span>
         </div>
       </div>
     }>

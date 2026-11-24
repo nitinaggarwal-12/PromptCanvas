@@ -13,6 +13,7 @@ import {
   saveDiagramBundleToGcs,
   loadDiagramBundleFromGcs,
   deleteDiagramBundleFromGcs,
+  listDiagramIdsFromGcs,
   getGcsStateBucket,
 } from './gcsDiagramStore';
 
@@ -1131,9 +1132,36 @@ export async function getUserDiagramAccess(
   return null;
 }
 
+let lastGcsListHydrateAt = 0;
+
+async function hydrateAllDiagramsFromGcsIntoSqlite(): Promise<void> {
+  if (isPostgres() || !getGcsStateBucket()) return;
+  const now = Date.now();
+  if (now - lastGcsListHydrateAt < 15_000) return;
+  lastGcsListHydrateAt = now;
+  try {
+    const gcsIds = await listDiagramIdsFromGcs(200);
+    if (gcsIds.length === 0) return;
+    const db = getSqliteDb();
+    const missingIds = gcsIds.filter(
+      (id) => !db.prepare('SELECT id FROM diagrams WHERE id = ?').get(id)
+    );
+    // Bounded concurrency of 6 to avoid spiking cold-start latency
+    for (let i = 0; i < missingIds.length; i += 6) {
+      const batch = missingIds.slice(i, i + 6);
+      await Promise.all(batch.map((id) => hydrateDiagramFromGcsIntoSqlite(id)));
+    }
+  } catch (err) {
+    console.warn('[DB] Best-effort GCS library hydration skipped:', err);
+  }
+}
+
 // Helper: List all diagrams accessible by a given user (owned, shared, or public seeded ones)
 export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_content?: string; prompt?: string | null })[]> {
   await ensureTablesExist();
+  if (!isPostgres()) {
+    await hydrateAllDiagramsFromGcsIntoSqlite();
+  }
   
   if (userId) {
     if (isPostgres()) {

@@ -65,7 +65,8 @@ export function BlueprintCatalogModal({
       t.name.toLowerCase().includes(q) ||
       t.family.toLowerCase().includes(q) ||
       t.primaryPurpose.toLowerCase().includes(q) ||
-      t.keyComponents.some((c) => c.toLowerCase().includes(q))
+      t.keyComponents.some((c) => c.toLowerCase().includes(q)) ||
+      Boolean(t.tags?.some((tag) => tag.toLowerCase().includes(q)))
     );
   };
 
@@ -318,6 +319,15 @@ export function BlueprintCatalogModal({
                         >
                           {levelBadgeLabel}
                         </span>
+                        {template.tags?.map((tag) => (
+                          <span
+                            key={tag}
+                            className="inline-flex items-center gap-0.5 text-[9.5px] font-extrabold uppercase px-1.5 py-0.5 rounded-md font-mono bg-indigo-50 text-indigo-700 border border-indigo-200"
+                          >
+                            <Tag className="w-2.5 h-2.5" />
+                            {tag}
+                          </span>
+                        ))}
                       </div>
                       <span className="text-[10.5px] font-semibold text-slate-400 truncate max-w-[120px]">
                         {template.family}

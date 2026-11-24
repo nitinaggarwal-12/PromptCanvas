@@ -100,7 +100,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         stepNumber: 1,
         title: 'Architecture Studio Orientation',
         whereToClick: 'Architecture Studio / Blueprint Catalog',
-        description: 'PromptCanvas provides a streamlined architecture workspace. Access 40 Certified Blueprints in the Blueprint Catalog and 8 surviving archetypes in Document Studio, directly from the sidebar.',
+        description: 'PromptCanvas provides a streamlined architecture workspace. Access 41 Certified Blueprints in the Blueprint Catalog and 8 surviving archetypes in Document Studio, directly from the sidebar.',
         validationChecklist: [
           'Left Studio is ready for prompt input or blueprint selection',
           'Canvas is set to high-DPI 1600px 16:9 desktop grid'
@@ -116,7 +116,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         stepNumber: 2,
         title: 'Prompt Entry & Architecture Selection',
         whereToClick: 'Architecture Studio -> "ACTIVE USE CASE PROMPT" text area',
-        description: 'Type plain English requirements or select from 40 Certified Blueprints (7 Core #78, #79, #81, #84, #00, #67, #69 + 14 G-Series #85–#98 + 4 Restored #03, #12, #14, #29 + 15 Infographic Blueprints #52–#66).',
+        description: 'Type plain English requirements or select from 41 Certified Blueprints (8 Core #78, #99 [L400 GCP], #79, #81, #84, #00, #67, #69 + 14 G-Series #85–#98 + 4 Restored #03, #12, #14, #29 + 15 Infographic Blueprints #52–#66).',
         promptRecipe: 'Design an Enterprise Cloud Platform on Google Cloud featuring Cloud Armor WAF, GKE Autopilot microservices with private VPC peering, Cloud SQL high availability, and Pub/Sub event ingestion.',
         validationChecklist: [
           'Active prompt input with concrete cloud infrastructure components',

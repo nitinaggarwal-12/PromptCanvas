@@ -30,6 +30,7 @@ import {
   FileText,
   Boxes,
   Edit3,
+  Tag,
 } from 'lucide-react';
 import { ComposeModal } from '@/components/workspace/ComposeModal';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -190,6 +191,20 @@ export default function CanonicalTemplateDetailPage() {
                   }`}>
                     {activeTemplate.name}
                   </h1>
+                  {activeTemplate.tags?.map((tag) => (
+                    <span
+                      key={tag}
+                      data-testid="canonical-detail-tag-badge"
+                      className={`inline-flex items-center gap-1 text-[10px] font-black uppercase px-2 py-0.5 rounded-full border shrink-0 ${
+                        isDark
+                          ? 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30'
+                          : 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                      }`}
+                    >
+                      <Tag className="w-2.5 h-2.5" />
+                      {tag}
+                    </span>
+                  ))}
                   <span className={`hidden 2xl:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded border shrink-0 ${
                     isDark
                       ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
@@ -416,14 +431,14 @@ export default function CanonicalTemplateDetailPage() {
         {/* Viewport Frame */}
         {isSideBySide ? (
           <div className="flex-1 w-full h-[calc(100vh-90px)] flex flex-col gap-3 overflow-hidden">
-            {/* Quick 40 Certified Production Blueprint Switcher */}
+            {/* Quick Certified Production Blueprint Switcher */}
             <div className="bg-white rounded-2xl border border-slate-200 px-4 py-2 shadow-sm flex items-center justify-between gap-3 overflow-x-auto shrink-0">
               <div className="flex items-center gap-2 shrink-0">
                 <span className="px-2.5 py-0.5 rounded-md bg-indigo-600 text-white font-mono text-[10px] font-extrabold uppercase tracking-wider">
                   Side-by-Side Comparison
                 </span>
                 <span className="text-xs font-extrabold text-slate-800">
-                  40 Certified Blueprints:
+                  {CANONICAL_TEMPLATES.length} Certified Blueprints:
                 </span>
               </div>
               <div className="flex items-center gap-1 overflow-x-auto py-0.5">
@@ -518,10 +533,19 @@ export default function CanonicalTemplateDetailPage() {
           <div className="flex-1 w-full flex flex-col gap-2.5">
             {/* Full-Page Stable Blueprint Metadata Strip */}
             <div className="w-full rounded-2xl bg-white border border-slate-200 px-4 py-2.5 shadow-xs flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-3 min-w-0">
-                <span className="px-2.5 py-1 rounded-lg bg-sky-50 text-sky-700 border border-sky-200 font-mono text-xs font-black">
+              <div className="flex items-center gap-3 min-w-0 flex-wrap">
+                <span className="px-2.5 py-1 rounded-lg bg-sky-50 text-sky-700 border border-sky-200 font-mono text-xs font-black shrink-0">
                   Blueprint #{activeTemplate.id} • {activeTemplate.family}
                 </span>
+                {activeTemplate.tags?.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono text-[11px] font-black uppercase shrink-0"
+                  >
+                    <Tag className="w-3 h-3" />
+                    Tag: {tag}
+                  </span>
+                ))}
                 <p className="text-xs font-semibold text-slate-600 truncate">
                   {activeTemplate.primaryPurpose}
                 </p>

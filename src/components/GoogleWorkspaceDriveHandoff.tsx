@@ -288,11 +288,6 @@ export default function GoogleWorkspaceDriveHandoff({
   useEffect(() => {
     if (bootedRef.current) return;
     bootedRef.current = true;
-    if (typeof window !== 'undefined' && window.location.hostname.toLowerCase().endsWith('.railway.app')) {
-      const targetUrl = `${CANONICAL_BEYONDCORP_ORIGIN}${window.location.pathname}${window.location.search}${window.location.hash}`;
-      window.location.replace(targetUrl);
-      return;
-    }
     (async () => {
       const id = (await resolveGoogleOAuthClientId()) || DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
       await bootWithClientId(id);

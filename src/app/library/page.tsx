@@ -863,35 +863,36 @@ function ArchitectureLibraryContent() {
     if (idStr.startsWith('bp_') || idStr.startsWith('canonical_') || archStr.startsWith('canonical_')) {
       const rawNum = idStr.replace(/^(bp_|canonical_)/i, '') || archStr.replace(/^canonical_/i, '');
       const num = parseInt(rawNum, 10);
-      if (!isNaN(num) && (num === 0 || (num >= 35 && num <= 50) || (num >= 67 && num <= 74) || num === 78)) {
+      const validNums = new Set([0, 3, 12, 14, 29, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 69, 78, 79, 81, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99]);
+      if (!isNaN(num) && validNums.has(num)) {
         return `/templates/canonical_${String(num).padStart(2, '0')}.png`;
       }
     }
     if (idStr === 'GCP-GE-BANKING-2026' || idStr === 'GCP-MULTIAGENT-01' || combined.includes('2026 upgraded gcp') || combined.includes('multi-agent banking')) {
       return '/templates/canonical_00.png';
     }
-    if (combined.includes('clinical') || combined.includes('fhir') || combined.includes('healthcare')) {
-      return '/templates/canonical_68.png';
+    if (combined.includes('clinical') || combined.includes('fhir') || combined.includes('healthcare') || combined.includes('pv') || combined.includes('adverse')) {
+      return '/templates/canonical_85.png';
     }
     if (idStr.includes('1787') || idStr.includes('3093') || combined.includes('gemini enterprise')) {
       return '/templates/canonical_78.png';
     }
     if (idStr.includes('9745') || combined.includes('landing zone')) {
-      return '/templates/canonical_38.png';
+      return '/templates/canonical_79.png';
     }
-    if (idStr.includes('AGENTIC') || combined.includes('agentic')) {
+    if (idStr.includes('AGENTIC') || combined.includes('agentic') || combined.includes('mcp')) {
       return '/templates/canonical_67.png';
     }
-    if (combined.includes('rag')) return '/templates/canonical_38.png';
-    if (combined.includes('lakehouse') || combined.includes('medallion')) return '/templates/canonical_42.png';
-    if (combined.includes('erd') || combined.includes('schema')) return '/templates/canonical_42.png';
-    if (combined.includes('sequence')) return '/templates/canonical_68.png';
-    if (combined.includes('swimlane')) return '/templates/canonical_67.png';
-    if (combined.includes('security') || combined.includes('threat') || combined.includes('zero-trust')) return '/templates/canonical_44.png';
-    if (combined.includes('finops')) return '/templates/canonical_44.png';
+    if (combined.includes('rag')) return '/templates/canonical_81.png';
+    if (combined.includes('lakehouse') || combined.includes('medallion')) return '/templates/canonical_84.png';
+    if (combined.includes('erd') || combined.includes('schema')) return '/templates/canonical_14.png';
+    if (combined.includes('sequence') || combined.includes('state')) return '/templates/canonical_12.png';
+    if (combined.includes('swimlane') || combined.includes('bpmn')) return '/templates/canonical_03.png';
+    if (combined.includes('security') || combined.includes('threat') || combined.includes('zero-trust') || combined.includes('iam')) return '/templates/canonical_88.png';
+    if (combined.includes('finops') || combined.includes('cutover') || combined.includes('runbook')) return '/templates/canonical_29.png';
 
-    // Deterministic hash fallback across active canonical thumbnails so every custom tile gets a rich diagram preview
-    const activeNums = ['00', '38', '42', '44', '67', '68', '78'];
+    // Deterministic hash fallback across active certified canonical thumbnails (zero 404s)
+    const activeNums = ['00', '03', '12', '14', '29', '67', '78', '79', '81', '84'];
     let hash = 0;
     const seed = `${idStr}:${nameStr}`;
     for (let i = 0; i < seed.length; i++) {

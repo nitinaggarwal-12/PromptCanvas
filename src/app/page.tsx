@@ -29,7 +29,6 @@ import { UserProfileModal } from '@/components/UserProfileModal';
 import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
 import { ContactUsModal } from '@/components/ContactUsModal';
 import { VisitorCounter } from '@/components/VisitorCounter';
-import { TEMPLATE_CATALOG_ITEMS } from '@/lib/templateCategories';
 import { useTheme } from '@/lib/themeContext';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 import { FeedbackHeaderEmailButton } from '@/components/UniversalFeedbackSystem';
@@ -151,10 +150,10 @@ export default function LandingPage() {
               <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-black ${isLight ? 'bg-teal-50 text-teal-700 border border-teal-200' : 'bg-teal-500/20 text-teal-300'}`}>HOME</span>
             </Link>
 
-            <Link href="/canonical" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-sky-700' : 'hover:bg-slate-800/80 hover:text-white text-sky-400'}`} title="40 Certified Blueprints (7 Core + 14 G-Series + 4 Restored + 15 Infographics)">
+            <Link href="/canonical" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-sky-700' : 'hover:bg-slate-800/80 hover:text-white text-sky-400'}`} title="41 Certified Blueprints (8 Core incl. WS1 #99 + 14 G-Series + 4 Restored + 15 Infographics)">
               <Sparkles className={`w-3.5 h-3.5 ${isLight ? 'text-sky-600' : 'text-sky-400'}`} aria-hidden="true" />
               <span>Canonical Hub</span>
-              <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-sky-50 text-sky-700 border border-sky-200' : 'bg-sky-500/20 text-sky-300'}`}>40</span>
+              <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-sky-50 text-sky-700 border border-sky-200' : 'bg-sky-500/20 text-sky-300'}`}>41</span>
             </Link>
 
             <Link href="/blogs" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-blue-700' : 'hover:bg-slate-800/80 hover:text-white text-blue-400'}`} title="9-Guide Google Cloud Architecture Center Series">
@@ -282,7 +281,7 @@ export default function LandingPage() {
                 className="p-2 rounded-lg hover:bg-slate-800 text-sky-400 font-bold flex items-center justify-between"
               >
                 <span>Blueprint Catalog</span>
-                <span className="px-2 py-0.5 rounded-full text-xs bg-sky-500/20 text-sky-300">40 Certified Blueprints</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-sky-500/20 text-sky-300">41 Certified Blueprints</span>
               </Link>
               <Link 
                 href="/blogs" 
@@ -556,7 +555,7 @@ export default function LandingPage() {
             </div>
             <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Ready-To-Go Templates</h4>
             <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-              Launch with 40 Certified Blueprints (7 Core Architecture/Flow Blueprints #78, #79, #81, #84, #00, #67, #69 + 14 G-Series #85–#98 + 4 Restored #03, #12, #14, #29 + 15 Infographic Blueprints #52–#66) to instantly validate stacks.
+              Launch with 41 Certified Blueprints (8 Core Architecture/Flow Blueprints #78, #99, #79, #81, #84, #00, #67, #69 + 14 G-Series #85–#98 + 4 Restored #03, #12, #14, #29 + 15 Infographic Blueprints #52–#66) to instantly validate stacks.
             </p>
           </div>
 
@@ -623,14 +622,14 @@ export default function LandingPage() {
             Bootstrap with Production-Grade Blueprints
           </h3>
           <p className={`text-lg mt-4 max-w-2xl mx-auto ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-            Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>40 Certified Blueprints</strong> (7 Core + 14 G-Series + 4 Restored + 15 Infographics) directly in the interactive studio.
+            Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>41 Certified Blueprints</strong> (8 Core incl. WS1 #99 + 14 G-Series + 4 Restored + 15 Infographics) directly in the interactive studio.
           </p>
           <div className="mt-4">
             <Link
               href="/canonical"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>View All 40 Certified Blueprints in Templates Gallery →</span>
+              <span>View All 41 Certified Blueprints in Templates Gallery →</span>
             </Link>
           </div>
         </div>
@@ -688,7 +687,7 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Template 3: Enterprise GenAI & Multi-Agent Platform (#40) */}
+          {/* Template 3: WS1 Shared 5-Hop Multi-Tenant Agent Platform (#99 • L400 GCP) */}
           <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
             isLight ? 'bg-white border-slate-200 hover:border-purple-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-purple-500/45 text-slate-100'
           }`}>
@@ -697,24 +696,24 @@ export default function LandingPage() {
                 <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
                   <Zap className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">Blueprint #40</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border border-indigo-500/20">L400 GCP • #99</span>
               </div>
-              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Enterprise GenAI &amp; Multi-Agent Platform (#40)</h4>
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>WS1: Shared 5-Hop Multi-Tenant Agent Platform (#99)</h4>
               <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                8-layer Gemini Enterprise multi-agent supervisor, 7 specialist domain agents, Model Armor safety guardrails, Vertex AI Vector Search 2.0, and enterprise connectors.
+                80% shared 5-Hop governance &amp; control plane (&lt;42ms p95 overhead), RFC 8693 OBO + DPoP, dual Agent Gateways, Cloud Run Gen2 gVisor ADK Runtime, Valkey sessions, and Pool / Hybrid PSC / HSM CMEK Silo isolation.
               </p>
             </div>
             <Link
-              href="/dashboard?blueprint=40"
-              aria-label="Launch Enterprise GenAI and Multi-Agent blueprint #40 in Dashboard"
+              href="/canonical/99"
+              aria-label="Open WS1 Shared 5-Hop Multi-Tenant Agent Platform blueprint #99"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-300 hover:text-purple-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch Multi-Agent Platform (#40)</span>
+              <span>Open WS1 5-Hop Blueprint (#99)</span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
 
-          {/* Template 4: Enterprise RAG & Knowledge Intelligence Platform (#41) */}
+          {/* Template 4: L400 Deployment & Network Spec (#79) */}
           <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
             isLight ? 'bg-white border-slate-200 hover:border-teal-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-teal-500/45 text-slate-100'
           }`}>
@@ -723,24 +722,24 @@ export default function LandingPage() {
                 <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-accent group-hover:scale-110 transition-transform">
                   <FileText className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">Blueprint #41</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border border-indigo-500/20">L400 GCP • #79</span>
               </div>
-              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Enterprise RAG &amp; Knowledge Intelligence (#41)</h4>
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>L400 Multi-Tenant Hub &amp; Spoke Network Spec (#79)</h4>
               <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                Hybrid semantic + lexical retrieval, Document AI Layout Parser, Vertex AI Vector Search 2.0, Spanner GraphRAG, and grounded citation synthesis.
+                Physical VPC CIDR blocks, BGP ASN 64512, Cloud Armor WAF, Global External ALB VIP, Private Service Connect attachments, AlloyDB FORCE RLS pools, and sovereign VPC-SC silos.
               </p>
             </div>
             <Link
-              href="/dashboard?blueprint=41"
-              aria-label="Launch Enterprise RAG blueprint #41 in Dashboard"
+              href="/canonical/79"
+              aria-label="Open L400 Hub and Spoke Network Spec blueprint #79"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch Enterprise RAG (#41)</span>
+              <span>Open L400 Network Spec (#79)</span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
 
-          {/* Template 5: Modern Data Lakehouse & Data Mesh (#42) */}
+          {/* Template 5: L400 Principal Sequence A2A & MCP (#81) */}
           <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
             isLight ? 'bg-white border-slate-200 hover:border-indigo-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-indigo-500/45 text-slate-100'
           }`}>
@@ -749,24 +748,24 @@ export default function LandingPage() {
                 <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
                   <History className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">Blueprint #42</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border border-indigo-500/20">L400 GCP • #81</span>
               </div>
-              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Modern Data Lakehouse &amp; Data Mesh (#42)</h4>
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>L400 Principal Sequence — A2A &amp; MCP Runtime (#81)</h4>
               <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                BigLake Apache Iceberg Bronze/Silver/Gold zones, Dataplex Universal Governance Catalog, Dataflow CDC pipelines, BigQuery analytics, and Looker BI.
+                16-step governed runtime sequence covering OIDC JWT, SPIFFE mTLS, Agent Gateway delegation control, grounded retrieval, governed analytics, and HITL approval gates.
               </p>
             </div>
             <Link
-              href="/dashboard?blueprint=42"
-              aria-label="Launch Modern Data Lakehouse blueprint #42 in Dashboard"
+              href="/canonical/81"
+              aria-label="Open L400 Principal Sequence A2A and MCP blueprint #81"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-300 hover:text-indigo-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch Lakehouse &amp; Data Mesh (#42)</span>
+              <span>Open Principal Sequence (#81)</span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
 
-          {/* Template 6: Enterprise API, Integration & MCP Gateway (#45) */}
+          {/* Template 6: L400 C4 Level 1 System Context (#94) */}
           <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
             isLight ? 'bg-white border-slate-200 hover:border-purple-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-purple-500/45 text-slate-100'
           }`}>
@@ -775,19 +774,19 @@ export default function LandingPage() {
                 <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
                   <Shield className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/20">Blueprint #45</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border border-indigo-500/20">L400 GCP • #94</span>
               </div>
-              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Enterprise API, Integration &amp; MCP Gateway (#45)</h4>
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>G-01: L400 C4 System Context &amp; VPC-SC Platform (#94)</h4>
               <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                Apigee X API Management, Application Integration connectors, Model Context Protocol (MCP) JSON-RPC 2.0 tool servers, and Eventarc pub/sub routing.
+                Security-hardened C4 Level 1 system context with OAuth 2.1 DPoP, FIDO2 WebAuthn, VPC-SC restricted.googleapis.com, Model Armor, Gemini 2.5 Pro ADK, and SecOps Chronicle WORM retention.
               </p>
             </div>
             <Link
-              href="/dashboard?blueprint=45"
-              aria-label="Launch Enterprise API and MCP Gateway blueprint #45 in Dashboard"
+              href="/canonical/94"
+              aria-label="Open L400 C4 System Context blueprint #94"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-300 hover:text-purple-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Launch API &amp; MCP Gateway (#45)</span>
+              <span>Open L400 C4 Context (#94)</span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>

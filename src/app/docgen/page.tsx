@@ -142,13 +142,13 @@ export const DIAGRAM_FAMILY_PRESETS = [
 
 export const FAMILY_TO_TEMPLATE_IDS: Record<string, string[]> = {
   all: CANONICAL_TEMPLATES.map(t => t.id),
-  structure: CANONICAL_TEMPLATES.filter(t => t.family === 'Structure' || ['78', '82', '83', '00'].includes(t.id)).map(t => t.id),
-  flow: CANONICAL_TEMPLATES.filter(t => t.family === 'Flow' || t.family === 'Process' || ['81', '67', '68', '69'].includes(t.id)).map(t => t.id),
-  infrastructure: CANONICAL_TEMPLATES.filter(t => t.family === 'Infrastructure' || t.family === 'Delivery & Operations' || ['78', '79', '80', '84', '00', '38'].includes(t.id)).map(t => t.id),
-  data: CANONICAL_TEMPLATES.filter(t => ['42', '84', '69'].includes(t.id)).map(t => t.id),
-  ai: CANONICAL_TEMPLATES.filter(t => t.family === 'Whiteboard' || t.family === 'Paper' || ['78', '79', '80', '81', '82', '83', '00', '67', '68'].includes(t.id)).map(t => t.id),
-  security: CANONICAL_TEMPLATES.filter(t => t.family === 'Security & Governance' || ['78', '79', '81', '44'].includes(t.id)).map(t => t.id),
-  business: CANONICAL_TEMPLATES.filter(t => t.family === 'Understand' || t.family === 'Analysis & Planning' || t.family === 'Infographic' || ['83'].includes(t.id)).map(t => t.id),
+  structure: CANONICAL_TEMPLATES.filter(t => t.family === 'Structure' || ['78', '99', '00'].includes(t.id)).map(t => t.id),
+  flow: CANONICAL_TEMPLATES.filter(t => t.family === 'Flow' || t.family === 'Process' || ['81', '67', '69'].includes(t.id)).map(t => t.id),
+  infrastructure: CANONICAL_TEMPLATES.filter(t => t.family === 'Infrastructure' || t.family === 'Delivery & Operations' || ['78', '99', '79', '84', '00'].includes(t.id)).map(t => t.id),
+  data: CANONICAL_TEMPLATES.filter(t => ['14', '84', '69', '92', '93'].includes(t.id)).map(t => t.id),
+  ai: CANONICAL_TEMPLATES.filter(t => t.family === 'Whiteboard' || t.family === 'Paper' || ['78', '99', '79', '81', '00', '67'].includes(t.id)).map(t => t.id),
+  security: CANONICAL_TEMPLATES.filter(t => t.family === 'Security & Governance' || ['78', '99', '79', '81', '94', '97'].includes(t.id)).map(t => t.id),
+  business: CANONICAL_TEMPLATES.filter(t => t.family === 'Understand' || t.family === 'Analysis & Planning' || t.family === 'Infographic').map(t => t.id),
 };
 
 export function getTemplatesForFamily(familyId: string): CanonicalTemplate[] {

@@ -3,6 +3,7 @@ import {
   getGcsStateBucket,
   saveDiagramBundleToGcs,
   loadDiagramBundleFromGcs,
+  listDiagramIdsFromGcs,
 } from '@/lib/gcsDiagramStore';
 
 describe('GCS Diagram Persistence Store', () => {
@@ -20,5 +21,7 @@ describe('GCS Diagram Persistence Store', () => {
     expect(saved).toBe(false);
     const loaded = await loadDiagramBundleFromGcs('test-1234');
     expect(loaded).toBeNull();
+    const ids = await listDiagramIdsFromGcs();
+    expect(ids).toEqual([]);
   });
 });

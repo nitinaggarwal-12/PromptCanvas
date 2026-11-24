@@ -1,5 +1,5 @@
 /**
- * Machine-Readable Canonical Architecture Contracts for the 40 Certified Blueprints
+ * Machine-Readable Canonical Architecture Contracts for the 41 Certified Blueprints
  * (7 Core #78, #79, #81, #84, #00, #67, #69 + 14 G-Series #85–#98 + 4 Restored #03, #12, #14, #29 + 15 Infographics #52–#66)
  * Enforces strict semantic boundaries, required elements, forbidden antipatterns,
  * exact reference geometry, PNG aspect-ratio locks, and fail-closed QA certification.
@@ -583,6 +583,44 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
       requiredCellIds: ['g08_l400_top_bg', 'g08_l400_ingested', 'g08_l400_validated', 'g08_l400_comp', 'g08_l400_sla_bg', 'g08_l400_b1', 'g08_l400_b4'],
       forbiddenCellIds: [],
       requiredSubstrings: ['G-08: L400 UML 2.5 Finite State Machine', 'Formal UML 2.5 Hierarchical ICSR Statechart', 'T_regulatory_sla'],
+      forbiddenSubstrings: ['image=data:image/svg+xml;utf8,']
+    }
+  },
+  '99': {
+    id: '99',
+    grammar: 'WS1: Shared 5-Hop Multi-Tenant Agent Platform Architecture (Pool / Hybrid / Silo — L400 GCP)',
+    family: 'Reference Architectures',
+    level: ['L3'],
+    semanticQuestion: 'How does an L400 Google Cloud multi-tenant agentic platform keep 80% of its 5-Hop Governance & Control Plane shared (<42ms p95 overhead across Edge PEP, STS DPoP, ARD PDP, dual Agent Gateways, Cloud Run Gen2 gVisor ADK Runtime, Valkey sessions, and FinOps bulkhead) while dynamically isolating the remaining 20% Hop 5 targets across Pool (AlloyDB FORCE RLS), Hybrid (/28 PSC Spokes), and Sovereign Silo (Dedicated GCP Project + HSM CMEK)?',
+    requiredElements: ['caller tiers', 'agent gateway', 'adk runtime', 'alloydb force rls', 'hsm cmek', 'fail-closed circuit breakers'],
+    forbiddenElements: ['unconnected-edges'],
+    edgeTypes: ['caller-to-hop1', 'five-hop-pipeline', 'control-plane-enforcement', 'observability-telemetry'],
+    iconPolicy: 'authentic-brand',
+    sourceImage: 'canonical_99.png',
+    generatorVersion: '4.0',
+    certificationStatus: 'certified',
+    referenceGeometry: {
+      pageWidth: 1600,
+      pageHeight: 900,
+      aspectRatio: 1600 / 900,
+      minIconCount: 18,
+      requiredCellIds: [
+        'zone_cp', 'zone_hop1', 'zone_fe', 'zone_gw_in', 'zone_rt', 'zone_gw_out', 'zone_tgts',
+        'u_a', 'u_b', 'u_c', 'idp', 'ingress', 'app_layer', 'gw_in_box', 'runtime', 'gw_out_box',
+        'mcp_srv', 'a2a_srv', 'llm_srv', 'ent_api', 'sessions', 'mem_bank', 'finops_bulkhead', 'obs_bar', 'plane_guide'
+      ],
+      forbiddenCellIds: [],
+      requiredSubstrings: [
+        'Shared 80% 5-Hop Governance',
+        'Hop 1–2 · Auth Manager',
+        'Hop 2 · Agent Registry (ARD)',
+        'Hop 4 · Model Armor',
+        'Hop 3 · ADK Runtime',
+        'Hop 5A (Pool): FORCE ROW LEVEL SECURITY',
+        'Hop 5C (Hybrid): /28 PSC Spoke VPCs',
+        'Hop 5B (Silo): Dedicated GCP Project + HSM CMEK',
+        'AI Observability'
+      ],
       forbiddenSubstrings: ['image=data:image/svg+xml;utf8,']
     }
   }

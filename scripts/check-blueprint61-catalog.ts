@@ -70,7 +70,7 @@ if (vertices < 25) failures.push(`runtime diagram too sparse: ${vertices} vertic
 if (edges < 18) failures.push(`runtime diagram too sparse: ${edges} edges`);
 if (decisions < 3) failures.push(`runtime diagram missing decision depth: ${decisions} diamonds`);
 
-const liveLink = bp61?.liveRailwayLink || '';
+const liveLink = bp61?.liveStudioLink || '';
 if (!liveLink.includes(`blueprint=${ID}`)) {
   failures.push('Blueprint 61 Railway deep link is missing or incorrect');
 }
@@ -89,5 +89,5 @@ console.log(JSON.stringify({
   edges,
   decisions,
   combinedId: bp61.combinedId,
-  liveRailwayLink: bp61.liveRailwayLink,
+  liveStudioLink: bp61.liveStudioLink,
 }, null, 2));

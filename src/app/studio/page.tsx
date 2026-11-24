@@ -3826,11 +3826,11 @@ function StudioMain() {
                                     />
                                   ) : selectedDiagramMode === 'blueprint' ? (
                                     <img
-                                      src={`/templates/${selectedBlueprintId === 'custom' ? '00' : selectedBlueprintId}.png`}
+                                      src={`/templates/canonical_${selectedBlueprintId === 'custom' ? '00' : selectedBlueprintId}.png`}
                                       alt={`Blueprint #${selectedBlueprintId}`}
                                       className="w-full h-full object-cover object-top"
                                       onError={(e) => {
-                                        (e.currentTarget as HTMLImageElement).src = '/templates/00.png';
+                                        (e.currentTarget as HTMLImageElement).src = '/templates/canonical_00.png';
                                       }}
                                     />
                                   ) : selectedAbstractionLevel === 'L1' ? (
@@ -5029,17 +5029,15 @@ function StudioMain() {
                         <div className="flex-1 min-h-0 relative overflow-hidden bg-slate-100/70">
                           <img
                             id="sbs-reference-png-img"
-                            src={`/templates/${
+                            src={
                               selectedDiagramMode === 'infographic'
-                                ? selectedInfographicBlueprintId
-                                : selectedBlueprintId === 'custom'
-                                  ? '00'
-                                  : selectedBlueprintId
-                            }.png`}
-                            alt="Reference Infographic PNG"
+                                ? `/templates/${selectedInfographicBlueprintId}.png`
+                                : `/templates/canonical_${selectedBlueprintId === 'custom' ? '00' : selectedBlueprintId}.png`
+                            }
+                            alt="Reference Blueprint PNG"
                             className="absolute inset-3 w-[calc(100%-24px)] h-[calc(100%-24px)] object-contain rounded-xl border border-slate-200 bg-white shadow-md"
                             onError={(e) => {
-                              (e.currentTarget as HTMLImageElement).src = '/templates/00.png';
+                              (e.currentTarget as HTMLImageElement).src = '/templates/canonical_00.png';
                             }}
                           />
                         </div>

@@ -3,6 +3,7 @@ import { getDiagram, deleteDiagram, getDiagramVersions, updateDiagramArchitectur
 import { getAuthenticatedUser } from '@/lib/auth';
 import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
+import { healFosterParentedHtmlInXml } from '@/lib/htmlTableSanitizer';
 import { generateGeminiEnterpriseArchitectureXml } from '@/lib/masterBuilders/build_master_gemini_enterprise_agent_platform';
 import { generateGoogleMultiagentArchitectureXml } from '@/lib/masterBuilders/build_master_google_multiagent_ai_system';
 import { generateUpgradedGcpGeBankingArchitectureXml } from '@/lib/canonical/upgradedGcpGeBankingAgentTemplate';
@@ -248,10 +249,12 @@ export async function GET(request: Request, { params }: RouteParams) {
         xmlStr = enrichDrawioXmlWithVectorIcons(generateGeminiEnterpriseArchitectureXml());
       }
       xmlStr = String(xmlStr || '');
-      const healedXml = preflightVerifyAndHealXmlAcrossAll6Audits(
-        xmlStr || '',
-        diagram.architecture_type || 'unified_system_view'
-      );
+      const healedXml = healFosterParentedHtmlInXml(
+        preflightVerifyAndHealXmlAcrossAll6Audits(
+          xmlStr || '',
+          diagram.architecture_type || 'unified_system_view'
+        )
+      ).xml;
       return { ...v, xml_content: healedXml };
     });
 

@@ -45,7 +45,6 @@ async function executeSingleAttempt(prompt: string): Promise<IntentClassificatio
         contents: systemPrompt,
         config: {
           temperature: 0.1,
-          thinkingConfig: { thinkingBudget: 0 },
           responseMimeType: 'application/json',
           responseSchema: {
             type: Type.OBJECT,

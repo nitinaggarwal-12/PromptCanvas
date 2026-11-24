@@ -174,3 +174,36 @@ export async function deleteDiagramBundleFromGcs(diagramId: string): Promise<voi
     // Best-effort delete
   }
 }
+
+/**
+ * Lists all diagram IDs stored under `diagrams/*.json` in the GCS state bucket.
+ * Bounded to maxResults=200 so cold-start library hydration stays sub-second.
+ */
+export async function listDiagramIdsFromGcs(maxResults = 200): Promise<string[]> {
+  const bucket = getGcsStateBucket();
+  if (!bucket) return [];
+  const token = await getMetadataAccessToken();
+  if (!token) return [];
+
+  const url = `https://storage.googleapis.com/storage/v1/b/${encodeURIComponent(bucket)}/o?prefix=${encodeURIComponent('diagrams/')}&maxResults=${Math.min(500, Math.max(1, maxResults))}&fields=items(name)`;
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 6000);
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
+    if (!res.ok) return [];
+    const data = (await res.json()) as { items?: Array<{ name?: string }> };
+    const ids: string[] = [];
+    for (const item of data?.items || []) {
+      const name = String(item?.name || '');
+      const m = /^diagrams\/([a-zA-Z0-9._-]{4,128})\.json$/.exec(name);
+      if (m) ids.push(m[1]);
+    }
+    return ids;
+  } catch {
+    return [];
+  }
+}
