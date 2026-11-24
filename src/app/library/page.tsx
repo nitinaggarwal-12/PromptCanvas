@@ -104,7 +104,7 @@ interface CanvasDiagramItem {
   is_starred?: boolean;
 }
 
-type StudioTabKey = 'all' | 'drafts' | 'studio' | 'studio1' | 'canonical' | 'vision';
+type StudioTabKey = 'all' | 'drafts' | 'studio' | 'prompt_to_diagram' | 'canonical' | 'vision';
 
 function ArchitectureLibraryContent() {
   const router = useRouter();
@@ -189,11 +189,13 @@ function ArchitectureLibraryContent() {
     const studioParam = searchParams.get('studio');
     if (studioParam === 'draft') {
       setActiveStudioTab('drafts');
+    } else if (studioParam === 'studio1') {
+      setActiveStudioTab('studio');
     } else if (
       studioParam === 'all' ||
       studioParam === 'drafts' ||
       studioParam === 'studio' ||
-      studioParam === 'studio1' ||
+      studioParam === 'prompt_to_diagram' ||
       studioParam === 'canonical' ||
       studioParam === 'vision'
     ) {
@@ -651,7 +653,7 @@ function ArchitectureLibraryContent() {
         body: JSON.stringify({
           name: `${diagram.name || 'Architecture'} (Clone)`,
           architecture_type: diagram.architecture_type || 'custom',
-          created_studio: diagram.created_studio || 'studio1',
+          created_studio: diagram.created_studio || 'dashboard',
           xml_content: xmlToClone
         })
       });
@@ -822,7 +824,10 @@ function ArchitectureLibraryContent() {
     ) {
       return 'drafts';
     }
-    if (raw === 'studio' || d.id.startsWith('proj_')) {
+    if (raw === 'prompt_to_diagram' || raw === 'prompt-to-diagram' || (d.architecture_type && d.architecture_type.includes('nlp_blueprint'))) {
+      return 'prompt_to_diagram';
+    }
+    if (raw === 'studio' || raw === 'dashboard' || raw === 'studio1' || d.id.startsWith('proj_')) {
       return 'studio';
     }
     if (d.id.startsWith('bp_') || raw === 'canonical' || (d.architecture_type && d.architecture_type.startsWith('canonical_'))) {
@@ -836,15 +841,6 @@ function ArchitectureLibraryContent() {
       (d.architecture_type && d.architecture_type.includes('vision'))
     ) {
       return 'vision';
-    }
-    const archLower = (d.architecture_type || '').toLowerCase();
-    if (
-      raw === 'prompt_lab' ||
-      /^p[1-7](_|$)/i.test(d.id) ||
-      /^p[1-7](_|$)/i.test(archLower) ||
-      archLower.startsWith('matrix_')
-    ) {
-      return 'studio1';
     }
     return 'studio';
   };
@@ -908,7 +904,7 @@ function ArchitectureLibraryContent() {
       all: diagrams.length,
       drafts: 0,
       studio: 0,
-      studio1: 0,
+      prompt_to_diagram: 0,
       canonical: 0,
       vision: 0
     };
@@ -943,7 +939,7 @@ function ArchitectureLibraryContent() {
         if (rightFilterTag === 'gemini_enterprise') return upperId.includes('1787') || upperId.includes('3093') || nameLower.includes('gemini enterprise') || archLower.includes('gemini_enterprise');
         if (rightFilterTag === 'vision_landing_agentic') return upperId.includes('9745') || upperId.includes('AGENTIC') || nameLower.includes('landing zone') || nameLower.includes('agentic ai architecture');
         if (rightFilterTag === 'studio_pro') return cat === 'studio';
-        if (rightFilterTag === 'studio1_lab') return cat === 'studio1';
+        if (rightFilterTag === 'prompt_to_diagram') return cat === 'prompt_to_diagram';
         if (rightFilterTag === 'canonical_50') return cat === 'canonical';
         return true;
       });
@@ -1448,7 +1444,7 @@ function ArchitectureLibraryContent() {
                     Saved Architectures &amp; <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Enterprise Library</span>
                   </h1>
                   <p className={`text-[11px] leading-tight mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                    Unified repository for Auto-Saved Micro-Version Drafts, My Created &amp; Saved Architectures, Vision Decompilations, and Official Canonical Blueprints ({CANONICAL_TEMPLATES.length}).
+                    Unified repository for Blueprint Studio Instances, Prompt to Diagram (NLP) Instances, Vision Decompilations, and Certified Blueprints ({CANONICAL_TEMPLATES.length}).
                   </p>
                 </div>
               </div>
@@ -1472,12 +1468,12 @@ function ArchitectureLibraryContent() {
                 <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
                 <div className="flex items-center gap-1.5">
                   <span className="font-extrabold text-indigo-600 dark:text-indigo-400">{studioCounts.studio}</span>
-                  <span className="text-[10px] text-slate-500 uppercase font-bold">Custom/Forked</span>
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Blueprint Studio</span>
                 </div>
                 <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
                 <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-emerald-600 dark:text-emerald-400">{studioCounts.studio1}</span>
-                  <span className="text-[10px] text-slate-500 uppercase font-bold">Matrix Lab</span>
+                  <span className="font-extrabold text-emerald-600 dark:text-emerald-400">{studioCounts.prompt_to_diagram}</span>
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Prompt to Diagram</span>
                 </div>
               </div>
             </div>
@@ -1492,11 +1488,11 @@ function ArchitectureLibraryContent() {
             >
               {[
                 { id: 'all', label: '🌐 All Architectures', count: studioCounts.all, color: 'teal' },
-                { id: 'drafts', label: '📝 Drafts (Micro-Versions)', count: studioCounts.drafts, color: 'amber' },
-                { id: 'studio', label: '💎 My Created & Saved (Studio)', count: studioCounts.studio, color: 'indigo' },
-                { id: 'vision', label: '👁️ Vision Decompiled & Upgraded', count: studioCounts.vision, color: 'teal' },
-                { id: 'studio1', label: '🧭 Guided Matrix & Lab', count: studioCounts.studio1, color: 'emerald' },
-                { id: 'canonical', label: '📚 Official Canonical', count: studioCounts.canonical, color: 'sky' }
+                { id: 'drafts', label: '📝 Saved Drafts', count: studioCounts.drafts, color: 'amber' },
+                { id: 'studio', label: '💎 Blueprint Studio Saved', count: studioCounts.studio, color: 'indigo' },
+                { id: 'prompt_to_diagram', label: '✨ Prompt to Diagram (NLP)', count: studioCounts.prompt_to_diagram, color: 'emerald' },
+                { id: 'vision', label: '👁️ Vision Decompiled', count: studioCounts.vision, color: 'teal' },
+                { id: 'canonical', label: '📚 Certified Blueprints (41)', count: studioCounts.canonical, color: 'sky' }
               ].map((tab) => {
                 const isActive = activeStudioTab === tab.id;
                 return (
@@ -1625,13 +1621,11 @@ function ArchitectureLibraryContent() {
                     }`}
                   >
                     <option value="all">📖 All Saved Library &amp; Categories</option>
-                    <option value="drafts_auto">📝 Auto-Saved Drafts (Micro-Versions)</option>
-                    <option value="vision_saved">👁️ Saved Library (Vision Decompiler All)</option>
-                    <option value="gcp_multiagent">🤖 Google Multiagent AI System (87)</option>
-                    <option value="gemini_enterprise">✨ VIS-1787 / VIS-3093 Gemini Enterprise Agent Platform</option>
-                    <option value="studio_pro">💎 Architecture Studio (Pro)</option>
-                    <option value="studio1_lab">🧪 Prompt Lab (Studio 1)</option>
-                    <option value="canonical_50">📚 Canonical Reference Blueprints (40)</option>
+                    <option value="drafts_auto">📝 Saved Drafts</option>
+                    <option value="vision_saved">👁️ Vision Decompiled Diagrams</option>
+                    <option value="studio_pro">💎 Blueprint Studio Saved Instances</option>
+                    <option value="prompt_to_diagram">✨ Prompt to Diagram (NLP) Instances</option>
+                    <option value="canonical_50">📚 Certified Blueprints (41)</option>
                   </select>
 
                   {/* Sort By Dropdown */}
@@ -1757,25 +1751,25 @@ function ArchitectureLibraryContent() {
                         label: '📝 Saved Draft',
                         style: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/40',
                         btnStyle: 'bg-amber-600 hover:bg-amber-500 text-white',
-                        actionLabel: 'Open Draft in Dashboard',
+                        actionLabel: 'Open Draft in Studio',
                         route: `/dashboard?draft=${encodeURIComponent(diagram.id)}`
                       },
                       studio: {
-                        label: 'My Custom & Forked',
+                        label: 'Blueprint Studio Instance',
                         style: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/30',
                         btnStyle: 'bg-indigo-600 hover:bg-indigo-500 text-white',
-                        actionLabel: 'Open in Dashboard',
-                        route: `/dashboard?blueprint=${encodeURIComponent(cleanCanonicalId)}`
+                        actionLabel: 'Open Instance in Studio',
+                        route: `/dashboard?id=${encodeURIComponent(diagram.id)}`
                       },
-                      studio1: {
-                        label: 'Guided Matrix',
-                        style: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/30',
-                        btnStyle: 'bg-teal-600 hover:bg-teal-500 text-white',
-                        actionLabel: 'Open in Dashboard',
-                        route: `/dashboard?blueprint=${encodeURIComponent(cleanCanonicalId)}`
+                      prompt_to_diagram: {
+                        label: 'Prompt to Diagram (NLP)',
+                        style: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30',
+                        btnStyle: 'bg-emerald-600 hover:bg-emerald-500 text-white',
+                        actionLabel: 'Open in Prompt to Diagram',
+                        route: `/prompt-to-diagram?id=${encodeURIComponent(diagram.id)}`
                       },
                       canonical: {
-                        label: 'Canonical Blueprint',
+                        label: 'Certified Blueprint',
                         style: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30',
                         btnStyle: 'bg-sky-600 hover:bg-sky-500 text-white',
                         actionLabel: 'Open Blueprint',
@@ -1790,7 +1784,7 @@ function ArchitectureLibraryContent() {
                       }
                     };
 
-                    const studioBadgeConfig = studioBadgeConfigMap[studioCategory] || studioBadgeConfigMap.studio1;
+                    const studioBadgeConfig = studioBadgeConfigMap[studioCategory] || studioBadgeConfigMap.studio;
 
                     return (
                       <div

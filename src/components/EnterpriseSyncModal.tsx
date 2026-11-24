@@ -220,14 +220,14 @@ ${githubChecklist}
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <h3 className="text-xs font-black truncate">
-                Enterprise Webhook &amp; Toolchain Export
+                Toolchain Export Templates &amp; Webhook
               </h3>
               <span className="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded-full bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30 shrink-0">
-                Jira &bull; GitHub
+                Copy &bull; POST
               </span>
             </div>
             <p className="text-[10px] text-slate-400 truncate">
-              Non-blocking right panel &bull; Jira, Confluence, and GitHub Sync
+              Copy-ready Jira Wiki, Confluence Markup, GitHub Issue templates &amp; JSON Webhook POST
             </p>
           </div>
         </div>
@@ -352,7 +352,7 @@ ${githubChecklist}
 
       {/* FOOTER */}
       <div className="flex items-center justify-between px-4 py-2.5 border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md text-[11px] text-slate-400">
-        <span>Native Jira, Confluence &amp; GitHub Import</span>
+        <span>Copy-Pasteable Templates &amp; Live JSON Webhook</span>
         <span className="font-mono text-[10px]">JSON &bull; MD</span>
       </div>
     </aside>

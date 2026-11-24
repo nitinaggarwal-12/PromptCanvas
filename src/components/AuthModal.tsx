@@ -15,7 +15,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
-  const [mode, setMode] = useState<'signin' | 'signup' | 'magiclink'>(initialMode);
+  const [mode, setMode] = useState<'signin' | 'signup'>(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -109,19 +109,6 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
     setLoading(true);
 
     try {
-      if (mode === 'magiclink') {
-        const res = await fetch('/api/auth/magic-link', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to send magic link');
-
-        setSuccessMsg(data.message || 'Magic link dispatched! Please check your inbox to complete sign in.');
-        return;
-      }
-
       const endpoint = mode === 'signin' ? '/api/auth/signin' : '/api/auth/signup';
       const payload = mode === 'signin' 
         ? { email, password } 
@@ -200,7 +187,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
               isLight ? 'text-slate-900' : 'text-white'
             }`}
           >
-            {mode === 'signin' ? 'Welcome Back' : mode === 'signup' ? 'Create Your Account' : 'Passwordless Login'}
+            {mode === 'signin' ? 'Welcome Back' : 'Create Your Account'}
           </h2>
           <p
             id="auth-modal-desc"
@@ -208,9 +195,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
           >
             {mode === 'signin' 
               ? 'Sign in to access your saved architecture diagrams' 
-              : mode === 'signup'
-              ? 'Sign up to create, save, and export multi-cloud architecture diagrams'
-              : 'Enter your email to receive an instant passwordless login link'}
+              : 'Sign up to create, save, and export multi-cloud architecture diagrams'}
           </p>
         </div>
 
@@ -218,7 +203,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
         <div
           role="tablist"
           aria-label="Authentication mode"
-          className={`grid grid-cols-3 p-1.5 rounded-2xl border mb-6 gap-1.5 ${
+          className={`grid grid-cols-2 p-1.5 rounded-2xl border mb-6 gap-1.5 ${
             isLight
               ? 'bg-slate-100 border-slate-300'
               : 'bg-slate-900/90 border-slate-800'
@@ -261,25 +246,6 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
             }`}
           >
             Sign Up
-          </button>
-          <button
-            id="auth-tab-magiclink"
-            type="button"
-            role="tab"
-            aria-selected={mode === 'magiclink'}
-            onClick={() => {
-              setMode('magiclink');
-              setError(null);
-            }}
-            className={`py-3 text-xs md:text-sm font-extrabold rounded-xl transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${
-              mode === 'magiclink'
-                ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-md'
-                : isLight
-                ? 'text-slate-600 hover:text-slate-900'
-                : 'text-slate-300 hover:text-white'
-            }`}
-          >
-            ✨ Magic Link
           </button>
         </div>
 
@@ -383,49 +349,47 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
             </div>
           </div>
 
-          {mode !== 'magiclink' && (
-            <div>
-              <label
-                htmlFor="auth-input-password"
-                className={`block text-sm font-bold mb-2 ${
-                  isLight ? 'text-slate-800' : 'text-slate-200'
+          <div>
+            <label
+              htmlFor="auth-input-password"
+              className={`block text-sm font-bold mb-2 ${
+                isLight ? 'text-slate-800' : 'text-slate-200'
+              }`}
+            >
+              Password
+            </label>
+            <div className="relative">
+              <Lock className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" aria-hidden="true" />
+              <input
+                id="auth-input-password"
+                type="password"
+                required
+                minLength={mode === 'signup' ? 10 : 6}
+                aria-invalid={!!error}
+                aria-describedby={
+                  error
+                    ? 'auth-error-alert'
+                    : mode === 'signup'
+                    ? 'auth-password-hint'
+                    : undefined
+                }
+                autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+                placeholder="••••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={`w-full pl-12 pr-4 py-3.5 rounded-2xl border text-base outline-none transition-colors focus-visible:ring-2 focus-visible:ring-sky-500 ${
+                  isLight
+                    ? 'bg-slate-50 border-slate-300 focus:border-teal-500 text-slate-900 placeholder-slate-400'
+                    : 'bg-slate-900/80 border-slate-800 focus:border-teal-400 text-white placeholder-slate-500'
                 }`}
-              >
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" aria-hidden="true" />
-                <input
-                  id="auth-input-password"
-                  type="password"
-                  required
-                  minLength={6}
-                  aria-invalid={!!error}
-                  aria-describedby={
-                    error
-                      ? 'auth-error-alert'
-                      : mode === 'signup'
-                      ? 'auth-password-hint'
-                      : undefined
-                  }
-                  autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full pl-12 pr-4 py-3.5 rounded-2xl border text-base outline-none transition-colors focus-visible:ring-2 focus-visible:ring-sky-500 ${
-                    isLight
-                      ? 'bg-slate-50 border-slate-300 focus:border-teal-500 text-slate-900 placeholder-slate-400'
-                      : 'bg-slate-900/80 border-slate-800 focus:border-teal-400 text-white placeholder-slate-500'
-                  }`}
-                />
-              </div>
-              {mode === 'signup' && (
-                <p id="auth-password-hint" className={`mt-1.5 text-xs ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                  Minimum 6 characters required.
-                </p>
-              )}
+              />
             </div>
-          )}
+            {mode === 'signup' && (
+              <p id="auth-password-hint" className={`mt-1.5 text-xs ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
+                Minimum 10 characters required.
+              </p>
+            )}
+          </div>
 
           <button
             id="auth-submit-btn"
@@ -437,11 +401,11 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'signin' }
             {loading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
-                <span>{mode === 'signin' ? 'Signing In...' : mode === 'signup' ? 'Creating Account...' : 'Generating Link...'}</span>
+                <span>{mode === 'signin' ? 'Signing In...' : 'Creating Account...'}</span>
               </>
             ) : (
               <>
-                <span>{mode === 'signin' ? 'Sign In' : mode === 'signup' ? 'Create Account' : 'Send Magic Link ✨'}</span>
+                <span>{mode === 'signin' ? 'Sign In' : 'Create Account'}</span>
                 <ArrowRight className="w-5 h-5" aria-hidden="true" />
               </>
             )}

@@ -190,7 +190,8 @@ type PendingLeaveAction =
 function getCanonicalBaselineForPerspective(
   blueprintId: string,
   perspective: ArchitecturePerspective,
-  isLight: boolean
+  isLight: boolean,
+  domainFlavor = 'enterprise'
 ): {
   xml: string;
   title: string;
@@ -283,10 +284,10 @@ function getCanonicalBaselineForPerspective(
 
   // Default: Technical Perspective
   return {
-    xml: bp.generateXml('enterprise', isLight ? 'light' : 'dark'),
+    xml: bp.generateXml(domainFlavor || 'enterprise', isLight ? 'light' : 'dark'),
     title: blueprintId === '00' ? 'Google Cloud Enterprise Architecture' : bp.name,
     level: (bp.level as AbstractionDetailLevel) || 'L3',
-    diffSummary: `Canonical Master Blueprint #${bp.id} loaded across 5 Deterministic Zones (Immutable Baseline).`
+    diffSummary: `Canonical Master Blueprint #${bp.id} (${domainFlavor || 'enterprise'} domain) loaded across 5 Deterministic Zones (Immutable Baseline).`
   };
 }
 
@@ -394,6 +395,7 @@ function DashboardContent() {
         const incomingInstanceId = params.get('id')?.trim();
         const draftParam = params.get('draft');
         const bpParam = params.get('blueprint');
+        const domainParam = params.get('domain')?.trim() || undefined;
         const depthParam = params.get('depth')?.trim().toUpperCase();
         const importParam = params.get('import');
 
@@ -552,39 +554,6 @@ function DashboardContent() {
           }
         }
 
-        const activeHandoffXml = localStorage.getItem('promptcanvas_active_xml');
-        if ((importParam === 'pv' || !bpParam) && activeHandoffXml && activeHandoffXml.includes('<mxCell')) {
-          const activeHandoffTitle = localStorage.getItem('promptcanvas_active_title') || 'PV Case Processing Architecture';
-          localStorage.removeItem('promptcanvas_active_xml');
-          localStorage.removeItem('promptcanvas_active_title');
-          setCanvasTitle(activeHandoffTitle);
-          setIsSessionForked(true);
-          setHasUnsavedSessionChanges(true);
-          setVersionHistory([
-            {
-              id: `ver_handoff_${Date.now()}`,
-              versionTag: 'v1.0.1',
-              major: 1,
-              minor: 0,
-              micro: 1,
-              title: activeHandoffTitle,
-              prompt: 'Imported from PV Case Processing / Architecture Matrix',
-              source: 'initial_load',
-              sourceLabel: 'Matrix Import',
-              diffSummary: 'Imported canonical architecture topology into Studio.',
-              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-              xml: activeHandoffXml,
-              blueprintId: '78',
-              level: 'L3',
-              perspective: 'Technical',
-              status: 'draft',
-              perspectiveXmlMap: { Technical: activeHandoffXml },
-            },
-          ]);
-          setActiveVersionIndex(0);
-          return;
-        }
-
         if (
           bpParam?.toLowerCase() === 'blank' ||
           params.get('mode')?.toLowerCase() === 'blank'
@@ -623,7 +592,7 @@ function DashboardContent() {
           const cleanBpId = bpParam.replace(/^#/, '').padStart(2, '0');
           const foundBp = CANONICAL_TEMPLATES.find((t) => t.id === cleanBpId || t.id === bpParam);
           if (foundBp) {
-            loadPristineCanonicalBlueprint(foundBp.id);
+            loadPristineCanonicalBlueprint(foundBp.id, undefined, domainParam);
             return;
           }
         }
@@ -1245,7 +1214,8 @@ function DashboardContent() {
   // =========================================================================
   const loadPristineCanonicalBlueprint = (
     targetBlueprintId: string,
-    explicitPerspective?: ArchitecturePerspective
+    explicitPerspective?: ArchitecturePerspective,
+    domainFlavor?: string
   ) => {
     const bp =
       CANONICAL_TEMPLATES.find(
@@ -1263,7 +1233,7 @@ function DashboardContent() {
       defaultPerspective = 'Logical';
     }
 
-    const baseline = getCanonicalBaselineForPerspective(bp.id, defaultPerspective, isLight);
+    const baseline = getCanonicalBaselineForPerspective(bp.id, defaultPerspective, isLight, domainFlavor || 'enterprise');
 
     // Clear any ephemeral session copy from sessionStorage
     if (typeof window !== 'undefined') {
@@ -2163,9 +2133,8 @@ function DashboardContent() {
     } else if (actionToExecute?.type === 'route') {
       loadPristineCanonicalBlueprint(loadedBlueprintId);
       showToast(`✓ Saved "${finalTitle}" to your projects!`);
-      // If user clicked "Launch Studio ->", open their newly saved project in Studio directly!
-      if (actionToExecute.href.startsWith('/studio')) {
-        router.push(`/studio?id=${encodeURIComponent(finalProjectId)}`);
+      if (actionToExecute.href.startsWith('/dashboard')) {
+        router.push(`/dashboard?id=${encodeURIComponent(finalProjectId)}`);
       } else {
         router.push(actionToExecute.href);
       }

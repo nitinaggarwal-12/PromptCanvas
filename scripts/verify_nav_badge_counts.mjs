@@ -63,25 +63,40 @@ const meta = arche.slice(metaStart, metaEnd === -1 ? undefined : metaEnd);
 const archetypeCount = (meta.match(/^\s*id:\s*'/gm) || []).length;
 check('Document Studio', archetypeCount, 'docgen', sidebar);
 
-// PV Case Matrix: count buildRow({...}) entries in PV_MASTER_DIAGRAM_MATRIX
-const pvMatrixSrc = read('src/lib/pvCaseProcessing/pvMatrixAndOverview.ts');
-const pvRowCount = (pvMatrixSrc.match(/buildRow\(\{/g) || []).length;
-check('PV Case Matrix (10 Docs)', pvRowCount, 'pv-pack', sidebar);
-
-// Obsolete route guard: /workspace, /studio1, and /gcp are retired and must never appear in UnifiedAppSidebar or exist in src/app/
-const retiredRouteDirs = ['src/app/workspace', 'src/app/studio1', 'src/app/gcp'].filter((d) =>
-  fs.existsSync(path.join(ROOT, d))
-);
+// Obsolete route & purged CUJ guard: retired routes, studio monolith, customer-specific PV pack,
+// broken auth/contact endpoints, and orphaned APIs must never reappear in UnifiedAppSidebar or on disk.
+const retiredPaths = [
+  'src/app/workspace',
+  'src/app/studio1',
+  'src/app/studio',
+  'src/app/gcp',
+  'src/app/pv-case-processing',
+  'src/app/test-status',
+  'src/components/studio',
+  'src/components/ContactUsModal.tsx',
+  'src/components/AccessRequestsInbox.tsx',
+  'src/app/api/chat',
+  'src/app/api/auth/session',
+  'src/app/api/auth/magic-link',
+  'src/app/api/contact',
+  'src/app/api/access-requests',
+  'src/app/api/diagrams/customize',
+  'src/app/api/export/terraform',
+  'src/app/api/generate/usecases',
+  'src/app/api/infographic-blueprint',
+  'src/app/api/research-infographic',
+];
+const existingRetiredPaths = retiredPaths.filter((d) => fs.existsSync(path.join(ROOT, d)));
 if (
-  /href:\s*['"]\/(?:workspace|studio1|gcp)|href=['"]\/(?:workspace|studio1|gcp)/.test(sidebar) ||
-  retiredRouteDirs.length > 0
+  /href:\s*['"]\/(?:workspace|studio1|studio|gcp|pv-case-processing|test-status)|href=['"]\/(?:workspace|studio1|studio|gcp|pv-case-processing|test-status)/.test(sidebar) ||
+  existingRetiredPaths.length > 0
 ) {
   console.error(
-    `❌ Obsolete Route Guard: Retired routes found in UnifiedAppSidebar.tsx or on disk: ${retiredRouteDirs.join(', ')}`
+    `❌ Obsolete Route & Purged CUJ Guard: Retired paths found in UnifiedAppSidebar.tsx or on disk: ${existingRetiredPaths.join(', ')}`
   );
   failed++;
 } else {
-  console.log('✅ Obsolete Route Guard: Zero retired studio links or route directories (/workspace, /studio1, /gcp)');
+  console.log(`✅ Obsolete Route & Purged CUJ Guard: 0/${retiredPaths.length} retired routes/components/APIs exist`);
 }
 
 // Legacy & Purged Tier 1/2/3 Template Guard: public/templates must contain zero purged legacy files AND every active canonical blueprint must have its certified canonical_<id>.png preview
@@ -227,7 +242,6 @@ const crossPageTargets = [
   'src/components/NewDiagramInputSelectionModal.tsx',
   'src/app/dashboard/page.tsx',
   'src/app/guide/page.tsx',
-  'src/app/test-status/page.tsx',
   'README.md',
 ];
 const staleBlueprintRegex = /\b(?:7|8|18|19|22|23|26|29|40|77)\s+(?:Official\s+Google\s+Cloud\s+Reference\s+(?:&\s+Infographic\s+)?Blueprints|curated\s+Google\s+Cloud\s+reference\s+(?:&\s+infographic\s+)?blueprints|Production\s+Blueprints|Certified\s+Blueprints|Certified|certified\s+reference\s+architectures|Reference\s+Blueprints|Blueprints|blueprints|Canonical\s+Blueprints|canonical\s+master\s+blueprints|production\s+Google\s+Cloud\s+blueprints)\b/;

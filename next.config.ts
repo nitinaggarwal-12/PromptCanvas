@@ -65,13 +65,18 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/studio',
+        destination: '/dashboard',
+        permanent: true,
+      },
+      {
         source: '/canvas',
-        destination: '/studio',
+        destination: '/dashboard',
         permanent: true,
       },
       {
         source: '/workspace',
-        destination: '/studio',
+        destination: '/dashboard',
         permanent: true,
       },
       {
@@ -101,22 +106,32 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/compare-diagrams',
-        destination: '/studio',
+        destination: '/dashboard',
         permanent: true,
       },
       {
         source: '/studio2',
-        destination: '/studio',
+        destination: '/dashboard',
         permanent: true,
       },
       {
         source: '/studio3',
-        destination: '/studio',
+        destination: '/dashboard',
         permanent: true,
       },
       {
         source: '/studioprod',
-        destination: '/studio',
+        destination: '/dashboard',
+        permanent: true,
+      },
+      {
+        source: '/pv-case-processing',
+        destination: '/docgen',
+        permanent: true,
+      },
+      {
+        source: '/test-status',
+        destination: '/audit?tab=health',
         permanent: true,
       },
     ];

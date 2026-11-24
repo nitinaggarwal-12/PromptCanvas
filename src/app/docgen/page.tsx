@@ -532,12 +532,12 @@ function DocGenContent() {
   }, [searchParams]);
 
   const [selectedArchetypeId, setSelectedArchetypeId] = useState<ArchetypeId>('sdd');
-  const [selectedDomain, setSelectedDomain] = useState<string>('biopharma');
-  const [projectName, setProjectName] = useState<string>('Bio-Pharma Clinical Platform');
-  const [useCaseName, setUseCaseName] = useState<string>('Genomics Analysis & Regulatory AI');
-  const [projectTitle, setProjectTitle] = useState<string>('Bio-Pharma Clinical Platform — Genomics Analysis & Regulatory AI');
+  const [selectedDomain, setSelectedDomain] = useState<string>('enterprise');
+  const [projectName, setProjectName] = useState<string>('Enterprise Cloud AI Platform');
+  const [useCaseName, setUseCaseName] = useState<string>('Multi-Tenant Agentic Cloud Architecture');
+  const [projectTitle, setProjectTitle] = useState<string>('Enterprise Cloud AI Platform — Multi-Tenant Agentic Architecture');
   const [projectScopePrompt, setProjectScopePrompt] = useState<string>(
-    'An enterprise-grade decentralized clinical genomics analysis and regulatory pharmacovigilance platform with automated FDA electronic signature audits, Spanner knowledge graphs, multi-region active-active disaster recovery, and zero-trust VPC Service Perimeters.'
+    'An enterprise-grade multi-tenant cloud AI platform on Google Cloud with zero-trust VPC Service Controls, Cloud Run agent orchestration, AlloyDB / Spanner persistence, Model Armor guardrails, and active-active multi-region disaster recovery.'
   );
 
   // Restore & persist custom scope prompt draft in sessionStorage (UX-26)
@@ -2143,13 +2143,13 @@ function DocGenContent() {
                   </div>
                   <div>
                     <h1 className="text-sm sm:text-base font-black tracking-tight leading-none text-slate-900 dark:text-white flex items-center gap-2">
-                      Enterprise Specification Engine — &ldquo;Lean 8&rdquo; Pharma Regulatory Rigor
+                      Enterprise Specification Engine — &ldquo;Lean 8&rdquo; Architecture Standards
                       <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20">
                         {DOC_ARCHETYPES_META.length} SURVIVING CORE DOCS
                       </span>
                     </h1>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 hidden sm:block">
-                      Consolidated from 17 legacy specs into 8 zero-redundancy, GxP / FDA 21 CFR Part 11 inspection-ready documents with 100% deduplicated blueprints.
+                      Consolidated from 17 legacy specs into 8 zero-redundancy, enterprise audit-ready documents with 100% deduplicated blueprints.
                     </p>
                   </div>
                 </div>
@@ -2230,22 +2230,13 @@ function DocGenContent() {
                     <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
                       <span>1. Master Consolidation &amp; Blueprint Mapping Table</span>
                       <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
-                        Pharma Regulatory Rigor &bull; Zero Redundancy
+                        Enterprise Rigor &bull; Zero Redundancy
                       </span>
                     </h2>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
                       Maps every absorbed redundant document, its specialized topics, and its deduplicated blueprint #IDs directly into the 8 surviving core documents.
                     </p>
                   </div>
-                  <Link
-                    href="/pv-case-processing"
-                    data-testid="docgen-open-pv-matrix-link"
-                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold shadow-xs transition-colors"
-                  >
-                    <Layers className="w-3.5 h-3.5" />
-                    <span>Open PV Case Processing Matrix (10 Docs · 39 Diagrams)</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
                 </div>
               </div>
 

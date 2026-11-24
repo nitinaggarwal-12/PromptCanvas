@@ -83,7 +83,6 @@ export default function PurePromptToDiagramPage() {
   const [userPrompt, setUserPrompt] = useState('');
   const [followUpPrompt, setFollowUpPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [activeAction, setActiveAction] = useState<'create' | 'modify'>('create');
   const [elapsedSec, setElapsedSec] = useState(0);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -106,7 +105,6 @@ export default function PurePromptToDiagramPage() {
   const [linkedSlidesUrl, setLinkedSlidesUrl] = useState<string | null>(null);
   const [statusNotice, setStatusNotice] = useState<string | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
-  const [synthesisEngine, setSynthesisEngine] = useState<'v2_fast' | 'visual_4stage'>('v2_fast');
 
   // NLP Blueprint Recommendation & Deferred-ID Selection State
   const [preferredLevel, setPreferredLevel] = useState<PreferredDepthFilter>('All');
@@ -641,142 +639,45 @@ export default function PurePromptToDiagramPage() {
     }
   }
 
-  async function executeSynthesis(action: 'create' | 'modify', explicitPrompt?: string) {
+  async function executeMutation(explicitPrompt?: string) {
     setErrorMsg(null);
-    const basePrompt = (explicitPrompt !== undefined ? explicitPrompt : userPrompt).trim();
-    const modInstruction = (action === 'modify' && explicitPrompt !== undefined ? explicitPrompt : followUpPrompt).trim();
+    const modInstruction = (explicitPrompt !== undefined ? explicitPrompt : followUpPrompt).trim();
 
-    if (action === 'create' && !basePrompt) {
-      setErrorMsg('Enter an architecture prompt to generate a diagram.');
+    if (!savedDiagramId || !activeResult?.xml) {
+      setErrorMsg('Choose a blueprint template first to assign an Instance ID and unlock mutations.');
       return;
     }
-    if (action === 'modify') {
-      if (!savedDiagramId || !activeResult?.xml) {
-        setErrorMsg('Choose a blueprint template first to assign an Instance ID and unlock mutations.');
-        return;
-      }
-      if (!modInstruction) {
-        setErrorMsg('Enter a follow-up change instruction.');
-        return;
-      }
+    if (!modInstruction) {
+      setErrorMsg('Enter a follow-up change instruction.');
+      return;
     }
 
     startRef.current = Date.now();
     setElapsedSec(0);
-    setActiveAction(action);
     setIsGenerating(true);
 
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 175_000);
 
-      // Fast Structured Graph V2 Create Mode (direct JSON IR -> deterministic layout -> Draw.io XML + DB save)
-      // Strictly independent of preset templates per AGENTS.md (forceV2Freeform: true).
-      if (action === 'create' && synthesisEngine === 'v2_fast') {
-        const res = await fetch('/api/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          signal: controller.signal,
-          body: JSON.stringify({
-            prompt: basePrompt,
-            layoutEngineV2: true,
-            forceV2Freeform: true,
-          }),
-        });
-        clearTimeout(timeoutId);
-        const data = await res.json();
-        if (!res.ok || !data?.xml) {
-          throw new Error(data?.error || data?.replyMessage || 'Failed to synthesize diagram.');
-        }
-        const inv = countXmlInventory(data.xml);
-        const newDiagramId = data?.diagram?.id || null;
-        if (newDiagramId) {
-          syncDiagramIdToUrl(newDiagramId);
-        }
-        const v2Payload: CompoundPromptToDiagramResult = {
-          success: true,
-          action: 'create',
-          mutationMode: 'direct_drawio_xml_update',
-          userPrompt: basePrompt,
-          modificationHistory: [],
-          summaryOfChanges: data.reasoning || 'Synthesized structured multi-tier architecture via V2 Graph Engine.',
-          xml: data.xml,
-          graph: {
-            title: data.graph?.title || data.diagram?.name || basePrompt.slice(0, 60),
-            reasoning: data.reasoning || '',
-            groups: (data.graph?.tiers || []).map((t: any) => ({
-              id: t.id,
-              label: t.label,
-              parentId: null,
-              fillHex: '#F8FAFC',
-              strokeHex: '#CBD5E1',
-            })),
-            nodes: (data.graph?.nodes || []).map((n: any) => ({
-              id: n.id,
-              label: n.label,
-              subtitle: n.subtitle || n.description,
-              parentId: n.tier || null,
-              shape: n.type === 'database' ? 'cylinder' : 'rounded',
-              fillHex: '#FFFFFF',
-              strokeHex: '#CBD5E1',
-            })),
-            edges: (data.graph?.edges || []).map((e: any) => ({
-              id: e.id,
-              source: e.source,
-              target: e.target,
-              label: e.label,
-              dashed: e.style === 'dashed',
-            })),
-          },
-          audit: {
-            ...inv,
-            maxNestingDepth: inv.groupCount > 0 ? 1 : 0,
-            siblingOverlaps: Array.isArray(data?.validationReport?.errors)
-              ? data.validationReport.errors.filter((e: any) => e?.code === 'OVERLAP_NODE').length
-              : 0,
-            childContainmentViolations: Array.isArray(data?.validationReport?.errors)
-              ? data.validationReport.errors.filter(
-                  (e: any) =>
-                    e?.code === 'TEXT_OVERFLOW_HEIGHT' ||
-                    e?.code === 'HTML_FOSTER_PARENTING_IN_TABLE'
-                ).length
-              : 0,
-          },
-          modelUsed: data.telemetry?.modelId || 'gemini-2.5-flash',
-          latencyMs: data.telemetry?.latencyMs || Date.now() - (startRef.current || Date.now()),
-        };
-        setSessionRefImageUrl(null);
-        setLinkedSlidesId(null);
-        setLinkedSlidesUrl(null);
-        setStatusNotice(newDiagramId ? `Generated & auto-saved to Library (${newDiagramId.slice(0, 8)}…).` : 'Generated diagram.');
-        setHistoryState((prev) =>
-          pushUndoRedoChange(prev, {
-            label: v2Payload.graph.title,
-            xml: v2Payload.xml,
-            payload: v2Payload,
-          })
-        );
-        return;
-      }
-
       const res = await fetch('/api/prompt-to-diagram', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         signal: controller.signal,
         body: JSON.stringify({
-          action,
-          userPrompt: basePrompt || activeResult?.userPrompt || '',
-          modificationPrompt: action === 'modify' ? modInstruction : undefined,
-          modificationHistory: activeResult?.modificationHistory || [],
-          currentGraph: action === 'modify' ? activeResult?.graph || null : null,
-          currentXml: action === 'modify' ? activeResult?.xml : undefined,
+          action: 'modify',
+          userPrompt: userPrompt.trim() || activeResult.userPrompt || '',
+          modificationPrompt: modInstruction,
+          modificationHistory: activeResult.modificationHistory || [],
+          currentGraph: activeResult.graph || null,
+          currentXml: activeResult.xml,
         }),
       });
       clearTimeout(timeoutId);
 
       const data = await res.json();
       if (!res.ok || !data?.success) {
-        throw new Error(data?.error || 'Failed to generate diagram.');
+        throw new Error(data?.error || 'Failed to mutate diagram.');
       }
 
       const typedResult = data as CompoundPromptToDiagramResult;
@@ -785,69 +686,35 @@ export default function PurePromptToDiagramPage() {
         try {
           sessionStorage.setItem(P2D_REF_IMAGE_SESSION_KEY, typedResult.referenceImageDataUrl);
         } catch {}
-      } else if (action === 'create') {
-        setSessionRefImageUrl(null);
-        try {
-          sessionStorage.removeItem(P2D_REF_IMAGE_SESSION_KEY);
-        } catch {}
       }
 
-      if (action === 'modify') {
-        setFollowUpPrompt('');
-        if (canvasViewMode === 'image') {
-          setCanvasViewMode('drawio');
-        }
+      setFollowUpPrompt('');
+      if (canvasViewMode === 'image') {
+        setCanvasViewMode('drawio');
       }
-
-      const changeLabel =
-        action === 'create' ? typedResult.graph.title : modInstruction;
 
       setHistoryState((prev) =>
         pushUndoRedoChange(prev, {
-          label: changeLabel,
+          label: modInstruction,
           xml: typedResult.xml,
           payload: typedResult,
         })
       );
 
-      // Guarantee EVERY generated/modified diagram gets a unique persistent UUID and ?id=<uuid> URL
+      // Persist the mutated version to the assigned Instance ID for 2-way Prompt <-> Draw.io sync
       try {
-        if (action === 'create') {
-          const saveRes = await fetch('/api/diagrams', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name: typedResult.graph?.title || basePrompt.slice(0, 60) || 'PromptCanvas Architecture',
-              xml: typedResult.xml,
-              comment: '4-Stage Vision Render Synthesis',
-              prompt: basePrompt,
-              aiReasoning: typedResult.summaryOfChanges || typedResult.graph?.reasoning || '',
-              architectureType: 'compound_freeform',
-              createdStudio: 'prompt_to_diagram',
-            }),
-          });
-          if (saveRes.ok) {
-            const savedData = await saveRes.json();
-            const createdId = savedData?.diagram?.id || savedData?.id || null;
-            if (createdId) {
-              syncDiagramIdToUrl(createdId);
-              setStatusNotice(`Generated & auto-saved with permanent URL (?id=${createdId.slice(0, 8)}…).`);
-            }
-          }
-        } else if (action === 'modify' && savedDiagramId) {
-          await fetch(`/api/diagrams/${encodeURIComponent(savedDiagramId)}/versions`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              xmlContent: typedResult.xml,
-              comment: modInstruction.slice(0, 120),
-              createdBy: 'AI-Spatial',
-            }),
-          });
-          setStatusNotice(`Updated diagram (${savedDiagramId.slice(0, 8)}…) & persisted new version.`);
-        }
+        await fetch(`/api/diagrams/${encodeURIComponent(savedDiagramId)}/versions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            xmlContent: typedResult.xml,
+            comment: modInstruction.slice(0, 120),
+            createdBy: 'AI-Spatial',
+          }),
+        });
+        setStatusNotice(`Updated diagram (${savedDiagramId.slice(0, 8)}…) & persisted new version.`);
       } catch {
-        // Non-blocking: diagram is still rendered locally and user can click Save to Library
+        // Non-blocking: diagram is still rendered locally and user can click Save Version
       }
     } catch (err: any) {
       if (err?.name === 'AbortError') {
@@ -1199,7 +1066,7 @@ export default function PurePromptToDiagramPage() {
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
-                      void executeSynthesis('modify');
+                      void executeMutation();
                     }
                   }}
                   placeholder="Add, move, connect, or remove components directly in your diagram instance..."
@@ -1209,10 +1076,10 @@ export default function PurePromptToDiagramPage() {
                   type="button"
                   data-testid="btn-apply-followup-prompt"
                   disabled={isGenerating || !followUpPrompt.trim()}
-                  onClick={() => void executeSynthesis('modify')}
+                  onClick={() => void executeMutation()}
                   className="w-full py-2 px-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-500 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer disabled:cursor-not-allowed"
                 >
-                  {isGenerating && activeAction === 'modify' ? (
+                  {isGenerating ? (
                     <>
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
                       <span>Mutating Draw.io XML ({elapsedSec}s)...</span>
@@ -1264,7 +1131,7 @@ export default function PurePromptToDiagramPage() {
                             ? `NLP Blueprint #${selectedRecMeta.templateId} (2-Way Sync)`
                             : 'Persisted Diagram (2-Way Sync)'
                           : 'Direct Draw.io Spatial Update'
-                        : '4-Stage Research → Image → 1:1 XML'}
+                        : 'NLP Blueprint (2-Way Sync)'}
                     </span>
                     <span className="font-mono text-[10px] text-slate-500 shrink-0">
                       {(activeResult.latencyMs / 1000).toFixed(1)}s

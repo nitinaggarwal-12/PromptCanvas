@@ -78,7 +78,6 @@ const NAV_GROUPS: NavGroup[] = [
       { id: 'prompt-to-diagram', name: 'Prompt to Diagram', icon: Sparkles, href: '/prompt-to-diagram', badge: 'PURE AI', badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
       { id: 'vision', name: 'Image to Diagram', icon: Sparkles, href: '/vision', badge: 'AI', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
       { id: 'docgen', name: 'Document Studio', icon: FileText, href: '/docgen', badge: '8' },
-      { id: 'pv-pack', name: 'PV Case Matrix (10 Docs)', icon: Layers, href: '/pv-case-processing', badge: '39' },
       { id: 'blogs', name: 'Technical Blog Studio', icon: Newspaper, href: '/blogs', badge: 'BLOG', badgeColor: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30' },
     ],
   },
@@ -118,7 +117,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
 
   const isItemActive = (href: string) => {
     const [targetPath, targetQuery] = href.split('?');
-    if (targetPath === '/dashboard' && (pathname === '/dashboard' || pathname === '/studio')) {
+    if (targetPath === '/dashboard' && pathname === '/dashboard') {
       return true;
     }
     if (targetPath === '/library' && pathname === '/library') {
@@ -130,7 +129,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
     if (targetPath === '/blogs' && pathname.startsWith('/blogs')) {
       return true;
     }
-    if (targetPath === '/audit' && (pathname === '/audit' || pathname === '/test-status')) {
+    if (targetPath === '/audit' && pathname === '/audit') {
       return true;
     }
     if (targetPath !== pathname) return false;

@@ -26,9 +26,6 @@ import {
 } from 'lucide-react';
 import { AuthModal } from '@/components/AuthModal';
 import { UserProfileModal } from '@/components/UserProfileModal';
-import { AccessRequestsInbox } from '@/components/AccessRequestsInbox';
-import { ContactUsModal } from '@/components/ContactUsModal';
-import { VisitorCounter } from '@/components/VisitorCounter';
 import { useTheme } from '@/lib/themeContext';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 import { FeedbackHeaderEmailButton } from '@/components/UniversalFeedbackSystem';
@@ -38,11 +35,9 @@ export default function LandingPage() {
   const { theme } = useTheme();
   const isLight = theme === 'light';
   const [user, setUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
-  const [authLoading, setAuthLoading] = useState(true);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isContactOpen, setIsContactOpen] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   const checkAuth = async () => {
@@ -56,8 +51,6 @@ export default function LandingPage() {
       }
     } catch {
       setUser(null);
-    } finally {
-      setAuthLoading(false);
     }
   };
 
@@ -72,32 +65,6 @@ export default function LandingPage() {
       setIsProfileOpen(false);
     } catch (err) {
       console.error('Failed to logout:', err);
-    }
-  };
-
-  const handleLaunchAppClick = (e: React.MouseEvent) => {
-    if (!user) {
-      e.preventDefault();
-      setAuthMode('signin');
-      setIsAuthOpen(true);
-    }
-  };
-
-  const handleBuildDiagramClick = (e: React.MouseEvent) => {
-    if (!user) {
-      e.preventDefault();
-      setAuthMode('signup');
-      setIsAuthOpen(true);
-    }
-  };
-
-  const handleExploreAsGuest = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    try {
-      await fetch('/api/auth/guest', { method: 'POST' });
-      router.push('/dashboard');
-    } catch {
-      router.push('/dashboard');
     }
   };
 
@@ -143,40 +110,38 @@ export default function LandingPage() {
             </div>
           </Link>
 
-          <nav aria-label="Primary Header Navigation" className={`hidden lg:flex items-center gap-3 xl:gap-4 text-xs font-bold shrink-0 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-            <Link href="/dashboard" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-teal-700' : 'hover:bg-slate-800/80 hover:text-white text-teal-400'}`} title="Workspace Home Dashboard — Search Projects & Create New Diagrams">
+          <nav aria-label="Primary Header Navigation" className={`hidden lg:flex items-center gap-1 xl:gap-2 text-xs font-bold shrink-0 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+            <Link href="/dashboard" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-teal-700' : 'hover:bg-slate-800/80 hover:text-white text-teal-400'}`} title="Blueprint Studio — L100–L400 Level Filters & 2-Way Prompt/Draw.io Sync">
               <BarChart3 className={`w-3.5 h-3.5 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} aria-hidden="true" />
-              <span>Home Dashboard</span>
-              <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-black ${isLight ? 'bg-teal-50 text-teal-700 border border-teal-200' : 'bg-teal-500/20 text-teal-300'}`}>HOME</span>
+              <span>Blueprint Studio</span>
             </Link>
 
-            <Link href="/canonical" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-sky-700' : 'hover:bg-slate-800/80 hover:text-white text-sky-400'}`} title="41 Certified Blueprints (8 Core incl. WS1 #99 + 14 G-Series + 4 Restored + 15 Infographics)">
-              <Sparkles className={`w-3.5 h-3.5 ${isLight ? 'text-sky-600' : 'text-sky-400'}`} aria-hidden="true" />
-              <span>Canonical Hub</span>
-              <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-sky-50 text-sky-700 border border-sky-200' : 'bg-sky-500/20 text-sky-300'}`}>41</span>
+            <Link href="/prompt-to-diagram" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-blue-700' : 'hover:bg-slate-800/80 hover:text-white text-blue-400'}`} title="Prompt to Diagram — Gemini NLP Top 1–3 Blueprint Selection & 2-Way Mutation">
+              <Sparkles className={`w-3.5 h-3.5 ${isLight ? 'text-blue-600' : 'text-blue-400'}`} aria-hidden="true" />
+              <span>Prompt to Diagram</span>
+              <span className={`px-1 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-blue-500/20 text-blue-300'}`}>NLP</span>
             </Link>
 
-            <Link href="/blogs" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-blue-700' : 'hover:bg-slate-800/80 hover:text-white text-blue-400'}`} title="9-Guide Google Cloud Architecture Center Series">
-              <Layers className={`w-3.5 h-3.5 ${isLight ? 'text-blue-600' : 'text-blue-400'}`} aria-hidden="true" />
-              <span>Arch Center</span>
-              <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-blue-500/20 text-blue-300'}`}>9</span>
+            <Link href="/canonical" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-sky-700' : 'hover:bg-slate-800/80 hover:text-white text-sky-400'}`} title="41 Certified Blueprints across L100–L400 Depth Levels">
+              <Network className={`w-3.5 h-3.5 ${isLight ? 'text-sky-600' : 'text-sky-400'}`} aria-hidden="true" />
+              <span>Blueprints</span>
+              <span className={`px-1 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-sky-50 text-sky-700 border border-sky-200' : 'bg-sky-500/20 text-sky-300'}`}>41</span>
             </Link>
 
-            <Link href="/docgen" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-indigo-700' : 'hover:bg-slate-800/80 hover:text-white text-indigo-400'}`} title="8 Lean Enterprise Specification Blueprints (BRD, PRD, SDD, TDD, AI Card, STRIDE, GRC, SRE)">
+            <Link href="/docgen" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-indigo-700' : 'hover:bg-slate-800/80 hover:text-white text-indigo-400'}`} title="8 Lean Enterprise Specification Blueprints (BRD, PRD, SDD, TDD, AI Card, STRIDE, GRC, SRE)">
               <FileText className={`w-3.5 h-3.5 ${isLight ? 'text-indigo-600' : 'text-indigo-400'}`} aria-hidden="true" />
-              <span>DocGen Hub</span>
-              <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-indigo-500/20 text-indigo-300'}`}>8</span>
+              <span>Specs</span>
+              <span className={`px-1 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-indigo-500/20 text-indigo-300'}`}>8</span>
             </Link>
 
-            <Link href="/guide" className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-teal-50 text-teal-700' : 'hover:bg-teal-500/10 text-teal-400 hover:text-teal-300'}`} title="Interactive Animated Playbooks & GIFs">
-              <Sparkles className={`w-3.5 h-3.5 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} aria-hidden="true" />
-              <span>Playbooks &amp; GIFs</span>
+            <Link href="/blogs" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-slate-700' : 'hover:bg-slate-800/80 hover:text-white text-slate-300'}`} title="Technical Blog Studio & Cloud Architecture Guides">
+              <Layers className={`w-3.5 h-3.5 ${isLight ? 'text-slate-600' : 'text-slate-300'}`} aria-hidden="true" />
+              <span>Blogs</span>
             </Link>
 
-            <Link href="/test-status" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-emerald-700' : 'hover:bg-slate-800/80 hover:text-white text-emerald-400'}`} title="Enterprise Quality & Test Status (285 Tests Passed across 37 Suites)">
+            <Link href="/audit" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-emerald-700' : 'hover:bg-slate-800/80 hover:text-white text-emerald-400'}`} title="6-Tier Architecture Audit, FinOps & Live Runtime Health">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" aria-hidden="true" />
-              <span>Test Status</span>
-              <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-emerald-500/20 text-emerald-400'}`}>100%</span>
+              <span>Audit</span>
             </Link>
           </nav>
 
@@ -272,8 +237,16 @@ export default function LandingPage() {
                 onClick={() => setIsMobileNavOpen(false)}
                 className="p-2 rounded-lg hover:bg-slate-800 text-teal-400 font-bold flex items-center justify-between"
               >
-                <span>Home Dashboard</span>
-                <span className="px-2 py-0.5 rounded-full text-xs bg-teal-500/20 text-teal-300">Live Canvas</span>
+                <span>Blueprint Studio</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-teal-500/20 text-teal-300">L100–L400</span>
+              </Link>
+              <Link 
+                href="/prompt-to-diagram" 
+                onClick={() => setIsMobileNavOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-800 text-blue-400 font-bold flex items-center justify-between"
+              >
+                <span>Prompt to Diagram</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-blue-500/20 text-blue-300">NLP Top 3</span>
               </Link>
               <Link 
                 href="/canonical" 
@@ -347,16 +320,6 @@ export default function LandingPage() {
               >
                 Build First Diagram
               </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  setIsMobileNavOpen(false);
-                  setIsContactOpen(true);
-                }}
-                className="w-full py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs font-bold text-center"
-              >
-                Contact Us
-              </button>
             </div>
           </div>
         )}
@@ -366,7 +329,7 @@ export default function LandingPage() {
       <section className="relative w-full max-w-8xl mx-auto px-4 sm:px-6 md:px-12 pt-8 sm:pt-12 md:pt-20 pb-16 md:pb-20 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-center z-10">
         <div className="lg:col-span-7 flex flex-col items-start text-left space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-600 dark:text-teal-300 text-sm font-semibold tracking-wide animate-pulse">
-            <Sparkles className="w-4 h-4" aria-hidden="true" /> Powered by Gemini 2.5 Pro, Gemini 2.5 Pro, 3.1 Pro, 2.5 Flash &amp; Draw.io
+            <Sparkles className="w-4 h-4" aria-hidden="true" /> Powered by Gemini 2.5 Pro, 2.5 Flash &amp; Draw.io
           </div>
           
           <h1 className={`text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] ${isLight ? 'text-slate-900' : 'text-white'}`}>
@@ -827,7 +790,7 @@ export default function LandingPage() {
               </div>
               <h4 className={`font-bold text-xl md:text-2xl ${isLight ? 'text-slate-900' : 'text-white'}`}>Gemini Generates XML</h4>
               <p className={`text-base max-w-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                Our backend compiler calls Gemini 2.5 Flash &amp; 3.1 Pro, generating a valid XML diagram with sequential node numbering, structured tiers, and descriptive connections.
+                Our backend compiler calls Gemini 2.5 Pro &amp; 2.5 Flash, generating a valid XML diagram with sequential node numbering, structured tiers, and descriptive connections.
               </p>
             </div>
 
@@ -891,9 +854,9 @@ export default function LandingPage() {
             &copy; 2026 Prompt Canvas. Designed with high-fidelity cloud blueprints. Open-source Draw.io XML compatible.
           </p>
           <div className={`flex flex-wrap gap-6 text-sm ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-            <Link href="/test-status" className={`hover:underline underline-offset-4 transition-colors flex items-center gap-1.5 font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded ${isLight ? 'text-emerald-700 hover:text-emerald-800' : 'text-emerald-400 hover:text-emerald-300'}`}>
+            <Link href="/audit?tab=health" className={`hover:underline underline-offset-4 transition-colors flex items-center gap-1.5 font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded ${isLight ? 'text-emerald-700 hover:text-emerald-800' : 'text-emerald-400 hover:text-emerald-300'}`}>
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
-              <span>Test Status (302 Passed)</span>
+              <span>Audit &amp; Live Health</span>
             </Link>
             <Link href="/privacy" className={`hover:underline underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded ${isLight ? 'hover:text-teal-700' : 'hover:text-teal-400'}`}>Privacy Policy</Link>
             <Link href="/terms" className={`hover:underline underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded ${isLight ? 'hover:text-teal-700' : 'hover:text-teal-400'}`}>Terms of Service</Link>
@@ -921,12 +884,6 @@ export default function LandingPage() {
           setUser(updatedUser);
         }}
         onLogout={handleLogout}
-      />
-
-      <ContactUsModal
-        isOpen={isContactOpen}
-        onClose={() => setIsContactOpen(false)}
-        currentUser={user}
       />
 
     </div>

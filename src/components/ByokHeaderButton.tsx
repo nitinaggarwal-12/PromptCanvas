@@ -41,10 +41,6 @@ export default function ByokHeaderButton({
   const triggerRef = React.useRef<HTMLButtonElement | null>(null);
   const dialogRef = React.useRef<HTMLDivElement | null>(null);
 
-  // Optional inline quick sign-in if user is currently in Guest mode inside the modal
-  const [loginEmail, setLoginEmail] = useState('');
-  const [signingIn, setSigningIn] = useState(false);
-
   const closeModal = useCallback(() => {
     setIsOpen(false);
     setConfirmingRemove(false);
@@ -153,39 +149,6 @@ export default function ByokHeaderButton({
       setFeedback({ type: 'error', message: err?.message || 'Network error.' });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleQuickSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!loginEmail.trim() || !loginEmail.includes('@')) return;
-    setSigningIn(true);
-    setFeedback(null);
-    try {
-      const res = await fetch('/api/auth/session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: loginEmail.trim() }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (res.ok) {
-        setLoginEmail('');
-        window.dispatchEvent(new CustomEvent('promptcanvas-auth-changed'));
-        await fetchKeyStatus();
-        setFeedback({
-          type: 'success',
-          message: 'Signed in! You can now save your personal Gemini API key tied to your account.',
-        });
-      } else {
-        setFeedback({
-          type: 'error',
-          message: data.error || 'Unable to sign in with that email address.',
-        });
-      }
-    } catch {
-      setFeedback({ type: 'error', message: 'Unable to sign in right now.' });
-    } finally {
-      setSigningIn(false);
     }
   };
 
@@ -390,34 +353,10 @@ export default function ByokHeaderButton({
                       </p>
                       <p className="text-slate-200">
                         In Guest Mode, PromptCanvas automatically routes requests through the default system{' '}
-                        <code className="text-amber-200 font-mono">GEMINI_API_KEY</code>. Sign in with your email below to bind and save your own personal Gemini API key tied to your User ID.
+                        <code className="text-amber-200 font-mono">GEMINI_API_KEY</code>. Use the <strong>Sign In / Profile</strong> button in the navigation sidebar with your verified account credentials to bind a personal Gemini API key.
                       </p>
                     </div>
                   </div>
-
-                  <form onSubmit={handleQuickSignIn} className="flex gap-2 pt-1">
-                    <label htmlFor="byok-guest-email-input" className="sr-only">
-                      Email address for quick sign-in
-                    </label>
-                    <input
-                      id="byok-guest-email-input"
-                      type="email"
-                      autoComplete="email"
-                      required
-                      value={loginEmail}
-                      onChange={(e) => setLoginEmail(e.target.value)}
-                      placeholder="Enter your email to sign in (e.g. architect@company.com)"
-                      className="flex-1 rounded-lg bg-slate-950 border border-slate-700 px-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 focus-visible:ring-2 focus-visible:ring-amber-400"
-                    />
-                    <button
-                      type="submit"
-                      disabled={signingIn}
-                      aria-busy={signingIn}
-                      className="min-h-[38px] px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors disabled:opacity-50 cursor-pointer"
-                    >
-                      {signingIn ? 'Signing In...' : 'Sign In'}
-                    </button>
-                  </form>
 
                   <div className="flex justify-end pt-2 border-t border-amber-500/20">
                     <button

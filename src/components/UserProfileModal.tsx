@@ -376,15 +376,15 @@ export function UserProfileModal({ isOpen, onClose, user, onUpdateUser, onLogout
                 <span className="text-xs font-extrabold uppercase tracking-wider text-teal-600 dark:text-teal-400">Active AI Model Tier</span>
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-teal-500 text-slate-950">ENTERPRISE PRO</span>
               </div>
-              <h3 className="text-base font-black">Gemini 3.1 Pro Vision &amp; Gemini 2.5 Flash</h3>
+              <h3 className="text-base font-black">Gemini 2.5 Pro &amp; Gemini 2.5 Flash</h3>
               <p className={`text-xs mt-1 leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                Full multimodal 1:1 visual twin decompilation, zero-collision Draw.io XML compilation, and automated Omni 1.1 forensic auditing active across Architecture Studio, Prompt Lab, and Image to Diagram.
+                Full multimodal 1:1 visual twin decompilation, zero-collision Draw.io XML compilation, and automated 6-tier forensic auditing active across Blueprint Studio, Prompt to Diagram, and Image to Diagram.
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className={`p-3.5 rounded-xl border ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/60 border-slate-800'}`}>
-                <span className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-300 block">Omni 1.1 Quality Gate</span>
+                <span className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-300 block">Diagram Quality Gate</span>
                 <span className="text-sm font-black text-emerald-600 dark:text-emerald-400 mt-0.5 block">✓ 100% Active (Zero Bypass)</span>
               </div>
               <div className={`p-3.5 rounded-xl border ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/60 border-slate-800'}`}>
@@ -623,11 +623,11 @@ export function UserProfileModal({ isOpen, onClose, user, onUpdateUser, onLogout
                 </p>
                 <div className="pt-1">
                   <Link
-                    href="/studio"
+                    href="/dashboard"
                     onClick={onClose}
                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-extrabold bg-teal-500/15 hover:bg-teal-500/25 text-teal-600 dark:text-teal-300 border border-teal-500/30 transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
                   >
-                    <span>Open Architecture Studio</span>
+                    <span>Open Blueprint Studio</span>
                     <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
                   </Link>
                 </div>

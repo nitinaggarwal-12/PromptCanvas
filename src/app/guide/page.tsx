@@ -142,7 +142,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 3,
-        templateId: '44',
+        templateId: '94',
         imagePath: '/workflows/frames/quickstart/frame_04.png',
         actionLabel: '4. 16:9 Multi-Tier Canvas View: High-Contrast Badges & Demarcation',
         narrationText: 'Step four: The live diagram opens on the canvas. Inspect clean tier containers, subnets, and collision-free connector lines.',
@@ -158,7 +158,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 4,
-        templateId: '41',
+        templateId: '81',
         imagePath: '/workflows/frames/quickstart/frame_05.png',
         actionLabel: '5. Interactive Edits & Zero-Trust Mesh Refinements',
         narrationText: 'Step five: Make edits. In the refinement chat, type any adjustments, like adding Cloud HA VPN dual tunnels and Cloud KMS HSM key rotation.',
@@ -175,7 +175,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 5,
-        templateId: '48',
+        templateId: '98',
         imagePath: '/workflows/frames/quickstart/frame_06.png',
         actionLabel: '6. Save & Version Increments: Immutable Snapshot History (v1 -> v2)',
         narrationText: 'Step six: Saving and version control. Version v2 is automatically committed with full rollback lineage.',
@@ -192,7 +192,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 6,
-        templateId: '41',
+        templateId: '81',
         imagePath: '/workflows/frames/quickstart/frame_07.png',
         actionLabel: '7. Export: Choose PDF Architecture Dossier or Boardroom PPTX Deck',
         narrationText: 'Step seven: Export deliverables. Choose between Executive PDF Dossiers, PowerPoint slide presentations, high-res PNG, or Draw.io XML.',
@@ -224,9 +224,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 8,
-        templateId: '68',
+        templateId: '52',
         imagePath: '/workflows/frames/quickstart/frame_09.png',
-        actionLabel: '9. Open PowerPoint (.pptx) Deck: Boardroom Vector Slides Ready for ARB Sign-Off (Blueprint #68)',
+        actionLabel: '9. Open PowerPoint (.pptx) Deck: Boardroom Vector Slides Ready for ARB Sign-Off (Blueprint #52)',
         narrationText: 'Step nine: Open the PowerPoint deck. The slides feature native vector diagram shapes, executive decision points, and financial ROI models.',
         stepNumber: 9,
         title: 'Inspecting Open PowerPoint (.pptx) Slide Deck',
@@ -255,13 +255,13 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
     frames: [
       {
         frameIndex: 0,
-        templateId: '38',
+        templateId: '79',
         imagePath: '/workflows/frames/architect/frame_01.png',
-        actionLabel: '1. Greenfield Shared VPC, 100G Interconnect & CIDRs (Blueprint #38)',
+        actionLabel: '1. Greenfield Shared VPC, 100G Interconnect & CIDRs (Blueprint #79)',
         narrationText: 'Enter your greenfield Landing Zone requirements into Architecture Studio: 100G Dedicated Interconnect, Cloud Router BGP, GKE Autopilot subnets, and VPC Service Controls.',
         stepNumber: 1,
         title: 'Inputting Landing Zone Requirements',
-        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #38',
+        whereToClick: 'Blueprint Studio -> Level Filter / Blueprint #79',
         description: 'Provide enterprise networking constraints: 100G Dedicated Interconnect, Cloud Router BGP ASN 65001, GKE Autopilot pod CIDR (10.20.0.0/16), and PSC consumer endpoints.',
         promptRecipe: 'Design a Google Cloud Landing Zone and Shared VPC Network Fabric with 100G Dedicated Interconnect, Cloud Router BGP, PSC Hub 10.100.0.0/24, GKE Autopilot, and VPC-SC perimeter.',
         validationChecklist: ['Prompt contains CIDRs and SLA parameters'],
@@ -269,9 +269,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 1,
-        templateId: '37',
+        templateId: '78',
         imagePath: '/workflows/frames/architect/frame_02.png',
-        actionLabel: '2. 5-Tier Zero-Trust Hub & Spoke Network (Blueprint #37)',
+        actionLabel: '2. 5-Tier Zero-Trust Hub & Spoke Network (Blueprint #78)',
         narrationText: 'Open and inspect the rendered diagram on the canvas. Notice the clear 5-tier demarcation, Cloud Router BGP routes, and zero line collisions.',
         stepNumber: 2,
         title: 'Inspecting Hybrid Transit & Hub',
@@ -282,9 +282,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 2,
-        templateId: '46',
+        templateId: '95',
         imagePath: '/workflows/frames/architect/frame_03.png',
-        actionLabel: '3. Adding Cloud HA VPN Failover & Cloud KMS HSM Dual Rings (Blueprint #46)',
+        actionLabel: '3. Adding Cloud HA VPN Failover & Cloud KMS HSM Dual Rings (Blueprint #95)',
         narrationText: 'In the refinement chat, add Cloud HA VPN IPsec backup tunnels and Cloud KMS HSM dual rings for automated key rotation.',
         stepNumber: 3,
         title: 'Adding Resilience & Key Management',
@@ -296,9 +296,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 3,
-        templateId: '48',
+        templateId: '98',
         imagePath: '/workflows/frames/architect/frame_04.png',
-        actionLabel: '4. Multi-Region Active-Active DR & Spanner (Blueprint #48)',
+        actionLabel: '4. Multi-Region Active-Active DR & Spanner (Blueprint #98)',
         narrationText: 'Version v2 is committed automatically with immutable history for your Architecture Review Board sign-off.',
         stepNumber: 4,
         title: 'Committing Version 2 for ARB Sign-off',
@@ -309,9 +309,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 4,
-        templateId: '45',
+        templateId: '99',
         imagePath: '/workflows/frames/architect/frame_05.png',
-        actionLabel: '5. Export Deliverables: Generate PDF Dossier and PowerPoint Deck (Blueprint #45)',
+        actionLabel: '5. Export Deliverables: Generate PDF Dossier and PowerPoint Deck (Blueprint #99)',
         narrationText: 'Open the export menu and choose PowerPoint presentation or PDF Architecture Dossier.',
         stepNumber: 5,
         title: 'Selecting Export Deliverables',
@@ -350,13 +350,13 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
     frames: [
       {
         frameIndex: 0,
-        templateId: '42',
+        templateId: '90',
         imagePath: '/workflows/frames/data_ai/frame_01.png',
-        actionLabel: '1. Medallion Data Lakehouse & BigQuery (Blueprint #42)',
+        actionLabel: '1. Medallion Data Lakehouse & BigQuery (Blueprint #90)',
         narrationText: 'Enter data and AI platform requirements: AlloyDB pgvector with gemini-embedding-001, BigQuery Lakehouse Star Schema, and Looker BI.',
         stepNumber: 1,
         title: 'Inputting Data & AI Requirements',
-        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #42',
+        whereToClick: 'Blueprint Studio -> Level Filter / Blueprint #90',
         description: 'Define real-time streaming, Vertex AI Search, AlloyDB pgvector, and BigQuery Lakehouse.',
         promptRecipe: 'Build an Omnichannel Retail AI Platform with AlloyDB pgvector, BigQuery Lakehouse Star Schema, and Looker BI.',
         validationChecklist: ['Data flows and model parameters defined'],
@@ -364,9 +364,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 1,
-        templateId: '50',
+        templateId: '91',
         imagePath: '/workflows/frames/data_ai/frame_02.png',
-        actionLabel: '2. Event-Driven Real-Time CDC & Kafka Streaming (Blueprint #50)',
+        actionLabel: '2. Event-Driven Real-Time CDC & Kafka Streaming (Blueprint #91)',
         narrationText: 'Open the diagram to validate the AI intelligence core, sub-10ms vector similarity recall, and BigQuery Star Schema relationships.',
         stepNumber: 2,
         title: 'Inspecting AI Intelligence Core',
@@ -377,9 +377,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 2,
-        templateId: '41',
+        templateId: '81',
         imagePath: '/workflows/frames/data_ai/frame_03.png',
-        actionLabel: '3. Multi-Agent Swarm Orchestration & Vertex AI RAG (Blueprint #41)',
+        actionLabel: '3. Multi-Agent Swarm Orchestration & Vertex AI RAG (Blueprint #81)',
         narrationText: 'Refine the pipeline in chat by prompting Gemini to add sub-second fraud anomaly scoring on Cloud Run and real-time conversion BI.',
         stepNumber: 3,
         title: 'Refining Pipeline with Chat',
@@ -391,9 +391,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 3,
-        templateId: '35',
+        templateId: '92',
         imagePath: '/workflows/frames/data_ai/frame_04.png',
-        actionLabel: '4. BigQuery BI Engine & Realtime Dashboards (Blueprint #35)',
+        actionLabel: '4. BigQuery BI Engine & Realtime Dashboards (Blueprint #92)',
         narrationText: 'Version v2 is committed with an immutable snapshot, preserving previous states in rollback history.',
         stepNumber: 4,
         title: 'Committing Version 2 Snapshot',
@@ -404,9 +404,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 4,
-        templateId: '36',
+        templateId: '93',
         imagePath: '/workflows/frames/data_ai/frame_05.png',
-        actionLabel: '5. Data Lineage & Governance Catalog (Blueprint #36)',
+        actionLabel: '5. Data Lineage & Governance Catalog (Blueprint #93)',
         narrationText: 'Export your data architecture as a comprehensive PDF Data Dictionary or editable Draw.io XML.',
         stepNumber: 5,
         title: 'Exporting Data Architecture Package',
@@ -417,9 +417,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 5,
-        templateId: '37',
+        templateId: '78',
         imagePath: '/workflows/frames/data_ai/frame_06.png',
-        actionLabel: '6. End-to-End Enterprise Lakehouse Map (Blueprint #37)',
+        actionLabel: '6. End-to-End Enterprise Lakehouse Map (Blueprint #78)',
         narrationText: 'Open the PDF Architecture Dossier to review end-to-end data flow lineage, table schemas, and model hosting specs.',
         stepNumber: 6,
         title: 'Open PDF Architecture Dossier',
@@ -451,7 +451,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         narrationText: 'Provide your legacy infrastructure inventory: Mainframe, Oracle 11g RAC, SAP ECC, and spaghetti ETL scripts.',
         stepNumber: 1,
         title: 'Prompting Discovery & Assessment',
-        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #00',
+        whereToClick: 'Blueprint Studio -> Level Filter / Blueprint #00',
         description: 'Provide legacy inventory: Mainframe, Oracle 11g RAC, SAP ECC, and spaghetti ETL scripts.',
         promptRecipe: 'Assess on-prem legacy silos, spaghetti integration matrix, StratoZone Discovery Appliance, and 4 migration waves.',
         validationChecklist: ['Legacy monoliths and discovery tools defined'],
@@ -472,9 +472,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 2,
-        templateId: '70',
+        templateId: '03',
         imagePath: '/workflows/frames/consultant/frame_03.png',
-        actionLabel: '3. Cross-Functional Swimlanes & TCO Analysis (Blueprint #70)',
+        actionLabel: '3. Cross-Functional Swimlanes & TCO Analysis (Blueprint #03)',
         narrationText: 'Click Insights and Cost to review the 3-year TCO financial model and 42 percent operating expenditure savings.',
         stepNumber: 3,
         title: 'Reviewing TCO & FinOps Score',
@@ -485,9 +485,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 3,
-        templateId: '71',
+        templateId: '12',
         imagePath: '/workflows/frames/consultant/frame_04.png',
-        actionLabel: '4. Decision Tree & Modernization Waves (Blueprint #71)',
+        actionLabel: '4. Decision Tree & Modernization Waves (Blueprint #12)',
         narrationText: 'The modernization roadmap is saved as version v2 with Strangler Fig API proxies approved.',
         stepNumber: 4,
         title: 'Committing Version 2 Roadmap',
@@ -498,9 +498,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 4,
-        templateId: '72',
+        templateId: '29',
         imagePath: '/workflows/frames/consultant/frame_05.png',
-        actionLabel: '5. Strangler Fig Pattern & API Gateway Migration (Blueprint #72)',
+        actionLabel: '5. Strangler Fig Pattern & API Gateway Migration (Blueprint #29)',
         narrationText: 'Export the client pitch deck as a native PowerPoint presentation.',
         stepNumber: 5,
         title: 'Exporting Client Pitch Deck',
@@ -511,9 +511,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 5,
-        templateId: '74',
+        templateId: '53',
         imagePath: '/workflows/frames/consultant/frame_06.png',
-        actionLabel: '6. Open PowerPoint (.pptx): Client Pitch Deck with 4-Wave Roadmap (Blueprint #74)',
+        actionLabel: '6. Open PowerPoint (.pptx): Client Pitch Deck with 4-Wave Roadmap (Blueprint #53)',
         narrationText: 'Open the PowerPoint pitch pack to view the 4-wave modernization roadmap, financial ROI charts, and decommissioning timeline.',
         stepNumber: 6,
         title: 'Open PowerPoint (.pptx) Client Pitch Deck',
@@ -539,13 +539,13 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
     frames: [
       {
         frameIndex: 0,
-        templateId: '44',
+        templateId: '94',
         imagePath: '/workflows/frames/secops/frame_01.png',
-        actionLabel: '1. Zero-Trust BeyondCorp & Identity-Aware Proxy (Blueprint #44)',
+        actionLabel: '1. Zero-Trust BeyondCorp & Identity-Aware Proxy (Blueprint #94)',
         narrationText: 'Enter zero-trust regulatory constraints: PCI-DSS 4.0, SOC2 Type II, Cloud KMS HSM CMEK, and VPC Service Controls.',
         stepNumber: 1,
         title: 'Prompting Zero-Trust Security Requirements',
-        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #44',
+        whereToClick: 'Blueprint Studio -> Level Filter / Blueprint #94',
         description: 'Specify regulatory standards: PCI-DSS 4.0, SOC2 Type II, and VPC Service Controls.',
         promptRecipe: 'Enforce PCI-DSS 4.0 and SOC2 Type II: Cloud KMS HSM CMEK, VPC Service Controls, and Cloud Armor WAF.',
         validationChecklist: ['Compliance guardrails and policy IDs defined'],
@@ -553,9 +553,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 1,
-        templateId: '39',
+        templateId: '96',
         imagePath: '/workflows/frames/secops/frame_02.png',
-        actionLabel: '2. STRIDE Threat Model & Security Controls Matrix (Blueprint #39)',
+        actionLabel: '2. STRIDE Threat Model & Security Controls Matrix (Blueprint #96)',
         narrationText: 'Open the diagram to audit perimeter boundaries, Cloud KMS HSM dual rings, and zero plain-text egress paths.',
         stepNumber: 2,
         title: 'Auditing Perimeter Demarcation',
@@ -566,9 +566,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 2,
-        templateId: '73',
+        templateId: '96',
         imagePath: '/workflows/frames/secops/frame_03.png',
-        actionLabel: '3. SOC 2 / FedRAMP Audit & KMS Key Ring Mesh (Blueprint #73)',
+        actionLabel: '3. SOC 2 / FedRAMP Audit & KMS Key Ring Mesh (Blueprint #96)',
         narrationText: 'Apply one-click automated remediation in chat to patch findings and seal exposed endpoints with Private Service Connect.',
         stepNumber: 3,
         title: 'Executing 1-Click Security Remediation',
@@ -580,9 +580,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 3,
-        templateId: '49',
+        templateId: '97',
         imagePath: '/workflows/frames/secops/frame_04.png',
-        actionLabel: '4. Security Operations Center & Eventarc SIEM Ingestion (Blueprint #49)',
+        actionLabel: '4. Security Operations Center & Eventarc SIEM Ingestion (Blueprint #97)',
         narrationText: 'The hardened architecture is committed as version v2, achieving 100 percent SOC2 and CIS compliance.',
         stepNumber: 4,
         title: 'Committing Hardened Version v2',
@@ -593,9 +593,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 4,
-        templateId: '47',
+        templateId: '84',
         imagePath: '/workflows/frames/secops/frame_05.png',
-        actionLabel: '5. Multi-Cloud Guardrails & Policy Enforcement (Blueprint #47)',
+        actionLabel: '5. Multi-Cloud Guardrails & Policy Enforcement (Blueprint #84)',
         narrationText: 'Export the cryptographic SOC2 and ISO 27001 compliance audit package.',
         stepNumber: 5,
         title: 'Exporting Compliance Audit Package',
@@ -606,9 +606,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 5,
-        templateId: '43',
+        templateId: '95',
         imagePath: '/workflows/frames/secops/frame_06.png',
-        actionLabel: '6. Open PDF Compliance Dossier: Cryptographic Proof for SOC2 Auditors (Blueprint #43)',
+        actionLabel: '6. Open PDF Compliance Dossier: Cryptographic Proof for SOC2 Auditors (Blueprint #95)',
         narrationText: 'Open the PDF compliance dossier to inspect perimeter boundary rules, key rotation policies, and SHA-256 proof for auditors.',
         stepNumber: 6,
         title: 'Open PDF Compliance Dossier',
@@ -1372,7 +1372,7 @@ export default function GuidePage() {
                 <div className="flex items-center justify-between">
                   <span className="text-xl">🏢</span>
                   <span className="text-[9px] font-bold px-2 py-0.2 rounded-full bg-blue-500/10 text-blue-600 border border-blue-500/20">
-                    Blueprint #38
+                    Blueprint #79
                   </span>
                 </div>
                 <h3 className={`font-extrabold text-xs ${isLight ? 'text-blue-700' : 'text-blue-400'}`}>Enterprise Cloud Architect</h3>
@@ -1417,7 +1417,7 @@ export default function GuidePage() {
                 <div className="flex items-center justify-between">
                   <span className="text-xl">🤖</span>
                   <span className="text-[9px] font-bold px-2 py-0.2 rounded-full bg-purple-500/10 text-purple-600 border border-purple-500/20">
-                    Blueprint #41
+                    Blueprint #81
                   </span>
                 </div>
                 <h3 className={`font-extrabold text-xs ${isLight ? 'text-purple-700' : 'text-purple-400'}`}>Data Platform &amp; AI</h3>
@@ -1507,7 +1507,7 @@ export default function GuidePage() {
                 <div className="flex items-center justify-between">
                   <span className="text-xl">🔒</span>
                   <span className="text-[9px] font-bold px-2 py-0.2 rounded-full bg-rose-500/10 text-rose-600 border border-rose-500/20">
-                    Blueprint #44
+                    Blueprint #94
                   </span>
                 </div>
                 <h3 className={`font-extrabold text-xs ${isLight ? 'text-rose-700' : 'text-rose-400'}`}>CISO &amp; DevSecOps</h3>
@@ -1569,7 +1569,7 @@ export default function GuidePage() {
           <div className={`p-3.5 rounded-xl border space-y-1 ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
             <span className="w-6 h-6 rounded-md bg-teal-500/10 text-teal-600 border border-teal-500/20 flex items-center justify-center font-bold text-xs">2</span>
             <b className={`text-xs block ${isLight ? 'text-slate-900' : 'text-white'}`}>Templates Matrix</b>
-            <p className={`text-[10px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>7 certified production blueprints with 1-click &quot;Add as New View&quot;.</p>
+            <p className={`text-[10px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>41 certified blueprints with 1-click &quot;Add as New View&quot;.</p>
           </div>
 
           <div className={`p-3.5 rounded-xl border space-y-1 ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>

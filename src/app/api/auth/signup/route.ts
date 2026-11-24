@@ -39,7 +39,7 @@ export async function POST(request: Request) {
         {
           success: true,
           requiresVerification: true,
-          message: 'Check your email or use magic-link verification to continue signing in to this account.',
+          message: 'If an account already exists for this email, please sign in with your password.',
         },
         { status: 200 }
       );

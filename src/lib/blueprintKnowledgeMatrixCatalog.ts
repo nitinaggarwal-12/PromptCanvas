@@ -75,7 +75,7 @@ const BLUEPRINT_61_ENTERPRISE_AI_DOCUMENT_ASSISTANT: BlueprintKnowledgeItem = {
   primaryPersonas: 'Creator: Principal AI / Cloud Architect | Consumers: AI Platform Engineers, Application Engineers, Data Engineers | Stakeholders: CISO, Enterprise Architecture, Business Operations, Compliance, Product Owners',
   salesStage: 'Architecture Design / Review',
   lifecyclePhase: 'Design → Build',
-  liveStudioLink: '/studio?blueprint=enterprise_ai_document_assistant',
+  liveStudioLink: '/dashboard?blueprint=enterprise_ai_document_assistant',
 };
 
 export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [

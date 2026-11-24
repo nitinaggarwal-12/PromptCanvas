@@ -115,7 +115,7 @@ export default function CollaborativeTeamPresence({
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>{peerCount === 1 ? '1 Active Session (You)' : `${peerCount} Active Sessions`}</span>
+          <span>{peerCount === 1 ? '1 Local Browser Tab' : `${peerCount} Local Browser Tabs`}</span>
         </div>
 
         {/* Authenticated User Avatar Pod */}

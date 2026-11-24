@@ -190,7 +190,7 @@ function AuditHubContent() {
 
   // Navigation & Scope Selection (Defaults to 'artifacts' for user generated diagrams!)
   const [scopeTab, setScopeTab] = useState<'artifacts' | 'custom' | 'canonical'>('artifacts');
-  const [selectedDomain, setSelectedDomain] = useState<string>('biopharma');
+  const [selectedDomain, setSelectedDomain] = useState<string>('enterprise');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filterSeverity, setFilterSeverity] = useState<'all' | 'flagged' | 'clean'>('all');
 
@@ -233,6 +233,66 @@ function AuditHubContent() {
     if (t === 'health' || t === 'tests' || t === 'status') return 'health';
     return 'audit';
   });
+
+  // Real Live Runtime Health Probes (replaces legacy /test-status & fake hardcoded PASS cards)
+  type RuntimeProbeItem = {
+    id: string;
+    endpoint: string;
+    label: string;
+    status: 'IDLE' | 'RUNNING' | 'PASSED' | 'FAILED';
+    latencyMs: number | null;
+    detail: string;
+  };
+  const [runtimeProbes, setRuntimeProbes] = useState<RuntimeProbeItem[]>([
+    { id: 'health', endpoint: '/api/health', label: 'Server Health & Runtime Status', status: 'IDLE', latencyMs: null, detail: 'Click Run Live Probes to verify' },
+    { id: 'diagrams', endpoint: '/api/diagrams', label: 'SQLite + GCS Persistence Read', status: 'IDLE', latencyMs: null, detail: 'Click Run Live Probes to verify' },
+    { id: 'oauth', endpoint: '/api/google-workspace/oauth-config', label: 'Workspace OAuth Config (Zero Token Leak)', status: 'IDLE', latencyMs: null, detail: 'Click Run Live Probes to verify' },
+    { id: 'changelog', endpoint: '/api/changelog', label: 'Governance Changelog API', status: 'IDLE', latencyMs: null, detail: 'Click Run Live Probes to verify' },
+  ]);
+  const [isProbingHealth, setIsProbingHealth] = useState<boolean>(false);
+
+  const runLiveRuntimeProbes = async () => {
+    setIsProbingHealth(true);
+    setRuntimeProbes((prev) => prev.map((p) => ({ ...p, status: 'RUNNING', detail: 'Probing...' })));
+    const probeOne = async (
+      id: string,
+      endpoint: string,
+      label: string,
+      validator?: (json: any) => boolean
+    ): Promise<RuntimeProbeItem> => {
+      const t0 = performance.now();
+      try {
+        const res = await fetch(endpoint, { cache: 'no-store' });
+        const ms = Math.max(1, Math.round(performance.now() - t0));
+        if (!res.ok) {
+          return { id, endpoint, label, status: 'FAILED', latencyMs: ms, detail: `HTTP ${res.status}` };
+        }
+        if (validator) {
+          const j = await res.json().catch(() => null);
+          const ok = validator(j);
+          return { id, endpoint, label, status: ok ? 'PASSED' : 'FAILED', latencyMs: ms, detail: ok ? `HTTP ${res.status} · Verified` : 'Validation check failed' };
+        }
+        return { id, endpoint, label, status: 'PASSED', latencyMs: ms, detail: `HTTP ${res.status} · OK` };
+      } catch (err: any) {
+        return { id, endpoint, label, status: 'FAILED', latencyMs: Math.max(1, Math.round(performance.now() - t0)), detail: err?.message || 'Network error' };
+      }
+    };
+    const results = await Promise.all([
+      probeOne('health', '/api/health', 'Server Health & Runtime Status'),
+      probeOne('diagrams', '/api/diagrams', 'SQLite + GCS Persistence Read'),
+      probeOne('oauth', '/api/google-workspace/oauth-config', 'Workspace OAuth Config (Zero Token Leak)', (j) => Boolean(j && j.sessionToken === null)),
+      probeOne('changelog', '/api/changelog', 'Governance Changelog API'),
+    ]);
+    setRuntimeProbes(results);
+    setIsProbingHealth(false);
+  };
+
+  useEffect(() => {
+    if (activeHubTab === 'health' && runtimeProbes.every((p) => p.status === 'IDLE')) {
+      void runLiveRuntimeProbes();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeHubTab]);
 
   // Load Generated Artifacts from API on mount (Cleanly deduplicated)
   useEffect(() => {
@@ -774,8 +834,10 @@ function AuditHubContent() {
                   }`}
                 >
                   <Activity className="w-4 h-4 text-emerald-400" aria-hidden="true" />
-                  <span>System E2E Health</span>
-                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-mono tabular-nums">100%</span>
+                  <span>Live Runtime Health</span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-mono tabular-nums">
+                    {runtimeProbes.filter((p) => p.status === 'PASSED').length}/{runtimeProbes.length}
+                  </span>
                 </button>
               </div>
 
@@ -786,17 +848,20 @@ function AuditHubContent() {
                     className="px-3 py-1.5 rounded-xl font-bold bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
                   >
                     <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
-                    <span>Open Full Operations View (/dashboard)</span>
+                    <span>Open Blueprint Studio (/dashboard)</span>
                   </Link>
                 )}
                 {activeHubTab === 'health' && (
-                  <Link
-                    href="/test-status"
-                    className="px-3 py-1.5 rounded-xl font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+                  <button
+                    type="button"
+                    data-testid="audit-run-live-probes-btn"
+                    disabled={isProbingHealth}
+                    onClick={() => void runLiveRuntimeProbes()}
+                    className="px-3 py-1.5 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white flex items-center gap-1.5 cursor-pointer"
                   >
-                    <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
-                    <span>Open Full E2E Matrix (/test-status)</span>
-                  </Link>
+                    <RefreshCw className={`w-3.5 h-3.5 ${isProbingHealth ? 'animate-spin' : ''}`} aria-hidden="true" />
+                    <span>{isProbingHealth ? 'Running Live Probes...' : 'Run Live Runtime Probes'}</span>
+                  </button>
                 )}
               </div>
             </div>
@@ -824,37 +889,50 @@ function AuditHubContent() {
                   <div className="text-[11px] text-slate-500 mt-1 tabular-nums">{CANONICAL_TEMPLATES.length} Canonical + {artifacts.length} Custom/Vision</div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
-                  <div className="text-[11px] font-bold uppercase text-slate-500">Auto-Heal Geometry Pass Rate</div>
-                  <div className="text-2xl font-black text-emerald-600 mt-1 tabular-nums">100%</div>
-                  <div className="text-[11px] text-emerald-600 font-semibold mt-1">Zero Bounding-Box Collisions</div>
+                  <div className="text-[11px] font-bold uppercase text-slate-500">Open Audit Findings</div>
+                  <div className="text-2xl font-black text-slate-900 mt-1 tabular-nums">{auditGaps.length}</div>
+                  <div className="text-[11px] text-slate-600 font-semibold mt-1">
+                    {auditGaps.length === 0 ? 'Zero unresolved findings on active XML' : 'Click Auto-Heal to remediate'}
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* INLINE SYSTEM E2E HEALTH MATRIX WHEN SELECTED */}
+            {/* REAL LIVE RUNTIME HEALTH PROBES WHEN SELECTED */}
             {activeHubTab === 'health' && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
-                <div className="p-4 rounded-xl bg-emerald-50/50 border border-emerald-200">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-slate-900">1. 6-Audit XML Geometry Gate</span>
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white tabular-nums">PASS (6/6)</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+                {runtimeProbes.map((probe) => (
+                  <div
+                    key={probe.id}
+                    data-testid={`runtime-probe-${probe.id}`}
+                    className={`p-3.5 rounded-xl border ${
+                      probe.status === 'PASSED'
+                        ? 'bg-emerald-50/50 border-emerald-200'
+                        : probe.status === 'FAILED'
+                        ? 'bg-rose-50/60 border-rose-200'
+                        : 'bg-slate-50 border-slate-200'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-black text-slate-900 truncate">{probe.label}</span>
+                      <span
+                        className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded shrink-0 ${
+                          probe.status === 'PASSED'
+                            ? 'bg-emerald-600 text-white'
+                            : probe.status === 'FAILED'
+                            ? 'bg-rose-600 text-white'
+                            : 'bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {probe.status}
+                      </span>
+                    </div>
+                    <p className="text-[11px] font-mono text-slate-500 mt-1 truncate">GET {probe.endpoint}</p>
+                    <p className="text-[11px] text-slate-600 mt-1 tabular-nums">
+                      {probe.detail}{probe.latencyMs !== null ? ` · ${probe.latencyMs}ms` : ''}
+                    </p>
                   </div>
-                  <p className="text-xs text-slate-600 mt-1.5">Orthogonal routing (`jettySize=auto`), 140px column pitch, and zero node/label collisions verified.</p>
-                </div>
-                <div className="p-4 rounded-xl bg-emerald-50/50 border border-emerald-200">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-slate-900">2. Conversational Intent Guardrails</span>
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white tabular-nums">PASS (4/4)</span>
-                  </div>
-                  <p className="text-xs text-slate-600 mt-1.5">Greetings, capability queries, and short tokens return helpful chat replies with zero canvas mutation.</p>
-                </div>
-                <div className="p-4 rounded-xl bg-emerald-50/50 border border-emerald-200">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-slate-900">3. Studio Fork &amp; Incremental AI Modify</span>
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white tabular-nums">PASS (100%)</span>
-                  </div>
-                  <p className="text-xs text-slate-600 mt-1.5">`+ Add Node`, `Connect`, `Group`, and natural-language delta prompts preserve base XML topology.</p>
-                </div>
+                ))}
               </div>
             )}
 
@@ -1029,11 +1107,11 @@ function AuditHubContent() {
                             <p className="text-[11px] text-slate-500 mt-1">Generate a new architecture diagram in Studio or paste custom XML to begin auditing.</p>
                           </div>
                           <Link
-                            href="/studio"
+                            href="/dashboard"
                             className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-xl bg-teal-600 text-white text-xs font-bold shadow-xs hover:bg-teal-500"
                           >
                             <Plus className="w-3.5 h-3.5" />
-                            <span>Open in Studio</span>
+                            <span>Open Blueprint Studio</span>
                           </Link>
                         </div>
                       ) : (
