@@ -320,11 +320,26 @@ export function extractDiagramObjects(xml: string): DiagramObjectMetadata[] {
 export function enrichDrawioXmlWithVectorIcons(xml: string): string {
   if (!xml || typeof xml !== 'string' || !xml.includes('<mxCell')) return xml;
 
-  // 1. Repair malformed base64 SVG data URIs that omitted ';base64' before the comma:
-  // e.g. image=data:image/svg+xml,PHN2Zy... -> image=data:image/svg+xml;base64,PHN2Zy...
+  // 1. Normalize base64 SVG data URIs in Draw.io ';' style strings into semicolon-free
+  // percent-encoded SVG data URIs. Draw.io's mxStyle parser splits on ';', so injecting
+  // ';base64,' inside style="...image=data:image/svg+xml;base64,..." truncates the URI at ';'
+  // and causes net::ERR_INVALID_URL blank boxes in DiagramViewerRenderSafe / viewer-static.min.js.
+  const decodeBase64ToSafeSvgDataUri = (b64: string): string | null => {
+    try {
+      const rawSvg =
+        typeof Buffer !== 'undefined'
+          ? Buffer.from(b64, 'base64').toString('utf8')
+          : atob(b64);
+      const trimmed = rawSvg.trim();
+      if (!trimmed.startsWith('<svg')) return null;
+      return `image=data:image/svg+xml,${encodeURIComponent(trimmed).replace(/;/g, '%3B')}`;
+    } catch {
+      return null;
+    }
+  };
   let sanitizedXml = xml.replace(
-    /image=data:image\/svg\+xml,([A-Za-z0-9+/=]{20,})/g,
-    'image=data:image/svg+xml;base64,$1'
+    /image=data:image\/svg\+xml(?:;base64)?,([A-Za-z0-9+/=]{20,})/g,
+    (full, b64) => decodeBase64ToSafeSvgDataUri(b64) || full
   );
 
   // 2. If 'header_icon' is a separate broken/duplicate shape=image cell next to Gemini Enterprise,

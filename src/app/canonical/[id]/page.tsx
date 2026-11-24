@@ -52,7 +52,7 @@ export default function CanonicalTemplateDetailPage() {
   const isDark = theme === 'dark';
   const themeMode: 'light' | 'dark' = theme;
 
-  const [selectedDomain, setSelectedDomain] = useState<string>(domainParam || 'biopharma');
+  const [selectedDomain, setSelectedDomain] = useState<string>(domainParam || 'enterprise');
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
   const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);

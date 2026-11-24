@@ -47,7 +47,7 @@ export function BlueprintCatalogModal({
   onSelectBlueprint,
   onOpenInNewTab,
   currentBlueprintId,
-  currentDomainPresetId = 'biopharma',
+  currentDomainPresetId = 'enterprise',
   theme = 'light'
 }: BlueprintCatalogModalProps) {
   const [searchQuery, setSearchQuery] = useState('');

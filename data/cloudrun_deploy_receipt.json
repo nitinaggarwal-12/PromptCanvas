@@ -5,54 +5,61 @@
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "promptcanvas-00071-h9k",
-  "latestCreatedRevisionName": "promptcanvas-00071-h9k",
+  "latestReadyRevisionName": "promptcanvas-00072-bxl",
+  "latestCreatedRevisionName": "promptcanvas-00072-bxl",
   "readyStatus": "True",
   "trafficPercent": 100,
   "gcsStateBucket": "ramp-portal-dev-promptcanvas-state",
-  "gitCommit": "ecadd3a3",
+  "gitCommit": "6e385924",
   "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"promptcanvas-1\" on port 8080.",
   "beyondCorpHttpStatus": 302,
   "liveHttpVerification": {
-    "verifiedAt": "2026-11-24T01:01:25.628Z",
-    "verificationMode": "cloud_run_revision_pre_traffic_live_http_dom_probe",
-    "project": "ramp-portal-dev",
-    "region": "us-west1",
-    "service": "promptcanvas",
-    "revision": "promptcanvas-00071-h9k",
-    "overallPassed": true,
+    "verifiedAt": "2026-11-24T01:40:32.656641Z",
+    "revision": "promptcanvas-00072-bxl",
     "routes": [
       {
-        "path": "/blogs",
-        "httpStatus": 200,
-        "responseBytes": 10745,
-        "bodySha256Short": "ab0c6c584166d34c",
-        "latencyMs": 3203,
-        "markersMatched": [
-          "Architecture",
-          "blogs"
-        ],
-        "markersMissing": [],
-        "passed": true,
-        "error": ""
+        "path": "/api/health",
+        "httpStatus": 0,
+        "error": "HTTP Error 404: Not Found",
+        "passed": false
       },
       {
-        "path": "/api/blogs/gcp-verify",
-        "httpStatus": 200,
-        "responseBytes": 1117569,
-        "bodySha256Short": "919b87d058ce3ce1",
-        "latencyMs": 177,
-        "markersMatched": [
-          "ramp-portal-dev",
-          "bbar-138hf0"
-        ],
-        "markersMissing": [],
-        "passed": true,
-        "error": ""
+        "path": "/prompt-to-diagram",
+        "httpStatus": 0,
+        "error": "HTTP Error 404: Not Found",
+        "passed": false
+      },
+      {
+        "path": "/canonical",
+        "httpStatus": 0,
+        "error": "HTTP Error 404: Not Found",
+        "passed": false
+      },
+      {
+        "path": "/canonical/99",
+        "httpStatus": 0,
+        "error": "HTTP Error 404: Not Found",
+        "passed": false
+      },
+      {
+        "path": "/templates/canonical_99.png",
+        "httpStatus": 0,
+        "error": "HTTP Error 404: Not Found",
+        "passed": false
+      },
+      {
+        "path": "/api/diagrams",
+        "httpStatus": 0,
+        "error": "HTTP Error 404: Not Found",
+        "passed": false
       }
-    ]
+    ],
+    "overallPassed": false
   },
-  "verifiedAt": "2026-11-24T01:01:26Z",
-  "canonicalBlueprintsCount": 40,
-  "leanDocArchetypesCount": 8
+  "verifiedAt": "2026-11-24T01:40:32Z",
+  "canonicalBlueprintsCount": 41,
+  "leanDocArchetypesCount": 8,
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/promptcanvas:v20261124-013936-cleanup-ws1-l400",
+  "imageDigest": "sha256:26e8126e2e88e44bf05b78d4400e28acd8fb64be97554cbef7eb7c90ab4f5466",
+  "nextjsVersion": "16.4.6"
 }

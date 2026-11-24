@@ -63,7 +63,10 @@ describe('41 Canonical Blueprints (8 Core #78,#99,#79,#81,#84,#00,#67,#69 + 14 G
     const bp99 = CANONICAL_TEMPLATES.find((t) => t.id === '99');
     expect(bp99).toBeDefined();
     expect(bp99?.tags).toContain('L400 GCP');
-    expect(bp99?.generateXml('enterprise', 'light')).toContain('id="ws1-5hop-governance-baseline"');
+    const bp99Xml = bp99?.generateXml('enterprise', 'light') || '';
+    expect(bp99Xml).toContain('id="ws1-5hop-governance-baseline"');
+    expect(bp99Xml).not.toContain('data:image/svg+xml;base64,');
+    expect((bp99Xml.match(/shape=image;[^"]*image=data:image\/svg\+xml,%3Csvg/g) || []).length).toBe(18);
 
     for (const id of ['78', '99', '79', '81', '84', '85', '86', '87', '88', '89', '90', '91', '92', '93', '94', '95', '96', '97', '98', '03', '12', '14', '29', '67', '69']) {
       expect(ACTIVE_CANONICAL_BLUEPRINT_IDS.includes(id)).toBe(true);
