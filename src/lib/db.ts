@@ -9,6 +9,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { mkdirSync } from 'fs';
 import type { Pool } from 'pg';
 import { getTechnicalArchitectureXml } from './technicalArchitectureXmls';
+import {
+  saveDiagramBundleToGcs,
+  loadDiagramBundleFromGcs,
+  deleteDiagramBundleFromGcs,
+  getGcsStateBucket,
+} from './gcsDiagramStore';
 
 // Define TypeScript interfaces for our models
 export interface User {
@@ -1220,9 +1226,79 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
   }
 }
 
+async function hydrateDiagramFromGcsIntoSqlite(id: string): Promise<boolean> {
+  if (isPostgres() || !getGcsStateBucket() || !id) return false;
+  const db = getSqliteDb();
+  const existing = db.prepare('SELECT id FROM diagrams WHERE id = ?').get(id);
+  if (existing) return true;
+  const bundle = await loadDiagramBundleFromGcs(id);
+  if (!bundle?.diagram?.id) return false;
+  try {
+    await runSqliteTransaction(async (tx) => {
+      const d = bundle.diagram;
+      tx.prepare(
+        'INSERT OR IGNORE INTO diagrams (id, name, user_id, architecture_type, is_private, created_studio, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, COALESCE(?, CURRENT_TIMESTAMP), COALESCE(?, CURRENT_TIMESTAMP))'
+      ).run(
+        d.id,
+        d.name || 'Saved Architecture',
+        d.user_id || null,
+        d.architecture_type || 'v2_freeform',
+        d.is_private ? 1 : 0,
+        d.created_studio || 'prompt_to_diagram',
+        d.created_at ? String(d.created_at) : null,
+        d.updated_at ? String(d.updated_at) : null
+      );
+      const insertVer = tx.prepare(`
+        INSERT OR IGNORE INTO diagram_versions
+          (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type, graph_json, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE(?, CURRENT_TIMESTAMP))
+      `);
+      for (const v of bundle.versions || []) {
+        insertVer.run(
+          v.id || uuidv4(),
+          d.id,
+          v.version_number || 1,
+          v.xml_content || '',
+          v.comment || null,
+          v.created_by || 'AI',
+          v.prompt || null,
+          v.ai_reasoning || null,
+          v.business_usecase || null,
+          v.technical_usecase || null,
+          v.architecture_type || d.architecture_type || 'v2_freeform',
+          v.graph_json || null,
+          v.created_at ? String(v.created_at) : null
+        );
+      }
+    });
+    return true;
+  } catch (err) {
+    console.warn(`[DB] Failed hydrating GCS diagram ${id} into SQLite:`, err);
+    return false;
+  }
+}
+
+async function mirrorDiagramFromSqliteToGcs(diagramId: string): Promise<void> {
+  if (isPostgres() || !getGcsStateBucket() || !diagramId) return;
+  try {
+    const db = getSqliteDb();
+    const diag = db.prepare('SELECT * FROM diagrams WHERE id = ?').get(diagramId) as unknown as Diagram | undefined;
+    if (!diag) return;
+    const versions = db
+      .prepare('SELECT * FROM diagram_versions WHERE diagram_id = ? ORDER BY version_number DESC')
+      .all(diagramId) as unknown as DiagramVersion[];
+    await saveDiagramBundleToGcs({ diagram: diag, versions });
+  } catch (err) {
+    console.warn(`[DB] Best-effort GCS mirror skipped for ${diagramId}:`, err);
+  }
+}
+
 // Helper: Get a single diagram by ID (verifying owner or collaborator access)
 export async function getDiagram(id: string, userId?: string): Promise<(Diagram & { access_level?: string | null }) | null> {
   await ensureTablesExist();
+  if (!isPostgres()) {
+    await hydrateDiagramFromGcsIntoSqlite(id);
+  }
   
   const accessLevel = await getUserDiagramAccess(id, userId);
   if (!accessLevel) return null;
@@ -1376,6 +1452,9 @@ export async function createDiagram(
       const getDiag = db.prepare('SELECT * FROM diagrams WHERE id = ?');
       const diagram = getDiag.get(diagramId) as unknown as Diagram;
       return { diagram, version };
+    }).then(async (created) => {
+      await mirrorDiagramFromSqliteToGcs(created.diagram.id);
+      return created;
     });
   }
 }
@@ -1472,6 +1551,9 @@ export async function saveDiagramVersion(
 
       const getVersion = db.prepare('SELECT * FROM diagram_versions WHERE id = ?');
       return getVersion.get(versionId) as unknown as DiagramVersion;
+    }).then(async (savedVer) => {
+      await mirrorDiagramFromSqliteToGcs(diagramId);
+      return savedVer;
     });
   }
 }
@@ -1522,6 +1604,7 @@ export async function getLatestDiagramVersion(diagramId: string, architectureTyp
     const res = await pool.query(query, architectureType ? [diagramId, architectureType] : [diagramId]);
     return (res.rows[0] as DiagramVersion) || null;
   } else {
+    await hydrateDiagramFromGcsIntoSqlite(diagramId);
     const db = getSqliteDb();
     const query = architectureType
       ? 'SELECT * FROM diagram_versions WHERE diagram_id = ? AND (architecture_type = ? OR architecture_type IS NULL) ORDER BY version_number DESC LIMIT 1'
@@ -1571,6 +1654,7 @@ export async function deleteDiagram(id: string, userId?: string, isSuperAdmin = 
       );
       stmt.run(id, userId!, userId!);
     }
+    await deleteDiagramBundleFromGcs(id);
   }
 }
 

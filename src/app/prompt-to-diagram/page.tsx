@@ -27,6 +27,7 @@ import {
   Save,
   Presentation,
   RefreshCw,
+  Link2,
 } from 'lucide-react';
 import AppHeader, { btnClass } from '@/components/AppHeader';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
@@ -51,7 +52,9 @@ import {
 
 type CanvasViewMode = 'drawio' | 'split' | 'image';
 
-const P2D_UNDO_REDO_STORAGE_KEY = 'promptcanvas_p2d_undo_redo_v1';
+const P2D_LEGACY_STORAGE_KEY = 'promptcanvas_p2d_undo_redo_v1';
+const P2D_UNDO_REDO_STORAGE_KEY = 'promptcanvas_p2d_undo_redo_v2';
+const P2D_SAVED_ID_STORAGE_KEY = 'promptcanvas_p2d_diagram_id_v2';
 const P2D_REF_IMAGE_SESSION_KEY = 'promptcanvas_p2d_ref_image_v1';
 
 function describeCreateStageProgress(elapsedSec: number): string {
@@ -85,7 +88,27 @@ export default function PurePromptToDiagramPage() {
   const [linkedSlidesId, setLinkedSlidesId] = useState<string | null>(null);
   const [linkedSlidesUrl, setLinkedSlidesUrl] = useState<string | null>(null);
   const [statusNotice, setStatusNotice] = useState<string | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
   const [synthesisEngine, setSynthesisEngine] = useState<'v2_fast' | 'visual_4stage'>('v2_fast');
+
+  const syncDiagramIdToUrl = useCallback((id: string | null) => {
+    setSavedDiagramId(id);
+    if (typeof window === 'undefined') return;
+    try {
+      if (id) {
+        localStorage.setItem(P2D_SAVED_ID_STORAGE_KEY, id);
+      } else {
+        localStorage.removeItem(P2D_SAVED_ID_STORAGE_KEY);
+      }
+      const url = new URL(window.location.href);
+      if (id) {
+        url.searchParams.set('id', id);
+      } else {
+        url.searchParams.delete('id');
+      }
+      window.history.replaceState({}, '', url.toString());
+    } catch {}
+  }, []);
   const drawioIframeRef = useRef<HTMLIFrameElement | null>(null);
   const startRef = useRef<number | null>(null);
   const autoTriggeredRef = useRef(false);
@@ -109,10 +132,15 @@ export default function PurePromptToDiagramPage() {
     if (hydratedStorageRef.current || typeof window === 'undefined') return;
     hydratedStorageRef.current = true;
 
+    // Purge legacy pre-fix localStorage cache so stale broken diagrams are never resurrected
+    try {
+      localStorage.removeItem(P2D_LEGACY_STORAGE_KEY);
+    } catch {}
+
     const params = new URLSearchParams(window.location.search);
     const incomingId = params.get('id')?.trim();
     if (incomingId) {
-      setSavedDiagramId(incomingId);
+      syncDiagramIdToUrl(incomingId);
       fetch(`/api/diagrams/${encodeURIComponent(incomingId)}`, { cache: 'no-store' })
         .then((r) => (r.ok ? r.json() : null))
         .then((data) => {
@@ -124,7 +152,7 @@ export default function PurePromptToDiagramPage() {
               mutationMode: 'direct_drawio_xml_update',
               userPrompt: data.latest_prompt || data.name || 'Saved Architecture',
               modificationHistory: [],
-              summaryOfChanges: `Loaded saved diagram "${data.name || incomingId}" from Library`,
+              summaryOfChanges: data.ai_reasoning || `Loaded saved diagram "${data.name || incomingId}" from Library`,
               xml: data.xml_content,
               graph: {
                 title: data.name || 'Saved Architecture',
@@ -150,9 +178,14 @@ export default function PurePromptToDiagramPage() {
                 payload: loadedPayload,
               })
             );
+          } else {
+            setErrorMsg(`Saved diagram "${incomingId}" was not found. Enter a prompt and click Generate Diagram to create a fresh persistent diagram.`);
+            syncDiagramIdToUrl(null);
           }
         })
-        .catch(() => {});
+        .catch(() => {
+          setErrorMsg(`Could not load diagram "${incomingId}". Enter a prompt to generate a new diagram.`);
+        });
       return;
     }
 
@@ -170,12 +203,18 @@ export default function PurePromptToDiagramPage() {
       if (restored.present.payload?.userPrompt) {
         setUserPrompt(restored.present.payload.userPrompt);
       }
+      try {
+        const storedId = localStorage.getItem(P2D_SAVED_ID_STORAGE_KEY)?.trim();
+        if (storedId) {
+          syncDiagramIdToUrl(storedId);
+        }
+      } catch {}
     }
     try {
       const savedImg = sessionStorage.getItem(P2D_REF_IMAGE_SESSION_KEY);
       if (savedImg) setSessionRefImageUrl(savedImg);
     } catch {}
-  }, []);
+  }, [syncDiagramIdToUrl]);
 
   // Persist Undo/Redo stack (last 15 changes) whenever historyState updates
   useEffect(() => {
@@ -337,12 +376,7 @@ export default function PurePromptToDiagramPage() {
         const data = await res.json();
         const newId = data?.diagram?.id || data?.id;
         if (!res.ok || !newId) throw new Error(data?.error || 'Failed to save diagram to Database.');
-        setSavedDiagramId(newId);
-        if (typeof window !== 'undefined') {
-          const url = new URL(window.location.href);
-          url.searchParams.set('id', newId);
-          window.history.replaceState({}, '', url.toString());
-        }
+        syncDiagramIdToUrl(newId);
         setStatusNotice(`Saved to Library Database (ID: ${newId.slice(0, 8)}…).`);
         return newId;
       }
@@ -495,12 +529,7 @@ export default function PurePromptToDiagramPage() {
         const inv = countXmlInventory(data.xml);
         const newDiagramId = data?.diagram?.id || null;
         if (newDiagramId) {
-          setSavedDiagramId(newDiagramId);
-          if (typeof window !== 'undefined') {
-            const url = new URL(window.location.href);
-            url.searchParams.set('id', newDiagramId);
-            window.history.replaceState({}, '', url.toString());
-          }
+          syncDiagramIdToUrl(newDiagramId);
         }
         const v2Payload: CompoundPromptToDiagramResult = {
           success: true,
@@ -618,6 +647,46 @@ export default function PurePromptToDiagramPage() {
           payload: typedResult,
         })
       );
+
+      // Guarantee EVERY generated/modified diagram gets a unique persistent UUID and ?id=<uuid> URL
+      try {
+        if (action === 'create') {
+          const saveRes = await fetch('/api/diagrams', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: typedResult.graph?.title || basePrompt.slice(0, 60) || 'PromptCanvas Architecture',
+              xml: typedResult.xml,
+              comment: '4-Stage Vision Render Synthesis',
+              prompt: basePrompt,
+              aiReasoning: typedResult.summaryOfChanges || typedResult.graph?.reasoning || '',
+              architectureType: 'compound_freeform',
+              createdStudio: 'prompt_to_diagram',
+            }),
+          });
+          if (saveRes.ok) {
+            const savedData = await saveRes.json();
+            const createdId = savedData?.diagram?.id || savedData?.id || null;
+            if (createdId) {
+              syncDiagramIdToUrl(createdId);
+              setStatusNotice(`Generated & auto-saved with permanent URL (?id=${createdId.slice(0, 8)}…).`);
+            }
+          }
+        } else if (action === 'modify' && savedDiagramId) {
+          await fetch(`/api/diagrams/${encodeURIComponent(savedDiagramId)}/versions`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              xmlContent: typedResult.xml,
+              comment: modInstruction.slice(0, 120),
+              createdBy: 'AI-Spatial',
+            }),
+          });
+          setStatusNotice(`Updated diagram (${savedDiagramId.slice(0, 8)}…) & persisted new version.`);
+        }
+      } catch {
+        // Non-blocking: diagram is still rendered locally and user can click Save to Library
+      }
     } catch (err: any) {
       if (err?.name === 'AbortError') {
         setErrorMsg('Synthesis timed out after 175s. Please try again.');
@@ -647,14 +716,24 @@ export default function PurePromptToDiagramPage() {
   function handleResetNewPrompt() {
     setHistoryState(createEmptyUndoRedoState<CompoundPromptToDiagramResult>());
     clearUndoRedoStorage(P2D_UNDO_REDO_STORAGE_KEY);
+    syncDiagramIdToUrl(null);
     setSessionRefImageUrl(null);
     try {
       sessionStorage.removeItem(P2D_REF_IMAGE_SESSION_KEY);
     } catch {}
     setFollowUpPrompt('');
     setErrorMsg(null);
+    setStatusNotice(null);
     setCanvasViewMode('drawio');
     setShowPlanDetails(false);
+  }
+
+  function handleCopyPermanentUrl() {
+    if (typeof window === 'undefined' || !savedDiagramId) return;
+    const shareUrl = `${window.location.origin}/prompt-to-diagram?id=${encodeURIComponent(savedDiagramId)}`;
+    navigator.clipboard?.writeText(shareUrl).catch(() => {});
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 1800);
   }
 
   const effectiveRefImage = activeResult?.referenceImageDataUrl || sessionRefImageUrl;
@@ -715,6 +794,18 @@ export default function PurePromptToDiagramPage() {
             )}
             {activeResult?.xml && (
               <>
+                {savedDiagramId && (
+                  <button
+                    type="button"
+                    onClick={handleCopyPermanentUrl}
+                    className="px-2.5 py-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-800 text-[11px] font-mono font-bold inline-flex items-center gap-1.5 cursor-pointer transition"
+                    data-testid="btn-copy-diagram-url"
+                    title={`Permanent Diagram ID: ${savedDiagramId} — Click to copy shareable URL`}
+                  >
+                    <Link2 className="w-3.5 h-3.5 text-blue-600" />
+                    <span>{copiedLink ? 'Copied URL!' : `ID: ${savedDiagramId.slice(0, 8)}`}</span>
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => void handleSaveToLibraryDb()}
