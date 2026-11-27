@@ -2,14 +2,14 @@
 
 /**
  * AppHeader — the single consolidated application header bar.
- * Adapts to active Light and Dark themes via useTheme().
+ * Adapts to active Light and Dark themes via useTheme(), with an always-clickable
+ * top-left PromptCanvas Homepage link (`/`).
  */
 
 import React from 'react';
 import Link from 'next/link';
-import { Menu } from 'lucide-react';
+import { Menu, Sparkles } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
-import ByokHeaderButton from './ByokHeaderButton';
 import { FeedbackHeaderEmailButton } from './UniversalFeedbackSystem';
 
 const SHELL_DARK =
@@ -32,8 +32,6 @@ type HeaderTone =
   | 'amber'
   | 'slate';
 
-/** Icon-tile + badge tints, kept in one place so routes stay visually distinct
- *  from each other but internally consistent across Light and Dark themes. */
 const TONES: Record<HeaderTone, { tile: string; badge: string }> = {
   blue: {
     tile: 'bg-blue-50 border-blue-200 text-blue-600 dark:bg-blue-600/20 dark:border-blue-500/30 dark:text-blue-400',
@@ -69,7 +67,6 @@ const TONES: Record<HeaderTone, { tile: string; badge: string }> = {
   },
 };
 
-/** Shared action-button recipes with Light & Dark support. */
 export const headerBtn = {
   base:
     'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border ' +
@@ -87,7 +84,6 @@ export const headerBtn = {
     'dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30',
 } as const;
 
-/** Compose a header action button className: `btnClass('neutral')`. */
 export function btnClass(variant: keyof Omit<typeof headerBtn, 'base'> = 'neutral', extra = '') {
   return `${headerBtn.base} ${headerBtn[variant]} ${extra}`.trim();
 }
@@ -118,14 +114,18 @@ export function AppHeader({
   actions,
   children,
   noPrint = false,
-  zIndexClass = 'z-[120]',
+  zIndexClass = 'z-30',
   className = '',
 }: AppHeaderProps) {
   const { theme } = useTheme();
   const isLight = theme === 'light';
-  const t = TONES[tone] ?? TONES.blue;
-
-  const shell = [isLight ? SHELL_LIGHT : SHELL_DARK, zIndexClass, noPrint ? 'no-print' : '', className]
+  const t = TONES[tone];
+  const shell = [
+    isLight ? SHELL_LIGHT : SHELL_DARK,
+    zIndexClass,
+    noPrint ? 'print:hidden' : '',
+    className,
+  ]
     .filter(Boolean)
     .join(' ');
 
@@ -145,7 +145,23 @@ export function AppHeader({
     </button>
   );
 
-  // Raw mode: the page owns the internal layout, the shell owns the geometry.
+  // Top-left clickable brand link to Homepage (`/`) on every inner page
+  const brandHomeLink = (
+    <Link
+      href="/"
+      data-testid="app-header-home-link"
+      title="Go to PromptCanvas Homepage"
+      className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg border text-xs font-extrabold tracking-tight shrink-0 transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
+        isLight
+          ? 'bg-slate-50 hover:bg-sky-50 text-slate-900 hover:text-sky-700 border-slate-200 hover:border-sky-300'
+          : 'bg-slate-900 hover:bg-sky-500/15 text-white hover:text-sky-300 border-slate-700/80 hover:border-sky-500/40'
+      }`}
+    >
+      <Sparkles className="w-3.5 h-3.5 text-sky-500 shrink-0" aria-hidden="true" />
+      <span>PromptCanvas</span>
+    </Link>
+  );
+
   if (children) {
     return (
       <header className={shell}>
@@ -157,8 +173,6 @@ export function AppHeader({
           <FeedbackHeaderEmailButton
             appId="promptcanvas"
             appName="PromptCanvas"
-            defaultSenderEmail="nitinagga@google.com"
-            defaultSenderName="Nitin Aggarwal"
           />
         </div>
       </header>
@@ -193,6 +207,10 @@ export function AppHeader({
     <header className={shell}>
       <div className="flex items-center gap-2.5 min-w-0 overflow-hidden shrink-0">
         {leading ?? defaultMobileToggle}
+        {brandHomeLink}
+        <span className={`text-xs select-none ${isLight ? 'text-slate-300' : 'text-slate-700'}`} aria-hidden="true">
+          /
+        </span>
         {href ? (
           <Link
             href={href}
@@ -211,8 +229,6 @@ export function AppHeader({
         <FeedbackHeaderEmailButton
           appId="promptcanvas"
           appName="PromptCanvas"
-          defaultSenderEmail="nitinagga@google.com"
-          defaultSenderName="Nitin Aggarwal"
         />
       </div>
     </header>

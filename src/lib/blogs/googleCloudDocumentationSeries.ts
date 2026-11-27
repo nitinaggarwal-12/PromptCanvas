@@ -690,8 +690,8 @@ COMMIT;
 
 -- 2. BigQuery: Row-Level Access Policy on shared analytical tables
 CREATE OR REPLACE ROW ACCESS POLICY tenant_pooled_rls_policy
-  ON \`cymbal-build-sandbox.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities\`
-  GRANT TO ("serviceAccount:cymbal-pooled-runtime@cymbal-build-sandbox.iam.gserviceaccount.com")
+  ON \`bbar-138hf0.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities\`
+  GRANT TO ("serviceAccount:cymbal-pooled-runtime@bbar-138hf0.iam.gserviceaccount.com")
   FILTER USING (tenant_id = SESSION_USER());`,
         },
         wellArchitectedHook:
@@ -815,7 +815,7 @@ CREATE OR REPLACE ROW ACCESS POLICY tenant_pooled_rls_policy
           title: 'Terraform Private Service Connect NAT Subnet & Dynamic Spoke Dispatcher',
           language: 'hcl',
           filename: 'terraform/pattern_2b_psc_bridge.tf',
-          code: `# 1. Hub VPC & /28 Private Service Connect NAT Subnet (cymbal-build-sandbox)
+          code: `# 1. Hub VPC & /28 Private Service Connect NAT Subnet (bbar-138hf0)
 resource "google_compute_network" "hub_vpc" {
   name                    = "cymbal-pattern-c-hub-vpc"
   auto_create_subnetworks = false
@@ -1091,7 +1091,7 @@ def assert_tenant_cmek_active_or_halt(kms_key_name: str, tenant_id: str) -> dict
         numberLabel: '2',
         heading: 'Live Google Cloud Console, Cloud Shell SSH & BigQuery Audit Verification Runbook',
         leadParagraphs: [
-          'Every security control in the 10-point red-team suite is backed by deterministic audit receipts in BigQuery (cymbal_agentic_finops_otel.security_breach_audit_log) and Cloud Logging across ramp-portal-dev and cymbal-build-sandbox:',
+          'Every security control in the 10-point red-team suite is backed by deterministic audit receipts in BigQuery (cymbal_agentic_finops_otel.security_breach_audit_log) and Cloud Logging across ramp-portal-dev and bbar-138hf0:',
         ],
         whatHappens:
           'Executing the verification suite invokes the deployed Cloud Run endpoint, triggers all 10 adversarial simulations, and writes cryptographic pass/block receipts to BigQuery and Cloud Logging.',
@@ -1100,7 +1100,7 @@ def assert_tenant_cmek_active_or_halt(kms_key_name: str, tenant_id: str) -> dict
           language: 'sql',
           filename: 'sql/verify_10_point_breach_audit_log.sql',
           code: `SELECT sim_id, attack_vector, enforcement_hop, http_status_code, verdict, verified_at
-FROM \`cymbal-build-sandbox.cymbal_agentic_finops_otel.security_breach_audit_log\`
+FROM \`bbar-138hf0.cymbal_agentic_finops_otel.security_breach_audit_log\`
 ORDER BY sim_id ASC;`,
         },
         wellArchitectedHook:

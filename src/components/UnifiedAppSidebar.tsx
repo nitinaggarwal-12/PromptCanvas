@@ -27,6 +27,7 @@ import {
   PanelLeftOpen,
   PanelLeft,
   Newspaper,
+  Home,
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import { usePersistentBoolean } from '@/lib/hooks/useHydrationSafeState';
@@ -62,7 +63,7 @@ interface NavGroup {
  * works. It also removes the old "Canvas > Design Canvas" parent/child stutter:
  * Design Canvas is now a peer under CREATE.
  *
- * NOTE ON BADGE COUNTS: '41' and '8' are literals rather than
+ * NOTE ON BADGE COUNTS: '84', '35', '15', and '8' are literals rather than
  * CANONICAL_TEMPLATES.length / DOC_ARCHETYPES_META.length on purpose — this
  * component renders on every route, and importing those modules would pull
  * ~130KB of template and archetype source into every client bundle for the sake
@@ -74,6 +75,7 @@ const NAV_GROUPS: NavGroup[] = [
     id: 'create',
     label: 'Create',
     items: [
+      { id: 'home', name: 'Homepage', icon: Home, href: '/' },
       { id: 'dashboard', name: 'Blueprint Studio', icon: Compass, href: '/dashboard', badge: 'HOME', badgeColor: 'bg-sky-500/20 text-sky-400 border-sky-500/30' },
       { id: 'prompt-to-diagram', name: 'Prompt to Diagram', icon: Sparkles, href: '/prompt-to-diagram', badge: 'PURE AI', badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
       { id: 'vision', name: 'Image to Diagram', icon: Sparkles, href: '/vision', badge: 'AI', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
@@ -85,8 +87,10 @@ const NAV_GROUPS: NavGroup[] = [
     id: 'reference',
     label: 'Library & Blueprints',
     items: [
+      { id: 'templates', name: 'Templates', icon: Layers, href: '/templates', badge: '84', badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
+      { id: 'infographics', name: 'Infographics', icon: BarChart3, href: '/infographics', badge: '15', badgeColor: 'bg-amber-500/20 text-amber-400 border-amber-500/30' },
       { id: 'library', name: 'Saved Architectures', icon: LayoutGrid, href: '/library', badge: 'SAVED', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
-      { id: 'canonical', name: 'Blueprint Catalog', icon: Network, href: '/canonical', badge: '41' },
+      { id: 'canonical', name: 'Blueprint Catalog', icon: Network, href: '/canonical', badge: '35' },
     ],
   },
   {
@@ -121,6 +125,12 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
       return true;
     }
     if (targetPath === '/library' && pathname === '/library') {
+      return true;
+    }
+    if (targetPath === '/templates' && pathname.startsWith('/templates')) {
+      return true;
+    }
+    if (targetPath === '/infographics' && pathname.startsWith('/infographics')) {
       return true;
     }
     if (targetPath === '/canonical' && pathname.startsWith('/canonical')) {
@@ -187,6 +197,45 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
   const [user, setUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
   const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
+  const [savedArchitecturesCount, setSavedArchitecturesCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    const refreshSavedCount = async () => {
+      try {
+        const seen = new Set<string>();
+        const res = await fetch('/api/diagrams', { cache: 'no-store' }).catch(() => null);
+        const apiItems = res && res.ok ? await res.json().catch(() => []) : [];
+        if (Array.isArray(apiItems)) {
+          for (const d of apiItems) {
+            const idKey = String(d?.id || '').trim().toUpperCase();
+            if (idKey) seen.add(idKey);
+          }
+        }
+        if (typeof window !== 'undefined') {
+          try {
+            const localSaved = JSON.parse(localStorage.getItem('promptcanvas_saved_blueprints') || '[]');
+            if (Array.isArray(localSaved)) {
+              for (const item of localSaved) {
+                const idKey = String(item?.id || '').trim().toUpperCase();
+                if (idKey) seen.add(idKey);
+              }
+            }
+          } catch {}
+        }
+        if (!cancelled) {
+          setSavedArchitecturesCount(seen.size);
+        }
+      } catch {}
+    };
+    void refreshSavedCount();
+    const onSavedUpdated = () => void refreshSavedCount();
+    window.addEventListener('promptcanvas_saved_updated', onSavedUpdated);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('promptcanvas_saved_updated', onSavedUpdated);
+    };
+  }, [pathname]);
 
   const toggleSidebar = () => {
     if (onToggle) {
@@ -217,25 +266,26 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
 
   return (
     <>
-      {/* 1. DESKTOP COLLAPSIBLE SIDEBAR */}
+      {/* 1. DESKTOP COLLAPSIBLE SIDEBAR (z-[160] stays uncovered & clickable even when drawers are open) */}
       <aside
         id="unified-app-sidebar"
         aria-label="Global Application Navigation Rail"
         className={`${isLight ? '' : 'dark'} ${
           isSidebarOpen ? 'w-64' : 'w-16'
-        } hidden lg:flex border-r transition-all duration-300 flex-col justify-between z-40 shrink-0 sticky top-0 h-screen select-none ${
+        } hidden lg:flex border-r transition-all duration-300 flex-col justify-between z-[160] shrink-0 sticky top-0 h-screen select-none ${
           isLight ? 'bg-white border-slate-200 text-slate-800 shadow-xs' : 'bg-[#090d16]/95 border-slate-800/80 text-slate-100'
         } ${className}`}
       >
         {/* Top Branding & Navigation */}
         <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
           {/* Brand Header */}
-          <div className={`h-14 border-b flex items-center justify-between px-3.5 shrink-0 ${isLight ? 'border-slate-200 bg-white' : 'border-slate-800/60'}`}>
+          <div className={`${isSidebarOpen ? 'h-14 px-3.5 justify-between' : 'py-2.5 px-2 justify-center'} border-b flex items-center shrink-0 ${isLight ? 'border-slate-200 bg-white' : 'border-slate-800/60'}`}>
             {isSidebarOpen ? (
               <>
                 <Link
                   href="/"
                   aria-label="PromptCanvas Home"
+                  title="Go to PromptCanvas Homepage"
                   className="flex items-center gap-2.5 group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
                 >
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-400 to-indigo-500 p-0.5 shadow-lg shadow-sky-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
@@ -244,8 +294,8 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                     </div>
                   </div>
                   <div className="flex flex-col">
-                    <span className={`font-extrabold tracking-wider text-xs uppercase ${isLight ? 'text-slate-900' : 'text-white'}`}>Prompt Canvas</span>
-                    <span className={`text-[9px] font-semibold tracking-wider ${isLight ? 'text-sky-600' : 'text-sky-400'}`}>Enterprise AI</span>
+                    <span className={`font-extrabold tracking-wider text-xs uppercase group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors ${isLight ? 'text-slate-900' : 'text-white'}`}>Prompt Canvas</span>
+                    <span className={`text-[9px] font-semibold tracking-wider ${isLight ? 'text-sky-600' : 'text-sky-400'}`}>Home &bull; Enterprise AI</span>
                   </div>
                 </Link>
                 <button
@@ -264,14 +314,24 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                 </button>
               </>
             ) : (
-              <div className="mx-auto flex flex-col items-center gap-1">
+              <div className="mx-auto flex flex-col items-center gap-1.5">
+                <Link
+                  href="/"
+                  aria-label="PromptCanvas Homepage"
+                  title="Go to PromptCanvas Homepage"
+                  className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-400 to-indigo-500 p-0.5 shadow-md flex items-center justify-center hover:scale-105 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+                >
+                  <div className={`w-full h-full rounded-[10px] flex items-center justify-center ${isLight ? 'bg-white' : 'bg-[#070a13]'}`}>
+                    <Sparkles className="w-4 h-4 text-sky-500" aria-hidden="true" />
+                  </div>
+                </Link>
                 <button
                   id="unified-sidebar-expand-btn"
                   type="button"
                   onClick={toggleSidebar}
                   aria-expanded={isSidebarOpen}
                   aria-controls="unified-primary-nav"
-                  className={`min-w-[42px] min-h-[42px] p-2 rounded-xl cursor-pointer transition-all border shadow-xs flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95 ${
+                  className={`min-w-[40px] min-h-[34px] p-1.5 rounded-xl cursor-pointer transition-all border shadow-xs flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-95 ${
                     isLight
                       ? 'bg-slate-100 hover:bg-sky-50 text-slate-600 hover:text-sky-600 border-slate-200 hover:border-sky-300'
                       : 'bg-slate-800/80 hover:bg-sky-500/15 text-slate-300 hover:text-sky-400 border-slate-700/60 hover:border-sky-500/40'
@@ -374,7 +434,9 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                                     'bg-sky-500/20 text-sky-400 border-sky-500/30'
                               }`}
                             >
-                              {item.badge}
+                              {item.id === 'library' && savedArchitecturesCount !== null
+                                ? String(savedArchitecturesCount)
+                                : item.badge}
                             </span>
                           )}
                         </div>

@@ -69,8 +69,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true });
     }
 
-    const actorName = body.actorName || authUser?.name || 'Nitin Aggarwal';
-    const actorEmail = body.actorEmail || authUser?.email || 'nitin.aggarwal@enterprise-arch.io';
+    const actorName = body.actorName || authUser?.name || 'Cloud Architecture Review Board';
+    const actorEmail = body.actorEmail || authUser?.email || 'architecture-governance@cloud-review.internal';
     const actorRole = body.actorRole || authUser?.global_role || 'Super-Admin';
     const source: 'UI' | 'GOOGLE_SHEET' = body.source === 'GOOGLE_SHEET' ? 'GOOGLE_SHEET' : 'UI';
 

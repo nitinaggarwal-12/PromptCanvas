@@ -92,7 +92,7 @@ const FLOWCHART_PRESETS = [
 ];
 
 const BLUEPRINT_FILTERS = [
-  { id: 'all', label: 'All 50' },
+  { id: 'all', label: `All ${CANONICAL_TEMPLATES.length}` },
   { id: 'cloud', label: 'Cloud & Network' },
   { id: 'data', label: 'Data & Warehouse' },
   { id: 'ai', label: 'Vertex & GenAI' },
@@ -277,7 +277,7 @@ export function InsertDiagramModal({
               }`}
             >
               <Layers className="w-4 h-4" />
-              <span>1. Blueprint Templates (50)</span>
+              <span>1. Blueprint Templates ({CANONICAL_TEMPLATES.length})</span>
             </button>
 
             <button

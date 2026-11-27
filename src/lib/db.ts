@@ -13,6 +13,9 @@ import {
   saveDiagramBundleToGcs,
   loadDiagramBundleFromGcs,
   deleteDiagramBundleFromGcs,
+  saveSessionBundleToGcs,
+  loadSessionBundleFromGcs,
+  deleteSessionBundleFromGcs,
   listDiagramIdsFromGcs,
   getGcsStateBucket,
 } from './gcsDiagramStore';
@@ -1157,7 +1160,7 @@ async function hydrateAllDiagramsFromGcsIntoSqlite(): Promise<void> {
 }
 
 // Helper: List all diagrams accessible by a given user (owned, shared, or public seeded ones)
-export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_content?: string; prompt?: string | null })[]> {
+export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_content?: string; prompt?: string | null; version_count?: number; max_version?: number })[]> {
   await ensureTablesExist();
   if (!isPostgres()) {
     await hydrateAllDiagramsFromGcsIntoSqlite();
@@ -1167,12 +1170,12 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
     if (isPostgres()) {
       const query = `
         SELECT d.*, v.xml_content, v.prompt,
+          (SELECT COUNT(*)::int FROM diagram_versions dv WHERE dv.diagram_id = d.id) as version_count,
+          (SELECT COALESCE(MAX(version_number), 1)::int FROM diagram_versions dv WHERE dv.diagram_id = d.id) as max_version,
           CASE 
             WHEN d.user_id = $1 THEN 'Owner'
             WHEN c.access_level IS NOT NULL THEN c.access_level
-            WHEN d.user_id IS NULL THEN 'Viewer'
-            WHEN d.user_id LIKE 'guest-%' THEN 'Editor'
-            ELSE 'Viewer'
+            ELSE 'Editor'
           END as access_level
         FROM diagrams d
         LEFT JOIN diagram_collaborators c ON c.diagram_id = d.id AND c.user_id = $1
@@ -1180,10 +1183,10 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
           SELECT id 
           FROM diagram_versions 
           WHERE diagram_id = d.id
-          ORDER BY created_at DESC, version_number DESC
+          ORDER BY version_number DESC, created_at DESC
           LIMIT 1
         )
-        WHERE d.user_id = $1 OR d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR c.user_id = $1 OR d.is_private IS NOT TRUE
+        WHERE d.user_id = $1 OR c.user_id = $1 OR (d.user_id IS NOT NULL AND COALESCE(d.is_private, false) = false)
         ORDER BY d.updated_at DESC
       `;
       const pool = getPgPool();
@@ -1192,12 +1195,12 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
     } else {
       const query = `
         SELECT d.*, v.xml_content, v.prompt,
+          (SELECT COUNT(*) FROM diagram_versions dv WHERE dv.diagram_id = d.id) as version_count,
+          (SELECT COALESCE(MAX(version_number), 1) FROM diagram_versions dv WHERE dv.diagram_id = d.id) as max_version,
           CASE 
             WHEN d.user_id = ? THEN 'Owner'
             WHEN c.access_level IS NOT NULL THEN c.access_level
-            WHEN d.user_id IS NULL THEN 'Viewer'
-            WHEN d.user_id LIKE 'guest-%' THEN 'Editor'
-            ELSE 'Viewer'
+            ELSE 'Editor'
           END as access_level
         FROM diagrams d
         LEFT JOIN diagram_collaborators c ON c.diagram_id = d.id AND c.user_id = ?
@@ -1205,52 +1208,55 @@ export async function listDiagrams(userId?: string): Promise<(Diagram & { xml_co
           SELECT id 
           FROM diagram_versions 
           WHERE diagram_id = d.id
-          ORDER BY created_at DESC, version_number DESC
+          ORDER BY version_number DESC, created_at DESC
           LIMIT 1
         )
-        WHERE d.user_id = ? OR d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR c.user_id = ? OR d.is_private IS NULL OR d.is_private = 0
+        WHERE d.user_id = ? OR c.user_id = ? OR (d.user_id IS NOT NULL AND COALESCE(d.is_private, 0) = 0)
         ORDER BY d.updated_at DESC
       `;
       const db = getSqliteDb();
       const stmt = db.prepare(query);
-      return stmt.all(userId, userId, userId, userId) as unknown as (Diagram & { xml_content?: string; prompt?: string | null })[];
+      return stmt.all(userId, userId, userId, userId) as unknown as (Diagram & { xml_content?: string; prompt?: string | null; version_count?: number; max_version?: number })[];
     }
   } else {
     if (isPostgres()) {
       const query = `
-        SELECT d.*, v.xml_content, v.prompt, 'Viewer' as access_level
+        SELECT d.*, v.xml_content, v.prompt,
+          (SELECT COUNT(*)::int FROM diagram_versions dv WHERE dv.diagram_id = d.id) as version_count,
+          (SELECT COALESCE(MAX(version_number), 1)::int FROM diagram_versions dv WHERE dv.diagram_id = d.id) as max_version,
+          'Viewer' as access_level
         FROM diagrams d
         LEFT JOIN diagram_versions v ON v.id = (
-          SELECT id 
-          FROM diagram_versions 
+          SELECT id
+          FROM diagram_versions
           WHERE diagram_id = d.id
-          ORDER BY created_at DESC, version_number DESC
+          ORDER BY version_number DESC, created_at DESC
           LIMIT 1
         )
-        WHERE d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR d.is_private IS NOT TRUE
+        WHERE d.user_id IS NOT NULL AND COALESCE(d.is_private, false) = false
         ORDER BY d.updated_at DESC
       `;
-      const pool = getPgPool();
-      const res = await pool.query(query);
+      const res = await getPgPool().query(query);
       return res.rows;
-    } else {
-      const query = `
-        SELECT d.*, v.xml_content, v.prompt, 'Viewer' as access_level
-        FROM diagrams d
-        LEFT JOIN diagram_versions v ON v.id = (
-          SELECT id 
-          FROM diagram_versions 
-          WHERE diagram_id = d.id
-          ORDER BY created_at DESC, version_number DESC
-          LIMIT 1
-        )
-        WHERE d.user_id IS NULL OR d.user_id LIKE 'guest-%' OR d.is_private IS NULL OR d.is_private = 0
-        ORDER BY d.updated_at DESC
-      `;
-      const db = getSqliteDb();
-      const stmt = db.prepare(query);
-      return stmt.all() as unknown as (Diagram & { xml_content?: string; prompt?: string | null })[];
     }
+    const query = `
+      SELECT d.*, v.xml_content, v.prompt,
+        (SELECT COUNT(*) FROM diagram_versions dv WHERE dv.diagram_id = d.id) as version_count,
+        (SELECT COALESCE(MAX(version_number), 1) FROM diagram_versions dv WHERE dv.diagram_id = d.id) as max_version,
+        'Viewer' as access_level
+      FROM diagrams d
+      LEFT JOIN diagram_versions v ON v.id = (
+        SELECT id
+        FROM diagram_versions
+        WHERE diagram_id = d.id
+        ORDER BY version_number DESC, created_at DESC
+        LIMIT 1
+      )
+      WHERE d.user_id IS NOT NULL AND COALESCE(d.is_private, 0) = 0
+      ORDER BY d.updated_at DESC
+    `;
+    const db = getSqliteDb();
+    return db.prepare(query).all() as unknown as (Diagram & { xml_content?: string; prompt?: string | null; version_count?: number; max_version?: number })[];
   }
 }
 
@@ -1383,10 +1389,20 @@ export async function updateDiagramPrivacy(diagramId: string, isPrivate: boolean
     const db = getSqliteDb();
     const stmt = db.prepare("UPDATE diagrams SET is_private = ?, updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now')) WHERE id = ?");
     stmt.run(isPrivate ? 1 : 0, diagramId);
+    await mirrorDiagramFromSqliteToGcs(diagramId);
   }
 }
 
-// Helper: Create a new diagram with an optional initial XML, userId, and canonical graph_json
+export interface BackfillVersionInput {
+  version_number?: number;
+  xml: string;
+  comment?: string | null;
+  prompt?: string | null;
+  created_by?: string | null;
+  created_at?: string | null;
+}
+
+// Helper: Create a new diagram with an optional initial XML, userId, canonical graph_json, and full version history backfill
 export async function createDiagram(
   name: string,
   initialXml?: string,
@@ -1398,11 +1414,106 @@ export async function createDiagram(
   userId?: string | null,
   architectureType?: string | null,
   isPrivate?: boolean,
-  createdStudio: string = 'studio1',
-  graphJson?: string | null
+  createdStudio: string = 'dashboard',
+  graphJson?: string | null,
+  explicitId?: string | null,
+  versionsHistory?: BackfillVersionInput[] | null
 ): Promise<{ diagram: Diagram; version: DiagramVersion | null }> {
   await ensureTablesExist();
-  const diagramId = uuidv4();
+  const cleanedExplicitId =
+    explicitId && /^[a-zA-Z0-9._-]{4,128}$/.test(explicitId.trim())
+      ? explicitId.trim()
+      : null;
+
+  const validBackfill = Array.isArray(versionsHistory)
+    ? versionsHistory
+        .filter((v) => v && typeof v.xml === 'string' && v.xml.trim().length > 0)
+        .map((v, idx) => ({
+          version_number: Number.isFinite(Number(v.version_number)) && Number(v.version_number) > 0 ? Number(v.version_number) : idx + 1,
+          xml: v.xml,
+          comment: v.comment || `Snapshot v${idx + 1}`,
+          prompt: v.prompt || prompt || null,
+          created_by: v.created_by || 'User',
+          created_at: v.created_at || null,
+        }))
+        .sort((a, b) => a.version_number - b.version_number)
+    : [];
+
+  if (cleanedExplicitId) {
+    if (!isPostgres()) {
+      await hydrateDiagramFromGcsIntoSqlite(cleanedExplicitId);
+    }
+    let idAlreadyExists = false;
+    if (isPostgres()) {
+      const existsRes = await getPgPool().query('SELECT 1 FROM diagrams WHERE id = $1 LIMIT 1', [cleanedExplicitId]);
+      idAlreadyExists = (existsRes.rowCount || 0) > 0;
+    } else {
+      idAlreadyExists = Boolean(getSqliteDb().prepare('SELECT 1 FROM diagrams WHERE id = ?').get(cleanedExplicitId));
+    }
+
+    if (idAlreadyExists) {
+      const existingDiag = await getDiagram(cleanedExplicitId, userId || undefined);
+      if (!existingDiag || existingDiag.access_level === 'Viewer') {
+        throw new Error('Forbidden: Only the owner or an authorized editor can overwrite an existing diagram ID.');
+      }
+      if (name && name.trim() && name.trim() !== existingDiag.name && existingDiag.access_level === 'Owner') {
+        await updateDiagramName(cleanedExplicitId, name.trim());
+      }
+      if (
+        existingDiag.access_level === 'Owner' &&
+        validBackfill.length > (existingDiag.versions?.length || 0) &&
+        !isPostgres()
+      ) {
+        await runSqliteTransaction(async (db) => {
+          db.prepare('DELETE FROM diagram_versions WHERE diagram_id = ?').run(cleanedExplicitId);
+          const insVer = db.prepare(`
+            INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type, graph_json, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE(?, strftime('%Y-%m-%d %H:%M:%f', 'now')))
+          `);
+          validBackfill.forEach((bv, idx) => {
+            insVer.run(
+              uuidv4(),
+              cleanedExplicitId,
+              idx + 1,
+              bv.xml,
+              bv.comment,
+              bv.created_by,
+              bv.prompt,
+              aiReasoning || null,
+              businessUsecase || null,
+              technicalUsecase || null,
+              architectureType || existingDiag.architecture_type || 'conceptual_diagram',
+              graphJson ?? null,
+              bv.created_at
+            );
+          });
+          db.prepare("UPDATE diagrams SET updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now')) WHERE id = ?").run(cleanedExplicitId);
+        });
+        await mirrorDiagramFromSqliteToGcs(cleanedExplicitId);
+        const refreshedMulti = (await getDiagram(cleanedExplicitId, userId || undefined)) || existingDiag;
+        return { diagram: refreshedMulti, version: refreshedMulti.versions?.[0] || null };
+      }
+      const ver =
+        initialXml !== undefined
+          ? await saveDiagramVersion(
+              cleanedExplicitId,
+              initialXml,
+              comment || 'Saved updated snapshot',
+              'User',
+              prompt,
+              aiReasoning,
+              businessUsecase,
+              technicalUsecase,
+              architectureType || existingDiag.architecture_type || 'unified_system_view',
+              graphJson
+            )
+          : existingDiag.versions?.[0] || null;
+      const refreshed = (await getDiagram(cleanedExplicitId, userId || undefined)) || existingDiag;
+      return { diagram: refreshed, version: ver };
+    }
+  }
+
+  const diagramId = cleanedExplicitId || uuidv4();
   const versionId = uuidv4();
   const privateValPg = isPrivate ? true : false;
   const privateValSqlite = isPrivate ? 1 : 0;
@@ -1415,7 +1526,33 @@ export async function createDiagram(
       await client.query('INSERT INTO diagrams (id, name, user_id, architecture_type, is_private, created_studio) VALUES ($1, $2, $3, $4, $5, $6)', [diagramId, name, userId || null, architectureType || 'unified_system_view', privateValPg, createdStudio || 'studio1']);
 
       let version: DiagramVersion | null = null;
-      if (initialXml !== undefined) {
+      if (validBackfill.length > 0) {
+        let lastInsertedId = versionId;
+        for (let i = 0; i < validBackfill.length; i++) {
+          const bv = validBackfill[i];
+          const vid = i === validBackfill.length - 1 ? versionId : uuidv4();
+          lastInsertedId = vid;
+          await client.query(`
+            INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type, graph_json)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+          `, [
+            vid,
+            diagramId,
+            i + 1,
+            bv.xml,
+            bv.comment,
+            bv.created_by,
+            bv.prompt,
+            aiReasoning || null,
+            businessUsecase || null,
+            technicalUsecase || null,
+            architectureType || 'conceptual_diagram',
+            graphJson ?? null,
+          ]);
+        }
+        const getVer = await client.query('SELECT * FROM diagram_versions WHERE id = $1', [lastInsertedId]);
+        version = getVer.rows[0] as DiagramVersion;
+      } else if (initialXml !== undefined) {
         await client.query(`
           INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type, graph_json)
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
@@ -1450,11 +1587,40 @@ export async function createDiagram(
     }
   } else {
     return await runSqliteTransaction(async (db) => {
-      const insertDiagram = db.prepare('INSERT INTO diagrams (id, name, user_id, architecture_type, is_private, created_studio) VALUES (?, ?, ?, ?, ?, ?)');
+      const insertDiagram = db.prepare('INSERT OR REPLACE INTO diagrams (id, name, user_id, architecture_type, is_private, created_studio) VALUES (?, ?, ?, ?, ?, ?)');
       insertDiagram.run(diagramId, name, userId || null, architectureType || 'unified_system_view', privateValSqlite, createdStudio || 'studio1');
 
       let version: DiagramVersion | null = null;
-      if (initialXml !== undefined) {
+      if (validBackfill.length > 0) {
+        db.prepare('DELETE FROM diagram_versions WHERE diagram_id = ?').run(diagramId);
+        const insertVersion = db.prepare(`
+          INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type, graph_json, created_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE(?, strftime('%Y-%m-%d %H:%M:%f', 'now')))
+        `);
+        let lastId = versionId;
+        for (let i = 0; i < validBackfill.length; i++) {
+          const bv = validBackfill[i];
+          const vid = i === validBackfill.length - 1 ? versionId : uuidv4();
+          lastId = vid;
+          insertVersion.run(
+            vid,
+            diagramId,
+            i + 1,
+            bv.xml,
+            bv.comment,
+            bv.created_by,
+            bv.prompt,
+            aiReasoning || null,
+            businessUsecase || null,
+            technicalUsecase || null,
+            architectureType || 'conceptual_diagram',
+            graphJson ?? null,
+            bv.created_at
+          );
+        }
+        const getVersion = db.prepare('SELECT * FROM diagram_versions WHERE id = ?');
+        version = getVersion.get(lastId) as unknown as DiagramVersion;
+      } else if (initialXml !== undefined) {
         const insertVersion = db.prepare(`
           INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt, ai_reasoning, business_usecase, technical_usecase, architecture_type, graph_json)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -1509,7 +1675,7 @@ export async function saveDiagramVersion(
     try {
       await client.query('BEGIN');
       
-      const maxVer = await client.query("SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = $1 AND (architecture_type = $2 OR architecture_type IS NULL)", [diagramId, architectureType || 'unified_system_view']);
+      const maxVer = await client.query("SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = $1", [diagramId]);
       const nextVersionNumber = (maxVer.rows[0].max_version || 0) + 1;
 
       await client.query(`
@@ -1544,8 +1710,23 @@ export async function saveDiagramVersion(
     }
   } else {
     return await runSqliteTransaction(async (db) => {
-      const maxVersionStmt = db.prepare("SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = ? AND (architecture_type = ? OR architecture_type IS NULL)");
-      const versionResult = maxVersionStmt.get(diagramId, architectureType || 'unified_system_view') as { max_version: number };
+      const latestExisting = db
+        .prepare('SELECT * FROM diagram_versions WHERE diagram_id = ? ORDER BY version_number DESC LIMIT 1')
+        .get(diagramId) as unknown as DiagramVersion | undefined;
+      if (
+        latestExisting &&
+        typeof latestExisting.xml_content === 'string' &&
+        latestExisting.xml_content.trim() === String(xmlContent || '').trim()
+      ) {
+        if (comment && comment.trim()) {
+          db.prepare('UPDATE diagram_versions SET comment = ? WHERE id = ?').run(comment.trim(), latestExisting.id);
+        }
+        db.prepare("UPDATE diagrams SET updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now')) WHERE id = ?").run(diagramId);
+        return db.prepare('SELECT * FROM diagram_versions WHERE id = ?').get(latestExisting.id) as unknown as DiagramVersion;
+      }
+
+      const maxVersionStmt = db.prepare("SELECT COALESCE(MAX(version_number), 0) as max_version FROM diagram_versions WHERE diagram_id = ?");
+      const versionResult = maxVersionStmt.get(diagramId) as { max_version: number };
       const nextVersionNumber = versionResult.max_version + 1;
 
       db.prepare('INSERT OR IGNORE INTO diagrams (id, name, architecture_type, is_private, created_studio) VALUES (?, ?, ?, 0, ?)').run(
@@ -1667,26 +1848,35 @@ export async function deleteDiagram(id: string, userId?: string, isSuperAdmin = 
       );
     }
   } else {
+    await hydrateDiagramFromGcsIntoSqlite(id);
     const db = getSqliteDb();
+    const existingRow = db.prepare('SELECT id, user_id FROM diagrams WHERE id = ?').get(id) as { id: string; user_id: string | null } | undefined;
+    if (!existingRow) {
+      return;
+    }
     if (isSuperAdmin) {
-      const stmt = db.prepare('DELETE FROM diagrams WHERE id = ?');
-      stmt.run(id);
+      db.prepare('DELETE FROM diagrams WHERE id = ?').run(id);
+      await deleteDiagramBundleFromGcs(id);
     } else {
       const stmt = db.prepare(
         `DELETE FROM diagrams 
          WHERE id = ? 
            AND (
              user_id = ? 
+             OR user_id IS NULL
              OR id IN (SELECT diagram_id FROM diagram_collaborators WHERE user_id = ? AND access_level = 'Owner')
            )`
       );
-      stmt.run(id, userId!, userId!);
+      const info = stmt.run(id, userId!, userId!);
+      if (Number(info.changes || 0) === 0) {
+        throw new Error('Forbidden: Only the diagram owner or Super-Admin can delete this diagram.');
+      }
+      await deleteDiagramBundleFromGcs(id);
     }
-    await deleteDiagramBundleFromGcs(id);
   }
 }
 
-// Helper: Batch Delete multiple diagrams (strictly scoped to creator, owner collaborator, or super-admin)
+// Helper: Batch Delete multiple diagrams (strictly scoped to creator, owner collaborator, unowned legacy, or super-admin)
 export async function batchDeleteDiagrams(ids: string[], userId?: string, isSuperAdmin = false): Promise<number> {
   if (!ids || ids.length === 0) return 0;
   if (!userId && !isSuperAdmin) {
@@ -1712,24 +1902,32 @@ export async function batchDeleteDiagrams(ids: string[], userId?: string, isSupe
       return res.rowCount || 0;
     }
   } else {
+    await Promise.all(ids.map((id) => hydrateDiagramFromGcsIntoSqlite(id)));
     const db = getSqliteDb();
     const placeholders = ids.map(() => '?').join(',');
+    let authorizedIds: string[] = [];
     if (isSuperAdmin) {
-      const stmt = db.prepare(`DELETE FROM diagrams WHERE id IN (${placeholders})`);
-      const info = stmt.run(...ids);
-      return Number(info.changes || 0);
+      const rows = db.prepare(`SELECT id FROM diagrams WHERE id IN (${placeholders})`).all(...ids) as Array<{ id: string }>;
+      authorizedIds = rows.map((r) => r.id);
     } else {
-      const stmt = db.prepare(
-        `DELETE FROM diagrams 
-         WHERE id IN (${placeholders}) 
-           AND (
-             user_id = ? 
-             OR id IN (SELECT diagram_id FROM diagram_collaborators WHERE user_id = ? AND access_level = 'Owner')
-           )`
-      );
-      const info = stmt.run(...ids, userId!, userId!);
-      return Number(info.changes || 0);
+      const rows = db
+        .prepare(
+          `SELECT id FROM diagrams 
+           WHERE id IN (${placeholders}) 
+             AND (
+               user_id = ? 
+               OR user_id IS NULL
+               OR id IN (SELECT diagram_id FROM diagram_collaborators WHERE user_id = ? AND access_level = 'Owner')
+             )`
+        )
+        .all(...ids, userId!, userId!) as Array<{ id: string }>;
+      authorizedIds = rows.map((r) => r.id);
     }
+    if (authorizedIds.length === 0) return 0;
+    const authPlaceholders = authorizedIds.map(() => '?').join(',');
+    const info = db.prepare(`DELETE FROM diagrams WHERE id IN (${authPlaceholders})`).run(...authorizedIds);
+    await Promise.all(authorizedIds.map((id) => deleteDiagramBundleFromGcs(id)));
+    return Number(info.changes || 0);
   }
 }
 
@@ -1744,9 +1942,11 @@ export async function clearAllDiagrams(userId?: string): Promise<void> {
     const pool = getPgPool();
     await pool.query('DELETE FROM diagrams WHERE user_id = $1', [userId]);
   } else {
+    await hydrateAllDiagramsFromGcsIntoSqlite();
     const db = getSqliteDb();
-    const stmt = db.prepare('DELETE FROM diagrams WHERE user_id = ?');
-    stmt.run(userId);
+    const ownedRows = db.prepare('SELECT id FROM diagrams WHERE user_id = ?').all(userId) as Array<{ id: string }>;
+    db.prepare('DELETE FROM diagrams WHERE user_id = ?').run(userId);
+    await Promise.all(ownedRows.map((r) => deleteDiagramBundleFromGcs(r.id)));
   }
 }
 
@@ -1769,11 +1969,12 @@ export async function updateDiagramArchitectureType(diagramId: string, architect
   await ensureTablesExist();
   if (isPostgres()) {
     const pool = getPgPool();
-    await pool.query('UPDATE diagrams SET architecture_type = $1 WHERE id = $2', [architectureType, diagramId]);
+    await pool.query('UPDATE diagrams SET architecture_type = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2', [architectureType, diagramId]);
   } else {
     const db = getSqliteDb();
-    const stmt = db.prepare('UPDATE diagrams SET architecture_type = ? WHERE id = ?');
+    const stmt = db.prepare("UPDATE diagrams SET architecture_type = ?, updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now')) WHERE id = ?");
     stmt.run(architectureType, diagramId);
+    await mirrorDiagramFromSqliteToGcs(diagramId);
   }
 }
 
@@ -1781,11 +1982,12 @@ export async function updateDiagramName(diagramId: string, name: string): Promis
   await ensureTablesExist();
   if (isPostgres()) {
     const pool = getPgPool();
-    await pool.query('UPDATE diagrams SET name = $1 WHERE id = $2', [name, diagramId]);
+    await pool.query('UPDATE diagrams SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2', [name, diagramId]);
   } else {
     const db = getSqliteDb();
-    const stmt = db.prepare('UPDATE diagrams SET name = ? WHERE id = ?');
+    const stmt = db.prepare("UPDATE diagrams SET name = ?, updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now')) WHERE id = ?");
     stmt.run(name, diagramId);
+    await mirrorDiagramFromSqliteToGcs(diagramId);
   }
 }
 
@@ -1823,6 +2025,7 @@ export async function updateLatestDiagramVersionContent(
       const nextXml = xmlContent || (isArchChanged ? getDefaultXmlForArchitecture(architectureType) : null) || latest.xml_content;
       const stmt = db.prepare('UPDATE diagram_versions SET xml_content = ?, architecture_type = ?, business_usecase = ? WHERE id = ?');
       stmt.run(nextXml, nextArch, businessUseCase || latest.business_usecase, latest.id);
+      await mirrorDiagramFromSqliteToGcs(diagramId);
     }
   }
 }
@@ -1984,7 +2187,26 @@ export async function createSession(userId: string, expiresAt: Date): Promise<Se
     );
     stmt.run(id, userId, expiresStr);
     const getSess = db.prepare('SELECT * FROM sessions WHERE id = ?');
-    return getSess.get(id) as unknown as Session;
+    const created = getSess.get(id) as unknown as Session;
+    const uRow = db.prepare('SELECT * FROM users WHERE id = ?').get(userId) as any;
+    if (uRow) {
+      await saveSessionBundleToGcs(id, {
+        session: {
+          user_id: userId,
+          expires_at: expiresStr,
+          created_at: String(created?.created_at || new Date().toISOString()),
+        },
+        user: {
+          id: uRow.id,
+          email: uRow.email,
+          name: uRow.name || null,
+          global_role: uRow.global_role,
+          is_super_admin: Boolean(uRow.is_super_admin),
+          created_at: String(uRow.created_at || new Date().toISOString()),
+        },
+      });
+    }
+    return created;
   }
 }
 
@@ -2026,7 +2248,30 @@ export async function getSession(sessionId: string): Promise<(Session & { user?:
        JOIN users u ON u.id = s.user_id
        WHERE s.id = ? AND s.expires_at > (strftime('%Y-%m-%d %H:%M:%f', 'now'))`
     );
-    const row = stmt.get(sessionId) as any;
+    let row = stmt.get(sessionId) as any;
+    if (!row) {
+      const gcsSess = await loadSessionBundleFromGcs(sessionId);
+      if (gcsSess?.user?.id && gcsSess?.session?.expires_at) {
+        try {
+          db.prepare(
+            `INSERT OR IGNORE INTO users (id, email, password_hash, salt, name, global_role, is_super_admin, created_at)
+             VALUES (?, ?, 'gcs_hydrated_hash', 'gcs_hydrated_salt', ?, ?, ?, COALESCE(?, strftime('%Y-%m-%d %H:%M:%f', 'now')))`
+          ).run(
+            gcsSess.user.id,
+            gcsSess.user.email,
+            gcsSess.user.name,
+            gcsSess.user.global_role || 'Author',
+            gcsSess.user.is_super_admin ? 1 : 0,
+            gcsSess.user.created_at
+          );
+          db.prepare(
+            `INSERT OR IGNORE INTO sessions (id, user_id, expires_at, created_at)
+             VALUES (?, ?, ?, COALESCE(?, strftime('%Y-%m-%d %H:%M:%f', 'now')))`
+          ).run(sessionId, gcsSess.user.id, gcsSess.session.expires_at, gcsSess.session.created_at);
+          row = stmt.get(sessionId) as any;
+        } catch {}
+      }
+    }
     if (!row) return null;
     return {
       id: row.id,
@@ -2057,6 +2302,7 @@ export async function deleteSession(sessionId: string): Promise<void> {
     const db = getSqliteDb();
     const stmt = db.prepare('DELETE FROM sessions WHERE id = ?');
     stmt.run(sessionId);
+    await deleteSessionBundleFromGcs(sessionId);
   }
 }
 
@@ -2109,344 +2355,6 @@ export async function getUserLogs(userId: string, limit: number = 50): Promise<U
 }
 
 // ==========================================
-// ACCESS REQUESTS & COLLABORATOR DB FUNCTIONS
-// ==========================================
-
-export async function createAccessRequest(
-  diagramId: string,
-  requesterUserId: string,
-  requestedRole: 'Viewer' | 'Editor',
-  message?: string | null
-): Promise<AccessRequest> {
-  await ensureTablesExist();
-
-  const existing = await getAccessRequestStatus(diagramId, requesterUserId);
-
-  if (existing && existing.status === 'Pending') {
-    const id = existing.id;
-    if (isPostgres()) {
-      const pool = getPgPool();
-      const res = await pool.query(
-        `UPDATE access_requests
-         SET requested_role = $1, message = $2, updated_at = CURRENT_TIMESTAMP
-         WHERE id = $3
-         RETURNING *`,
-        [requestedRole, message || null, id]
-      );
-      await logUserEvent(requesterUserId, 'ACCESS_REQUEST_UPDATED', null, `Diagram: ${diagramId}`);
-      return res.rows[0] as AccessRequest;
-    } else {
-      const db = getSqliteDb();
-      const stmt = db.prepare(
-        `UPDATE access_requests
-         SET requested_role = ?, message = ?, updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now'))
-         WHERE id = ?`
-      );
-      stmt.run(requestedRole, message || null, id);
-      await logUserEvent(requesterUserId, 'ACCESS_REQUEST_UPDATED', null, `Diagram: ${diagramId}`);
-      const getReq = db.prepare('SELECT * FROM access_requests WHERE id = ?');
-      return getReq.get(id) as unknown as AccessRequest;
-    }
-  }
-
-  const id = uuidv4();
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(
-      `INSERT INTO access_requests (id, diagram_id, requester_user_id, requested_role, message)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING *`,
-      [id, diagramId, requesterUserId, requestedRole, message || null]
-    );
-    await logUserEvent(requesterUserId, 'ACCESS_REQUEST_CREATED', null, `Diagram: ${diagramId}`);
-    return res.rows[0] as AccessRequest;
-  } else {
-    const db = getSqliteDb();
-    const stmt = db.prepare(
-      `INSERT INTO access_requests (id, diagram_id, requester_user_id, requested_role, message)
-       VALUES (?, ?, ?, ?, ?)`
-    );
-    stmt.run(id, diagramId, requesterUserId, requestedRole, message || null);
-    await logUserEvent(requesterUserId, 'ACCESS_REQUEST_CREATED', null, `Diagram: ${diagramId}`);
-    const getReq = db.prepare('SELECT * FROM access_requests WHERE id = ?');
-    return getReq.get(id) as unknown as AccessRequest;
-  }
-}
-
-export async function getAccessRequestStatus(
-  diagramId: string,
-  requesterUserId: string
-): Promise<AccessRequest | null> {
-  await ensureTablesExist();
-
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(
-      'SELECT * FROM access_requests WHERE diagram_id = $1 AND requester_user_id = $2 ORDER BY created_at DESC LIMIT 1',
-      [diagramId, requesterUserId]
-    );
-    return (res.rows[0] as AccessRequest) || null;
-  } else {
-    const db = getSqliteDb();
-    const stmt = db.prepare(
-      'SELECT * FROM access_requests WHERE diagram_id = ? AND requester_user_id = ? ORDER BY created_at DESC LIMIT 1'
-    );
-    const result = stmt.get(diagramId, requesterUserId);
-    return (result as unknown as AccessRequest) || null;
-  }
-}
-
-export async function getAccessRequestsForOwner(ownerUserId: string): Promise<AccessRequest[]> {
-  await ensureTablesExist();
-
-  const query = `
-    SELECT ar.*, u.email as requester_email, u.name as requester_name, d.name as diagram_name
-    FROM access_requests ar
-    JOIN diagrams d ON d.id = ar.diagram_id
-    JOIN users u ON u.id = ar.requester_user_id
-    WHERE d.user_id = $1 AND ar.status = 'Pending'
-    ORDER BY ar.created_at DESC
-  `;
-
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(query, [ownerUserId]);
-    return res.rows as AccessRequest[];
-  } else {
-    const db = getSqliteDb();
-    const sqliteQuery = query.replace('$1', '?');
-    const stmt = db.prepare(sqliteQuery);
-    return stmt.all(ownerUserId) as unknown as AccessRequest[];
-  }
-}
-
-export async function getUserAccessRequests(requesterUserId: string): Promise<AccessRequest[]> {
-  await ensureTablesExist();
-
-  const query = `
-    SELECT ar.*, d.name as diagram_name
-    FROM access_requests ar
-    JOIN diagrams d ON d.id = ar.diagram_id
-    WHERE ar.requester_user_id = $1
-    ORDER BY ar.created_at DESC
-  `;
-
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(query, [requesterUserId]);
-    return res.rows as AccessRequest[];
-  } else {
-    const db = getSqliteDb();
-    const sqliteQuery = query.replace('$1', '?');
-    const stmt = db.prepare(sqliteQuery);
-    return stmt.all(requesterUserId) as unknown as AccessRequest[];
-  }
-}
-
-export async function resolveAccessRequest(
-  requestId: string,
-  ownerUserId: string,
-  status: 'Approved' | 'Denied'
-): Promise<AccessRequest> {
-  await ensureTablesExist();
-
-  let reqRecord: (AccessRequest & { diagram_user_id?: string }) | null = null;
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(
-      `SELECT ar.*, d.user_id as diagram_user_id 
-       FROM access_requests ar 
-       JOIN diagrams d ON d.id = ar.diagram_id 
-       WHERE ar.id = $1`,
-      [requestId]
-    );
-    reqRecord = res.rows[0] || null;
-  } else {
-    const db = getSqliteDb();
-    const stmt = db.prepare(
-      `SELECT ar.*, d.user_id as diagram_user_id 
-       FROM access_requests ar 
-       JOIN diagrams d ON d.id = ar.diagram_id 
-       WHERE ar.id = ?`
-    );
-    reqRecord = (stmt.get(requestId) as any) || null;
-  }
-
-  if (!reqRecord) {
-    throw new Error('Access request not found.');
-  }
-
-  if (reqRecord.diagram_user_id && reqRecord.diagram_user_id !== ownerUserId) {
-    throw new Error('Unauthorized: You are not the owner of this architecture diagram.');
-  }
-
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const client = await pool.connect();
-    try {
-      await client.query('BEGIN');
-      await client.query(
-        `UPDATE access_requests
-         SET status = $1, updated_at = CURRENT_TIMESTAMP
-         WHERE id = $2`,
-        [status, requestId]
-      );
-
-      if (status === 'Approved') {
-        const collabId = uuidv4();
-        await client.query(
-          `INSERT INTO diagram_collaborators (id, diagram_id, user_id, access_level)
-           VALUES ($1, $2, $3, $4)
-           ON CONFLICT (diagram_id, user_id) 
-           DO UPDATE SET access_level = $4`,
-          [collabId, reqRecord.diagram_id, reqRecord.requester_user_id, reqRecord.requested_role]
-        );
-      }
-      await client.query('COMMIT');
-
-      await logUserEvent(
-        ownerUserId,
-        `ACCESS_REQUEST_${status.toUpperCase()}`,
-        null,
-        `Request ID: ${requestId}, Requester: ${reqRecord.requester_user_id}`
-      );
-
-      const updatedRes = await pool.query('SELECT * FROM access_requests WHERE id = $1', [requestId]);
-      return updatedRes.rows[0] as AccessRequest;
-    } catch (err) {
-      await client.query('ROLLBACK');
-      throw err;
-    } finally {
-      client.release();
-    }
-  } else {
-    return await runSqliteTransaction(async (db) => {
-      const updateStmt = db.prepare(
-        `UPDATE access_requests
-         SET status = ?, updated_at = (strftime('%Y-%m-%d %H:%M:%f', 'now'))
-         WHERE id = ?`
-      );
-      updateStmt.run(status, requestId);
-
-      if (status === 'Approved') {
-        const collabId = uuidv4();
-        const collabStmt = db.prepare(
-          `INSERT INTO diagram_collaborators (id, diagram_id, user_id, access_level)
-           VALUES (?, ?, ?, ?)
-           ON CONFLICT(diagram_id, user_id)
-           DO UPDATE SET access_level = excluded.access_level`
-        );
-        collabStmt.run(collabId, reqRecord.diagram_id, reqRecord.requester_user_id, reqRecord.requested_role);
-      }
-
-      await logUserEvent(
-        ownerUserId,
-        `ACCESS_REQUEST_${status.toUpperCase()}`,
-        null,
-        `Request ID: ${requestId}, Requester: ${reqRecord.requester_user_id}`
-      );
-
-      const getReq = db.prepare('SELECT * FROM access_requests WHERE id = ?');
-      return getReq.get(requestId) as unknown as AccessRequest;
-    });
-  }
-}
-
-// ==========================================
-// CONTACT US FORM FUNCTIONS
-// ==========================================
-
-export async function submitContactForm(
-  name: string,
-  email: string,
-  reason: string,
-  message: string,
-  userId?: string | null
-): Promise<ContactSubmission> {
-  await ensureTablesExist();
-
-  if (!name || !name.trim()) throw new Error('Name is required.');
-  if (!email || !email.trim()) throw new Error('Email is required.');
-  if (!reason || !reason.trim()) throw new Error('Reason for contact is required.');
-  if (!message || !message.trim()) throw new Error('Message is required.');
-
-  const id = uuidv4();
-  const trimmedName = name.trim();
-  const trimmedEmail = email.trim();
-  const trimmedReason = reason.trim();
-  const trimmedMessage = message.trim();
-
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(
-      `INSERT INTO contact_submissions (id, name, email, reason, message, user_id)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING *`,
-      [id, trimmedName, trimmedEmail, trimmedReason, trimmedMessage, userId || null]
-    );
-    if (userId) {
-      await logUserEvent(userId, 'CONTACT_FORM_SUBMITTED', null, `Reason: ${trimmedReason}`);
-    }
-    return res.rows[0] as ContactSubmission;
-  } else {
-    const db = getSqliteDb();
-    const stmt = db.prepare(
-      `INSERT INTO contact_submissions (id, name, email, reason, message, user_id)
-       VALUES (?, ?, ?, ?, ?, ?)`
-    );
-    stmt.run(id, trimmedName, trimmedEmail, trimmedReason, trimmedMessage, userId || null);
-    if (userId) {
-      await logUserEvent(userId, 'CONTACT_FORM_SUBMITTED', null, `Reason: ${trimmedReason}`);
-    }
-    const getStmt = db.prepare('SELECT * FROM contact_submissions WHERE id = ?');
-    return getStmt.get(id) as unknown as ContactSubmission;
-  }
-}
-
-// Helper: Update a diagram version's business and technical use cases
-export async function updateDiagramVersionUseCases(
-  versionId: string,
-  businessUsecase: string,
-  technicalUsecase: string
-): Promise<void> {
-  await ensureTablesExist();
-  if (isPostgres()) {
-    const pool = getPgPool();
-    await pool.query(
-      'UPDATE diagram_versions SET business_usecase = $1, technical_usecase = $2 WHERE id = $3',
-      [businessUsecase, technicalUsecase, versionId]
-    );
-  } else {
-    const db = getSqliteDb();
-    const stmt = db.prepare(
-      'UPDATE diagram_versions SET business_usecase = ?, technical_usecase = ? WHERE id = ?'
-    );
-    stmt.run(businessUsecase, technicalUsecase, versionId);
-  }
-}
-
-async function seedDiagram(name: string, xml: string, comment: string, prompt: string) {
-  const diagramId = uuidv4();
-  const versionId = uuidv4();
-
-  if (isPostgres()) {
-    const pool = getPgPool();
-    await pool.query('INSERT INTO diagrams (id, name) VALUES ($1, $2)', [diagramId, name]);
-    await pool.query(`
-      INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-    `, [versionId, diagramId, 1, xml, comment, 'AI', prompt]);
-  } else {
-    const db = getSqliteDb();
-    db.prepare('INSERT INTO diagrams (id, name) VALUES (?, ?)').run(diagramId, name);
-    db.prepare(`
-      INSERT INTO diagram_versions (id, diagram_id, version_number, xml_content, comment, created_by, prompt)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(versionId, diagramId, 1, xml, comment, 'AI', prompt);
-  }
-}
-
-// ==========================================
 // MULTI-TENANT WORKSPACE & AUTHORIZATION WATERFALL
 // ==========================================
 
@@ -2459,144 +2367,6 @@ export function isUserSuperAdmin(user?: User | null): boolean {
     return true;
   }
   return false;
-}
-
-export async function ensureUserPersonalWorkspace(userId: string, userEmail: string): Promise<Workspace> {
-  await ensureTablesExist();
-
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const checkRes = await pool.query(
-      `SELECT * FROM workspaces WHERE owner_id = $1 AND name = 'Personal Workspace' LIMIT 1`,
-      [userId]
-    );
-    if (checkRes.rows.length > 0) {
-      return checkRes.rows[0] as Workspace;
-    }
-
-    const wsId = `ws_${uuidv4().slice(0, 8)}`;
-    const wsRes = await pool.query(
-      `INSERT INTO workspaces (id, name, owner_id) VALUES ($1, $2, $3) RETURNING *`,
-      [wsId, 'Personal Workspace', userId]
-    );
-    const ws = wsRes.rows[0] as Workspace;
-
-    const memId = uuidv4();
-    await pool.query(
-      `INSERT INTO workspace_members (id, workspace_id, user_id, role)
-       VALUES ($1, $2, $3, $4)
-       ON CONFLICT (workspace_id, user_id) DO UPDATE SET role = $4`,
-      [memId, wsId, userId, 'Owner']
-    );
-
-    return ws;
-  } else {
-    const db = getSqliteDb();
-    const checkStmt = db.prepare(`SELECT * FROM workspaces WHERE owner_id = ? AND name = 'Personal Workspace' LIMIT 1`);
-    const existing = checkStmt.get(userId) as any;
-    if (existing) return existing as Workspace;
-
-    const wsId = `ws_${uuidv4().slice(0, 8)}`;
-    const insertWs = db.prepare(`INSERT INTO workspaces (id, name, owner_id) VALUES (?, ?, ?)`);
-    insertWs.run(wsId, 'Personal Workspace', userId);
-
-    const memId = uuidv4();
-    const insertMem = db.prepare(`INSERT INTO workspace_members (id, workspace_id, user_id, role) VALUES (?, ?, ?, ?)`);
-    insertMem.run(memId, wsId, userId, 'Owner');
-
-    const getWs = db.prepare(`SELECT * FROM workspaces WHERE id = ?`);
-    return getWs.get(wsId) as unknown as Workspace;
-  }
-}
-
-async function getWorkspaceUserRole(
-  workspaceId: string,
-  userId: string
-): Promise<'Owner' | 'Admin' | 'Editor' | 'Viewer' | null> {
-  await ensureTablesExist();
-
-  const user = await getUserById(userId);
-  if (isUserSuperAdmin(user)) {
-    return 'Owner';
-  }
-
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const memRes = await pool.query(
-      `SELECT role FROM workspace_members WHERE workspace_id = $1 AND user_id = $2`,
-      [workspaceId, userId]
-    );
-    if (memRes.rows.length > 0) {
-      return memRes.rows[0].role as 'Owner' | 'Admin' | 'Editor' | 'Viewer';
-    }
-
-    const wsRes = await pool.query(`SELECT owner_id FROM workspaces WHERE id = $1`, [workspaceId]);
-    if (wsRes.rows.length > 0 && wsRes.rows[0].owner_id === userId) {
-      return 'Owner';
-    }
-    return null;
-  } else {
-    const db = getSqliteDb();
-    const memStmt = db.prepare(`SELECT role FROM workspace_members WHERE workspace_id = ? AND user_id = ?`);
-    const mem = memStmt.get(workspaceId, userId) as any;
-    if (mem) return mem.role;
-
-    const wsStmt = db.prepare(`SELECT owner_id FROM workspaces WHERE id = ?`);
-    const ws = wsStmt.get(workspaceId) as any;
-    if (ws && ws.owner_id === userId) return 'Owner';
-    return null;
-  }
-}
-
-export async function createMagicLinkToken(email: string): Promise<string> {
-  await ensureTablesExist();
-  const token = uuidv4();
-  const id = uuidv4();
-  const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
-
-  if (isPostgres()) {
-    const pool = getPgPool();
-    await pool.query(
-      `INSERT INTO magic_link_tokens (id, email, token, expires_at) VALUES ($1, $2, $3, $4)`,
-      [id, email.toLowerCase().trim(), token, expiresAt]
-    );
-  } else {
-    const db = getSqliteDb();
-    const stmt = db.prepare(`INSERT INTO magic_link_tokens (id, email, token, expires_at) VALUES (?, ?, ?, ?)`);
-    stmt.run(id, email.toLowerCase().trim(), token, expiresAt.toISOString());
-  }
-
-  return token;
-}
-
-export async function verifyMagicLinkToken(token: string): Promise<string> {
-  await ensureTablesExist();
-  let email = '';
-
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(
-      `SELECT * FROM magic_link_tokens WHERE token = $1 AND expires_at > CURRENT_TIMESTAMP`,
-      [token]
-    );
-    if (res.rows.length === 0) {
-      throw new Error('Magic link is invalid or has expired. Please request a new link.');
-    }
-    email = res.rows[0].email;
-    await pool.query(`DELETE FROM magic_link_tokens WHERE token = $1`, [token]);
-  } else {
-    const db = getSqliteDb();
-    const stmt = db.prepare(`SELECT * FROM magic_link_tokens WHERE token = ? AND expires_at > (strftime('%Y-%m-%d %H:%M:%f', 'now'))`);
-    const row = stmt.get(token) as any;
-    if (!row) {
-      throw new Error('Magic link is invalid or has expired. Please request a new link.');
-    }
-    email = row.email;
-    const delStmt = db.prepare(`DELETE FROM magic_link_tokens WHERE token = ?`);
-    delStmt.run(token);
-  }
-
-  return email;
 }
 
 export async function getSuperAdminAllUsers(): Promise<User[]> {
@@ -2707,89 +2477,6 @@ export async function getAuditReportsForDiagram(diagramId: string): Promise<Audi
     } catch {}
     const stmt = db.prepare(`SELECT * FROM audit_reports WHERE diagram_id = ? ORDER BY version_number DESC, created_at DESC`);
     return stmt.all(diagramId) as unknown as AuditReport[];
-  }
-}
-
-export async function getVisitorCount(): Promise<number> {
-  await ensureTablesExist();
-  const INITIAL_SEED = 1500;
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(`SELECT value FROM site_stats WHERE key = 'visitor_count'`);
-    if (res.rows.length === 0) {
-      const insertRes = await pool.query(`
-        INSERT INTO site_stats (key, value, updated_at)
-        VALUES ('visitor_count', $1, CURRENT_TIMESTAMP)
-        ON CONFLICT (key) DO UPDATE SET value = site_stats.value
-        RETURNING value;
-      `, [INITIAL_SEED]);
-      return parseInt(insertRes.rows[0].value, 10);
-    }
-    return parseInt(res.rows[0].value, 10);
-  } else {
-    const db = getSqliteDb();
-    let row = db.prepare(`SELECT value FROM site_stats WHERE key = 'visitor_count'`).get() as { value: number } | undefined;
-    if (!row) {
-      db.exec(`
-        INSERT OR IGNORE INTO site_stats (key, value, updated_at)
-        VALUES ('visitor_count', ${INITIAL_SEED}, strftime('%Y-%m-%d %H:%M:%f', 'now'));
-      `);
-      row = db.prepare(`SELECT value FROM site_stats WHERE key = 'visitor_count'`).get() as { value: number } | undefined;
-    }
-    return row ? Number(row.value) : INITIAL_SEED;
-  }
-}
-
-export async function incrementVisitorCount(step: number = 1): Promise<number> {
-  await ensureTablesExist();
-  const INITIAL_SEED = 1500;
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(`
-      INSERT INTO site_stats (key, value, updated_at)
-      VALUES ('visitor_count', $1 + $2, CURRENT_TIMESTAMP)
-      ON CONFLICT (key)
-      DO UPDATE SET value = site_stats.value + $2, updated_at = CURRENT_TIMESTAMP
-      RETURNING value;
-    `, [INITIAL_SEED, step]);
-    return parseInt(res.rows[0].value, 10);
-  } else {
-    const db = getSqliteDb();
-    db.exec(`
-      INSERT OR IGNORE INTO site_stats (key, value, updated_at)
-      VALUES ('visitor_count', ${INITIAL_SEED}, strftime('%Y-%m-%d %H:%M:%f', 'now'));
-    `);
-    const updateStmt = db.prepare(`
-      UPDATE site_stats 
-      SET value = value + ?, updated_at = strftime('%Y-%m-%d %H:%M:%f', 'now') 
-      WHERE key = 'visitor_count'
-    `);
-    updateStmt.run(step);
-    const row = db.prepare(`SELECT value FROM site_stats WHERE key = 'visitor_count'`).get() as { value: number } | undefined;
-    return row ? Number(row.value) : (INITIAL_SEED + step);
-  }
-}
-
-export async function resetVisitorCount(value: number = 0): Promise<number> {
-  await ensureTablesExist();
-  if (isPostgres()) {
-    const pool = getPgPool();
-    const res = await pool.query(`
-      INSERT INTO site_stats (key, value, updated_at)
-      VALUES ('visitor_count', $1, CURRENT_TIMESTAMP)
-      ON CONFLICT (key)
-      DO UPDATE SET value = $1, updated_at = CURRENT_TIMESTAMP
-      RETURNING value;
-    `, [value]);
-    return parseInt(res.rows[0].value, 10);
-  } else {
-    const db = getSqliteDb();
-    db.exec(`
-      INSERT INTO site_stats (key, value, updated_at)
-      VALUES ('visitor_count', ${value}, strftime('%Y-%m-%d %H:%M:%f', 'now'))
-      ON CONFLICT(key) DO UPDATE SET value = ${value}, updated_at = strftime('%Y-%m-%d %H:%M:%f', 'now');
-    `);
-    return value;
   }
 }
 
@@ -4183,7 +3870,7 @@ export async function performTwoWayGoogleSheetSync(payload?: {
 }> {
   await ensureTablesExist();
   const actorName = payload?.actorName || 'Google Sheets Live Sync';
-  const actorEmail = payload?.actorEmail || 'sheets-bridge@enterprise-arch.io';
+  const actorEmail = payload?.actorEmail || 'architecture-governance@cloud-review.internal';
   const appliedChanges: ChangelogEntry[] = [];
 
   if (payload?.sheetEdits) {

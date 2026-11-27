@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
@@ -18,6 +18,8 @@ import {
   Copy,
   Check,
   Download,
+  Share2,
+  Link2,
   Filter,
   ArrowUpDown,
   FileCode,
@@ -62,6 +64,7 @@ import {
   getSelfHealedAgenticAiBlueprint,
 } from '@/lib/visionBlueprintStore';
 import DiagramViewer from '@/components/DiagramViewer';
+import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { UserProfileModal } from '@/components/UserProfileModal';
 import { AuthModal } from '@/components/AuthModal';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
@@ -106,7 +109,7 @@ interface CanvasDiagramItem {
 
 type StudioTabKey = 'all' | 'drafts' | 'studio' | 'prompt_to_diagram' | 'canonical' | 'vision';
 
-function ArchitectureLibraryContent() {
+function ArchitectureLibraryContent({ initialDiagramId }: { initialDiagramId?: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { theme } = useTheme();
@@ -150,6 +153,127 @@ function ArchitectureLibraryContent() {
   const [selectedVersionIndex, setSelectedVersionIndex] = useState<number>(0);
   const [isLoadingVersions, setIsLoadingVersions] = useState<boolean>(false);
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
+  const [copiedDiagramId, setCopiedDiagramId] = useState<string | null>(null);
+  const [copiedShareLinkId, setCopiedShareLinkId] = useState<string | null>(null);
+  const deepLinkHandledRef = useRef<string | null>(null);
+  const syncedBackfillIdsRef = useRef<Set<string>>(new Set());
+
+  const handleCopyDiagramId = (id: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(id).catch(() => {});
+    }
+    setCopiedDiagramId(id);
+    showToast(`📋 Copied Unique Diagram ID: ${id}`);
+    setTimeout(() => setCopiedDiagramId((prev) => (prev === id ? null : prev)), 2200);
+  };
+
+  // Backfills any localStorage-saved diagram (including full multi-version history) to Server + GCS
+  // under its exact canonical Unique ID so any colleague opening the shared URL receives 100% of versions.
+  const syncDiagramToServerForSharing = useCallback(async (diagram: CanvasDiagramItem): Promise<boolean> => {
+    if (!diagram?.id || typeof window === 'undefined') return false;
+    try {
+      let versionsPayload: Array<{
+        version_number: number;
+        xml: string;
+        comment?: string;
+        prompt?: string;
+        created_by?: string;
+        created_at?: string;
+      }> | undefined;
+
+      try {
+        const localRaw = localStorage.getItem(`promptcanvas_studio_${diagram.id}`);
+        if (localRaw) {
+          const parsedLocal = JSON.parse(localRaw);
+          if (Array.isArray(parsedLocal?.versions) && parsedLocal.versions.length > 0) {
+            const total = parsedLocal.versions.length;
+            versionsPayload = parsedLocal.versions
+              .map((v: any, idx: number) => ({
+                version_number: total - idx,
+                xml: String(v?.xml || diagram.xml_content || ''),
+                comment: `${v?.versionTag || `v1.${total - idx - 1}`} — ${
+                  v?.diffSummary || v?.actionSummary || v?.prompt || 'Saved Snapshot'
+                }`,
+                prompt: v?.prompt || diagram.latest_prompt || undefined,
+                created_by: v?.persona || v?.author || v?.sourceLabel || 'Saved Instance',
+                created_at: parsedLocal.updatedAt || diagram.updated_at || diagram.created_at,
+              }))
+              .filter((v: any) => v.xml && v.xml.includes('<mxCell'))
+              .sort((a: any, b: any) => a.version_number - b.version_number);
+          }
+        }
+      } catch {}
+
+      const effectiveXml =
+        diagram.xml_content ||
+        (versionsPayload && versionsPayload.length > 0 ? versionsPayload[versionsPayload.length - 1].xml : '');
+      if (!effectiveXml || !effectiveXml.includes('<mxCell')) {
+        return false;
+      }
+
+      try {
+        const checkRes = await fetch(`/api/diagrams/${encodeURIComponent(diagram.id)}`, { cache: 'no-store' });
+        if (checkRes.ok) {
+          const checkJson = await checkRes.json();
+          const serverVerCount = Array.isArray(checkJson?.versions) ? checkJson.versions.length : 0;
+          const localVerCount = versionsPayload?.length || 1;
+          if (serverVerCount >= localVerCount) {
+            return true;
+          }
+        }
+      } catch {}
+
+      const res = await fetch('/api/diagrams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: diagram.id,
+          name: diagram.name || 'Saved Architecture',
+          xml: effectiveXml,
+          comment: diagram.latest_prompt || 'Synced saved architecture for colleague sharing',
+          prompt: diagram.latest_prompt || diagram.name,
+          architectureType: diagram.architecture_type || 'gcp_enterprise_reference',
+          createdStudio: diagram.created_studio || 'dashboard',
+          isPrivate: Boolean(diagram.is_private),
+          versions: versionsPayload && versionsPayload.length > 0 ? versionsPayload : undefined,
+        }),
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  const handleShareColleagueLink = useCallback(
+    async (diagram: CanvasDiagramItem, explicitVersionNum?: number, e?: React.MouseEvent) => {
+      e?.stopPropagation();
+      if (typeof window === 'undefined' || !diagram?.id) return;
+      const verNum = explicitVersionNum || diagram.max_version || diagram.version_count || 1;
+      const shareUrl = `${window.location.origin}/library?id=${encodeURIComponent(diagram.id)}&v=${verNum}`;
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        navigator.clipboard.writeText(shareUrl).catch(() => {});
+      }
+      setCopiedShareLinkId(diagram.id);
+      showToast(`🔗 Shareable colleague link copied: /library?id=${diagram.id}&v=${verNum}`);
+      setTimeout(() => setCopiedShareLinkId((prev) => (prev === diagram.id ? null : prev)), 2500);
+      await syncDiagramToServerForSharing(diagram);
+    },
+    [syncDiagramToServerForSharing]
+  );
+
+  const handleClosePreviewModal = useCallback(() => {
+    deepLinkHandledRef.current = '__closed__';
+    setActiveModalCanvas(null);
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      params.delete('id');
+      params.delete('v');
+      const qs = params.toString();
+      const nextUrl = qs ? `/library?${qs}` : '/library';
+      window.history.replaceState(null, '', nextUrl);
+    }
+  }, []);
   const [cloudViewerTarget, setCloudViewerTarget] = useState<{
     isOpen: boolean;
     targetApp: 'slides' | 'docs' | 'pdf';
@@ -219,7 +343,7 @@ function ArchitectureLibraryContent() {
     }
   }, [searchParams]);
 
-  // Persist filter/search/sort state into URL query string without navigation reload (UX-09)
+  // Persist active diagram Unique ID (?id=<id>&v=<ver>) AND filter/search/sort state into browser URL bar
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
@@ -234,12 +358,34 @@ function ArchitectureLibraryContent() {
     if (sortBy !== 'recent') params.set('sort', sortBy);
     else params.delete('sort');
 
+    if (activeModalCanvas?.id) {
+      const currentVerNum = modalVersions[selectedVersionIndex]?.version_number || 1;
+      params.set('id', activeModalCanvas.id);
+      params.set('v', String(currentVerNum));
+    } else if (deepLinkHandledRef.current === '__closed__') {
+      params.delete('id');
+      params.delete('v');
+    } else if (initialDiagramId && !params.get('id')) {
+      params.set('id', initialDiagramId);
+    }
+
+    const basePath = '/library';
     const qs = params.toString();
-    const nextUrl = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
+    const nextUrl = qs ? `${basePath}?${qs}` : basePath;
     if (nextUrl !== `${window.location.pathname}${window.location.search}`) {
       window.history.replaceState(null, '', nextUrl);
     }
-  }, [activeStudioTab, rightFilterTag, searchQuery, selectedPhase, sortBy]);
+  }, [
+    activeStudioTab,
+    rightFilterTag,
+    searchQuery,
+    selectedPhase,
+    sortBy,
+    activeModalCanvas,
+    modalVersions,
+    selectedVersionIndex,
+    initialDiagramId,
+  ]);
 
   // Auth Fetch
   const checkAuth = async () => {
@@ -256,69 +402,32 @@ function ArchitectureLibraryContent() {
     }
   };
 
-  // Build Vision Saved Library items (Google Multiagent AI System 87, VIS-1787, VIS-3093, etc.)
+  // Build ONLY user-saved custom Vision items (zero hardcoded sample/template padding in Saved Architectures)
   const buildVisionSavedLibraryItems = useCallback((): CanvasDiagramItem[] => {
-    const deletedSet = new Set(getDeletedVisionBlueprintIds().map(id => id.toUpperCase()));
+    const deletedSet = new Set(getDeletedVisionBlueprintIds().map((id) => id.toUpperCase()));
+    const builtInPresetIds = new Set([
+      'GCP-GE-BANKING-2026',
+      'GCP-MULTIAGENT-01',
+      'VIS-1787',
+      'VIS-3093',
+      'VIS-5965',
+      'VIS-9745',
+      'VIS-AGENTIC-01',
+    ]);
     const items: CanvasDiagramItem[] = [];
     const seen = new Set<string>();
 
-    const BASELINE_REF_TIMESTAMP = '2026-08-15T12:00:00.000Z';
-
-    // 0. 2026 Upgraded GCP & Gemini Enterprise Multi-Agent Banking Architecture (L2/L3 Uncluttered Blueprint)
-    if (!deletedSet.has('GCP-GE-BANKING-2026')) {
-      seen.add('GCP-GE-BANKING-2026');
-      items.push({
-        id: 'GCP-GE-BANKING-2026',
-        name: '2026 Upgraded GCP & Gemini Enterprise Multi-Agent Banking Architecture',
-        architecture_type: 'vision_gcp_multiagent',
-        created_studio: 'vision',
-        created_at: '2026-09-30T12:00:00.000Z',
-        updated_at: '2026-09-30T12:00:00.000Z',
-        version_count: 1,
-        latest_prompt: 'Upgraded L2/L3 Multi-Agent Banking Architecture using Gemini Enterprise, Vertex AI Agent Engine, Google ADK, LangGraph, A2A & MCP Protocols, Gemini 3.1 Pro / 2.5 Flash, vLLM on GKE, Model Armor & SDP, Vector Search 2.0 + Valkey, and OTel GenAI FinOps.',
-        xml_content: generateUpgradedGcpGeBankingArchitectureXml(),
-      });
-    }
-
-    // 1. Official Precompiled Sample Blueprints (e.g. GCP-MULTIAGENT-01: Google Multiagent AI System)
-    for (const sample of PRECOMPILED_SAMPLE_BLUEPRINTS) {
-      if (deletedSet.has(sample.id.toUpperCase())) continue;
-      seen.add(sample.id.toUpperCase());
-      items.push({
-        id: sample.id,
-        name: `${sample.title} (87 Objects)`,
-        architecture_type: 'vision_gcp_multiagent',
-        created_studio: 'vision',
-        created_at: BASELINE_REF_TIMESTAMP,
-        updated_at: BASELINE_REF_TIMESTAMP,
-        version_count: 1,
-        latest_prompt: sample.desc,
-        xml_content: sample.getPrecompiledXml(),
-      });
-    }
-
-    // 2. Custom & Certified Google Cloud Vision Blueprints (VIS-1787, etc.)
-    seen.add('VIS-3093');
-    seen.add('VIS-5965');
-    seen.add('VIS-9745');
-    seen.add('VIS-AGENTIC-01');
-    const presetVisionItems = [
-      getSelfHealedGeminiEnterpriseBlueprint('VIS-1787'),
-      ...getCustomVisionBlueprints(),
-    ];
-
-    for (const v of presetVisionItems) {
-      const upperId = v.id.toUpperCase();
-      if (deletedSet.has(upperId) || seen.has(upperId)) continue;
+    for (const v of getCustomVisionBlueprints()) {
+      const upperId = String(v.id || '').trim().toUpperCase();
+      if (!upperId || builtInPresetIds.has(upperId) || deletedSet.has(upperId) || seen.has(upperId)) {
+        continue;
+      }
       seen.add(upperId);
-      const isBuiltInPreset = ['VIS-1787', 'VIS-3093'].includes(upperId);
-      const itemTs = !isBuiltInPreset && v.timestamp ? new Date(v.timestamp).toISOString() : BASELINE_REF_TIMESTAMP;
+      const itemTs = v.timestamp ? new Date(v.timestamp).toISOString() : new Date().toISOString();
       items.push({
         id: v.id,
-        name: v.title.startsWith(v.id) ? v.title : `${v.id} ${v.title}`,
-        architecture_type: v.id.startsWith('VIS-1787') || v.id.startsWith('VIS-3093')
-          ? 'vision_gemini_enterprise'
-          : 'vision_decompiled',
+        name: v.title || `Vision Diagram (${v.id})`,
+        architecture_type: 'vision_decompiled',
         created_studio: 'vision',
         created_at: itemTs,
         updated_at: itemTs,
@@ -434,62 +543,57 @@ function ArchitectureLibraryContent() {
 
       const visionSavedItems = buildVisionSavedLibraryItems();
 
-      const canonicalFallbackItems: CanvasDiagramItem[] = CANONICAL_TEMPLATES.map((tpl) => ({
-        id: `bp_${tpl.id}`,
-        name: `#${tpl.id} • ${tpl.name}`,
-        architecture_type: `canonical_${tpl.id}`,
-        created_studio: 'canonical',
-        created_at: '2026-08-10T12:00:00.000Z',
-        updated_at: '2026-08-10T12:00:00.000Z',
-        version_count: 1,
-        latest_prompt: tpl.primaryPurpose || tpl.examples,
-        xml_content: tpl.generateXml('biopharma', 'light'),
-      }));
-
-      const normalizeDiagramTitle = (s?: string) =>
-        (s || '').replace(/\s*\(v\d+\.\d+(?:\.\d+)?\)\s*$/i, '').toLowerCase().trim();
-      const draftIdSet = new Set(autoDraftItems.map((d) => d.id.toUpperCase()));
-      const draftNameSet = new Set(autoDraftItems.map((d) => normalizeDiagramTitle(d.name)));
       const isPurgedLegacyItem = (d: { id?: string; name?: string; latest_prompt?: string }) =>
         /novacura|omnicommerce|voltgrid|nexusfin|^add\s+\d+\s+more\s+components|clinical\s+ai\s+-|vis-9745|vis-agentic-01|^custom\s+diagram\s+#|^unified\s+cloud\s+architecture\s+#/i.test(
           `${d.id || ''} ${d.name || ''} ${d.latest_prompt || ''}`
         );
-      const filteredDbList = dbList.filter((d) => {
-        if (draftIdSet.has(d.id.toUpperCase())) return false;
-        if (draftNameSet.has(normalizeDiagramTitle(d.name))) return false;
-        return !isPurgedLegacyItem(d);
-      });
-      const existingIds = new Set([...filteredDbList.map(d => d.id.toUpperCase()), ...Array.from(draftIdSet)]);
-      const existingNames = new Set([
-        ...filteredDbList.map(d => normalizeDiagramTitle(d.name)),
-        ...Array.from(draftNameSet),
-      ]);
-      const uniqueLocalSaved = localSavedItems.filter(
-        l =>
-          !existingIds.has(l.id.toUpperCase()) &&
-          !existingNames.has(normalizeDiagramTitle(l.name)) &&
-          !isPurgedLegacyItem(l)
-      );
 
-      const merged = [
-        ...autoDraftItems.filter(d => !isPurgedLegacyItem(d)),
-        ...uniqueLocalSaved,
-        ...filteredDbList,
-        ...visionSavedItems.filter(v => !existingIds.has(v.id.toUpperCase()) && !isPurgedLegacyItem(v)),
-      ];
-      const deletedVisionOrDraftSet = new Set(
-        [...getDeletedVisionBlueprintIds(), ...(typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('promptcanvas_deleted_draft_ids') || '[]') : [])].map((id: string) =>
-          String(id || '').toUpperCase()
-        )
-      );
-      const mergedIds = new Set(merged.map(d => d.id.toUpperCase()));
-      for (const c of canonicalFallbackItems) {
-        if (!mergedIds.has(c.id.toUpperCase()) && !deletedVisionOrDraftSet.has(c.id.toUpperCase())) {
-          merged.push(c);
-          mergedIds.add(c.id.toUpperCase());
+      // Strict 1-Diagram = 1-Canonical-ID merge (DB is authoritative; localSavedItems enrich version_count & auto-backfill to GCS!)
+      const byCanonicalId = new Map<string, CanvasDiagramItem>();
+      const dbVersionCountById = new Map<string, number>();
+      for (const d of dbList) {
+        const key = String(d.id || '').trim();
+        if (!key || isPurgedLegacyItem(d)) continue;
+        const upper = key.toUpperCase();
+        const dbVerCount = Number(d.version_count || d.versions?.length || 1);
+        dbVersionCountById.set(upper, dbVerCount);
+        byCanonicalId.set(upper, {
+          ...d,
+          version_count: dbVerCount,
+          max_version: Number(d.max_version || dbVerCount || 1),
+        });
+      }
+      const itemsNeedingCloudBackfill: CanvasDiagramItem[] = [];
+      for (const l of [...localSavedItems, ...autoDraftItems, ...visionSavedItems]) {
+        const key = String(l.id || '').trim();
+        if (!key || isPurgedLegacyItem(l)) continue;
+        const upper = key.toUpperCase();
+        const existing = byCanonicalId.get(upper);
+        const localVerCount = Number(l.version_count || 1);
+        if (existing) {
+          existing.version_count = Math.max(Number(existing.version_count || 1), localVerCount);
+          if (localVerCount > (dbVersionCountById.get(upper) || 0) && !syncedBackfillIdsRef.current.has(upper)) {
+            syncedBackfillIdsRef.current.add(upper);
+            itemsNeedingCloudBackfill.push(l);
+          }
+        } else {
+          byCanonicalId.set(upper, l);
+          if (!syncedBackfillIdsRef.current.has(upper)) {
+            syncedBackfillIdsRef.current.add(upper);
+            itemsNeedingCloudBackfill.push(l);
+          }
         }
       }
+
+      if (itemsNeedingCloudBackfill.length > 0) {
+        void Promise.all(itemsNeedingCloudBackfill.map((item) => syncDiagramToServerForSharing(item)));
+      }
+
+      const merged = Array.from(byCanonicalId.values());
       setDiagrams(merged);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('promptcanvas_saved_updated'));
+      }
     } catch (err) {
       console.error('Error fetching library canvases:', err);
       setDiagrams([
@@ -549,6 +653,7 @@ function ArchitectureLibraryContent() {
       }
       setConfirmDeleteId(null);
       showToast(`🗑️ Deleted "${diagram.name}"`);
+      if (typeof window !== 'undefined') window.dispatchEvent(new Event('promptcanvas_saved_updated'));
     } catch (err) {
       console.error('Failed to delete diagram:', err);
       showToast(err instanceof Error ? err.message : 'Failed to delete diagram');
@@ -623,6 +728,7 @@ function ArchitectureLibraryContent() {
       setShowBatchDeleteModal(false);
       setIsSelectMode(false);
       showToast(`🗑️ Successfully deleted ${count} architecture diagram(s)!`);
+      if (typeof window !== 'undefined') window.dispatchEvent(new Event('promptcanvas_saved_updated'));
       
       // Re-fetch to ensure 100% database synchronicity
       await fetchAllCanvases();
@@ -669,129 +775,274 @@ function ArchitectureLibraryContent() {
     }
   };
 
-  // Open Preview Modal (with automatic self-healing of any cached 1-box stubs)
-  const handleOpenPreviewModal = async (diagram: CanvasDiagramItem) => {
-    const healedDiagramMain = ({ xml: diagram.xml_content, healed: false, canonicalTitle: undefined });
-    const resolvedDiagram: CanvasDiagramItem = {
-      ...diagram,
-      name: healedDiagramMain.canonicalTitle || diagram.name,
-      xml_content: healedDiagramMain.xml || diagram.xml_content,
-    };
-    setActiveModalCanvas(resolvedDiagram);
-    setIsLoadingVersions(true);
-    try {
-      // 0. Check auto-saved drafts store first (includes DRAFT-NASA-MULTIVERSE-V1-0-1)
-      const matchedAutoDraft = ([] as any[]).find(
-        (d) => d.id.toUpperCase() === resolvedDiagram.id.toUpperCase()
-      );
-      if (matchedAutoDraft && Array.isArray(matchedAutoDraft.versions) && matchedAutoDraft.versions.length > 0) {
-        const total = matchedAutoDraft.versions.length;
-        const mappedDraftVersions: DiagramVersionItem[] = matchedAutoDraft.versions.map((v: any, idx: number) => {
-          const hv = ({ xml: v.xml, healed: false, canonicalTitle: undefined });
-          return {
-            id: v.id || `ver_${matchedAutoDraft.id}_${total - idx}`,
-            diagram_id: resolvedDiagram.id,
-            version_number: total - idx,
-            xml_content: idx === 0 ? matchedAutoDraft.xml : hv.xml || v.xml || matchedAutoDraft.xml,
-            comment: `${v.versionTag || `v1.${total - idx - 1}`} — ${v.diffSummary || v.actionSummary || v.prompt || 'Session Snapshot'}`,
-            created_by: v.persona || v.author || v.sourceLabel || 'Auto-Saved Draft',
-            created_at: matchedAutoDraft.updatedAt || resolvedDiagram.created_at,
-            prompt: v.prompt || matchedAutoDraft.prompt,
-            architecture_type: resolvedDiagram.architecture_type,
-          };
-        });
-        setModalVersions(mappedDraftVersions);
-        setSelectedVersionIndex(0);
-        return;
-      }
+  // Open Preview Modal (with URL sync, version-pin selection, and automatic cloud backfill of local-only projects)
+  const handleOpenPreviewModal = useCallback(
+    async (diagram: CanvasDiagramItem, preferredVersionNumber?: number | null) => {
+      const healedDiagramMain = ({ xml: diagram.xml_content, healed: false, canonicalTitle: undefined });
+      const resolvedDiagram: CanvasDiagramItem = {
+        ...diagram,
+        name: healedDiagramMain.canonicalTitle || diagram.name,
+        xml_content: healedDiagramMain.xml || diagram.xml_content,
+      };
+      deepLinkHandledRef.current = resolvedDiagram.id;
+      setActiveModalCanvas(resolvedDiagram);
+      setIsLoadingVersions(true);
 
-      // 1. Check localStorage studio/dashboard project payload for rich multi-version history
-      if (typeof window !== 'undefined') {
-        try {
-          const localRaw = localStorage.getItem(`promptcanvas_studio_${resolvedDiagram.id}`);
-          if (localRaw) {
-            const parsedLocal = JSON.parse(localRaw);
-            if (Array.isArray(parsedLocal?.versions) && parsedLocal.versions.length > 0) {
-              const total = parsedLocal.versions.length;
-              const mappedLocalVersions: DiagramVersionItem[] = parsedLocal.versions.map((v: any, idx: number) => {
-                const hv = ({ xml: v.xml || resolvedDiagram.xml_content, healed: false, canonicalTitle: undefined });
-                return {
+      const pickVersionIdx = (list: DiagramVersionItem[]) => {
+        if (preferredVersionNumber && Number.isFinite(Number(preferredVersionNumber))) {
+          const found = list.findIndex((v) => Number(v.version_number) === Number(preferredVersionNumber));
+          if (found >= 0) return found;
+        }
+        return 0;
+      };
+
+      try {
+        // 0. Check auto-saved drafts store first
+        const matchedAutoDraft = ([] as any[]).find(
+          (d) => d.id.toUpperCase() === resolvedDiagram.id.toUpperCase()
+        );
+        if (matchedAutoDraft && Array.isArray(matchedAutoDraft.versions) && matchedAutoDraft.versions.length > 0) {
+          const total = matchedAutoDraft.versions.length;
+          const mappedDraftVersions: DiagramVersionItem[] = matchedAutoDraft.versions.map((v: any, idx: number) => {
+            const hv = ({ xml: v.xml, healed: false, canonicalTitle: undefined });
+            return {
+              id: v.id || `ver_${matchedAutoDraft.id}_${total - idx}`,
+              diagram_id: resolvedDiagram.id,
+              version_number: total - idx,
+              xml_content: idx === 0 ? matchedAutoDraft.xml : hv.xml || v.xml || matchedAutoDraft.xml,
+              comment: `${v.versionTag || `v1.${total - idx - 1}`} — ${v.diffSummary || v.actionSummary || v.prompt || 'Session Snapshot'}`,
+              created_by: v.persona || v.author || v.sourceLabel || 'Auto-Saved Draft',
+              created_at: matchedAutoDraft.updatedAt || resolvedDiagram.created_at,
+              prompt: v.prompt || matchedAutoDraft.prompt,
+              architecture_type: resolvedDiagram.architecture_type,
+            };
+          });
+          setModalVersions(mappedDraftVersions);
+          setSelectedVersionIndex(pickVersionIdx(mappedDraftVersions));
+          return;
+        }
+
+        // Check if localStorage has a richer multi-version history than server (and backfill if needed)
+        let localMappedVersions: DiagramVersionItem[] | null = null;
+        if (typeof window !== 'undefined') {
+          try {
+            const localRaw = localStorage.getItem(`promptcanvas_studio_${resolvedDiagram.id}`);
+            if (localRaw) {
+              const parsedLocal = JSON.parse(localRaw);
+              if (Array.isArray(parsedLocal?.versions) && parsedLocal.versions.length > 0) {
+                const total = parsedLocal.versions.length;
+                localMappedVersions = parsedLocal.versions.map((v: any, idx: number) => ({
                   id: v.id || `ver_${resolvedDiagram.id}_${total - idx}`,
                   diagram_id: resolvedDiagram.id,
                   version_number: total - idx,
-                  xml_content: hv.xml || v.xml || resolvedDiagram.xml_content || '',
+                  xml_content: v.xml || resolvedDiagram.xml_content || '',
                   comment: `${v.versionTag || `v1.${total - idx - 1}`} — ${v.diffSummary || v.actionSummary || v.prompt || 'Session Snapshot'}`,
-                  created_by: v.persona || v.author || v.sourceLabel || 'Session Copy',
+                  created_by: v.persona || v.author || v.sourceLabel || 'Saved Instance',
                   created_at: parsedLocal.updatedAt || resolvedDiagram.created_at,
                   prompt: v.prompt || resolvedDiagram.latest_prompt,
                   architecture_type: resolvedDiagram.architecture_type,
-                };
-              });
-              setModalVersions(mappedLocalVersions);
-              setSelectedVersionIndex(0);
-              return;
+                }));
+              }
             }
+          } catch {}
+        }
+
+        // 1. Authoritative Database/GCS version history first (keyed by exact unique diagram ID)
+        const res = await fetch(`/api/diagrams/${encodeURIComponent(resolvedDiagram.id)}`, { cache: 'no-store' });
+        if (res.ok) {
+          const fullData = await res.json();
+          const vers: DiagramVersionItem[] = fullData.versions || [];
+          if (localMappedVersions && localMappedVersions.length > vers.length) {
+            setModalVersions(localMappedVersions);
+            setSelectedVersionIndex(pickVersionIdx(localMappedVersions));
+            void syncDiagramToServerForSharing(resolvedDiagram);
+            return;
+          }
+          if (vers.length > 0) {
+            const sorted = [...vers]
+              .sort((a, b) => b.version_number - a.version_number)
+              .map((v) => ({
+                ...v,
+                xml_content: v.xml_content,
+              }));
+            setModalVersions(sorted);
+            setSelectedVersionIndex(pickVersionIdx(sorted));
+            return;
+          }
+        }
+
+        // 2. Fallback to localStorage studio payload for local projects & immediately backfill to Server/GCS
+        if (localMappedVersions && localMappedVersions.length > 0) {
+          setModalVersions(localMappedVersions);
+          setSelectedVersionIndex(pickVersionIdx(localMappedVersions));
+          void syncDiagramToServerForSharing(resolvedDiagram);
+          return;
+        }
+
+        const fallbackVer: DiagramVersionItem = {
+          id: `ver_${resolvedDiagram.id}_1`,
+          diagram_id: resolvedDiagram.id,
+          version_number: 1,
+          xml_content:
+            resolvedDiagram.xml_content ||
+            getDefaultXmlForArchitecture(resolvedDiagram.architecture_type || 'conceptual_diagram') ||
+            '',
+          comment: 'Initial Master Reference Blueprint',
+          created_by: 'system',
+          created_at: resolvedDiagram.created_at,
+          prompt: resolvedDiagram.latest_prompt,
+          architecture_type: resolvedDiagram.architecture_type,
+        };
+        setModalVersions([fallbackVer]);
+        setSelectedVersionIndex(0);
+        void syncDiagramToServerForSharing(resolvedDiagram);
+      } catch (err) {
+        console.error('Failed to load version details:', err);
+        const fallbackVer: DiagramVersionItem = {
+          id: `ver_${resolvedDiagram.id}_1`,
+          diagram_id: resolvedDiagram.id,
+          version_number: 1,
+          xml_content:
+            resolvedDiagram.xml_content ||
+            getDefaultXmlForArchitecture(resolvedDiagram.architecture_type || 'conceptual_diagram') ||
+            '',
+          comment: 'Initial Master Reference Blueprint',
+          created_by: 'system',
+          created_at: resolvedDiagram.created_at,
+          prompt: resolvedDiagram.latest_prompt,
+          architecture_type: resolvedDiagram.architecture_type,
+        };
+        setModalVersions([fallbackVer]);
+        setSelectedVersionIndex(0);
+      } finally {
+        setIsLoadingVersions(false);
+      }
+    },
+    [syncDiagramToServerForSharing]
+  );
+
+  // Direct Colleague Deep-Link Loader: opens /library?id=<diagramId>&v=<ver> or /library/<diagramId>
+  // even when opened by a colleague in a fresh browser with zero localStorage or cookies!
+  const openSharedDiagramById = useCallback(
+    async (rawId: string, preferredVersion?: number | null) => {
+      const targetId = String(rawId || '').trim();
+      if (!targetId) return;
+      const existingLocal = diagrams.find((d) => d.id.toUpperCase() === targetId.toUpperCase());
+      if (existingLocal) {
+        await handleOpenPreviewModal(existingLocal, preferredVersion);
+        return;
+      }
+      try {
+        const res = await fetch(`/api/diagrams/${encodeURIComponent(targetId)}`, { cache: 'no-store' });
+        if (res.ok) {
+          const fullData = await res.json();
+          const vers: DiagramVersionItem[] = Array.isArray(fullData.versions)
+            ? [...fullData.versions].sort((a, b) => b.version_number - a.version_number)
+            : [];
+          const sharedItem: CanvasDiagramItem = {
+            id: fullData.id || targetId,
+            name: fullData.name || `Shared Architecture (${targetId.slice(0, 8)})`,
+            architecture_type: fullData.architecture_type || 'gcp_enterprise_reference',
+            created_studio: fullData.created_studio || 'dashboard',
+            is_private: fullData.is_private ?? false,
+            created_at: fullData.created_at || new Date().toISOString(),
+            updated_at: fullData.updated_at || new Date().toISOString(),
+            versions: vers,
+            version_count: vers.length || 1,
+            max_version: vers[0]?.version_number || vers.length || 1,
+            latest_prompt: vers[0]?.prompt || fullData.latest_prompt || fullData.prompt || '',
+            xml_content: fullData.xml_content || vers[0]?.xml_content || '',
+          };
+          setDiagrams((prev) =>
+            prev.some((p) => p.id.toUpperCase() === sharedItem.id.toUpperCase())
+              ? prev
+              : [sharedItem, ...prev]
+          );
+          deepLinkHandledRef.current = sharedItem.id;
+          setActiveModalCanvas(sharedItem);
+          setModalVersions(
+            vers.length > 0
+              ? vers
+              : [
+                  {
+                    id: `ver_${sharedItem.id}_1`,
+                    diagram_id: sharedItem.id,
+                    version_number: 1,
+                    xml_content: sharedItem.xml_content || '',
+                    comment: 'Shared Architecture Snapshot',
+                    created_by: 'Shared Link',
+                    created_at: sharedItem.created_at,
+                    prompt: sharedItem.latest_prompt,
+                    architecture_type: sharedItem.architecture_type,
+                  },
+                ]
+          );
+          const targetIdx =
+            preferredVersion && vers.length > 0
+              ? vers.findIndex((v) => Number(v.version_number) === Number(preferredVersion))
+              : 0;
+          setSelectedVersionIndex(targetIdx >= 0 ? targetIdx : 0);
+          setIsLoadingVersions(false);
+          return;
+        }
+      } catch {}
+
+      // Fallback if local studio key exists directly in author's browser before list finishes
+      if (typeof window !== 'undefined') {
+        try {
+          const localStudioRaw = localStorage.getItem(`promptcanvas_studio_${targetId}`);
+          if (localStudioRaw) {
+            const parsed = JSON.parse(localStudioRaw);
+            const fallbackLocalItem: CanvasDiagramItem = {
+              id: targetId,
+              name: parsed.name || parsed.projectTitle || targetId,
+              architecture_type: 'gcp_enterprise_reference',
+              created_studio: 'dashboard',
+              created_at: parsed.createdAt || new Date().toISOString(),
+              updated_at: parsed.updatedAt || new Date().toISOString(),
+              version_count: Array.isArray(parsed.versions) ? parsed.versions.length : 1,
+              latest_prompt: parsed.description || '',
+              xml_content: parsed.xml || '',
+            };
+            await handleOpenPreviewModal(fallbackLocalItem, preferredVersion);
+            return;
           }
         } catch {}
       }
+      showToast(`⚠️ Shared diagram "${targetId}" could not be found on server.`);
+    },
+    [diagrams, handleOpenPreviewModal]
+  );
 
-      const res = await fetch(`/api/diagrams/${resolvedDiagram.id}`);
-      if (res.ok) {
-        const fullData = await res.json();
-        const vers: DiagramVersionItem[] = fullData.versions || [];
-        if (vers.length > 0) {
-          const sorted = [...vers]
-            .sort((a, b) => b.version_number - a.version_number)
-            .map((v) => {
-              const hv = ({ xml: v.xml_content, healed: false, canonicalTitle: undefined });
-              return {
-                ...v,
-                xml_content: hv.xml || v.xml_content,
-              };
-            });
-          setModalVersions(sorted);
-          setSelectedVersionIndex(0);
-          return;
-        }
+  useEffect(() => {
+    if (isLoading) return;
+    const urlId = (initialDiagramId || searchParams.get('id') || '').trim();
+    if (!urlId) return;
+    if (deepLinkHandledRef.current === '__closed__') return;
+    if (activeModalCanvas?.id.toUpperCase() === urlId.toUpperCase()) return;
+    if (deepLinkHandledRef.current?.toUpperCase() === urlId.toUpperCase()) return;
+    const rawV = searchParams.get('v');
+    const parsedV = rawV && Number.isFinite(Number(rawV)) ? Number(rawV) : null;
+    void openSharedDiagramById(urlId, parsedV);
+  }, [isLoading, initialDiagramId, searchParams, activeModalCanvas, openSharedDiagramById]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onPopState = () => {
+      const p = new URLSearchParams(window.location.search);
+      const nextId = p.get('id')?.trim();
+      const nextV = p.get('v');
+      if (!nextId) {
+        deepLinkHandledRef.current = '__closed__';
+        setActiveModalCanvas(null);
+      } else {
+        deepLinkHandledRef.current = null;
+        void openSharedDiagramById(nextId, nextV ? Number(nextV) : null);
       }
-      const fallbackVer: DiagramVersionItem = {
-        id: `ver_${resolvedDiagram.id}_1`,
-        diagram_id: resolvedDiagram.id,
-        version_number: 1,
-        xml_content:
-          resolvedDiagram.xml_content ||
-          getDefaultXmlForArchitecture(resolvedDiagram.architecture_type || 'conceptual_diagram') ||
-          '',
-        comment: 'Initial Master Reference Blueprint',
-        created_by: 'system',
-        created_at: resolvedDiagram.created_at,
-        prompt: resolvedDiagram.latest_prompt,
-        architecture_type: resolvedDiagram.architecture_type
-      };
-      setModalVersions([fallbackVer]);
-      setSelectedVersionIndex(0);
-    } catch (err) {
-      console.error('Failed to load version details:', err);
-      const fallbackVer: DiagramVersionItem = {
-        id: `ver_${resolvedDiagram.id}_1`,
-        diagram_id: resolvedDiagram.id,
-        version_number: 1,
-        xml_content:
-          resolvedDiagram.xml_content ||
-          getDefaultXmlForArchitecture(resolvedDiagram.architecture_type || 'conceptual_diagram') ||
-          '',
-        comment: 'Initial Master Reference Blueprint',
-        created_by: 'system',
-        created_at: resolvedDiagram.created_at,
-        prompt: resolvedDiagram.latest_prompt,
-        architecture_type: resolvedDiagram.architecture_type
-      };
-      setModalVersions([fallbackVer]);
-      setSelectedVersionIndex(0);
-    } finally {
-      setIsLoadingVersions(false);
-    }
-  };
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, [openSharedDiagramById]);
 
 
   const handleCopyXml = (xml: string) => {
@@ -827,11 +1078,14 @@ function ArchitectureLibraryContent() {
     if (raw === 'prompt_to_diagram' || raw === 'prompt-to-diagram' || (d.architecture_type && d.architecture_type.includes('nlp_blueprint'))) {
       return 'prompt_to_diagram';
     }
-    if (raw === 'studio' || raw === 'dashboard' || raw === 'studio1' || d.id.startsWith('proj_')) {
+    if (
+      raw === 'studio' ||
+      raw === 'dashboard' ||
+      raw === 'studio1' ||
+      d.id.startsWith('proj_') ||
+      (d.architecture_type && (d.architecture_type.startsWith('arch_tpl_') || d.architecture_type.startsWith('canonical_')))
+    ) {
       return 'studio';
-    }
-    if (d.id.startsWith('bp_') || raw === 'canonical' || (d.architecture_type && d.architecture_type.startsWith('canonical_'))) {
-      return 'canonical';
     }
     if (
       raw === 'vision' ||
@@ -1036,7 +1290,7 @@ function ArchitectureLibraryContent() {
         if (showBatchDeleteModal) {
           setShowBatchDeleteModal(false);
         } else if (activeModalCanvas) {
-          setActiveModalCanvas(null);
+          handleClosePreviewModal();
         }
       } else if (activeModalCanvas && !showBatchDeleteModal) {
         if (e && (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) {
@@ -1094,7 +1348,7 @@ function ArchitectureLibraryContent() {
               <span className={isLight ? 'text-slate-400' : 'text-slate-500'} aria-hidden="true">/</span>
               <span className={`font-bold flex items-center gap-1.5 ${isLight ? 'text-teal-700' : 'text-teal-400'}`}>
                 <LayoutGrid className="w-3.5 h-3.5" aria-hidden="true" />
-                <span>Architecture Library</span>
+                <span>Saved Architectures</span>
               </span>
             </div>
           </div>
@@ -1153,175 +1407,231 @@ function ArchitectureLibraryContent() {
               isLight ? 'bg-[#F8FAFC] text-slate-900' : 'bg-[#070A13] text-white'
             }`}
           >
-            {/* Full-Page Top Action Header */}
-            <div className={`px-6 py-3.5 border-b flex flex-wrap items-center justify-between gap-4 shrink-0 ${
+            {/* Full-Page Top Action Header (Clean 2-Row Zero-Collision Layout) */}
+            <div className={`px-6 py-3 border-b flex flex-col gap-2.5 shrink-0 ${
               isLight ? 'bg-white border-slate-200 text-slate-900 shadow-2xs' : 'bg-[#0B111E] border-slate-800 text-white'
             }`}>
-              <div className="flex items-center gap-3 min-w-0 flex-1">
-                <button
-                  id="library-preview-close-btn"
-                  type="button"
-                  onClick={() => setActiveModalCanvas(null)}
-                  aria-label="Back to Library (Escape)"
-                  title="Return to Architecture Library Grid (Esc)"
-                  className={`px-3.5 py-2 rounded-xl border text-xs font-black flex items-center gap-1.5 transition cursor-pointer shrink-0 shadow-sm ${
+              {/* Row 1: Back CTA + Saved Badge + Full Copyable Unique ID + Title + Prev/Next */}
+              <div className="flex items-center justify-between gap-4 min-w-0">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  <button
+                    id="library-preview-close-btn"
+                    type="button"
+                    onClick={handleClosePreviewModal}
+                    aria-label="Back to Library (Escape)"
+                    title="Return to Saved Architectures Grid (Esc)"
+                    className={`px-3 py-1.5 rounded-xl border text-xs font-black flex items-center gap-1.5 transition cursor-pointer shrink-0 shadow-2xs ${
+                      isLight
+                        ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-100 border-slate-700'
+                    }`}
+                  >
+                    <ChevronLeft className={`w-4 h-4 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
+                    <span>Back to Library</span>
+                  </button>
+
+                  <span className={`text-[10px] font-mono font-black uppercase tracking-wider px-2 py-0.5 rounded border whitespace-nowrap shrink-0 ${
                     isLight
-                      ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
-                      : 'bg-slate-800 hover:bg-slate-700 text-slate-100 border-slate-700'
+                      ? 'bg-teal-50 text-teal-700 border-teal-300'
+                      : 'bg-teal-500/20 text-teal-300 border-teal-500/30'
+                  }`}>
+                    SAVED ARCHITECTURE
+                  </span>
+
+                  <button
+                    type="button"
+                    data-testid="library-fullpage-id-badge"
+                    data-full-id={activeModalCanvas.id}
+                    onClick={(e) => handleCopyDiagramId(activeModalCanvas.id, e)}
+                    title={`Saved Unique Diagram ID: ${activeModalCanvas.id} (Click to copy full ID)`}
+                    className={`text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-md border flex items-center gap-1.5 cursor-pointer transition whitespace-nowrap shrink-0 ${
+                      isLight
+                        ? 'bg-blue-50 hover:bg-blue-100 text-blue-800 border-blue-200'
+                        : 'bg-blue-500/15 hover:bg-blue-500/25 text-blue-300 border-blue-500/30'
+                    }`}
+                  >
+                    <span>ID: {activeModalCanvas.id}</span>
+                    {copiedDiagramId === activeModalCanvas.id ? (
+                      <Check className="w-3 h-3 text-emerald-500" />
+                    ) : (
+                      <Copy className="w-3 h-3 opacity-75" />
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    data-testid="library-fullpage-url-pill"
+                    onClick={(e) => void handleShareColleagueLink(activeModalCanvas, activeVersion?.version_number || 1, e)}
+                    title="Direct colleague-shareable URL — click to copy full link"
+                    className={`hidden xl:inline-flex text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-md border items-center gap-1.5 cursor-pointer transition whitespace-nowrap shrink-0 ${
+                      isLight
+                        ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200'
+                        : 'bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border-emerald-500/30'
+                    }`}
+                  >
+                    <Link2 className="w-3 h-3 shrink-0" />
+                    <span>/library?id={activeModalCanvas.id}&amp;v={activeVersion?.version_number || 1}</span>
+                  </button>
+
+                  <h2 id="library-preview-modal-title" className={`text-sm md:text-base font-black truncate min-w-0 ${
+                    isLight ? 'text-slate-900' : 'text-white'
+                  }`} title={activeModalCanvas.name}>
+                    {activeModalCanvas.name}
+                  </h2>
+                </div>
+
+                {/* Prev / Next Navigation */}
+                <div
+                  id="library-preview-nav-bar"
+                  className={`flex items-center gap-1.5 px-2 py-1 rounded-xl border shrink-0 ${
+                    isLight ? 'bg-slate-50 border-slate-200 shadow-2xs' : 'bg-slate-900/95 border-slate-700/90 shadow-inner'
                   }`}
                 >
-                  <ChevronLeft className={`w-4 h-4 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} />
-                  <span>Back to Library</span>
-                </button>
+                  <button
+                    id="library-preview-prev-btn"
+                    type="button"
+                    disabled={!prevModalDiagram}
+                    onClick={() => prevModalDiagram && handleOpenPreviewModal(prevModalDiagram)}
+                    aria-label="Previous saved architecture"
+                    title={prevModalDiagram ? `Previous (←): ${prevModalDiagram.name}` : 'No previous architecture'}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-black transition-all ${
+                      prevModalDiagram
+                        ? isLight
+                          ? 'bg-white hover:bg-teal-600 hover:text-white text-slate-800 border border-slate-300 cursor-pointer shadow-2xs'
+                          : 'bg-slate-800 hover:bg-teal-500 hover:text-slate-950 text-slate-100 border border-slate-700 cursor-pointer shadow-sm'
+                        : 'opacity-35 cursor-not-allowed text-slate-400'
+                    }`}
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                    <span>Prev</span>
+                  </button>
 
-                <div className={`p-2 rounded-xl border shrink-0 hidden sm:flex ${
-                  isLight ? 'bg-teal-50 text-teal-600 border-teal-200' : 'bg-teal-500/10 text-teal-400 border-teal-500/20'
-                }`}>
-                  <Layers className="w-5 h-5" />
+                  <span
+                    id="library-preview-position-badge"
+                    className={`text-xs font-mono font-black px-2.5 py-0.5 rounded-md border tabular-nums ${
+                      isLight ? 'bg-white text-teal-700 border-slate-200' : 'bg-slate-950 text-teal-400 border-slate-800'
+                    }`}
+                  >
+                    {currentModalIndex >= 0 ? `${currentModalIndex + 1} / ${filteredDiagrams.length}` : `1 / ${filteredDiagrams.length}`}
+                  </span>
+
+                  <button
+                    id="library-preview-next-btn"
+                    type="button"
+                    disabled={!nextModalDiagram}
+                    onClick={() => nextModalDiagram && handleOpenPreviewModal(nextModalDiagram)}
+                    aria-label="Next saved architecture"
+                    title={nextModalDiagram ? `Next (→): ${nextModalDiagram.name}` : 'No next architecture'}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-black transition-all ${
+                      nextModalDiagram
+                        ? isLight
+                          ? 'bg-white hover:bg-teal-600 hover:text-white text-slate-800 border border-slate-300 cursor-pointer shadow-2xs'
+                          : 'bg-slate-800 hover:bg-teal-500 hover:text-slate-950 text-slate-100 border border-slate-700 cursor-pointer shadow-sm'
+                        : 'opacity-35 cursor-not-allowed text-slate-400'
+                    }`}
+                  >
+                    <span>Next</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
                 </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className={`text-[10px] font-mono font-black uppercase tracking-wider px-2 py-0.5 rounded border ${
-                      isLight
-                        ? 'bg-teal-50 text-teal-700 border-teal-300'
-                        : 'bg-teal-500/20 text-teal-300 border-teal-500/30'
-                    }`}>
-                      FULL-PAGE TEMPLATE VIEW
-                    </span>
-                    <h2 id="library-preview-modal-title" className={`text-base md:text-lg font-black truncate max-w-2xl ${
-                      isLight ? 'text-slate-900' : 'text-white'
-                    }`}>
-                      {activeModalCanvas.name}
-                    </h2>
-                  </div>
-                  <div className={`flex items-center gap-2 text-xs mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                    <span>{getArchitectureTypeById(activeModalCanvas.architecture_type || '')?.name || activeModalCanvas.architecture_type}</span>
-                    <span>&bull;</span>
-                    <span>{modalVersions.length} Version{modalVersions.length > 1 ? 's' : ''}</span>
-                    {(activeVersion?.prompt || activeModalCanvas.latest_prompt) && (
+              </div>
+
+              {/* Row 2: Metadata Subtitle + Export / Open in Studio Actions */}
+              <div className="flex flex-wrap items-center justify-between gap-3 min-w-0">
+                <div className={`flex items-center gap-2 text-xs min-w-0 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
+                  <span className="font-semibold shrink-0">{getArchitectureTypeById(activeModalCanvas.architecture_type || '')?.name || activeModalCanvas.architecture_type}</span>
+                  <span>&bull;</span>
+                  <span className="font-bold text-indigo-600 dark:text-indigo-400 shrink-0">{modalVersions.length} Version{modalVersions.length > 1 ? 's' : ''}</span>
+                  {(activeVersion?.prompt || activeModalCanvas.latest_prompt) && (
+                    <>
+                      <span>&bull;</span>
+                      <span className={`truncate max-w-lg font-medium ${isLight ? 'text-teal-700' : 'text-teal-300'}`} title={activeVersion?.prompt || activeModalCanvas.latest_prompt}>
+                        &ldquo;{activeVersion?.prompt || activeModalCanvas.latest_prompt}&rdquo;
+                      </span>
+                    </>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    data-testid="library-fullpage-share-btn"
+                    onClick={(e) => void handleShareColleagueLink(activeModalCanvas, activeVersion?.version_number || 1, e)}
+                    title="Copy colleague-shareable URL with Unique ID & active version (cloud-synced)"
+                    className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-black text-xs transition flex items-center gap-1.5 shadow-md cursor-pointer"
+                  >
+                    {copiedShareLinkId === activeModalCanvas.id ? (
                       <>
-                        <span>&bull;</span>
-                        <span className={`truncate max-w-xl font-medium ${isLight ? 'text-teal-700' : 'text-teal-300'}`} title={activeVersion?.prompt || activeModalCanvas.latest_prompt}>
-                          &ldquo;{activeVersion?.prompt || activeModalCanvas.latest_prompt}&rdquo;
-                        </span>
+                        <Check className="w-3.5 h-3.5 text-emerald-300" />
+                        <span>Share Link Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Share2 className="w-3.5 h-3.5" />
+                        <span>Share Link</span>
                       </>
                     )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Center: Backward / Forward Saved Architecture Navigation */}
-              <div
-                id="library-preview-nav-bar"
-                className={`flex items-center gap-1.5 px-2 py-1.5 rounded-2xl border shrink-0 ${
-                  isLight ? 'bg-slate-50 border-slate-200 shadow-2xs' : 'bg-slate-900/95 border-slate-700/90 shadow-inner'
-                }`}
-              >
-                <button
-                  id="library-preview-prev-btn"
-                  type="button"
-                  disabled={!prevModalDiagram}
-                  onClick={() => prevModalDiagram && handleOpenPreviewModal(prevModalDiagram)}
-                  aria-label="Previous saved architecture"
-                  title={prevModalDiagram ? `Previous (←): ${prevModalDiagram.name}` : 'No previous architecture'}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
-                    prevModalDiagram
-                      ? isLight
-                        ? 'bg-white hover:bg-teal-600 hover:text-white text-slate-800 border border-slate-300 cursor-pointer shadow-2xs'
-                        : 'bg-slate-800 hover:bg-teal-500 hover:text-slate-950 text-slate-100 border border-slate-700 cursor-pointer shadow-sm'
-                      : 'opacity-35 cursor-not-allowed text-slate-400'
-                  }`}
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Prev</span>
-                </button>
-
-                <span
-                  id="library-preview-position-badge"
-                  className={`text-xs font-mono font-black px-2.5 py-1 rounded-lg border tabular-nums ${
-                    isLight ? 'bg-white text-teal-700 border-slate-200' : 'bg-slate-950 text-teal-400 border-slate-800'
-                  }`}
-                >
-                  {currentModalIndex >= 0 ? `${currentModalIndex + 1} / ${filteredDiagrams.length}` : `1 / ${filteredDiagrams.length}`}
-                </span>
-
-                <button
-                  id="library-preview-next-btn"
-                  type="button"
-                  disabled={!nextModalDiagram}
-                  onClick={() => nextModalDiagram && handleOpenPreviewModal(nextModalDiagram)}
-                  aria-label="Next saved architecture"
-                  title={nextModalDiagram ? `Next (→): ${nextModalDiagram.name}` : 'No next architecture'}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
-                    nextModalDiagram
-                      ? isLight
-                        ? 'bg-white hover:bg-teal-600 hover:text-white text-slate-800 border border-slate-300 cursor-pointer shadow-2xs'
-                        : 'bg-slate-800 hover:bg-teal-500 hover:text-slate-950 text-slate-100 border border-slate-700 cursor-pointer shadow-sm'
-                      : 'opacity-35 cursor-not-allowed text-slate-400'
-                  }`}
-                >
-                  <span>Next</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="flex items-center gap-2 shrink-0">
-                {activeVersion && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => handleCopyXml(activeVersion.xml_content)}
-                      className={`px-3 py-2 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                        isLight
-                          ? 'bg-white border-slate-300 text-slate-800 hover:bg-slate-100'
-                          : 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800'
-                      }`}
-                    >
-                      {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                      <span>{copiedXml ? 'Copied!' : 'Copy XML'}</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDownloadXml(activeModalCanvas.name, activeVersion.version_number, activeVersion.xml_content)}
-                      className={`px-3 py-2 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                        isLight
-                          ? 'bg-white border-slate-300 text-slate-800 hover:bg-slate-100'
-                          : 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800'
-                      }`}
-                    >
-                      <Download className="w-3.5 h-3.5 text-sky-500" />
-                      <span>Download .drawio</span>
-                    </button>
-                    <DiagramInlineSlidesPreviewer
-                      headerOnly={true}
-                      manifestKey={
-                        /^\d+$/.test(activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim())
-                          ? `BP-${activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim().padStart(2, '0')}`
-                          : activeModalCanvas.id
+                  </button>
+                  {activeVersion && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyXml(activeVersion.xml_content)}
+                        className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                          isLight
+                            ? 'bg-white border-slate-300 text-slate-800 hover:bg-slate-100'
+                            : 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800'
+                        }`}
+                      >
+                        {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                        <span>{copiedXml ? 'Copied!' : 'Copy XML'}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDownloadXml(activeModalCanvas.name, activeVersion.version_number, activeVersion.xml_content)}
+                        className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                          isLight
+                            ? 'bg-white border-slate-300 text-slate-800 hover:bg-slate-100'
+                            : 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800'
+                        }`}
+                      >
+                        <Download className="w-3.5 h-3.5 text-sky-500" />
+                        <span>Download .drawio</span>
+                      </button>
+                      <DiagramInlineSlidesPreviewer
+                        headerOnly={true}
+                        manifestKey={
+                          /^\d+$/.test(activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim())
+                            ? `BP-${activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim().padStart(2, '0')}`
+                            : activeModalCanvas.id
+                        }
+                        title={activeModalCanvas.name}
+                        subtitle={activeVersion.comment || activeModalCanvas.latest_prompt || 'Enterprise Reference Architecture'}
+                        xml={activeVersion.xml_content}
+                        templateId={activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim().padStart(2, '0')}
+                        badgeLabel={`Library • v${activeVersion.version_number}`}
+                      />
+                    </>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const cat = getStudioCategory(activeModalCanvas);
+                      const vParam = activeVersion?.version_number ? `&v=${activeVersion.version_number}` : '';
+                      if (cat === 'prompt_to_diagram') {
+                        router.push(`/prompt-to-diagram?id=${encodeURIComponent(activeModalCanvas.id)}${vParam}`);
+                      } else if (cat === 'vision') {
+                        router.push(`/vision?id=${encodeURIComponent(activeModalCanvas.id)}`);
+                      } else {
+                        router.push(`/dashboard?id=${encodeURIComponent(activeModalCanvas.id)}${vParam}`);
                       }
-                      title={activeModalCanvas.name}
-                      subtitle={activeVersion.comment || activeModalCanvas.latest_prompt || 'Enterprise Reference Architecture'}
-                      xml={activeVersion.xml_content}
-                      templateId={activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '').trim().padStart(2, '0')}
-                      badgeLabel={`Library • v${activeVersion.version_number}`}
-                    />
-                  </>
-                )}
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (getStudioCategory(activeModalCanvas) === 'drafts') {
-                      router.push(`/dashboard?draft=${encodeURIComponent(activeModalCanvas.id)}`);
-                      return;
-                    }
-                    const cleanCanonicalId = activeModalCanvas.id.replace(/^(bp_|canonical_)/i, '');
-                    router.push(`/dashboard?blueprint=${encodeURIComponent(cleanCanonicalId)}`);
-                  }}
-                  className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-black text-xs transition flex items-center gap-1.5 shadow-md cursor-pointer"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  <span>Open in Dashboard</span>
-                </button>
+                    }}
+                    className="px-3.5 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-black text-xs transition flex items-center gap-1.5 shadow-md cursor-pointer"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Open in Studio (ID: {activeModalCanvas.id.slice(0, 8)})</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -1369,14 +1679,12 @@ function ArchitectureLibraryContent() {
                   <span className="text-sm font-bold">Loading full-screen architecture canvas...</span>
                 </div>
               ) : activeVersion ? (
-                <div className="w-full h-full max-w-none mx-auto bg-white rounded-2xl overflow-hidden shadow-xl border border-slate-200">
-                  <DiagramViewer
+                <div className="w-full h-full max-w-none mx-auto bg-white rounded-2xl overflow-hidden shadow-xl border border-slate-200 flex items-center justify-center">
+                  <DiagramViewerRenderSafe
                     xml={activeVersion.xml_content}
                     diagramId={activeModalCanvas.id}
                     versionId={String(activeVersion.id)}
                     useCaseName={activeModalCanvas.name}
-                    description={activeVersion.prompt || activeModalCanvas.latest_prompt}
-                    aspectRatioId="16:9"
                     bgTheme="light"
                   />
                 </div>
@@ -1417,7 +1725,7 @@ function ArchitectureLibraryContent() {
               <div className="flex items-center gap-3">
                 <button
                   type="button"
-                  onClick={() => setActiveModalCanvas(null)}
+                  onClick={handleClosePreviewModal}
                   className={`px-3.5 py-1.5 rounded-xl border font-bold text-xs transition cursor-pointer ${
                     isLight
                       ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
@@ -1441,10 +1749,10 @@ function ArchitectureLibraryContent() {
                 </div>
                 <div>
                   <h1 className={`text-base sm:text-lg font-black tracking-tight leading-none ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                    Saved Architectures &amp; <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Enterprise Library</span>
+                    Saved <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Architectures</span>
                   </h1>
                   <p className={`text-[11px] leading-tight mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                    Unified repository for Blueprint Studio Instances, Prompt to Diagram (NLP) Instances, Vision Decompilations, and Certified Blueprints ({CANONICAL_TEMPLATES.length}).
+                    Every saved diagram is tracked under a single permanent Unique ID with full version history (1 diagram = 1 tile).
                   </p>
                 </div>
               </div>
@@ -1462,8 +1770,8 @@ function ArchitectureLibraryContent() {
                 </div>
                 <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
                 <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-amber-600 dark:text-amber-400">{studioCounts.canonical}</span>
-                  <span className="text-[10px] text-slate-500 uppercase font-bold">Canonical</span>
+                  <span className="font-extrabold text-sky-600 dark:text-sky-400">{studioCounts.vision}</span>
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Vision AI</span>
                 </div>
                 <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
                 <div className="flex items-center gap-1.5">
@@ -1487,12 +1795,11 @@ function ArchitectureLibraryContent() {
               className="flex flex-wrap items-center gap-2 border-b pb-4 border-slate-200 dark:border-slate-800"
             >
               {[
-                { id: 'all', label: '🌐 All Architectures', count: studioCounts.all, color: 'teal' },
-                { id: 'drafts', label: '📝 Saved Drafts', count: studioCounts.drafts, color: 'amber' },
-                { id: 'studio', label: '💎 Blueprint Studio Saved', count: studioCounts.studio, color: 'indigo' },
-                { id: 'prompt_to_diagram', label: '✨ Prompt to Diagram (NLP)', count: studioCounts.prompt_to_diagram, color: 'emerald' },
-                { id: 'vision', label: '👁️ Vision Decompiled', count: studioCounts.vision, color: 'teal' },
-                { id: 'canonical', label: '📚 Certified Blueprints (41)', count: studioCounts.canonical, color: 'sky' }
+                { id: 'all', label: '🌐 All Saved Architectures', count: studioCounts.all, color: 'teal' },
+                { id: 'studio', label: '💎 Blueprint Studio Instances', count: studioCounts.studio, color: 'indigo' },
+                { id: 'prompt_to_diagram', label: '✨ Prompt to Diagram', count: studioCounts.prompt_to_diagram, color: 'emerald' },
+                { id: 'vision', label: '👁️ Vision AI Saved', count: studioCounts.vision, color: 'teal' },
+                { id: 'drafts', label: '📝 Saved Drafts', count: studioCounts.drafts, color: 'amber' }
               ].map((tab) => {
                 const isActive = activeStudioTab === tab.id;
                 return (
@@ -1544,7 +1851,7 @@ function ArchitectureLibraryContent() {
                   <input
                     id="library-search-input"
                     type="search"
-                    placeholder="Search by canvas title, prompt, keywords..."
+                    placeholder="Search by Unique Diagram ID, title, prompt, keywords..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className={`w-full border rounded-xl pl-10 pr-12 py-2.5 text-xs transition font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
@@ -1625,7 +1932,7 @@ function ArchitectureLibraryContent() {
                     <option value="vision_saved">👁️ Vision Decompiled Diagrams</option>
                     <option value="studio_pro">💎 Blueprint Studio Saved Instances</option>
                     <option value="prompt_to_diagram">✨ Prompt to Diagram (NLP) Instances</option>
-                    <option value="canonical_50">📚 Certified Blueprints (41)</option>
+
                   </select>
 
                   {/* Sort By Dropdown */}
@@ -1752,7 +2059,7 @@ function ArchitectureLibraryContent() {
                         style: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/40',
                         btnStyle: 'bg-amber-600 hover:bg-amber-500 text-white',
                         actionLabel: 'Open Draft in Studio',
-                        route: `/dashboard?draft=${encodeURIComponent(diagram.id)}`
+                        route: `/dashboard?id=${encodeURIComponent(diagram.id)}`
                       },
                       studio: {
                         label: 'Blueprint Studio Instance',
@@ -1912,12 +2219,32 @@ function ArchitectureLibraryContent() {
                             </div>
                           </div>
 
-                          {/* Canvas Title */}
-                          <h2 className={`text-base md:text-lg font-bold transition-colors line-clamp-2 min-h-[2.75rem] mb-2 ${
+                          {/* Canvas Title + Canonical Unique Diagram ID Badge */}
+                          <h2 className={`text-base md:text-lg font-bold transition-colors line-clamp-2 min-h-[2.5rem] mb-1.5 ${
                             isLight ? 'text-slate-900 group-hover:text-teal-700' : 'text-white group-hover:text-teal-300'
                           }`}>
                             {diagram.name}
                           </h2>
+                          <div className="mb-2 flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              data-testid={`library-tile-id-${diagram.id}`}
+                              onClick={(e) => handleCopyDiagramId(diagram.id, e)}
+                              title={`Unique Saved Diagram ID: ${diagram.id} (Click to copy)`}
+                              className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border font-mono text-[10px] font-bold transition cursor-pointer max-w-full truncate ${
+                                isLight
+                                  ? 'bg-blue-50/90 hover:bg-blue-100 text-blue-800 border-blue-200'
+                                  : 'bg-blue-500/15 hover:bg-blue-500/25 text-blue-300 border-blue-500/30'
+                              }`}
+                            >
+                              <span className="truncate">ID: {diagram.id}</span>
+                              {copiedDiagramId === diagram.id ? (
+                                <Check className="w-3 h-3 text-emerald-500 shrink-0" />
+                              ) : (
+                                <Copy className="w-3 h-3 opacity-70 shrink-0" />
+                              )}
+                            </button>
+                          </div>
 
                           {/* Prompt / Description Snippet */}
                           <p className={`text-xs line-clamp-2 min-h-[2rem] mb-4 italic ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
@@ -2004,7 +2331,7 @@ function ArchitectureLibraryContent() {
                                   ? 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300'
                                   : 'bg-[#202124] hover:bg-[#303134] text-white border-white/15'
                               }`}
-                              title="Open directly in Google Slides (nitinagga@google.com) via Server-Side Drive Conversion Bridge"
+                              title="Open directly in Google Slides via Server-Side Drive Conversion Bridge"
                             >
                               <span className="inline-flex items-center justify-center w-4 h-4 rounded-[3px] bg-[#fbbc04] text-[#202124] font-black text-[10px]">
                                 S
@@ -2014,13 +2341,39 @@ function ArchitectureLibraryContent() {
                           </div>
 
                           <div className="flex items-center gap-1.5">
+                            {/* 1-Click Share Link with Colleague */}
+                            <button
+                              type="button"
+                              data-testid={`library-tile-share-${diagram.id}`}
+                              onClick={(e) => void handleShareColleagueLink(diagram, diagram.max_version || verCount, e)}
+                              aria-label={`Copy colleague share link for ${diagram.name}`}
+                              className={`flex-1 py-1.5 px-2.5 rounded-lg border text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                                isLight
+                                  ? 'bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-800'
+                                  : 'bg-blue-950/50 hover:bg-blue-900 border-blue-800 text-blue-300'
+                              }`}
+                              title="Copy colleague-shareable URL (?id=...) synced to cloud"
+                            >
+                              {copiedShareLinkId === diagram.id ? (
+                                <>
+                                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                  <span>Copied!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Share2 className="w-3.5 h-3.5" />
+                                  <span>Share Link</span>
+                                </>
+                              )}
+                            </button>
+
                             {/* Dashboard (only shown when primary CTA targets /studio or /vision rather than /dashboard) */}
                             {!studioBadgeConfig.route.startsWith('/dashboard') && (
                               <button
                                 type="button"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  router.push(`/dashboard?blueprint=${encodeURIComponent(cleanCanonicalId)}`);
+                                  router.push(`/dashboard?id=${encodeURIComponent(diagram.id)}`);
                                 }}
                                 aria-label={`Edit ${diagram.name} in Dashboard`}
                                 className={`flex-1 py-1.5 px-2.5 rounded-lg border text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
@@ -2320,14 +2673,14 @@ function ArchitectureLibraryContent() {
   );
 }
 
-export default function ArchitectureLibraryPage() {
+export default function ArchitectureLibraryPage({ initialDiagramId }: { initialDiagramId?: string } = {}) {
   return (
     <Suspense fallback={
       <div className="h-screen w-screen flex items-center justify-center bg-[#070A13] text-teal-400">
         <Loader2 className="w-8 h-8 animate-spin" />
       </div>
     }>
-      <ArchitectureLibraryContent />
+      <ArchitectureLibraryContent initialDiagramId={initialDiagramId} />
     </Suspense>
   );
 }

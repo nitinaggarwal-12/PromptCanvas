@@ -1,4 +1,4 @@
-interface RasterOptions {
+export interface RasterOptions {
   scale?: number;
   transparent?: boolean;
 }
@@ -47,6 +47,30 @@ export function exportDiagramPng(
       transparent: opts?.transparent ?? false,
     })
   );
+}
+
+export async function exportDiagramSvg(
+  xml: string,
+  opts?: { transparent?: boolean }
+): Promise<string> {
+  const dataOrSvg = await queueExport(() =>
+    exportDiagramFormat(xml, 'xmlsvg', {
+      transparent: opts?.transparent ?? false,
+    })
+  );
+  if (dataOrSvg.startsWith('data:image/svg+xml;base64,')) {
+    const b64 = dataOrSvg.slice('data:image/svg+xml;base64,'.length);
+    if (typeof atob === 'function') {
+      const bin = atob(b64);
+      const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+      return new TextDecoder('utf-8').decode(bytes);
+    }
+    return Buffer.from(b64, 'base64').toString('utf8');
+  }
+  if (dataOrSvg.startsWith('data:image/svg+xml,')) {
+    return decodeURIComponent(dataOrSvg.slice('data:image/svg+xml,'.length));
+  }
+  return dataOrSvg;
 }
 
 function queueExport(fn: () => Promise<string>): Promise<string> {

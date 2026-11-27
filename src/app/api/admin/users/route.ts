@@ -91,8 +91,8 @@ export async function POST(request: Request) {
     }
 
     const validRole = ['Super-Admin', 'Author', 'Member'].includes(role) ? role : 'Author';
-    const actorName = user.name || body.actorName || 'Nitin Aggarwal';
-    const actorEmail = user.email || body.actorEmail || 'nitin.aggarwal@enterprise-arch.io';
+    const actorName = user.name || body.actorName || 'Platform Governance Admin';
+    const actorEmail = user.email || body.actorEmail || 'architecture-governance@cloud-review.internal';
 
     const result = await addOrUpdateUserWithChangelog({
       name,

@@ -24,6 +24,7 @@ import {
   Check,
   Copy,
   Menu,
+  Share2,
 } from 'lucide-react';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { AppHeader } from '@/components/AppHeader';
@@ -141,10 +142,49 @@ export default function ChangelogAndSheetSyncPage() {
   const [activeMainTab, setActiveMainTab] = useState<'unified_changelog' | 'google_sheet_twin' | 'apps_script'>('unified_changelog');
   // Google Sheet Sub-Tab: 'Tracker' | 'Users' | 'Comments' | 'Changelog'
   const [activeSheetTab, setActiveSheetTab] = useState<'Tracker' | 'Users' | 'Comments' | 'Changelog'>('Tracker');
+  const [shareCopied, setShareCopied] = useState<boolean>(false);
 
-  // Quick Mutation Form States (UI Originated OR Google Sheet Simulated)
-  const [actorName, setActorName] = useState<string>('Nitin Aggarwal');
-  const [actorEmail, setActorEmail] = useState<string>('nitinagga@google.com');
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get('tab');
+    if (t === 'unified_changelog' || t === 'google_sheet_twin' || t === 'apps_script') {
+      setActiveMainTab(t);
+    }
+    const s = params.get('sheet');
+    if (s === 'Tracker' || s === 'Users' || s === 'Comments' || s === 'Changelog') {
+      setActiveSheetTab(s);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', activeMainTab);
+      if (activeMainTab === 'google_sheet_twin') {
+        url.searchParams.set('sheet', activeSheetTab);
+      } else {
+        url.searchParams.delete('sheet');
+      }
+      window.history.replaceState(null, '', url.toString());
+    } catch {}
+  }, [activeMainTab, activeSheetTab]);
+
+  const handleCopyChangelogShareLink = () => {
+    if (typeof window === 'undefined') return;
+    const qs = new URLSearchParams();
+    qs.set('tab', activeMainTab);
+    if (activeMainTab === 'google_sheet_twin') qs.set('sheet', activeSheetTab);
+    const shareUrl = `${window.location.origin}/changelog?${qs.toString()}`;
+    navigator.clipboard.writeText(shareUrl).catch(() => {});
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 2200);
+  };
+
+  // Quick Mutation Form States (Person-neutral defaults; auto-hydrated from /api/auth/me when signed in)
+  const [actorName, setActorName] = useState<string>('Cloud Architecture Team');
+  const [actorEmail, setActorEmail] = useState<string>('architecture-governance@cloud-review.internal');
 
   // 1. Status Change Form
   const [selectedBpForStatus, setSelectedBpForStatus] = useState<string>('BP-03');
@@ -164,7 +204,7 @@ export default function ChangelogAndSheetSyncPage() {
   const [sheetDraftEdits, setSheetDraftEdits] = useState<Record<string, { status: string; latest_comment: string }>>({});
   const [sheetNewUserRow, setSheetNewUserRow] = useState({ name: '', email: '', role: 'Author' as 'Super-Admin' | 'Author' | 'Member' });
   const [sheetEditorName, setSheetEditorName] = useState<string>('Cloud Architecture Review Board');
-  const [sheetEditorEmail, setSheetEditorEmail] = useState<string>('nitinagga@google.com');
+  const [sheetEditorEmail, setSheetEditorEmail] = useState<string>('architecture-governance@cloud-review.internal');
   const [sheetUrlInput, setSheetUrlInput] = useState<string>('');
   const [copiedScript, setCopiedScript] = useState<boolean>(false);
 
@@ -481,6 +521,30 @@ export default function ChangelogAndSheetSyncPage() {
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                data-testid="changelog-share-link-btn"
+                onClick={handleCopyChangelogShareLink}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition cursor-pointer ${
+                  shareCopied
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                    : isLight
+                      ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
+                      : 'bg-slate-800 hover:bg-slate-700 text-slate-100 border-slate-700'
+                }`}
+              >
+                {shareCopied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Link Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Share2 className="w-3.5 h-3.5 text-indigo-600" />
+                    <span>Share Link</span>
+                  </>
+                )}
+              </button>
               <a
                 href="/api/changelog/sheet-sync?format=csv"
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
@@ -1133,7 +1197,7 @@ export default function ChangelogAndSheetSyncPage() {
                                 type="email"
                                 value={sheetNewUserRow.email}
                                 onChange={(e) => setSheetNewUserRow((p) => ({ ...p, email: e.target.value }))}
-                                placeholder="new.user@enterprise-arch.io"
+                                placeholder="colleague@google.com"
                                 className="w-full px-2.5 py-1 rounded border border-emerald-300 bg-white text-xs text-slate-900"
                               />
                             </td>

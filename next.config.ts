@@ -95,11 +95,6 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/templates',
-        destination: '/canonical',
-        permanent: true,
-      },
-      {
         source: '/gallery',
         destination: '/canonical',
         permanent: true,
@@ -139,4 +134,3 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-

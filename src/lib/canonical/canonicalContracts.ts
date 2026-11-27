@@ -1,5 +1,5 @@
 /**
- * Machine-Readable Canonical Architecture Contracts for the 41 Certified Blueprints
+ * Machine-Readable Canonical Architecture Contracts for the 35 Certified Blueprints
  * (7 Core #78, #79, #81, #84, #00, #67, #69 + 14 G-Series #85–#98 + 4 Restored #03, #12, #14, #29 + 15 Infographics #52–#66)
  * Enforces strict semantic boundaries, required elements, forbidden antipatterns,
  * exact reference geometry, PNG aspect-ratio locks, and fail-closed QA certification.
@@ -157,20 +157,6 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
     generatorVersion: '4.0',
     certificationStatus: 'certified'
   },
-  '79': {
-    id: '79',
-    grammar: 'L400 Deployment & Network Spec — Multi-Tenant Agentic Hub-and-Spoke (GCP us-central1 • VPC-SC)',
-    family: 'Reference Architectures',
-    level: ['L3'],
-    semanticQuestion: 'How are subnet CIDRs, BGP ASN 64512 routing, Cloud Armor WAF policies, PSC endpoints, and VPC-SC perimeters configured across the shared control hub and isolated tenant spokes?',
-    requiredElements: ['10.100.0.0/16', '64512', 'p-finvault-silo', '10.110.0.0/20', '10.200.0.0/20'],
-    forbiddenElements: ['unconnected-edges', 'overlapping-cards'],
-    edgeTypes: ['tls-ingress', 'mtls-grpc', 'psc-attachment', 'force-rls'],
-    iconPolicy: 'authentic-brand',
-    sourceImage: 'canonical_79.png',
-    generatorVersion: '4.0',
-    certificationStatus: 'certified'
-  },
   '81': {
     id: '81',
     grammar: '[L400 PRINCIPAL SEQUENCE] OIDC JWT, SPIFFE mTLS, FW & VPC-SC (P3-APP-L-10)',
@@ -255,54 +241,6 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
     generatorVersion: '4.0',
     certificationStatus: 'certified'
   },
-  '85': {
-    id: '85',
-    grammar: 'G-01: C4 Level 1 System Context — Pharmacovigilance & Adverse Event (AE) AI Platform',
-    family: 'Understand',
-    level: ['L1', 'L2'],
-    semanticQuestion: 'How do external AE reporters, clinical safety reviewers, EDC/EHR feeds, and corporate IdP interact with the Google Cloud Pharmacovigilance AI Platform, Safety DB of Record, and FDA/EMA gateways?',
-    requiredElements: ['pharmacovigilance', 'meddra', 'e2b', 'mxGraphModel'],
-    forbiddenElements: ['unconnected-edges', 'overlapping-cards'],
-    edgeTypes: ['ae-case-reports', 'review-esign', 'e2b-as2-gateway'],
-    iconPolicy: 'authentic-brand',
-    sourceImage: 'canonical_85.png',
-    generatorVersion: '4.0',
-    certificationStatus: 'certified',
-    referenceGeometry: {
-      pageWidth: 1536,
-      pageHeight: 858,
-      aspectRatio: 1536 / 858,
-      minIconCount: 10,
-      requiredCellIds: ['g01_left_col', 'g01_center_col', 'g01_right_col', 'g01_sys_frame', 'g01_legend'],
-      forbiddenCellIds: [],
-      requiredSubstrings: ['Pharmacovigilance', 'Multimodal AE Intake', 'E2B(R3) Compliance Validation'],
-      forbiddenSubstrings: ['image=data:image/svg+xml;utf8,']
-    }
-  },
-  '86': {
-    id: '86',
-    grammar: 'G-02: As-Is vs. To-Be BPMN 2.0 Process Swimlane — Adverse Event (ICSR) Case Processing',
-    family: 'Process',
-    level: ['L2'],
-    semanticQuestion: 'How does the To-Be Gemini Enterprise Automated ICSR BPMN 2.0 workflow (<12m cycle, 89% STP, <0.2% error) compare against the As-Is Legacy Manual ICSR workflow (7-10d cycle, 14% error)?',
-    requiredElements: ['as-is', 'to-be', 'meddra', 'mxGraphModel'],
-    forbiddenElements: ['unconnected-edges'],
-    edgeTypes: ['bpmn-sequence-flow', 'parallel-and-gateway', 'exclusive-xor-gateway'],
-    iconPolicy: 'authentic-brand',
-    sourceImage: 'canonical_86.png',
-    generatorVersion: '4.0',
-    certificationStatus: 'certified',
-    referenceGeometry: {
-      pageWidth: 1536,
-      pageHeight: 858,
-      aspectRatio: 1536 / 858,
-      minIconCount: 2,
-      requiredCellIds: ['g02_asis_frame', 'g02_tobe_frame', 'tobe_fork', 'tobe_join', 'tobe_xor'],
-      forbiddenCellIds: [],
-      requiredSubstrings: ['AS-IS LEGACY MANUAL ICSR WORKFLOW', 'TO-BE GEMINI ENTERPRISE AUTOMATED ICSR WORKFLOW'],
-      forbiddenSubstrings: ['image=data:image/svg+xml;utf8,']
-    }
-  },
   '87': {
     id: '87',
     grammar: 'G-03: Multi-Persona User Journey & OpenTelemetry Blueprint (Adverse Event Lifecycle)',
@@ -324,30 +262,6 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
       requiredCellIds: ['g03_ch1', 'g03_ch5', 'g03_grid_frame', 'j_l1_n1', 'j_l5_n4'],
       forbiddenCellIds: [],
       requiredSubstrings: ['1. Reporter Intake', '5. E2B(R3) Submission', 'traceparent'],
-      forbiddenSubstrings: ['image=data:image/svg+xml;utf8,']
-    }
-  },
-  '88': {
-    id: '88',
-    grammar: 'G-04: UML Use Case, IAM/RBAC & GxP Separation-of-Duties (SoD) Boundary',
-    family: 'Security & Governance',
-    level: ['L2'],
-    semanticQuestion: 'Which actors can invoke Intake, Triage, Approval, and Audit use cases inside the VPC-SC & 21 CFR Part 11 boundary, and how does the OPA Rego PEP enforce Separation-of-Duties (SoD Rules 1–3)?',
-    requiredElements: ['intake zone', 'triage zone', 'approval zone', 'audit zone', 'sod rule'],
-    forbiddenElements: ['unconnected-edges'],
-    edgeTypes: ['actor-association', 'uml-include', 'sod-constraint'],
-    iconPolicy: 'authentic-brand',
-    sourceImage: 'canonical_88.png',
-    generatorVersion: '4.0',
-    certificationStatus: 'certified',
-    referenceGeometry: {
-      pageWidth: 1536,
-      pageHeight: 858,
-      aspectRatio: 1536 / 858,
-      minIconCount: 6,
-      requiredCellIds: ['g04_sys_bound', 'g04_z1', 'g04_z2', 'g04_z3', 'g04_z4', 'g04_pep'],
-      forbiddenCellIds: [],
-      requiredSubstrings: ['INTAKE ZONE', 'APPROVAL ZONE', 'SoD Rule 1', 'SoD Rule 2', 'SoD Rule 3'],
       forbiddenSubstrings: ['image=data:image/svg+xml;utf8,']
     }
   },
@@ -515,30 +429,6 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
       forbiddenSubstrings: ['image=data:image/svg+xml;utf8,']
     }
   },
-  '96': {
-    id: '96',
-    grammar: 'G-03: L400 Multi-Persona User Journey, OpenTelemetry & Gemini Enterprise Touchpoint Blueprint',
-    family: 'Process',
-    level: ['L3'],
-    semanticQuestion: 'How do Patient/HCP Reporter, Drug Safety Associate (DSA), QPPV Medical Reviewer, Frontstage Edge & API Mesh, and Backstage Gemini ADK & OpenTelemetry interact across the 5 L400 touchpoint stages with p99 latency budgets and W3C traceparent lineage?',
-    requiredElements: ['oidc/passkey', 'beyondcorp', 'pam jit', 'traceparent', 'ec-p384'],
-    forbiddenElements: ['unconnected-edges'],
-    edgeTypes: ['persona-stage-progression', 'frontstage-backstage-touchpoint'],
-    iconPolicy: 'authentic-brand',
-    sourceImage: 'canonical_96.png',
-    generatorVersion: '4.0',
-    certificationStatus: 'certified',
-    referenceGeometry: {
-      pageWidth: 1536,
-      pageHeight: 858,
-      aspectRatio: 1536 / 858,
-      minIconCount: 14,
-      requiredCellIds: ['g03_l400_s1', 'g03_l400_s5', 'g03_l400_r1_bg', 'g03_l400_r5_bg'],
-      forbiddenCellIds: [],
-      requiredSubstrings: ['G-03: L400 Multi-Persona User Journey', 'OIDC/Passkey', 'traceparent', 'EC-P384'],
-      forbiddenSubstrings: ['image=data:image/svg+xml;utf8,']
-    }
-  },
   '97': {
     id: '97',
     grammar: 'G-04: L400 UML Use Case, IAM/PAM & Agent Identity Separation-of-Duties (SoD) Boundary',
@@ -560,29 +450,6 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
       requiredCellIds: ['g04_l400_sys', 'g04_l400_z1', 'g04_l400_z2', 'g04_l400_z3', 'g04_l400_z4', 'g04_l400_pep'],
       forbiddenCellIds: [],
       requiredSubstrings: ['G-04: L400 UML Use Case', 'SoD Invariant 1', 'SoD Invariant 2', 'SoD Invariant 3'],
-      forbiddenSubstrings: ['image=data:image/svg+xml;utf8,']
-    }
-  },
-  '98': {
-    id: '98',
-    grammar: 'G-08: L400 UML 2.5 Finite State Machine, Guard Conditions & Regulatory SLA Clock Lifecycle',
-    family: 'Process',
-    level: ['L3'],
-    semanticQuestion: 'How does the L400 Hierarchical ICSR Statechart transition across INGESTED, VALIDATED, AGENTIC_PROCESSING (4 substates), WAITING_CLINICAL_HITL, SLA_ESCALATED_QPPV, AUTO_SUBMITTED_E2B, QPPV_SIGNED_SUBMITTED, NULLIFIED_COMPENSATED, and DLQ_QUARANTINED with the Synchronized Regulatory SLA Clock Formula?',
-    requiredElements: ['ingested', 'validated', 'agentic_processing', 'qppv_signed_submitted', 't_regulatory_sla'],
-    forbiddenElements: ['unconnected-edges'],
-    edgeTypes: ['uml-state-transition', 'guard-condition', 'sla-escalation'],
-    iconPolicy: 'semantic-vector',
-    sourceImage: 'canonical_98.png',
-    generatorVersion: '4.0',
-    certificationStatus: 'certified',
-    referenceGeometry: {
-      pageWidth: 1536,
-      pageHeight: 858,
-      aspectRatio: 1536 / 858,
-      requiredCellIds: ['g08_l400_top_bg', 'g08_l400_ingested', 'g08_l400_validated', 'g08_l400_comp', 'g08_l400_sla_bg', 'g08_l400_b1', 'g08_l400_b4'],
-      forbiddenCellIds: [],
-      requiredSubstrings: ['G-08: L400 UML 2.5 Finite State Machine', 'Formal UML 2.5 Hierarchical ICSR Statechart', 'T_regulatory_sla'],
       forbiddenSubstrings: ['image=data:image/svg+xml;utf8,']
     }
   },

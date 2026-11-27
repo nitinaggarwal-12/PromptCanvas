@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { executeGcpPromptModification } from '@/lib/gcpCoPilotModifier';
 import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
-import { ALL_GCP_DIALECT_A_ARCHITECTURES } from '@/lib/gcpDialectA';
+import { loadImmutableServerTemplateXml } from '@/lib/templates/serverTemplateXmlLoader';
 
 describe('Architecture Co-Pilot Spatial Modifier (Hijacker-Free)', () => {
-  const baseArch = ALL_GCP_DIALECT_A_ARCHITECTURES[0];
-  const baseXml = baseArch.generateXml(true);
+  const baseArch = { id: 'arch_tpl_94' };
+  const baseXml = loadImmutableServerTemplateXml('94')!;
 
   it('classifies advisory and gap questions correctly without mutating diagram', () => {
     const question1 = classifyChatIntent('What is missing in this architecture?');

@@ -247,7 +247,7 @@ function CanonicalContent() {
     setIsAdaptModalOpen(true);
   };
 
-  // Execute Domain Adaptation & Self-Healing (and persist to Saved Architectures Library)
+  // Execute Domain Adaptation & Self-Healing (mints canonical Unique ID and opens in Studio)
   const handleRunAdaptation = async () => {
     if (!activeTemplate) return;
     setIsGenerating(true);
@@ -259,28 +259,35 @@ function CanonicalContent() {
         healedXml = modRes.updatedXml;
       }
     }
+    let mintedId: string | null = null;
     try {
-      await fetch('/api/diagrams', {
+      const res = await fetch('/api/diagrams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: `${activeTemplate.name} — ${customPrompt.trim() ? customPrompt.trim().slice(0, 48) : domainLabel}`,
-          architecture_type: `canonical_${activeTemplate.id}`,
-          created_studio: 'studio',
-          xml_content: healedXml,
+          architectureType: `canonical_${activeTemplate.id}`,
+          createdStudio: 'dashboard',
+          xml: healedXml,
           prompt: customPrompt.trim() || `Adapted Blueprint #${activeTemplate.id} (${activeTemplate.name}) for ${domainLabel}`,
         }),
       });
-    } catch {}
-    setTimeout(() => {
-      setCurrentXml(healedXml);
-      setIsGenerating(false);
-      setIsAdaptModalOpen(false);
-      setIsViewerOpen(true);
-      if (typeof window !== 'undefined') {
-        window.history.pushState({ templateId: activeTemplate.id }, '', `/canonical?id=${activeTemplate.id}`);
+      if (res.ok) {
+        const saved = await res.json();
+        mintedId = saved?.diagram?.id || saved?.id || null;
       }
-    }, 450);
+    } catch {}
+    setIsGenerating(false);
+    setIsAdaptModalOpen(false);
+    if (mintedId) {
+      router.push(`/dashboard?id=${encodeURIComponent(mintedId)}&v=1&blueprint=${activeTemplate.id}`);
+      return;
+    }
+    setCurrentXml(healedXml);
+    setIsViewerOpen(true);
+    if (typeof window !== 'undefined') {
+      window.history.replaceState({ templateId: activeTemplate.id }, '', `/canonical?id=${activeTemplate.id}`);
+    }
   };
 
   const handleCopyXml = () => {

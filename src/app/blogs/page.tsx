@@ -33,6 +33,7 @@ import {
   FolderOpen,
   Trash2,
   ChevronRight,
+  Share2,
 } from 'lucide-react';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { AppHeader, btnClass } from '@/components/AppHeader';
@@ -70,6 +71,7 @@ import gcpPatternCodebaseAndExecutionBundle from '@/data/gcpPatternCodebaseAndEx
 interface SavedBlogRecord {
   id: string;
   savedAt: string;
+  versionCount?: number;
   useCase: UseCaseBlogPreset;
   blog: GeneratedUseCaseBlog;
 }
@@ -426,10 +428,50 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
 
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [savedBlogs, setSavedBlogs] = useState<SavedBlogRecord[]>([]);
-
-  // Load query parameters (?doc=DOC-MT-01&id=...&mode=...&useCase=...&format=...&title=...&prompt=...&domain=...)
+  const [activeSavedBlogId, setActiveSavedBlogId] = useState<string | null>(null);
+  const savedBlogsRef = React.useRef<SavedBlogRecord[]>([]);
   useEffect(() => {
-    const qDoc = initialDocId || searchParams.get('doc') || searchParams.get('id');
+    savedBlogsRef.current = savedBlogs;
+  }, [savedBlogs]);
+
+  const hydrateSavedBlogRecord = (item: SavedBlogRecord, syncUrl = true) => {
+    if (!item?.useCase || !item?.blog) return;
+    setCustomPresets((prev) =>
+      prev.some((p) => p.id === item.useCase.id) || basePresets.some((p) => p.id === item.useCase.id)
+        ? prev
+        : [item.useCase, ...prev]
+    );
+    const fmtId = item.blog.formatId || 'cloud-arch-center';
+    const cacheKey = `${item.useCase.id}::${fmtId}`;
+    if (Array.isArray(item.blog.sections) && item.blog.sections.length > 0) {
+      setSectionOverrides((prev) => {
+        const next = { ...prev };
+        for (const sec of item.blog.sections) {
+          next[`${cacheKey}::${sec.id}`] = sec.markdown;
+        }
+        return next;
+      });
+    }
+    if (item.blog.tldrSummary) {
+      setAiEnhancedOverride({ key: cacheKey, tldrSummary: item.blog.tldrSummary });
+    }
+    setSelectedUseCaseId(item.useCase.id);
+    setSelectedFormatId(fmtId);
+    setStudioLayoutMode('legacy-studio');
+    setActiveSavedBlogId(item.id);
+    if (syncUrl && typeof window !== 'undefined') {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('id', item.id);
+        url.searchParams.delete('doc');
+        window.history.replaceState(null, '', url.toString());
+      } catch {}
+    }
+  };
+
+  // Load query parameters (?doc=DOC-MT-01&id=blog_...&mode=...&useCase=...&format=...&title=...&prompt=...&domain=...)
+  useEffect(() => {
+    const qDoc = initialDocId || searchParams.get('id') || searchParams.get('doc');
     const qMode = searchParams.get('mode');
     const qUseCase = searchParams.get('useCase');
     const qFormat = searchParams.get('format') as BlogFormatId | null;
@@ -449,8 +491,31 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
         setStudioLayoutMode('pdf-doc-reader');
         setSelectedUseCaseId(matchedDoc.useCasePresetId);
         setShowDocWorkbench(Boolean(matchedDoc.includeInteractiveWorkbench));
+        setActiveSavedBlogId(null);
         return;
       }
+
+      // If already hydrated locally in this session (e.g., right after clicking Save), skip redundant GET /api/blogs/saved/<id>
+      const alreadyLocal = savedBlogsRef.current.find((b) => b.id === qDoc);
+      if (alreadyLocal) {
+        if (activeSavedBlogId !== qDoc) {
+          hydrateSavedBlogRecord(alreadyLocal, false);
+        }
+        return;
+      }
+
+      // Colleague deep-link for a Saved Blog (?id=blog_...)
+      let cancelled = false;
+      void fetch(`/api/blogs/saved/${encodeURIComponent(qDoc)}`, { cache: 'no-store' })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((remoteItem) => {
+          if (cancelled || !remoteItem?.useCase || !remoteItem?.blog) return;
+          hydrateSavedBlogRecord(remoteItem as SavedBlogRecord, true);
+        })
+        .catch(() => {});
+      return () => {
+        cancelled = true;
+      };
     }
 
     if (qTitle) {
@@ -488,15 +553,27 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
     }
   }, [initialDocId, searchParams, basePresets]);
 
-  // Load saved library architectures and saved blogs from localStorage / API (migrating any legacy template IDs to #78 and purging stale Zone-by-Zone sections)
+  // Load saved blogs from localStorage + Cloud Storage (/api/blogs/saved) with canonical-ID deduplication & auto-backfill
   useEffect(() => {
+    let cancelled = false;
+    const toCanonicalBlogId = (rec: SavedBlogRecord): string => {
+      if (rec.id && rec.id.startsWith('blog_') && !/-\d{12,}$/.test(rec.id)) return rec.id;
+      const slug = `${rec.useCase?.id || 'custom'}_${rec.blog?.formatId || 'cloud-arch-center'}`
+        .replace(/[^a-zA-Z0-9._-]/g, '-')
+        .slice(0, 110);
+      return `blog_${slug}`;
+    };
+
+    let localList: SavedBlogRecord[] = [];
     try {
       const rawBlogs = localStorage.getItem('promptcanvas_saved_blogs');
       if (rawBlogs) {
         const parsed = JSON.parse(rawBlogs);
         if (Array.isArray(parsed)) {
-          let didMigrate = false;
-          const normalized = parsed.map((rec: SavedBlogRecord) => {
+          const dedupedByCanon = new Map<string, SavedBlogRecord>();
+          for (const rec of parsed as SavedBlogRecord[]) {
+            const canonId = toCanonicalBlogId(rec);
+            if (dedupedByCanon.has(canonId)) continue;
             const normUc = rec.useCase
               ? {
                   ...rec.useCase,
@@ -514,26 +591,58 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                   s.heading.includes('Reading Figure 1') ||
                   s.markdown?.includes('Outer Frame & Actor')
               );
-            if (hasStaleWalkthrough && normUc) {
-              didMigrate = true;
-              return {
-                ...rec,
-                useCase: normUc,
-                blog: generateBlogForUseCase(normUc, rec.blog?.formatId || 'cloud-arch-center'),
-              };
-            }
-            return {
+            const normBlog =
+              hasStaleWalkthrough && normUc
+                ? generateBlogForUseCase(normUc, rec.blog?.formatId || 'cloud-arch-center')
+                : rec.blog;
+            dedupedByCanon.set(canonId, {
               ...rec,
+              id: canonId,
               useCase: normUc,
-            };
-          });
-          if (didMigrate) {
-            localStorage.setItem('promptcanvas_saved_blogs', JSON.stringify(normalized));
+              blog: { ...normBlog, id: canonId },
+            });
           }
-          setSavedBlogs(normalized);
+          localList = Array.from(dedupedByCanon.values());
+          localStorage.setItem('promptcanvas_saved_blogs', JSON.stringify(localList));
+          setSavedBlogs(localList);
         }
       }
     } catch {}
+
+    void (async () => {
+      try {
+        const res = await fetch('/api/blogs/saved', { cache: 'no-store' });
+        const remoteRaw = res.ok ? await res.json() : [];
+        const remoteList: SavedBlogRecord[] = Array.isArray(remoteRaw) ? remoteRaw : [];
+        const mergedById = new Map<string, SavedBlogRecord>();
+        for (const r of remoteList) {
+          if (r?.id && r?.useCase && r?.blog) {
+            mergedById.set(r.id, r);
+          }
+        }
+        for (const loc of localList) {
+          if (!mergedById.has(loc.id)) {
+            await fetch('/api/blogs/saved', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(loc),
+            }).catch(() => {});
+            mergedById.set(loc.id, loc);
+          }
+        }
+        const merged = Array.from(mergedById.values()).slice(0, 30);
+        if (!cancelled && merged.length > 0) {
+          setSavedBlogs(merged);
+          try {
+            localStorage.setItem('promptcanvas_saved_blogs', JSON.stringify(merged));
+          } catch {}
+        }
+      } catch {}
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const [gcpVerification, setGcpVerification] = useState<any>(null);
@@ -1087,20 +1196,74 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
     URL.revokeObjectURL(url);
   };
 
-  const handleSaveBlogToLibrary = () => {
+  const getCanonicalBlogIdForActive = () => {
+    const slug = `${activeUseCase.id}_${selectedFormatId}`
+      .replace(/[^a-zA-Z0-9._-]/g, '-')
+      .slice(0, 110);
+    return `blog_${slug}`;
+  };
+
+  const handleSaveBlogToLibrary = async (): Promise<string> => {
+    const canonicalId = getCanonicalBlogIdForActive();
+    const existing = savedBlogs.find((b) => b.id === canonicalId);
+    const nextVersionCount = (existing?.versionCount || 0) + 1;
     const newRecord: SavedBlogRecord = {
-      id: `${generatedBlog.id}-${Date.now()}`,
+      id: canonicalId,
       savedAt: new Date().toLocaleString(),
+      versionCount: nextVersionCount,
       useCase: activeUseCase,
-      blog: generatedBlog,
+      blog: {
+        ...generatedBlog,
+        id: canonicalId,
+      },
     };
-    const updated = [newRecord, ...savedBlogs.filter((b) => b.blog.id !== generatedBlog.id)].slice(0, 30);
+    const updated = [newRecord, ...savedBlogs.filter((b) => b.id !== canonicalId)].slice(0, 30);
+    savedBlogsRef.current = updated;
     setSavedBlogs(updated);
+    setActiveSavedBlogId(canonicalId);
     try {
       localStorage.setItem('promptcanvas_saved_blogs', JSON.stringify(updated));
     } catch {}
+    await fetch('/api/blogs/saved', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newRecord),
+    }).catch(() => {});
+    if (typeof window !== 'undefined') {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('id', canonicalId);
+        url.searchParams.delete('doc');
+        window.history.replaceState(null, '', url.toString());
+      } catch {}
+    }
     setCopiedKey('saved-blog');
     setTimeout(() => setCopiedKey(null), 2000);
+    return canonicalId;
+  };
+
+  const handleShareBlogLink = async (explicitBlogId?: string) => {
+    if (typeof window === 'undefined') return;
+    let targetId = explicitBlogId;
+    if (!targetId) {
+      if (studioLayoutMode === 'pdf-doc-reader') {
+        targetId = activeDocGuide.docId;
+      } else if (activeSavedBlogId && savedBlogs.some((b) => b.id === activeSavedBlogId)) {
+        targetId = activeSavedBlogId;
+      } else {
+        targetId = await handleSaveBlogToLibrary();
+      }
+    }
+    const shareUrl = `${window.location.origin}/blogs?id=${encodeURIComponent(targetId)}`;
+    navigator.clipboard.writeText(shareUrl).catch(() => {});
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set('id', targetId);
+      url.searchParams.delete('doc');
+      window.history.replaceState(null, '', url.toString());
+    } catch {}
+    setCopiedKey(`share-${targetId}`);
+    setTimeout(() => setCopiedKey(null), 2200);
   };
 
   const handleEnhanceWithGemini = async () => {
@@ -1375,8 +1538,39 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                       </>
                     )}
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowSavedBlogsModal(true)}
+                    data-testid="open-saved-blogs-drawer-btn"
+                    className={btnClass('neutral')}
+                    title="Open Saved Use-Case Blogs Drawer"
+                  >
+                    <FolderOpen className="w-3.5 h-3.5 text-teal-600" />
+                    <span className="hidden xl:inline">Saved ({savedBlogs.length})</span>
+                  </button>
                 </>
               )}
+
+              <button
+                type="button"
+                onClick={() => handleShareBlogLink()}
+                data-testid="share-blog-link-btn"
+                className={btnClass(copiedKey?.startsWith('share-') ? 'success' : 'neutral')}
+                title="Copy canonical shareable colleague URL (?id=...)"
+              >
+                {copiedKey?.startsWith('share-') ? (
+                  <>
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Link Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Share2 className="w-3.5 h-3.5 text-indigo-600" />
+                    <span>Share Link</span>
+                  </>
+                )}
+              </button>
             </div>
           }
         />
@@ -1428,7 +1622,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                   <a
-                    href="https://console.cloud.google.com/security/kms/keyrings/manage/us-west1/cymbal-multi-tenant-kr?project=cymbal-build-sandbox"
+                    href="https://console.cloud.google.com/security/kms/keyrings/manage/us-west1/cymbal-multi-tenant-kr?project=bbar-138hf0"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 transition-all block"
@@ -1442,7 +1636,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                     </div>
                   </a>
                   <a
-                    href="https://console.cloud.google.com/bigquery?project=cymbal-build-sandbox&ws=!1m4!1m3!3m2!1scymbal-build-sandbox!2scymbal_agentic_finops_otel"
+                    href="https://console.cloud.google.com/bigquery?project=bbar-138hf0&ws=!1m4!1m3!3m2!1sbbar-138hf0!2scymbal_agentic_finops_otel"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 transition-all block"
@@ -1456,17 +1650,17 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                     </div>
                   </a>
                   <a
-                    href="https://console.cloud.google.com/storage/browser/cymbal-build-sandbox-cymbal-multi-tenant-artifacts?project=cymbal-build-sandbox"
+                    href="https://console.cloud.google.com/storage/browser/bbar-138hf0-cymbal-multi-tenant-artifacts?project=bbar-138hf0"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 transition-all block"
                   >
                     <div className="font-bold text-indigo-600 dark:text-indigo-400 flex items-center justify-between">
-                      <span>🪣 Cloud Storage Artifacts (27 Objects)</span>
+                      <span>🪣 Cloud Storage Artifacts (61 Objects)</span>
                       <ExternalLink className="w-3 h-3" />
                     </div>
                     <div className="font-mono text-[10px] text-slate-600 dark:text-slate-400 mt-1 break-all">
-                      gs://cymbal-build-sandbox-cymbal-multi-tenant-artifacts/ (14 .svg + 14 .drawio + DDL)
+                      gs://bbar-138hf0-cymbal-multi-tenant-artifacts/ (bundles/, codebase/, diagrams/, rag-corpus/)
                     </div>
                   </a>
                   <a
@@ -3326,7 +3520,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                           🧪 End-to-End Pattern Implementation, Live Code Execution Results &amp; Complete Multi-Tenant Codebase Explorer (Pattern A • Pattern B • Pattern C)
                         </h3>
                         <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                          Live Google Cloud resources provisioned and executed in <code className="text-indigo-700 bg-indigo-50 px-1 py-0.5 rounded">cymbal-build-sandbox (#887605034827)</code>, <code className="text-indigo-700 bg-indigo-50 px-1 py-0.5 rounded">cymbal-pooled-prod (#638420508320)</code>, and <code className="text-indigo-700 bg-indigo-50 px-1 py-0.5 rounded">ramp-portal-dev (#248990048888)</code> (Cloud Run Source Function <code className="text-teal-700 bg-teal-50 px-1 py-0.5 rounded">cymbal-multi-tenant-patterns</code>, BigQuery Row-Level Security, CMEK-encrypted Sovereign Vault, Cloud KMS HSM/CMEK &amp; ECDSA P-256 Asymmetric Signing Keys, Custom Hub &amp; Spoke VPCs + Private Service Connect <code className="text-teal-700 bg-teal-50 px-1 py-0.5 rounded">/28</code> NAT Subnet), paired with verbatim execution stdout and the complete 27-file Python + Terraform reference codebase.
+                          Live Google Cloud resources provisioned and executed in <code className="text-indigo-700 bg-indigo-50 px-1 py-0.5 rounded">bbar-138hf0 (#48439189383)</code> and <code className="text-indigo-700 bg-indigo-50 px-1 py-0.5 rounded">ramp-portal-dev (#248990048888)</code> (Cloud Run Source Function <code className="text-teal-700 bg-teal-50 px-1 py-0.5 rounded">cymbal-multi-tenant-patterns</code>, BigQuery Row-Level Security, CMEK-encrypted Sovereign Vault, Cloud KMS HSM/CMEK &amp; ECDSA P-256 Asymmetric Signing Keys, Custom Hub &amp; Spoke VPCs + Private Service Connect <code className="text-teal-700 bg-teal-50 px-1 py-0.5 rounded">/28</code> NAT Subnet), paired with verbatim execution stdout and the complete 27-file Python + Terraform reference codebase.
                         </p>
                       </div>
 
@@ -3714,7 +3908,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                           </div>
                           <div className="flex flex-wrap items-center gap-2 shrink-0">
                             <a
-                              href="https://console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/source?project=cymbal-build-sandbox&cloudshell=true"
+                              href="https://console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/source?project=bbar-138hf0&cloudshell=true"
                               target="_blank"
                               rel="noopener noreferrer"
                               className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-extrabold inline-flex items-center gap-1.5"
@@ -3722,7 +3916,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                               <span>☁️ Open Cloud Run Source + Cloud Shell ↗</span>
                             </a>
                             <a
-                              href="https://console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/revisions?project=cymbal-build-sandbox&cloudshell=true"
+                              href="https://console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/revisions?project=bbar-138hf0&cloudshell=true"
                               target="_blank"
                               rel="noopener noreferrer"
                               className="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold inline-flex items-center gap-1.5"
@@ -4139,24 +4333,44 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
             {savedBlogs.map((item) => (
               <div
                 key={item.id}
+                data-testid={`saved-blog-card-${item.id}`}
                 className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex items-center justify-between gap-3"
               >
-                <div>
-                  <div className="text-xs font-extrabold text-slate-900 dark:text-white">
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-extrabold text-slate-900 dark:text-white truncate">
                     {item.blog.title}
                   </div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                    {item.blog.publicationBadge} • Saved {item.savedAt}
+                  <div className="flex items-center gap-1.5 flex-wrap text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                    <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+                      ID: {item.id}
+                    </span>
+                    {item.versionCount && item.versionCount > 1 && (
+                      <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        {item.versionCount} Versions
+                      </span>
+                    )}
+                    <span>• Saved {item.savedAt}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-1.5 shrink-0">
                   <button
+                    type="button"
+                    data-testid={`share-saved-blog-${item.id}`}
+                    onClick={() => handleShareBlogLink(item.id)}
+                    className={btnClass(copiedKey === `share-${item.id}` ? 'success' : 'neutral')}
+                    title="Copy colleague share link (?id=...)"
+                  >
+                    {copiedKey === `share-${item.id}` ? (
+                      <Check className="w-3.5 h-3.5" />
+                    ) : (
+                      <Share2 className="w-3.5 h-3.5 text-indigo-500" />
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    data-testid={`open-saved-blog-${item.id}`}
                     onClick={() => {
-                      setCustomPresets((prev) =>
-                        prev.some((p) => p.id === item.useCase.id) ? prev : [item.useCase, ...prev]
-                      );
-                      setSelectedUseCaseId(item.useCase.id);
-                      setSelectedFormatId(item.blog.formatId);
+                      hydrateSavedBlogRecord(item, true);
                       setShowSavedBlogsModal(false);
                     }}
                     className={btnClass('primary')}
@@ -4164,14 +4378,19 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                     Open
                   </button>
                   <button
+                    type="button"
+                    data-testid={`delete-saved-blog-${item.id}`}
                     onClick={() => {
                       const next = savedBlogs.filter((b) => b.id !== item.id);
                       setSavedBlogs(next);
+                      if (activeSavedBlogId === item.id) setActiveSavedBlogId(null);
                       try {
                         localStorage.setItem('promptcanvas_saved_blogs', JSON.stringify(next));
                       } catch {}
+                      void fetch(`/api/blogs/saved/${encodeURIComponent(item.id)}`, { method: 'DELETE' }).catch(() => {});
                     }}
                     className={btnClass('neutral')}
+                    title="Delete saved blog"
                   >
                     <Trash2 className="w-3.5 h-3.5 text-rose-500" />
                   </button>

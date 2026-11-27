@@ -334,7 +334,22 @@ function DocDetailPageContent() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const rawId = Array.isArray(params?.id) ? params.id[0] : params?.id;
+  const rawId = String((Array.isArray(params?.id) ? params.id[0] : params?.id) || '').trim();
+  const isSavedProjectRoute = Boolean(
+    rawId &&
+      (rawId.startsWith('proj_') ||
+        !DOC_ARCHETYPES_META.some((m) => m.id.toLowerCase() === rawId.toLowerCase()))
+  );
+
+  React.useEffect(() => {
+    if (isSavedProjectRoute && rawId) {
+      const vParam = searchParams?.get('v');
+      const docParam = searchParams?.get('doc') || 'sdd';
+      const targetUrl = `/docgen?id=${encodeURIComponent(rawId)}${vParam ? `&v=${encodeURIComponent(vParam)}` : ''}&doc=${encodeURIComponent(docParam)}&tab=studio`;
+      router.replace(targetUrl);
+    }
+  }, [isSavedProjectRoute, rawId, router, searchParams]);
+
   const docId: ArchetypeId = useMemo(() => {
     try {
       return resolveSurvivingArchetypeId(rawId || 'sdd');
@@ -346,9 +361,9 @@ function DocDetailPageContent() {
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
-  const initialDomain = searchParams?.get('domain') || 'biopharma';
+  const initialDomain = searchParams?.get('domain') || 'enterprise';
   const initialTitle = searchParams?.get('title') ? decodeURIComponent(searchParams.get('title')!) : '';
-  const initialProj = searchParams?.get('proj') || searchParams?.get('project') || '';
+  const initialProj = searchParams?.get('id') || searchParams?.get('proj') || searchParams?.get('project') || '';
 
   const [selectedDomain, setSelectedDomain] = useState<string>(initialDomain);
   const [projectTitle, setProjectTitle] = useState<string>(initialTitle);
@@ -371,11 +386,15 @@ function DocDetailPageContent() {
 
   const handleCopyShareUrl = () => {
     if (typeof window !== 'undefined') {
-      const url = new URL(window.location.href);
-      url.searchParams.set('domain', selectedDomain);
-      if (projectId) url.searchParams.set('proj', projectId);
-      if (projectTitle) url.searchParams.set('title', projectTitle);
-      navigator.clipboard.writeText(url.toString());
+      if (projectId) {
+        const projShareUrl = `${window.location.origin}/docgen?id=${encodeURIComponent(projectId)}&doc=${encodeURIComponent(docMeta.id)}&tab=studio`;
+        navigator.clipboard.writeText(projShareUrl);
+      } else {
+        const url = new URL(window.location.href);
+        url.searchParams.set('domain', selectedDomain);
+        if (projectTitle) url.searchParams.set('title', projectTitle);
+        navigator.clipboard.writeText(url.toString());
+      }
       setShareCopied(true);
       setTimeout(() => setShareCopied(false), 2000);
     }

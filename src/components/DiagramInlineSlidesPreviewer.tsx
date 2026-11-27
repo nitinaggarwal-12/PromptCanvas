@@ -37,12 +37,12 @@ interface CloudViewerManifestClient {
 }
 
 const FALLBACK_MANIFEST: CloudViewerManifestClient = {
-  accountEmail: 'nitinagga@google.com',
+  accountEmail: '',
   slides: {
     'GCP-MULTIAGENT-01': {
       googleSlidesId: '1rBHt-al8JDO9UZY6IIJpOdAR76zZQvvoNhPnX-ae9NY',
       googleSlidesEditUrl:
-        'https://docs.google.com/presentation/d/1rBHt-al8JDO9UZY6IIJpOdAR76zZQvvoNhPnX-ae9NY/edit?authuser=nitinagga%40google.com',
+        'https://docs.google.com/presentation/d/1rBHt-al8JDO9UZY6IIJpOdAR76zZQvvoNhPnX-ae9NY/edit',
       googleSlidesPreviewUrl:
         'https://docs.google.com/presentation/d/1rBHt-al8JDO9UZY6IIJpOdAR76zZQvvoNhPnX-ae9NY/preview',
       googleSlidesEmbedUrl:
@@ -157,7 +157,7 @@ function sanitizeDrawioXmlAttributeValues(raw: string): string {
  * Opens a full-screen interactive Draw.io (/drawio-editor -> embed.diagrams.net) editor in a new browser tab
  * preloaded with the given Draw.io XML and bidirectional BroadcastChannel sync.
  */
-export function openDrawioInNewTab(xml: string, title: string): void {
+export function openDrawioInNewTab(xml: string, title: string, diagramId?: string | null): void {
   if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(
@@ -166,12 +166,14 @@ export function openDrawioInNewTab(xml: string, title: string): void {
         xml: sanitizeDrawioXmlAttributeValues(xml),
         projectTitle: title || 'Google Cloud Hub-and-Spoke (#78)',
         versionTag: 'v2.0 (#78)',
+        diagramId: diagramId || undefined,
       })
     );
   } catch (e) {
     console.error('Failed to store active Draw.io session:', e);
   }
-  window.open('/drawio-editor', '_blank');
+  const url = diagramId ? `/drawio-editor?id=${encodeURIComponent(diagramId)}` : '/drawio-editor';
+  window.open(url, '_blank');
 }
 
 interface InteractiveDrawioInlineEditorProps {
@@ -328,7 +330,7 @@ export async function fetchCloudViewerManifest(): Promise<CloudViewerManifestCli
       const data = await res.json();
       if (data && data.slides) {
         globalManifestCache = {
-          accountEmail: data.accountEmail || 'nitinagga@google.com',
+          accountEmail: data.accountEmail || '',
           slides: { ...FALLBACK_MANIFEST.slides, ...data.slides },
           docs: { ...FALLBACK_MANIFEST.docs, ...(data.docs || {}) },
         };
@@ -345,7 +347,7 @@ export async function fetchCloudViewerManifest(): Promise<CloudViewerManifestCli
  * 1. Fast-path synchronous open (`window.open(sEntry.googleSlidesEditUrl, '_blank')`) when pre-warmed manifest entry exists.
  * 2. Otherwise opens a dark progress popup synchronously inside the click gesture, compiles .pptx (if needed),
  *    calls `POST /api/google-workspace/open` (server-side refresh token conversion), and redirects the tab to the
- *    real `https://docs.google.com/presentation/d/<id>/edit?authuser=nitinagga%40google.com` URL.
+ *    real `https://docs.google.com/presentation/d/<id>/edit` URL.
  */
 interface OpenDiagramWorkspaceParams {
   key: string;
@@ -1256,7 +1258,7 @@ export default function DiagramInlineSlidesPreviewer({
           className={`inline-flex items-center gap-1.5 rounded-l-lg hover:bg-slate-50 dark:hover:bg-slate-700 font-semibold text-slate-700 dark:text-slate-200 transition cursor-pointer whitespace-nowrap ${
             compact ? 'pl-2 pr-1.5 py-1 text-[11px]' : 'pl-2.5 pr-2 py-1 text-xs'
           }`}
-          title="Open directly in Google Slides (nitinagga@google.com) via Server-Side Drive Conversion Bridge"
+          title="Open directly in Google Slides via Server-Side Drive Conversion Bridge"
         >
           <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-[3px] bg-[#FBBC04] text-[#202124] font-black text-[9px] shrink-0">
             S
@@ -1757,7 +1759,7 @@ export default function DiagramInlineSlidesPreviewer({
                 ) : (
                   <div className="w-full flex-1 min-h-[540px] border border-[#444746] rounded-xl bg-[#202124] flex flex-col items-center justify-center gap-2 text-sm">
                     <div className="text-[#FBBC04] font-bold">
-                      ☁️ Syncing {title} to Google Slides (nitinagga@google.com)...
+                      ☁️ Syncing {title} to Google Slides...
                     </div>
                     <div className="text-xs text-[#9AA0A6]">
                       Converting native editable .pptx vector shapes in Google Drive...

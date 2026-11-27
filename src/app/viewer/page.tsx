@@ -10,9 +10,10 @@ import {
   Printer,
   Loader2,
   Cloud,
-  Edit3
+  Edit3,
+  Share2,
+  Check,
 } from 'lucide-react';
-import { generateAzureLandingZoneArchitectureXml } from '@/lib/masterBuilders/build_master_azure_landing_zone';
 import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 import { getPrecompiledBlueprint } from '@/lib/visionBlueprintStore';
 import { exportDrawioToEditablePptx } from '@/lib/export/editablePptxCompiler';
@@ -146,17 +147,56 @@ function CloudViewerContent() {
       return;
     }
 
+    if (bpId && bpId !== '00') {
+      fetch(`/api/diagrams/${encodeURIComponent(bpId)}`, { cache: 'no-store' })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          if (data?.xml_content) {
+            setResolvedId(data.id || bpId);
+            setResolvedTitle(rawTitleParam || data.name || 'Saved Architecture');
+            setXmlContent(data.xml_content);
+          }
+        })
+        .catch(() => {});
+      return;
+    }
+
     let loadedXml = '';
     if (typeof window !== 'undefined') {
       loadedXml = localStorage.getItem('pc_vision_last_xml') || '';
     }
+    const defaultTpl = CANONICAL_TEMPLATES[0];
     if (!loadedXml) {
-      loadedXml = generateAzureLandingZoneArchitectureXml();
+      loadedXml = defaultTpl.generateXml('enterprise', isLight ? 'light' : 'dark');
     }
-    setResolvedId(bpId || 'VIS-9745');
-    setResolvedTitle(rawTitleParam || 'Azure Application Landing Zone');
+    setResolvedId(bpId || `#${defaultTpl.id}`);
+    setResolvedTitle(rawTitleParam || defaultTpl.name);
     setXmlContent(loadedXml);
   }, [rawBlueprintParam, rawTitleParam, isLight]);
+
+  const [shareCopied, setShareCopied] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !resolvedId) return;
+    try {
+      const cleanId = resolvedId.replace(/^#/, '');
+      const url = new URL(window.location.href);
+      if (url.searchParams.get('id') !== cleanId) {
+        url.searchParams.set('id', cleanId);
+        url.searchParams.delete('blueprint');
+        window.history.replaceState(null, '', url.toString());
+      }
+    } catch {}
+  }, [resolvedId]);
+
+  const handleCopyViewerShareLink = () => {
+    if (typeof window === 'undefined') return;
+    const cleanId = (resolvedId || '00').replace(/^#/, '');
+    const shareUrl = `${window.location.origin}/viewer?id=${encodeURIComponent(cleanId)}&mode=${encodeURIComponent(activeMode)}&view=${viewerSubMode === 'cloud-viewer' ? 'cloud-viewer' : 'workspace'}`;
+    navigator.clipboard.writeText(shareUrl).catch(() => {});
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 2200);
+  };
 
   // Compile real .pptx or .docx and upload to GCP Cloud Storage Bridge so docs.google.com/viewerng/viewer renders it authentically
   // (only needed for the in-app fallbacks — the Google Drive handoff uploads straight into the user's Drive instead)
@@ -388,6 +428,32 @@ function CloudViewerContent() {
 
         {/* Right: Native Google Viewer Launchers, Interactive Studio Toggle & Download */}
         <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            data-testid="viewer-share-link-btn"
+            onClick={handleCopyViewerShareLink}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border ${
+              shareCopied
+                ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                : isLight
+                  ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                  : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+            }`}
+            title="Copy canonical shareable viewer link (?id=...)"
+          >
+            {shareCopied ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Link Copied!</span>
+              </>
+            ) : (
+              <>
+                <Share2 className="w-3.5 h-3.5 text-sky-600" />
+                <span className="hidden md:inline">Share Link</span>
+              </>
+            )}
+          </button>
+
           {/* Toggle between Embedded Google Cloud Viewer and Interactive Slides/Docs Editor */}
           <button
             type="button"

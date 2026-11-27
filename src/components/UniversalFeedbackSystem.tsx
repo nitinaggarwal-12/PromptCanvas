@@ -74,6 +74,19 @@ export const FeedbackHeaderEmailButton: React.FC<UniversalFeedbackProps> = ({
   const [submittedRecord, setSubmittedRecord] = useState<FeedbackRecord | null>(null);
   const [deliveryInfo, setDeliveryInfo] = useState<DeliveryStatus | null>(null);
 
+  useEffect(() => {
+    if (!modalOpen || senderEmail) return;
+    fetch('/api/auth/me')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d?.user?.email && !String(d.user.email).endsWith('@promptcanvas.guest')) {
+          setSenderEmail(d.user.email);
+          if (d.user.name && !senderName) setSenderName(d.user.name);
+        }
+      })
+      .catch(() => {});
+  }, [modalOpen, senderEmail, senderName]);
+
   const resolvedRoute =
     currentRoute ||
     (typeof window !== 'undefined'
@@ -403,7 +416,7 @@ export const FeedbackHeaderEmailButton: React.FC<UniversalFeedbackProps> = ({
                         data-testid="feedback-sender-name-input"
                         value={senderName}
                         onChange={(e) => setSenderName(e.target.value)}
-                        placeholder="e.g., Nitin Aggarwal"
+                        placeholder="e.g., Alex Morgan"
                         className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-blue-600 focus:outline-none"
                       />
                     </div>

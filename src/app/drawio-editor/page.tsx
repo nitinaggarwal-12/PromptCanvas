@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { CheckCircle2, Save, ArrowLeft, Layers, AlertCircle } from 'lucide-react';
+import Link from 'next/link';
+import { CheckCircle2, Save, ArrowLeft, Layers, AlertCircle, Share2, Check } from 'lucide-react';
 
 const DRAWIO_EMBED_ORIGIN = 'https://embed.diagrams.net';
 
@@ -13,14 +14,15 @@ export default function FullscreenDrawioEditorPage() {
   const [versionTag, setVersionTag] = useState<string>('v1.0');
   const [syncStatus, setSyncStatus] = useState<'ready' | 'saving' | 'synced' | 'error'>('ready');
   const [syncDetail, setSyncDetail] = useState<string>('');
+  const [shareCopied, setShareCopied] = useState<boolean>(false);
   const latestXmlRef = useRef<string>('');
 
   useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search);
-      const urlDiagramId = params.get('diagramId')?.trim() || null;
+      const urlDiagramId = (params.get('id') || params.get('diagramId') || '').trim() || null;
       const storedRaw = localStorage.getItem('promptcanvas_drawio_active_session');
-      if (storedRaw) {
+      if (storedRaw && !urlDiagramId) {
         const parsed = JSON.parse(storedRaw);
         if (parsed.xml) {
           setXml(parsed.xml);
@@ -28,11 +30,23 @@ export default function FullscreenDrawioEditorPage() {
         }
         if (parsed.projectTitle) setProjectTitle(parsed.projectTitle);
         if (parsed.versionTag) setVersionTag(parsed.versionTag);
-        if (urlDiagramId || parsed.diagramId) {
-          setDiagramId(urlDiagramId || parsed.diagramId);
+        if (parsed.diagramId) {
+          setDiagramId(parsed.diagramId);
         }
       } else if (urlDiagramId) {
         setDiagramId(urlDiagramId);
+        if (storedRaw) {
+          try {
+            const parsed = JSON.parse(storedRaw);
+            if (parsed.diagramId === urlDiagramId && parsed.xml) {
+              setXml(parsed.xml);
+              latestXmlRef.current = parsed.xml;
+              if (parsed.projectTitle) setProjectTitle(parsed.projectTitle);
+              if (parsed.versionTag) setVersionTag(parsed.versionTag);
+              return;
+            }
+          } catch {}
+        }
         fetch(`/api/diagrams/${encodeURIComponent(urlDiagramId)}`, { cache: 'no-store' })
           .then((r) => (r.ok ? r.json() : null))
           .then((data) => {
@@ -48,6 +62,36 @@ export default function FullscreenDrawioEditorPage() {
       console.error('Failed to load active Draw.io session:', e);
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !diagramId) return;
+    try {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get('id') !== diagramId) {
+        url.searchParams.set('id', diagramId);
+        url.searchParams.delete('diagramId');
+        window.history.replaceState(null, '', url.toString());
+      }
+    } catch {}
+  }, [diagramId]);
+
+  const handleCopyShareLink = () => {
+    if (typeof window === 'undefined' || !diagramId) return;
+    const shareUrl = `${window.location.origin}/drawio-editor?id=${encodeURIComponent(diagramId)}`;
+    navigator.clipboard.writeText(shareUrl).catch(() => {});
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 2200);
+  };
+
+  const handleBackNavigation = () => {
+    if (typeof window !== 'undefined') {
+      if (window.opener) {
+        window.close();
+        return;
+      }
+      window.location.assign(diagramId ? `/dashboard?id=${encodeURIComponent(diagramId)}` : '/dashboard');
+    }
+  };
 
   const broadcastSavedXmlToStudio = async (
     savedXml: string,
@@ -80,11 +124,10 @@ export default function FullscreenDrawioEditorPage() {
       console.error('Broadcast sync error:', e);
     }
 
-    // Persist directly to DB version history whenever linked to a real persisted diagramId
+    // Persist directly to DB version history whenever linked to a real persisted diagramId (including proj_* IDs)
     const isPersistedDbId =
       Boolean(diagramId) &&
       !diagramId!.startsWith('ses_') &&
-      !diagramId!.startsWith('proj_') &&
       !diagramId!.startsWith('tab_');
 
     if (isPersistedDbId && diagramId) {
@@ -157,17 +200,30 @@ export default function FullscreenDrawioEditorPage() {
       {/* Top Light-Theme Sync Bar */}
       <header className="h-12 px-6 bg-white border-b border-slate-200 flex items-center justify-between shrink-0 shadow-2xs">
         <div className="flex items-center gap-3">
+          <Link
+            href="/"
+            className="text-xs font-extrabold text-slate-900 hover:text-blue-600 transition-colors"
+          >
+            PromptCanvas
+          </Link>
+          <span className="text-slate-300">/</span>
           <button
-            onClick={() => window.close()}
+            type="button"
+            onClick={handleBackNavigation}
             className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 cursor-pointer border border-slate-200"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Studio Tab</span>
+            <span>Back to Studio</span>
           </button>
           <div className="flex items-center gap-2 text-xs font-bold text-slate-800">
             <Layers className="w-4 h-4 text-blue-600" />
             <span>Draw.io Live Bidirectional Editor:</span>
             <span className="text-blue-700 font-mono">{projectTitle}</span>
+            {diagramId && (
+              <span className="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono text-[11px]">
+                ID: {diagramId}
+              </span>
+            )}
             <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono text-[11px]">
               Base {versionTag}
             </span>
@@ -175,6 +231,30 @@ export default function FullscreenDrawioEditorPage() {
         </div>
 
         <div className="flex items-center gap-3">
+          {diagramId && (
+            <button
+              type="button"
+              data-testid="drawio-editor-share-link-btn"
+              onClick={handleCopyShareLink}
+              className={`px-3 py-1.5 rounded-lg border text-xs font-bold flex items-center gap-1.5 cursor-pointer transition ${
+                shareCopied
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
+              }`}
+            >
+              {shareCopied ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Link Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Share2 className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Share Link</span>
+                </>
+              )}
+            </button>
+          )}
           {syncStatus === 'synced' && (
             <span className="text-xs font-bold text-emerald-700 flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
               <CheckCircle2 className="w-3.5 h-3.5" />

@@ -14,8 +14,8 @@ describe('Architecture Depth Levels (L100–L400) & NLP Top 1–3 Blueprint Reco
     vi.restoreAllMocks();
   });
 
-  it('assigns a valid L100/L200/L300/L400 depthLevel to all 41 certified blueprints with L400 as most detailed', () => {
-    expect(CANONICAL_TEMPLATES.length).toBe(41);
+  it('assigns a valid L100/L200/L300/L400 depthLevel to all 35 certified blueprints with L400 as most detailed', () => {
+    expect(CANONICAL_TEMPLATES.length).toBe(35);
     expect(CANONICAL_DEPTH_LEVELS).toEqual(['All', 'L100', 'L200', 'L300', 'L400']);
 
     const counts: Record<BlueprintDepthLevel, number> = {
@@ -33,8 +33,8 @@ describe('Architecture Depth Levels (L100–L400) & NLP Top 1–3 Blueprint Reco
     expect(counts.L100).toBeGreaterThan(0);
     expect(counts.L200).toBeGreaterThan(0);
     expect(counts.L300).toBeGreaterThan(0);
-    expect(counts.L400).toBe(9);
-    expect(counts.L100 + counts.L200 + counts.L300 + counts.L400).toBe(41);
+    expect(counts.L400).toBe(6);
+    expect(counts.L100 + counts.L200 + counts.L300 + counts.L400).toBe(35);
 
     const bp99 = CANONICAL_TEMPLATES.find((t) => t.id === '99');
     expect(bp99?.depthLevel).toBe('L400');
@@ -64,10 +64,10 @@ describe('Architecture Depth Levels (L100–L400) & NLP Top 1–3 Blueprint Reco
           },
           {
             rank: 2,
-            templateId: '79',
+            templateId: '94',
             matchScore: 91,
-            reasoning: 'Template #79 supplies the L400 VPC CIDR blocks, BGP ASN 64512, Cloud Armor WAF, and PSC subnet geometry for the same hub-and-spoke multi-tenant topology.',
-            suggestedMutations: ['Add custom PSC spoke CIDR ranges'],
+            reasoning: 'Template #94 supplies the L400 C4 System Context boundary, VPC-SC perimeters, and OAuth 2.1 DPoP ingress contracts for the same enterprise platform.',
+            suggestedMutations: ['Add custom PSC spoke ingress endpoints'],
           },
           {
             rank: 3,
@@ -90,7 +90,7 @@ describe('Architecture Depth Levels (L100–L400) & NLP Top 1–3 Blueprint Reco
     expect(res.inferredLevel).toBe('L400');
     expect(res.recommendations.length).toBe(3);
     expect(res.recommendations.map((r) => r.rank)).toEqual([1, 2, 3]);
-    expect(res.recommendations.map((r) => r.templateId)).toEqual(['99', '79', '81']);
+    expect(res.recommendations.map((r) => r.templateId)).toEqual(['99', '94', '81']);
     expect(res.recommendations.every((r) => r.depthLevel === 'L400')).toBe(true);
     expect(res.recommendations[0].reasoning).toContain('5-Hop');
     expect(res.recommendations[0].suggestedMutations.length).toBeGreaterThan(0);

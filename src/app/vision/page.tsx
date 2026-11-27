@@ -381,14 +381,16 @@ function VisionPageContent() {
   );
 
   /**
-   * Synchronizes the browser address bar URL with the active Blueprint ID and Object ID
-   * so every blueprint and every individual object has a unique addressable URL.
+   * Synchronizes the browser address bar URL with the exact Canonical Blueprint/Diagram ID and Object ID
+   * (never hashing a persisted UUID into a lossy VIS-XXXX shortcode).
    */
-  const syncVisionUrl = useCallback((bpId: string, objSlug?: string | null) => {
+  const syncVisionUrl = useCallback((bpId: string, objSlug?: string | null, verNum?: number | null) => {
     if (typeof window === 'undefined' || !bpId) return;
     const params = new URLSearchParams(window.location.search);
-    const shortId = formatDisplayBlueprintId(bpId);
-    params.set('id', shortId);
+    params.set('id', bpId);
+    if (verNum && verNum >= 1) {
+      params.set('v', String(verNum));
+    }
     if (objSlug) {
       params.set('obj', objSlug);
     } else {
@@ -771,11 +773,13 @@ function VisionPageContent() {
         if (latestVer && latestVer.xml_content) {
           const enrichedXml = enrichDrawioXmlWithVectorIcons(latestVer.xml_content);
           const resolvedTitle = inferTitleFromXml(enrichedXml, dbDiagram.name);
-          const effectiveId = id.toUpperCase().startsWith('VIS-') ? id.toUpperCase() : dbDiagram.id;
+          const effectiveId = dbDiagram.id || id;
           setSelectedBlueprintId(effectiveId);
           setSelectedImageName(resolvedTitle);
           setIsCustomUpload(true);
           setLeftPaneMode('single');
+          setActiveObjectSlug(initialObjSlug || null);
+          syncVisionUrl(effectiveId, initialObjSlug || null, Array.isArray(dbDiagram.versions) ? dbDiagram.versions.length : 1);
           setDecompiledXml(enrichedXml);
           setComponentCount((enrichedXml.match(/<mxCell/g) || []).length);
           setSummaryText(latestVer.comment || resolvedTitle);
@@ -796,20 +800,26 @@ function VisionPageContent() {
             if (vaultImg && vaultImg.length > 100) recoveredImg = vaultImg;
           }
 
-          // Priority 3: Match against custom blueprints stored in browser
+          // Priority 2.5: Exact architecture_type template preview (arch_tpl_* or canonical_*)
+          if (!recoveredImg && typeof dbDiagram.architecture_type === 'string') {
+            const archTplMatch = /^arch_tpl_([a-z0-9]+)$/i.exec(dbDiagram.architecture_type.trim());
+            const canonMatch = /^canonical_(\d{1,2})/i.exec(dbDiagram.architecture_type.trim());
+            if (archTplMatch) {
+              recoveredImg = `/architecture-templates/template_${archTplMatch[1].toLowerCase()}.png`;
+            } else if (canonMatch) {
+              recoveredImg = `/templates/canonical_${canonMatch[1].padStart(2, '0')}.png`;
+            }
+          }
+
+          // Priority 3: Match against custom blueprints stored in browser (strictly matching ID/title, never arbitrary allCustoms[0])
           if (!recoveredImg) {
             const allCustoms = getCustomVisionBlueprints();
             const customMatch = allCustoms.find(c =>
               c.id === dbDiagram.id ||
               c.id.toUpperCase() === effectiveId.toUpperCase() ||
               c.title.toLowerCase() === resolvedTitle.toLowerCase() ||
-              c.title.toLowerCase() === dbDiagram.name.toLowerCase() ||
-              (resolvedTitle.toLowerCase().includes('gemini enterprise') &&
-                (c.title.toLowerCase().includes('gemini enterprise') ||
-                 c.title.toLowerCase().includes('image_') ||
-                 c.title.toLowerCase().includes('clipboard') ||
-                 c.xml.toLowerCase().includes('gemini enterprise')))
-            ) || allCustoms[0];
+              c.title.toLowerCase() === dbDiagram.name.toLowerCase()
+            );
             if (customMatch?.imageSrc) {
               recoveredImg = customMatch.imageSrc;
             }
@@ -1200,10 +1210,90 @@ function VisionPageContent() {
     }
   };
 
-  // Open in Studio Editor with this diagram pre-loaded
-  const handleOpenInStudio = () => {
+  const [shareCopied, setShareCopied] = useState<boolean>(false);
+
+  const persistCurrentVisionDiagramIfNeeded = async (): Promise<string> => {
+    const presetIds = new Set([
+      'VIS-1787',
+      'VIS-3093',
+      'VIS-5965',
+      'VIS-9745',
+      'VIS-AGENTIC-01',
+      'GCP-MULTIAGENT-01',
+      'GCP-GE-BANKING-2026',
+    ]);
+    if (!isCustomUpload && presetIds.has((selectedBlueprintId || '').toUpperCase())) {
+      return selectedBlueprintId;
+    }
+    const enriched = enrichDrawioXmlWithVectorIcons(decompiledXml);
+    const imgToPersist = resolveIntactBlueprintImage(selectedBlueprintId, selectedImageSrc, selectedImageName, enriched);
+    const xmlWithImage = imgToPersist && imgToPersist.length <= 180000 ? embedSourceImageInXml(enriched, imgToPersist) : enriched;
+    const resolvedTitle = inferTitleFromXml(xmlWithImage, selectedImageName || 'Vision AI Decompiled Diagram');
+    const explicitId =
+      selectedBlueprintId && !presetIds.has(selectedBlueprintId.toUpperCase()) && selectedBlueprintId !== 'NEW-CANVAS'
+        ? selectedBlueprintId
+        : undefined;
+    if (explicitId) {
+      try {
+        const existsRes = await fetch(`/api/diagrams/${encodeURIComponent(explicitId)}`, { cache: 'no-store' });
+        if (existsRes.ok) {
+          return explicitId;
+        }
+      } catch {}
+    }
+    const res = await fetch('/api/diagrams', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: explicitId,
+        name: resolvedTitle,
+        xml: xmlWithImage,
+        comment: summaryText || `Decompiled with Vision AI (${componentCount} components)`,
+        prompt: summaryText || `Vision Decompiler Blueprint: ${resolvedTitle}`,
+        architectureType: 'vision_decompiled',
+        createdStudio: 'vision',
+        isPrivate: false,
+      }),
+    });
+    if (res.ok) {
+      const savedData = await res.json();
+      const dbId = savedData?.diagram?.id || savedData?.id;
+      if (dbId) {
+        setSelectedBlueprintId(dbId);
+        syncVisionUrl(dbId, activeObjectSlug, 1);
+        return dbId;
+      }
+    }
+    return selectedBlueprintId;
+  };
+
+  const handleCopyVisionShareLink = async () => {
+    if (typeof window === 'undefined') return;
+    let targetId = selectedBlueprintId || 'GCP-MULTIAGENT-01';
+    try {
+      if (isCustomUpload && decompiledXml && decompiledXml.includes('<mxCell')) {
+        targetId = await persistCurrentVisionDiagramIfNeeded();
+      }
+    } catch {}
+    const shareUrl = `${window.location.origin}/vision?id=${encodeURIComponent(targetId)}${
+      activeObject ? `&obj=${encodeURIComponent(activeObject.urlSlug)}` : ''
+    }`;
+    navigator.clipboard.writeText(shareUrl).catch(() => {});
+    syncVisionUrl(targetId, activeObject ? activeObject.urlSlug : null);
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 2200);
+    showToast(`🔗 Copied colleague-shareable URL: ${shareUrl}`);
+  };
+
+  // Open in Studio Editor with a permanent Canonical ID (?id=<persistedId>)
+  const handleOpenInStudio = async () => {
     if (!decompiledXml) return;
     try {
+      const persistedId = await persistCurrentVisionDiagramIfNeeded();
+      if (persistedId && !['GCP-MULTIAGENT-01', 'GCP-GE-BANKING-2026', 'VIS-1787', 'VIS-3093', 'VIS-5965', 'VIS-9745', 'VIS-AGENTIC-01'].includes(persistedId.toUpperCase())) {
+        router.push(`/dashboard?id=${encodeURIComponent(persistedId)}&v=1`);
+        return;
+      }
       const importPayload = {
         title: selectedImageName,
         xml: decompiledXml,
@@ -1437,10 +1527,15 @@ function VisionPageContent() {
       const xmlWithImage = embedSourceImageInXml(enriched, imgToPersist);
       const resolvedTitle = inferTitleFromXml(xmlWithImage, selectedImageName || 'Vision AI Decompiled Diagram');
 
+      const canonicalVisionId =
+        selectedBlueprintId && !['VIS-1787', 'VIS-3093', 'VIS-5965', 'VIS-9745', 'VIS-AGENTIC-01', 'GCP-MULTIAGENT-01', 'GCP-GE-BANKING-2026'].includes(selectedBlueprintId.toUpperCase())
+          ? selectedBlueprintId
+          : undefined;
       const res = await fetch('/api/diagrams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          id: canonicalVisionId,
           name: resolvedTitle,
           xml: xmlWithImage,
           comment: `Decompiled with Vision AI (${componentCount} components)`,
@@ -1453,6 +1548,13 @@ function VisionPageContent() {
       if (!res.ok) throw new Error('Failed to save to database');
       const savedData = await res.json();
       const dbId = savedData?.diagram?.id || savedData?.id;
+      if (dbId && canonicalVisionId && dbId !== canonicalVisionId) {
+        deleteCustomVisionBlueprint(canonicalVisionId);
+      }
+      if (dbId) {
+        setSelectedBlueprintId(dbId);
+        syncVisionUrl(dbId, activeObjectSlug);
+      }
       if (dbId && imgToPersist && typeof window !== 'undefined') {
         try {
           localStorage.setItem(`vision_db_image_${dbId}`, imgToPersist);
@@ -1506,6 +1608,7 @@ function VisionPageContent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          id: bp.id,
           name: bp.title,
           xml: xmlWithImage,
           comment: `Vision AI Blueprint: ${bp.title}`,
@@ -1668,6 +1771,19 @@ function VisionPageContent() {
               <BookmarkPlus className="w-3 h-3 text-amber-400" aria-hidden="true" />
             )}
             <span>Save to Library</span>
+          </button>
+
+          {/* 2B. 1-Click Share Link in Header */}
+          <button
+            type="button"
+            data-testid="vision-share-link-btn"
+            onClick={() => void handleCopyVisionShareLink()}
+            disabled={!decompiledXml || isDecompiling}
+            className="px-3 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-blue-500/40 text-blue-200 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 whitespace-nowrap active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
+            title="Copy canonical shareable colleague URL (?id=...)"
+          >
+            <Link2 className="w-3 h-3 text-blue-400" aria-hidden="true" />
+            <span>{shareCopied ? 'Link Copied!' : 'Share Link'}</span>
           </button>
 
           {/* 3. Consolidated Export & Google Workspace Menu (Slides, Docs, .pptx, .docx, .drawio, XML) */}
@@ -1887,7 +2003,13 @@ function VisionPageContent() {
 
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900 text-white text-[10.5px] font-mono font-bold border border-slate-700 shadow-2xs">
               <Tag className="w-3 h-3 text-teal-400" aria-hidden="true" />
-              <span className="text-teal-300 tracking-tight tabular-nums">{formatDisplayBlueprintId(selectedBlueprintId)}</span>
+              <span className="text-teal-300 tracking-tight tabular-nums" title={`Canonical ID: ${selectedBlueprintId}`}>
+                {selectedBlueprintId.startsWith('VIS-') || selectedBlueprintId.startsWith('GCP-')
+                  ? selectedBlueprintId
+                  : selectedBlueprintId.length > 18
+                  ? `${selectedBlueprintId.slice(0, 8)}…`
+                  : selectedBlueprintId}
+              </span>
               {componentCount > 0 && (
                 <span className="px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 text-[9.5px] font-sans border border-slate-700 tabular-nums">
                   {componentCount} nodes
@@ -1916,18 +2038,14 @@ function VisionPageContent() {
               <div className="h-3 w-px bg-slate-700 mx-0.5" />
               <button
                 type="button"
-                onClick={() => {
-                  const shortId = formatDisplayBlueprintId(selectedBlueprintId);
-                  const shareUrl = `${window.location.origin}/vision?id=${encodeURIComponent(shortId)}${activeObject ? `&obj=${encodeURIComponent(activeObject.urlSlug)}` : ''}`;
-                  navigator.clipboard.writeText(shareUrl);
-                  showToast(`🔗 Copied Direct URL [${shareUrl}] to clipboard!`);
-                }}
+                data-testid="vision-copy-url-btn"
+                onClick={() => void handleCopyVisionShareLink()}
                 aria-label="Copy Direct Shareable URL"
                 className="px-1.5 py-0.2 rounded bg-blue-600/30 hover:bg-blue-600/50 text-blue-200 border border-blue-500/40 flex items-center gap-1 transition cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
-                title="Copy Direct Shareable URL"
+                title={`Copy Direct Shareable URL (ID: ${selectedBlueprintId})`}
               >
                 <Link2 className="w-2.5 h-2.5" aria-hidden="true" />
-                <span className="text-[9.5px] font-sans font-bold">Copy URL</span>
+                <span className="text-[9.5px] font-sans font-bold">{shareCopied ? 'Copied!' : 'Share Link'}</span>
               </button>
               <button
                 type="button"

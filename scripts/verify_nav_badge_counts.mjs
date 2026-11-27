@@ -55,6 +55,22 @@ const templateCount = activeBlockMatch
   : 19;
 check('Blueprint Catalog', templateCount, 'canonical', sidebar);
 
+// Certified Architecture Templates (/templates): count entries in CERTIFIED_ARCHITECTURE_TEMPLATES & assert 0 L100
+const certArchSrc = read('src/lib/templates/certifiedArchitectureTemplates.ts');
+const certArchCount = (certArchSrc.match(/"slug":\s*"template_/g) || []).length;
+check('Templates', certArchCount, 'templates', sidebar);
+if (/"level":\s*"L100"/.test(certArchSrc)) {
+  console.error('❌ Templates Level Guard: Found forbidden L100 entry in src/lib/templates/certifiedArchitectureTemplates.ts');
+  failed++;
+} else {
+  console.log(`✅ Templates Level Guard: ${certArchCount} certified architecture templates verified across L200–L400 (0 L100, 0 Infographics)`);
+}
+
+// Separate Infographics (/infographics): count entries in INFOGRAPHIC_BLUEPRINTS_LIST
+const infoSrc = read('src/lib/canonical/infographicBlueprints52to66.ts');
+const infoCount = (infoSrc.match(/previewImage:\s*'\/templates\/(?:5[2-9]|6[0-6])\.png'/g) || []).length;
+check('Infographics', infoCount, 'infographics', sidebar);
+
 // Document archetypes: count `id:` keys inside DOC_ARCHETYPES_META.
 const arche = read('src/lib/compose/archetypes.ts');
 const metaStart = arche.indexOf('export const DOC_ARCHETYPES_META');
@@ -85,6 +101,15 @@ const retiredPaths = [
   'src/app/api/generate/usecases',
   'src/app/api/infographic-blueprint',
   'src/app/api/research-infographic',
+  'public/gcp-templates',
+  'public/gcp-multi-tenant-artifacts',
+  'src/components/VisitorCounter.tsx',
+  'src/app/api/visitors',
+  'src/lib/canonical/template59QuarterlyRoadmapGcp.ts',
+  'src/lib/gcpDialectA.ts',
+  'src/lib/gcpConceptualPharma.ts',
+  'src/lib/validate/contrast.ts',
+  'src/prompts/repairXml.ts',
 ];
 const existingRetiredPaths = retiredPaths.filter((d) => fs.existsSync(path.join(ROOT, d)));
 if (
@@ -109,8 +134,8 @@ const RESTORED_CANONICAL_PNGS = new Set([
   'canonical_29.png',
 ]);
 const forbiddenLegacyFiles = pubTemplates.filter((f) =>
-  (/^(?:0[1-9]|[1234]\d|5[01]|68|7[0-4]|80|82|83)\.png$/.test(f)) ||
-  (/^canonical_(?:0[1-9]|[1234]\d|5[01]|68|7[0-4]|80|82|83)\.png$/.test(f) && !RESTORED_CANONICAL_PNGS.has(f)) ||
+  (/^(?:0[1-9]|[1234]\d|5[01]|68|7[0-4]|79|80|82|83|85|86|88|96|98)\.png$/.test(f)) ||
+  (/^canonical_(?:0[1-9]|[1234]\d|5[01]|68|7[0-4]|79|80|82|83|85|86|88|96|98)\.png$/.test(f) && !RESTORED_CANONICAL_PNGS.has(f)) ||
   /^(?:P[1-5]|ARCH|IND|NEW)-/.test(f) ||
   /^infographic_/.test(f) ||
   f === '40.svg' ||
@@ -228,6 +253,39 @@ for (const f of allSrcFiles) {
   if (rel.startsWith('src/lib/masterBuilders/') && /id="old_[^"]+"/.test(txt)) {
     srcViolations.push(`${rel}: contains legacy id="old_*" diagram ID`);
   }
+  if (/art_gen_default_|proj_aeronode_981|proj_smartgrid_774|proj_apexpay_332/.test(txt)) {
+    srcViolations.push(`${rel}: contains purged fabricated demo project/artifact ID`);
+  }
+  if (rel === 'src/app/viewer/page.tsx' && /VIS-9745|Azure Application Landing Zone/.test(txt)) {
+    srcViolations.push(`${rel}: contains purged VIS-9745 Azure fallback`);
+  }
+  if (/cymbal-build-sandbox/i.test(txt)) {
+    srcViolations.push(`${rel}: contains retired cymbal-build-sandbox GCP project reference`);
+  }
+  if (/authuser=nitinagga/i.test(txt)) {
+    srcViolations.push(`${rel}: contains hardcoded personal authuser=nitinagga query param`);
+  }
+  if (/defaultSenderEmail=["']nitinagga@/i.test(txt)) {
+    srcViolations.push(`${rel}: contains hardcoded personal defaultSenderEmail spoofing colleague feedback`);
+  }
+  if (/\b(?:All\s+50|Blueprint\s+Templates\s*\(50\))\b/.test(txt)) {
+    srcViolations.push(`${rel}: contains stale (50) blueprint count label`);
+  }
+}
+
+// 9B. Zero sidecar .metadata.json files anywhere inside src/
+function walkAllFiles(dir) {
+  let out = [];
+  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, ent.name);
+    if (ent.isDirectory()) out.push(...walkAllFiles(p));
+    else out.push(p);
+  }
+  return out;
+}
+const strayMetaFiles = walkAllFiles(path.join(ROOT, 'src')).filter((f) => f.endsWith('.metadata.json'));
+for (const mf of strayMetaFiles) {
+  srcViolations.push(`${path.relative(ROOT, mf)}: stray sidecar .metadata.json file in src/`);
 }
 if (srcViolations.length > 0) {
   console.error(`❌ Full-Repo Source Purity Guard (${srcViolations.length} violation(s)):`, srcViolations);
@@ -244,7 +302,7 @@ const crossPageTargets = [
   'src/app/guide/page.tsx',
   'README.md',
 ];
-const staleBlueprintRegex = /\b(?:7|8|18|19|22|23|26|29|40|77)\s+(?:Official\s+Google\s+Cloud\s+Reference\s+(?:&\s+Infographic\s+)?Blueprints|curated\s+Google\s+Cloud\s+reference\s+(?:&\s+infographic\s+)?blueprints|Production\s+Blueprints|Certified\s+Blueprints|Certified|certified\s+reference\s+architectures|Reference\s+Blueprints|Blueprints|blueprints|Canonical\s+Blueprints|canonical\s+master\s+blueprints|production\s+Google\s+Cloud\s+blueprints)\b/;
+const staleBlueprintRegex = /\b(?:7|8|18|19|22|23|26|29|40|41|77)\s+(?:Official\s+Google\s+Cloud\s+Reference\s+(?:&\s+Infographic\s+)?Blueprints|curated\s+Google\s+Cloud\s+reference\s+(?:&\s+infographic\s+)?blueprints|Production\s+Blueprints|Certified\s+Blueprints|Certified|certified\s+reference\s+architectures|Reference\s+Blueprints|Blueprints|blueprints|Canonical\s+Blueprints|canonical\s+master\s+blueprints|production\s+Google\s+Cloud\s+blueprints)\b/;
 for (const rel of crossPageTargets) {
   const content = read(rel);
   const m = staleBlueprintRegex.exec(content);

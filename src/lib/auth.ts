@@ -1,9 +1,11 @@
 import { randomBytes, scryptSync, timingSafeEqual } from 'crypto';
 import { cookies } from 'next/headers';
-import { getSession, User } from './db';
+import { createSession, createUser, getSession, User } from './db';
 
 export const SESSION_COOKIE_NAME = 'promptcanvas_session';
 export const SESSION_MAX_AGE_DAYS = 30;
+
+// TODO(security): Integrate corporate OAuth2 / BeyondCorp IAP identity header extraction when configured.
 
 /**
  * Hash a plain text password using Node.js native crypto scrypt with a random salt.
@@ -64,6 +66,31 @@ export async function getAuthenticatedUser(): Promise<User | null> {
 }
 
 export const getCurrentUser = getAuthenticatedUser;
+
+/**
+ * Ensures the caller has a persistent authenticated or guest session (backed by SQLite + GCS)
+ * so diagram creation, multi-version backfill, and collaborative edits retain ownership across
+ * Cloud Run container restarts.
+ */
+export async function ensureAuthenticatedOrGuestUser(): Promise<User | null> {
+  const existing = await getAuthenticatedUser();
+  if (existing && existing.id) {
+    return existing;
+  }
+  try {
+    const guestRand = randomBytes(6).toString('hex');
+    const guestEmail = `guest_${guestRand}@promptcanvas.guest`;
+    const ephemeralPass = randomBytes(24).toString('hex');
+    const { hash, salt } = hashPassword(ephemeralPass);
+    const guestUser = await createUser(guestEmail, hash, salt, 'Workspace Architect');
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * SESSION_MAX_AGE_DAYS);
+    const session = await createSession(guestUser.id, expiresAt);
+    await setSessionCookie(session.id);
+    return guestUser;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Helper to set session cookie on Next.js Response / cookieStore.

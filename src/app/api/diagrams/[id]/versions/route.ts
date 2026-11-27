@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDiagram, saveDiagramVersion } from '@/lib/db';
-import { getAuthenticatedUser } from '@/lib/auth';
+import { ensureAuthenticatedOrGuestUser } from '@/lib/auth';
 
 interface RouteParams {
   params: Promise<{
@@ -11,9 +11,9 @@ interface RouteParams {
 // POST /api/diagrams/[id]/versions - Save a new version of a diagram
 export async function POST(request: Request, { params }: RouteParams) {
   try {
-    const user = await getAuthenticatedUser();
+    const user = await ensureAuthenticatedOrGuestUser();
     const { id: diagramId } = await params;
-    
+
     // Verify diagram exists and user has edit permissions
     const diagram = await getDiagram(diagramId, user?.id);
     if (!diagram) {
@@ -35,6 +35,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     const comment = body.comment;
     const createdBy = body.createdBy ?? body.created_by ?? (user?.name || user?.email || 'User');
     const architectureType = body.architectureType ?? body.architecture_type;
+    const prompt = body.prompt ?? null;
 
     if (xmlContent === undefined || typeof xmlContent !== 'string') {
       return NextResponse.json(
@@ -48,7 +49,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       xmlContent,
       comment,
       createdBy || 'User',
-      null,
+      prompt,
       null,
       null,
       null,

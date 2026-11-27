@@ -38,7 +38,8 @@ import {
   Maximize2,
   Minimize2,
   MessageSquareQuote,
-  X
+  X,
+  Share2,
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
@@ -100,7 +101,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         stepNumber: 1,
         title: 'Architecture Studio Orientation',
         whereToClick: 'Architecture Studio / Blueprint Catalog',
-        description: 'PromptCanvas provides a streamlined architecture workspace. Access 41 Certified Blueprints in the Blueprint Catalog and 8 surviving archetypes in Document Studio, directly from the sidebar.',
+        description: 'PromptCanvas provides a streamlined architecture workspace. Access 36 Zero-Bento Architecture Templates, 35 Certified Blueprints in the Blueprint Catalog, and 8 surviving archetypes in Document Studio directly from the sidebar.',
         validationChecklist: [
           'Left Studio is ready for prompt input or blueprint selection',
           'Canvas is set to high-DPI 1600px 16:9 desktop grid'
@@ -116,7 +117,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         stepNumber: 2,
         title: 'Prompt Entry & Architecture Selection',
         whereToClick: 'Architecture Studio -> "ACTIVE USE CASE PROMPT" text area',
-        description: 'Type plain English requirements or select from 41 Certified Blueprints (8 Core #78, #99 [L400 GCP], #79, #81, #84, #00, #67, #69 + 14 G-Series #85–#98 + 4 Restored #03, #12, #14, #29 + 15 Infographic Blueprints #52–#66).',
+        description: 'Type plain English requirements or select from 35 Certified Blueprints (7 Core #78, #99 [L400 GCP], #81, #84, #00, #67, #69 + 9 G-Series #87, #89–#95, #97 + 4 Restored #03, #12, #14, #29 + 15 Infographic Blueprints #52–#66).',
         promptRecipe: 'Design an Enterprise Cloud Platform on Google Cloud featuring Cloud Armor WAF, GKE Autopilot microservices with private VPC peering, Cloud SQL high availability, and Pub/Sub event ingestion.',
         validationChecklist: [
           'Active prompt input with concrete cloud infrastructure components',
@@ -126,7 +127,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 2,
-        templateId: '79',
+        templateId: '78',
         imagePath: '/workflows/frames/quickstart/frame_03.png',
         actionLabel: '3. Compiling 2D AST Architecture Graph with Zero Collision Routing',
         narrationText: 'Step three: Click Generate. Gemini AI parses your prompt into functional tiers and compiles a 2D collision-free Draw.io XML graph.',
@@ -630,6 +631,44 @@ export default function GuidePage() {
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
   const [copiedPrompt, setCopiedPrompt] = useState<string | null>(null);
+  const [shareCopied, setShareCopied] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const p = params.get('persona') as PersonaKey | null;
+    if (p && p in PERSONA_WORKFLOWS) {
+      setActivePersona(p);
+      const stepNum = Number(params.get('step') || 0);
+      if (stepNum >= 1) {
+        const wf = PERSONA_WORKFLOWS[p];
+        setCurrentFrameIndex(Math.min(wf.frames.length - 1, stepNum - 1));
+        setIsPlaying(false);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get('persona') !== activePersona) {
+        url.searchParams.set('persona', activePersona);
+        window.history.replaceState(null, '', url.toString());
+      }
+    } catch {}
+  }, [activePersona]);
+
+  const handleCopyGuideShareLink = () => {
+    if (typeof window === 'undefined') return;
+    const shareUrl = `${window.location.origin}/guide?persona=${encodeURIComponent(activePersona)}&step=${currentFrameIndex + 1}`;
+    navigator.clipboard.writeText(shareUrl).catch(() => {});
+    try {
+      window.history.replaceState(null, '', shareUrl);
+    } catch {}
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 2200);
+  };
 
   const [isAudioEnabled, setIsAudioEnabled] = useState<boolean>(false);
   const [isCaptionsEnabled, setIsCaptionsEnabled] = useState<boolean>(true);
@@ -785,6 +824,30 @@ export default function GuidePage() {
 
             {/* Right: Hub Links & Action */}
             <div className="flex items-center gap-2.5 shrink-0">
+              <button
+                type="button"
+                data-testid="guide-share-link-btn"
+                onClick={handleCopyGuideShareLink}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition cursor-pointer ${
+                  shareCopied
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                    : isLight
+                      ? 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                      : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                }`}
+              >
+                {shareCopied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Link Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Share2 className="w-3.5 h-3.5 text-teal-600" />
+                    <span>Share Link</span>
+                  </>
+                )}
+              </button>
               <Link
                 href="/dashboard"
                 className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-teal-500/20 transition-all hover:scale-[1.02]"
@@ -1569,7 +1632,7 @@ export default function GuidePage() {
           <div className={`p-3.5 rounded-xl border space-y-1 ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
             <span className="w-6 h-6 rounded-md bg-teal-500/10 text-teal-600 border border-teal-500/20 flex items-center justify-center font-bold text-xs">2</span>
             <b className={`text-xs block ${isLight ? 'text-slate-900' : 'text-white'}`}>Templates Matrix</b>
-            <p className={`text-[10px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>41 certified blueprints with 1-click &quot;Add as New View&quot;.</p>
+            <p className={`text-[10px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>36 Zero-Bento templates &amp; 35 certified blueprints.</p>
           </div>
 
           <div className={`p-3.5 rounded-xl border space-y-1 ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>

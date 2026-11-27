@@ -49,6 +49,7 @@ export function loadAllHistoricalProjects(): HistoricalProjectItem[] {
       const key = window.localStorage.key(i);
       if (key && key.startsWith('promptcanvas_docgen_versions_')) {
         const projId = key.replace('promptcanvas_docgen_versions_', '');
+        if (!projId || projId === 'default') continue;
         const raw = window.localStorage.getItem(key);
         if (raw) {
           try {
@@ -56,19 +57,29 @@ export function loadAllHistoricalProjects(): HistoricalProjectItem[] {
             if (Array.isArray(snapshots) && snapshots.length > 0) {
               const latest = snapshots[0];
               const docMarkdown = latest.docMarkdown || '';
+              let savedMeta: Record<string, string> = {};
+              try {
+                const rawMeta = window.localStorage.getItem(`promptcanvas_docgen_meta_${projId}`);
+                if (rawMeta) savedMeta = JSON.parse(rawMeta);
+              } catch {}
+
               // Extract title
               const titleMatch = docMarkdown.match(/##\s+([^\n—]+)/) || docMarkdown.match(/#\s+([^\n]+)/);
-              const title = titleMatch ? titleMatch[1].trim() : `Project ${projId.slice(-6)}`;
-              
+              const title = savedMeta.title || (titleMatch ? titleMatch[1].trim() : `Project ${projId.slice(-6)}`);
+
               // Extract summary snippet
               const summaryMatch = docMarkdown.match(/### 1\.1 Business Problem Statement\n([\s\S]*?)(?=###|$)/i);
-              const scopeSummary = summaryMatch ? summaryMatch[1].trim().slice(0, 140) + '...' : 'Production specification baseline with multi-blueprint diagram pack.';
+              const scopeSummary =
+                savedMeta.scopeSummary ||
+                (summaryMatch
+                  ? summaryMatch[1].trim().slice(0, 140) + '...'
+                  : 'Production specification baseline with multi-blueprint diagram pack.');
 
               items.push({
                 id: projId,
                 title,
-                archetypeId: 'sdd',
-                domainId: 'manufacturing',
+                archetypeId: savedMeta.archetypeId || 'sdd',
+                domainId: savedMeta.domainId || 'enterprise',
                 docVersion: latest.docVersion || latest.versionTag || 'v1.0',
                 snapshotCount: snapshots.length,
                 lastUpdated: latest.timestamp || new Date().toISOString(),
@@ -80,45 +91,7 @@ export function loadAllHistoricalProjects(): HistoricalProjectItem[] {
       }
     }
 
-    const isExplicitlyCleared = window.localStorage.getItem('promptcanvas_history_cleared') === 'true';
-
-    // If no local history found and not explicitly cleared, populate demo active historical projects
-    if (items.length === 0 && !isExplicitlyCleared) {
-      items.push(
-        {
-          id: 'proj_aeronode_981',
-          title: 'AeroNode Autonomous Drone Delivery Fleet Mesh',
-          archetypeId: 'sdd',
-          domainId: 'manufacturing',
-          docVersion: 'v1.2',
-          snapshotCount: 4,
-          lastUpdated: new Date(Date.now() - 3600000).toISOString(),
-          scopeSummary: 'Autonomous telemetry, FAA Part 135 UTM airspace routing, and Spanner state mesh.',
-        },
-        {
-          id: 'proj_smartgrid_774',
-          title: 'SmartGrid Autonomous EV & Battery Storage (BESS / V2G)',
-          archetypeId: 'tdd',
-          domainId: 'energy',
-          docVersion: 'v1.0',
-          snapshotCount: 2,
-          lastUpdated: new Date(Date.now() - 86400000).toISOString(),
-          scopeSummary: 'NERC-CIP high impact BESS substation synchronization and automated frequency regulation.',
-        },
-        {
-          id: 'proj_apexpay_332',
-          title: 'ApexPay Ultra-Low Latency FX Settlement Mesh',
-          archetypeId: 'prd',
-          domainId: 'fintech',
-          docVersion: 'v2.0',
-          snapshotCount: 6,
-          lastUpdated: new Date(Date.now() - 172800000).toISOString(),
-          scopeSummary: 'Sub-50ms ISO 20022 clearing saga, SEC 15c3-5 risk firewall, and Plaid wire routing.',
-        }
-      );
-    }
-
-    // Sort by lastUpdated descending
+    // Sort by lastUpdated descending (strictly real saved projects — 0 fabricated demo entries)
     items.sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime());
     return items;
   } catch (err) {
@@ -137,11 +110,72 @@ export default function DocGenHistoryModal({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  // Scan localStorage for all saved promptcanvas_docgen_versions_* keys
+  // Scan localStorage and merge cloud-persisted /api/docgen/projects
   useEffect(() => {
     if (!isOpen) return;
-    const items = loadAllHistoricalProjects();
-    setProjects(items);
+    let cancelled = false;
+    const localItems = loadAllHistoricalProjects();
+    setProjects(localItems);
+
+    void (async () => {
+      try {
+        const res = await fetch('/api/docgen/projects', { cache: 'no-store' });
+        const remoteRaw = res.ok ? await res.json() : [];
+        const remoteList: any[] = Array.isArray(remoteRaw) ? remoteRaw : [];
+        const remoteById = new Map<string, HistoricalProjectItem>();
+        for (const r of remoteList) {
+          if (!r?.id || r.id === 'default') continue;
+          remoteById.set(String(r.id), {
+            id: String(r.id),
+            title: String(r.title || `Project ${String(r.id).slice(-6)}`),
+            archetypeId: String(r.archetypeId || 'sdd'),
+            domainId: String(r.domainId || 'enterprise'),
+            docVersion: String(r.docVersion || 'v1.0'),
+            snapshotCount: Number(r.snapshotCount || r.snapshots?.length || 1),
+            lastUpdated: String(r.lastUpdated || new Date().toISOString()),
+            scopeSummary: String(r.scopeSummary || 'Production specification baseline with multi-blueprint diagram pack.'),
+          });
+        }
+
+        // Auto-backfill any local-only projects to cloud storage for colleague sharing
+        for (const loc of localItems) {
+          if (!remoteById.has(loc.id)) {
+            try {
+              const rawSnaps = window.localStorage.getItem(`promptcanvas_docgen_versions_${loc.id}`);
+              const rawChat = window.localStorage.getItem(`promptcanvas_docgen_chat_${loc.id}`);
+              const snapshots = rawSnaps ? JSON.parse(rawSnaps) : [];
+              const chatHistory = rawChat ? JSON.parse(rawChat) : [];
+              if (Array.isArray(snapshots) && snapshots.length > 0) {
+                await fetch('/api/docgen/projects', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    id: loc.id,
+                    title: loc.title,
+                    archetypeId: loc.archetypeId,
+                    domainId: loc.domainId,
+                    scopeSummary: loc.scopeSummary,
+                    docVersion: loc.docVersion,
+                    snapshots,
+                    chatHistory,
+                  }),
+                });
+              }
+            } catch {}
+            remoteById.set(loc.id, loc);
+          }
+        }
+
+        const merged = Array.from(remoteById.values()).sort(
+          (a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
+        );
+        if (!cancelled) setProjects(merged);
+      } catch {}
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -158,7 +192,7 @@ export default function DocGenHistoryModal({
   const handleCopyProjectLink = (proj: HistoricalProjectItem, e: React.MouseEvent) => {
     e.stopPropagation();
     if (typeof window !== 'undefined') {
-      const url = `${window.location.origin}/docgen?doc=${proj.archetypeId}&proj=${proj.id}&tab=studio`;
+      const url = `${window.location.origin}/docgen?id=${encodeURIComponent(proj.id)}&v=${encodeURIComponent(proj.docVersion || 'v1.0')}&doc=${encodeURIComponent(proj.archetypeId)}&tab=studio`;
       navigator.clipboard.writeText(url);
       setCopiedId(proj.id);
       setTimeout(() => setCopiedId(null), 2000);
@@ -171,7 +205,9 @@ export default function DocGenHistoryModal({
       try {
         window.localStorage.removeItem(`promptcanvas_docgen_versions_${projId}`);
         window.localStorage.removeItem(`promptcanvas_docgen_chat_${projId}`);
+        window.localStorage.removeItem(`promptcanvas_docgen_meta_${projId}`);
         setProjects((prev) => prev.filter((p) => p.id !== projId));
+        void fetch(`/api/docgen/projects/${encodeURIComponent(projId)}`, { method: 'DELETE' }).catch(() => {});
       } catch (err) {
         console.warn('Failed to delete project:', err);
       }
@@ -328,8 +364,8 @@ export default function DocGenHistoryModal({
 
         {/* FOOTER */}
         <div className="flex items-center justify-between px-6 py-3 border-t border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md text-xs text-slate-400">
-          <span>Persisted across session snapshots in browser local storage</span>
-          <span className="font-mono text-[11px]">10-Snapshot Ring Buffer &bull; Project State Lock</span>
+          <span>Synced across browser &amp; Google Cloud Storage for 1-click colleague sharing</span>
+          <span className="font-mono text-[11px]">10-Snapshot Ring Buffer &bull; Canonical ID Lock</span>
         </div>
       </div>
     </div>

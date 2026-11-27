@@ -195,7 +195,7 @@ export default function GoogleWorkspaceDriveHandoff({
   const bootWithClientId = useCallback(async (id: string) => {
     const effectiveId = id || DEFAULT_GOOGLE_OAUTH_CLIENT_ID;
     setClientId(effectiveId);
-    const rememberedEmail = getRememberedGoogleAccountEmail() || 'nitinagga@google.com';
+    const rememberedEmail = getRememberedGoogleAccountEmail() || '';
     setAccountEmail(rememberedEmail);
 
     // 1. ZERO-LATENCY PRE-WARMED MANIFEST FAST PATH (Exact parity with blogs/index.html)

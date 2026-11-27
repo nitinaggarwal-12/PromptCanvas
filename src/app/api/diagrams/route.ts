@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { listDiagrams, createDiagram, clearAllDiagrams, batchDeleteDiagrams } from '@/lib/db';
-import { getAuthenticatedUser } from '@/lib/auth';
+import { getAuthenticatedUser, ensureAuthenticatedOrGuestUser } from '@/lib/auth';
 import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
+import { getCertifiedArchitectureTemplateById } from '@/lib/templates/certifiedArchitectureTemplates';
+import { loadImmutableServerTemplateXml } from '@/lib/templates/serverTemplateXmlLoader';
 
 // GET /api/diagrams - List diagrams (user-scoped or public seed, optionally filtered by ?studio=)
 export async function GET(request: Request) {
@@ -55,11 +57,13 @@ export async function GET(request: Request) {
   }
 }
 
-// POST /api/diagrams - Create a new diagram attached to authenticated user
+// POST /api/diagrams - Create a new diagram (or immutable template clone) with a fresh unique UUID
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const name = body.name;
+    const rawExplicitId = typeof body.id === 'string' ? body.id.trim() : undefined;
+    const rawName = typeof body.name === 'string' ? body.name.trim() : '';
+    const rawTemplateId = typeof body.templateId === 'string' ? body.templateId.trim() : undefined;
     const xml = body.xml || body.xmlContent || body.xml_content;
     const comment = body.comment;
     const prompt = body.prompt;
@@ -68,56 +72,90 @@ export async function POST(request: Request) {
     const technicalUsecase = body.technicalUsecase || body.technical_usecase;
     const architectureType = body.architectureType || body.architecture_type;
     const isPrivate = body.isPrivate ?? body.is_private;
-    const createdStudio = body.createdStudio || body.created_studio || 'studio1';
+    const createdStudio = body.createdStudio || body.created_studio || 'dashboard';
 
-    if (!name || typeof name !== 'string') {
+    // Resolve immutable Certified Architecture Template if templateId or arch_tpl_<id> is passed
+    const certTpl = getCertifiedArchitectureTemplateById(
+      rawTemplateId ||
+        (typeof architectureType === 'string' && architectureType.startsWith('arch_tpl_')
+          ? architectureType
+          : undefined)
+    );
+    if (rawTemplateId && !certTpl) {
       return NextResponse.json(
-        { error: 'Invalid request: "name" is required and must be a string' },
+        { error: `Invalid request: unknown certified templateId "${rawTemplateId}"` },
         { status: 400 }
       );
     }
 
-    const effectiveArchType = architectureType || 'unified_system_view';
-    const rawEffectiveXml = xml !== undefined ? xml : (getDefaultXmlForArchitecture(effectiveArchType, businessUsecase || prompt || name, prompt || name) || undefined);
+    const name = rawName || certTpl?.title || '';
+    if (!name) {
+      return NextResponse.json(
+        { error: 'Invalid request: "name" is required and must be a non-empty string' },
+        { status: 400 }
+      );
+    }
+
+    const effectiveArchType = certTpl
+      ? `arch_tpl_${certTpl.id}`
+      : architectureType || 'unified_system_view';
+
+    // Clone a fresh copy of the frozen template XML when locking in a Certified Architecture Template.
+    // Original template files in public/architecture-templates/xml/ remain 100% untouched.
+    const serverClonedTemplateXml = certTpl ? loadImmutableServerTemplateXml(certTpl.id) : null;
+    const rawEffectiveXml =
+      xml !== undefined
+        ? xml
+        : serverClonedTemplateXml !== null
+        ? serverClonedTemplateXml
+        : getDefaultXmlForArchitecture(
+            effectiveArchType,
+            businessUsecase || prompt || name,
+            prompt || name
+          ) || undefined;
     const effectiveXml = rawEffectiveXml ? String(rawEffectiveXml) : rawEffectiveXml;
 
-    let user = await getAuthenticatedUser();
-    if (!user || !user.id) {
-      try {
-        const { v4: uuidv4 } = await import('uuid');
-        const { createUser, createSession } = await import('@/lib/db');
-        const { hashPassword, setSessionCookie, SESSION_MAX_AGE_DAYS } = await import('@/lib/auth');
-        const guestEmail = `guest_${uuidv4().slice(0, 8)}@promptcanvas.guest`;
-        const { hash, salt } = hashPassword('guest-session-secret');
-        const guestUser = await createUser(guestEmail, hash, salt, 'Guest Explorer');
-        const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * SESSION_MAX_AGE_DAYS);
-        const session = await createSession(guestUser.id, expiresAt);
-        await setSessionCookie(session.id);
-        user = guestUser;
-      } catch (authErr) {
-        console.warn('Failed to auto-provision guest session on diagram create:', authErr);
-      }
-    }
+    const user = await ensureAuthenticatedOrGuestUser();
+    const rawVersions = Array.isArray(body.versions)
+      ? body.versions.map((v: any, idx: number) => ({
+          version_number: Number(v?.version_number || idx + 1),
+          xml: String(v?.xml || v?.xml_content || v?.xmlContent || ''),
+          comment: v?.comment ? String(v.comment) : undefined,
+          prompt: v?.prompt ? String(v.prompt) : undefined,
+          created_by: v?.created_by || v?.createdBy || 'User',
+          created_at: v?.created_at || v?.createdAt || undefined,
+        }))
+      : null;
 
     const { diagram, version } = await createDiagram(
       name,
       effectiveXml,
-      comment || 'Initial version',
-      prompt,
-      aiReasoning,
-      businessUsecase,
-      technicalUsecase,
+      comment || (certTpl ? `Cloned from immutable Template #${certTpl.id} (${certTpl.headerTag})` : 'Initial version'),
+      prompt || certTpl?.summary,
+      aiReasoning ||
+        (certTpl
+          ? `Cloned from Certified Template #${certTpl.id} (${certTpl.level} • ${certTpl.type} • ${certTpl.kind} • ${certTpl.useCase}). Original template remains intact.`
+          : undefined),
+      businessUsecase || certTpl?.useCase,
+      technicalUsecase || (certTpl ? `${certTpl.type} · ${certTpl.kind}` : undefined),
       user?.id || null,
       effectiveArchType,
       Boolean(isPrivate),
-      createdStudio
+      createdStudio,
+      null,
+      rawExplicitId || null,
+      rawVersions
     );
 
     return NextResponse.json({ diagram, version }, { status: 201 });
   } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    if (msg.startsWith('Forbidden:')) {
+      return NextResponse.json({ error: msg }, { status: 403 });
+    }
     console.error('Failed to create diagram:', error);
     return NextResponse.json(
-      { error: 'Internal Server Error', details: error instanceof Error ? error.message : String(error) },
+      { error: 'Internal Server Error', details: msg },
       { status: 500 }
     );
   }
@@ -138,14 +176,21 @@ export async function DELETE(request: Request) {
     const idsParam = searchParams.get('ids');
     const studioParam = searchParams.get('studio');
 
+    const clearAllFlag = searchParams.get('clearAll') === 'true';
     let idsToDelete: string[] = [];
+    let explicitIdsProvided = Boolean(idsParam !== null);
+    let bodyClearAll = false;
     if (idsParam) {
       idsToDelete = idsParam.split(',').map(s => s.trim()).filter(Boolean);
     } else {
       try {
         const body = await request.json();
         if (Array.isArray(body?.ids)) {
+          explicitIdsProvided = true;
           idsToDelete = body.ids.map((id: unknown) => String(id).trim()).filter(Boolean);
+        }
+        if (body?.clearAll === true) {
+          bodyClearAll = true;
         }
       } catch {
         // No JSON body provided
@@ -158,6 +203,14 @@ export async function DELETE(request: Request) {
         success: true,
         deletedCount,
         message: `Deleted ${deletedCount} selected diagram(s) successfully`
+      });
+    }
+
+    if (explicitIdsProvided) {
+      return NextResponse.json({
+        success: true,
+        deletedCount: 0,
+        message: 'No diagram IDs selected for deletion'
       });
     }
 
@@ -182,6 +235,13 @@ export async function DELETE(request: Request) {
         deletedCount,
         message: `Cleared ${deletedCount} diagram(s) for studio ${targetStudio}`
       });
+    }
+
+    if (!clearAllFlag && !bodyClearAll) {
+      return NextResponse.json(
+        { error: 'Specify ids=[...], ?studio=<name>, or ?clearAll=true to delete diagrams.' },
+        { status: 400 }
+      );
     }
 
     await clearAllDiagrams(user.id);

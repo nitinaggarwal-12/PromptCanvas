@@ -728,6 +728,38 @@ function DocGenContent() {
     });
   };
 
+  const syncDocgenUrlBar = (projIdVal: string, verTagVal: string, docIdVal: string) => {
+    if (typeof window === 'undefined' || !projIdVal || projIdVal === 'default') return;
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set('id', projIdVal);
+      url.searchParams.set('v', verTagVal || 'v1.0');
+      url.searchParams.set('doc', docIdVal);
+      url.searchParams.set('tab', 'studio');
+      url.searchParams.delete('proj');
+      url.searchParams.delete('project');
+      window.history.replaceState(null, '', url.toString());
+    } catch {}
+  };
+
+  const applyDiagramSlotsFromSnapshot = (snap: VersionSnapshot) => {
+    const restoredCustoms: Record<number, { templateId: string; isCustom: boolean; customPrompt?: string }> = {};
+    Object.keys(snap.diagramSlots || {}).forEach((k) => {
+      const numKey = parseInt(k, 10);
+      const data = snap.diagramSlots[numKey];
+      if (data) {
+        restoredCustoms[numKey] = {
+          templateId: data.templateId,
+          isCustom: !!data.customizationPrompt,
+          customPrompt: data.customizationPrompt,
+        };
+      }
+    });
+    if (Object.keys(restoredCustoms).length > 0) {
+      setSlotCustomizations(restoredCustoms);
+    }
+  };
+
   const handleSelectHistoricalProject = (proj: HistoricalProjectItem) => {
     setProjectId(proj.id);
     setSelectedArchetypeId(proj.archetypeId as ArchetypeId);
@@ -735,14 +767,32 @@ function DocGenContent() {
     setProjectTitle(proj.title);
     setDocVersion(proj.docVersion);
     setActiveTab('studio');
+    syncDocgenUrlBar(proj.id, proj.docVersion || 'v1.0', proj.archetypeId);
 
-    // Load snapshots from localStorage
+    // Load snapshots from localStorage first, otherwise hydrate from /api/docgen/projects/<id>
     const saved = loadVersionHistory(proj.id);
     if (saved && saved.snapshots.length > 0) {
       setVersionHistory(saved.snapshots);
       setGeneratedDocContent(saved.snapshots[0].docMarkdown);
+      applyDiagramSlotsFromSnapshot(saved.snapshots[0]);
+      if (saved.chatHistory.length > 0) setChatHistory(saved.chatHistory);
     } else {
-      handleStartGeneration();
+      void fetch(`/api/docgen/projects/${encodeURIComponent(proj.id)}`, { cache: 'no-store' })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((cloudProj) => {
+          if (cloudProj && Array.isArray(cloudProj.snapshots) && cloudProj.snapshots.length > 0) {
+            setVersionHistory(cloudProj.snapshots);
+            setGeneratedDocContent(cloudProj.snapshots[0].docMarkdown);
+            setDocVersion(cloudProj.snapshots[0].docVersion || cloudProj.snapshots[0].versionTag || 'v1.0');
+            applyDiagramSlotsFromSnapshot(cloudProj.snapshots[0]);
+            if (Array.isArray(cloudProj.chatHistory)) setChatHistory(cloudProj.chatHistory);
+          } else {
+            void handleStartGeneration();
+          }
+        })
+        .catch(() => {
+          void handleStartGeneration();
+        });
     }
   };
 
@@ -761,14 +811,15 @@ function DocGenContent() {
     }
   }, [projectId]);
 
-  // URL query parameter synchronization (e.g. ?doc=brd, ?proj=proj_xxx, ?domain=fintech, ?title=..., ?prompt=..., ?scope=..., ?tab=studio)
+  // URL query parameter synchronization (supports ?id=proj_xxx&v=v1.1 as well as legacy ?proj=proj_xxx)
   useEffect(() => {
     const docParam = searchParams.get('doc') as ArchetypeId | null;
     const tabParam = searchParams.get('tab');
     const domainParam = searchParams.get('domain');
     const titleParam = searchParams.get('title');
     const scopeParam = searchParams.get('scope') || searchParams.get('prompt');
-    const projParam = searchParams.get('proj') || searchParams.get('project');
+    const projParam = searchParams.get('id') || searchParams.get('proj') || searchParams.get('project');
+    const verParam = searchParams.get('v');
 
     let effectiveTitle = projectTitle;
     let effectiveDomain = selectedDomain;
@@ -781,7 +832,6 @@ function DocGenContent() {
     if (titleParam) {
       effectiveTitle = decodeURIComponent(titleParam);
       setProjectTitle(effectiveTitle);
-      // If domain wasn't explicitly passed, detect it from title
       if (!domainParam) {
         effectiveDomain = detectDomainFromPrompt(effectiveTitle, '', effectiveDomain);
         setSelectedDomain(effectiveDomain);
@@ -791,7 +841,6 @@ function DocGenContent() {
       effectiveScope = decodeURIComponent(scopeParam);
       setProjectScopePrompt(effectiveScope);
     } else if (titleParam || domainParam) {
-      // If scope was not provided but title or domain was provided, auto-generate domain-aligned prompt
       if (effectiveDomain === 'manufacturing') {
         effectiveScope = `Mission-critical autonomous telemetry, SCADA/PLC edge ingestion, sub-20ms real-time control loops, Spanner state store, and automated safety interlocks for ${effectiveTitle}.`;
       } else if (effectiveDomain === 'fintech') {
@@ -814,13 +863,95 @@ function DocGenContent() {
       );
     }
 
+    // Explicit studio mode parameter precedence
+    if (modeParam === 'diagrams' || modeParam === 'documents' || modeParam === 'both') {
+      setStudioMode(modeParam);
+    } else if (tplParam && !docParam) {
+      setStudioMode('diagrams');
+    } else if (docParam && !tplParam) {
+      setStudioMode('both');
+    } else if (tabParam === 'studio') {
+      setActiveTab('studio');
+    }
+
+    const resolveTargetSnapshot = (snaps: VersionSnapshot[], vTag: string | null): VersionSnapshot => {
+      if (!vTag) return snaps[0];
+      const byTag = snaps.find(
+        (s) =>
+          s.versionTag?.toLowerCase() === vTag.toLowerCase() ||
+          s.docVersion?.toLowerCase() === vTag.toLowerCase() ||
+          `v${vTag}`.toLowerCase() === s.versionTag?.toLowerCase()
+      );
+      return byTag || snaps[0];
+    };
+
+    if (projParam) {
+      setActiveTab('studio');
+      const localSaved = loadVersionHistory(projParam);
+      if (localSaved && localSaved.snapshots.length > 0) {
+        const chosen = resolveTargetSnapshot(localSaved.snapshots, verParam);
+        setVersionHistory(localSaved.snapshots);
+        setDocVersion(chosen.docVersion || chosen.versionTag || 'v1.0');
+        setGeneratedDocContent(chosen.docMarkdown);
+        applyDiagramSlotsFromSnapshot(chosen);
+        if (localSaved.chatHistory.length > 0) setChatHistory(localSaved.chatHistory);
+        if (docParam && DOC_ARCHETYPES_META.some((m) => m.id === docParam)) {
+          setSelectedArchetypeId(docParam);
+        }
+        syncDocgenUrlBar(projParam, chosen.docVersion || chosen.versionTag || 'v1.0', docParam || selectedArchetypeId);
+        return;
+      }
+
+      // Colleague deep-link hydration from Cloud Storage (/api/docgen/projects/<id>)
+      let cancelled = false;
+      void fetch(`/api/docgen/projects/${encodeURIComponent(projParam)}`, { cache: 'no-store' })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((cloudProj) => {
+          if (cancelled) return;
+          if (cloudProj && Array.isArray(cloudProj.snapshots) && cloudProj.snapshots.length > 0) {
+            const chosen = resolveTargetSnapshot(cloudProj.snapshots, verParam);
+            if (cloudProj.title) setProjectTitle(cloudProj.title);
+            if (cloudProj.domainId) setSelectedDomain(cloudProj.domainId);
+            if (cloudProj.scopeSummary) setProjectScopePrompt(cloudProj.scopeSummary);
+            const archId = (cloudProj.archetypeId || docParam || 'sdd') as ArchetypeId;
+            if (DOC_ARCHETYPES_META.some((m) => m.id === archId)) {
+              setSelectedArchetypeId(archId);
+            }
+            setVersionHistory(cloudProj.snapshots);
+            if (Array.isArray(cloudProj.chatHistory)) setChatHistory(cloudProj.chatHistory);
+            const chosenVer = chosen.docVersion || chosen.versionTag || 'v1.0';
+            setDocVersion(chosenVer);
+            setGeneratedDocContent(chosen.docMarkdown);
+            applyDiagramSlotsFromSnapshot(chosen);
+            syncDocgenUrlBar(projParam, chosenVer, archId);
+          } else if (docParam) {
+            const matched = DOC_ARCHETYPES_META.find((m) => m.id === docParam);
+            if (matched) {
+              setSelectedArchetypeId(docParam);
+              const synthesized = synthesizeCustomExecutiveDocument(
+                docParam,
+                matched,
+                effectiveTitle,
+                effectiveDomain,
+                effectiveScope,
+                {}
+              );
+              setGeneratedDocContent(synthesized);
+            }
+          }
+        })
+        .catch(() => {});
+      return () => {
+        cancelled = true;
+      };
+    }
+
     if (docParam) {
       const matched = DOC_ARCHETYPES_META.find((m) => m.id === docParam);
       if (matched) {
         setSelectedArchetypeId(docParam);
-        if (tabParam === 'studio' || projParam || domainParam || titleParam) {
+        if (tabParam === 'studio' || domainParam || titleParam) {
           setActiveTab('studio');
-          // Auto-generate if custom project link
           const synthesized = synthesizeCustomExecutiveDocument(
             docParam,
             matched,
@@ -835,17 +966,6 @@ function DocGenContent() {
           setModalTab('doc');
         }
       }
-    }
-
-    // Explicit studio mode parameter precedence
-    if (modeParam === 'diagrams' || modeParam === 'documents' || modeParam === 'both') {
-      setStudioMode(modeParam);
-    } else if (tplParam && !docParam) {
-      setStudioMode('diagrams');
-    } else if (docParam && !tplParam) {
-      setStudioMode('both');
-    } else if (tabParam === 'studio') {
-      setActiveTab('studio');
     }
   }, [searchParams]);
 
@@ -905,14 +1025,37 @@ function DocGenContent() {
     }
   };
 
+  const ensureActiveProjectId = () => {
+    if (projectId && projectId !== 'default') return projectId;
+    const minted = `proj_${Math.random().toString(36).substring(2, 10)}`;
+    setProjectId(minted);
+    return minted;
+  };
+
+  const currentProjectMeta = () => ({
+    title: projectTitle,
+    archetypeId: selectedArchetypeId,
+    domainId: selectedDomain,
+    scopeSummary: projectScopePrompt,
+  });
+
   const handleCopyProjectShareLink = () => {
     if (typeof window !== 'undefined') {
-      const activeProjId = projectId || `proj_${Date.now().toString(36)}`;
-      if (!projectId) setProjectId(activeProjId);
-      const url = `${window.location.origin}/docgen?tab=studio&doc=${selectedArchetypeId}&proj=${activeProjId}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}&scope=${encodeURIComponent(projectScopePrompt)}`;
+      const activeProjId = ensureActiveProjectId();
+      const effectiveSnaps =
+        versionHistory.length > 0
+          ? versionHistory
+          : generatedDocContent && generatedDocContent !== 'DIAGRAMS_MODE_ACTIVE'
+            ? [createInitialSnapshot(generatedDocContent, {}, `Initial ${activeMeta.name} Baseline`)]
+            : [];
+      if (effectiveSnaps.length > 0) {
+        if (versionHistory.length === 0) setVersionHistory(effectiveSnaps);
+        saveVersionHistory(activeProjId, effectiveSnaps, chatHistory, currentProjectMeta());
+      }
+      const url = `${window.location.origin}/docgen?id=${encodeURIComponent(activeProjId)}&v=${encodeURIComponent(docVersion || 'v1.0')}&doc=${encodeURIComponent(selectedArchetypeId)}&tab=studio`;
       navigator.clipboard.writeText(url);
       setProjectShareCopied(true);
-      window.history.pushState(null, '', url);
+      window.history.replaceState(null, '', url);
       setTimeout(() => setProjectShareCopied(false), 2500);
     }
   };
@@ -934,7 +1077,7 @@ function DocGenContent() {
     setGenerationStep(1);
     setGeneratedDocContent(null);
 
-    const generatedProjId = projectId || `proj_${Math.random().toString(36).substring(2, 9)}`;
+    const generatedProjId = projectId && projectId !== 'default' ? projectId : `proj_${Math.random().toString(36).substring(2, 10)}`;
     setProjectId(generatedProjId);
 
     // Auto-detect domain if prompt does not match biopharma
@@ -954,8 +1097,8 @@ function DocGenContent() {
         setActiveDiagramSlotIndex(0);
 
         if (typeof window !== 'undefined') {
-          const uniqueUrl = `/docgen?tab=studio&mode=diagrams&doc=${selectedArchetypeId}&proj=${generatedProjId}&domain=${effectiveDomain}&title=${encodeURIComponent(projectTitle)}`;
-          window.history.pushState(null, '', uniqueUrl);
+          const uniqueUrl = `/docgen?id=${encodeURIComponent(generatedProjId)}&v=v1.0&doc=${encodeURIComponent(selectedArchetypeId)}&tab=studio&mode=diagrams`;
+          window.history.replaceState(null, '', uniqueUrl);
         }
       } finally {
         setIsGenerating(false);
@@ -1025,13 +1168,15 @@ function DocGenContent() {
       const initSnap = createInitialSnapshot(finalDoc, initialSlots, `Initial ${activeMeta.name} Generated Baseline`);
       setVersionHistory([initSnap]);
       setDocVersion('v1.0');
-      saveVersionHistory(generatedProjId, [initSnap], chatHistory);
+      saveVersionHistory(generatedProjId, [initSnap], chatHistory, {
+        title: projectTitle,
+        archetypeId: selectedArchetypeId,
+        domainId: effectiveDomain,
+        scopeSummary: projectScopePrompt,
+      });
 
-      // Update browser URL with unique project ID and parameters
-      if (typeof window !== 'undefined') {
-        const uniqueUrl = `/docgen?tab=studio&doc=${selectedArchetypeId}&proj=${generatedProjId}&domain=${effectiveDomain}&title=${encodeURIComponent(projectTitle)}`;
-        window.history.pushState(null, '', uniqueUrl);
-      }
+      // Update browser URL with canonical ?id=<projId>&v=v1.0
+      syncDocgenUrlBar(generatedProjId, 'v1.0', selectedArchetypeId);
     } catch (err: any) {
       console.error('DocGen generation error:', err);
       const fallbackContent = synthesizeCustomExecutiveDocument(
@@ -1067,12 +1212,13 @@ function DocGenContent() {
       const initSnap = createInitialSnapshot(generatedDocContent, initialSlots, `Initial ${activeMeta.name} Baseline`);
       setVersionHistory([initSnap]);
       setDocVersion('v1.0');
-      saveVersionHistory(projectId || 'default', [initSnap], chatHistory);
+      saveVersionHistory(projectId || 'default', [initSnap], chatHistory, currentProjectMeta());
     }
   }, [generatedDocContent, activeMeta, projectId]);
 
   // Handle AI Assist Document Text Update (bumps doc version, preserves diagram slots)
   const handleApplyDocUpdate = (newMarkdown: string, summary: string, author: 'AI Assist' | 'User' = 'AI Assist') => {
+    const activeProjId = ensureActiveProjectId();
     const nextVer = bumpVersionTag(docVersion);
     const currentSlots: Record<number, DiagramSlotVersionData> = {};
     activeMeta.blueprintPack.forEach((slot, idx) => {
@@ -1102,11 +1248,13 @@ function DocGenContent() {
     setDocVersion(nextVer);
     setGeneratedDocContent(newMarkdown);
     setVersionHistory(updatedHistory);
-    saveVersionHistory(projectId || 'default', updatedHistory, chatHistory);
+    saveVersionHistory(activeProjId, updatedHistory, chatHistory, currentProjectMeta());
+    syncDocgenUrlBar(activeProjId, nextVer, selectedArchetypeId);
   };
 
   // Handle AI Assist Diagram Slot Update (bumps specific slot version, preserves doc markdown)
   const handleApplyDiagramUpdate = (slotIndex: number, newPrompt: string, summary: string) => {
+    const activeProjId = ensureActiveProjectId();
     const slotKey = slotIndex;
     const currentSlotVersion = versionHistory[0]?.diagramSlots[slotKey]?.version || 'v1.0';
     const nextSlotVersion = bumpVersionTag(currentSlotVersion);
@@ -1145,11 +1293,13 @@ function DocGenContent() {
 
     const updatedHistory = pushVersionSnapshot(versionHistory, newSnapshot);
     setVersionHistory(updatedHistory);
-    saveVersionHistory(projectId || 'default', updatedHistory, chatHistory);
+    saveVersionHistory(activeProjId, updatedHistory, chatHistory, currentProjectMeta());
+    syncDocgenUrlBar(activeProjId, docVersion, selectedArchetypeId);
   };
 
   // Handle 1-Click Snapshot Rollback & Replay
   const handleRestoreSnapshot = (snapshot: VersionSnapshot) => {
+    const activeProjId = ensureActiveProjectId();
     setGeneratedDocContent(snapshot.docMarkdown);
     setDocVersion(snapshot.docVersion);
 
@@ -1190,14 +1340,15 @@ function DocGenContent() {
     };
     const updatedChat = [...chatHistory, rollbackMsg];
     setChatHistory(updatedChat);
-    saveVersionHistory(projectId || 'default', updatedHistory, updatedChat);
+    saveVersionHistory(activeProjId, updatedHistory, updatedChat, currentProjectMeta());
+    syncDocgenUrlBar(activeProjId, snapshot.docVersion || 'v1.0', selectedArchetypeId);
   };
 
   // Append Chat Message helper
   const handleAddChatMessage = (msg: ChatMessage) => {
     setChatHistory((prev) => {
       const updated = [...prev, msg];
-      saveVersionHistory(projectId || 'default', versionHistory, updated);
+      saveVersionHistory(projectId || 'default', versionHistory, updated, currentProjectMeta());
       return updated;
     });
   };

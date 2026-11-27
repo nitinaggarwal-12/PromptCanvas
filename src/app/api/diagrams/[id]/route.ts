@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDiagram, deleteDiagram, getDiagramVersions, updateDiagramArchitectureType, updateDiagramPrivacy, listDiagrams } from '@/lib/db';
-import { getAuthenticatedUser } from '@/lib/auth';
+import { getAuthenticatedUser, ensureAuthenticatedOrGuestUser } from '@/lib/auth';
 import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import { healFosterParentedHtmlInXml } from '@/lib/htmlTableSanitizer';
@@ -178,38 +178,6 @@ export async function GET(request: Request, { params }: RouteParams) {
         });
       }
 
-      // Client-side Studio session IDs (e.g. ses_studio_v22, proj_*, tab_*) resolve cleanly with 200 OK
-      if (
-        id.startsWith('ses_') ||
-        id.startsWith('proj_') ||
-        id.startsWith('tab_') ||
-        id.startsWith('session_')
-      ) {
-        const now = new Date().toISOString();
-        const defaultStudioXml = generateGcpNativeArchitectureXml();
-        return NextResponse.json({
-          id,
-          name: 'ENTERPRISE CLOUD - 2026 Upgraded GCP & Gemini Enterprise Native Architecture',
-          architecture_type: 'gcp_enterprise_reference',
-          is_private: false,
-          is_ephemeral_session: true,
-          created_at: now,
-          updated_at: now,
-          access_level: 'Owner',
-          xml_content: defaultStudioXml,
-          versions: [{
-            id: `${id}__session_default`,
-            diagram_id: id,
-            version_number: 1,
-            xml_content: defaultStudioXml,
-            comment: 'Studio Session Baseline (v1.0)',
-            created_by: 'System',
-            created_at: now,
-            architecture_type: 'gcp_enterprise_reference'
-          }]
-        });
-      }
-
       return NextResponse.json(
         { error: `Diagram with ID ${id} not found` },
         { status: 404 }
@@ -374,7 +342,60 @@ export async function DELETE(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ success: true, message: `Diagram ${id} deleted successfully` });
   } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    if (msg.startsWith('Forbidden:')) {
+      return NextResponse.json({ error: msg }, { status: 403 });
+    }
     console.error('Failed to delete diagram:', error);
+    return NextResponse.json(
+      { error: 'Internal Server Error', details: msg },
+      { status: 500 }
+    );
+  }
+}
+
+
+// PUT /api/diagrams/[id] - Append a new saved version onto an existing diagram ID (and optionally rename)
+export async function PUT(request: Request, { params }: RouteParams) {
+  try {
+    const user = await ensureAuthenticatedOrGuestUser();
+    const { id } = await params;
+    const diagram = await getDiagram(id, user?.id);
+    if (!diagram) {
+      return NextResponse.json({ error: `Diagram with ID ${id} not found` }, { status: 404 });
+    }
+    if (diagram.access_level === 'Viewer') {
+      return NextResponse.json({ error: 'Forbidden: You have read-only access to this diagram.' }, { status: 403 });
+    }
+
+    const body = await request.json();
+    const xmlContent = body.xml_content ?? body.xmlContent ?? body.xml;
+    const diagramName = typeof body.name === 'string' ? body.name.trim() : '';
+    const comment = body.comment || body.prompt || 'Updated diagram version';
+    const prompt = body.prompt || null;
+
+    const { updateDiagramName, saveDiagramVersion } = await import('@/lib/db');
+    if (diagramName && diagramName !== diagram.name) {
+      await updateDiagramName(id, diagramName);
+    }
+    let version = null;
+    if (typeof xmlContent === 'string' && xmlContent.trim()) {
+      version = await saveDiagramVersion(
+        id,
+        xmlContent,
+        comment,
+        user?.name || user?.email || 'User',
+        prompt,
+        null,
+        null,
+        null,
+        body.architecture_type || body.architectureType || diagram.architecture_type || 'unified_system_view'
+      );
+    }
+    const updated = await getDiagram(id, user?.id);
+    return NextResponse.json({ success: true, diagram: updated, version });
+  } catch (error) {
+    console.error('Failed to PUT diagram update:', error);
     return NextResponse.json(
       { error: 'Internal Server Error', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }

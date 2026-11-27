@@ -527,8 +527,7 @@ export default function GoogleWorkspaceDirectOpenModal({
 
   /**
    * Method 1: 1-click "Open with Google Slides / Google Docs" — Server-Side Refresh-Token Bridge
-   * (Exact parity with /Users/nitinagga/Documents/blogs/index.html & sync_google_workspace_bridge.py)
-   * Result: a real https://docs.google.com/presentation/d/<id>/edit?authuser=nitinagga%40google.com URL.
+   * Result: a real https://docs.google.com/presentation/d/<id>/edit URL.
    */
   const handleDirectGoogleDriveOpen = async () => {
     if (activeMode === 'pdf') return;
@@ -550,7 +549,7 @@ export default function GoogleWorkspaceDirectOpenModal({
       if (openedUrl) {
         setStatusMessage({
           type: 'success',
-          text: `🎉 Opened ${productLabel} in Google Drive (nitinagga@google.com): ${openedUrl}`,
+          text: `🎉 Opened ${productLabel} in Google Drive: ${openedUrl}`,
           url: openedUrl,
         });
         return;
@@ -790,7 +789,7 @@ export default function GoogleWorkspaceDirectOpenModal({
       const publicDiagramImgUrl =
         effectivePreviewUrl && effectivePreviewUrl.startsWith('http')
           ? effectivePreviewUrl
-          : 'https://promptcanvas-248990048888.cr.gclb.goog/blueprints/azure_application_landing_zone.png';
+          : `${typeof window !== 'undefined' ? window.location.origin : 'https://promptcanvas-248990048888.cr.gclb.goog'}/architecture-templates/template_94.png`;
 
       const tableRowsHtml = sortedVertices
         .filter((v) => cleanHtmlToPlainText(v.value).title.length > 0)

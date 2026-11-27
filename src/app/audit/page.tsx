@@ -294,62 +294,90 @@ function AuditHubContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeHubTab]);
 
-  // Load Generated Artifacts from API on mount (Cleanly deduplicated)
+  // Load Generated Artifacts from API on mount (Cleanly deduplicated + supports shared ?id= colleague links)
   useEffect(() => {
     async function loadArtifacts() {
       setIsLoadingArtifacts(true);
       try {
+        const requestedId = (searchParams.get('id') || searchParams.get('diagram') || '').trim();
         const res = await fetch('/api/diagrams');
-        if (res.ok) {
-          const data: GeneratedArtifact[] = await res.json();
-          if (Array.isArray(data) && data.length > 0) {
-            // Deduplicate case-insensitively by normalized prefix and filter out empty rows
-            const seen = new Set<string>();
-            const deduped = data.filter((item) => {
-              const norm = (item.name || '').trim().toLowerCase();
-              const prefix = norm.slice(0, 32);
-              if (!norm) {
-                return false;
-              }
-              if (seen.has(prefix)) return false;
-              seen.add(prefix);
-              return true;
-            });
-            setArtifacts(deduped.length > 0 ? deduped : data);
-            const targetId = searchParams.get('diagram') || searchParams.get('id') || (deduped[0] || data[0]).id;
-            setActiveArtifactId(targetId);
-          } else {
-            // Fallback rich demo artifacts
-            const fallback: GeneratedArtifact[] = [
-              {
-                id: 'art_gen_default_01',
-                name: 'Clinical Genomics & Regulatory AI Platform',
-                created_at: new Date().toISOString(),
-                architecture_type: 'data_ai_pipeline',
-                xml_content: CANONICAL_TEMPLATES[0].generateXml('biopharma', 'light'),
-                prompt: 'Decentralized pharmacovigilance platform with Spanner Graph RAG, Cloud Armor WAF, and multi-region failover.'
-              },
-              {
-                id: 'art_gen_default_02',
-                name: 'Autonomous Drone Fleet Operations Mesh',
-                created_at: new Date(Date.now() - 86400000).toISOString(),
-                architecture_type: 'iot_edge_mesh',
-                xml_content: CANONICAL_TEMPLATES[5].generateXml('manufacturing', 'light'),
-                prompt: 'Sub-20ms edge telemetry ingestion, SCADA/PLC safety interlocks, and Vertex AI real-time routing.'
-              }
-            ];
-            setArtifacts(fallback);
-            setActiveArtifactId(fallback[0].id);
+        const listData: GeneratedArtifact[] = res.ok ? await res.json() : [];
+        const seen = new Set<string>();
+        const deduped = (Array.isArray(listData) ? listData : []).filter((item) => {
+          const idKey = String(item.id || '').trim().toUpperCase();
+          const norm = (item.name || '').trim();
+          if (!idKey || !norm || seen.has(idKey)) return false;
+          seen.add(idKey);
+          return true;
+        });
+
+        if (requestedId && !deduped.some((d) => d.id.toUpperCase() === requestedId.toUpperCase())) {
+          const singleRes = await fetch(`/api/diagrams/${encodeURIComponent(requestedId)}`).catch(() => null);
+          if (singleRes && singleRes.ok) {
+            const sharedItem = await singleRes.json();
+            if (sharedItem?.id) {
+              deduped.unshift({
+                id: sharedItem.id,
+                name: sharedItem.name || `Shared Architecture (${sharedItem.id.slice(0, 8)})`,
+                created_at: sharedItem.created_at || new Date().toISOString(),
+                architecture_type: sharedItem.architecture_type || 'gcp_enterprise_reference',
+                xml_content: sharedItem.xml_content || sharedItem.versions?.[0]?.xml_content || '',
+                prompt: sharedItem.latest_prompt || sharedItem.prompt || '',
+              });
+            }
           }
         }
+
+        if (deduped.length > 0) {
+          setArtifacts(deduped);
+          const targetId = requestedId || deduped[0].id;
+          setActiveArtifactId(targetId);
+          if (CANONICAL_TEMPLATES.some((t) => t.id === requestedId)) {
+            setScopeTab('canonical');
+          }
+        } else {
+          setArtifacts([]);
+          setActiveArtifactId(requestedId || CANONICAL_TEMPLATES[0].id);
+          setScopeTab('canonical');
+        }
       } catch (e) {
-        console.warn('Failed to fetch user artifacts, using fallback:', e);
+        console.warn('Failed to fetch user artifacts:', e);
+        setArtifacts([]);
+        setScopeTab('canonical');
       } finally {
         setIsLoadingArtifacts(false);
       }
     }
     loadArtifacts();
   }, [searchParams]);
+
+  const [shareCopied, setShareCopied] = useState(false);
+  const handleCopyAuditShareLink = () => {
+    if (typeof window === 'undefined') return;
+    const targetId = activeArtifactId || CANONICAL_TEMPLATES[0].id;
+    const shareUrl = `${window.location.origin}/audit?id=${encodeURIComponent(targetId)}`;
+    navigator.clipboard.writeText(shareUrl).catch(() => {});
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set('id', targetId);
+      url.searchParams.delete('diagram');
+      window.history.replaceState(null, '', url.toString());
+    } catch {}
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 2200);
+  };
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !activeArtifactId) return;
+    try {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get('id') !== activeArtifactId) {
+        url.searchParams.set('id', activeArtifactId);
+        url.searchParams.delete('diagram');
+        window.history.replaceState(null, '', url.toString());
+      }
+    } catch {}
+  }, [activeArtifactId]);
 
   // Active Selected Artifact
   const activeArtifact = useMemo(() => {
@@ -620,7 +648,7 @@ function AuditHubContent() {
     let healedXml = remediateDiagramXml(currentXml);
 
     // Invoke backend /api/audit/remediate if this is a persisted diagram with active gaps
-    if (activeArtifact && !activeArtifact.id.startsWith('art_gen_default_') && auditGaps.length > 0) {
+    if (activeArtifact && auditGaps.length > 0) {
       try {
         const remRes = await fetch('/api/audit/remediate', {
           method: 'POST',
@@ -652,21 +680,19 @@ function AuditHubContent() {
         )
       );
 
-      // Persist remediated XML to the database if this is a saved diagram
-      if (!activeArtifact.id.startsWith('art_gen_default_')) {
-        try {
-          await fetch(`/api/diagrams/${activeArtifact.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name: activeArtifact.name,
-              xml_content: healedXml,
-              prompt: activeArtifact.prompt || 'Auto-remediated via 6-Tier Security & Geometry Audit',
-            }),
-          });
-        } catch (err) {
-          console.warn('Could not persist remediated diagram to DB:', err);
-        }
+      // Persist remediated XML to the database for this saved diagram
+      try {
+        await fetch(`/api/diagrams/${activeArtifact.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: activeArtifact.name,
+            xml_content: healedXml,
+            prompt: activeArtifact.prompt || 'Auto-remediated via 6-Tier Security & Geometry Audit',
+          }),
+        });
+      } catch (err) {
+        console.warn('Could not persist remediated diagram to DB:', err);
       }
     }
 
@@ -750,6 +776,33 @@ function AuditHubContent() {
                   ))}
                 </select>
               </div>
+
+              {/* Share Link CTA */}
+              <button
+                type="button"
+                data-testid="audit-share-link-btn"
+                onClick={handleCopyAuditShareLink}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 active:scale-95 ${
+                  shareCopied
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                    : isLight
+                      ? 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
+                      : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                }`}
+                title="Copy canonical shareable Audit link (?id=...)"
+              >
+                {shareCopied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-600" aria-hidden="true" />
+                    <span>Link Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Share2 className="w-3.5 h-3.5 text-teal-600" aria-hidden="true" />
+                    <span className="hidden sm:inline">Share Link</span>
+                  </>
+                )}
+              </button>
 
               {/* Run Full Suite Button */}
               <button
@@ -1139,7 +1192,7 @@ function AuditHubContent() {
                                 <div className="flex items-center gap-2">
                                   <span className="text-base">{icon}</span>
                                   <span className="text-[10px] font-mono font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-1.5 py-0.2 rounded">
-                                    Artifact
+                                    ID: {art.id.slice(0, 8)}
                                   </span>
                                   <span className="text-[9px] font-semibold text-slate-400 truncate">
                                     {art.architecture_type || 'Architecture'}

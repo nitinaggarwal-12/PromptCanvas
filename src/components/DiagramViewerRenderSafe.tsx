@@ -340,11 +340,19 @@ ${origin ? `<base href="${origin}/">` : ''}
     if (isDarkTheme) {
       trimmed = trimmed.replace(/background="#(?:FFFFFF|ffffff|F8FAFC|f8fafc)"/g, 'background="#0F172A"');
     }
+    // Wrap inline <mxGraphModel> inside a compact zero-whitespace <mxfile><diagram> shell so
+    // viewer-static.min.js never treats inter-tag whitespace inside <diagram> as base64-deflated data.
+    const ms = trimmed.indexOf('<mxGraphModel');
+    const me = trimmed.lastIndexOf('</mxGraphModel>');
+    if (ms !== -1 && me !== -1) {
+      const modelXml = trimmed.substring(ms, me + 15).replace(/>\\s+</g, '><');
+      return '<mxfile host="embed.diagrams.net"><diagram id="diagram_1" name="Diagram">' + modelXml + '</diagram></mxfile>';
+    }
     if (trimmed.startsWith('<mxfile') || trimmed.includes('<mxfile')) {
       const s = trimmed.indexOf('<mxfile');
       const e = trimmed.lastIndexOf('</mxfile>');
       if (s !== -1 && e !== -1) {
-        return trimmed.substring(s, e + 9);
+        return trimmed.substring(s, e + 9).replace(/>\\s+</g, '><');
       }
     }
     const s = trimmed.indexOf('<mxGraphModel');

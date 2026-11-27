@@ -115,7 +115,7 @@ export default function PurePromptToDiagramPage() {
   const [isChoosingTemplateId, setIsChoosingTemplateId] = useState<string | null>(null);
   const [resumableStoredId, setResumableStoredId] = useState<string | null>(null);
 
-  const syncDiagramIdToUrl = useCallback((id: string | null) => {
+  const syncDiagramIdToUrl = useCallback((id: string | null, verNum?: number | null) => {
     setSavedDiagramId(id);
     if (typeof window === 'undefined') return;
     try {
@@ -127,8 +127,12 @@ export default function PurePromptToDiagramPage() {
       const url = new URL(window.location.href);
       if (id) {
         url.searchParams.set('id', id);
+        if (verNum && verNum >= 1) {
+          url.searchParams.set('v', String(verNum));
+        }
       } else {
         url.searchParams.delete('id');
+        url.searchParams.delete('v');
       }
       window.history.replaceState({}, '', url.toString());
     } catch {}
@@ -163,45 +167,65 @@ export default function PurePromptToDiagramPage() {
 
     const params = new URLSearchParams(window.location.search);
     const incomingId = params.get('id')?.trim();
+    const requestedVerNum = Number(params.get('v') || 0);
     if (incomingId) {
-      syncDiagramIdToUrl(incomingId);
+      syncDiagramIdToUrl(incomingId, requestedVerNum >= 1 ? requestedVerNum : 1);
       fetch(`/api/diagrams/${encodeURIComponent(incomingId)}`, { cache: 'no-store' })
         .then((r) => (r.ok ? r.json() : null))
         .then((data) => {
           if (data?.xml_content && String(data.xml_content).includes('<mxCell')) {
-            const inv = countXmlInventory(data.xml_content);
-            const loadedPayload: CompoundPromptToDiagramResult = {
-              success: true,
-              action: 'create',
-              mutationMode: 'direct_drawio_xml_update',
-              userPrompt: data.latest_prompt || data.name || 'Saved Architecture',
-              modificationHistory: [],
-              summaryOfChanges: data.ai_reasoning || `Loaded saved diagram "${data.name || incomingId}" from Library`,
-              xml: data.xml_content,
-              graph: {
-                title: data.name || 'Saved Architecture',
-                reasoning: data.ai_reasoning || 'Loaded persisted Draw.io XML from database.',
-                groups: [],
-                nodes: [],
-                edges: [],
-              },
-              audit: {
-                ...inv,
-                maxNestingDepth: inv.groupCount > 0 ? 1 : 0,
-                siblingOverlaps: 0,
-                childContainmentViolations: 0,
-              },
-              modelUsed: 'Persisted Library DB',
-              latencyMs: 0,
-            };
-            setUserPrompt(loadedPayload.userPrompt);
-            setHistoryState((prev) =>
-              pushUndoRedoChange(prev, {
-                label: loadedPayload.graph.title,
-                xml: loadedPayload.xml,
-                payload: loadedPayload,
-              })
-            );
+            const rawVers = Array.isArray(data.versions) && data.versions.length > 0
+              ? [...data.versions].sort((a: any, b: any) => Number(a.version_number || 1) - Number(b.version_number || 1))
+              : [{ version_number: 1, xml_content: data.xml_content, comment: data.ai_reasoning, prompt: data.latest_prompt }];
+            let nextStack = createEmptyUndoRedoState<CompoundPromptToDiagramResult>();
+            let lastPrompt = data.latest_prompt || data.name || 'Saved Architecture';
+            for (const ver of rawVers) {
+              const vXml = String(ver.xml_content || data.xml_content);
+              const inv = countXmlInventory(vXml);
+              const vPayload: CompoundPromptToDiagramResult = {
+                success: true,
+                action: 'create',
+                mutationMode: 'direct_drawio_xml_update',
+                userPrompt: ver.prompt || data.latest_prompt || data.name || 'Saved Architecture',
+                modificationHistory: [],
+                summaryOfChanges:
+                  ver.comment ||
+                  data.ai_reasoning ||
+                  `Loaded saved diagram "${data.name || incomingId}" (v${ver.version_number || 1})`,
+                xml: vXml,
+                graph: {
+                  title: data.name || 'Saved Architecture',
+                  reasoning: ver.comment || data.ai_reasoning || 'Loaded persisted Draw.io XML from database.',
+                  groups: [],
+                  nodes: [],
+                  edges: [],
+                },
+                audit: {
+                  ...inv,
+                  maxNestingDepth: inv.groupCount > 0 ? 1 : 0,
+                  siblingOverlaps: 0,
+                  childContainmentViolations: 0,
+                },
+                modelUsed: 'Persisted Library DB',
+                latencyMs: 0,
+              };
+              lastPrompt = vPayload.userPrompt;
+              nextStack = pushUndoRedoChange(nextStack, {
+                label: ver.comment || vPayload.graph.title,
+                xml: vXml,
+                payload: vPayload,
+              });
+            }
+            if (requestedVerNum >= 1 && requestedVerNum < rawVers.length) {
+              const stepsBack = rawVers.length - requestedVerNum;
+              for (let s = 0; s < stepsBack; s++) {
+                if (canUndoChange(nextStack)) {
+                  nextStack = undoDiagramChange(nextStack);
+                }
+              }
+            }
+            setUserPrompt(lastPrompt);
+            setHistoryState(nextStack);
           } else {
             setErrorMsg(`Saved diagram "${incomingId}" was not found. Enter a prompt and click Generate Diagram to create a fresh persistent diagram.`);
             syncDiagramIdToUrl(null);
@@ -235,14 +259,25 @@ export default function PurePromptToDiagramPage() {
     } catch {}
   }, [syncDiagramIdToUrl]);
 
-  // Persist Undo/Redo stack (last 15 changes) whenever historyState updates
+  // Persist Undo/Redo stack (last 15 changes) & keep ?id=<id>&v=<ver> synced whenever historyState updates
   useEffect(() => {
     if (!hydratedStorageRef.current || typeof window === 'undefined') return;
     if (!historyState.present && historyState.past.length === 0 && historyState.future.length === 0) {
       return;
     }
     saveUndoRedoStateToStorage(P2D_UNDO_REDO_STORAGE_KEY, historyState);
-  }, [historyState]);
+    if (savedDiagramId && historyState.present) {
+      const activeVer = historyState.past.length + 1;
+      try {
+        const url = new URL(window.location.href);
+        if (url.searchParams.get('id') !== savedDiagramId || url.searchParams.get('v') !== String(activeVer)) {
+          url.searchParams.set('id', savedDiagramId);
+          url.searchParams.set('v', String(activeVer));
+          window.history.replaceState({}, '', url.toString());
+        }
+      } catch {}
+    }
+  }, [historyState, savedDiagramId]);
 
   const handleUndo = useCallback(() => {
     setHistoryState((prev) => (canUndoChange(prev) ? undoDiagramChange(prev) : prev));
@@ -404,7 +439,8 @@ export default function PurePromptToDiagramPage() {
         const newId = data?.diagram?.id || data?.id;
         if (!res.ok || !newId) throw new Error(data?.error || 'Failed to save diagram to Database.');
         syncDiagramIdToUrl(newId);
-        setStatusNotice(`Saved to Library Database (ID: ${newId.slice(0, 8)}…).`);
+        if (typeof window !== 'undefined') window.dispatchEvent(new Event('promptcanvas_saved_updated'));
+        setStatusNotice(`Saved to Saved Architectures (Unique ID: ${newId}).`);
         return newId;
       }
     } catch (err: any) {
@@ -762,7 +798,8 @@ export default function PurePromptToDiagramPage() {
 
   function handleCopyPermanentUrl() {
     if (typeof window === 'undefined' || !savedDiagramId) return;
-    const shareUrl = `${window.location.origin}/prompt-to-diagram?id=${encodeURIComponent(savedDiagramId)}`;
+    const activeVer = Math.max(1, historyState.past.length + 1);
+    const shareUrl = `${window.location.origin}/prompt-to-diagram?id=${encodeURIComponent(savedDiagramId)}&v=${activeVer}`;
     navigator.clipboard?.writeText(shareUrl).catch(() => {});
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 1800);
@@ -831,10 +868,10 @@ export default function PurePromptToDiagramPage() {
                   onClick={handleCopyPermanentUrl}
                   className="px-2.5 py-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-800 text-[11px] font-mono font-bold inline-flex items-center gap-1.5 cursor-pointer transition"
                   data-testid="btn-copy-diagram-url"
-                  title={`Permanent Diagram ID: ${savedDiagramId} — Click to copy shareable URL`}
+                  title={`Permanent Diagram ID: ${savedDiagramId} — Click to copy colleague-shareable URL`}
                 >
                   <Link2 className="w-3.5 h-3.5 text-blue-600" />
-                  <span>{copiedLink ? 'Copied URL!' : `ID: ${savedDiagramId.slice(0, 8)}`}</span>
+                  <span>{copiedLink ? 'Share Link Copied!' : `Share (ID: ${savedDiagramId.slice(0, 8)})`}</span>
                 </button>
                 <button
                   type="button"

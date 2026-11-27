@@ -71,11 +71,18 @@ import {
 import {
   CANONICAL_TEMPLATES,
   CANONICAL_FAMILIES,
-  CANONICAL_DEPTH_LEVELS,
   DEPTH_LEVEL_META,
   BlueprintDepthLevel,
   CanonicalTemplate
 } from '@/lib/canonical/canonicalTemplates';
+import {
+  CERTIFIED_ARCHITECTURE_TEMPLATES,
+  getCertifiedArchitectureTemplateById,
+  cloneArchitectureTemplateInstance,
+  fetchImmutableTemplateXml,
+} from '@/lib/templates/certifiedArchitectureTemplates';
+
+const STUDIO_DEPTH_LEVELS: readonly ('All' | BlueprintDepthLevel)[] = ['All', 'L200', 'L300', 'L400'] as const;
 import { AppHeader } from '@/components/AppHeader';
 import { generateLogicalGcpAgentArchitectureXml } from '@/lib/canonical/templateLogicalGcpAgentArchitecture';
 import { generateConceptualGcpAgentArchitectureXml } from '@/lib/canonical/templateConceptualGcpAgentArch';
@@ -95,7 +102,7 @@ import {
   GeminiArchitecturalDecision
 } from '@/lib/geminiArchitecturalDecisionEngine';
 import { computeArchitectureDiff, ArchitectureDiffResult } from '@/lib/diffEngine';
-import { exportDiagramPng } from '@/lib/export/diagramRaster';
+import { exportDiagramPng, exportDiagramSvg } from '@/lib/export/diagramRaster';
 import {
   preflightVerifyAndHealXmlAcrossAll6Audits,
   applyOmniAndGeminiAutoFixRemediation,
@@ -392,63 +399,236 @@ function DashboardContent() {
 
       try {
         const params = new URLSearchParams(window.location.search);
-        const incomingInstanceId = params.get('id')?.trim();
-        const draftParam = params.get('draft');
-        const bpParam = params.get('blueprint');
+        const rawIdParam = params.get('id')?.trim();
+        const draftParam = params.get('draft')?.trim();
+        const incomingInstanceId = rawIdParam || draftParam || '';
+        const incomingVerParam = params.get('v');
+        const requestedVerNum =
+          incomingVerParam && Number.isFinite(Number(incomingVerParam)) ? Number(incomingVerParam) : null;
+        const bpParam = params.get('template') || params.get('blueprint');
         const domainParam = params.get('domain')?.trim() || undefined;
         const depthParam = params.get('depth')?.trim().toUpperCase();
         const importParam = params.get('import');
 
-        if (depthParam === 'L100' || depthParam === 'L200' || depthParam === 'L300' || depthParam === 'L400') {
+        if (depthParam === 'L100') {
+          setSelectedDepthLevel('L200');
+        } else if (depthParam === 'L200' || depthParam === 'L300' || depthParam === 'L400') {
           setSelectedDepthLevel(depthParam);
         }
 
         if (incomingInstanceId) {
           setActiveInstanceId(incomingInstanceId);
+          if (draftParam && !rawIdParam) {
+            try {
+              const normUrl = new URL(window.location.href);
+              normUrl.searchParams.delete('draft');
+              normUrl.searchParams.set('id', incomingInstanceId);
+              window.history.replaceState({}, '', normUrl.toString());
+            } catch {}
+          }
+
+          const tryHydrateFromLocalStudioStore = (): boolean => {
+            try {
+              const rawLocal = localStorage.getItem(`promptcanvas_studio_${incomingInstanceId}`);
+              if (!rawLocal) return false;
+              const parsedLocal = JSON.parse(rawLocal);
+              if (!parsedLocal || (!parsedLocal.xml && !Array.isArray(parsedLocal.versions))) return false;
+              const localVers: DashboardVersionEntry[] =
+                Array.isArray(parsedLocal.versions) && parsedLocal.versions.length > 0
+                  ? parsedLocal.versions
+                  : [
+                      {
+                        id: `ver_local_${incomingInstanceId}`,
+                        versionTag: parsedLocal.activeVersionTag || 'v1.0',
+                        major: 1,
+                        minor: 0,
+                        micro: 0,
+                        title: parsedLocal.name || parsedLocal.projectTitle || incomingInstanceId,
+                        prompt: parsedLocal.description || DEFAULT_DASHBOARD_PROMPT,
+                        source: 'initial_load',
+                        sourceLabel: `Instance ${incomingInstanceId.slice(0, 8)}`,
+                        diffSummary: parsedLocal.description || `Loaded saved architecture ${incomingInstanceId}`,
+                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        xml: parsedLocal.xml || '',
+                        blueprintId: parsedLocal.selectedBlueprintId || '00',
+                        level: 'L3',
+                        perspective: (parsedLocal.perspective as ArchitecturePerspective) || 'Technical',
+                        status: 'published',
+                        perspectiveXmlMap: { Technical: parsedLocal.xml || '' },
+                      },
+                    ];
+              const resolvedTitle = parsedLocal.name || parsedLocal.projectTitle || 'Saved Architecture';
+              setCanvasTitle(resolvedTitle);
+              setSelectedBlueprintId(parsedLocal.selectedBlueprintId || '00');
+              setLoadedBlueprintId(parsedLocal.selectedBlueprintId || '00');
+              setIsSessionForked(true);
+              setHasUnsavedSessionChanges(false);
+              setVersionHistory(localVers);
+              const total = localVers.length;
+              const targetIdx =
+                requestedVerNum !== null
+                  ? localVers.findIndex((_, idx) => total - idx === requestedVerNum)
+                  : 0;
+              setActiveVersionIndex(targetIdx >= 0 ? targetIdx : 0);
+
+              // Auto-backfill all versions to Server + GCS so colleagues can open this exact ?id= URL!
+              const backfillVers = localVers
+                .map((v, idx) => ({
+                  version_number: total - idx,
+                  xml: v.xml,
+                  comment: `${v.versionTag || `v${total - idx}.0`} — ${v.diffSummary || v.prompt || 'Saved Snapshot'}`,
+                  prompt: v.prompt,
+                  created_by: v.persona || v.sourceLabel || 'User',
+                }))
+                .sort((a, b) => a.version_number - b.version_number);
+              void fetch('/api/diagrams', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  id: incomingInstanceId,
+                  name: resolvedTitle,
+                  xml: localVers[0]?.xml || parsedLocal.xml,
+                  comment: parsedLocal.description || 'Synced saved architecture',
+                  prompt: parsedLocal.description || resolvedTitle,
+                  architectureType: `canonical_${parsedLocal.selectedBlueprintId || '00'}`,
+                  createdStudio: 'dashboard',
+                  isPrivate: false,
+                  versions: backfillVers,
+                }),
+              }).catch(() => {});
+              return true;
+            } catch {
+              return false;
+            }
+          };
+
           fetch(`/api/diagrams/${encodeURIComponent(incomingInstanceId)}`, { cache: 'no-store' })
             .then((r) => (r.ok ? r.json() : null))
             .then((data) => {
+              const serverVersions = Array.isArray(data?.versions) ? data.versions : [];
+              try {
+                const rawLocal = localStorage.getItem(`promptcanvas_studio_${incomingInstanceId}`);
+                const parsedLocal = rawLocal ? JSON.parse(rawLocal) : null;
+                if (
+                  Array.isArray(parsedLocal?.versions) &&
+                  parsedLocal.versions.length > serverVersions.length &&
+                  tryHydrateFromLocalStudioStore()
+                ) {
+                  return;
+                }
+              } catch {}
+
               if (data?.xml_content && String(data.xml_content).includes('<mxCell')) {
                 const archType = String(data.architecture_type || '');
+                const certTpl = getCertifiedArchitectureTemplateById(bpParam || archType);
                 const bpMatch = archType.match(/^canonical_(\d+)$/);
-                const matchedBpId = bpMatch ? bpMatch[1].padStart(2, '0') : (bpParam || '99');
+                const matchedBpId = certTpl
+                  ? certTpl.id
+                  : bpMatch
+                  ? bpMatch[1].padStart(2, '0')
+                  : (bpParam || '00');
                 const matchedTpl = CANONICAL_TEMPLATES.find((t) => t.id === matchedBpId);
-                if (matchedTpl) {
-                  setSelectedBlueprintId(matchedTpl.id);
-                  setLoadedBlueprintId(matchedTpl.id);
-                  setSelectedDepthLevel(matchedTpl.depthLevel);
-                }
-                setCanvasTitle(data.name || matchedTpl?.name || 'Saved Architecture Instance');
+                const resolvedId = certTpl?.id || matchedTpl?.id || '00';
+                const resolvedLevel = (certTpl?.level ||
+                  (matchedTpl?.depthLevel === 'L100' ? 'L200' : matchedTpl?.depthLevel) ||
+                  'L300') as BlueprintDepthLevel;
+                const resolvedTitle =
+                  data.name || certTpl?.title || matchedTpl?.name || 'Cloned Architecture Instance';
+
+                setSelectedBlueprintId(resolvedId);
+                setLoadedBlueprintId(resolvedId);
+                setSelectedDepthLevel(resolvedLevel);
+                setCanvasTitle(resolvedTitle);
                 setIsSessionForked(true);
                 setHasUnsavedSessionChanges(false);
-                setVersionHistory([
-                  {
-                    id: `ver_db_${incomingInstanceId}_${Date.now()}`,
-                    versionTag: `v${data.max_version || data.version_count || 1}.0`,
-                    major: Number(data.max_version || data.version_count || 1),
-                    minor: 0,
-                    micro: 0,
-                    title: data.name || matchedTpl?.name || 'Saved Architecture Instance',
-                    prompt: data.latest_prompt || matchedTpl?.primaryPurpose || DEFAULT_DASHBOARD_PROMPT,
-                    source: 'initial_load',
-                    sourceLabel: 'Persisted Instance (2-Way Sync)',
-                    diffSummary: data.ai_reasoning || `Loaded persisted diagram instance ${incomingInstanceId.slice(0, 8)}… with 2-way Prompt & Draw.io sync.`,
-                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    xml: data.xml_content,
-                    blueprintId: matchedTpl?.id || '99',
-                    level: 'L3',
-                    perspective: 'Technical',
-                    status: 'draft',
-                    perspectiveXmlMap: { Technical: data.xml_content },
-                  },
-                ]);
-                setActiveVersionIndex(0);
-              } else {
+
+                const sortedServer = [...serverVersions].sort(
+                  (a: any, b: any) => Number(b.version_number || 1) - Number(a.version_number || 1)
+                );
+                const mappedHistory: DashboardVersionEntry[] =
+                  sortedServer.length > 0
+                    ? sortedServer.map((v: any) => {
+                        const vNum = Number(v.version_number || 1);
+                        const vXml = String(v.xml_content || data.xml_content || '');
+                        const vTime = v.created_at
+                          ? new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                          : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        return {
+                          id: String(v.id || `ver_db_${incomingInstanceId}_v${vNum}`),
+                          versionTag: `v${vNum}.0`,
+                          major: vNum,
+                          minor: 0,
+                          micro: 0,
+                          title: resolvedTitle,
+                          prompt:
+                            v.prompt ||
+                            data.latest_prompt ||
+                            certTpl?.summary ||
+                            matchedTpl?.primaryPurpose ||
+                            DEFAULT_DASHBOARD_PROMPT,
+                          source: vNum === 1 ? 'initial_load' : 'ai_copilot',
+                          sourceLabel:
+                            vNum === 1
+                              ? `Baseline Instance (${incomingInstanceId.slice(0, 8)})`
+                              : v.created_by || `Version ${vNum}`,
+                          diffSummary:
+                            v.comment ||
+                            v.ai_reasoning ||
+                            `Saved Version ${vNum} on Diagram ID ${incomingInstanceId}`,
+                          aiReasoning: v.ai_reasoning || undefined,
+                          timestamp: vTime,
+                          xml: vXml,
+                          blueprintId: resolvedId,
+                          level: resolvedLevel === 'L400' ? 'L4' : resolvedLevel === 'L300' ? 'L3' : 'L2',
+                          perspective: 'Technical',
+                          status: 'published',
+                          perspectiveXmlMap: { Technical: vXml },
+                        };
+                      })
+                    : [
+                        {
+                          id: `ver_db_${incomingInstanceId}_${Date.now()}`,
+                          versionTag: `v${data.max_version || data.version_count || 1}.0`,
+                          major: Number(data.max_version || data.version_count || 1),
+                          minor: 0,
+                          micro: 0,
+                          title: resolvedTitle,
+                          prompt:
+                            data.latest_prompt ||
+                            certTpl?.summary ||
+                            matchedTpl?.primaryPurpose ||
+                            DEFAULT_DASHBOARD_PROMPT,
+                          source: 'initial_load',
+                          sourceLabel: `Instance ${incomingInstanceId.slice(0, 8)}`,
+                          diffSummary:
+                            data.ai_reasoning ||
+                            `Loaded saved diagram ID ${incomingInstanceId}.`,
+                          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                          xml: data.xml_content,
+                          blueprintId: resolvedId,
+                          level: resolvedLevel === 'L400' ? 'L4' : resolvedLevel === 'L300' ? 'L3' : 'L2',
+                          perspective: 'Technical',
+                          status: 'published',
+                          perspectiveXmlMap: { Technical: data.xml_content },
+                        },
+                      ];
+
+                setVersionHistory(mappedHistory);
+                const verIdx =
+                  requestedVerNum !== null
+                    ? mappedHistory.findIndex((entry) => entry.major === requestedVerNum)
+                    : 0;
+                setActiveVersionIndex(verIdx >= 0 ? verIdx : 0);
+              } else if (!tryHydrateFromLocalStudioStore()) {
                 setActiveInstanceId(null);
+                setIsNewDiagramModalOpen(true);
               }
             })
             .catch(() => {
-              setActiveInstanceId(null);
+              if (!tryHydrateFromLocalStudioStore()) {
+                setActiveInstanceId(null);
+                setIsNewDiagramModalOpen(true);
+              }
             });
           return;
         }
@@ -589,6 +769,51 @@ function DashboardContent() {
         }
 
         if (bpParam) {
+          const certTpl = getCertifiedArchitectureTemplateById(bpParam);
+          if (certTpl) {
+            cloneArchitectureTemplateInstance(certTpl, 'dashboard')
+              .then((cloned) => {
+                setActiveInstanceId(cloned.instanceId);
+                setLoadedBlueprintId(certTpl.id);
+                setSelectedBlueprintId(certTpl.id);
+                setSelectedDepthLevel(certTpl.level);
+                setCanvasTitle(certTpl.title);
+                setIsSessionForked(true);
+                setHasUnsavedSessionChanges(false);
+                try {
+                  const url = new URL(window.location.href);
+                  url.searchParams.set('id', cloned.instanceId);
+                  url.searchParams.set('template', certTpl.id);
+                  window.history.replaceState({}, '', url.toString());
+                } catch {}
+                setVersionHistory([
+                  {
+                    id: `ver_clone_${cloned.instanceId}_${Date.now()}`,
+                    versionTag: 'v1.0',
+                    major: 1,
+                    minor: 0,
+                    micro: 0,
+                    title: certTpl.title,
+                    prompt: certTpl.summary,
+                    source: 'initial_load',
+                    sourceLabel: `Clone ${cloned.instanceId.slice(0, 8)} (${certTpl.level})`,
+                    diffSummary: `Cloned unique Diagram ID ${cloned.instanceId.slice(0, 8)}… from Template #${certTpl.id}. Original template remains intact.`,
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    xml: cloned.xml,
+                    blueprintId: certTpl.id,
+                    level: certTpl.level === 'L400' ? 'L4' : certTpl.level === 'L300' ? 'L3' : 'L2',
+                    perspective: 'Technical',
+                    status: 'draft',
+                    perspectiveXmlMap: { Technical: cloned.xml },
+                  },
+                ]);
+                setActiveVersionIndex(0);
+              })
+              .catch(() => {
+                setIsNewDiagramModalOpen(true);
+              });
+            return;
+          }
           const cleanBpId = bpParam.replace(/^#/, '').padStart(2, '0');
           const foundBp = CANONICAL_TEMPLATES.find((t) => t.id === cleanBpId || t.id === bpParam);
           if (foundBp) {
@@ -597,9 +822,9 @@ function DashboardContent() {
           }
         }
 
-        if (params.get('new') === 'true') {
-          setIsNewDiagramModalOpen(true);
-        }
+        // When creating a new diagram without a locked-in ?id=, open the Dynamic 4-Dropdown Template Picker
+        // so the user chooses & locks in a starting template (which clones a fresh unique ID).
+        setIsNewDiagramModalOpen(true);
 
         const savedSessionRaw = sessionStorage.getItem(`promptcanvas_dashboard_session_${sid}_00`);
         if (savedSessionRaw) {
@@ -766,7 +991,7 @@ function DashboardContent() {
   // 8. MODALS & DRAWERS STATE
   const [isInlineEditOpen, setIsInlineEditOpen] = useState<boolean>(false);
   const [isAuditModalOpen, setIsAuditModalOpen] = useState<boolean>(false);
-  const [isExporting, setIsExporting] = useState<'pdf' | 'png' | null>(null);
+  const [isExporting, setIsExporting] = useState<'pdf' | 'png' | 'svg' | null>(null);
   const [auditScores, setAuditScores] = useState<AuditDimensionResult[]>([
     {
       category: 'security',
@@ -1164,19 +1389,14 @@ function DashboardContent() {
   }, [selectedCategory, selectedDepthLevel, blueprintSearchQuery]);
 
   const depthLevelCounts = useMemo(() => {
-    const activeCategory = CATEGORY_GROUPS.find((c) => c.id === selectedCategory);
-    const catList =
-      activeCategory && activeCategory.familyFilter
-        ? CANONICAL_TEMPLATES.filter((t) => t.family === activeCategory.familyFilter)
-        : CANONICAL_TEMPLATES;
     return {
-      All: catList.length,
-      L100: catList.filter((t) => t.depthLevel === 'L100').length,
-      L200: catList.filter((t) => t.depthLevel === 'L200').length,
-      L300: catList.filter((t) => t.depthLevel === 'L300').length,
-      L400: catList.filter((t) => t.depthLevel === 'L400').length,
+      All: CERTIFIED_ARCHITECTURE_TEMPLATES.length,
+      L100: 0,
+      L200: CERTIFIED_ARCHITECTURE_TEMPLATES.filter((t) => t.level === 'L200').length,
+      L300: CERTIFIED_ARCHITECTURE_TEMPLATES.filter((t) => t.level === 'L300').length,
+      L400: CERTIFIED_ARCHITECTURE_TEMPLATES.filter((t) => t.level === 'L400').length,
     };
-  }, [selectedCategory]);
+  }, []);
 
   const selectedCategoryObj = useMemo(() => {
     return CATEGORY_GROUPS.find((c) => c.id === selectedCategory) || CATEGORY_GROUPS[0];
@@ -1186,12 +1406,22 @@ function DashboardContent() {
     return DETAIL_LEVELS.find((l) => l.id === selectedLevel) || DETAIL_LEVELS[2];
   }, [selectedLevel]);
 
-  const selectedBlueprintObj = useMemo(() => {
-    return (
-      CANONICAL_TEMPLATES.find(
-        (t) => t.id === selectedBlueprintId || t.id === selectedBlueprintId.padStart(2, '0')
-      ) || CANONICAL_TEMPLATES[0]
+  const selectedBlueprintObj = useMemo<CanonicalTemplate>(() => {
+    const cert = getCertifiedArchitectureTemplateById(selectedBlueprintId);
+    const existing = CANONICAL_TEMPLATES.find(
+      (t) => t.id === selectedBlueprintId || t.id === selectedBlueprintId.padStart(2, '0')
     );
+    if (cert) {
+      return {
+        ...(existing || CANONICAL_TEMPLATES[0]),
+        id: cert.id,
+        name: cert.title,
+        depthLevel: cert.level,
+        primaryPurpose: cert.summary,
+        previewImage: cert.previewImage,
+      };
+    }
+    return existing || CANONICAL_TEMPLATES[0];
   }, [selectedBlueprintId]);
 
   // =========================================================================
@@ -1199,7 +1429,7 @@ function DashboardContent() {
   // =========================================================================
   const openSaveOrDiscardModal = (action: PendingLeaveAction) => {
     setPendingLeaveAction(action);
-    const defaultName = `${canvasTitle} — Custom Project (${currentVersion.versionTag})`;
+    const defaultName = canvasTitle;
     setSaveProjectName(defaultName);
     setSaveProjectDomain(
       selectedCategoryObj.id === 'all' || selectedCategoryObj.name.startsWith('All ')
@@ -1286,9 +1516,58 @@ function DashboardContent() {
     setActiveVersionIndex(0);
   };
 
-  // Handler for New Diagram Input Selection Modal results (World 1: Template-First Studio)
+  // Handler for New Diagram Input Selection Modal results (Dynamic Template-Lock -> Cloned Unique ID)
   const handleSelectNewDiagramOption = (result: NewDiagramSelectionResult) => {
     setIsNewDiagramModalOpen(false);
+
+    if (result.mode === 'cloned_template' && result.instanceId && result.templateId && result.customXml) {
+      const tplLevel = (result.templateLevel || 'L300') as BlueprintDepthLevel;
+      const tplTitle = result.projectName || result.blueprintTitle || `Template #${result.templateId}`;
+      setActiveInstanceId(result.instanceId);
+      setLoadedBlueprintId(result.templateId);
+      setSelectedBlueprintId(result.templateId);
+      setSelectedDepthLevel(tplLevel);
+      setCanvasTitle(tplTitle);
+      setIsSessionForked(true);
+      setHasUnsavedSessionChanges(false);
+
+      if (typeof window !== 'undefined') {
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.delete('new');
+          url.searchParams.set('id', result.instanceId);
+          url.searchParams.set('template', result.templateId);
+          window.history.replaceState({}, '', url.toString());
+        } catch {}
+      }
+
+      setVersionHistory([
+        {
+          id: `ver_clone_${result.instanceId}_${Date.now()}`,
+          versionTag: 'v1.0',
+          major: 1,
+          minor: 0,
+          micro: 0,
+          title: tplTitle,
+          prompt: result.prompt || DEFAULT_DASHBOARD_PROMPT,
+          source: 'initial_load',
+          sourceLabel: `Cloned ID ${result.instanceId.slice(0, 8)} (${tplLevel})`,
+          diffSummary: `Locked in Template #${result.templateId} (${result.templateType || 'Technical'} · ${result.templateKind || 'Architecture'}) and cloned unique Diagram ID ${result.instanceId.slice(0, 8)}…. Original template remains intact.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          xml: result.customXml,
+          blueprintId: result.templateId,
+          level: tplLevel === 'L400' ? 'L4' : tplLevel === 'L300' ? 'L3' : 'L2',
+          perspective: 'Technical',
+          status: 'draft',
+          perspectiveXmlMap: { Technical: result.customXml },
+        },
+      ]);
+      setActiveVersionIndex(0);
+      showToast(
+        `✨ Locked in Template #${result.templateId} → Cloned new Diagram ID ${result.instanceId.slice(0, 8)}… (Original template untouched!)`
+      );
+      return;
+    }
 
     if (result.mode === 'prompt') {
       const targetUrl = result.prompt?.trim()
@@ -1299,6 +1578,25 @@ function DashboardContent() {
     }
 
     if (result.mode === 'blueprint' && result.blueprintId) {
+      const cert = getCertifiedArchitectureTemplateById(result.blueprintId);
+      if (cert) {
+        void cloneArchitectureTemplateInstance(cert, 'dashboard').then((cloned) => {
+          handleSelectNewDiagramOption({
+            mode: 'cloned_template',
+            instanceId: cloned.instanceId,
+            templateId: cert.id,
+            templateLevel: cert.level,
+            templateType: cert.type,
+            templateKind: cert.kind,
+            templateUseCase: cert.useCase,
+            blueprintTitle: cert.title,
+            projectName: cert.title,
+            prompt: cert.summary,
+            customXml: cloned.xml,
+          });
+        });
+        return;
+      }
       const bp = CANONICAL_TEMPLATES.find((t) => t.id === result.blueprintId);
       if (bp) {
         loadPristineCanonicalBlueprint(bp.id);
@@ -1391,6 +1689,24 @@ function DashboardContent() {
     if (!bp || isCreatingInstance) return;
     setIsCreatingInstance(true);
     try {
+      const certTpl = getCertifiedArchitectureTemplateById(bp.id);
+      if (certTpl) {
+        const cloned = await cloneArchitectureTemplateInstance(certTpl, 'dashboard');
+        handleSelectNewDiagramOption({
+          mode: 'cloned_template',
+          instanceId: cloned.instanceId,
+          templateId: certTpl.id,
+          templateLevel: certTpl.level,
+          templateType: certTpl.type,
+          templateKind: certTpl.kind,
+          templateUseCase: certTpl.useCase,
+          blueprintTitle: certTpl.title,
+          projectName: certTpl.title,
+          prompt: certTpl.summary,
+          customXml: cloned.xml,
+        });
+        return;
+      }
       const xmlToInstantiate =
         loadedBlueprintId === bp.id && activeCanvasXml && activeCanvasXml.includes('<mxCell')
           ? activeCanvasXml
@@ -1460,13 +1776,53 @@ function DashboardContent() {
     }
   };
 
-  const handleCopyInstanceUrl = () => {
-    if (typeof window === 'undefined' || !activeInstanceId) return;
-    const shareUrl = `${window.location.origin}/dashboard?id=${encodeURIComponent(activeInstanceId)}`;
+  const handleCopyInstanceUrl = async () => {
+    if (typeof window === 'undefined') return;
+    const targetId = activeInstanceId || sessionCopyId;
+    if (!targetId) {
+      const fallbackUrl = `${window.location.origin}/dashboard?template=${encodeURIComponent(loadedBlueprintId)}`;
+      navigator.clipboard?.writeText(fallbackUrl).catch(() => {});
+      showToast(`🔗 Copied Template URL (?template=${loadedBlueprintId})`);
+      return;
+    }
+    const activeVerNum = Math.max(1, versionHistory.length - activeVersionIndex);
+    const shareUrl = `${window.location.origin}/dashboard?id=${encodeURIComponent(targetId)}&v=${activeVerNum}`;
     navigator.clipboard?.writeText(shareUrl).catch(() => {});
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set('id', targetId);
+      url.searchParams.set('v', String(activeVerNum));
+      window.history.replaceState({}, '', url.toString());
+    } catch {}
     setCopiedInstanceLink(true);
     setTimeout(() => setCopiedInstanceLink(false), 1800);
-    showToast(`🔗 Copied Instance URL (?id=${activeInstanceId.slice(0, 8)}…)`);
+    showToast(`🔗 Shareable colleague link copied: /dashboard?id=${targetId}&v=${activeVerNum}`);
+
+    const total = versionHistory.length;
+    const orderedVersions = versionHistory
+      .map((v, idx) => ({
+        version_number: total - idx,
+        xml: v.xml,
+        comment: `${v.versionTag || `v${total - idx}.0`} — ${v.diffSummary || v.prompt || 'Snapshot'}`,
+        prompt: v.prompt,
+        created_by: v.persona || v.sourceLabel || 'User',
+      }))
+      .sort((a, b) => a.version_number - b.version_number);
+    await fetch('/api/diagrams', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: targetId,
+        name: canvasTitle || 'Saved Architecture',
+        xml: activeCanvasXml,
+        comment: currentVersion?.diffSummary || 'Shared architecture snapshot',
+        prompt: currentVersion?.prompt || canvasTitle,
+        architectureType: `arch_tpl_${loadedBlueprintId}`,
+        createdStudio: 'dashboard',
+        isPrivate: false,
+        versions: orderedVersions,
+      }),
+    }).catch(() => {});
   };
 
   // Immediate Category Selection (after no unsaved changes or after modal resolution)
@@ -1643,7 +1999,7 @@ function DashboardContent() {
     if (newPerspective === canvasPerspective) return;
     setCanvasPerspective(newPerspective);
     if (newPerspective === 'Technical') {
-      showToast('⚙️ Technical Mode active — choose a Level (L100, L200, L300, or L400) to filter tagged blueprints, then click Use Blueprint.');
+      showToast('⚙️ Technical Mode active — choose a Level (L200, L300, or L400) or click Change Template to filter by Type, Kind & Use Case.');
     }
 
     const baseline = getCanonicalBaselineForPerspective(loadedBlueprintId, newPerspective, isLight);
@@ -1716,15 +2072,17 @@ function DashboardContent() {
     const rawPrompt = promptToRun || activeComposerPrompt;
     if (!rawPrompt.trim() || isProcessingAi) return;
 
-    // World 1 Contract: A certified template MUST be selected in Step 1 before prompt mutation
+    // World 1 Contract: A certified template MUST be locked in & cloned before prompt mutation
     const hasSelectedTemplate = Boolean(
       loadedBlueprintId &&
         loadedBlueprintId !== 'blank' &&
         loadedBlueprintId !== 'custom' &&
-        CANONICAL_TEMPLATES.some((t) => t.id === loadedBlueprintId)
+        (getCertifiedArchitectureTemplateById(loadedBlueprintId) ||
+          CANONICAL_TEMPLATES.some((t) => t.id === loadedBlueprintId))
     );
     if (!hasSelectedTemplate) {
-      showToast('🏛️ Select one of the 41 Certified Blueprints in Step 1 before applying AI mutations (or use Prompt Only for no-template generation).');
+      setIsNewDiagramModalOpen(true);
+      showToast('🏛️ Lock in one of the 84 Certified Architecture Templates first to clone a unique Diagram ID.');
       return;
     }
 
@@ -1791,52 +2149,17 @@ function DashboardContent() {
 
       const isCompositionalChainXml = healedXml.includes('data-compositional-chain="true"');
 
-      setAiPlanningStatus('Stage 3/4: Running Live Gemini Synthesis + Cross-Model Truthfulness Critic (gemini-2.5-flash + gemini-2.5-pro)...');
-
       let apiDecision: GeminiArchitecturalDecision | null = null;
       let truthfulnessDossier: TruthfulnessGroundingDossier | null = null;
       let liveCopilotModification: any = null;
-      const controller = new AbortController();
-      const timeoutId = setTimeout(
-        () => controller.abort(),
-        isCompositionalChainXml ? 12000 : 25000
-      );
-      try {
-        const res = await fetch('/api/architect-decision', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            prompt: query,
-            blueprintId: loadedBlueprintId,
-            currentTitle: canvasTitle,
-            currentPerspective: canvasPerspective,
-            currentLevel: selectedLevel,
-            xmlContent: healedXml
-          }),
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-        if (res.ok) {
-          const data = await res.json();
-          if (data?.decision) {
-            apiDecision = data.decision;
-          }
-          if (data?.truthfulnessDossier) {
-            truthfulnessDossier = data.truthfulnessDossier;
-          }
-          if (data?.copilotModification) {
-            liveCopilotModification = data.copilotModification;
-          }
-        }
-      } catch (apiErr) {
-        clearTimeout(timeoutId);
-        console.warn('Gemini Architect API fast-path synthesis:', apiErr);
-      }
 
-      // First try real spatial XML mutation via /api/prompt-to-diagram so edits modify the
-      // actual Draw.io topology (add/move/rename/connect/remove) instead of only appending 1 box!
+      // Primary fast-path (~5-8s): run direct spatial Draw.io XML mutation FIRST without waiting 25s
+      // on a redundant 3-model /api/architect-decision call!
       let spatialModified = false;
       if (!isCompositionalChainXml && !forceNewSynthesis && currentVersion.xml.includes('<mxCell')) {
+        setAiPlanningStatus(
+          `Applying Live Gemini Spatial Mutation on Cloned Instance (${activeInstanceId.slice(0, 8)}…)…`
+        );
         try {
           const spRes = await fetch('/api/prompt-to-diagram', {
             method: 'POST',
@@ -1865,8 +2188,39 @@ function DashboardContent() {
               };
             }
           }
+        } catch (spErr) {
+          console.warn('Direct spatial mutation fallback:', spErr);
+        }
+      }
+
+      // Only invoke /api/architect-decision fallback when spatial mutation did not already resolve
+      if (!spatialModified) {
+        setAiPlanningStatus('Synthesizing Fallback Gemini Architectural Mutation...');
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 14000);
+        try {
+          const res = await fetch('/api/architect-decision', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              prompt: query,
+              blueprintId: loadedBlueprintId,
+              currentTitle: canvasTitle,
+              currentPerspective: canvasPerspective,
+              currentLevel: selectedLevel,
+              xmlContent: healedXml,
+            }),
+            signal: controller.signal,
+          });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const data = await res.json();
+            if (data?.decision) apiDecision = data.decision;
+            if (data?.truthfulnessDossier) truthfulnessDossier = data.truthfulnessDossier;
+            if (data?.copilotModification) liveCopilotModification = data.copilotModification;
+          }
         } catch {
-          // Graceful fallback to architect-decision + executeGcpPromptModification
+          clearTimeout(timeoutId);
         }
       }
 
@@ -2017,15 +2371,16 @@ function DashboardContent() {
   // CORE ACTION: Modal Choice 1 — Accept & Save Session Copy as User's Project
   // =========================================================================
   const handleAcceptAndSaveProject = async () => {
-    const finalTitle = (saveProjectName || `${canvasTitle} — Custom Project (${currentVersion.versionTag})`).trim();
+    const finalTitle = (saveProjectName || canvasTitle).trim();
     const finalDomain = (saveProjectDomain || 'Enterprise Cloud & Multi-Agent AI').trim();
     setIsSavingProject(true);
 
     const fallbackProjId = 'proj_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
-    let finalProjectId = fallbackProjId;
+    let finalProjectId = activeInstanceId || fallbackProjId;
     const latestPrompt = currentVersion.prompt || DEFAULT_DASHBOARD_PROMPT;
     const actualNodeCount = (activeCanvasXml.match(/vertex="1"/g) || []).length || 24;
     const actualSpecCount = 16;
+    const certTplCheck = getCertifiedArchitectureTemplateById(loadedBlueprintId);
     const effectiveArchType =
       canvasPerspective === 'Whiteboard'
         ? 'canonical_76_whiteboard'
@@ -2033,23 +2388,39 @@ function DashboardContent() {
         ? 'canonical_77_paper'
         : canvasPerspective === 'Process'
         ? 'process_flow'
+        : certTplCheck
+        ? `arch_tpl_${certTplCheck.id}`
         : `canonical_${loadedBlueprintId}`;
 
     try {
-      // 1. Save to Database API (/api/diagrams) scoped to current user/guest session and capture canonical DB id
+      // 1. Upsert onto existing activeInstanceId (or create once if none exists) — 1 Diagram = 1 Canonical ID!
+      const totalHist = versionHistory.length;
+      const orderedSaveVers = versionHistory
+        .map((v, idx) => ({
+          version_number: totalHist - idx,
+          xml: v.xml,
+          comment: `${v.versionTag || `v${totalHist - idx}.0`} — ${v.diffSummary || v.prompt || 'Saved Snapshot'}`,
+          prompt: v.prompt,
+          created_by: v.persona || v.sourceLabel || 'User',
+        }))
+        .sort((a, b) => a.version_number - b.version_number);
       const saveRes = await fetch('/api/diagrams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          id: activeInstanceId || sessionCopyId || undefined,
           name: finalTitle,
           xml: activeCanvasXml,
-          comment: `Saved from Dashboard Session Copy (${currentVersion.versionTag}, ${canvasPerspective} perspective, forked from Blueprint #${loadedBlueprintId})`,
+          comment:
+            currentVersion.diffSummary ||
+            `Saved snapshot (${currentVersion.versionTag}, ${canvasPerspective} perspective)`,
           prompt: latestPrompt,
           businessUsecase: finalDomain,
           technicalUsecase: currentVersion.diffSummary,
           architectureType: effectiveArchType,
-          createdStudio: 'studio',
-          isPrivate: true
+          createdStudio: 'dashboard',
+          isPrivate: false,
+          versions: orderedSaveVers.length > 0 ? orderedSaveVers : undefined,
         })
       }).catch(() => null);
 
@@ -2061,7 +2432,7 @@ function DashboardContent() {
         }
       }
 
-      // 2. Save to LocalStorage Saved Architectures Inventory (/library & /studio) using unified finalProjectId
+      // 2. Sync LocalStorage Saved Architectures Inventory (/library) keyed strictly by canonical finalProjectId
       if (typeof window !== 'undefined') {
         const studioCompatibleVersions = versionHistory.map((v) => ({
           ...v,
@@ -2077,7 +2448,7 @@ function DashboardContent() {
           projectTitle: finalTitle,
           domain: finalDomain,
           description: currentVersion.diffSummary || latestPrompt,
-          tags: ['Session Copy', `Blueprint #${loadedBlueprintId}`, currentVersion.versionTag, canvasPerspective],
+          tags: ['Saved Instance', `Blueprint #${loadedBlueprintId}`, currentVersion.versionTag, canvasPerspective],
           visibility: 'private',
           activeVersionTag: currentVersion.versionTag,
           selectedBlueprintId: loadedBlueprintId,
@@ -2104,14 +2475,17 @@ function DashboardContent() {
             versionCount: versionHistory.length,
             activeVersionTag: currentVersion.versionTag,
             xml: activeCanvasXml,
-            created_studio: 'studio',
+            created_studio: 'dashboard',
             architecture_type: effectiveArchType,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           },
-          ...(Array.isArray(existingCatalog) ? existingCatalog.filter((item: any) => item.id !== finalProjectId) : [])
+          ...(Array.isArray(existingCatalog)
+            ? existingCatalog.filter((item: any) => item.id !== finalProjectId && item.id !== activeInstanceId)
+            : [])
         ];
         localStorage.setItem('promptcanvas_saved_blueprints', JSON.stringify(updatedCatalog));
+        window.dispatchEvent(new Event('promptcanvas_saved_updated'));
       }
     } catch (err) {
       console.error('Error saving session copy as project:', err);
@@ -2123,24 +2497,29 @@ function DashboardContent() {
     setLeaveModalOpen(false);
     setPendingLeaveAction(null);
 
-    // Restore Dashboard Canonical Blueprint back to pristine v1.0 so dashboard blueprint NEVER stays mutated
     if (actionToExecute?.type === 'category') {
       applyCategorySelectImmediate(actionToExecute.categoryId);
-      showToast(`✓ Saved "${finalTitle}" to your projects! Switched category.`);
+      showToast(`✓ Saved "${finalTitle}" (ID: ${finalProjectId.slice(0, 8)}…)! Switched category.`);
     } else if (actionToExecute?.type === 'blueprint') {
       loadPristineCanonicalBlueprint(actionToExecute.blueprint.id);
-      showToast(`✓ Saved "${finalTitle}" to your projects! Loaded Blueprint #${actionToExecute.blueprint.id}.`);
+      showToast(`✓ Saved "${finalTitle}" (ID: ${finalProjectId.slice(0, 8)}…)! Loaded Blueprint #${actionToExecute.blueprint.id}.`);
     } else if (actionToExecute?.type === 'route') {
-      loadPristineCanonicalBlueprint(loadedBlueprintId);
-      showToast(`✓ Saved "${finalTitle}" to your projects!`);
+      showToast(`✓ Saved "${finalTitle}" (ID: ${finalProjectId.slice(0, 8)}…)!`);
       if (actionToExecute.href.startsWith('/dashboard')) {
         router.push(`/dashboard?id=${encodeURIComponent(finalProjectId)}`);
       } else {
         router.push(actionToExecute.href);
       }
     } else {
-      loadPristineCanonicalBlueprint(loadedBlueprintId);
-      showToast(`✓ Saved "${finalTitle}" to Saved Architectures! Canonical Blueprint #${loadedBlueprintId} restored to v1.0.`);
+      setActiveInstanceId(finalProjectId);
+      setCanvasTitle(finalTitle);
+      setHasUnsavedSessionChanges(false);
+      if (typeof window !== 'undefined') {
+        const activeVerNum = Math.max(1, versionHistory.length - activeVersionIndex);
+        const nextUrl = `/dashboard?id=${encodeURIComponent(finalProjectId)}&v=${activeVerNum}&template=${encodeURIComponent(loadedBlueprintId)}`;
+        window.history.replaceState(null, '', nextUrl);
+      }
+      showToast(`✓ Saved "${finalTitle}" (Unique ID: ${finalProjectId}) — all versions tracked under this single ID.`);
     }
   };
 
@@ -2253,20 +2632,59 @@ function DashboardContent() {
   const handleExportPng = async () => {
     setIsExporting('png');
     try {
-      const dataUrl = await exportDiagramPng(activeCanvasXml, { scale: 2, transparent: false });
+      const dataUrl = await exportDiagramPng(activeCanvasXml, {
+        scale: 2.4,
+        transparent: false,
+      });
       const link = document.createElement('a');
       link.href = dataUrl;
-      link.download = `${canvasTitle.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${currentVersion.versionTag}.png`;
+      link.download = `${canvasTitle.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${currentVersion.versionTag}_4k_uhd.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      showToast('✓ Downloaded high-resolution PNG');
+      showToast('✓ Downloaded True 4K UHD PNG (3840×2160)');
     } catch (e) {
       console.error(e);
-      showToast('❌ Failed to export PNG');
+      showToast('❌ Failed to export 4K PNG');
     } finally {
       setIsExporting(null);
     }
+  };
+
+  const handleExportSvg = async () => {
+    setIsExporting('svg');
+    try {
+      const svgContent = await exportDiagramSvg(activeCanvasXml, { transparent: false });
+      const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${canvasTitle.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${currentVersion.versionTag}.svg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+      showToast('✓ Downloaded standalone Vector SVG');
+    } catch (e) {
+      console.error(e);
+      showToast('❌ Failed to export Vector SVG');
+    } finally {
+      setIsExporting(null);
+    }
+  };
+
+  const handleExportDrawioFile = () => {
+    if (!activeCanvasXml) return;
+    const blob = new Blob([activeCanvasXml], { type: 'application/xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${canvasTitle.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${currentVersion.versionTag}.drawio`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    showToast('✓ Downloaded editable .drawio XML');
   };
 
   const handleExportPdf = async () => {
@@ -2482,18 +2900,31 @@ function DashboardContent() {
         {/* Top Header */}
         <AppHeader>
           <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-3">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 to-indigo-600 flex items-center justify-center shadow-md shrink-0">
+            <Link
+              href="/"
+              title="Go to PromptCanvas Homepage"
+              aria-label="Go to PromptCanvas Homepage"
+              className="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 to-indigo-600 flex items-center justify-center shadow-md shrink-0 hover:scale-105 transition-transform"
+            >
               <div className="w-4 h-4 rounded-md border-2 border-white/90 flex items-center justify-center">
                 <div className="w-1.5 h-1.5 bg-white rounded-full" />
               </div>
-            </div>
+            </Link>
             <div className="min-w-0 flex-1">
               <h1
                 className={`font-black text-xs md:text-sm tracking-tight flex items-center gap-1.5 whitespace-nowrap overflow-hidden ${
                   isLight ? 'text-slate-900' : 'text-white'
                 }`}
               >
-                <span className="shrink-0">PromptCanvas &mdash; AI Architecture Studio</span>
+                <Link
+                  href="/"
+                  data-testid="dashboard-header-home-link"
+                  title="Go to PromptCanvas Homepage"
+                  className="shrink-0 hover:underline hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+                >
+                  PromptCanvas
+                </Link>
+                <span className="shrink-0">&mdash; AI Architecture Studio</span>
                 <span
                   className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border shrink-0 ${
                     isLight
@@ -2535,7 +2966,7 @@ function DashboardContent() {
               <p className={`text-[10.5px] font-semibold truncate ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 {activeInstanceId
                   ? `Editable Instance (${activeInstanceId.slice(0, 8)}…) • 2-Way Sync Active (Prompt ↔ Draw.io) • Source Blueprint #${loadedBlueprintId} (${selectedBlueprintObj.depthLevel})`
-                  : `Blueprint Studio: ① Choose Level (L100–L400) & Blueprint (#00–#99)  →  ② Use Blueprint (New ID)  →  ③ 2-Way Prompt & Draw.io Sync`}
+                  : `Blueprint Studio: ① Filter & Lock In Template (L200–L400)  →  ② Clones Unique Diagram ID  →  ③ Mutate via Prompt & Draw.io (Original Intact)`}
               </p>
             </div>
           </div>
@@ -2585,25 +3016,17 @@ function DashboardContent() {
             {/* 1. Share Button */}
             <button
               type="button"
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  const shareUrl = `${window.location.origin}/dashboard?blueprint=${encodeURIComponent(
-                    loadedBlueprintId
-                  )}&perspective=${encodeURIComponent(canvasPerspective)}&level=${encodeURIComponent(selectedLevel)}`;
-                  navigator.clipboard.writeText(shareUrl).catch(() => {});
-                  showToast('🔗 Share link copied to clipboard!');
-                }
-              }}
+              onClick={() => void handleCopyInstanceUrl()}
               data-testid="dashboard-share-btn"
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-bold text-xs transition cursor-pointer shrink-0 ${
                 isLight
                   ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
                   : 'bg-slate-800/90 hover:bg-slate-700 text-slate-200 border-slate-700'
               }`}
-              title="Copy shareable link to this architecture"
+              title="Copy colleague-shareable URL with Unique Diagram ID (?id=...)"
             >
               <Share2 className={`w-3.5 h-3.5 ${isLight ? 'text-sky-600' : 'text-sky-400'}`} />
-              <span>Share</span>
+              <span>{copiedInstanceLink ? 'Link Copied!' : 'Share'}</span>
             </button>
 
             {/* 2. Header-Only Cloud Viewer + Open with Google Slides Split-Dropdown (Rule 47) */}
@@ -2641,7 +3064,7 @@ function DashboardContent() {
               onClick={() => setIsNewDiagramModalOpen(true)}
               data-testid="dashboard-new-diagram-btn"
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs transition shadow-md shadow-sky-500/25 cursor-pointer shrink-0 active:scale-95"
-              title="Create New Architecture Diagram (41 Certified Blueprints, Pure Prompt-to-Diagram, or Image Decompile)"
+              title="Create New Architecture Diagram (84 Architecture Templates, 35 Certified Blueprints, Pure Prompt-to-Diagram, or Image Decompile)"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>New Diagram</span>
@@ -2690,10 +3113,10 @@ function DashboardContent() {
                       ? 'bg-teal-600 text-white border-teal-700'
                       : 'bg-teal-600 text-white border-teal-500'
                   }`}
-                  title="World 1 (Blueprint Studio): Choose Level (L100–L400) & Certified Blueprint (#00–#99), then create a new editable instance"
+                  title="World 1 (Blueprint Studio): Filter & lock in one of 84 Architecture Templates (L200–L400) to clone a unique editable Diagram ID"
                 >
                   <span className="truncate">🏛️ Blueprint</span>
-                  <span className="text-[8.5px] font-medium opacity-90 truncate">41 Certified</span>
+                  <span className="text-[8.5px] font-medium opacity-90 truncate">35 Certified</span>
                 </button>
                 <Link
                   href="/prompt-to-diagram"
@@ -2750,18 +3173,19 @@ function DashboardContent() {
                     Choose Level &amp; Blueprint
                   </span>
                 </div>
-                <Link
-                  href="/canonical"
-                  className={`text-[10px] font-bold hover:underline flex items-center gap-0.5 shrink-0 ${
-                    isLight ? 'text-teal-700' : 'text-teal-400'
+                <button
+                  type="button"
+                  onClick={() => setIsNewDiagramModalOpen(true)}
+                  className={`text-[10px] font-bold hover:underline flex items-center gap-0.5 shrink-0 cursor-pointer ${
+                    isLight ? 'text-blue-700' : 'text-blue-400'
                   }`}
                 >
-                  <span>Browse All {CANONICAL_TEMPLATES.length}</span>
+                  <span>Filter All {CERTIFIED_ARCHITECTURE_TEMPLATES.length} Templates</span>
                   <ArrowRight className="w-2.5 h-2.5" />
-                </Link>
+                </button>
               </div>
 
-              {/* ARCHITECTURE DEPTH LEVEL SELECTOR (L100 | L200 | L300 | L400) */}
+              {/* ARCHITECTURE DEPTH LEVEL SELECTOR (L200 | L300 | L400 — 0 L100) */}
               <div
                 data-testid="dashboard-depth-level-selector"
                 className={`p-2 rounded-xl border space-y-1.5 ${
@@ -2781,15 +3205,15 @@ function DashboardContent() {
                       : isLight ? 'text-slate-600' : 'text-slate-400'
                   }`}>
                     {canvasPerspective === 'Technical'
-                      ? 'Technical Depth Level (Choose L100–L400)'
-                      : 'Blueprint Level Filter (L100–L400)'}
+                      ? 'Technical Depth Level (Choose L200–L400)'
+                      : 'Template Level Filter (L200–L400)'}
                   </span>
                   <span className="text-[9px] font-semibold text-indigo-600 dark:text-indigo-300">
                     L400 = Most Detailed
                   </span>
                 </div>
-                <div className="grid grid-cols-5 gap-1">
-                  {CANONICAL_DEPTH_LEVELS.map((lvl) => {
+                <div className="grid grid-cols-4 gap-1">
+                  {STUDIO_DEPTH_LEVELS.map((lvl) => {
                     const count = depthLevelCounts[lvl];
                     const isActive = selectedDepthLevel === lvl;
                     const meta = lvl === 'All' ? null : DEPTH_LEVEL_META[lvl];
@@ -2799,7 +3223,7 @@ function DashboardContent() {
                         type="button"
                         data-testid={`dashboard-level-btn-${lvl.toLowerCase()}`}
                         onClick={() => handleSelectDepthLevel(lvl)}
-                        title={meta ? `${meta.label}: ${meta.description}` : 'Show blueprints across all levels (L100–L400)'}
+                        title={meta ? `${meta.label}: ${meta.description}` : 'Show templates across L200–L400'}
                         className={`py-1 px-1 rounded-lg text-[10px] font-extrabold transition flex flex-col items-center justify-center border cursor-pointer ${
                           isActive
                             ? lvl === 'L400'
@@ -3345,6 +3769,53 @@ function DashboardContent() {
                     <span className="truncate">RFC Doc</span>
                   </Link>
                 </div>
+
+                <div className="grid grid-cols-3 gap-1 pt-0.5">
+                  <button
+                    type="button"
+                    data-testid="dashboard-export-4k-png-btn"
+                    disabled={isExporting !== null}
+                    onClick={() => void handleExportPng()}
+                    title="Download True 4K UHD PNG (3840×2160)"
+                    className={`px-1.5 py-1 rounded-lg border text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer disabled:opacity-50 ${
+                      isLight
+                        ? 'bg-blue-50/80 hover:bg-blue-100 text-blue-900 border-blue-200'
+                        : 'bg-blue-500/15 hover:bg-blue-500/25 text-blue-200 border-blue-500/30'
+                    }`}
+                  >
+                    <Download className="w-3 h-3 text-blue-600 shrink-0" />
+                    <span className="truncate">{isExporting === 'png' ? '4K…' : '4K PNG'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="dashboard-export-svg-btn"
+                    disabled={isExporting !== null}
+                    onClick={() => void handleExportSvg()}
+                    title="Download Standalone Vector SVG"
+                    className={`px-1.5 py-1 rounded-lg border text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer disabled:opacity-50 ${
+                      isLight
+                        ? 'bg-teal-50/80 hover:bg-teal-100 text-teal-900 border-teal-200'
+                        : 'bg-teal-500/15 hover:bg-teal-500/25 text-teal-200 border-teal-500/30'
+                    }`}
+                  >
+                    <Download className="w-3 h-3 text-teal-600 shrink-0" />
+                    <span className="truncate">{isExporting === 'svg' ? 'SVG…' : 'Vector SVG'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="dashboard-export-drawio-btn"
+                    onClick={handleExportDrawioFile}
+                    title="Download Native Editable .drawio XML"
+                    className={`px-1.5 py-1 rounded-lg border text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer ${
+                      isLight
+                        ? 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                    }`}
+                  >
+                    <Download className="w-3 h-3 text-indigo-600 shrink-0" />
+                    <span className="truncate">.drawio</span>
+                  </button>
+                </div>
               </div>
 
               {/* Version History Subheader */}
@@ -3532,7 +4003,7 @@ function DashboardContent() {
                       <span className="text-[9.5px] font-black uppercase tracking-wider px-1.5 text-indigo-700 dark:text-indigo-300">
                         Level:
                       </span>
-                      {(['L100', 'L200', 'L300', 'L400'] as BlueprintDepthLevel[]).map((lvl) => (
+                      {(['L200', 'L300', 'L400'] as BlueprintDepthLevel[]).map((lvl) => (
                         <button
                           key={lvl}
                           type="button"
@@ -4226,7 +4697,7 @@ function DashboardContent() {
         />
       )}
 
-      {/* New Diagram Input Selection Modal */}
+      {/* Dynamic 4-Dropdown Template Picker & Immutable Clone-on-Lock Modal */}
       <NewDiagramInputSelectionModal
         isOpen={isNewDiagramModalOpen}
         onClose={() => setIsNewDiagramModalOpen(false)}

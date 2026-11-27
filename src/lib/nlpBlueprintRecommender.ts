@@ -133,20 +133,20 @@ function buildSemanticFallbackRecommendations(
 
   // Conceptual expansions so even fallback handles synonyms beyond literal keywords
   const conceptualClusters: Array<[RegExp, string[]]> = [
-    [/multi[\s-]?tenant|saas|isolation|pool|silo|hybrid|5[\s-]?hop/i, ['99', '78', '79']],
-    [/mcp|a2a|sequence|delegation|spiffe|oidc|jwt|protocol/i, ['81', '99', '79']],
+    [/multi[\s-]?tenant|saas|isolation|pool|silo|hybrid|5[\s-]?hop/i, ['99', '78']],
+    [/mcp|a2a|sequence|delegation|spiffe|oidc|jwt|protocol/i, ['81', '99', '78']],
     [/agent|adk|gemini|rag|llm|gateway|model armor|guardrail/i, ['99', '78', '67', '00']],
-    [/network|vpc|cidr|bgp|waf|alb|psc|perimeter|firewall/i, ['79', '99', '78']],
-    [/oracle|ebs|exadata|erp|oci|goldengate/i, ['84', '78', '79']],
-    [/bpmn|swimlane|process|workflow|approval|sla/i, ['95', '86', '03']],
-    [/journey|persona|touchpoint|telemetry|otel/i, ['96', '87']],
-    [/use case|sod|separation of duties|rbac|iam|pam/i, ['97', '88']],
-    [/state machine|statechart|lifecycle|finite state/i, ['98', '91', '12']],
+    [/network|vpc|cidr|bgp|waf|alb|psc|perimeter|firewall/i, ['78', '99', '94']],
+    [/oracle|ebs|exadata|erp|oci|goldengate/i, ['84', '78', '99']],
+    [/bpmn|swimlane|process|workflow|approval|sla/i, ['95', '03']],
+    [/journey|persona|touchpoint|telemetry|otel/i, ['87', '94']],
+    [/use case|sod|separation of duties|rbac|iam|pam/i, ['97', '94']],
+    [/state machine|statechart|lifecycle|finite state/i, ['91', '12']],
     [/erd|schema|database|ddl|alloydb|postgres|table/i, ['93', '14']],
     [/dfd|data flow|tokenization|phi|lineage/i, ['92', '69']],
     [/adr|trade[\s-]?off|comparison|decision|scoring|option/i, ['89', '56', '64']],
     [/cutover|rollback|migration|runbook|release/i, ['29', '58']],
-    [/context|c4|system boundary|external actor/i, ['94', '85']],
+    [/context|c4|system boundary|external actor/i, ['94', '90']],
     [/hexagonal|microservice|ports|adapters|worker/i, ['90', '69']],
     [/infographic|executive|roadmap|timeline|funnel|quadrant|pyramid/i, ['59', '56', '62', '65', '52']],
   ];
@@ -302,7 +302,7 @@ Return strict JSON with this exact structure:
     },
     {
       "rank": 3,
-      "templateId": "79",
+      "templateId": "94",
       "matchScore": 79,
       "reasoning": "...",
       "suggestedMutations": ["...", "..."]

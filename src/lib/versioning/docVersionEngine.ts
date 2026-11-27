@@ -211,25 +211,69 @@ export function formatRelativeTime(isoString: string): string {
 }
 
 /**
- * LocalStorage Persistence Helpers
+ * LocalStorage + Cloud State Persistence Helpers
  */
-function getStorageKey(projectId: string, type: 'versions' | 'chat'): string {
+export interface DocProjectCloudMeta {
+  title?: string;
+  archetypeId?: string;
+  domainId?: string;
+  scopeSummary?: string;
+}
+
+function getStorageKey(projectId: string, type: 'versions' | 'chat' | 'meta'): string {
   return `promptcanvas_docgen_${type}_${projectId || 'default'}`;
 }
 
 export function saveVersionHistory(
   projectId: string,
   snapshots: VersionSnapshot[],
-  chatHistory: ChatMessage[]
+  chatHistory: ChatMessage[],
+  meta?: DocProjectCloudMeta
 ): void {
   if (typeof window === 'undefined') return;
+  const trimmedSnapshots = snapshots.slice(0, MAX_VERSION_SNAPSHOTS);
+  const trimmedChat = chatHistory.slice(-50);
+  let resolvedMeta: DocProjectCloudMeta = meta || {};
+
   try {
     const vKey = getStorageKey(projectId, 'versions');
     const cKey = getStorageKey(projectId, 'chat');
-    window.localStorage.setItem(vKey, JSON.stringify(snapshots.slice(0, MAX_VERSION_SNAPSHOTS)));
-    window.localStorage.setItem(cKey, JSON.stringify(chatHistory.slice(-50)));
+    const mKey = getStorageKey(projectId, 'meta');
+    window.localStorage.setItem(vKey, JSON.stringify(trimmedSnapshots));
+    window.localStorage.setItem(cKey, JSON.stringify(trimmedChat));
+
+    const prevRawMeta = window.localStorage.getItem(mKey);
+    const prevMeta = prevRawMeta ? (JSON.parse(prevRawMeta) as DocProjectCloudMeta) : {};
+    resolvedMeta = {
+      title: meta?.title || prevMeta.title,
+      archetypeId: meta?.archetypeId || prevMeta.archetypeId,
+      domainId: meta?.domainId || prevMeta.domainId,
+      scopeSummary: meta?.scopeSummary || prevMeta.scopeSummary,
+    };
+    window.localStorage.setItem(mKey, JSON.stringify(resolvedMeta));
   } catch (err) {
     console.warn('[DocVersionEngine] Failed to save history to localStorage:', err);
+  }
+
+  if (projectId && projectId !== 'default' && trimmedSnapshots.length > 0) {
+    const latest = trimmedSnapshots[0];
+    const docMarkdown = latest?.docMarkdown || '';
+    const titleMatch = docMarkdown.match(/##\s+([^\n—]+)/) || docMarkdown.match(/#\s+([^\n]+)/);
+    const derivedTitle = resolvedMeta.title || (titleMatch ? titleMatch[1].trim() : `Project ${projectId}`);
+    void fetch('/api/docgen/projects', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: projectId,
+        title: derivedTitle,
+        archetypeId: resolvedMeta.archetypeId || 'sdd',
+        domainId: resolvedMeta.domainId || 'enterprise',
+        scopeSummary: resolvedMeta.scopeSummary || '',
+        docVersion: latest?.docVersion || latest?.versionTag || 'v1.0',
+        snapshots: trimmedSnapshots,
+        chatHistory: trimmedChat,
+      }),
+    }).catch(() => {});
   }
 }
 

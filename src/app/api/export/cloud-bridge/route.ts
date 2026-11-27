@@ -330,8 +330,8 @@ export async function POST(req: NextRequest) {
           googleWebViewLink =
             gData.webViewLink ||
             (entry.format === 'pptx'
-              ? `https://docs.google.com/presentation/d/${gData.id}/edit?authuser=nitinagga%40google.com`
-              : `https://docs.google.com/document/d/${gData.id}/edit?authuser=nitinagga%40google.com`);
+              ? `https://docs.google.com/presentation/d/${gData.id}/edit`
+              : `https://docs.google.com/document/d/${gData.id}/edit`);
         } else {
           const errText = await gRes.text();
           googleDriveError = `Google Drive API returned ${gRes.status}: ${errText}`;

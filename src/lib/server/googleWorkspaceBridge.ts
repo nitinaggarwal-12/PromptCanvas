@@ -433,7 +433,6 @@ export async function uploadPptxBufferToGoogleSlides(params: {
   }
 
   const fid = data.id;
-  const encodedEmail = encodeURIComponent(DEFAULT_USER_EMAIL);
 
   const entry: CloudSlidesManifestEntry = {
     key: normalizedKey,
@@ -442,7 +441,7 @@ export async function uploadPptxBufferToGoogleSlides(params: {
     ...(params.xmlSha256 ? { xmlSha256: params.xmlSha256 } : {}),
     sizeBytes: params.pptxBuffer.length,
     googleSlidesId: fid,
-    googleSlidesEditUrl: `https://docs.google.com/presentation/d/${fid}/edit?authuser=${encodedEmail}`,
+    googleSlidesEditUrl: `https://docs.google.com/presentation/d/${fid}/edit`,
     googleSlidesPreviewUrl: `https://docs.google.com/presentation/d/${fid}/preview`,
     googleSlidesEmbedUrl: `https://docs.google.com/presentation/d/${fid}/embed?start=false&loop=false&delayms=5000`,
     googleSlidesPdfUrl: `https://docs.google.com/presentation/d/${fid}/export/pdf`,
@@ -509,7 +508,6 @@ export async function uploadHtmlOrDocxToGoogleDocs(params: {
 
   const data = (await copyRes.json()) as { id: string; webViewLink?: string };
   const fid = data.id;
-  const encodedEmail = encodeURIComponent(DEFAULT_USER_EMAIL);
 
   // Apply surgical title replacement via Google Docs API documents.batchUpdate
   try {
@@ -541,7 +539,7 @@ export async function uploadHtmlOrDocxToGoogleDocs(params: {
     title: params.title,
     sha256: sha,
     googleDocsId: fid,
-    googleDocsEditUrl: `https://docs.google.com/document/d/${fid}/edit?authuser=${encodedEmail}`,
+    googleDocsEditUrl: `https://docs.google.com/document/d/${fid}/edit`,
     googleDocsPreviewUrl: `https://docs.google.com/document/d/${fid}/preview`,
     googleDocsPdfUrl: `https://docs.google.com/document/d/${fid}/export?format=pdf`,
     webViewLink: data.webViewLink || `https://docs.google.com/document/d/${fid}/edit`,

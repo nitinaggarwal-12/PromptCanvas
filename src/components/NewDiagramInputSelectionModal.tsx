@@ -1,27 +1,42 @@
 'use client';
 
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   Sparkles,
   X,
-  ArrowRight,
-  Check,
   Upload,
   Image as ImageIcon,
   Loader2,
   ExternalLink,
-  Search,
   Plus,
   FileUp,
-  LayoutGrid,
+  Layers,
+  Lock,
+  Home,
 } from 'lucide-react';
-import { CANONICAL_TEMPLATES, CANONICAL_DEPTH_LEVELS, CanonicalTemplate } from '@/lib/canonical/canonicalTemplates';
 import { useTheme } from '@/lib/themeContext';
+import ArchitectureTemplateBrowser, {
+  ArchitectureTemplateCloneResult,
+} from '@/components/ArchitectureTemplateBrowser';
+import {
+  CERTIFIED_ARCHITECTURE_TEMPLATES,
+  ArchitectureTemplateLevel,
+  ArchitectureTemplateType,
+  ArchitectureTemplateKind,
+  ArchitectureTemplateUseCase,
+} from '@/lib/templates/certifiedArchitectureTemplates';
 
 export interface NewDiagramSelectionResult {
-  mode: 'prompt' | 'blueprint' | 'vision' | 'import_xml';
+  mode: 'cloned_template' | 'prompt' | 'blueprint' | 'vision' | 'import_xml';
+  instanceId?: string;
+  templateId?: string;
+  templateHeaderTag?: string;
+  templateLevel?: ArchitectureTemplateLevel;
+  templateType?: ArchitectureTemplateType;
+  templateKind?: ArchitectureTemplateKind;
+  templateUseCase?: ArchitectureTemplateUseCase;
   prompt?: string;
   blueprintId?: string;
   blueprintTitle?: string;
@@ -35,6 +50,12 @@ interface NewDiagramInputSelectionModalProps {
   onClose: () => void;
   onSelectOption: (result: NewDiagramSelectionResult) => void;
   isLight?: boolean;
+  /**
+   * When true (new-diagram flow before any template clone is locked in),
+   * keeps the dynamic template selector open until the user locks in a starting template
+   * or explicitly chooses another creation mode.
+   */
+  requireTemplateLock?: boolean;
 }
 
 export function NewDiagramInputSelectionModal({
@@ -42,20 +63,14 @@ export function NewDiagramInputSelectionModal({
   onClose,
   onSelectOption,
   isLight: propIsLight,
+  requireTemplateLock = false,
 }: NewDiagramInputSelectionModalProps) {
   const router = useRouter();
   const { theme } = useTheme();
   const isLight = propIsLight !== undefined ? propIsLight : theme === 'light';
 
-  // World 1 (/dashboard) defaults strictly to Certified Blueprint selection
   const [activeTab, setActiveTab] = useState<'blueprint' | 'prompt' | 'vision' | 'import'>('blueprint');
-  const [isExpandedWide, setIsExpandedWide] = useState(false);
-
-  // Blueprint Mode State
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedDepthLevel, setSelectedDepthLevel] = useState<string>('All');
-  const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>('78');
+  const [isExpandedWide, setIsExpandedWide] = useState(true);
 
   // Pure Prompt-to-Diagram Handoff State (navigates to World 2: /prompt-to-diagram)
   const [promptText, setPromptText] = useState('');
@@ -72,38 +87,39 @@ export function NewDiagramInputSelectionModal({
   const [pastedXml, setPastedXml] = useState('');
   const [importTitle, setImportTitle] = useState('Imported Draw.io Diagram');
 
-  const filteredBlueprints = useMemo(() => {
-    let list = CANONICAL_TEMPLATES;
-    if (selectedDepthLevel !== 'All') {
-      list = list.filter((t) => t.depthLevel === selectedDepthLevel);
-    }
-    if (selectedCategory === 'L400 GCP') {
-      list = list.filter((t) => Boolean(t.tags?.includes('L400 GCP')));
-    } else if (selectedCategory !== 'all') {
-      list = list.filter((t) => t.family === selectedCategory);
-    }
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      list = list.filter(
-        (t) =>
-          t.name.toLowerCase().includes(q) ||
-          t.id.toLowerCase().includes(q) ||
-          t.depthLevel.toLowerCase().includes(q) ||
-          t.primaryPurpose.toLowerCase().includes(q) ||
-          (t.examples && t.examples.toLowerCase().includes(q)) ||
-          Boolean(t.tags?.some((tag) => tag.toLowerCase().includes(q)))
-      );
-    }
-    return list;
-  }, [selectedCategory, selectedDepthLevel, searchQuery]);
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (document.querySelector('[data-testid="template-expanded-modal"]')) return;
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
-  const handleBlueprintSubmit = (bp: CanonicalTemplate) => {
+  const handleLockedInTemplateClone = ({
+    instanceId,
+    xml,
+    template,
+  }: ArchitectureTemplateCloneResult) => {
     onSelectOption({
-      mode: 'blueprint',
-      blueprintId: bp.id,
-      blueprintTitle: bp.name,
+      mode: 'cloned_template',
+      instanceId,
+      templateId: template.id,
+      templateHeaderTag: template.headerTag,
+      templateLevel: template.level,
+      templateType: template.type,
+      templateKind: template.kind,
+      templateUseCase: template.useCase,
+      blueprintId: template.id,
+      blueprintTitle: template.title,
+      prompt: template.summary,
+      customXml: xml,
+      projectName: template.title,
     });
   };
 
@@ -160,8 +176,10 @@ export function NewDiagramInputSelectionModal({
       } else {
         throw new Error(data.error || 'Decompilation failed.');
       }
-    } catch (err: any) {
-      setDecompileStatus(`Error: ${err.message || 'Failed to decompile image'}`);
+    } catch (err: unknown) {
+      setDecompileStatus(
+        `Error: ${err instanceof Error ? err.message : 'Failed to decompile image'}`
+      );
     } finally {
       setIsDecompiling(false);
     }
@@ -196,62 +214,92 @@ export function NewDiagramInputSelectionModal({
       aria-labelledby="new-diagram-modal-title"
       data-testid="new-diagram-drawer-backdrop"
       className={`fixed inset-0 z-[140] flex justify-end animate-in fade-in duration-150 ${
-        isLight ? 'bg-slate-900/15' : 'bg-slate-950/45'
+        isLight ? 'bg-slate-900/25' : 'bg-slate-950/55'
       }`}
       onClick={onClose}
     >
       <div
         data-testid="new-diagram-docked-drawer"
         className={`relative h-full w-full ${
-          isExpandedWide ? 'max-w-[860px]' : 'max-w-[640px]'
+          isExpandedWide ? 'lg:w-[calc(100vw-16rem)] max-w-[1240px]' : 'max-w-[760px]'
         } border-l shadow-2xl overflow-hidden flex flex-col transition-all duration-200 ${
           isLight
-            ? 'bg-white border-slate-200 text-slate-900'
+            ? 'bg-slate-50 border-slate-200 text-slate-900'
             : 'bg-slate-900 border-slate-800 text-slate-100'
         }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* DRAWER HEADER */}
         <div
-          className={`px-5 py-3.5 border-b flex items-center justify-between shrink-0 ${
-            isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950/60 border-slate-800'
+          className={`px-5 py-3.5 border-b flex items-center justify-between gap-3 shrink-0 ${
+            isLight ? 'bg-white border-slate-200' : 'bg-slate-950/80 border-slate-800'
           }`}
         >
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-600 to-sky-600 flex items-center justify-center text-white shadow-md shadow-teal-500/20 shrink-0">
+            <Link
+              href="/"
+              title="Go to PromptCanvas Homepage"
+              aria-label="Go to PromptCanvas Homepage"
+              className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 shrink-0 hover:scale-105 transition-transform"
+            >
               <Plus className="w-4 h-4 stroke-[2.5]" />
-            </div>
+            </Link>
             <div className="min-w-0">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <Link
+                  href="/"
+                  data-testid="new-diagram-home-brand-link"
+                  title="Go to PromptCanvas Homepage"
+                  className={`text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-md border transition inline-flex items-center gap-1 ${
+                    isLight
+                      ? 'bg-slate-100 hover:bg-sky-50 text-slate-800 hover:text-sky-700 border-slate-200'
+                      : 'bg-slate-800 hover:bg-sky-500/20 text-slate-100 hover:text-sky-300 border-slate-700'
+                  }`}
+                >
+                  <Home className="w-3 h-3" />
+                  <span>PromptCanvas Home</span>
+                </Link>
                 <h2
                   id="new-diagram-modal-title"
-                  className={`text-sm font-extrabold tracking-tight truncate ${
+                  className={`text-sm sm:text-base font-extrabold tracking-tight truncate ${
                     isLight ? 'text-slate-900' : 'text-white'
                   }`}
                 >
-                  Select Starting Blueprint or Input Source
+                  Choose &amp; Lock In a Starting Architecture Template
                 </h2>
                 <span
-                  className={`text-[9.5px] font-mono font-bold px-2 py-0.5 rounded-full border shrink-0 ${
+                  className={`text-xs font-mono font-bold px-2.5 py-0.5 rounded-full border shrink-0 hidden xl:inline-block ${
                     isLight
-                      ? 'bg-teal-50 text-teal-700 border-teal-200'
-                      : 'bg-teal-500/20 text-teal-300 border-teal-500/30'
+                      ? 'bg-blue-50 text-blue-700 border-blue-200'
+                      : 'bg-blue-500/20 text-blue-300 border-blue-500/30'
                   }`}
                 >
-                  TEMPLATE-FIRST STUDIO
+                  CLONES UNIQUE ID · ORIGINAL INTACT
                 </span>
               </div>
-              <p className={`text-[11px] truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                Pick one of {CANONICAL_TEMPLATES.length} certified templates to mutate, or launch Pure Prompt-to-Diagram
+              <p className={`text-xs truncate ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                Filter dynamically by Level (L200–L400), Type, Diagram Kind, and Use Case — or use the left sidebar / Close button anytime.
               </p>
             </div>
           </div>
+
           <div className="flex items-center gap-1.5 shrink-0">
+            <Link
+              href="/templates"
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border transition hidden md:inline-flex items-center gap-1 ${
+                isLight
+                  ? 'bg-white hover:bg-slate-100 text-blue-700 border-slate-200'
+                  : 'bg-slate-800 hover:bg-slate-700 text-blue-300 border-slate-700'
+              }`}
+            >
+              <span>Full Templates Page</span>
+              <ExternalLink className="w-3 h-3" />
+            </Link>
             <button
               type="button"
               onClick={() => setIsExpandedWide(!isExpandedWide)}
               data-testid="new-diagram-drawer-width-toggle"
-              className={`px-2.5 py-1.5 rounded-lg text-[10.5px] font-bold border transition cursor-pointer ${
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border transition cursor-pointer hidden sm:inline-flex ${
                 isLight
                   ? 'bg-white hover:bg-slate-100 text-slate-600 border-slate-200'
                   : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
@@ -261,15 +309,18 @@ export function NewDiagramInputSelectionModal({
             </button>
             <button
               type="button"
+              data-testid="new-diagram-close-btn"
               onClick={onClose}
               aria-label="Close new diagram dialog"
-              className={`p-1.5 rounded-xl transition cursor-pointer ${
+              title="Close drawer (Esc)"
+              className={`px-2.5 py-1.5 rounded-xl border text-xs font-extrabold inline-flex items-center gap-1 transition cursor-pointer ${
                 isLight
-                  ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/70'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
+                  : 'bg-slate-800 hover:bg-slate-700 text-slate-100 border-slate-700'
               }`}
             >
               <X className="w-4 h-4" />
+              <span>Close</span>
             </button>
           </div>
         </div>
@@ -278,40 +329,42 @@ export function NewDiagramInputSelectionModal({
         <div
           data-testid="new-diagram-segmented-tabs"
           className={`px-5 py-2.5 border-b grid grid-cols-4 gap-1.5 shrink-0 ${
-            isLight ? 'border-slate-200 bg-slate-50/80' : 'border-slate-800/80 bg-slate-950/30'
+            isLight ? 'border-slate-200 bg-slate-50/90' : 'border-slate-800/80 bg-slate-950/30'
           }`}
         >
           <button
             type="button"
             data-testid="new-diagram-tab-blueprint"
             onClick={() => setActiveTab('blueprint')}
-            className={`px-2 py-2 rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-1.5 cursor-pointer min-w-0 ${
+            className={`px-2 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer min-w-0 ${
               activeTab === 'blueprint'
-                ? 'bg-teal-600 text-white shadow-sm shadow-teal-600/30'
+                ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30'
                 : inactiveTabClass
             }`}
           >
-            <LayoutGrid
+            <Layers
               className={`w-3.5 h-3.5 shrink-0 ${
-                activeTab === 'blueprint' ? 'text-teal-100' : 'text-teal-600'
+                activeTab === 'blueprint' ? 'text-blue-100' : 'text-blue-600'
               }`}
             />
-            <span className="truncate">{CANONICAL_TEMPLATES.length} Blueprints</span>
+            <span className="truncate">
+              {CERTIFIED_ARCHITECTURE_TEMPLATES.length} Architecture Templates
+            </span>
           </button>
 
           <button
             type="button"
             data-testid="new-diagram-tab-prompt"
             onClick={() => setActiveTab('prompt')}
-            className={`px-2 py-2 rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-1.5 cursor-pointer min-w-0 ${
+            className={`px-2 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer min-w-0 ${
               activeTab === 'prompt'
-                ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30'
+                ? 'bg-teal-600 text-white shadow-sm shadow-teal-600/30'
                 : inactiveTabClass
             }`}
           >
             <Sparkles
               className={`w-3.5 h-3.5 shrink-0 ${
-                activeTab === 'prompt' ? 'text-blue-100' : 'text-blue-600'
+                activeTab === 'prompt' ? 'text-teal-100' : 'text-teal-600'
               }`}
             />
             <span className="truncate">Prompt Only</span>
@@ -321,7 +374,7 @@ export function NewDiagramInputSelectionModal({
             type="button"
             data-testid="new-diagram-tab-vision"
             onClick={() => setActiveTab('vision')}
-            className={`px-2 py-2 rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-1.5 cursor-pointer min-w-0 ${
+            className={`px-2 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer min-w-0 ${
               activeTab === 'vision'
                 ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30'
                 : inactiveTabClass
@@ -339,7 +392,7 @@ export function NewDiagramInputSelectionModal({
             type="button"
             data-testid="new-diagram-tab-import"
             onClick={() => setActiveTab('import')}
-            className={`px-2 py-2 rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-1.5 cursor-pointer min-w-0 ${
+            className={`px-2 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer min-w-0 ${
               activeTab === 'import'
                 ? 'bg-purple-600 text-white shadow-sm shadow-purple-600/30'
                 : inactiveTabClass
@@ -356,195 +409,17 @@ export function NewDiagramInputSelectionModal({
 
         {/* DRAWER BODY */}
         <div className="flex-1 overflow-y-auto px-5 py-4">
-          {/* TAB 1 (DEFAULT): CERTIFIED BLUEPRINT CATALOG */}
+          {/* TAB 1 (DEFAULT): DYNAMIC 4-DROPDOWN ARCHITECTURE TEMPLATE SELECTOR + CLONE-ON-LOCK */}
           {activeTab === 'blueprint' && (
-            <div className="space-y-3.5">
-              <div className={`flex ${!isExpandedWide ? 'flex-col items-stretch' : 'flex-col sm:flex-row items-center'} gap-2.5`}>
-                <div className="relative flex-1 w-full">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder={`Search ${CANONICAL_TEMPLATES.length} certified reference architectures...`}
-                    className={`w-full border rounded-xl pl-9 pr-3.5 py-2 text-xs outline-none focus:border-teal-500 font-medium ${
-                      isLight
-                        ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
-                        : 'bg-slate-950 border-slate-700 text-white placeholder-slate-500'
-                    }`}
-                  />
-                </div>
-                <div className="flex items-center gap-1.5 shrink-0 flex-wrap w-full">
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mr-0.5">
-                    Level:
-                  </span>
-                  {CANONICAL_DEPTH_LEVELS.map((lvl) => {
-                    const cnt =
-                      lvl === 'All'
-                        ? CANONICAL_TEMPLATES.length
-                        : CANONICAL_TEMPLATES.filter((t) => t.depthLevel === lvl).length;
-                    return (
-                      <button
-                        key={lvl}
-                        type="button"
-                        data-testid={`new-modal-level-${lvl.toLowerCase()}`}
-                        onClick={() => setSelectedDepthLevel(lvl)}
-                        className={`px-2 py-1 rounded-lg text-[10.5px] font-bold transition shrink-0 cursor-pointer border ${
-                          selectedDepthLevel === lvl
-                            ? lvl === 'L400'
-                              ? 'bg-indigo-600 text-white border-indigo-600'
-                              : isLight
-                              ? 'bg-teal-600 text-white border-teal-600'
-                              : 'bg-teal-500 text-slate-950 border-teal-500'
-                            : isLight
-                            ? 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
-                            : 'bg-slate-900 text-slate-300 border-slate-700 hover:border-slate-600'
-                        }`}
-                      >
-                        {lvl === 'All' ? `All (${cnt})` : `${lvl} (${cnt})`}
-                      </button>
-                    );
-                  })}
-                </div>
-                <div className="flex items-center gap-1.5 shrink-0 flex-wrap w-full">
-                  {['all', 'L400 GCP', 'Reference Architectures', 'Infographic', 'Flow'].map((f) => (
-                    <button
-                      key={f}
-                      type="button"
-                      onClick={() => setSelectedCategory(f)}
-                      className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition shrink-0 cursor-pointer ${
-                        selectedCategory === f
-                          ? f === 'L400 GCP'
-                            ? isLight
-                              ? 'bg-indigo-100 text-indigo-900 border border-indigo-300'
-                              : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40'
-                            : isLight
-                              ? 'bg-teal-100 text-teal-900 border border-teal-300'
-                              : 'bg-teal-500/20 text-teal-300 border border-teal-500/40'
-                          : isLight
-                            ? 'bg-slate-100 text-slate-600 hover:text-slate-900'
-                            : 'bg-slate-800/60 text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      {f === 'all' ? `All (${CANONICAL_TEMPLATES.length})` : f === 'L400 GCP' ? `Tag: L400 GCP` : f}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pr-1">
-                {filteredBlueprints.map((bp) => {
-                  const isSelected = selectedBlueprintId === bp.id;
-                  return (
-                    <div
-                      key={bp.id}
-                      onClick={() => setSelectedBlueprintId(bp.id)}
-                      className={`p-3 rounded-2xl border transition-all text-left flex flex-col justify-between cursor-pointer ${
-                        isSelected
-                          ? isLight
-                            ? 'bg-teal-50 border-teal-500 shadow-sm'
-                            : 'bg-teal-500/15 border-teal-500 shadow-md shadow-teal-500/10'
-                          : isLight
-                            ? 'bg-slate-50/70 hover:bg-slate-100/80 border-slate-200 hover:border-slate-300'
-                            : 'bg-slate-950/60 hover:bg-slate-900 border-slate-800 hover:border-slate-700'
-                      }`}
-                    >
-                      <div>
-                        <div className="flex items-center justify-between gap-1.5 mb-1.5 flex-wrap">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <span
-                              className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${
-                                isLight
-                                  ? 'bg-white text-teal-800 border-teal-200'
-                                  : 'bg-slate-800 text-teal-300 border-slate-700'
-                              }`}
-                            >
-                              #{bp.id} • {bp.family}
-                            </span>
-                            <span
-                              className={`text-[9.5px] font-mono font-black uppercase px-1.5 py-0.5 rounded border ${
-                                bp.depthLevel === 'L400'
-                                  ? 'bg-indigo-600 text-white border-indigo-600'
-                                  : isLight
-                                  ? 'bg-sky-50 text-sky-800 border-sky-200'
-                                  : 'bg-sky-500/15 text-sky-300 border-sky-500/30'
-                              }`}
-                            >
-                              {bp.depthLevel}
-                            </span>
-                            {bp.tags?.map((tag) => (
-                              <span
-                                key={tag}
-                                className={`text-[9.5px] font-mono font-extrabold uppercase px-1.5 py-0.5 rounded border ${
-                                  isLight
-                                    ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-                                    : 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30'
-                                }`}
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                          {isSelected && (
-                            <div className="w-4 h-4 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold">
-                              <Check className="w-2.5 h-2.5 stroke-[3]" />
-                            </div>
-                          )}
-                        </div>
-                        <h4
-                          className={`text-xs font-bold mb-1 leading-snug ${
-                            isLight ? 'text-slate-900' : 'text-white'
-                          }`}
-                        >
-                          {bp.name}
-                        </h4>
-                        <p
-                          className={`text-[11px] line-clamp-2 leading-relaxed ${
-                            isLight ? 'text-slate-600' : 'text-slate-400'
-                          }`}
-                        >
-                          {bp.primaryPurpose}
-                        </p>
-                      </div>
-
-                      <div
-                        className={`mt-2.5 pt-2 border-t flex items-center justify-between ${
-                          isLight ? 'border-slate-200' : 'border-slate-800/60'
-                        }`}
-                      >
-                        <span
-                          className={`text-[10px] truncate max-w-[140px] ${
-                            isLight ? 'text-slate-500' : 'text-slate-400'
-                          }`}
-                        >
-                          {bp.examples || 'Enterprise Cloud Topology'}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleBlueprintSubmit(bp);
-                          }}
-                          className={`px-2.5 py-1 rounded-lg font-bold text-[10px] transition border flex items-center gap-1 cursor-pointer ${
-                            isLight
-                              ? 'bg-teal-100 hover:bg-teal-200 text-teal-900 border-teal-300'
-                              : 'bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border-teal-500/30'
-                          }`}
-                        >
-                          <span>Load Template</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <ArchitectureTemplateBrowser
+              mode="picker"
+              onLockedInClone={handleLockedInTemplateClone}
+            />
           )}
 
           {/* TAB 2: DIRECT HANDOFF TO WORLD 2 (/prompt-to-diagram — NO TEMPLATES, NO EXTRA OPTIONS) */}
           {activeTab === 'prompt' && (
-            <form onSubmit={handleLaunchPurePromptWorld} className="space-y-4">
+            <form onSubmit={handleLaunchPurePromptWorld} className="space-y-4 max-w-2xl">
               <div
                 className={`p-4 rounded-2xl border ${
                   isLight ? 'bg-blue-50/70 border-blue-200' : 'bg-blue-950/20 border-blue-800'
@@ -558,14 +433,14 @@ export function NewDiagramInputSelectionModal({
                   Pure Prompt-to-Diagram Studio (No Templates)
                 </h3>
                 <p
-                  className={`text-[11px] leading-relaxed ${
+                  className={`text-xs leading-relaxed ${
                     isLight ? 'text-blue-900/80' : 'text-blue-300/80'
                   }`}
                 >
-                  Blueprint Studio (<code>/dashboard</code>) requires selecting a certified template
-                  first before applying AI mutations. To generate a brand-new architecture directly
-                  from a prompt with zero templates and zero extra options, use the dedicated{' '}
-                  <strong>Prompt to Diagram</strong> workspace.
+                  Blueprint Studio (<code>/dashboard</code>) clones a chosen architecture template
+                  into a unique Diagram ID first before applying AI prompt mutations. To generate a
+                  brand-new diagram from scratch with zero templates, launch{' '}
+                  <strong>Prompt to Diagram</strong>.
                 </p>
               </div>
 
@@ -584,7 +459,7 @@ export function NewDiagramInputSelectionModal({
                   rows={5}
                   value={promptText}
                   onChange={(e) => setPromptText(e.target.value)}
-                  placeholder="e.g., Build an L400 architecture design diagram of a Borderless Lakehouse on GCP including Databricks..."
+                  placeholder="e.g., Build an L400 architecture design diagram of a Borderless Lakehouse on GCP..."
                   className={`w-full border focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 rounded-2xl p-3.5 text-xs outline-none transition leading-relaxed resize-none font-medium ${
                     isLight
                       ? 'bg-white border-slate-300 text-slate-900 placeholder-slate-400'
@@ -597,7 +472,7 @@ export function NewDiagramInputSelectionModal({
 
           {/* TAB 3: IMAGE TO DIAGRAM (VISION AI) */}
           {activeTab === 'vision' && (
-            <div className="space-y-4">
+            <div className="space-y-4 max-w-2xl">
               <input
                 type="file"
                 ref={fileInputRef}
@@ -627,7 +502,7 @@ export function NewDiagramInputSelectionModal({
                       ? 'border-teal-500 bg-teal-50/50'
                       : 'border-teal-500/80 bg-teal-950/20'
                     : isLight
-                      ? 'border-slate-300 hover:border-teal-500 bg-slate-50 hover:bg-teal-50/30'
+                      ? 'border-slate-300 hover:border-teal-500 bg-white hover:bg-teal-50/30'
                       : 'border-slate-700 hover:border-teal-500 bg-slate-950/40 hover:bg-teal-950/10'
                 }`}
               >
@@ -642,7 +517,7 @@ export function NewDiagramInputSelectionModal({
                       <span className={`text-xs font-bold ${isLight ? 'text-teal-700' : 'text-teal-300'}`}>
                         {uploadedFileName}
                       </span>
-                      <span className="text-[10px] text-slate-400 font-mono">(Click to change)</span>
+                      <span className="text-xs text-slate-400 font-mono">(Click to change)</span>
                     </div>
                   </div>
                 ) : (
@@ -660,7 +535,7 @@ export function NewDiagramInputSelectionModal({
                       <span className={`text-xs font-bold block ${isLight ? 'text-slate-900' : 'text-white'}`}>
                         Drop architecture screenshot, diagram PNG, or whiteboard photo here
                       </span>
-                      <span className={`text-[11px] ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                      <span className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                         Supports PNG, JPG, WEBP, SVG • Analyzed with Gemini Vision
                       </span>
                     </div>
@@ -684,7 +559,7 @@ export function NewDiagramInputSelectionModal({
               {decompileStatus && (
                 <div
                   className={`p-3 rounded-xl border text-xs flex items-center gap-2 ${
-                    isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
+                    isLight ? 'bg-white border-slate-200' : 'bg-slate-950 border-slate-800'
                   }`}
                 >
                   {isDecompiling && <Loader2 className="w-4 h-4 animate-spin text-teal-500 shrink-0" />}
@@ -719,7 +594,7 @@ export function NewDiagramInputSelectionModal({
 
           {/* TAB 4: IMPORT XML */}
           {activeTab === 'import' && (
-            <form id="new-diagram-import-form" onSubmit={handleImportXmlSubmit} className="space-y-4">
+            <form id="new-diagram-import-form" onSubmit={handleImportXmlSubmit} className="space-y-4 max-w-2xl">
               <div>
                 <label className={`block text-xs font-bold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
                   Diagram Title
@@ -743,9 +618,9 @@ export function NewDiagramInputSelectionModal({
                   value={pastedXml}
                   onChange={(e) => setPastedXml(e.target.value)}
                   placeholder="<mxGraphModel>...</mxGraphModel>"
-                  className={`w-full border font-mono text-[11px] p-3 rounded-xl focus:border-purple-500 outline-none transition resize-none ${
+                  className={`w-full border font-mono text-xs p-3 rounded-xl focus:border-purple-500 outline-none transition resize-none ${
                     isLight
-                      ? 'bg-slate-50 border-slate-300 text-slate-800 placeholder-slate-400'
+                      ? 'bg-white border-slate-300 text-slate-800 placeholder-slate-400'
                       : 'bg-slate-950 border-slate-700 text-slate-200 placeholder-slate-500'
                   }`}
                 />
@@ -757,57 +632,43 @@ export function NewDiagramInputSelectionModal({
         {/* STICKY FOOTER */}
         <div
           data-testid="new-diagram-sticky-footer"
-          className={`px-5 py-3.5 border-t flex items-center justify-between gap-3 shrink-0 ${
-            isLight ? 'bg-slate-50/95 border-slate-200' : 'bg-slate-950/90 border-slate-800'
+          className={`px-5 py-3 border-t flex items-center justify-between gap-3 shrink-0 ${
+            isLight ? 'bg-white border-slate-200' : 'bg-slate-950/90 border-slate-800'
           }`}
         >
-          <div className="min-w-0">
-            {activeTab === 'blueprint' && (
-              <span className={`text-[11px] font-medium block truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                Showing {filteredBlueprints.length} of {CANONICAL_TEMPLATES.length} Certified Blueprints
-              </span>
-            )}
-            {activeTab === 'prompt' && (
-              <span className={`text-[11px] font-medium block truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                Opens dedicated Pure Prompt-to-Diagram Studio (/prompt-to-diagram)
-              </span>
-            )}
-            {activeTab === 'vision' && (
-              <span className={`text-[11px] font-medium block truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                {uploadedFileName ? `Ready: ${uploadedFileName}` : 'Upload PNG/JPG/SVG to decompile'}
-              </span>
-            )}
-            {activeTab === 'import' && (
-              <span className={`text-[11px] font-medium block truncate ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                {pastedXml.trim() ? `${pastedXml.trim().length} bytes XML ready` : 'Paste <mxGraphModel> XML above'}
-              </span>
-            )}
+          <div className="min-w-0 flex items-center gap-1.5 text-xs">
+            <Lock className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+            <span className={`font-medium truncate ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+              {activeTab === 'blueprint'
+                ? 'Select any filtered template above (or click Inspect for Back/Forward preview) to lock in a fresh cloned Diagram ID.'
+                : activeTab === 'prompt'
+                ? 'Opens dedicated Pure Prompt-to-Diagram Studio (/prompt-to-diagram)'
+                : activeTab === 'vision'
+                ? uploadedFileName
+                  ? `Ready: ${uploadedFileName}`
+                  : 'Upload PNG/JPG/SVG to decompile'
+                : pastedXml.trim()
+                ? `${pastedXml.trim().length} bytes XML ready`
+                : 'Paste <mxGraphModel> XML above'}
+            </span>
           </div>
 
           <div className="flex items-center gap-2.5 shrink-0">
-            <button type="button" onClick={onClose} className={cancelBtnClass}>
-              Cancel
+            <button
+              type="button"
+              data-testid="new-diagram-cancel-btn"
+              onClick={onClose}
+              className={cancelBtnClass}
+            >
+              Close
             </button>
-
-            {activeTab === 'blueprint' && (
-              <button
-                type="button"
-                onClick={() => {
-                  const bp = CANONICAL_TEMPLATES.find((t) => t.id === selectedBlueprintId);
-                  if (bp) handleBlueprintSubmit(bp);
-                }}
-                className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-extrabold shadow-md shadow-teal-600/20 transition flex items-center gap-1.5 cursor-pointer"
-              >
-                <span>Load Blueprint #{selectedBlueprintId} →</span>
-              </button>
-            )}
 
             {activeTab === 'prompt' && (
               <button
                 type="button"
                 onClick={() => handleLaunchPurePromptWorld()}
                 data-testid="new-diagram-synthesize-submit-btn"
-                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold shadow-md shadow-blue-600/20 transition flex items-center gap-1.5 cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-extrabold shadow-md shadow-teal-600/20 transition flex items-center gap-1.5 cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>

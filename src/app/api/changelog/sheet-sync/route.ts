@@ -87,7 +87,7 @@ function onEdit(e) {
   const row = e.range.getRow();
   if (row <= 1) return; // Skip header row
 
-  const editorEmail = Session.getActiveUser().getEmail() || "sheet-editor@enterprise-arch.io";
+  const editorEmail = Session.getActiveUser().getEmail() || "architecture-governance@cloud-review.internal";
   const editorName = editorEmail.split("@")[0].replace(/\\./g, " ");
   const rowValues = sheet.getRange(row, 1, 1, sheet.getLastColumn()).getValues()[0];
 

@@ -111,9 +111,21 @@ export default function LandingPage() {
           </Link>
 
           <nav aria-label="Primary Header Navigation" className={`hidden lg:flex items-center gap-1 xl:gap-2 text-xs font-bold shrink-0 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-            <Link href="/dashboard" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-teal-700' : 'hover:bg-slate-800/80 hover:text-white text-teal-400'}`} title="Blueprint Studio — L100–L400 Level Filters & 2-Way Prompt/Draw.io Sync">
+            <Link href="/dashboard" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-teal-700' : 'hover:bg-slate-800/80 hover:text-white text-teal-400'}`} title="Blueprint Studio — L200–L400 Dynamic Template Lock & Clone-on-Mutate">
               <BarChart3 className={`w-3.5 h-3.5 ${isLight ? 'text-teal-600' : 'text-teal-400'}`} aria-hidden="true" />
               <span>Blueprint Studio</span>
+            </Link>
+
+            <Link href="/templates" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-blue-700' : 'hover:bg-slate-800/80 hover:text-white text-blue-400'}`} title="84 Certified Architecture Templates (15 Calm L400+ · 25 Exec 25x12 · 36 Foundational) (L200–L400)">
+              <Layers className={`w-3.5 h-3.5 ${isLight ? 'text-blue-600' : 'text-blue-400'}`} aria-hidden="true" />
+              <span>Templates</span>
+              <span className={`px-1 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-blue-500/20 text-blue-300'}`}>76</span>
+            </Link>
+
+            <Link href="/infographics" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-amber-700' : 'hover:bg-slate-800/80 hover:text-white text-amber-400'}`} title="15 Executive Infographics (Separate Gallery)">
+              <LayoutGrid className={`w-3.5 h-3.5 ${isLight ? 'text-amber-600' : 'text-amber-400'}`} aria-hidden="true" />
+              <span>Infographics</span>
+              <span className={`px-1 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-amber-500/20 text-amber-300'}`}>15</span>
             </Link>
 
             <Link href="/prompt-to-diagram" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-blue-700' : 'hover:bg-slate-800/80 hover:text-white text-blue-400'}`} title="Prompt to Diagram — Gemini NLP Top 1–3 Blueprint Selection & 2-Way Mutation">
@@ -122,10 +134,10 @@ export default function LandingPage() {
               <span className={`px-1 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-blue-500/20 text-blue-300'}`}>NLP</span>
             </Link>
 
-            <Link href="/canonical" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-sky-700' : 'hover:bg-slate-800/80 hover:text-white text-sky-400'}`} title="41 Certified Blueprints across L100–L400 Depth Levels">
+            <Link href="/canonical" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-sky-700' : 'hover:bg-slate-800/80 hover:text-white text-sky-400'}`} title="35 Certified Blueprints across L100–L400 Depth Levels">
               <Network className={`w-3.5 h-3.5 ${isLight ? 'text-sky-600' : 'text-sky-400'}`} aria-hidden="true" />
               <span>Blueprints</span>
-              <span className={`px-1 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-sky-50 text-sky-700 border border-sky-200' : 'bg-sky-500/20 text-sky-300'}`}>41</span>
+              <span className={`px-1 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-sky-50 text-sky-700 border border-sky-200' : 'bg-sky-500/20 text-sky-300'}`}>35</span>
             </Link>
 
             <Link href="/docgen" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-indigo-700' : 'hover:bg-slate-800/80 hover:text-white text-indigo-400'}`} title="8 Lean Enterprise Specification Blueprints (BRD, PRD, SDD, TDD, AI Card, STRIDE, GRC, SRE)">
@@ -238,7 +250,23 @@ export default function LandingPage() {
                 className="p-2 rounded-lg hover:bg-slate-800 text-teal-400 font-bold flex items-center justify-between"
               >
                 <span>Blueprint Studio</span>
-                <span className="px-2 py-0.5 rounded-full text-xs bg-teal-500/20 text-teal-300">L100–L400</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-teal-500/20 text-teal-300">L200–L400</span>
+              </Link>
+              <Link 
+                href="/templates" 
+                onClick={() => setIsMobileNavOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-800 text-blue-400 font-bold flex items-center justify-between"
+              >
+                <span>Templates</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-blue-500/20 text-blue-300">84 Architecture Templates</span>
+              </Link>
+              <Link 
+                href="/infographics" 
+                onClick={() => setIsMobileNavOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-800 text-amber-400 font-bold flex items-center justify-between"
+              >
+                <span>Infographics</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-amber-500/20 text-amber-300">15 Infographics</span>
               </Link>
               <Link 
                 href="/prompt-to-diagram" 
@@ -254,7 +282,7 @@ export default function LandingPage() {
                 className="p-2 rounded-lg hover:bg-slate-800 text-sky-400 font-bold flex items-center justify-between"
               >
                 <span>Blueprint Catalog</span>
-                <span className="px-2 py-0.5 rounded-full text-xs bg-sky-500/20 text-sky-300">41 Certified Blueprints</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-sky-500/20 text-sky-300">35 Certified Blueprints</span>
               </Link>
               <Link 
                 href="/blogs" 
@@ -518,7 +546,7 @@ export default function LandingPage() {
             </div>
             <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Ready-To-Go Templates</h4>
             <p className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-              Launch with 41 Certified Blueprints (8 Core Architecture/Flow Blueprints #78, #99, #79, #81, #84, #00, #67, #69 + 14 G-Series #85–#98 + 4 Restored #03, #12, #14, #29 + 15 Infographic Blueprints #52–#66) to instantly validate stacks.
+              Launch with 84 Certified Architecture Templates (L200–L400) and 35 Certified Blueprints (7 Core #78, #99, #81, #84, #00, #67, #69 + 9 G-Series #87, #89–#95, #97 + 4 Restored #03, #12, #14, #29 + 15 Infographic Blueprints #52–#66) to instantly validate stacks.
             </p>
           </div>
 
@@ -585,14 +613,14 @@ export default function LandingPage() {
             Bootstrap with Production-Grade Blueprints
           </h3>
           <p className={`text-lg mt-4 max-w-2xl mx-auto ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-            Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>41 Certified Blueprints</strong> (8 Core incl. WS1 #99 + 14 G-Series + 4 Restored + 15 Infographics) directly in the interactive studio.
+            Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>84 Architecture Templates</strong> and <strong>35 Certified Blueprints</strong> (7 Core incl. WS1 #99 + 9 G-Series + 4 Restored + 15 Infographics) directly in the interactive studio.
           </p>
           <div className="mt-4">
             <Link
               href="/canonical"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>View All 41 Certified Blueprints in Templates Gallery →</span>
+              <span>View All 35 Certified Blueprints in Blueprint Catalog →</span>
             </Link>
           </div>
         </div>
