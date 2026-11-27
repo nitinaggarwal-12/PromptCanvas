@@ -161,7 +161,7 @@ function InlineDiagramFigure({
 
           {canonicalTpl && (
             <Link
-              href={`/canonical/${canonicalTpl.id}`}
+              href={`/dashboard?template=${canonicalTpl.id}`}
               target="_blank"
               className="px-3.5 py-1.5 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-500 border border-sky-500/30 text-xs font-bold flex items-center gap-1.5 transition-all hover:scale-105"
             >
@@ -959,7 +959,7 @@ function DocDetailPageContent() {
                         <h4 className="text-xs font-bold text-slate-900 dark:text-white">Chapter {slot.chapterNumber}: {slot.slotTitle}</h4>
                       </div>
                       <Link
-                        href={`/canonical/${slot.recommendedTemplateId}`}
+                        href={`/dashboard?template=${slot.recommendedTemplateId}`}
                         className="text-[10px] font-bold text-sky-500 hover:underline"
                         target="_blank"
                       >

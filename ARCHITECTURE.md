@@ -152,16 +152,15 @@ PromptCanvas/
 │       ├── universal-document-cloud-hub/
 │       └── visual-regression-testing/
 ├── src/
-│   ├── app/                   # Next.js 16 App Router pages (/dashboard, /templates, /canonical, /library, /docgen, /vision, /audit) & API routes
+│   ├── app/                   # Next.js 16 App Router pages (/dashboard, /templates, /infographics, /library, /docgen, /vision, /audit, /blogs, /changelog) & API routes
 │   └── lib/                   # Core engine, geminiConfig, orthogonalMultiModelJudge, validators, DB, icons, templates
 │       ├── templates/         # 84 Certified Architecture Templates (53 Tier 1 + 31 Tier 2, L200–L400)
-│       ├── canonical/         # 35 Certified Blueprints + 15 Infographics (#52–#66)
+│       ├── canonical/         # Canonical Draw.io generators + 15 Infographics (#52–#66)
 │       ├── geminiConfig.ts    # Frontier Gemini 3.1 Pro / Gemini 3 Flash / Gemma 4 31B model registry + Cloud Run Metadata ADC
 │       ├── orthogonalMultiModelJudge.ts      # Parallel Pro + Gemma 4 cross-family LLM-as-a-Judge panel
 │       ├── diagramAstHealth.ts               # Zero-floor deterministic 6-dimension AST & domain health evaluator
 │       ├── freeform/directDrawioSpatialMutator.ts # Composite-card Draw.io spatial mutator + closed-loop repair
 │       └── deepmindVisionDecompiler.ts       # Vision image-to-Draw.io XML decompiler
-├── templates/master_blueprints/ # 60 certified standalone .drawio.xml blueprints + all_master_templates.json
-├── scripts/                   # Quality gate runners, lifecycle hook guards, catalog validators
-└── scratch/                   # Ephemeral screenshots, E2E harnesses & diagnostic logs (gitignored)
+├── scripts/                   # Zero-orphan, nav-badge, canonical certification & docgen quality gates
+└── tests/                     # Vitest unit, security, and anti-theatre mechanical ratchet suites
 ```

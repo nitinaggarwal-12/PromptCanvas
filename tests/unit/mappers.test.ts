@@ -12,7 +12,7 @@ import {
 } from '../../src/lib/compose/mappers';
 
 describe('Phase 3: Pure Derivation Mappers & Traceability', () => {
-  const corpusDir = path.join(__dirname, '../../diagrams/latest');
+  const corpusDir = path.join(__dirname, '../fixtures/compose');
 
   it('unified system view fixture yields component descriptions with sourceRefs', () => {
     const xml = fs.readFileSync(path.join(corpusDir, 'hdc__unified_system_view__v1.xml'), 'utf8');

@@ -134,12 +134,6 @@ export default function LandingPage() {
               <span className={`px-1 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-blue-500/20 text-blue-300'}`}>NLP</span>
             </Link>
 
-            <Link href="/canonical" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-sky-700' : 'hover:bg-slate-800/80 hover:text-white text-sky-400'}`} title="35 Certified Blueprints across L100–L400 Depth Levels">
-              <Network className={`w-3.5 h-3.5 ${isLight ? 'text-sky-600' : 'text-sky-400'}`} aria-hidden="true" />
-              <span>Blueprints</span>
-              <span className={`px-1 py-0.2 rounded text-[10px] font-mono font-bold ${isLight ? 'bg-sky-50 text-sky-700 border border-sky-200' : 'bg-sky-500/20 text-sky-300'}`}>35</span>
-            </Link>
-
             <Link href="/docgen" className={`px-2 py-1.5 rounded-xl transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${isLight ? 'hover:bg-slate-100 text-indigo-700' : 'hover:bg-slate-800/80 hover:text-white text-indigo-400'}`} title="8 Lean Enterprise Specification Blueprints (BRD, PRD, SDD, TDD, AI Card, STRIDE, GRC, SRE)">
               <FileText className={`w-3.5 h-3.5 ${isLight ? 'text-indigo-600' : 'text-indigo-400'}`} aria-hidden="true" />
               <span>Specs</span>
@@ -277,12 +271,12 @@ export default function LandingPage() {
                 <span className="px-2 py-0.5 rounded-full text-xs bg-blue-500/20 text-blue-300">NLP Top 3</span>
               </Link>
               <Link 
-                href="/canonical" 
+                href="/templates" 
                 onClick={() => setIsMobileNavOpen(false)}
                 className="p-2 rounded-lg hover:bg-slate-800 text-sky-400 font-bold flex items-center justify-between"
               >
-                <span>Blueprint Catalog</span>
-                <span className="px-2 py-0.5 rounded-full text-xs bg-sky-500/20 text-sky-300">35 Certified Blueprints</span>
+                <span>Architecture Templates</span>
+                <span className="px-2 py-0.5 rounded-full text-xs bg-sky-500/20 text-sky-300">84 Certified Templates</span>
               </Link>
               <Link 
                 href="/blogs" 
@@ -613,14 +607,14 @@ export default function LandingPage() {
             Bootstrap with Production-Grade Blueprints
           </h3>
           <p className={`text-lg mt-4 max-w-2xl mx-auto ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-            Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>84 Architecture Templates</strong> and <strong>35 Certified Blueprints</strong> (7 Core incl. WS1 #99 + 9 G-Series + 4 Restored + 15 Infographics) directly in the interactive studio.
+            Explore 6 spotlighted enterprise architecture stacks below, or launch any of our <strong>84 Certified Architecture Templates</strong> across L200–L400 depth levels directly in the interactive studio.
           </p>
           <div className="mt-4">
             <Link
-              href="/canonical"
+              href="/templates"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>View All 35 Certified Blueprints in Blueprint Catalog →</span>
+              <span>Browse All 84 Certified Architecture Templates →</span>
             </Link>
           </div>
         </div>
@@ -695,7 +689,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/canonical/99"
+              href="/dashboard?template=99"
               aria-label="Open WS1 Shared 5-Hop Multi-Tenant Agent Platform blueprint #99"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-300 hover:text-purple-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
@@ -704,7 +698,7 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Template 4: L400 Deployment & Network Spec (#79) */}
+          {/* Template 4: L400 Multi-Region Active / Warm-Standby HA/DR (#120) */}
           <div className={`rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between border ${
             isLight ? 'bg-white border-slate-200 hover:border-teal-400 shadow-md text-slate-800' : 'glass-panel border-panel-border/40 hover:border-teal-500/45 text-slate-100'
           }`}>
@@ -713,19 +707,19 @@ export default function LandingPage() {
                 <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-accent group-hover:scale-110 transition-transform">
                   <FileText className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border border-indigo-500/20">L400 GCP • #79</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border border-indigo-500/20">L400 GCP • #120</span>
               </div>
-              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>L400 Multi-Tenant Hub &amp; Spoke Network Spec (#79)</h4>
+              <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>L400 Multi-Region HA/DR &amp; Spanner nam7 Quorum (#120)</h4>
               <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                Physical VPC CIDR blocks, BGP ASN 64512, Cloud Armor WAF, Global External GCLB VIP, Private Service Connect attachments, AlloyDB FORCE RLS pools, and sovereign VPC-SC silos.
+                Twin-region active/warm-standby topology with Global External GCLB, Cloud Armor, Dual 2x10G Interconnect MACsec, Spanner nam7 5-way Paxos witness quorum, and AlloyDB failover.
               </p>
             </div>
             <Link
-              href="/canonical/79"
-              aria-label="Open L400 Hub and Spoke Network Spec blueprint #79"
+              href="/dashboard?template=120"
+              aria-label="Open L400 Multi-Region HA/DR and Spanner nam7 Quorum template #120"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-300 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
-              <span>Open L400 Network Spec (#79)</span>
+              <span>Open L400 HA/DR Spec (#120)</span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
@@ -747,7 +741,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/canonical/81"
+              href="/dashboard?template=81"
               aria-label="Open L400 Principal Sequence A2A and MCP blueprint #81"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-300 hover:text-indigo-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >
@@ -773,7 +767,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/canonical/94"
+              href="/dashboard?template=94"
               aria-label="Open L400 C4 System Context blueprint #94"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-300 hover:text-purple-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded"
             >

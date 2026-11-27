@@ -595,19 +595,6 @@ async function doEnsureTablesExist(): Promise<void> {
         sheet_row_ref TEXT,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
-
-      CREATE TABLE IF NOT EXISTS sheet_sync_config (
-        id TEXT PRIMARY KEY,
-        spreadsheet_id TEXT NOT NULL,
-        spreadsheet_url TEXT NOT NULL,
-        sheet_title TEXT NOT NULL,
-        auto_sync_enabled INTEGER NOT NULL DEFAULT 1,
-        sync_mode TEXT NOT NULL DEFAULT 'TWO_WAY_LIVE',
-        last_synced_at TEXT,
-        last_sync_actor TEXT,
-        total_ui_to_sheet_pushes INTEGER NOT NULL DEFAULT 0,
-        total_sheet_to_ui_pulls INTEGER NOT NULL DEFAULT 0
-      );
     `);
   } else {
     const db = getSqliteDb();
@@ -866,19 +853,6 @@ async function doEnsureTablesExist(): Promise<void> {
         source TEXT NOT NULL DEFAULT 'UI',
         sheet_row_ref TEXT,
         created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now'))
-      );
-
-      CREATE TABLE IF NOT EXISTS sheet_sync_config (
-        id TEXT PRIMARY KEY,
-        spreadsheet_id TEXT NOT NULL,
-        spreadsheet_url TEXT NOT NULL,
-        sheet_title TEXT NOT NULL,
-        auto_sync_enabled INTEGER NOT NULL DEFAULT 1,
-        sync_mode TEXT NOT NULL DEFAULT 'TWO_WAY_LIVE',
-        last_synced_at TEXT,
-        last_sync_actor TEXT,
-        total_ui_to_sheet_pushes INTEGER NOT NULL DEFAULT 0,
-        total_sheet_to_ui_pulls INTEGER NOT NULL DEFAULT 0
       );
     `);
 
@@ -2718,19 +2692,6 @@ export interface GovernanceComment {
   created_at: string;
 }
 
-export interface SheetSyncConfig {
-  id: string;
-  spreadsheet_id: string;
-  spreadsheet_url: string;
-  sheet_title: string;
-  auto_sync_enabled: boolean | number;
-  sync_mode: string;
-  last_synced_at: string | null;
-  last_sync_actor: string | null;
-  total_ui_to_sheet_pushes: number;
-  total_sheet_to_ui_pulls: number;
-}
-
 async function seedInitialGovernanceAndChangelog(): Promise<void> {
   const initialUsers = [
     { id: 'usr-admin-1', email: 'nitinagga@google.com', name: 'Nitin Aggarwal', role: 'Super-Admin', isSuper: 1 },
@@ -2766,27 +2727,27 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
 
     db.prepare(`UPDATE governance_tracker_items SET owner_email = 'nitinagga@google.com', owner_name = 'Nitin Aggarwal', comment_author = 'Nitin Aggarwal', last_modified_by = 'Nitin Aggarwal (UI)' WHERE blueprint_code = 'BP-00'`).run();
     db.prepare(`UPDATE governance_tracker_items SET owner_email = 'arch-review-board@google.com', owner_name = 'Principal Domain Architecture Team', comment_author = 'Principal Domain Architecture Team', last_modified_by = 'Principal Domain Architecture Team (UI)' WHERE blueprint_code = 'BP-01'`).run();
-    db.prepare(`UPDATE governance_tracker_items SET owner_email = 'cloud-governance-board@google.com', owner_name = 'Cloud Architecture Review Board', comment_author = 'Cloud Architecture Review Board', last_modified_by = 'Cloud Architecture Review Board (GOOGLE_SHEET)' WHERE blueprint_code = 'BP-02'`).run();
-    db.prepare(`UPDATE governance_tracker_items SET owner_email = 'clinical-ops-arch@google.com', owner_name = 'Clinical Operations Architecture Team', comment_author = 'Clinical Operations Architecture Team', last_modified_by = 'Clinical Operations Architecture Team (GOOGLE_SHEET)' WHERE blueprint_code = 'BP-03'`).run();
+    db.prepare(`UPDATE governance_tracker_items SET owner_email = 'cloud-governance-board@google.com', owner_name = 'Cloud Architecture Review Board', comment_author = 'Cloud Architecture Review Board', last_modified_by = 'Cloud Architecture Review Board (UI)', last_sync_source = 'UI' WHERE blueprint_code = 'BP-02'`).run();
+    db.prepare(`UPDATE governance_tracker_items SET owner_email = 'clinical-ops-arch@google.com', owner_name = 'Clinical Operations Architecture Team', comment_author = 'Clinical Operations Architecture Team', last_modified_by = 'Clinical Operations Architecture Team (UI)', last_sync_source = 'UI' WHERE blueprint_code = 'BP-03'`).run();
     db.prepare(`UPDATE governance_tracker_items SET owner_email = 'data-lakehouse-arch@google.com', owner_name = 'Enterprise Data & Lakehouse Team', comment_author = 'Enterprise Data & Lakehouse Team', last_modified_by = 'Enterprise Data & Lakehouse Team (UI)' WHERE blueprint_code = 'BP-04'`).run();
     db.prepare(`UPDATE governance_tracker_items SET owner_email = 'ai-security-board@google.com', owner_name = 'AI Security & Risk Review Board', comment_author = 'AI Security & Risk Review Board', last_modified_by = 'AI Security & Risk Review Board (UI)' WHERE blueprint_code = 'BP-05'`).run();
 
     db.prepare(`UPDATE governance_comments SET author_name = 'Principal Domain Architecture Team', author_email = 'arch-review-board@google.com' WHERE id = 'cmt-seed-1' OR author_email = 'elena.rostova@enterprise-arch.io'`).run();
-    db.prepare(`UPDATE governance_comments SET author_name = 'Cloud Architecture Review Board', author_email = 'cloud-governance-board@google.com' WHERE id = 'cmt-seed-2' OR author_email = 'marcus.vance@enterprise-arch.io'`).run();
+    db.prepare(`UPDATE governance_comments SET author_name = 'Cloud Architecture Review Board', author_email = 'cloud-governance-board@google.com', comment_text = 'Verified capability maturity ratings across L1–L2 domain taxonomy.' WHERE id = 'cmt-seed-2' OR author_email = 'marcus.vance@enterprise-arch.io'`).run();
     db.prepare(`UPDATE governance_comments SET author_name = 'AI Security & Risk Review Board', author_email = 'ai-security-board@google.com' WHERE id = 'cmt-seed-3' OR author_email = 'sophia.martinez@enterprise-arch.io'`).run();
 
     db.prepare(`UPDATE changelog_entries SET actor_email = 'nitinagga@google.com' WHERE actor_email = 'nitin.aggarwal@enterprise-arch.io'`).run();
     db.prepare(`UPDATE changelog_entries SET actor_name = 'Cloud Architecture Review Board', actor_email = 'cloud-governance-board@google.com' WHERE actor_email = 'marcus.vance@enterprise-arch.io'`).run();
     db.prepare(`UPDATE changelog_entries SET actor_name = 'Principal Domain Architecture Team', actor_email = 'arch-review-board@google.com' WHERE actor_email = 'elena.rostova@enterprise-arch.io'`).run();
     db.prepare(`UPDATE changelog_entries SET actor_name = 'AI Security & Risk Review Board', actor_email = 'ai-security-board@google.com' WHERE actor_email = 'sophia.martinez@enterprise-arch.io'`).run();
-    db.prepare(`UPDATE changelog_entries SET entity_name = 'Principal Domain Architecture Team (arch-review-board@google.com)', summary = 'Added Principal Domain Architecture Team via PromptCanvas Admin UI and synced to Google Sheet [Users!A3:F3].' WHERE id = 'chg-seed-01'`).run();
-    db.prepare(`UPDATE changelog_entries SET entity_name = 'AI Security & Risk Review Board (ai-security-board@google.com)', summary = 'Added AI Security & Risk Review Board directly in Google Sheet [Users!A4:F4] — auto-imported into PromptCanvas UI.' WHERE id = 'chg-seed-02'`).run();
-    db.prepare(`UPDATE changelog_entries SET entity_name = 'Cloud Architecture Review Board (cloud-governance-board@google.com)', summary = 'Promoted Cloud Architecture Review Board from Member to Super-Admin in UI and pushed role update to Google Sheet [Users!D5].' WHERE id = 'chg-seed-03'`).run();
-    db.prepare(`UPDATE changelog_entries SET summary = 'Cloud Architecture Review Board changed status of BP-02 from "In Review" to "Approved" in Google Sheet [Tracker!E4] — synced to UI.' WHERE id = 'chg-seed-04'`).run();
-    db.prepare(`UPDATE changelog_entries SET summary = 'AI Security & Risk Review Board added review comment on BP-05 in Google Sheet [Comments!A4:G4] — synced to UI.' WHERE id = 'chg-seed-05'`).run();
-    db.prepare(`UPDATE changelog_entries SET summary = 'Principal Domain Architecture Team updated BP-01 status from "Approved" to "Production Certified" in UI and pushed to Google Sheet [Tracker!E3].' WHERE id = 'chg-seed-06'`).run();
+    db.prepare(`UPDATE changelog_entries SET entity_name = 'Principal Domain Architecture Team (arch-review-board@google.com)', summary = 'Added Principal Domain Architecture Team via PromptCanvas Admin UI.', source = 'UI', sync_status = 'SYNCED', sheet_row_ref = NULL WHERE id = 'chg-seed-01'`).run();
+    db.prepare(`UPDATE changelog_entries SET actor_id = 'usr-marcus', entity_name = 'AI Security & Risk Review Board (ai-security-board@google.com)', summary = 'Added AI Security & Risk Review Board in Governance UI.', source = 'UI', sync_status = 'SYNCED', sheet_row_ref = NULL WHERE id = 'chg-seed-02'`).run();
+    db.prepare(`UPDATE changelog_entries SET entity_name = 'Cloud Architecture Review Board (cloud-governance-board@google.com)', summary = 'Promoted Cloud Architecture Review Board from Member to Super-Admin in Governance UI.', source = 'UI', sync_status = 'SYNCED', sheet_row_ref = NULL WHERE id = 'chg-seed-03'`).run();
+    db.prepare(`UPDATE changelog_entries SET actor_id = 'usr-marcus', summary = 'Cloud Architecture Review Board changed status of BP-02 from "In Review" to "Approved" in Governance UI.', source = 'UI', sync_status = 'SYNCED', sheet_row_ref = NULL WHERE id = 'chg-seed-04'`).run();
+    db.prepare(`UPDATE changelog_entries SET actor_id = 'usr-sophia', summary = 'AI Security & Risk Review Board added review comment on BP-05 in Governance UI.', source = 'UI', sync_status = 'SYNCED', sheet_row_ref = NULL WHERE id = 'chg-seed-05'`).run();
+    db.prepare(`UPDATE changelog_entries SET summary = 'Principal Domain Architecture Team updated BP-01 status from "Approved" to "Production Certified" in Governance UI.', source = 'UI', sync_status = 'SYNCED', sheet_row_ref = NULL WHERE id = 'chg-seed-06'`).run();
+    db.prepare(`UPDATE changelog_entries SET summary = 'Nitin Aggarwal added architecture review comment on BP-00 in Governance UI.', source = 'UI', sync_status = 'SYNCED', sheet_row_ref = NULL WHERE id = 'chg-seed-07'`).run();
     db.prepare(`UPDATE changelog_entries SET summary = REPLACE(REPLACE(REPLACE(REPLACE(summary, 'Marcus Vance', 'Cloud Architecture Review Board'), 'Dr. Elena Rostova', 'Principal Domain Architecture Team'), 'Sophia Martinez', 'AI Security & Risk Review Board'), 'Priya Nair', 'Clinical Operations Architecture Team')`).run();
-    db.prepare(`UPDATE sheet_sync_config SET last_sync_actor = REPLACE(last_sync_actor, 'Marcus Vance', 'Cloud Architecture Review Board')`).run();
   }
 
   const countRes = isPostgres()
@@ -2837,11 +2798,11 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         priority: 'P0 - Critical',
         owner_name: 'Cloud Architecture Review Board',
         owner_email: 'cloud-governance-board@google.com',
-        latest_comment: 'Synced capability maturity ratings from Architecture Review Board Google Sheet.',
+        latest_comment: 'Verified capability maturity ratings across L1–L2 domain taxonomy.',
         comment_author: 'Cloud Architecture Review Board',
         version: 'v3.2',
-        last_modified_by: 'Cloud Architecture Review Board (GOOGLE_SHEET)',
-        last_sync_source: 'GOOGLE_SHEET',
+        last_modified_by: 'Cloud Architecture Review Board (UI)',
+        last_sync_source: 'UI',
         sheet_row_number: 4,
       },
       {
@@ -2856,8 +2817,8 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         latest_comment: 'Validating SLA handoff gates between Clinical Operations and Regulatory Submissions.',
         comment_author: 'Clinical Operations Architecture Team',
         version: 'v3.1',
-        last_modified_by: 'Clinical Operations Architecture Team (GOOGLE_SHEET)',
-        last_sync_source: 'GOOGLE_SHEET',
+        last_modified_by: 'Clinical Operations Architecture Team (UI)',
+        last_sync_source: 'UI',
         sheet_row_number: 5,
       },
       {
@@ -2945,53 +2906,6 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
     }
   }
 
-  // Ensure default sheet_sync_config exists
-  const syncCfgRes = isPostgres()
-    ? await getPgPool().query("SELECT COUNT(*)::int AS cnt FROM sheet_sync_config WHERE id = 'default'")
-    : (getSqliteDb().prepare("SELECT COUNT(*) AS cnt FROM sheet_sync_config WHERE id = 'default'").get() as { cnt: number });
-  const cfgCount = isPostgres() ? Number((syncCfgRes as any).rows[0]?.cnt || 0) : Number((syncCfgRes as any)?.cnt || 0);
-
-  if (cfgCount === 0) {
-    const nowIso = new Date().toISOString();
-    const defaultSheetId = '';
-    const defaultSheetUrl = '';
-    const defaultTitle = 'PromptCanvas — Governance Changelog Ledger';
-    if (isPostgres()) {
-      await getPgPool().query(
-        `INSERT INTO sheet_sync_config
-         (id, spreadsheet_id, spreadsheet_url, sheet_title, auto_sync_enabled, sync_mode, last_synced_at, last_sync_actor, total_ui_to_sheet_pushes, total_sheet_to_ui_pulls)
-         VALUES ('default', $1, $2, $3, 0, 'CSV_AND_WEBHOOK', $4, 'Local Governance Ledger', 0, 0)
-         ON CONFLICT (id) DO NOTHING`,
-        [defaultSheetId, defaultSheetUrl, defaultTitle, nowIso]
-      );
-    } else {
-      getSqliteDb()
-        .prepare(
-          `INSERT OR IGNORE INTO sheet_sync_config
-           (id, spreadsheet_id, spreadsheet_url, sheet_title, auto_sync_enabled, sync_mode, last_synced_at, last_sync_actor, total_ui_to_sheet_pushes, total_sheet_to_ui_pulls)
-           VALUES ('default', ?, ?, ?, 0, 'CSV_AND_WEBHOOK', ?, 'Local Governance Ledger', 0, 0)`
-        )
-        .run(defaultSheetId, defaultSheetUrl, defaultTitle, nowIso);
-    }
-  } else {
-    // Purge legacy hardcoded Google quickstart sample sheet ID (`1BxiMVs...`) & fake counters if present
-    if (isPostgres()) {
-      await getPgPool().query(
-        `UPDATE sheet_sync_config
-         SET spreadsheet_id = '', spreadsheet_url = '', sync_mode = 'CSV_AND_WEBHOOK', total_ui_to_sheet_pushes = 0, total_sheet_to_ui_pulls = 0
-         WHERE spreadsheet_id = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms'`
-      );
-    } else {
-      getSqliteDb()
-        .prepare(
-          `UPDATE sheet_sync_config
-           SET spreadsheet_id = '', spreadsheet_url = '', sync_mode = 'CSV_AND_WEBHOOK', total_ui_to_sheet_pushes = 0, total_sheet_to_ui_pulls = 0
-           WHERE spreadsheet_id = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms'`
-        )
-        .run();
-    }
-  }
-
   // Ensure initial comments & changelog entries exist
   const logCountRes = isPostgres()
     ? await getPgPool().query('SELECT COUNT(*)::int AS cnt FROM changelog_entries')
@@ -3010,7 +2924,7 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         comment_text: 'Upgraded to vendor-neutral L1 System Context with CDISC ODM, HL7 FHIR R4, IDMP & GxP Part 11 contracts.',
         status_at_comment: 'Production Certified',
         source: 'UI',
-        sheet_row_ref: 'Comments!A2:G2',
+        sheet_row_ref: null,
       },
       {
         id: 'cmt-seed-2',
@@ -3019,10 +2933,10 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         author_name: 'Cloud Architecture Review Board',
         author_email: 'cloud-governance-board@google.com',
         author_role: 'Enterprise Governance Lead',
-        comment_text: 'Synced capability maturity ratings from Architecture Review Board Google Sheet.',
+        comment_text: 'Verified capability maturity ratings across L1–L2 domain taxonomy.',
         status_at_comment: 'Approved',
-        source: 'GOOGLE_SHEET',
-        sheet_row_ref: 'Tracker!I4',
+        source: 'UI',
+        sheet_row_ref: null,
       },
       {
         id: 'cmt-seed-3',
@@ -3033,8 +2947,8 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         author_role: 'AI Security & Risk Reviewer',
         comment_text: 'Pending final sign-off on citation verification threshold (>= 0.92 groundedness).',
         status_at_comment: 'In Review',
-        source: 'GOOGLE_SHEET',
-        sheet_row_ref: 'Comments!A4:G4',
+        source: 'UI',
+        sheet_row_ref: null,
       },
     ];
 
@@ -3069,15 +2983,15 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         field_changed: 'user_created',
         old_value: 'None',
         new_value: 'Author (Principal Domain Architect)',
-        summary: 'Added Principal Domain Architecture Team via PromptCanvas Admin UI and synced to Google Sheet [Users!A3:F3].',
+        summary: 'Added Principal Domain Architecture Team via PromptCanvas Admin UI.',
         source: 'UI',
         sync_status: 'SYNCED',
-        sheet_row_ref: 'Users!A3:F3',
+        sheet_row_ref: null,
       },
       {
         id: 'chg-seed-02',
         event_category: 'USER_ADDED',
-        actor_id: 'sheet-sync',
+        actor_id: 'usr-marcus',
         actor_name: 'Cloud Architecture Review Board',
         actor_email: 'cloud-governance-board@google.com',
         actor_role: 'Super-Admin',
@@ -3087,10 +3001,10 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         field_changed: 'user_created',
         old_value: 'None',
         new_value: 'Author (AI Security & Risk Reviewer)',
-        summary: 'Added AI Security & Risk Review Board directly in Google Sheet [Users!A4:F4] — auto-imported into PromptCanvas UI.',
-        source: 'GOOGLE_SHEET',
-        sync_status: 'PULLED_FROM_SHEET',
-        sheet_row_ref: 'Users!A4:F4',
+        summary: 'Added AI Security & Risk Review Board in Governance UI.',
+        source: 'UI',
+        sync_status: 'SYNCED',
+        sheet_row_ref: null,
       },
       {
         id: 'chg-seed-03',
@@ -3105,15 +3019,15 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         field_changed: 'global_role',
         old_value: 'Member',
         new_value: 'Super-Admin',
-        summary: 'Promoted Cloud Architecture Review Board from Member to Super-Admin in UI and pushed role update to Google Sheet [Users!D5].',
+        summary: 'Promoted Cloud Architecture Review Board from Member to Super-Admin in Governance UI.',
         source: 'UI',
         sync_status: 'SYNCED',
-        sheet_row_ref: 'Users!D5',
+        sheet_row_ref: null,
       },
       {
         id: 'chg-seed-04',
         event_category: 'STATUS_CHANGED',
-        actor_id: 'sheet-sync',
+        actor_id: 'usr-marcus',
         actor_name: 'Cloud Architecture Review Board',
         actor_email: 'cloud-governance-board@google.com',
         actor_role: 'Super-Admin',
@@ -3123,15 +3037,15 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         field_changed: 'status',
         old_value: 'In Review',
         new_value: 'Approved',
-        summary: 'Cloud Architecture Review Board changed status of BP-02 from "In Review" to "Approved" in Google Sheet [Tracker!E4] — synced to UI.',
-        source: 'GOOGLE_SHEET',
-        sync_status: 'PULLED_FROM_SHEET',
-        sheet_row_ref: 'Tracker!E4',
+        summary: 'Cloud Architecture Review Board changed status of BP-02 from "In Review" to "Approved" in Governance UI.',
+        source: 'UI',
+        sync_status: 'SYNCED',
+        sheet_row_ref: null,
       },
       {
         id: 'chg-seed-05',
         event_category: 'COMMENT_ADDED',
-        actor_id: 'sheet-sync',
+        actor_id: 'usr-sophia',
         actor_name: 'AI Security & Risk Review Board',
         actor_email: 'ai-security-board@google.com',
         actor_role: 'Author',
@@ -3141,10 +3055,10 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         field_changed: 'comment',
         old_value: 'Initial AI topology draft submitted.',
         new_value: 'Pending final sign-off on citation verification threshold (>= 0.92 groundedness).',
-        summary: 'AI Security & Risk Review Board added review comment on BP-05 in Google Sheet [Comments!A4:G4] — synced to UI.',
-        source: 'GOOGLE_SHEET',
-        sync_status: 'PULLED_FROM_SHEET',
-        sheet_row_ref: 'Comments!A4:G4',
+        summary: 'AI Security & Risk Review Board added review comment on BP-05 in Governance UI.',
+        source: 'UI',
+        sync_status: 'SYNCED',
+        sheet_row_ref: null,
       },
       {
         id: 'chg-seed-06',
@@ -3159,10 +3073,10 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         field_changed: 'status',
         old_value: 'Approved',
         new_value: 'Production Certified',
-        summary: 'Principal Domain Architecture Team updated BP-01 status from "Approved" to "Production Certified" in UI and pushed to Google Sheet [Tracker!E3].',
+        summary: 'Principal Domain Architecture Team updated BP-01 status from "Approved" to "Production Certified" in Governance UI.',
         source: 'UI',
         sync_status: 'SYNCED',
-        sheet_row_ref: 'Tracker!E3',
+        sheet_row_ref: null,
       },
       {
         id: 'chg-seed-07',
@@ -3177,10 +3091,10 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         field_changed: 'comment',
         old_value: 'Baseline 5-tier layout.',
         new_value: 'Removed redundant brand headers; added closed-loop AI evaluation & FinOps guardrail telemetry.',
-        summary: 'Nitin Aggarwal added architecture review comment on BP-00 in UI and pushed to Google Sheet [Tracker!I2].',
+        summary: 'Nitin Aggarwal added architecture review comment on BP-00 in Governance UI.',
         source: 'UI',
         sync_status: 'SYNCED',
-        sheet_row_ref: 'Tracker!I2',
+        sheet_row_ref: null,
       },
     ];
 
@@ -3296,18 +3210,6 @@ async function ensureChangelogTablesAndSeed(): Promise<void> {
         sheet_row_ref TEXT,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
-      CREATE TABLE IF NOT EXISTS sheet_sync_config (
-        id TEXT PRIMARY KEY,
-        spreadsheet_id TEXT NOT NULL,
-        spreadsheet_url TEXT NOT NULL,
-        sheet_title TEXT NOT NULL,
-        auto_sync_enabled INTEGER NOT NULL DEFAULT 1,
-        sync_mode TEXT NOT NULL DEFAULT 'TWO_WAY_LIVE',
-        last_synced_at TEXT,
-        last_sync_actor TEXT,
-        total_ui_to_sheet_pushes INTEGER NOT NULL DEFAULT 0,
-        total_sheet_to_ui_pulls INTEGER NOT NULL DEFAULT 0
-      );
     `);
   } else {
     const db = getSqliteDb();
@@ -3361,18 +3263,6 @@ async function ensureChangelogTablesAndSeed(): Promise<void> {
         sheet_row_ref TEXT,
         created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now'))
       );
-      CREATE TABLE IF NOT EXISTS sheet_sync_config (
-        id TEXT PRIMARY KEY,
-        spreadsheet_id TEXT NOT NULL,
-        spreadsheet_url TEXT NOT NULL,
-        sheet_title TEXT NOT NULL,
-        auto_sync_enabled INTEGER NOT NULL DEFAULT 1,
-        sync_mode TEXT NOT NULL DEFAULT 'TWO_WAY_LIVE',
-        last_synced_at TEXT,
-        last_sync_actor TEXT,
-        total_ui_to_sheet_pushes INTEGER NOT NULL DEFAULT 0,
-        total_sheet_to_ui_pulls INTEGER NOT NULL DEFAULT 0
-      );
     `);
   }
   await seedInitialGovernanceAndChangelog();
@@ -3401,7 +3291,6 @@ export async function recordChangelogEntry(entry: {
   const source = entry.source || 'UI';
   const syncStatus = entry.sync_status || (source === 'GOOGLE_SHEET' ? 'PULLED_FROM_SHEET' : 'SYNCED');
   const actorRole = entry.actor_role || 'Author';
-  const nowIso = new Date().toISOString();
 
   if (isPostgres()) {
     const pool = getPgPool();
@@ -3429,17 +3318,6 @@ export async function recordChangelogEntry(entry: {
         entry.sheet_row_ref || null,
       ]
     );
-    if (source === 'GOOGLE_SHEET') {
-      await pool.query(
-        `UPDATE sheet_sync_config SET last_synced_at = $1, last_sync_actor = $2, total_sheet_to_ui_pulls = total_sheet_to_ui_pulls + 1 WHERE id = 'default'`,
-        [nowIso, `${entry.actor_name} (Google Sheet)`]
-      );
-    } else {
-      await pool.query(
-        `UPDATE sheet_sync_config SET last_synced_at = $1, last_sync_actor = $2, total_ui_to_sheet_pushes = total_ui_to_sheet_pushes + 1 WHERE id = 'default'`,
-        [nowIso, `${entry.actor_name} (UI)`]
-      );
-    }
     return res.rows[0] as ChangelogEntry;
   } else {
     const db = getSqliteDb();
@@ -3465,15 +3343,6 @@ export async function recordChangelogEntry(entry: {
       syncStatus,
       entry.sheet_row_ref || null
     );
-    if (source === 'GOOGLE_SHEET') {
-      db.prepare(
-        `UPDATE sheet_sync_config SET last_synced_at = ?, last_sync_actor = ?, total_sheet_to_ui_pulls = total_sheet_to_ui_pulls + 1 WHERE id = 'default'`
-      ).run(nowIso, `${entry.actor_name} (Google Sheet)`);
-    } else {
-      db.prepare(
-        `UPDATE sheet_sync_config SET last_synced_at = ?, last_sync_actor = ?, total_ui_to_sheet_pushes = total_ui_to_sheet_pushes + 1 WHERE id = 'default'`
-      ).run(nowIso, `${entry.actor_name} (UI)`);
-    }
     return db.prepare('SELECT * FROM changelog_entries WHERE id = ?').get(id) as unknown as ChangelogEntry;
   }
 }
@@ -3539,50 +3408,6 @@ export async function getGovernanceComments(limit: number = 100): Promise<Govern
   }
 }
 
-export async function getSheetSyncConfig(): Promise<SheetSyncConfig> {
-  await ensureChangelogTablesAndSeed();
-  if (isPostgres()) {
-    const res = await getPgPool().query("SELECT * FROM sheet_sync_config WHERE id = 'default' LIMIT 1");
-    return res.rows[0] as SheetSyncConfig;
-  } else {
-    return getSqliteDb()
-      .prepare("SELECT * FROM sheet_sync_config WHERE id = 'default' LIMIT 1")
-      .get() as unknown as SheetSyncConfig;
-  }
-}
-
-export async function updateSheetSyncConfig(updates: {
-  spreadsheet_id?: string;
-  spreadsheet_url?: string;
-  sheet_title?: string;
-  auto_sync_enabled?: boolean;
-}): Promise<SheetSyncConfig> {
-  await ensureTablesExist();
-  const current = await getSheetSyncConfig();
-  const nextUrl = updates.spreadsheet_url?.trim() || current.spreadsheet_url;
-  let nextId = updates.spreadsheet_id?.trim() || current.spreadsheet_id;
-  const idMatch = nextUrl.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-  if (idMatch && idMatch[1]) {
-    nextId = idMatch[1];
-  }
-  const nextTitle = updates.sheet_title?.trim() || current.sheet_title;
-  const nextAuto = updates.auto_sync_enabled !== undefined ? (updates.auto_sync_enabled ? 1 : 0) : Number(current.auto_sync_enabled ? 1 : 0);
-
-  if (isPostgres()) {
-    await getPgPool().query(
-      `UPDATE sheet_sync_config SET spreadsheet_id = $1, spreadsheet_url = $2, sheet_title = $3, auto_sync_enabled = $4 WHERE id = 'default'`,
-      [nextId, nextUrl, nextTitle, nextAuto]
-    );
-  } else {
-    getSqliteDb()
-      .prepare(
-        `UPDATE sheet_sync_config SET spreadsheet_id = ?, spreadsheet_url = ?, sheet_title = ?, auto_sync_enabled = ? WHERE id = 'default'`
-      )
-      .run(nextId, nextUrl, nextTitle, nextAuto);
-  }
-  return getSheetSyncConfig();
-}
-
 export async function updateGovernanceItemStatus(params: {
   blueprintCode: string;
   newStatus: string;
@@ -3602,7 +3427,7 @@ export async function updateGovernanceItemStatus(params: {
 
   const oldStatus = target.status;
   const modifiedByLabel = `${params.actorName} (${source})`;
-  const rowRef = `Tracker!E${target.sheet_row_number}`;
+  const rowRef = null;
 
   if (isPostgres()) {
     await getPgPool().query(
@@ -3632,10 +3457,7 @@ export async function updateGovernanceItemStatus(params: {
       );
   }
 
-  const summary =
-    source === 'GOOGLE_SHEET'
-      ? `${params.actorName} changed status of ${target.blueprint_code} from "${oldStatus}" to "${params.newStatus}" in Google Sheet [${rowRef}] — synced to UI.`
-      : `${params.actorName} changed status of ${target.blueprint_code} from "${oldStatus}" to "${params.newStatus}" in UI and synced to Google Sheet [${rowRef}].`;
+  const summary = `${params.actorName} changed status of ${target.blueprint_code} from "${oldStatus}" to "${params.newStatus}" in Governance UI.`;
 
   const changelog = await recordChangelogEntry({
     event_category: 'STATUS_CHANGED',
@@ -3687,7 +3509,7 @@ export async function addGovernanceComment(params: {
   const oldComment = matchedTracker?.latest_comment || 'None';
   const statusAtComment = matchedTracker?.status || 'Active';
   const id = uuidv4();
-  const rowRef = matchedTracker ? `Tracker!I${matchedTracker.sheet_row_number}` : 'Comments!A2:G2';
+  const rowRef = null;
 
   if (isPostgres()) {
     await getPgPool().query(
@@ -3750,10 +3572,7 @@ export async function addGovernanceComment(params: {
     }
   }
 
-  const summary =
-    source === 'GOOGLE_SHEET'
-      ? `${params.authorName} added comment on ${params.targetId} in Google Sheet [${rowRef}]: "${params.commentText}" — synced to UI.`
-      : `${params.authorName} added comment on ${params.targetId} in UI: "${params.commentText}" — synced to Google Sheet [${rowRef}].`;
+  const summary = `${params.authorName} added comment on ${params.targetId} in Governance UI: "${params.commentText}".`;
 
   const changelog = await recordChangelogEntry({
     event_category: 'COMMENT_ADDED',
@@ -3789,15 +3608,12 @@ export async function addOrUpdateUserWithChangelog(params: {
   const source = params.source || 'UI';
   const normalizedEmail = params.email.toLowerCase().trim();
   const existing = await getUserByEmail(normalizedEmail);
-  const rowRef = `DB:users:${normalizedEmail}`;
+  const rowRef = null;
 
   if (existing) {
     const oldRole = existing.global_role || 'Author';
     const updated = await updateUserGlobalRole(existing.id, params.role);
-    const summary =
-      source === 'GOOGLE_SHEET'
-        ? `${params.actorName} changed role of ${params.name} (${normalizedEmail}) from "${oldRole}" to "${params.role}" via Governance Sync.`
-        : `${params.actorName} changed role of ${params.name} (${normalizedEmail}) from "${oldRole}" to "${params.role}" in Governance UI.`;
+    const summary = `${params.actorName} changed role of ${params.name} (${normalizedEmail}) from "${oldRole}" to "${params.role}" in Governance UI.`;
     const changelog = await recordChangelogEntry({
       event_category: 'USER_ROLE_CHANGED',
       actor_name: params.actorName,
@@ -3820,22 +3636,19 @@ export async function addOrUpdateUserWithChangelog(params: {
     if (isPostgres()) {
       await getPgPool().query(
         `INSERT INTO users (id, email, password_hash, salt, name, global_role, is_super_admin)
-         VALUES ($1, $2, 'sheet_synced_hash', 'sheet_salt', $3, $4, $5)`,
+         VALUES ($1, $2, 'admin_provisioned_hash', 'admin_salt', $3, $4, $5)`,
         [id, normalizedEmail, params.name.trim(), params.role, isSuper]
       );
     } else {
       getSqliteDb()
         .prepare(
           `INSERT INTO users (id, email, password_hash, salt, name, global_role, is_super_admin)
-           VALUES (?, ?, 'sheet_synced_hash', 'sheet_salt', ?, ?, ?)`
+           VALUES (?, ?, 'admin_provisioned_hash', 'admin_salt', ?, ?, ?)`
         )
         .run(id, normalizedEmail, params.name.trim(), params.role, isSuper ? 1 : 0);
     }
     const createdUser = (await getUserById(id))!;
-    const summary =
-      source === 'GOOGLE_SHEET'
-        ? `${params.actorName} added new user ${params.name} (${normalizedEmail}) with role "${params.role}" via Governance Sync.`
-        : `${params.actorName} added new user ${params.name} (${normalizedEmail}) with role "${params.role}" in Governance UI.`;
+    const summary = `${params.actorName} added new user ${params.name} (${normalizedEmail}) with role "${params.role}" in Governance UI.`;
 
     const changelog = await recordChangelogEntry({
       event_category: 'USER_ADDED',
@@ -3856,142 +3669,6 @@ export async function addOrUpdateUserWithChangelog(params: {
   }
 }
 
-export async function performTwoWayGoogleSheetSync(payload?: {
-  actorName?: string;
-  actorEmail?: string;
-  sheetEdits?: {
-    trackerEdits?: Array<{
-      blueprint_code: string;
-      status?: string;
-      latest_comment?: string;
-      owner_name?: string;
-      owner_email?: string;
-    }>;
-    addedUsers?: Array<{
-      name: string;
-      email: string;
-      role: 'Super-Admin' | 'Author' | 'Member';
-    }>;
-    addedComments?: Array<{
-      target_id: string;
-      comment_text: string;
-      author_name?: string;
-      author_email?: string;
-    }>;
-  };
-}): Promise<{
-  appliedChanges: ChangelogEntry[];
-  syncConfig: SheetSyncConfig;
-  trackerItems: GovernanceTrackerItem[];
-  changelog: ChangelogEntry[];
-}> {
-  await ensureTablesExist();
-  const actorName = payload?.actorName || 'Google Sheets Live Sync';
-  const actorEmail = payload?.actorEmail || 'architecture-governance@cloud-review.internal';
-  const appliedChanges: ChangelogEntry[] = [];
-
-  if (payload?.sheetEdits) {
-    // 1. Apply any user additions or role changes coming from the Google Sheet
-    if (Array.isArray(payload.sheetEdits.addedUsers)) {
-      for (const u of payload.sheetEdits.addedUsers) {
-        if (u.email && u.name) {
-          const res = await addOrUpdateUserWithChangelog({
-            email: u.email,
-            name: u.name,
-            role: u.role || 'Author',
-            actorName,
-            actorEmail,
-            actorRole: 'Google Sheet Editor',
-            source: 'GOOGLE_SHEET',
-          });
-          appliedChanges.push(res.changelog);
-        }
-      }
-    }
-
-    // 2. Apply any status / comment / owner edits made in the Google Sheet Tracker tab
-    if (Array.isArray(payload.sheetEdits.trackerEdits)) {
-      const currentItems = await getGovernanceTrackerItems();
-      for (const edit of payload.sheetEdits.trackerEdits) {
-        const existing = currentItems.find((i) => i.blueprint_code === edit.blueprint_code);
-        if (!existing) continue;
-
-        if (edit.status && edit.status !== existing.status) {
-          const res = await updateGovernanceItemStatus({
-            blueprintCode: existing.blueprint_code,
-            newStatus: edit.status,
-            actorName,
-            actorEmail,
-            actorRole: 'Google Sheet Editor',
-            source: 'GOOGLE_SHEET',
-          });
-          appliedChanges.push(res.changelog);
-        }
-
-        if (
-          edit.latest_comment &&
-          edit.latest_comment.trim().length > 0 &&
-          edit.latest_comment.trim() !== (existing.latest_comment || '').trim()
-        ) {
-          const res = await addGovernanceComment({
-            targetId: existing.blueprint_code,
-            targetName: existing.blueprint_name,
-            authorName: actorName,
-            authorEmail: actorEmail,
-            authorRole: 'Google Sheet Editor',
-            commentText: edit.latest_comment.trim(),
-            source: 'GOOGLE_SHEET',
-          });
-          appliedChanges.push(res.changelog);
-        }
-      }
-    }
-
-    // 3. Apply any standalone comments added to the Google Sheet Comments tab
-    if (Array.isArray(payload.sheetEdits.addedComments)) {
-      for (const c of payload.sheetEdits.addedComments) {
-        if (c.target_id && c.comment_text?.trim()) {
-          const res = await addGovernanceComment({
-            targetId: c.target_id,
-            authorName: c.author_name || actorName,
-            authorEmail: c.author_email || actorEmail,
-            authorRole: 'Google Sheet Editor',
-            commentText: c.comment_text.trim(),
-            source: 'GOOGLE_SHEET',
-          });
-          appliedChanges.push(res.changelog);
-        }
-      }
-    }
-  }
-
-  // Mark all pending entries as SYNCED and update sync timestamp
-  const nowIso = new Date().toISOString();
-  if (isPostgres()) {
-    await getPgPool().query(
-      `UPDATE changelog_entries SET sync_status = 'SYNCED' WHERE sync_status = 'PENDING_PUSH'`
-    );
-    await getPgPool().query(
-      `UPDATE sheet_sync_config SET last_synced_at = $1, last_sync_actor = $2 WHERE id = 'default'`,
-      [nowIso, `${actorName} (2-Way Sync)`]
-    );
-  } else {
-    const db = getSqliteDb();
-    db.prepare(`UPDATE changelog_entries SET sync_status = 'SYNCED' WHERE sync_status = 'PENDING_PUSH'`).run();
-    db.prepare(`UPDATE sheet_sync_config SET last_synced_at = ?, last_sync_actor = ? WHERE id = 'default'`).run(
-      nowIso,
-      `${actorName} (2-Way Sync)`
-    );
-  }
-
-  return {
-    appliedChanges,
-    syncConfig: await getSheetSyncConfig(),
-    trackerItems: await getGovernanceTrackerItems(),
-    changelog: await getChangelogEntries({ limit: 200 }),
-  };
-}
-
 export async function resetChangelogBaseline(): Promise<void> {
   await ensureChangelogTablesAndSeed();
   if (isPostgres()) {
@@ -4000,10 +3677,10 @@ export async function resetChangelogBaseline(): Promise<void> {
     await pool.query(`DELETE FROM changelog_entries WHERE id NOT LIKE 'chg-seed-%'`);
     await pool.query(`DELETE FROM governance_comments WHERE id NOT LIKE 'cmt-seed-%'`);
     await pool.query(
-      `UPDATE governance_tracker_items SET status = 'In Review', latest_comment = 'Pending SLA handoff timing verification between Clinical Operations and Regulatory Affairs.', last_modified_by = 'Priya Nair (UI)' WHERE blueprint_code = 'BP-03'`
+      `UPDATE governance_tracker_items SET status = 'In Review', latest_comment = 'Pending SLA handoff timing verification between Clinical Operations and Regulatory Affairs.', last_modified_by = 'Clinical Operations Architecture Team (UI)', last_sync_source = 'UI' WHERE blueprint_code = 'BP-03'`
     );
     await pool.query(
-      `UPDATE governance_tracker_items SET status = 'In Review', latest_comment = 'Pending final sign-off on citation verification threshold (>= 0.92 groundedness).', last_modified_by = 'Sophia Martinez (GOOGLE_SHEET)' WHERE blueprint_code = 'BP-05'`
+      `UPDATE governance_tracker_items SET status = 'In Review', latest_comment = 'Pending final sign-off on citation verification threshold (>= 0.92 groundedness).', last_modified_by = 'AI Security & Risk Review Board (UI)', last_sync_source = 'UI' WHERE blueprint_code = 'BP-05'`
     );
   } else {
     const db = getSqliteDb();
@@ -4011,10 +3688,10 @@ export async function resetChangelogBaseline(): Promise<void> {
     db.prepare(`DELETE FROM changelog_entries WHERE id NOT LIKE 'chg-seed-%'`).run();
     db.prepare(`DELETE FROM governance_comments WHERE id NOT LIKE 'cmt-seed-%'`).run();
     db.prepare(
-      `UPDATE governance_tracker_items SET status = 'In Review', latest_comment = 'Pending SLA handoff timing verification between Clinical Operations and Regulatory Affairs.', last_modified_by = 'Priya Nair (UI)' WHERE blueprint_code = 'BP-03'`
+      `UPDATE governance_tracker_items SET status = 'In Review', latest_comment = 'Pending SLA handoff timing verification between Clinical Operations and Regulatory Affairs.', last_modified_by = 'Clinical Operations Architecture Team (UI)', last_sync_source = 'UI' WHERE blueprint_code = 'BP-03'`
     ).run();
     db.prepare(
-      `UPDATE governance_tracker_items SET status = 'In Review', latest_comment = 'Pending final sign-off on citation verification threshold (>= 0.92 groundedness).', last_modified_by = 'Sophia Martinez (GOOGLE_SHEET)' WHERE blueprint_code = 'BP-05'`
+      `UPDATE governance_tracker_items SET status = 'In Review', latest_comment = 'Pending final sign-off on citation verification threshold (>= 0.92 groundedness).', last_modified_by = 'AI Security & Risk Review Board (UI)', last_sync_source = 'UI' WHERE blueprint_code = 'BP-05'`
     ).run();
   }
 }

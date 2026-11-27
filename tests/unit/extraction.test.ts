@@ -5,7 +5,7 @@ import { xmlToGraph } from '../../src/lib/graph/xmlToGraph';
 import { extractSystemModel } from '../../src/lib/compose/extract';
 
 describe('Phase 1: XML Extraction & SystemModel Normalization', () => {
-  const corpusDir = path.join(__dirname, '../../diagrams/latest');
+  const corpusDir = path.join(__dirname, '../fixtures/compose');
 
   const corpusFiles = [
     'hdc__conceptual_diagram__v1.xml',

@@ -350,7 +350,13 @@ export default function DocGenHistoryModal({
                     </button>
 
                     <button
-                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-sky-600 group-hover:bg-sky-500 text-white shadow-sm transition-all"
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectProject(proj);
+                        onClose();
+                      }}
+                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-sky-600 group-hover:bg-sky-500 text-white shadow-sm transition-all cursor-pointer"
                     >
                       <span>Open</span>
                       <ArrowRight className="w-3.5 h-3.5" />

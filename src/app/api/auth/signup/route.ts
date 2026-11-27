@@ -71,9 +71,9 @@ export async function POST(request: Request) {
       field_changed: 'user_created',
       old_value: 'None',
       new_value: 'Author',
-      summary: `New user ${newUser.name || newUser.email} registered via UI and synced to Google Sheet [Users!A:F].`,
+      summary: `New user ${newUser.name || newUser.email} registered via PromptCanvas UI.`,
       source: 'UI',
-      sheet_row_ref: 'Users!A:F',
+      sheet_row_ref: null,
     });
 
     return NextResponse.json({

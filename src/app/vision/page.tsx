@@ -2263,7 +2263,11 @@ function VisionPageContent() {
                         </p>
                         <button
                           type="button"
-                          className={`mt-1 w-full py-1 px-2 rounded text-[9.5px] font-bold flex items-center justify-center gap-1 transition ${
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSelectWebImage(img, idx);
+                          }}
+                          className={`mt-1 w-full py-1 px-2 rounded text-[9.5px] font-bold flex items-center justify-center gap-1 transition cursor-pointer ${
                             isSelected
                               ? 'bg-blue-600 text-white'
                               : 'bg-slate-100 text-slate-700 hover:bg-blue-600 hover:text-white'

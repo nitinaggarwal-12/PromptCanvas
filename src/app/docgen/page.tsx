@@ -338,7 +338,7 @@ function InlineDiagramFigure({
 
           {canonicalTpl && (
             <Link
-              href={`/canonical/${canonicalTpl.id}`}
+              href={`/dashboard?template=${canonicalTpl.id}`}
               target="_blank"
               className="px-3.5 py-1.5 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-500 border border-sky-500/30 text-xs font-bold flex items-center gap-1.5 transition-all hover:scale-105"
             >
@@ -3359,10 +3359,10 @@ function DocGenContent() {
                                       <span className="text-slate-500 dark:text-slate-400">{activeSlot.description}</span>
                                     </div>
                                     <Link
-                                      href={`/canonical/${chapterTpl.id}?domain=${selectedDomain}&title=${encodeURIComponent(projectTitle || chapterTpl.name)}`}
+                                      href={`/dashboard?template=${chapterTpl.id}&domain=${selectedDomain}`}
                                       target="_blank"
                                       className="px-2 py-0.5 rounded-md bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 font-mono font-bold text-[10px] flex items-center gap-1 shrink-0 cursor-pointer"
-                                      title="Open standalone Canonical Blueprint in new tab"
+                                      title="Open standalone Blueprint in Studio"
                                     >
                                       <span>#{chapterTpl.id} [↗]</span>
                                     </Link>
@@ -3658,7 +3658,7 @@ function DocGenContent() {
                   {/* Standalone Diagram Action Toolbar */}
                   <div className="flex flex-wrap items-center gap-2">
                     <Link
-                      href={`/canonical/${(diagramSlotsList[activeDiagramSlotIndex]?.templateId || selectedDiagramTemplateId || '01')}?domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}`}
+                      href={`/dashboard?template=${diagramSlotsList[activeDiagramSlotIndex]?.templateId || selectedDiagramTemplateId || '00'}&domain=${selectedDomain}`}
                       className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-teal-accent text-bg-dark hover:brightness-110 transition shadow-sm font-extrabold cursor-pointer"
                     >
                       <Edit3 className="w-3.5 h-3.5 stroke-[2.5]" />

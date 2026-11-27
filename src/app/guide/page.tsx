@@ -1274,11 +1274,11 @@ export default function GuidePage() {
                       </button>
                     </div>
 
-                    {/* Open in Canonical Blueprint Link */}
+                    {/* Open in Studio Link */}
                     <Link
-                      href={`/canonical/${activeFrame.templateId || '78'}`}
+                      href={`/dashboard?template=${activeFrame.templateId || '78'}`}
                       className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-extrabold text-[10px] transition-all flex items-center gap-1 shadow-sm shrink-0 cursor-pointer"
-                      title="Open full interactive blueprint in the Blueprint Catalog"
+                      title="Open interactive blueprint in Studio"
                     >
                       <span>Open Canonical Blueprint</span>
                       <ExternalLink className="w-3 h-3" />

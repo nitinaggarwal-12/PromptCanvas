@@ -5,8 +5,6 @@ import {
   getGovernanceTrackerItems,
   getGovernanceComments,
   getSuperAdminAllUsers,
-  getSheetSyncConfig,
-  updateSheetSyncConfig,
   updateGovernanceItemStatus,
   addGovernanceComment,
   addOrUpdateUserWithChangelog,
@@ -16,30 +14,75 @@ import {
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+    const format = searchParams.get('format');
     const category = searchParams.get('category') || 'ALL';
     const source = searchParams.get('source') || 'ALL';
     const search = searchParams.get('search') || '';
 
-    const [changelog, trackerItems, comments, rawUsers, syncConfig] = await Promise.all([
+    const [changelog, trackerItems, comments, rawUsers] = await Promise.all([
       getChangelogEntries({ category, source, search, limit: 250 }),
       getGovernanceTrackerItems(),
       getGovernanceComments(100),
       getSuperAdminAllUsers(),
-      getSheetSyncConfig(),
     ]);
     const users = rawUsers.filter((u) => !u.email.endsWith('@promptcanvas.guest'));
 
-    const allLogs = category === 'ALL' && source === 'ALL' && !search
-      ? changelog
-      : await getChangelogEntries({ limit: 250 });
+    if (format === 'csv') {
+      const headers = [
+        'Timestamp',
+        'Category',
+        'Actor Name',
+        'Actor Email',
+        'Role',
+        'Entity Type',
+        'Target Entity',
+        'Field Changed',
+        'Before (Old Value)',
+        'After (New Value)',
+        'Origin Source',
+        'Audit Summary',
+      ];
+      const escapeCsv = (val: unknown) => `"${String(val ?? '').replace(/"/g, '""')}"`;
+      const rows = changelog.map((c) =>
+        [
+          c.created_at,
+          c.event_category,
+          c.actor_name,
+          c.actor_email,
+          c.actor_role,
+          c.entity_type,
+          c.entity_name,
+          c.field_changed,
+          c.old_value || '',
+          c.new_value || '',
+          c.source,
+          c.summary,
+        ]
+          .map(escapeCsv)
+          .join(',')
+      );
+      const csvContent = [headers.map(escapeCsv).join(','), ...rows].join('\n');
+      return new Response(csvContent, {
+        headers: {
+          'Content-Type': 'text/csv; charset=utf-8',
+          'Content-Disposition': 'attachment; filename="PromptCanvas_Governance_Changelog.csv"',
+        },
+      });
+    }
+
+    const allLogs =
+      category === 'ALL' && source === 'ALL' && !search
+        ? changelog
+        : await getChangelogEntries({ limit: 250 });
 
     const stats = {
       totalChanges: allLogs.length,
-      userChanges: allLogs.filter((e) => e.event_category === 'USER_ADDED' || e.event_category === 'USER_ROLE_CHANGED').length,
+      userChanges: allLogs.filter(
+        (e) => e.event_category === 'USER_ADDED' || e.event_category === 'USER_ROLE_CHANGED'
+      ).length,
       commentChanges: allLogs.filter((e) => e.event_category === 'COMMENT_ADDED').length,
       statusChanges: allLogs.filter((e) => e.event_category === 'STATUS_CHANGED').length,
       uiOriginated: allLogs.filter((e) => e.source === 'UI').length,
-      sheetOriginated: allLogs.filter((e) => e.source === 'GOOGLE_SHEET').length,
     };
 
     return NextResponse.json({
@@ -48,7 +91,6 @@ export async function GET(request: Request) {
       trackerItems,
       comments,
       users,
-      syncConfig,
       stats,
     });
   } catch (error: unknown) {
@@ -72,7 +114,6 @@ export async function POST(request: Request) {
     const actorName = body.actorName || authUser?.name || 'Cloud Architecture Review Board';
     const actorEmail = body.actorEmail || authUser?.email || 'architecture-governance@cloud-review.internal';
     const actorRole = body.actorRole || authUser?.global_role || 'Super-Admin';
-    const source: 'UI' | 'GOOGLE_SHEET' = body.source === 'GOOGLE_SHEET' ? 'GOOGLE_SHEET' : 'UI';
 
     if (action === 'ADD_USER' || action === 'CHANGE_USER_ROLE') {
       const { name, email, role } = body;
@@ -87,7 +128,7 @@ export async function POST(request: Request) {
         actorName,
         actorEmail,
         actorRole,
-        source,
+        source: 'UI',
       });
       return NextResponse.json({
         success: true,
@@ -107,7 +148,7 @@ export async function POST(request: Request) {
         actorName,
         actorEmail,
         actorRole,
-        source,
+        source: 'UI',
         comment,
       });
       return NextResponse.json({
@@ -129,25 +170,12 @@ export async function POST(request: Request) {
         authorEmail: actorEmail,
         authorRole: actorRole,
         commentText: commentText.trim(),
-        source,
+        source: 'UI',
       });
       return NextResponse.json({
         success: true,
         comment: res.comment,
         changelogEntry: res.changelog,
-      });
-    }
-
-    if (action === 'UPDATE_SHEET_CONFIG') {
-      const updated = await updateSheetSyncConfig({
-        spreadsheet_id: body.spreadsheet_id,
-        spreadsheet_url: body.spreadsheet_url,
-        sheet_title: body.sheet_title,
-        auto_sync_enabled: body.auto_sync_enabled,
-      });
-      return NextResponse.json({
-        success: true,
-        syncConfig: updated,
       });
     }
 

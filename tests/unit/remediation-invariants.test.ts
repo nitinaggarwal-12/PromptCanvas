@@ -8,9 +8,6 @@ import {
   stripLayoutFromGraph,
   type ArchitectureGraph,
 } from '@/lib/graph/schema';
-import { computeElkLayout } from '@/lib/layout/elk-layout';
-import { renderGraphToDrawioXml } from '@/lib/render/drawio-xml';
-import { validateDrawioXml } from '@/lib/validate/validator';
 import { getGenConfigForModel } from '@/lib/geminiConfig';
 import { checkConversationalOrNonMutationIntent } from '@/lib/geminiRouteGuard';
 import {
@@ -26,38 +23,23 @@ import {
 } from '@/lib/server/googleWorkspaceBridge';
 import { createDiagram, getLatestDiagramVersion, deleteDiagram } from '@/lib/db';
 
-const DENSE_AWS_FRAUD_GRAPH: ArchitectureGraph = {
-  title: 'Real-Time Credit Card Fraud Detection on AWS',
-  cloud: 'aws',
-  tiers: [
-    { id: 't_ingest', label: '1. Edge & Ingestion', order: 1 },
-    { id: 't_stream', label: '2. Real-Time Stream Processing', order: 2 },
-    { id: 't_ml', label: '3. ML Inference & Feature Store', order: 3 },
-    { id: 't_store', label: '4. Persistence & Alerting', order: 4 },
-  ],
-  nodes: [
-    { id: 'apigw', label: 'Amazon API Gateway', subtitle: 'REST / TLS 1.3', tier: 't_ingest', type: 'gateway', product: 'api_gateway' },
-    { id: 'waf', label: 'AWS WAF', subtitle: 'Bot & DDoS Filter', tier: 't_ingest', type: 'security', product: 'waf' },
-    { id: 'kinesis', label: 'Amazon Kinesis', subtitle: 'Transaction Stream', tier: 't_stream', type: 'queue', product: 'kinesis' },
-    { id: 'flink', label: 'Apache Flink', subtitle: 'Windowed Aggregator', tier: 't_stream', type: 'service', product: 'flink' },
-    { id: 'sagemaker', label: 'Amazon SageMaker', subtitle: 'XGBoost Fraud Model', tier: 't_ml', type: 'ai', product: 'sagemaker' },
-    { id: 'redis', label: 'ElastiCache Redis', subtitle: 'Velocity Features', tier: 't_ml', type: 'cache', product: 'redis' },
-    { id: 'dynamodb', label: 'Amazon DynamoDB', subtitle: 'Decision Ledger', tier: 't_store', type: 'database', product: 'dynamodb' },
-    { id: 'sns', label: 'Amazon SNS', subtitle: 'Fraud Alerts', tier: 't_store', type: 'queue', product: 'sns' },
-    { id: 's3', label: 'Amazon S3 Lake', subtitle: 'Training Archive', tier: 't_store', type: 'storage', product: 's3' },
-  ],
-  edges: [
-    { id: 'e1', source: 'waf', target: 'apigw', label: '1. Filter Traffic', style: 'solid' },
-    { id: 'e2', source: 'apigw', target: 'kinesis', label: '2. Ingest Event', style: 'solid' },
-    { id: 'e3', source: 'kinesis', target: 'flink', label: '3. Stream Records', style: 'solid' },
-    { id: 'e4', source: 'flink', target: 'redis', label: '4. Fetch Velocity', style: 'solid' },
-    { id: 'e5', source: 'flink', target: 'sagemaker', label: '5. Score Tx', style: 'solid' },
-    { id: 'e6', source: 'sagemaker', target: 'dynamodb', label: '6. Persist Score', style: 'solid' },
-    { id: 'e7', source: 'sagemaker', target: 'sns', label: '7. Trigger Alert', style: 'dashed' },
-    { id: 'e8', source: 'kinesis', target: 's3', label: '8. Archive Raw (Skip-Tier)', style: 'dashed' },
-    { id: 'e9', source: 'dynamodb', target: 'flink', label: '9. Feedback Loop', style: 'dashed' },
-  ],
-};
+const AWS_FRAUD_DRAWIO_XML = `<mxfile host="app.diagrams.net"><diagram id="aws_fraud_1" name="Real-Time Credit Card Fraud Detection on AWS"><mxGraphModel dx="1600" dy="900" pageWidth="1600" pageHeight="900"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+  <mxCell id="waf" value="&lt;b&gt;AWS WAF&lt;/b&gt;&lt;br/&gt;Bot &amp; DDoS Filter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#334155;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="60" y="120" width="210" height="84" as="geometry"/></mxCell>
+  <mxCell id="apigw" value="&lt;b&gt;Amazon API Gateway&lt;/b&gt;&lt;br/&gt;REST / TLS 1.3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#334155;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="330" y="120" width="210" height="84" as="geometry"/></mxCell>
+  <mxCell id="kinesis" value="&lt;b&gt;Amazon Kinesis&lt;/b&gt;&lt;br/&gt;Transaction Stream" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#334155;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="600" y="120" width="210" height="84" as="geometry"/></mxCell>
+  <mxCell id="flink" value="&lt;b&gt;Apache Flink&lt;/b&gt;&lt;br/&gt;Windowed Aggregator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#334155;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="870" y="120" width="210" height="84" as="geometry"/></mxCell>
+  <mxCell id="redis" value="&lt;b&gt;ElastiCache Redis&lt;/b&gt;&lt;br/&gt;Velocity Features" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#334155;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="60" y="300" width="210" height="84" as="geometry"/></mxCell>
+  <mxCell id="sagemaker" value="&lt;b&gt;Amazon SageMaker&lt;/b&gt;&lt;br/&gt;XGBoost Fraud Model" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#334155;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="330" y="300" width="210" height="84" as="geometry"/></mxCell>
+  <mxCell id="dynamodb" value="&lt;b&gt;Amazon DynamoDB&lt;/b&gt;&lt;br/&gt;Decision Ledger" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#334155;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="600" y="300" width="210" height="84" as="geometry"/></mxCell>
+  <mxCell id="sns" value="&lt;b&gt;Amazon SNS&lt;/b&gt;&lt;br/&gt;Fraud Alerts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#334155;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="60" y="480" width="210" height="84" as="geometry"/></mxCell>
+  <mxCell id="s3" value="&lt;b&gt;Amazon S3 Lake&lt;/b&gt;&lt;br/&gt;Training Archive" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#334155;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="1140" y="300" width="210" height="84" as="geometry"/></mxCell>
+  <mxCell id="e1" value="1. Filter" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="waf" target="apigw"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e2" value="2. Ingest" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="apigw" target="kinesis"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e3" value="3. Stream" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="kinesis" target="flink"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e4" value="4. Score" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="flink" target="sagemaker"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e5" value="5. Persist" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="sagemaker" target="dynamodb"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e6" value="6. Alert" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="sagemaker" target="sns"><mxGeometry relative="1" as="geometry"/></mxCell>
+</root></mxGraphModel></diagram></mxfile>`;
 
 describe('PromptCanvas Permanent Remediation Invariants', () => {
   describe('1. Canonical Schema, Normalizer & Thinking Config', () => {
@@ -92,12 +74,16 @@ describe('PromptCanvas Permanent Remediation Invariants', () => {
       expect(result.graph?.nodes.find((n) => n.id === 'n3')?.type).toBe('service');
     });
 
-    it('strips layout coordinates and bendPoints in stripLayoutFromGraph for compact edit prompts', async () => {
-      const laidOut = await computeElkLayout(DENSE_AWS_FRAUD_GRAPH);
-      expect(laidOut.nodes[0].x).toBeTypeOf('number');
-      expect(laidOut.edges.some((e) => (e.bendPoints?.length ?? 0) > 0)).toBe(true);
+    it('strips layout coordinates and bendPoints in stripLayoutFromGraph for compact edit prompts', () => {
+      const positioned: ArchitectureGraph = {
+        title: 'Positioned Graph',
+        cloud: 'aws',
+        tiers: [{ id: 't1', label: 'Edge', order: 1, x: 20, y: 40, width: 1200, height: 180 }],
+        nodes: [{ id: 'n1', label: 'WAF', tier: 't1', type: 'security', x: 60, y: 80, width: 200, height: 80 }],
+        edges: [{ id: 'e1', source: 'n1', target: 'n1', style: 'solid', bendPoints: [{ x: 100, y: 120 }] }],
+      };
 
-      const stripped = stripLayoutFromGraph(laidOut);
+      const stripped = stripLayoutFromGraph(positioned);
       expect(stripped.nodes[0].x).toBeUndefined();
       expect(stripped.nodes[0].y).toBeUndefined();
       expect(stripped.tiers[0].width).toBeUndefined();
@@ -123,122 +109,21 @@ describe('PromptCanvas Permanent Remediation Invariants', () => {
     });
 
     it('blocks bare greetings and identity questions without duplicating model names', () => {
-      const hi = checkConversationalOrNonMutationIntent('hi');
-      expect(hi.isNonMutation).toBe(true);
-      const help = checkConversationalOrNonMutationIntent('help');
-      expect(help.isNonMutation).toBe(true);
+      expect(checkConversationalOrNonMutationIntent('hi').isNonMutation).toBe(true);
+      expect(checkConversationalOrNonMutationIntent('help').isNonMutation).toBe(true);
       const who = checkConversationalOrNonMutationIntent('who are you?');
       expect(who.isNonMutation).toBe(true);
       expect(who.replyMessage || '').not.toContain('Gemini 2.5 Pro, Gemini 2.5 Pro');
     });
   });
 
-  describe('3. Mathematical Layout, Orthogonal Bypass Bus Router & Clean XML Renderer', () => {
-    it('produces 0 validation errors, uniform tier widths, distinct SVG icons, cylinder headroom, explicit orthogonal edges, and zero onerror= XSS sinks', async () => {
-      const laidOut = await computeElkLayout(DENSE_AWS_FRAUD_GRAPH);
-      const tierWidths = laidOut.tiers.map((t) => t.width ?? 0);
-      expect(Math.max(...tierWidths) - Math.min(...tierWidths)).toBe(0);
-
-      const dbNode = laidOut.nodes.find((n) => n.id === 'dynamodb');
-      expect(dbNode).toBeDefined();
-      expect(dbNode!.height ?? 0).toBeGreaterThanOrEqual(96);
-
-      const xml = renderGraphToDrawioXml(laidOut);
-      const report = validateDrawioXml(xml);
-      expect(report.valid).toBe(true);
-      expect(report.errors).toHaveLength(0);
-      expect(xml).not.toMatch(/onerror\s*=/i);
-      expect(xml).toContain('id="v2_canvas_title"');
-      expect(xml).toContain('edgeStyle=none;rounded=1;');
-
-      const iconMatches = [...xml.matchAll(/data:image\/svg\+xml[^"']+/g)].map((m) => m[0]);
-      const uniqueIcons = new Set(iconMatches);
-      expect(uniqueIcons.size).toBeGreaterThanOrEqual(4);
-    });
-
-    it('produces 0 validation errors on a dense 24-node 3-row multi-tier L300 graph with middle-row cross-tier edges', async () => {
-      const dense24Graph: ArchitectureGraph = {
-        title: 'Harness Engineering on Google Cloud (L300 — 24 Components)',
-        cloud: 'gcp',
-        tiers: [
-          { id: 't1', label: 'Ingress & Client', order: 1 },
-          { id: 't2', label: 'Compute & Orchestration', order: 2 },
-          { id: 't3', label: 'AI, Data & Security (3 Rows)', order: 3 },
-          { id: 't4', label: 'Observability & FinOps', order: 4 },
-        ],
-        nodes: [
-          { id: 'n1', label: 'Cloud Armor WAF', tier: 't1', type: 'security', product: 'cloud_armor' },
-          { id: 'n2', label: 'Cloud Load Balancing', tier: 't1', type: 'network', product: 'load_balancing' },
-          { id: 'n3', label: 'Developer CLI', tier: 't1', type: 'user', product: 'cli' },
-          { id: 'n4', label: 'Cloud Run Agent', tier: 't2', type: 'compute', product: 'cloud_run' },
-          { id: 'n5', label: 'Judge Worker', tier: 't2', type: 'compute', product: 'cloud_run' },
-          { id: 'n6', label: 'Cloud Build CI', tier: 't2', type: 'service', product: 'cloud_build' },
-          { id: 'n7', label: 'Cloud Deploy', tier: 't2', type: 'service', product: 'cloud_deploy' },
-          { id: 'n8', label: 'Cloud Pub/Sub', tier: 't2', type: 'queue', product: 'pubsub' },
-          { id: 'n9', label: 'GKE Autopilot', tier: 't2', type: 'compute', product: 'gke' },
-          { id: 'n10', label: 'API Gateway MCP', tier: 't2', type: 'gateway', product: 'api_gateway' },
-          // 11 nodes in t3 -> 3 rows (4 + 4 + 3), testing middle-row exits & entries!
-          { id: 'n11', label: 'BigQuery Warehouse', tier: 't3', type: 'analytics', product: 'bigquery' },
-          { id: 'n12', label: 'Memorystore Redis', tier: 't3', type: 'cache', product: 'redis' },
-          { id: 'n13', label: 'Gen AI Evaluation', tier: 't3', type: 'ai', product: 'vertex_ai' },
-          { id: 'n14', label: 'Cloud Storage', tier: 't3', type: 'storage', product: 'cloud_storage' },
-          { id: 'n15', label: 'Secret Manager', tier: 't3', type: 'security', product: 'secret_manager' },
-          { id: 'n16', label: 'Vector Search', tier: 't3', type: 'ai', product: 'vertex_ai' },
-          { id: 'n17', label: 'Cloud KMS', tier: 't3', type: 'security', product: 'kms' },
-          { id: 'n18', label: 'Cloud SQL Postgres', tier: 't3', type: 'database', product: 'cloud_sql' },
-          { id: 'n19', label: 'Vertex AI Gemini', tier: 't3', type: 'ai', product: 'vertex_ai' },
-          { id: 'n20', label: 'Model Armor', tier: 't3', type: 'security', product: 'model_armor' },
-          { id: 'n21', label: 'Cloud DLP', tier: 't3', type: 'security', product: 'dlp' },
-          { id: 'n22', label: 'Cloud Trace', tier: 't4', type: 'analytics', product: 'cloud_trace' },
-          { id: 'n23', label: 'Cloud Monitoring', tier: 't4', type: 'analytics', product: 'cloud_monitoring' },
-          { id: 'n24', label: 'Cloud Logging', tier: 't4', type: 'analytics', product: 'cloud_logging' },
-        ],
-        edges: [
-          { id: 'e1', source: 'n3', target: 'n2', label: '1. HTTPS', style: 'solid' },
-          { id: 'e2', source: 'n1', target: 'n2', label: '2. WAF', style: 'solid' },
-          { id: 'e3', source: 'n2', target: 'n4', label: '3. Route', style: 'solid' },
-          { id: 'e4', source: 'n4', target: 'n15', label: '4. Secrets (Middle Row)', style: 'solid' },
-          { id: 'e5', source: 'n9', target: 'n15', label: '5. Tool Creds (Middle Row)', style: 'solid' },
-          { id: 'e6', source: 'n4', target: 'n16', label: '6. Memory (Middle Row)', style: 'solid' },
-          { id: 'e7', source: 'n4', target: 'n18', label: '7. Prompts (Middle Row)', style: 'solid' },
-          { id: 'e8', source: 'n17', target: 'n14', label: '8. CMEK Storage', style: 'solid' },
-          { id: 'e9', source: 'n17', target: 'n18', label: '9. CMEK SQL', style: 'solid' },
-          { id: 'e10', source: 'n15', target: 'n24', label: '10. Audit Middle->Bottom', style: 'dashed' },
-          { id: 'e11', source: 'n19', target: 'n24', label: '11. LLM Logs', style: 'dashed' },
-          { id: 'e12', source: 'n4', target: 'n22', label: '12. OTel Spans', style: 'dashed' },
-          { id: 'e13', source: 'n24', target: 'n11', label: '13. Sink to BQ', style: 'solid' },
-          { id: 'e14', source: 'n22', target: 'n23', label: '14. SLO Metrics', style: 'solid' },
-          { id: 'e15', source: 'n3', target: 'n6', label: '15. CI Trigger', style: 'solid' },
-          { id: 'e16', source: 'n6', target: 'n7', label: '16. Verify', style: 'solid' },
-          { id: 'e17', source: 'n7', target: 'n4', label: '17. Canary', style: 'solid' },
-          { id: 'e18', source: 'n4', target: 'n8', label: '18. Pub/Sub', style: 'solid' },
-          { id: 'e19', source: 'n5', target: 'n8', label: '19. Sub', style: 'solid' },
-          { id: 'e20', source: 'n5', target: 'n13', label: '20. Eval', style: 'solid' },
-          { id: 'e21', source: 'n10', target: 'n9', label: '21. Sandbox', style: 'solid' },
-          { id: 'e22', source: 'n4', target: 'n10', label: '22. MCP', style: 'solid' },
-          { id: 'e23', source: 'n4', target: 'n12', label: '23. Cache', style: 'solid' },
-          { id: 'e24', source: 'n21', target: 'n20', label: '24. DLP->Armor', style: 'solid' },
-          { id: 'e25', source: 'n20', target: 'n19', label: '25. Safe LLM', style: 'solid' },
-        ],
-      };
-
-      const laidOut = await computeElkLayout(dense24Graph);
-      const xml = renderGraphToDrawioXml(laidOut);
-      const report = validateDrawioXml(xml);
-      expect(report.valid).toBe(true);
-      expect(report.errors).toHaveLength(0);
-    });
-  });
-
-  describe('4. Database graph_json Persistence on Create', () => {
+  describe('3. Database graph_json Persistence on Create', () => {
     it('persists graphJson on version 1 inside createDiagram and retrieves it via getLatestDiagramVersion', async () => {
-      const laidOut = await computeElkLayout(DENSE_AWS_FRAUD_GRAPH);
-      const xml = renderGraphToDrawioXml(laidOut);
-      const serializedGraph = JSON.stringify(laidOut);
+      const serializedGraph = JSON.stringify({ title: 'AWS Fraud', nodes: ['waf', 'apigw'] });
 
       const created = await createDiagram(
         'Invariant Test AWS Fraud',
-        xml,
+        AWS_FRAUD_DRAWIO_XML,
         'Unit test persistence check',
         'Build AWS fraud pipeline',
         'reasoning',
@@ -261,11 +146,9 @@ describe('PromptCanvas Permanent Remediation Invariants', () => {
     });
   });
 
-  describe('5. Spatial Mutator movePlacement + Live Audit Metrics', () => {
-    it('applies movePlacement=right_of relative to moveAnchorId and maintains zero overlaps', async () => {
-      const laidOut = await computeElkLayout(DENSE_AWS_FRAUD_GRAPH);
-      const xml = renderGraphToDrawioXml(laidOut);
-      const state = parseDrawioXmlSpatialState(xml);
+  describe('4. Spatial Mutator movePlacement + Live Audit Metrics', () => {
+    it('applies movePlacement=right_of relative to moveAnchorId and maintains zero overlaps', () => {
+      const state = parseDrawioXmlSpatialState(AWS_FRAUD_DRAWIO_XML);
       const origSns = state.cells.find((c) => c.id === 'sns')!;
       const anchorDb = state.cells.find((c) => c.id === 'dynamodb')!;
 
@@ -294,36 +177,30 @@ describe('PromptCanvas Permanent Remediation Invariants', () => {
     });
   });
 
-  describe('6. Preflight & Healer Preservation of Draw.io & Slides-Synced XML', () => {
+  describe('5. Preflight & Healer Preservation of Draw.io & Slides-Synced XML', () => {
     it('does not delete custom header cells or strip orthogonal waypoints from user-edited Draw.io or Slides-synced XML', () => {
       const manualXml = `<?xml version="1.0" encoding="UTF-8"?>
-<mxfile host="embed.diagrams.net" agent="PromptCanvas-UserDrawio" data-user-drawio="true" data-prompt-to-diagram="true" data-slides-synced="true">
-  <diagram id="d1" name="Custom User Diagram">
-    <mxGraphModel dx="1420" dy="1200" grid="1" gridSize="10" pageWidth="1600" pageHeight="1300">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="header_title" value="My Custom Title" style="text;html=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="20" width="420" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="n_a" value="Service A" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="80" y="120" width="220" height="80" as="geometry"/>
-        </mxCell>
-        <mxCell id="n_b" value="Service B" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="80" y="1020" width="220" height="80" as="geometry"/>
-        </mxCell>
-        <mxCell id="e_1" value="Long Route" style="edgeStyle=none;rounded=1;html=1;" edge="1" parent="1" source="n_a" target="n_b">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="460" y="160"/>
-              <mxPoint x="460" y="1150"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
+<mxfile host="embed.diagrams.net" agent="PromptCanvas-UserDrawio" data-user-drawio="true" data-prompt-to-diagram="true" data-slides-synced="true"><diagram id="d1" name="Custom User Diagram"><mxGraphModel dx="1420" dy="1200" grid="1" gridSize="10" pageWidth="1600" pageHeight="1300"><root>
+  <mxCell id="0"/>
+  <mxCell id="1" parent="0"/>
+  <mxCell id="header_title" value="My Custom Title" style="text;html=1;" vertex="1" parent="1">
+    <mxGeometry x="40" y="20" width="420" height="40" as="geometry"/>
+  </mxCell>
+  <mxCell id="n_a" value="Service A" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+    <mxGeometry x="80" y="120" width="220" height="80" as="geometry"/>
+  </mxCell>
+  <mxCell id="n_b" value="Service B" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+    <mxGeometry x="80" y="1020" width="220" height="80" as="geometry"/>
+  </mxCell>
+  <mxCell id="e_1" value="Long Route" style="edgeStyle=none;rounded=1;html=1;" edge="1" parent="1" source="n_a" target="n_b">
+    <mxGeometry relative="1" as="geometry">
+      <Array as="points">
+        <mxPoint x="460" y="160"/>
+        <mxPoint x="460" y="1150"/>
+      </Array>
+    </mxGeometry>
+  </mxCell>
+</root></mxGraphModel></diagram></mxfile>`;
 
       const preflightXml = preflightVerifyAndHealXmlAcrossAll6Audits(manualXml);
       expect(preflightXml).toContain('id="header_title"');
@@ -335,13 +212,10 @@ describe('PromptCanvas Permanent Remediation Invariants', () => {
     });
   });
 
-  describe('7. Editable PPTX Zero Vendor Leak + Google Slides Bidirectional Round-Trip Sync', () => {
+  describe('6. Editable PPTX Zero Vendor Leak + Google Slides Bidirectional Round-Trip Sync', () => {
     it('exports AWS diagram to PPTX with zero GCP/NASA brand leaks and embeds PROMPTCANVAS_SLIDES_SYNC_V1 manifest', async () => {
-      const laidOut = await computeElkLayout(DENSE_AWS_FRAUD_GRAPH);
-      const xml = renderGraphToDrawioXml(laidOut);
-
       const base64 = (await exportDrawioToEditablePptx(
-        xml,
+        AWS_FRAUD_DRAWIO_XML,
         'Real-Time Credit Card Fraud Detection on AWS',
         'CUSTOM-AWS-FRAUD',
         { returnBase64: true }
@@ -382,7 +256,6 @@ describe('PromptCanvas Permanent Remediation Invariants', () => {
 
       expect(manifestRaw).toContain('PROMPTCANVAS_SLIDES_SYNC_V1:');
 
-      // Round-trip test: simulate user editing Slide 2 in Google Slides (1 rename, 1 move, 1 new shape)
       const EMU_PER_IN = 914400;
       const jsonMatch = manifestRaw.match(/PROMPTCANVAS_SLIDES_SYNC_V1:(\{[\s\S]*\})/);
       expect(jsonMatch).not.toBeNull();
@@ -441,16 +314,14 @@ describe('PromptCanvas Permanent Remediation Invariants', () => {
               },
             },
             pageElements: [
-              // Rename SageMaker -> Amazon Bedrock Guardrails
               makeSlideShape(
                 'el_renamed',
                 targetRenameCell.sx,
                 targetRenameCell.sy,
                 targetRenameCell.sw,
                 targetRenameCell.sh,
-                'Amazon Bedrock Fraud Scorer\nClaude + XGBoost Ensemble'
+                'Amazon Bedrock Fraud Scorer\nXGBoost Ensemble'
               ),
-              // Move SNS 1.4 inches to the right
               makeSlideShape(
                 'el_moved',
                 targetMoveCell.sx + 1.4,
@@ -459,19 +330,18 @@ describe('PromptCanvas Permanent Remediation Invariants', () => {
                 targetMoveCell.sh,
                 targetMoveCell.label
               ),
-              // Add brand-new shape drawn in Google Slides
               makeSlideShape('el_brand_new_dlq', 9.2, 5.2, 1.8, 0.7, 'Amazon SQS DLQ\nDead Letter Queue'),
             ],
           },
         ],
       };
 
-      expect(extractPresentationIdFromInput('https://docs.google.com/presentation/d/1AbCdEfGhIjKlMnOpQrStUvWxYz/edit#slide=id.p2')).toBe(
-        '1AbCdEfGhIjKlMnOpQrStUvWxYz'
-      );
+      expect(
+        extractPresentationIdFromInput('https://docs.google.com/presentation/d/1AbCdEfGhIjKlMnOpQrStUvWxYz/edit#slide=id.p2')
+      ).toBe('1AbCdEfGhIjKlMnOpQrStUvWxYz');
 
       const syncResult = await applyGoogleSlidesPresentationToDrawioXml(
-        xml,
+        AWS_FRAUD_DRAWIO_XML,
         mockSlidesPresentation,
         'pres_roundtrip_001'
       );

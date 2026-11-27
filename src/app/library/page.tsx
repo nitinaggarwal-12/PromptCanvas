@@ -2080,7 +2080,7 @@ function ArchitectureLibraryContent({ initialDiagramId }: { initialDiagramId?: s
                         style: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30',
                         btnStyle: 'bg-sky-600 hover:bg-sky-500 text-white',
                         actionLabel: 'Open Blueprint',
-                        route: `/canonical/${encodeURIComponent(cleanCanonicalId)}`
+                        route: `/dashboard?template=${encodeURIComponent(cleanCanonicalId)}`
                       },
                       vision: {
                         label: 'Vision Decompiler',

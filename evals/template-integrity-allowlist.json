@@ -1,4 +1,0 @@
-{
-  "_comment": "Zero allowlisted violations — all 60 master templates pass check_template_integrity.ts cleanly.",
-  "allow": []
-}

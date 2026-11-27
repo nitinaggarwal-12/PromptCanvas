@@ -8,7 +8,7 @@ import { renderMarkdown } from '../../src/lib/compose/renderMd';
 import { renderDocx } from '../../src/lib/compose/renderDocx';
 
 describe('Phase 7: Golden Compose & Evidence Verification', () => {
-  const corpusDir = path.join(__dirname, '../../diagrams/latest');
+  const corpusDir = path.join(__dirname, '../fixtures/compose');
   const evidenceDir = path.join(__dirname, '../../scratch/evidence_compose');
 
   if (!fs.existsSync(evidenceDir)) {

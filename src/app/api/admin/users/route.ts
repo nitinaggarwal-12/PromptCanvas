@@ -59,15 +59,15 @@ export async function PUT(request: Request) {
       field_changed: 'global_role',
       old_value: oldRole,
       new_value: globalRole,
-      summary: `${user.name || user.email} changed global role of ${updatedUser?.name || updatedUser?.email} from "${oldRole}" to "${globalRole}" in Admin UI and synced to Google Sheet [Users!D:D].`,
+      summary: `${user.name || user.email} changed global role of ${updatedUser?.name || updatedUser?.email} from "${oldRole}" to "${globalRole}" in Admin UI.`,
       source: 'UI',
-      sheet_row_ref: 'Users!D:D',
+      sheet_row_ref: null,
     });
 
     return NextResponse.json({
       success: true,
       user: updatedUser,
-      message: `User role updated to ${globalRole} and synced to Changelog & Google Sheet!`,
+      message: `User role updated to ${globalRole} and recorded in Governance Changelog.`,
     });
   } catch (error: unknown) {
     console.error('Error updating user role:', error);
@@ -76,7 +76,7 @@ export async function PUT(request: Request) {
   }
 }
 
-// POST /api/admin/users - Add a new user from Admin UI and sync to Changelog + Google Sheet
+// POST /api/admin/users - Add a new user from Admin UI and record in Governance Changelog
 export async function POST(request: Request) {
   try {
     const user = await getAuthenticatedUser();

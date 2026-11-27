@@ -90,7 +90,6 @@ const NAV_GROUPS: NavGroup[] = [
       { id: 'templates', name: 'Templates', icon: Layers, href: '/templates', badge: '84', badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
       { id: 'infographics', name: 'Infographics', icon: BarChart3, href: '/infographics', badge: '15', badgeColor: 'bg-amber-500/20 text-amber-400 border-amber-500/30' },
       { id: 'library', name: 'Saved Architectures', icon: LayoutGrid, href: '/library', badge: 'SAVED', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
-      { id: 'canonical', name: 'Blueprint Catalog', icon: Network, href: '/canonical', badge: '35' },
     ],
   },
   {
@@ -131,9 +130,6 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
       return true;
     }
     if (targetPath === '/infographics' && pathname.startsWith('/infographics')) {
-      return true;
-    }
-    if (targetPath === '/canonical' && pathname.startsWith('/canonical')) {
       return true;
     }
     if (targetPath === '/blogs' && pathname.startsWith('/blogs')) {

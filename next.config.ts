@@ -85,18 +85,28 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: '/canonical',
+        destination: '/templates',
+        permanent: true,
+      },
+      {
+        source: '/canonical/:id',
+        destination: '/dashboard?template=:id',
+        permanent: true,
+      },
+      {
         source: '/canonical-templates',
-        destination: '/canonical',
+        destination: '/templates',
         permanent: true,
       },
       {
         source: '/blueprints',
-        destination: '/canonical',
+        destination: '/templates',
         permanent: true,
       },
       {
         source: '/gallery',
-        destination: '/canonical',
+        destination: '/templates',
         permanent: true,
       },
       {

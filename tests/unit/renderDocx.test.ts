@@ -8,7 +8,7 @@ import { renderMarkdown } from '../../src/lib/compose/renderMd';
 import { renderDocx } from '../../src/lib/compose/renderDocx';
 
 describe('Phase 5: Docx & Markdown Document Composer', () => {
-  const corpusDir = path.join(__dirname, '../../diagrams/latest');
+  const corpusDir = path.join(__dirname, '../fixtures/compose');
 
   it('renders clean Markdown with provenance summary table and TODO human block', () => {
     const xml = fs.readFileSync(path.join(corpusDir, 'hdc__governance_state_machine__v1.xml'), 'utf8');

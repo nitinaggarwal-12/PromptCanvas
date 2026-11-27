@@ -43,8 +43,7 @@ PROMPTCANVAS_GCS_BUCKET=ramp-portal-dev-promptcanvas-state
 
 ## 📚 Catalog & Studio Surfaces
 
-- **Templates (`/templates`)**: **84 Certified Architecture Templates** (`53` Tier 1 Primary + `31` Tier 2 Restyled across `L200`–`L400`, each with 4K PNG, Vector SVG, and editable Draw.io XML).
-- **Blueprint Catalog (`/canonical`)**: **35 Certified Blueprints** (`#78`, `#99`, `#81`, `#84`, `#00`, `#67`, `#69`, G-Series `#87`, `#89`–`#95`, `#97`, Restored `#03`, `#12`, `#14`, `#29`, and `#52`–`#66`).
+- **Templates (`/templates`)**: **84 Certified Architecture Templates** (`53` Tier 1 Primary + `31` Tier 2 Restyled across `L200`–`L400`, each with 4K PNG, Vector SVG, and editable Draw.io XML; legacy `/canonical` routes `308`-redirect here and to `/dashboard?template=:id`).
 - **Infographics (`/infographics`)**: **15 Executive Infographics** (`#52`–`#66`).
 - **Document Studio (`/docgen`)**: **8 Enterprise Document Archetypes** (`BRD`, `PRD`, `SDD`, `TDD`, `AI System Card`, `STRIDE Threat Model`, `GRC Security Package`, `SRE & Resilience Spec`).
 - **Technical Blog Studio (`/blogs`)**: **9 Architecture Center Guides** (`DOC-MT-01`..`DOC-REF-09`) with inline Draw.io editing and 6-slide native editable Google Slides export (`DiagramInlineSlidesPreviewer.tsx`).

@@ -19,8 +19,6 @@
       }
     ],
     "paths": {
-      "@/lib/architectureTypes": ["./src/lib/architectureTypesCertified.ts"],
-      "@/lib/blueprintKnowledgeMatrix": ["./src/lib/blueprintKnowledgeMatrixCatalog.ts"],
       "@/*": ["./src/*"]
     },
     "types": ["vitest/globals"]

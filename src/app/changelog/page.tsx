@@ -4,26 +4,16 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import {
   History,
-  RefreshCw,
   UserPlus,
   MessageSquarePlus,
   CheckCircle2,
   ArrowRight,
-  FileSpreadsheet,
   Search,
-  Filter,
   Download,
-  Code2,
   ShieldCheck,
   Sparkles,
-  ExternalLink,
   Users,
-  Layers,
-  Clock,
-  ArrowLeftRight,
   Check,
-  Copy,
-  Menu,
   Share2,
 } from 'lucide-react';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -32,7 +22,7 @@ import { useTheme } from '@/lib/themeContext';
 
 interface ChangelogEntry {
   id: string;
-  event_category: 'USER_ADDED' | 'USER_ROLE_CHANGED' | 'COMMENT_ADDED' | 'STATUS_CHANGED' | 'BLUEPRINT_UPDATED' | 'SHEET_SYNC';
+  event_category: 'USER_ADDED' | 'USER_ROLE_CHANGED' | 'COMMENT_ADDED' | 'STATUS_CHANGED' | 'BLUEPRINT_UPDATED';
   actor_id?: string | null;
   actor_name: string;
   actor_email: string;
@@ -44,9 +34,7 @@ interface ChangelogEntry {
   old_value?: string | null;
   new_value?: string | null;
   summary: string;
-  source: 'UI' | 'GOOGLE_SHEET' | 'API';
-  sync_status: 'SYNCED' | 'PENDING_PUSH' | 'PULLED_FROM_SHEET';
-  sheet_row_ref?: string | null;
+  source: string;
   created_at: string;
 }
 
@@ -63,44 +51,7 @@ interface GovernanceTrackerItem {
   comment_author?: string | null;
   version: string;
   last_modified_by: string;
-  last_sync_source: 'UI' | 'GOOGLE_SHEET';
-  sheet_row_number: number;
   updated_at: string;
-}
-
-interface GovernanceComment {
-  id: string;
-  target_id: string;
-  target_name: string;
-  author_name: string;
-  author_email: string;
-  author_role: string;
-  comment_text: string;
-  status_at_comment?: string | null;
-  source: 'UI' | 'GOOGLE_SHEET';
-  sheet_row_ref?: string | null;
-  created_at: string;
-}
-
-interface SheetSyncConfig {
-  id: string;
-  spreadsheet_id: string;
-  spreadsheet_url: string;
-  sheet_title: string;
-  auto_sync_enabled: boolean | number;
-  sync_mode: string;
-  last_synced_at: string | null;
-  last_sync_actor: string | null;
-  total_ui_to_sheet_pushes: number;
-  total_sheet_to_ui_pulls: number;
-}
-
-interface TrackedUser {
-  id: string;
-  email: string;
-  name?: string | null;
-  global_role?: string;
-  created_at?: string;
 }
 
 const STATUS_OPTIONS = [
@@ -112,77 +63,24 @@ const STATUS_OPTIONS = [
   'Deprecated',
 ];
 
-export default function ChangelogAndSheetSyncPage() {
+export default function GovernanceChangelogPage() {
   const { theme } = useTheme();
   const isLight = theme === 'light';
   const [changelog, setChangelog] = useState<ChangelogEntry[]>([]);
   const [trackerItems, setTrackerItems] = useState<GovernanceTrackerItem[]>([]);
-  const [comments, setComments] = useState<GovernanceComment[]>([]);
-  const [users, setUsers] = useState<TrackedUser[]>([]);
-  const [syncConfig, setSyncConfig] = useState<SheetSyncConfig | null>(null);
   const [stats, setStats] = useState({
     totalChanges: 0,
     userChanges: 0,
     commentChanges: 0,
     statusChanges: 0,
-    uiOriginated: 0,
-    sheetOriginated: 0,
   });
-  const [appsScriptCode, setAppsScriptCode] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(true);
   const [syncing, setSyncing] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-  // Filters
   const [categoryFilter, setCategoryFilter] = useState<string>('ALL');
-  const [sourceFilter, setSourceFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
-
-  // Main View Mode: 'unified_changelog' | 'google_sheet_twin' | 'apps_script'
-  const [activeMainTab, setActiveMainTab] = useState<'unified_changelog' | 'google_sheet_twin' | 'apps_script'>('unified_changelog');
-  // Google Sheet Sub-Tab: 'Tracker' | 'Users' | 'Comments' | 'Changelog'
-  const [activeSheetTab, setActiveSheetTab] = useState<'Tracker' | 'Users' | 'Comments' | 'Changelog'>('Tracker');
   const [shareCopied, setShareCopied] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const params = new URLSearchParams(window.location.search);
-    const t = params.get('tab');
-    if (t === 'unified_changelog' || t === 'google_sheet_twin' || t === 'apps_script') {
-      setActiveMainTab(t);
-    }
-    const s = params.get('sheet');
-    if (s === 'Tracker' || s === 'Users' || s === 'Comments' || s === 'Changelog') {
-      setActiveSheetTab(s);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    try {
-      const url = new URL(window.location.href);
-      url.searchParams.set('tab', activeMainTab);
-      if (activeMainTab === 'google_sheet_twin') {
-        url.searchParams.set('sheet', activeSheetTab);
-      } else {
-        url.searchParams.delete('sheet');
-      }
-      window.history.replaceState(null, '', url.toString());
-    } catch {}
-  }, [activeMainTab, activeSheetTab]);
-
-  const handleCopyChangelogShareLink = () => {
-    if (typeof window === 'undefined') return;
-    const qs = new URLSearchParams();
-    qs.set('tab', activeMainTab);
-    if (activeMainTab === 'google_sheet_twin') qs.set('sheet', activeSheetTab);
-    const shareUrl = `${window.location.origin}/changelog?${qs.toString()}`;
-    navigator.clipboard.writeText(shareUrl).catch(() => {});
-    setShareCopied(true);
-    setTimeout(() => setShareCopied(false), 2200);
-  };
-
-  // Quick Mutation Form States (Person-neutral defaults; auto-hydrated from /api/auth/me when signed in)
+  // Person-neutral defaults; auto-hydrated from /api/auth/me when signed in
   const [actorName, setActorName] = useState<string>('Cloud Architecture Team');
   const [actorEmail, setActorEmail] = useState<string>('architecture-governance@cloud-review.internal');
 
@@ -200,14 +98,6 @@ export default function ChangelogAndSheetSyncPage() {
   const [newUserEmail, setNewUserEmail] = useState<string>('');
   const [newUserRole, setNewUserRole] = useState<'Super-Admin' | 'Author' | 'Member'>('Author');
 
-  // Google Sheet Inline Edits State (for 2-Way Google Sheet -> UI sync verification)
-  const [sheetDraftEdits, setSheetDraftEdits] = useState<Record<string, { status: string; latest_comment: string }>>({});
-  const [sheetNewUserRow, setSheetNewUserRow] = useState({ name: '', email: '', role: 'Author' as 'Super-Admin' | 'Author' | 'Member' });
-  const [sheetEditorName, setSheetEditorName] = useState<string>('Cloud Architecture Review Board');
-  const [sheetEditorEmail, setSheetEditorEmail] = useState<string>('architecture-governance@cloud-review.internal');
-  const [sheetUrlInput, setSheetUrlInput] = useState<string>('');
-  const [copiedScript, setCopiedScript] = useState<boolean>(false);
-
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => {
@@ -215,52 +105,34 @@ export default function ChangelogAndSheetSyncPage() {
     }, 4500);
   };
 
+  const handleCopyChangelogShareLink = () => {
+    if (typeof window === 'undefined') return;
+    const shareUrl = `${window.location.origin}/changelog`;
+    navigator.clipboard.writeText(shareUrl).catch(() => {});
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 2200);
+  };
+
   const fetchChangelogData = useCallback(async () => {
     try {
       const params = new URLSearchParams();
       if (categoryFilter !== 'ALL') params.set('category', categoryFilter);
-      if (sourceFilter !== 'ALL') params.set('source', sourceFilter);
       if (searchQuery.trim()) params.set('search', searchQuery.trim());
 
-      const [res, sheetRes] = await Promise.all([
-        fetch(`/api/changelog?${params.toString()}`),
-        fetch('/api/changelog/sheet-sync'),
-      ]);
+      const res = await fetch(`/api/changelog?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
         setChangelog(data.changelog || []);
         setTrackerItems(data.trackerItems || []);
-        setComments(data.comments || []);
-        setUsers(data.users || []);
-        setSyncConfig(data.syncConfig || null);
-        if (data.syncConfig?.spreadsheet_url && !sheetUrlInput) {
-          setSheetUrlInput(data.syncConfig.spreadsheet_url);
-        }
         if (data.stats) setStats(data.stats);
-
-        // Initialize sheetDraftEdits from trackerItems
-        const drafts: Record<string, { status: string; latest_comment: string }> = {};
-        for (const item of data.trackerItems || []) {
-          drafts[item.blueprint_code] = {
-            status: item.status,
-            latest_comment: item.latest_comment || '',
-          };
-        }
-        setSheetDraftEdits(drafts);
-      }
-      if (sheetRes.ok) {
-        const sData = await sheetRes.json();
-        if (sData.appsScriptCode) setAppsScriptCode(sData.appsScriptCode);
       }
     } catch (err) {
       console.error('Failed to load changelog data:', err);
-    } finally {
-      setLoading(false);
     }
-  }, [categoryFilter, sourceFilter, searchQuery, sheetUrlInput]);
+  }, [categoryFilter, searchQuery]);
 
   useEffect(() => {
-    fetchChangelogData();
+    void fetchChangelogData();
   }, [fetchChangelogData]);
 
   useEffect(() => {
@@ -295,7 +167,7 @@ export default function ChangelogAndSheetSyncPage() {
       const data = await res.json();
       if (res.ok) {
         setStatusCommentVal('');
-        showToast(`Status of ${selectedBpForStatus} updated to "${newStatusVal}" in UI & synced to Google Sheet!`);
+        showToast(`Status of ${selectedBpForStatus} updated to "${newStatusVal}" in audit ledger.`);
         await fetchChangelogData();
       } else {
         showToast(data.error || 'Failed to update status.');
@@ -325,7 +197,7 @@ export default function ChangelogAndSheetSyncPage() {
       const data = await res.json();
       if (res.ok) {
         setCommentTextVal('');
-        showToast(`Comment added to ${selectedBpForComment} in UI & synced to Google Sheet!`);
+        showToast(`Review comment recorded on ${selectedBpForComment}.`);
         await fetchChangelogData();
       } else {
         showToast(data.error || 'Failed to add comment.');
@@ -358,78 +230,10 @@ export default function ChangelogAndSheetSyncPage() {
         const addedLabel = newUserName.trim();
         setNewUserName('');
         setNewUserEmail('');
-        showToast(`User "${addedLabel}" (${newUserRole}) recorded in UI & synced to Google Sheet [Users tab]!`);
+        showToast(`User "${addedLabel}" (${newUserRole}) recorded in governance RBAC directory.`);
         await fetchChangelogData();
       } else {
         showToast(data.error || 'Failed to add user.');
-      }
-    } finally {
-      setSyncing(false);
-    }
-  };
-
-  const handleTwoWaySheetSync = async (fromSheetGrid = false) => {
-    setSyncing(true);
-    try {
-      const trackerEdits = fromSheetGrid
-        ? Object.entries(sheetDraftEdits).map(([blueprint_code, vals]) => ({
-            blueprint_code,
-            status: vals.status,
-            latest_comment: vals.latest_comment,
-          }))
-        : [];
-
-      const addedUsers =
-        fromSheetGrid && sheetNewUserRow.name.trim() && sheetNewUserRow.email.trim()
-          ? [
-              {
-                name: sheetNewUserRow.name.trim(),
-                email: sheetNewUserRow.email.trim(),
-                role: sheetNewUserRow.role,
-              },
-            ]
-          : [];
-
-      const res = await fetch('/api/changelog/sheet-sync', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          actorName: fromSheetGrid ? sheetEditorName : actorName,
-          actorEmail: fromSheetGrid ? sheetEditorEmail : actorEmail,
-          sheetEdits: {
-            trackerEdits,
-            addedUsers,
-          },
-        }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        if (addedUsers.length > 0) {
-          setSheetNewUserRow({ name: '', email: '', role: 'Author' });
-        }
-        showToast(data.message || '2-Way Google Sheet Sync completed!');
-        await fetchChangelogData();
-      }
-    } finally {
-      setSyncing(false);
-    }
-  };
-
-  const handleSaveSheetUrl = async () => {
-    if (!sheetUrlInput.trim()) return;
-    setSyncing(true);
-    try {
-      const res = await fetch('/api/changelog', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'UPDATE_SHEET_CONFIG',
-          spreadsheet_url: sheetUrlInput.trim(),
-        }),
-      });
-      if (res.ok) {
-        showToast('Connected Google Sheet URL updated & 2-way sync bound!');
-        await fetchChangelogData();
       }
     } finally {
       setSyncing(false);
@@ -471,29 +275,11 @@ export default function ChangelogAndSheetSyncPage() {
     }
   };
 
-  const getStatusBadgeClass = (status: string) => {
-    switch (status) {
-      case 'Production Certified':
-        return 'bg-emerald-50 text-emerald-700 border-emerald-300';
-      case 'Approved':
-        return 'bg-sky-50 text-sky-700 border-sky-300';
-      case 'In Review':
-        return 'bg-amber-50 text-amber-800 border-amber-300';
-      case 'Needs Revision':
-        return 'bg-rose-50 text-rose-700 border-rose-300';
-      default:
-        return 'bg-slate-100 text-slate-700 border-slate-300';
-    }
-  };
-
   return (
     <div className="min-h-screen flex bg-[#F8FAFC] text-slate-900">
-      {/* Dark Left Navigation Shell */}
       <UnifiedAppSidebar />
 
-      {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Application Top Header (Rule 58 Universal Feedback Header via AppHeader) */}
         <AppHeader>
           <div className="w-full max-w-none flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 min-w-0">
@@ -540,7 +326,7 @@ export default function ChangelogAndSheetSyncPage() {
                 )}
               </button>
               <a
-                href="/api/changelog/sheet-sync?format=csv"
+                href="/api/changelog?format=csv"
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
                   isLight ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300' : 'bg-slate-800 hover:bg-slate-700 text-slate-100 border-slate-700'
                 }`}
@@ -568,9 +354,8 @@ export default function ChangelogAndSheetSyncPage() {
           </div>
         </AppHeader>
 
-        {/* Workspace Container (Strictly Light Mode, Full Width w-full max-w-none) */}
         <main className="w-full max-w-none px-6 md:px-10 py-6 space-y-6">
-          {/* KPI Telemetry Strip (Real DB Counts — Zero Simulated Sheet Counters) */}
+          {/* KPI Telemetry Strip */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
               <div className="text-xs font-bold uppercase tracking-wider text-slate-500">Total Audited Changes</div>
@@ -612,21 +397,20 @@ export default function ChangelogAndSheetSyncPage() {
                 value={actorName}
                 onChange={(e) => setActorName(e.target.value)}
                 className="px-2.5 py-1 rounded-md border border-slate-300 bg-white text-slate-900 font-semibold w-36"
-                placeholder="Your Name"
+                placeholder="Actor Name"
               />
               <input
                 type="email"
                 value={actorEmail}
                 onChange={(e) => setActorEmail(e.target.value)}
                 className="px-2.5 py-1 rounded-md border border-slate-300 bg-white text-slate-700 w-52"
-                placeholder="your.email@domain.com"
+                placeholder="actor@domain.com"
               />
             </div>
           </div>
 
-          {/* Quick Live Action Cards: 1) Change Status, 2) Add Comment, 3) Add User / Change Role */}
+          {/* Quick Live Action Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            {/* Card 1: Change Blueprint Status */}
             <form onSubmit={handleUiStatusChange} className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between space-y-3">
               <div>
                 <div className="flex items-center justify-between">
@@ -684,7 +468,6 @@ export default function ChangelogAndSheetSyncPage() {
               </button>
             </form>
 
-            {/* Card 2: Add Architecture Comment */}
             <form onSubmit={handleUiAddComment} className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between space-y-3">
               <div>
                 <div className="flex items-center justify-between">
@@ -727,7 +510,6 @@ export default function ChangelogAndSheetSyncPage() {
               </button>
             </form>
 
-            {/* Card 3: Add User or Change User Role */}
             <form onSubmit={handleUiAddUser} className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between space-y-3">
               <div>
                 <div className="flex items-center justify-between">
@@ -782,7 +564,7 @@ export default function ChangelogAndSheetSyncPage() {
             </form>
           </div>
 
-          {/* Unified Audit Changelog Table (Simulated Sheet Twin & Apps Script Tabs Purged) */}
+          {/* Unified Audit Changelog Table */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
             <div className="border-b border-slate-200 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 bg-slate-50/70">
               <div className="flex items-center gap-2">
@@ -792,136 +574,108 @@ export default function ChangelogAndSheetSyncPage() {
                 </span>
               </div>
 
-              {activeMainTab === 'unified_changelog' && (
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <div className="relative">
-                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search actor, blueprint, value, cell..."
-                      className="pl-8 pr-3 py-1.5 rounded-lg border border-slate-300 text-xs text-slate-900 bg-white w-56"
-                    />
-                  </div>
-
-                  <select
-                    value={categoryFilter}
-                    onChange={(e) => setCategoryFilter(e.target.value)}
-                    className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-800 bg-white"
-                  >
-                    <option value="ALL">All Categories</option>
-                    <option value="USER_ADDED">Users Added</option>
-                    <option value="USER_ROLE_CHANGED">User Roles Changed</option>
-                    <option value="COMMENT_ADDED">Comments Added</option>
-                    <option value="STATUS_CHANGED">Status Changes</option>
-                  </select>
-
-                  <select
-                    value={sourceFilter}
-                    onChange={(e) => setSourceFilter(e.target.value)}
-                    className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-800 bg-white"
-                  >
-                    <option value="ALL">All Sources (UI + Google Sheet)</option>
-                    <option value="UI">Origin: PromptCanvas UI</option>
-                    <option value="GOOGLE_SHEET">Origin: Google Sheet</option>
-                  </select>
+              <div className="flex flex-wrap items-center gap-2.5">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search actor, blueprint, value..."
+                    className="pl-8 pr-3 py-1.5 rounded-lg border border-slate-300 text-xs text-slate-900 bg-white w-56"
+                  />
                 </div>
-              )}
+
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-800 bg-white"
+                >
+                  <option value="ALL">All Categories</option>
+                  <option value="USER_ADDED">Users Added</option>
+                  <option value="USER_ROLE_CHANGED">User Roles Changed</option>
+                  <option value="COMMENT_ADDED">Comments Added</option>
+                  <option value="STATUS_CHANGED">Status Changes</option>
+                </select>
+              </div>
             </div>
 
-            {/* TAB 1: UNIFIED AUDIT CHANGELOG TABLE */}
-            {activeMainTab === 'unified_changelog' && (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-slate-100/80 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-600">
-                      <th className="py-3.5 px-5">When &amp; Sync Origin</th>
-                      <th className="py-3.5 px-5">Who Changed It (Actor)</th>
-                      <th className="py-3.5 px-5">Change Category</th>
-                      <th className="py-3.5 px-5">Target Entity</th>
-                      <th className="py-3.5 px-5">What Changed (Before → After)</th>
-                      <th className="py-3.5 px-5">Google Sheet Cell &amp; Summary</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200 text-xs md:text-sm">
-                    {changelog.map((entry) => (
-                      <tr key={entry.id} className="hover:bg-slate-50/90 transition">
-                        <td className="py-4 px-5 whitespace-nowrap align-top">
-                          <div className="font-semibold text-slate-900">
-                            {new Date(entry.created_at).toLocaleString()}
-                          </div>
-                          <div className="mt-1">
-                            {entry.source === 'GOOGLE_SHEET' ? (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-teal-50 text-teal-800 border border-teal-200">
-                                <FileSpreadsheet className="w-3 h-3 text-teal-600" />
-                                Edited in Google Sheet → UI
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-indigo-50 text-indigo-800 border border-indigo-200">
-                                <Sparkles className="w-3 h-3 text-indigo-600" />
-                                Edited in UI → Synced to Sheet
-                              </span>
-                            )}
-                          </div>
-                        </td>
-
-                        <td className="py-4 px-5 align-top">
-                          <div className="font-bold text-slate-900">{entry.actor_name}</div>
-                          <div className="text-xs text-slate-500">{entry.actor_email}</div>
-                          <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-100 text-slate-700 border border-slate-200">
-                            {entry.actor_role}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-100/80 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                    <th className="py-3.5 px-5">Recorded At</th>
+                    <th className="py-3.5 px-5">Actor</th>
+                    <th className="py-3.5 px-5">Change Category</th>
+                    <th className="py-3.5 px-5">Target Entity</th>
+                    <th className="py-3.5 px-5">Before → After</th>
+                    <th className="py-3.5 px-5">Audit Summary</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200 text-xs md:text-sm">
+                  {changelog.map((entry) => (
+                    <tr key={entry.id} className="hover:bg-slate-50/90 transition">
+                      <td className="py-4 px-5 whitespace-nowrap align-top">
+                        <div className="font-semibold text-slate-900">
+                          {new Date(entry.created_at).toLocaleString()}
+                        </div>
+                        <div className="mt-1">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-indigo-50 text-indigo-800 border border-indigo-200">
+                            <Sparkles className="w-3 h-3 text-indigo-600" />
+                            PromptCanvas UI
                           </span>
-                        </td>
+                        </div>
+                      </td>
 
-                        <td className="py-4 px-5 align-top whitespace-nowrap">
-                          {getCategoryBadge(entry.event_category)}
-                        </td>
+                      <td className="py-4 px-5 align-top">
+                        <div className="font-bold text-slate-900">{entry.actor_name}</div>
+                        <div className="text-xs text-slate-500">{entry.actor_email}</div>
+                        <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-100 text-slate-700 border border-slate-200">
+                          {entry.actor_role}
+                        </span>
+                      </td>
 
-                        <td className="py-4 px-5 align-top">
-                          <div className="font-bold text-slate-900">{entry.entity_name}</div>
-                          <div className="text-xs text-slate-500">
-                            Type: <span className="font-semibold text-slate-700">{entry.entity_type}</span> • Field:{' '}
-                            <code className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-800 font-mono text-[11px]">
-                              {entry.field_changed}
-                            </code>
-                          </div>
-                        </td>
+                      <td className="py-4 px-5 align-top whitespace-nowrap">
+                        {getCategoryBadge(entry.event_category)}
+                      </td>
 
-                        <td className="py-4 px-5 align-top max-w-md">
-                          <div className="flex flex-wrap items-center gap-2">
-                            {entry.old_value && entry.old_value !== 'None' ? (
-                              <span className="px-2.5 py-1 rounded-md text-xs font-medium bg-rose-50 text-rose-800 border border-rose-200 line-through">
-                                {entry.old_value}
-                              </span>
-                            ) : (
-                              <span className="px-2 py-0.5 rounded text-xs text-slate-400 italic">None</span>
-                            )}
-                            <ArrowRight className="w-4 h-4 text-slate-400 shrink-0" />
-                            <span className="px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-50 text-emerald-900 border border-emerald-300">
-                              {entry.new_value}
+                      <td className="py-4 px-5 align-top">
+                        <div className="font-bold text-slate-900">{entry.entity_name}</div>
+                        <div className="text-xs text-slate-500">
+                          Type: <span className="font-semibold text-slate-700">{entry.entity_type}</span> • Field:{' '}
+                          <code className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-800 font-mono text-[11px]">
+                            {entry.field_changed}
+                          </code>
+                        </div>
+                      </td>
+
+                      <td className="py-4 px-5 align-top max-w-md">
+                        <div className="flex flex-wrap items-center gap-2">
+                          {entry.old_value && entry.old_value !== 'None' ? (
+                            <span className="px-2.5 py-1 rounded-md text-xs font-medium bg-rose-50 text-rose-800 border border-rose-200 line-through">
+                              {entry.old_value}
                             </span>
-                          </div>
-                        </td>
-
-                        <td className="py-4 px-5 align-top max-w-md">
-                          {entry.sheet_row_ref && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 mb-1">
-                              <FileSpreadsheet className="w-3 h-3" /> {entry.sheet_row_ref}
-                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded text-xs text-slate-400 italic">None</span>
                           )}
-                          <p className="text-xs text-slate-700 leading-relaxed">{entry.summary}</p>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                          <ArrowRight className="w-4 h-4 text-slate-400 shrink-0" />
+                          <span className="px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-50 text-emerald-900 border border-emerald-300">
+                            {entry.new_value}
+                          </span>
+                        </div>
+                      </td>
+
+                      <td className="py-4 px-5 align-top max-w-md">
+                        <p className="text-xs text-slate-700 leading-relaxed">{entry.summary}</p>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </main>
 
-        {/* Compact Non-Blocking Bottom-Right Toast */}
         {toastMessage && (
           <div className="fixed bottom-4 right-4 z-50 max-w-sm sm:max-w-[420px] p-3.5 rounded-xl bg-slate-900 text-white border border-emerald-500/40 shadow-xl flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 text-xs font-semibold">
@@ -929,6 +683,7 @@ export default function ChangelogAndSheetSyncPage() {
               <span>{toastMessage}</span>
             </div>
             <button
+              type="button"
               onClick={() => setToastMessage(null)}
               className="text-slate-400 hover:text-white text-xs font-bold px-1.5"
               aria-label="Dismiss notification"
