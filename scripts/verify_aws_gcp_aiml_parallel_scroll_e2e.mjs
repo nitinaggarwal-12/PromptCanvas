@@ -42,12 +42,12 @@ async function run() {
     }
 
     // Wait until pipeline finishes (up to 90s)
-    console.log('Waiting for parallel Branch A (Nano Banana) & Branch B (Vector + Pro Judge) to complete...');
+    console.log('Waiting for parallel Branch A (Reference Poster) & Branch B (Vector + Pro Judge) to complete...');
     await page.waitForFunction(
       () => {
         const pctEl = document.querySelector('[data-testid="pipeline-progress-pct"]');
         const scorecard = document.querySelector('[data-testid="cross-model-judge-scorecard"]');
-        const img = document.querySelector('[data-testid="nano-banana-generated-image"]');
+        const img = document.querySelector('[data-testid="reference-poster-generated-image"]');
         return (
           pctEl &&
           pctEl.textContent &&

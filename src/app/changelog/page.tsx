@@ -508,14 +508,8 @@ export default function ChangelogAndSheetSyncPage() {
                 </Link>
                 <span className={isLight ? 'text-slate-400' : 'text-slate-600'}>/</span>
                 <span className={`font-bold flex items-center gap-1.5 truncate ${isLight ? 'text-indigo-700' : 'text-indigo-400'}`}>
-                  <ArrowLeftRight className="w-4 h-4 shrink-0" />
-                  <span className="inline-block max-w-full truncate">Governance Changelog &amp; 2-Way Sheet Sync</span>
-                </span>
-                <span className={`hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold border shrink-0 ${
-                  isLight ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                }`}>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  2-WAY LIVE SYNC ACTIVE
+                  <History className="w-4 h-4 shrink-0" />
+                  <span className="inline-block max-w-full truncate">Governance Changelog &amp; Audit Ledger</span>
                 </span>
               </div>
             </div>
@@ -552,16 +546,8 @@ export default function ChangelogAndSheetSyncPage() {
                 }`}
               >
                 <Download className={`w-3.5 h-3.5 ${isLight ? 'text-emerald-600' : 'text-emerald-400'}`} />
-                <span>Export Sheet (.CSV)</span>
+                <span>Export CSV</span>
               </a>
-              <button
-                onClick={() => handleTwoWaySheetSync(false)}
-                disabled={syncing}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition cursor-pointer disabled:opacity-50"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} />
-                <span>{syncing ? 'Syncing UI ⇄ Sheet...' : 'Sync Now (2-Way UI ⇄ Sheet)'}</span>
-              </button>
               <Link
                 href="/admin"
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
@@ -584,13 +570,13 @@ export default function ChangelogAndSheetSyncPage() {
 
         {/* Workspace Container (Strictly Light Mode, Full Width w-full max-w-none) */}
         <main className="w-full max-w-none px-6 md:px-10 py-6 space-y-6">
-          {/* KPI Telemetry Strip */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {/* KPI Telemetry Strip (Real DB Counts — Zero Simulated Sheet Counters) */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
               <div className="text-xs font-bold uppercase tracking-wider text-slate-500">Total Audited Changes</div>
               <div className="text-3xl font-extrabold text-slate-900 mt-1">{stats.totalChanges}</div>
               <div className="text-xs text-slate-600 mt-1 flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> 100% Attributed
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Actor-Attributed Ledger
               </div>
             </div>
 
@@ -603,56 +589,20 @@ export default function ChangelogAndSheetSyncPage() {
             <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
               <div className="text-xs font-bold uppercase tracking-wider text-sky-700">Comments Logged</div>
               <div className="text-3xl font-extrabold text-slate-900 mt-1">{stats.commentChanges}</div>
-              <div className="text-xs text-slate-600 mt-1">UI &amp; Sheet inline notes</div>
+              <div className="text-xs text-slate-600 mt-1">Blueprint review notes</div>
             </div>
 
             <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
               <div className="text-xs font-bold uppercase tracking-wider text-amber-700">Status Transitions</div>
               <div className="text-3xl font-extrabold text-slate-900 mt-1">{stats.statusChanges}</div>
-              <div className="text-xs text-slate-600 mt-1">Draft → Review → Certified</div>
-            </div>
-
-            <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
-              <div className="text-xs font-bold uppercase tracking-wider text-indigo-700">UI → Sheet Pushes</div>
-              <div className="text-3xl font-extrabold text-slate-900 mt-1">
-                {syncConfig?.total_ui_to_sheet_pushes ?? stats.uiOriginated}
-              </div>
-              <div className="text-xs text-slate-600 mt-1">Real-time outbound sync</div>
-            </div>
-
-            <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
-              <div className="text-xs font-bold uppercase tracking-wider text-teal-700">Google Sheet → UI Pulls</div>
-              <div className="text-3xl font-extrabold text-slate-900 mt-1">
-                {syncConfig?.total_sheet_to_ui_pulls ?? stats.sheetOriginated}
-              </div>
-              <div className="text-xs text-slate-600 mt-1">Inbound sheet cell diffs</div>
+              <div className="text-xs text-slate-600 mt-1">Draft → Review → Approved</div>
             </div>
           </div>
 
-          {/* Connected Google Sheet Status & Actor Identity Bar */}
+          {/* Actor Identity Bar */}
           <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs flex flex-wrap items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-3 flex-1 min-w-[300px]">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold">
-                <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
-                Connected Google Sheet:
-              </div>
-              <input
-                type="text"
-                value={sheetUrlInput}
-                onChange={(e) => setSheetUrlInput(e.target.value)}
-                placeholder="https://docs.google.com/spreadsheets/d/..."
-                className="flex-1 min-w-[260px] px-3 py-1.5 rounded-lg border border-slate-300 text-xs md:text-sm text-slate-800 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-              <button
-                onClick={handleSaveSheetUrl}
-                className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white transition cursor-pointer"
-              >
-                Bind Sheet URL
-              </button>
-              <div className="text-xs text-slate-500 flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-slate-400" />
-                Last synced by <span className="font-semibold text-slate-700">{syncConfig?.last_sync_actor || 'Auto-Sync Engine'}</span>
-              </div>
+            <div className="text-xs text-slate-600">
+              All governance status transitions, review comments, and role updates are persisted in the PromptCanvas database and exportable via CSV.
             </div>
 
             <div className="flex items-center gap-2 text-xs">
@@ -681,9 +631,9 @@ export default function ChangelogAndSheetSyncPage() {
               <div>
                 <div className="flex items-center justify-between">
                   <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-700">
-                    <CheckCircle2 className="w-4 h-4" /> 1. Record Status Change (UI ⇄ Sheet)
+                    <CheckCircle2 className="w-4 h-4" /> 1. Record Status Change
                   </span>
-                  <span className="text-[11px] font-semibold text-slate-400">Syncs to Tracker!E:E</span>
+                  <span className="text-[11px] font-semibold text-slate-400">Audit Ledger</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2.5 mt-3">
                   <div>
@@ -730,7 +680,7 @@ export default function ChangelogAndSheetSyncPage() {
                 disabled={syncing}
                 className="w-full py-2 px-4 rounded-lg text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white transition cursor-pointer"
               >
-                Update Status &amp; Sync to Sheet
+                Update Status
               </button>
             </form>
 
@@ -739,9 +689,9 @@ export default function ChangelogAndSheetSyncPage() {
               <div>
                 <div className="flex items-center justify-between">
                   <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-sky-700">
-                    <MessageSquarePlus className="w-4 h-4" /> 2. Add Review Comment (UI ⇄ Sheet)
+                    <MessageSquarePlus className="w-4 h-4" /> 2. Add Review Comment
                   </span>
-                  <span className="text-[11px] font-semibold text-slate-400">Syncs to Comments!A:G</span>
+                  <span className="text-[11px] font-semibold text-slate-400">Review Notes</span>
                 </div>
                 <div className="mt-3">
                   <label className="block text-xs font-semibold text-slate-600 mb-1">Target Blueprint</label>
@@ -773,7 +723,7 @@ export default function ChangelogAndSheetSyncPage() {
                 disabled={syncing}
                 className="w-full py-2 px-4 rounded-lg text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white transition cursor-pointer"
               >
-                Post Comment &amp; Sync to Sheet
+                Post Review Comment
               </button>
             </form>
 
@@ -782,9 +732,9 @@ export default function ChangelogAndSheetSyncPage() {
               <div>
                 <div className="flex items-center justify-between">
                   <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-700">
-                    <UserPlus className="w-4 h-4" /> 3. Add User / Role Change (UI ⇄ Sheet)
+                    <UserPlus className="w-4 h-4" /> 3. Add User / Role Change
                   </span>
-                  <span className="text-[11px] font-semibold text-slate-400">Syncs to Users!A:F</span>
+                  <span className="text-[11px] font-semibold text-slate-400">RBAC Directory</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2.5 mt-3">
                   <div>
@@ -827,48 +777,19 @@ export default function ChangelogAndSheetSyncPage() {
                 disabled={syncing}
                 className="w-full py-2 px-4 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition cursor-pointer"
               >
-                Add / Update User &amp; Sync to Sheet
+                Add / Update User
               </button>
             </form>
           </div>
 
-          {/* Primary Navigation Tabs: Unified Changelog Table vs Interactive 2-Way Google Sheet Twin vs Apps Script Webhook */}
+          {/* Unified Audit Changelog Table (Simulated Sheet Twin & Apps Script Tabs Purged) */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
             <div className="border-b border-slate-200 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 bg-slate-50/70">
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setActiveMainTab('unified_changelog')}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition cursor-pointer ${
-                    activeMainTab === 'unified_changelog'
-                      ? 'bg-slate-900 text-white shadow-xs'
-                      : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
-                  }`}
-                >
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs md:text-sm font-bold bg-slate-900 text-white shadow-xs">
                   <History className="w-4 h-4" />
                   Unified Audit Changelog ({changelog.length})
-                </button>
-                <button
-                  onClick={() => setActiveMainTab('google_sheet_twin')}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition cursor-pointer ${
-                    activeMainTab === 'google_sheet_twin'
-                      ? 'bg-emerald-700 text-white shadow-xs'
-                      : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
-                  }`}
-                >
-                  <FileSpreadsheet className="w-4 h-4" />
-                  Interactive 2-Way Google Sheet Twin (4 Synchronized Tabs)
-                </button>
-                <button
-                  onClick={() => setActiveMainTab('apps_script')}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition cursor-pointer ${
-                    activeMainTab === 'apps_script'
-                      ? 'bg-indigo-700 text-white shadow-xs'
-                      : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
-                  }`}
-                >
-                  <Code2 className="w-4 h-4" />
-                  Google Apps Script 2-Way Connector
-                </button>
+                </span>
               </div>
 
               {activeMainTab === 'unified_changelog' && (
@@ -995,357 +916,6 @@ export default function ChangelogAndSheetSyncPage() {
                     ))}
                   </tbody>
                 </table>
-              </div>
-            )}
-
-            {/* TAB 2: INTERACTIVE 2-WAY GOOGLE SHEET TWIN */}
-            {activeMainTab === 'google_sheet_twin' && (
-              <div className="p-6 space-y-5">
-                {/* Google Sheet Toolbar */}
-                <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <FileSpreadsheet className="w-5 h-5 text-emerald-700" />
-                      <h3 className="text-base font-bold text-slate-900">
-                        {syncConfig?.sheet_title || 'PromptCanvas — Master Architecture Governance & Changelog (2-Way Synced)'}
-                      </h3>
-                    </div>
-                    <p className="text-xs text-slate-600 mt-1">
-                      Edit any cell in the <strong>Tracker</strong> or <strong>Users</strong> sheet tab below and click{' '}
-                      <strong>&ldquo;Commit Google Sheet Edits → Sync to UI&rdquo;</strong> to test real-time Sheet → UI synchronization.
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    <div className="flex items-center gap-1.5 text-xs">
-                      <span className="font-bold text-slate-700">Sheet Editor:</span>
-                      <input
-                        type="text"
-                        value={sheetEditorName}
-                        onChange={(e) => setSheetEditorName(e.target.value)}
-                        className="px-2.5 py-1 rounded border border-emerald-300 bg-white text-slate-900 font-semibold w-36"
-                      />
-                    </div>
-                    <button
-                      onClick={() => handleTwoWaySheetSync(true)}
-                      disabled={syncing}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold bg-emerald-700 hover:bg-emerald-600 text-white shadow-xs transition cursor-pointer"
-                    >
-                      <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
-                      Commit Google Sheet Edits → Sync to UI
-                    </button>
-                  </div>
-                </div>
-
-                {/* Sheet Bottom-Style Tab Selector */}
-                <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
-                  {(['Tracker', 'Users', 'Comments', 'Changelog'] as const).map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveSheetTab(tab)}
-                      className={`px-4 py-2 rounded-t-lg text-xs font-bold border-b-2 transition cursor-pointer ${
-                        activeSheetTab === tab
-                          ? 'bg-emerald-50 text-emerald-800 border-emerald-600'
-                          : 'bg-slate-100 text-slate-600 border-transparent hover:bg-slate-200'
-                      }`}
-                    >
-                      Sheet Tab: {tab}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Sheet Sub-Tab 1: Tracker */}
-                {activeSheetTab === 'Tracker' && (
-                  <div className="overflow-x-auto border border-slate-300 rounded-lg">
-                    <table className="w-full text-left border-collapse text-xs">
-                      <thead>
-                        <tr className="bg-slate-200 text-slate-700 font-mono text-[11px] border-b border-slate-300">
-                          <th className="py-1.5 px-3 border-r border-slate-300 w-10 text-center">#</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">A • Blueprint Code</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">B • Blueprint Name</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">C • Layer</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">D • Status (Editable in Sheet)</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">E • Owner</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">F • Latest Review Comment (Editable in Sheet)</th>
-                          <th className="py-1.5 px-3">G • Last Modified By</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-200 bg-white">
-                        {trackerItems.map((item) => {
-                          const draft = sheetDraftEdits[item.blueprint_code] || {
-                            status: item.status,
-                            latest_comment: item.latest_comment || '',
-                          };
-                          return (
-                            <tr key={item.id} className="hover:bg-emerald-50/30">
-                              <td className="py-2.5 px-3 border-r border-slate-200 bg-slate-100 font-mono text-center font-bold text-slate-500">
-                                {item.sheet_row_number}
-                              </td>
-                              <td className="py-2.5 px-3 border-r border-slate-200 font-mono font-bold text-slate-900">
-                                {item.blueprint_code}
-                              </td>
-                              <td className="py-2.5 px-3 border-r border-slate-200 font-semibold text-slate-900">
-                                {item.blueprint_name}
-                              </td>
-                              <td className="py-2.5 px-3 border-r border-slate-200 text-slate-600">
-                                {item.domain_layer}
-                              </td>
-                              <td className="py-2 px-3 border-r border-slate-200">
-                                <select
-                                  value={draft.status}
-                                  onChange={(e) =>
-                                    setSheetDraftEdits((prev) => ({
-                                      ...prev,
-                                      [item.blueprint_code]: {
-                                        ...draft,
-                                        status: e.target.value,
-                                      },
-                                    }))
-                                  }
-                                  className={`px-2.5 py-1 rounded border text-xs font-bold ${getStatusBadgeClass(draft.status)}`}
-                                >
-                                  {STATUS_OPTIONS.map((st) => (
-                                    <option key={st} value={st}>
-                                      {st}
-                                    </option>
-                                  ))}
-                                </select>
-                              </td>
-                              <td className="py-2.5 px-3 border-r border-slate-200">
-                                <div className="font-semibold text-slate-800">{item.owner_name}</div>
-                                <div className="text-[11px] text-slate-500">{item.owner_email}</div>
-                              </td>
-                              <td className="py-2 px-3 border-r border-slate-200 min-w-[280px]">
-                                <input
-                                  type="text"
-                                  value={draft.latest_comment}
-                                  onChange={(e) =>
-                                    setSheetDraftEdits((prev) => ({
-                                      ...prev,
-                                      [item.blueprint_code]: {
-                                        ...draft,
-                                        latest_comment: e.target.value,
-                                      },
-                                    }))
-                                  }
-                                  className="w-full px-2.5 py-1 rounded border border-slate-300 text-xs text-slate-900 bg-white focus:ring-2 focus:ring-emerald-500"
-                                />
-                              </td>
-                              <td className="py-2.5 px-3 text-slate-600 font-medium">
-                                {item.last_modified_by}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
-                {/* Sheet Sub-Tab 2: Users */}
-                {activeSheetTab === 'Users' && (
-                  <div className="space-y-4">
-                    <div className="overflow-x-auto border border-slate-300 rounded-lg">
-                      <table className="w-full text-left border-collapse text-xs">
-                        <thead>
-                          <tr className="bg-slate-200 text-slate-700 font-mono text-[11px] border-b border-slate-300">
-                            <th className="py-1.5 px-3 border-r border-slate-300 w-10 text-center">#</th>
-                            <th className="py-1.5 px-3 border-r border-slate-300">A • Full Name</th>
-                            <th className="py-1.5 px-3 border-r border-slate-300">B • Email Address</th>
-                            <th className="py-1.5 px-3 border-r border-slate-300">C • Global Role</th>
-                            <th className="py-1.5 px-3">D • Provisioned Timestamp</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-200 bg-white">
-                          {users.map((u, idx) => (
-                            <tr key={u.id} className="hover:bg-emerald-50/30">
-                              <td className="py-2 px-3 border-r border-slate-200 bg-slate-100 font-mono text-center font-bold text-slate-500">
-                                {idx + 2}
-                              </td>
-                              <td className="py-2 px-3 border-r border-slate-200 font-bold text-slate-900">
-                                {u.name || 'Enterprise User'}
-                              </td>
-                              <td className="py-2 px-3 border-r border-slate-200 font-mono text-slate-700">
-                                {u.email}
-                              </td>
-                              <td className="py-2 px-3 border-r border-slate-200">
-                                <span className="px-2 py-0.5 rounded text-xs font-bold bg-indigo-50 text-indigo-800 border border-indigo-200">
-                                  {u.global_role || 'Author'}
-                                </span>
-                              </td>
-                              <td className="py-2 px-3 text-slate-500">
-                                {u.created_at ? new Date(u.created_at).toLocaleString() : 'Synced'}
-                              </td>
-                            </tr>
-                          ))}
-                          {/* New Row in Google Sheet to add a user directly from the Sheet */}
-                          <tr className="bg-emerald-50/50">
-                            <td className="py-2 px-3 border-r border-slate-200 font-mono text-center font-bold text-emerald-700">
-                              +
-                            </td>
-                            <td className="py-2 px-3 border-r border-slate-200">
-                              <input
-                                type="text"
-                                value={sheetNewUserRow.name}
-                                onChange={(e) => setSheetNewUserRow((p) => ({ ...p, name: e.target.value }))}
-                                placeholder="Add new user name in Sheet row..."
-                                className="w-full px-2.5 py-1 rounded border border-emerald-300 bg-white text-xs text-slate-900"
-                              />
-                            </td>
-                            <td className="py-2 px-3 border-r border-slate-200">
-                              <input
-                                type="email"
-                                value={sheetNewUserRow.email}
-                                onChange={(e) => setSheetNewUserRow((p) => ({ ...p, email: e.target.value }))}
-                                placeholder="colleague@google.com"
-                                className="w-full px-2.5 py-1 rounded border border-emerald-300 bg-white text-xs text-slate-900"
-                              />
-                            </td>
-                            <td className="py-2 px-3 border-r border-slate-200">
-                              <select
-                                value={sheetNewUserRow.role}
-                                onChange={(e) =>
-                                  setSheetNewUserRow((p) => ({
-                                    ...p,
-                                    role: e.target.value as 'Super-Admin' | 'Author' | 'Member',
-                                  }))
-                                }
-                                className="px-2.5 py-1 rounded border border-emerald-300 bg-white text-xs font-bold text-slate-900"
-                              >
-                                <option value="Author">Author</option>
-                                <option value="Super-Admin">Super-Admin</option>
-                                <option value="Member">Member</option>
-                              </select>
-                            </td>
-                            <td className="py-2 px-3 text-emerald-800 font-semibold">
-                              Click &ldquo;Commit Google Sheet Edits&rdquo; above to sync new user to UI
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-
-                {/* Sheet Sub-Tab 3: Comments */}
-                {activeSheetTab === 'Comments' && (
-                  <div className="overflow-x-auto border border-slate-300 rounded-lg">
-                    <table className="w-full text-left border-collapse text-xs">
-                      <thead>
-                        <tr className="bg-slate-200 text-slate-700 font-mono text-[11px] border-b border-slate-300">
-                          <th className="py-1.5 px-3 border-r border-slate-300 w-10 text-center">#</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">A • Blueprint ID</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">B • Author</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">C • Comment Text</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">D • Origin</th>
-                          <th className="py-1.5 px-3">E • Timestamp</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-200 bg-white">
-                        {comments.map((c, idx) => (
-                          <tr key={c.id}>
-                            <td className="py-2 px-3 border-r border-slate-200 bg-slate-100 font-mono text-center font-bold text-slate-500">
-                              {idx + 2}
-                            </td>
-                            <td className="py-2 px-3 border-r border-slate-200 font-mono font-bold text-slate-900">
-                              {c.target_id}
-                            </td>
-                            <td className="py-2 px-3 border-r border-slate-200 font-semibold text-slate-900">
-                              {c.author_name} ({c.author_email})
-                            </td>
-                            <td className="py-2 px-3 border-r border-slate-200 text-slate-800">
-                              {c.comment_text}
-                            </td>
-                            <td className="py-2 px-3 border-r border-slate-200 font-bold text-slate-700">
-                              {c.source}
-                            </td>
-                            <td className="py-2 px-3 text-slate-500">
-                              {new Date(c.created_at).toLocaleString()}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
-                {/* Sheet Sub-Tab 4: Changelog */}
-                {activeSheetTab === 'Changelog' && (
-                  <div className="overflow-x-auto border border-slate-300 rounded-lg">
-                    <table className="w-full text-left border-collapse text-xs">
-                      <thead>
-                        <tr className="bg-slate-200 text-slate-700 font-mono text-[11px] border-b border-slate-300">
-                          <th className="py-1.5 px-3 border-r border-slate-300 w-10 text-center">#</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">A • Timestamp</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">B • Category</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">C • Who Changed</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">D • Target</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">E • Before</th>
-                          <th className="py-1.5 px-3 border-r border-slate-300">F • After</th>
-                          <th className="py-1.5 px-3">G • Source</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-200 bg-white">
-                        {changelog.map((c, idx) => (
-                          <tr key={c.id}>
-                            <td className="py-2 px-3 border-r border-slate-200 bg-slate-100 font-mono text-center font-bold text-slate-500">
-                              {idx + 2}
-                            </td>
-                            <td className="py-2 px-3 border-r border-slate-200 font-mono text-slate-600">
-                              {new Date(c.created_at).toLocaleString()}
-                            </td>
-                            <td className="py-2 px-3 border-r border-slate-200 font-bold text-slate-900">
-                              {c.event_category}
-                            </td>
-                            <td className="py-2 px-3 border-r border-slate-200 font-semibold text-slate-900">
-                              {c.actor_name}
-                            </td>
-                            <td className="py-2 px-3 border-r border-slate-200 text-slate-800">
-                              {c.entity_name}
-                            </td>
-                            <td className="py-2 px-3 border-r border-slate-200 text-rose-700">
-                              {c.old_value || '—'}
-                            </td>
-                            <td className="py-2 px-3 border-r border-slate-200 font-bold text-emerald-800">
-                              {c.new_value || '—'}
-                            </td>
-                            <td className="py-2 px-3 font-bold text-slate-700">{c.source}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* TAB 3: GOOGLE APPS SCRIPT 2-WAY WEBHOOK CONNECTOR */}
-            {activeMainTab === 'apps_script' && (
-              <div className="p-6 space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div>
-                    <h3 className="text-base font-bold text-slate-900">
-                      Google Sheets `onEdit(e)` 2-Way Live Webhook Script
-                    </h3>
-                    <p className="text-xs text-slate-600 mt-0.5">
-                      Paste this into <strong>Extensions → Apps Script</strong> inside your Google Sheet to stream every cell edit (User added, Role changed, Comment added, Status changed) into PromptCanvas in real time.
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(appsScriptCode);
-                      setCopiedScript(true);
-                      setTimeout(() => setCopiedScript(false), 2500);
-                    }}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white cursor-pointer"
-                  >
-                    {copiedScript ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                    {copiedScript ? 'Copied to Clipboard!' : 'Copy Apps Script Code'}
-                  </button>
-                </div>
-                <pre className="p-4 rounded-xl bg-slate-900 text-slate-100 text-xs font-mono overflow-x-auto leading-relaxed">
-                  {appsScriptCode}
-                </pre>
               </div>
             )}
           </div>

@@ -281,15 +281,21 @@ export async function GET() {
     }
   }
 
+  const recordedVerifiedAt =
+    typeof (cachedReceipt as any)?.verifiedAt === 'string' && (cachedReceipt as any).verifiedAt
+      ? String((cachedReceipt as any).verifiedAt)
+      : '2026-11-25T00:00:00.000Z';
+
   return NextResponse.json({
     ok: true,
+    verificationMode: 'recorded_architecture_receipt_plus_live_svg_ast',
     controlPlaneProjectId: 'ramp-portal-dev',
     controlPlaneProjectNumber: '248990048888',
     dataSiloProjectId: 'bbar-138hf0',
     dataSiloProjectNumber: '48439189383',
     region: 'us-west1',
     beyondCorpUrl: 'https://promptcanvas-248990048888.cr.gclb.goog/blogs',
-    verifiedAt: new Date().toISOString(),
+    verifiedAt: recordedVerifiedAt,
     totalChecks: checks.length,
     passedChecks: checks.filter((c) => c.status === 'PASS').length,
     blueprintAudits,

@@ -2953,14 +2953,14 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
 
   if (cfgCount === 0) {
     const nowIso = new Date().toISOString();
-    const defaultSheetId = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms';
-    const defaultSheetUrl = 'https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit#gid=0';
-    const defaultTitle = 'PromptCanvas — Master Architecture Governance & Changelog (2-Way Synced)';
+    const defaultSheetId = '';
+    const defaultSheetUrl = '';
+    const defaultTitle = 'PromptCanvas — Governance Changelog Ledger';
     if (isPostgres()) {
       await getPgPool().query(
         `INSERT INTO sheet_sync_config
          (id, spreadsheet_id, spreadsheet_url, sheet_title, auto_sync_enabled, sync_mode, last_synced_at, last_sync_actor, total_ui_to_sheet_pushes, total_sheet_to_ui_pulls)
-         VALUES ('default', $1, $2, $3, 1, 'TWO_WAY_LIVE', $4, 'Nitin Aggarwal (Auto-Sync Engine)', 14, 8)
+         VALUES ('default', $1, $2, $3, 0, 'CSV_AND_WEBHOOK', $4, 'Local Governance Ledger', 0, 0)
          ON CONFLICT (id) DO NOTHING`,
         [defaultSheetId, defaultSheetUrl, defaultTitle, nowIso]
       );
@@ -2969,9 +2969,26 @@ async function seedInitialGovernanceAndChangelog(): Promise<void> {
         .prepare(
           `INSERT OR IGNORE INTO sheet_sync_config
            (id, spreadsheet_id, spreadsheet_url, sheet_title, auto_sync_enabled, sync_mode, last_synced_at, last_sync_actor, total_ui_to_sheet_pushes, total_sheet_to_ui_pulls)
-           VALUES ('default', ?, ?, ?, 1, 'TWO_WAY_LIVE', ?, 'Nitin Aggarwal (Auto-Sync Engine)', 14, 8)`
+           VALUES ('default', ?, ?, ?, 0, 'CSV_AND_WEBHOOK', ?, 'Local Governance Ledger', 0, 0)`
         )
         .run(defaultSheetId, defaultSheetUrl, defaultTitle, nowIso);
+    }
+  } else {
+    // Purge legacy hardcoded Google quickstart sample sheet ID (`1BxiMVs...`) & fake counters if present
+    if (isPostgres()) {
+      await getPgPool().query(
+        `UPDATE sheet_sync_config
+         SET spreadsheet_id = '', spreadsheet_url = '', sync_mode = 'CSV_AND_WEBHOOK', total_ui_to_sheet_pushes = 0, total_sheet_to_ui_pulls = 0
+         WHERE spreadsheet_id = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms'`
+      );
+    } else {
+      getSqliteDb()
+        .prepare(
+          `UPDATE sheet_sync_config
+           SET spreadsheet_id = '', spreadsheet_url = '', sync_mode = 'CSV_AND_WEBHOOK', total_ui_to_sheet_pushes = 0, total_sheet_to_ui_pulls = 0
+           WHERE spreadsheet_id = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms'`
+        )
+        .run();
     }
   }
 

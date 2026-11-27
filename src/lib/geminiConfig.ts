@@ -2,15 +2,38 @@ import { GoogleGenAI } from '@google/genai';
 
 /**
  * Ensures stale environment variables pointing to previous-generation models
- * (Gemini 1.x / 2.0) or unpublished fictional slugs never pollute runtime routing.
+ * (Gemini 1.x / 2.0), internal codenames, or Bidi-only audio slugs never pollute runtime routing.
  */
+const BANNED_MODEL_SUBSTRINGS = [
+  'argon',
+  'carbon',
+  'hydrogen',
+  'neon',
+  'nano-banana',
+  'antigravity',
+  'omni-1.',
+  'omni-flash',
+  'deep-research',
+  'computer-use',
+  'robotics',
+  'customtools',
+];
+
 export function sanitizeFrontierModelId(envValue: string | undefined, defaultModel: string): string {
   const cleaned = String(envValue || '')
     .trim()
     .replace(/^models\//i, '');
   if (!cleaned) return defaultModel;
-  // Accept verified Google Gemini 2.5 / 3.x, Imagen, Veo, Lyria 2, and text-embedding models
-  if (/^(?:gemini-(?:2\.5|3(?:\.\d+)?)-[a-z0-9.-]+|veo-[23][a-z0-9.-]*|imagen-[34][a-z0-9.-]*|lyria-002|text-embedding-004|gemini-embedding-001)$/i.test(cleaned)) {
+  const lower = cleaned.toLowerCase();
+  if (BANNED_MODEL_SUBSTRINGS.some((tok) => lower.includes(tok))) {
+    return defaultModel;
+  }
+  // Accept verified Google Gemini 2.5 / 3.x, Gemma 4 open-weights critics, Imagen, Veo, Lyria, and embedding models
+  if (
+    /^(?:gemini-(?:2\.5|3(?:\.\d+)?)-[a-z0-9.-]+|gemma-4-[a-z0-9.-]+|veo-[23][a-z0-9.-]*|imagen-[34][a-z0-9.-]*|lyria-[a-z0-9.-]+|text-embedding-004|gemini-embedding-001)$/i.test(
+      cleaned
+    )
+  ) {
     return cleaned;
   }
   return defaultModel;
@@ -18,10 +41,18 @@ export function sanitizeFrontierModelId(envValue: string | undefined, defaultMod
 
 export const GEMINI_PRO_MODEL_ID = sanitizeFrontierModelId(
   process.env.GEMINI_PRO_MODEL_ID,
+  'gemini-3.1-pro-preview'
+);
+export const GEMINI_SECONDARY_PRO_MODEL_ID = sanitizeFrontierModelId(
+  process.env.GEMINI_SECONDARY_PRO_MODEL_ID,
   'gemini-2.5-pro'
 );
 export const GEMINI_FLASH_MODEL_ID = sanitizeFrontierModelId(
   process.env.GEMINI_FLASH_MODEL_ID,
+  'gemini-3-flash-preview'
+);
+export const GEMINI_SECONDARY_FLASH_MODEL_ID = sanitizeFrontierModelId(
+  process.env.GEMINI_SECONDARY_FLASH_MODEL_ID,
   'gemini-2.5-flash'
 );
 export const GEMINI_FLASH_LITE_MODEL_ID = sanitizeFrontierModelId(
@@ -34,11 +65,15 @@ export const GEMINI_FLASH_LIVE_MODEL_ID = sanitizeFrontierModelId(
 );
 export const GEMINI_FALLBACK_PRO_MODEL_ID = sanitizeFrontierModelId(
   process.env.GEMINI_FALLBACK_PRO_MODEL_ID,
-  'gemini-2.5-flash'
+  'gemini-2.5-pro'
 );
 export const GEMINI_FALLBACK_FLASH_MODEL_ID = sanitizeFrontierModelId(
   process.env.GEMINI_FALLBACK_FLASH_MODEL_ID,
-  'gemini-2.5-flash-lite'
+  'gemini-2.5-flash'
+);
+export const CROSS_FAMILY_JUDGE_MODEL_ID = sanitizeFrontierModelId(
+  process.env.CROSS_FAMILY_JUDGE_MODEL_ID,
+  'gemma-4-31b-it'
 );
 export const DEEPMIND_VEO_MODEL_ID = sanitizeFrontierModelId(
   process.env.DEEPMIND_VEO_MODEL_ID,
@@ -116,6 +151,9 @@ export function setActiveRequestGeminiApiKey(apiKey: string | null, contextBox?:
 }
 
 export function getEffectiveGeminiApiKey(explicitKey?: string | null): string {
+  if (typeof window !== 'undefined') {
+    return explicitKey && explicitKey.trim().length > 0 ? explicitKey.trim() : '';
+  }
   if (explicitKey && explicitKey.trim().length > 0) {
     return explicitKey.trim();
   }
@@ -139,22 +177,96 @@ export function invalidateVertexTokenCache(): void {
   g.__pcVertexTokenCache = null;
 }
 
+/**
+ * Resolves a GCP Service Account token via Cloud Run / GCE Metadata Server first
+ * (works inside slim production containers where `gcloud` CLI is not installed),
+ * falling back to local `gcloud` CLI only on developer workstations.
+ */
+export async function resolveVertexAccessTokenAsync(forceRefresh = false): Promise<CachedVertexToken | null> {
+  if (typeof window !== 'undefined') return null;
+  const g = globalThis as unknown as { __pcVertexTokenCache?: CachedVertexToken | null };
+  if (!forceRefresh && g.__pcVertexTokenCache && g.__pcVertexTokenCache.expiresAt > Date.now() + 15_000) {
+    return g.__pcVertexTokenCache;
+  }
+  if (process.env.VITEST && !process.env.PROMPTCANVAS_ENABLE_LIVE_VERTEX_IN_TESTS) {
+    return null;
+  }
+  const useVertex =
+    process.env.GOOGLE_GENAI_USE_VERTEXAI === 'true' ||
+    process.env.PROMPTCANVAS_USE_VERTEXAI === 'true' ||
+    Boolean(process.env.K_SERVICE || process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT);
+  if (!useVertex && process.env.NODE_ENV === 'test') {
+    return null;
+  }
+
+  const location = (process.env.GOOGLE_CLOUD_LOCATION || 'global').trim();
+  let project = (process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT || '').trim();
+
+  // 1. Primary path: GCP Metadata Server (Cloud Run / GKE / GCE — zero `gcloud` binary needed)
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 1500);
+    const metaHeaders = { 'Metadata-Flavor': 'Google' };
+    try {
+      if (!project) {
+        const pRes = await fetch(
+          'http://metadata.google.internal/computeMetadata/v1/project/project-id',
+          { headers: metaHeaders, signal: ctrl.signal }
+        );
+        if (pRes.ok) {
+          project = (await pRes.text()).trim();
+        }
+      }
+      if (project) {
+        const tRes = await fetch(
+          'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token',
+          { headers: metaHeaders, signal: ctrl.signal }
+        );
+        if (tRes.ok) {
+          const data = (await tRes.json()) as { access_token?: string; expires_in?: number };
+          if (data?.access_token && data.access_token.length >= 20) {
+            const ttlMs = Math.max(60, Number(data.expires_in || 300) - 60) * 1000;
+            const cached: CachedVertexToken = {
+              token: data.access_token,
+              expiresAt: Date.now() + ttlMs,
+              project,
+              location,
+            };
+            g.__pcVertexTokenCache = cached;
+            return cached;
+          }
+        }
+      }
+    } finally {
+      clearTimeout(timer);
+    }
+  } catch {
+    // Metadata server unavailable (local workstation); fall through to local gcloud CLI
+  }
+
+  // 2. Workstation fallback: local `gcloud` CLI (strictly fixed binary & args, zero user input)
+  return resolveVertexAccessTokenSync(forceRefresh);
+}
+
 function resolveVertexAccessTokenSync(forceRefresh = false): CachedVertexToken | null {
   if (typeof window !== 'undefined') return null;
   const g = globalThis as unknown as { __pcVertexTokenCache?: CachedVertexToken | null };
   if (!forceRefresh && g.__pcVertexTokenCache && g.__pcVertexTokenCache.expiresAt > Date.now() + 15_000) {
     return g.__pcVertexTokenCache;
   }
+  if (process.env.VITEST && !process.env.PROMPTCANVAS_ENABLE_LIVE_VERTEX_IN_TESTS) {
+    return null;
+  }
   const useVertex =
     process.env.GOOGLE_GENAI_USE_VERTEXAI === 'true' ||
     process.env.PROMPTCANVAS_USE_VERTEXAI === 'true' ||
     Boolean(process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT);
-  // In unit tests (Vitest) without explicit opt-in, never shell out to gcloud so offline fallback tests stay fast & hermetic.
-  if (process.env.VITEST && !process.env.PROMPTCANVAS_ENABLE_LIVE_VERTEX_IN_TESTS) {
-    return null;
-  }
   if (!useVertex && process.env.NODE_ENV === 'test') {
     return null;
+  }
+  // Inside Cloud Run slim containers (`K_SERVICE`), `gcloud` is not installed; rely on async Metadata Server
+  if (process.env.K_SERVICE) {
+    return g.__pcVertexTokenCache || null;
   }
   try {
     const childProc = eval('require')('node:child_process') as typeof import('child_process');
@@ -163,21 +275,20 @@ function resolveVertexAccessTokenSync(forceRefresh = false): CachedVertexToken |
       process.env.GCLOUD_PROJECT ||
       childProc.execSync('gcloud config get-value project 2>/dev/null', {
         encoding: 'utf8',
-        timeout: 3000,
+        timeout: 2500,
       })
     ).trim();
     if (!project || project === '(unset)') return null;
     const token = childProc
       .execSync('gcloud auth print-access-token 2>/dev/null', {
         encoding: 'utf8',
-        timeout: 4000,
+        timeout: 3500,
       })
       .trim();
     if (!token || token.length < 20) return null;
-    const location = (process.env.GOOGLE_CLOUD_LOCATION || 'us-central1').trim();
+    const location = (process.env.GOOGLE_CLOUD_LOCATION || 'global').trim();
     const cached: CachedVertexToken = {
       token,
-      // Keep local cache short (3 min) since gcloud CLI returns tokens with arbitrary remaining TTL
       expiresAt: Date.now() + 3 * 60 * 1000,
       project,
       location,
@@ -190,40 +301,59 @@ function resolveVertexAccessTokenSync(forceRefresh = false): CachedVertexToken |
 }
 
 /**
- * Returns true if any live Gemini backend is available (BYOK / GEMINI_API_KEY / Vertex AI ADC).
+ * Returns true if any live Gemini backend is available (BYOK / GEMINI_API_KEY / Cloud Run Metadata ADC / local gcloud).
  */
 export function hasLiveGeminiBackend(explicitKey?: string | null): boolean {
+  if (typeof window !== 'undefined') {
+    return Boolean(explicitKey && explicitKey.trim().length > 0);
+  }
   if (getEffectiveGeminiApiKey(explicitKey)) return true;
+  if (process.env.K_SERVICE && (process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT)) {
+    return true;
+  }
   return Boolean(resolveVertexAccessTokenSync());
 }
 
 /**
- * Unified Gemini client factory used across ALL pipelines (V2, Prompt-to-Diagram, Spatial Mutator,
- * Intent Classifier, Chat, Decision Engine). Supports BYOK -> GEMINI_API_KEY -> Vertex AI ADC/gcloud.
+ * Unified Gemini client factory used across ALL server pipelines.
+ * Priority: Explicit BYOK -> Server GEMINI_API_KEY -> Cloud Run Metadata Server ADC -> Local gcloud ADC.
  */
 export function createGeminiClient(
   explicitKey?: string | null,
   options?: { location?: string }
 ): GoogleGenAI | null {
+  if (typeof window !== 'undefined') {
+    const browserKey = explicitKey && explicitKey.trim().length > 0 ? explicitKey.trim() : '';
+    return browserKey ? new GoogleGenAI({ apiKey: browserKey }) : null;
+  }
   const apiKey = getEffectiveGeminiApiKey(explicitKey);
   if (apiKey) {
     return new GoogleGenAI({ apiKey });
   }
-  const vertex = resolveVertexAccessTokenSync();
-  if (!vertex) return null;
-  const location = options?.location || vertex.location;
+  const envProject = (process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT || '').trim();
+  const syncVertex = resolveVertexAccessTokenSync();
+  const project = syncVertex?.project || (process.env.K_SERVICE ? envProject : '');
+  if (!project) return null;
+  const location = options?.location || syncVertex?.location || (process.env.GOOGLE_CLOUD_LOCATION || 'global').trim();
+
   return new GoogleGenAI({
     vertexai: true,
-    project: vertex.project,
+    project,
     location,
     googleAuthOptions: {
       authClient: {
         getAccessToken: async () => {
-          const fresh = resolveVertexAccessTokenSync() || vertex;
+          const fresh = (await resolveVertexAccessTokenAsync()) || syncVertex;
+          if (!fresh?.token) {
+            throw new Error('Unable to acquire Vertex AI access token from Metadata Server or ADC.');
+          }
           return { token: fresh.token };
         },
         getRequestHeaders: async () => {
-          const fresh = resolveVertexAccessTokenSync() || vertex;
+          const fresh = (await resolveVertexAccessTokenAsync()) || syncVertex;
+          if (!fresh?.token) {
+            throw new Error('Unable to acquire Vertex AI authorization header from Metadata Server or ADC.');
+          }
           return new Headers({ Authorization: `Bearer ${fresh.token}` });
         },
       } as any,
@@ -238,13 +368,14 @@ export type ModelTier =
   | 'medium'
   | 'pro'
   | 'critic'
+  | 'cross_family_critic'
   | 'vision'
   | 'chat'
   | 'live'
   | 'image';
 
 /**
- * Honest Live-Verified Gemini 3.x Model Routing Engine (Zero Fictional Model Slugs, Zero 1.x/2.x Downgrade)
+ * Live-Verified Frontier Model Routing Engine (Zero Fictional Slugs, Zero Internal Codenames, Zero Inverted Judge Downgrade)
  */
 export function getGeminiModel(tier: ModelTier = 'pro'): string {
   if (tier === 'image') {
@@ -256,6 +387,9 @@ export function getGeminiModel(tier: ModelTier = 'pro'): string {
   if (tier === 'lite') {
     return GEMINI_FLASH_LITE_MODEL_ID;
   }
+  if (tier === 'cross_family_critic') {
+    return CROSS_FAMILY_JUDGE_MODEL_ID;
+  }
   if (tier === 'latest' || tier === 'omni' || tier === 'pro' || tier === 'critic' || tier === 'vision') {
     return GEMINI_PRO_MODEL_ID;
   }
@@ -264,7 +398,10 @@ export function getGeminiModel(tier: ModelTier = 'pro'): string {
 
 export function getGeminiFallbackModel(tier: ModelTier = 'pro'): string {
   if (tier === 'live') {
-    return GEMINI_FLASH_MODEL_ID;
+    return GEMINI_SECONDARY_FLASH_MODEL_ID;
+  }
+  if (tier === 'cross_family_critic') {
+    return GEMINI_SECONDARY_PRO_MODEL_ID;
   }
   if (tier === 'latest' || tier === 'omni' || tier === 'pro' || tier === 'critic' || tier === 'vision') {
     return GEMINI_FALLBACK_PRO_MODEL_ID;
@@ -275,12 +412,20 @@ export function getGeminiFallbackModel(tier: ModelTier = 'pro'): string {
 export function getGeminiModelWithFallbacks(tier: ModelTier = 'pro'): string[] {
   if (tier === 'live') {
     return Array.from(
-      new Set([GEMINI_FLASH_LIVE_MODEL_ID, GEMINI_FLASH_MODEL_ID, GEMINI_FLASH_LITE_MODEL_ID])
+      new Set([GEMINI_FLASH_LIVE_MODEL_ID, GEMINI_SECONDARY_FLASH_MODEL_ID, GEMINI_FLASH_LITE_MODEL_ID])
+    );
+  }
+  if (tier === 'cross_family_critic') {
+    return Array.from(
+      new Set([CROSS_FAMILY_JUDGE_MODEL_ID, GEMINI_SECONDARY_PRO_MODEL_ID, GEMINI_PRO_MODEL_ID])
     );
   }
   const primary = getGeminiModel(tier);
   const fallback = getGeminiFallbackModel(tier);
-  return primary === fallback ? [primary, GEMINI_FLASH_LITE_MODEL_ID] : [primary, fallback];
+  if (tier === 'pro' || tier === 'critic' || tier === 'vision' || tier === 'latest' || tier === 'omni') {
+    return Array.from(new Set([primary, fallback, GEMINI_SECONDARY_PRO_MODEL_ID, GEMINI_FLASH_MODEL_ID]));
+  }
+  return Array.from(new Set([primary, fallback, GEMINI_SECONDARY_FLASH_MODEL_ID, GEMINI_FLASH_LITE_MODEL_ID]));
 }
 
 interface DiscoveredFrontierModel {
@@ -288,7 +433,7 @@ interface DiscoveredFrontierModel {
   major: number;
   minor: number;
   versionScore: number;
-  family: 'pro' | 'flash' | 'flash-lite' | 'live' | 'image';
+  family: 'pro' | 'flash' | 'flash-lite' | 'gemma' | 'live' | 'image';
 }
 
 interface DynamicModelCatalogEntry {
@@ -300,10 +445,32 @@ interface DynamicModelCatalogEntry {
 
 const DYNAMIC_CATALOG_TTL_MS = 10 * 60 * 1000;
 
-function parseFrontierGeminiModel(rawName: string): DiscoveredFrontierModel | null {
+export function parseFrontierGeminiModel(rawName: string): DiscoveredFrontierModel | null {
   const id = String(rawName || '')
     .trim()
     .replace(/^models\//i, '');
+  const lower = id.toLowerCase();
+  if (BANNED_MODEL_SUBSTRINGS.some((tok) => lower.includes(tok))) {
+    return null;
+  }
+
+  // Support Gemma 4 open-weights models as independent cross-family critics
+  const gemmaMatch = id.match(/^gemma-(\d+)-(\d+)b(?:-([a-z0-9-]+))?$/i);
+  if (gemmaMatch) {
+    const gMajor = Number(gemmaMatch[1]);
+    const gParamsB = Number(gemmaMatch[2]);
+    if (gMajor >= 4 && gParamsB >= 24) {
+      return {
+        id,
+        major: gMajor,
+        minor: gParamsB,
+        versionScore: 260 + gParamsB,
+        family: 'gemma',
+      };
+    }
+    return null;
+  }
+
   const match = id.match(/^gemini-(\d+)(?:\.(\d+))?-(.+)$/i);
   if (!match) return null;
   const major = Number(match[1]);
@@ -320,7 +487,8 @@ function parseFrontierGeminiModel(rawName: string): DiscoveredFrontierModel | nu
     rest.includes('audio') ||
     rest.includes('aqa') ||
     rest.includes('transcribe') ||
-    rest.includes('translate')
+    rest.includes('translate') ||
+    rest.includes('omni')
   ) {
     return null;
   }
@@ -336,15 +504,17 @@ function parseFrontierGeminiModel(rawName: string): DiscoveredFrontierModel | nu
     return { id, major, minor, versionScore, family: 'live' };
   }
   if (rest.includes('pro')) {
-    return { id, major, minor, versionScore, family: 'pro' };
+    return { id, major, minor, versionScore: versionScore + 25, family: 'pro' };
   }
   if (rest.includes('flash') && rest.includes('lite')) {
     return { id, major, minor, versionScore, family: 'flash-lite' };
   }
   if (rest.includes('flash')) {
-    return { id, major, minor, versionScore, family: 'flash' };
+    // Only rank standard stable/preview 2.5 & 3.0/3.1 Flash variants ahead of experimental sub-point Flash slugs
+    const stabilityPenalty = minor >= 5 ? -18 : 0;
+    return { id, major, minor, versionScore: versionScore + stabilityPenalty, family: 'flash' };
   }
-  return { id, major, minor, versionScore, family: 'pro' };
+  return null;
 }
 
 async function discoverLiveFrontierCatalog(ai: GoogleGenAI): Promise<DynamicModelCatalogEntry | null> {
@@ -355,7 +525,7 @@ async function discoverLiveFrontierCatalog(ai: GoogleGenAI): Promise<DynamicMode
 
   if (
     g.__promptCanvasDynamicModelCatalog &&
-    g.__promptCanvasDynamicModelCatalog.schemaRev === 3 &&
+    g.__promptCanvasDynamicModelCatalog.schemaRev === 4 &&
     g.__promptCanvasDynamicModelCatalog.expiresAt > Date.now()
   ) {
     return g.__promptCanvasDynamicModelCatalog;
@@ -378,7 +548,7 @@ async function discoverLiveFrontierCatalog(ai: GoogleGenAI): Promise<DynamicMode
         const pager = await ai.models.list({ config: { pageSize: 100 } } as any);
         let scanned = 0;
         for await (const item of pager as AsyncIterable<any>) {
-          if (++scanned > 120) break;
+          if (++scanned > 150) break;
           const supported: string[] | undefined = item?.supportedActions;
           if (Array.isArray(supported) && supported.length > 0 && !supported.includes('generateContent')) {
             continue;
@@ -404,7 +574,7 @@ async function discoverLiveFrontierCatalog(ai: GoogleGenAI): Promise<DynamicMode
       }
 
       const entry: DynamicModelCatalogEntry & { schemaRev: number } = {
-        schemaRev: 3,
+        schemaRev: 4,
         expiresAt: Date.now() + DYNAMIC_CATALOG_TTL_MS,
         ...discovered,
       };
@@ -430,7 +600,8 @@ export async function resolveLatestGeminiModelChain(
   }
 
   const familyRank: Record<DiscoveredFrontierModel['family'], number> = {
-    pro: 3,
+    pro: 4,
+    gemma: 3,
     flash: 2,
     'flash-lite': 1,
     live: 1,
@@ -443,36 +614,64 @@ export async function resolveLatestGeminiModelChain(
       return familyRank[b.family] - familyRank[a.family];
     });
 
-  const nonLite = catalog.generalModels.filter((m) => m.family !== 'flash-lite');
-  const liteOnly = catalog.generalModels.filter((m) => m.family === 'flash-lite');
   const proModels = catalog.generalModels.filter((m) => m.family === 'pro');
+  const gemmaModels = catalog.generalModels.filter((m) => m.family === 'gemma');
   const fullFlash = catalog.generalModels.filter((m) => m.family === 'flash');
+  const liteOnly = catalog.generalModels.filter((m) => m.family === 'flash-lite');
 
   let ordered: DiscoveredFrontierModel[];
-  if (tier === 'latest') {
-    ordered = [...sortLatestFirst(nonLite), ...sortLatestFirst(liteOnly)];
-  } else if (tier === 'omni' || tier === 'pro' || tier === 'critic' || tier === 'vision') {
+  if (tier === 'cross_family_critic') {
+    ordered = [...sortLatestFirst(gemmaModels), ...sortLatestFirst(proModels)];
+  } else if (tier === 'latest' || tier === 'omni' || tier === 'pro' || tier === 'critic' || tier === 'vision') {
     ordered = [...sortLatestFirst(proModels), ...sortLatestFirst(fullFlash), ...sortLatestFirst(liteOnly)];
   } else if (tier === 'lite') {
     ordered = [...sortLatestFirst([...liteOnly, ...fullFlash]), ...sortLatestFirst(proModels)];
   } else if (tier === 'live' && catalog.liveModels.length > 0) {
-    ordered = [...sortLatestFirst(catalog.liveModels), ...sortLatestFirst(nonLite)];
+    ordered = [...sortLatestFirst(catalog.liveModels), ...sortLatestFirst(fullFlash)];
   } else {
-    ordered = [...sortLatestFirst(fullFlash), ...sortLatestFirst(proModels), ...sortLatestFirst(liteOnly)];
+    // 'chat' / 'medium': prioritize clean fast Flash (gemini-3-flash-preview, gemini-2.5-flash)
+    const preferredFlash = [...fullFlash].sort((a, b) => {
+      const aPref = a.id === 'gemini-3-flash-preview' ? 2 : a.id === 'gemini-2.5-flash' ? 1 : 0;
+      const bPref = b.id === 'gemini-3-flash-preview' ? 2 : b.id === 'gemini-2.5-flash' ? 1 : 0;
+      if (bPref !== aPref) return bPref - aPref;
+      return b.versionScore - a.versionScore;
+    });
+    ordered = [...preferredFlash, ...sortLatestFirst(proModels), ...sortLatestFirst(liteOnly)];
   }
 
-  return Array.from(new Set(ordered.map((m) => m.id)));
+  const ids = Array.from(new Set(ordered.map((m) => m.id)));
+  return ids.length > 0 ? ids : getGeminiModelWithFallbacks(tier);
 }
 
+/**
+ * Resolves an Orthogonal Judge Chain (`judge !== generator`) WITHOUT EVER downgrading
+ * a Pro generator to a weaker Flash judge!
+ * - Flash generator -> Frontier Pro judges (`gemini-3.1-pro-preview`, `gemini-2.5-pro`, `gemma-4-31b-it`)
+ * - `gemini-2.5-pro` generator -> Stronger `gemini-3.1-pro-preview`, then cross-family `gemma-4-31b-it`
+ * - `gemini-3.1-pro-preview` generator -> Distinct Pro `gemini-2.5-pro` + cross-family `gemma-4-31b-it`
+ */
 export async function resolveLatestDistinctJudgeChain(
   ai: GoogleGenAI,
   generatorModelId?: string
 ): Promise<string[]> {
   const genNorm = String(generatorModelId || '').trim().toLowerCase();
-  const desiredTier: ModelTier = genNorm.includes('pro') ? 'chat' : 'pro';
-  const liveChain = await resolveLatestGeminiModelChain(ai, desiredTier);
-  const distinct = liveChain.filter((m) => m.toLowerCase() !== genNorm);
-  return distinct.length > 0 ? distinct : liveChain;
+  const proChain = await resolveLatestGeminiModelChain(ai, 'pro');
+  const crossFamilyChain = await resolveLatestGeminiModelChain(ai, 'cross_family_critic');
+
+  // Strictly keep only Pro-tier and Cross-Family Gemma-4-31B models at the front of the judge chain (never Flash first!)
+  const strongJudges = [
+    ...proChain.filter((m) => m.toLowerCase().includes('pro')),
+    ...crossFamilyChain.filter((m) => m.toLowerCase().startsWith('gemma-4-')),
+    GEMINI_PRO_MODEL_ID,
+    GEMINI_SECONDARY_PRO_MODEL_ID,
+    CROSS_FAMILY_JUDGE_MODEL_ID,
+  ];
+  const dedupedDistinct = Array.from(new Set(strongJudges)).filter(
+    (m) => m.toLowerCase() !== genNorm
+  );
+  return dedupedDistinct.length > 0
+    ? dedupedDistinct
+    : [GEMINI_SECONDARY_PRO_MODEL_ID, CROSS_FAMILY_JUDGE_MODEL_ID];
 }
 
 export async function resolveLatestGeminiImageModelChain(ai: GoogleGenAI): Promise<string[]> {
@@ -481,9 +680,7 @@ export async function resolveLatestGeminiImageModelChain(ai: GoogleGenAI): Promi
     const sorted = [...catalog.imageModels].sort((a, b) => b.versionScore - a.versionScore);
     return sorted.map((m) => m.id);
   }
-  return Array.from(
-    new Set([DEEPMIND_IMAGEN_MODEL_ID, 'gemini-2.5-flash-image'])
-  );
+  return Array.from(new Set([DEEPMIND_IMAGEN_MODEL_ID, 'gemini-2.5-flash-image']));
 }
 
 export interface GeneratedReferenceImage {
@@ -498,7 +695,6 @@ export interface GeneratedReferenceImage {
 function readPngDimensionsFromBase64(base64Data: string): { width?: number; height?: number } {
   try {
     const buf = Buffer.from(base64Data.slice(0, 64), 'base64');
-    // PNG magic bytes: 89 50 4E 47 0D 0A 1A 0A, IHDR width @ 16, height @ 20
     if (buf.length >= 24 && buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4e && buf[3] === 0x47) {
       const width = buf.readUInt32BE(16);
       const height = buf.readUInt32BE(20);
@@ -514,7 +710,7 @@ function readPngDimensionsFromBase64(base64Data: string): { width?: number; heig
 
 /**
  * Generates a crisp 16:9 architecture diagram image using the latest discovered
- * Gemini 3+ Pro/Flash multimodal image models (`responseModalities: ['TEXT', 'IMAGE']`).
+ * Gemini multimodal image models (`responseModalities: ['TEXT', 'IMAGE']`).
  */
 export async function generateReferenceArchitectureImage(
   ai: GoogleGenAI,
@@ -565,38 +761,41 @@ export async function generateReferenceArchitectureImage(
   return null;
 }
 
+/**
+ * Synchronous distinct judge selector: NEVER downgrades a Pro generator to a Flash judge!
+ */
 export function getDistinctJudgeModel(generatorModelId?: string): string {
   const normalizedGen = (generatorModelId || '').trim().toLowerCase();
-  const proModel = getGeminiModel('pro');
-  const flashModel = getGeminiModel('chat');
+  const primaryPro = GEMINI_PRO_MODEL_ID; // 'gemini-3.1-pro-preview'
+  const secondaryPro = GEMINI_SECONDARY_PRO_MODEL_ID; // 'gemini-2.5-pro'
 
   if (!normalizedGen) {
-    return proModel;
+    return primaryPro;
   }
-  if (normalizedGen === proModel.toLowerCase()) {
-    return flashModel;
+  if (normalizedGen === primaryPro.toLowerCase()) {
+    return secondaryPro !== primaryPro ? secondaryPro : CROSS_FAMILY_JUDGE_MODEL_ID;
   }
-  if (normalizedGen === flashModel.toLowerCase() || normalizedGen.includes('flash')) {
-    return proModel;
-  }
-  return proModel;
+  return primaryPro;
 }
 
 export const LLM_JUDGE_MATRIX = {
   diagramGenerationV2: {
     generator: GEMINI_FLASH_MODEL_ID,
     judge: GEMINI_PRO_MODEL_ID,
-    fallbackJudge: GEMINI_FLASH_LITE_MODEL_ID,
+    crossFamilyJudge: CROSS_FAMILY_JUDGE_MODEL_ID,
+    fallbackJudge: GEMINI_SECONDARY_PRO_MODEL_ID,
   },
   docgenReportSynthesis: {
-    generator: GEMINI_PRO_MODEL_ID,
-    judge: GEMINI_FLASH_MODEL_ID,
-    fallbackJudge: GEMINI_FLASH_LITE_MODEL_ID,
+    generator: GEMINI_SECONDARY_PRO_MODEL_ID,
+    judge: GEMINI_PRO_MODEL_ID,
+    crossFamilyJudge: CROSS_FAMILY_JUDGE_MODEL_ID,
+    fallbackJudge: CROSS_FAMILY_JUDGE_MODEL_ID,
   },
   sixAuditPostureSuite: {
     generator: GEMINI_FLASH_MODEL_ID,
     judge: GEMINI_PRO_MODEL_ID,
-    fallbackJudge: GEMINI_FLASH_LITE_MODEL_ID,
+    crossFamilyJudge: CROSS_FAMILY_JUDGE_MODEL_ID,
+    fallbackJudge: GEMINI_SECONDARY_PRO_MODEL_ID,
   },
 } as const;
 
@@ -617,7 +816,7 @@ export function getGenConfig(kind: GenConfigKind) {
         thinkingConfig: {
           thinkingLevel: 'HIGH' as any,
         },
-        temperature: 0.2,
+        temperature: 0.1,
         maxOutputTokens: 32768,
       };
     case 'vision':
@@ -643,16 +842,32 @@ export function getGenConfig(kind: GenConfigKind) {
         thinkingConfig: {
           thinkingLevel: 'LOW' as any,
         },
-        temperature: 0.5,
+        temperature: 0.3,
         maxOutputTokens: 32768,
       };
   }
 }
 
-export function getGenConfigForModel(kind: GenConfigKind, modelId?: string) {
+export function getGenConfigForModel(
+  kind: GenConfigKind,
+  modelId?: string
+): {
+  temperature: number;
+  maxOutputTokens: number;
+  thinkingConfig?: { thinkingLevel?: any; thinkingBudget?: number };
+} {
   const base = getGenConfig(kind);
   const modelStr = String(modelId || '').toLowerCase();
-  const isGemini25 = /^gemini-2\.5/i.test(modelStr) || !/^gemini-[345]/i.test(modelStr);
+
+  // Gemma open-weights models do not accept `thinkingConfig`
+  if (modelStr.startsWith('gemma-')) {
+    return {
+      temperature: base.temperature,
+      maxOutputTokens: Math.min(base.maxOutputTokens || 8192, 8192),
+    };
+  }
+
+  const isGemini25 = /^gemini-2\.5/i.test(modelStr) || (!/^gemini-[345]/i.test(modelStr) && modelStr.length > 0);
   if (isGemini25 && base.thinkingConfig) {
     const level = String((base.thinkingConfig as any).thinkingLevel || 'LOW').toUpperCase();
     const budgetByKind: Record<GenConfigKind, number> = {

@@ -324,7 +324,7 @@ function LegalModalContainer({
 
               <h4 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>1. Technical Accuracy &amp; Cloud Quota Disclosures</h4>
               <p>
-                While PromptCanvas enforces 100% collision-free geometric layout rules and authentic Google Cloud Platform iconography, live infrastructure deployments are subject to account-level GCP quota limits (e.g. TPU v5e/v5p allocations, Cloud Spanner processing units, Cloud Interconnect fiber provisioning).
+                While PromptCanvas applies deterministic AST geometric layout validation and official Google Cloud Platform iconography, live infrastructure deployments are subject to account-level GCP quota limits (e.g. TPU v5e/v5p allocations, Cloud Spanner processing units, Cloud Interconnect fiber provisioning).
               </p>
 
               <h4 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>2. Trademark &amp; Google Cloud Attribution</h4>

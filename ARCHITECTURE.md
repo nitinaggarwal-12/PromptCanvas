@@ -9,12 +9,12 @@ Welcome to the **PromptCanvas** Architecture Specification. This document outlin
 **PromptCanvas** is an enterprise-grade AI diagramming and living specifications platform built on **Next.js 16 (App Router)** and **React 19**. It compiles natural language prompts, raster architecture diagrams, domain requirements, and reference models into production-certified **Draw.io XML (`<mxfile>`)** diagrams, high-resolution vector assets, and **16 synchronized Living Specifications**.
 
 ### Core Architectural Responsibilities
-1. **Prompt-to-Architecture Compilation (5-Tier Model Stack)**: Ingests unstructured enterprise text or structured intents and synthesizes complete, multi-tiered architectures using the Canonical 5-Tier Google / Gemini / DeepMind Model Stack (`gemini-2.5-pro`, `gemini-2.5-pro`, `gemini-2.5-flash`, `gemini-2.5-flash`, `veo-3.0-generate-preview`, `lyria-002`, `gemini-2.5-flash-image`, `gemini-2.5-flash-preview-tts`, `text-embedding-005`) centralized in `src/lib/geminiConfig.ts`.
-2. **Dynamic Clause-Driven Synthesis & Word-Safe Wrapping**: Extracts 4+ domain clauses (`extractPromptDomainClauses`) and populates multi-tier Google Cloud architecture cards (`adaptSavedGoogleCloudTemplateToPrompt`) and sequential swimlane flowcharts (`generateLogicalFlowchartDrawioXml`) with word-safe two-line wrapping (`formatTwoLineCardClause`) in `src/lib/promptDrivenDiagramSynthesizer.ts`.
-3. **2-Stage Vision Image-to-Draw.io XML Decompilation**: Converts uploaded raster architecture diagrams (PNG/JPG/WebP) into editable Draw.io XML with 100% verbatim text parity (`src/lib/deepmindVisionDecompiler.ts` & `/api/decompile-image`).
-4. **16 Synchronized Living Specifications**: Automatically compiles 16 architecture documents (PRD, SRS, HLD, LLD, API Contracts, Security & Threat Model, SRE Runbook, FinOps & TCO, etc.) with dynamic domain entities and protocols (`src/lib/spec/livingSpecsGenerator.ts`).
-5. **Autonomous Closed-Loop Quality Certification**: Enforces the 11-Gate Master Omni 1.1 Quality Suite (`scripts/runQualityGate.ts`), Canonical Blueprint Certification (`scripts/verify_canonical_certification.ts`), and NASA Closed-Loop Default & Fail-Closed Audit Verification (`scripts/verify_blank_canvas_nasa_default_and_slides.ts`) ensuring 0 spatial collisions, 100% viewport containment, and full XML schema validity.
-6. **Dual-Engine Persistence**: Local-first development via SQLite (`dev.db`) with seamless PostgreSQL production synchronization.
+1. **Prompt-to-Architecture Compilation & Composite-Card Spatial Mutation**: Ingests natural language prompts and mutates or synthesizes multi-tiered Draw.io XML architectures using `gemini-3.1-pro-preview` and `gemini-3-flash-preview` centralized in `src/lib/geminiConfig.ts`, with atomic multi-primitive composite-card clustering (`src/lib/freeform/directDrawioSpatialMutator.ts`).
+2. **Orthogonal Cross-Family Multi-Model LLM-as-a-Judge**: Evaluates every generated or mutated diagram via a server-side panel (`gemini-3.1-pro-preview` primary reasoning/multimodal critic + `gemma-4-31b-it` open-weights cross-family critic) paired with deterministic zero-floor AST geometry & WCAG contrast checks (`src/lib/orthogonalMultiModelJudge.ts`, `src/lib/diagramAstHealth.ts`, `src/lib/validate/validator.ts`).
+3. **2-Stage Vision Image-to-Draw.io XML Decompilation**: Converts uploaded raster architecture diagrams (PNG/JPG/WebP) into editable Draw.io XML (`src/lib/deepmindVisionDecompiler.ts` & `/api/decompile-image`).
+4. **Lean 8 Document Studio & Living Specifications**: Synthesizes architecture specifications (BRD, PRD, SDD, TDD, AI System Card, STRIDE Threat Model, Security Package, SRE Resilience) audited by an orthogonal Pro + Gemma 4 judge panel.
+5. **Closed-Loop Quality Verification**: Enforces zero-floor AST validation (`validateDrawioXml`), Canonical Blueprint Certification (`scripts/verify_canonical_certification.ts`), and Nav/Source Purity Guards (`scripts/verify_nav_badge_counts.mjs`).
+6. **Dual-Engine Persistence**: Local development via SQLite (`dev.db`) with Cloud Run GCS / PostgreSQL synchronization.
 
 ---
 
@@ -152,14 +152,15 @@ PromptCanvas/
 │       ├── universal-document-cloud-hub/
 │       └── visual-regression-testing/
 ├── src/
-│   ├── app/                   # Next.js 16 App Router pages (/studio, /canonical, /library, /docgen, /vision, etc.) & API routes
-│   └── lib/                   # Core engine, 5-tier geminiConfig, validators, DB, icons, canonical blueprints
-│       ├── canonical/         # 77 Canonical blueprint implementations (01 - 77)
-│       ├── geminiConfig.ts    # Authoritative 5-Tier Google/Gemini/DeepMind model registry
-│       ├── promptDrivenDiagramSynthesizer.ts # Clause-driven architecture & flowchart synthesizer
-│       ├── deepmindVisionDecompiler.ts       # 2-Stage Vision image-to-Draw.io XML decompiler
-│       ├── spec/livingSpecsGenerator.ts      # 16 synchronized Living Specifications compiler
-│       └── preflightAuditEngine.ts           # Quality Validator & AABB auto-healer
+│   ├── app/                   # Next.js 16 App Router pages (/dashboard, /templates, /canonical, /library, /docgen, /vision, /audit) & API routes
+│   └── lib/                   # Core engine, geminiConfig, orthogonalMultiModelJudge, validators, DB, icons, templates
+│       ├── templates/         # 84 Certified Architecture Templates (53 Tier 1 + 31 Tier 2, L200–L400)
+│       ├── canonical/         # 35 Certified Blueprints + 15 Infographics (#52–#66)
+│       ├── geminiConfig.ts    # Frontier Gemini 3.1 Pro / Gemini 3 Flash / Gemma 4 31B model registry + Cloud Run Metadata ADC
+│       ├── orthogonalMultiModelJudge.ts      # Parallel Pro + Gemma 4 cross-family LLM-as-a-Judge panel
+│       ├── diagramAstHealth.ts               # Zero-floor deterministic 6-dimension AST & domain health evaluator
+│       ├── freeform/directDrawioSpatialMutator.ts # Composite-card Draw.io spatial mutator + closed-loop repair
+│       └── deepmindVisionDecompiler.ts       # Vision image-to-Draw.io XML decompiler
 ├── templates/master_blueprints/ # 60 certified standalone .drawio.xml blueprints + all_master_templates.json
 ├── scripts/                   # Quality gate runners, lifecycle hook guards, catalog validators
 └── scratch/                   # Ephemeral screenshots, E2E harnesses & diagnostic logs (gitignored)

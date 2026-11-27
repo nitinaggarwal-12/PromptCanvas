@@ -156,7 +156,7 @@ export async function executeUnifiedDiagramPipeline(
       technicalUsecase: researched.dossier.standardsAndProtocols.join(' • ') || 'Zero-collision calibrated widescreen 1600x1050 4-tier infographic.',
       isFallback: !researched.isLiveResearched,
       modelUsed: researched.modelUsed,
-      attribution: `Gemini 2.5 Pro + ${researched.modelUsed} 6-Dimension Domain Researcher`,
+      attribution: `${researched.modelUsed} 6-Dimension Domain Researcher`,
     };
   } else if (
     isTrivialPrompt ||

@@ -50,14 +50,14 @@ const TMP_MANIFEST_PATH = path.join(os.tmpdir(), 'promptcanvas_cloud_viewer_mani
 const BLOGS_MANIFEST_PATH = path.join(/*turbopackIgnore: true*/ HOME_DIR, 'Documents', 'blogs', 'slides', 'cloud_viewer_manifest.json');
 
 const TOKEN_CANDIDATE_PATHS = Array.from(
-  new Set([
-    path.join(/*turbopackIgnore: true*/ process.cwd(), '.gsheet_oauth_token.json'),
-    path.join(/*turbopackIgnore: true*/ HOME_DIR, 'Documents', 'gantry-pulse', '.gsheet_oauth_token.json'),
-    path.join(/*turbopackIgnore: true*/ HOME_DIR, 'Documents', 'blogs', '.gsheet_oauth_token.json'),
-    path.join(/*turbopackIgnore: true*/ HOME_DIR, 'Documents', 'PromptCanvas', '.gsheet_oauth_token.json'),
-    '/Users/nitinagga/Documents/blogs/.gsheet_oauth_token.json',
-    '/Users/nitinagga/Documents/gantry-pulse/.gsheet_oauth_token.json',
-  ])
+  new Set(
+    [
+      process.env.GOOGLE_OAUTH_TOKEN_FILE || '',
+      path.join(/*turbopackIgnore: true*/ process.cwd(), '.gsheet_oauth_token.json'),
+      path.join(/*turbopackIgnore: true*/ HOME_DIR, 'Documents', 'PromptCanvas', '.gsheet_oauth_token.json'),
+      path.join(/*turbopackIgnore: true*/ HOME_DIR, 'Documents', 'blogs', '.gsheet_oauth_token.json'),
+    ].filter(Boolean)
+  )
 );
 
 declare global {

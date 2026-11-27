@@ -2132,10 +2132,8 @@ function DocGenContent() {
     <div className={`flex min-h-screen font-sans selection:bg-sky-500/30 transition-colors duration-300 ${
       isLight ? 'bg-[#F8FAFC] text-slate-900' : 'bg-[#070A13] text-slate-100'
     }`}>
-      {/* PRINT-SPECIFIC CSS RULES FOR 100% CLEAN PDF EXPORT */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
+      {/* PRINT-SPECIFIC CSS RULES FOR CLEAN PDF EXPORT */}
+      <style>{`
         @media print {
           body {
             background: white !important;
@@ -2160,9 +2158,7 @@ function DocGenContent() {
             border: 1px solid #ccc !important;
           }
         }
-      `,
-        }}
-      />
+      `}</style>
 
       {/* Collapsible Left Navigation Menu */}
       <UnifiedAppSidebar />
@@ -2914,7 +2910,7 @@ function DocGenContent() {
                         5. Architectural Scope &amp; Topology Requirements Prompt
                       </label>
                       <span className="text-[10px] font-mono text-slate-500">
-                        Gemini 2.5 Flash &bull; Real-Time AST
+                        Gemini 3.1 Pro + Gemma 4 Judge &bull; Real-Time AST
                       </span>
                     </div>
                     <textarea
@@ -3018,7 +3014,7 @@ function DocGenContent() {
                           setProjectName('Bio-Pharma Clinical Platform');
                           setUseCaseName('FDA 21 CFR Part 11 PV Platform');
                           setProjectTitle('Bio-Pharma Clinical Platform — FDA 21 CFR Part 11 PV Platform');
-                          setProjectScopePrompt('Automated pharmacovigilance adverse event triage with Gemini 2.5 Flash reasoning, GxP audit ledgers, and human-in-the-loop safety board review.');
+                          setProjectScopePrompt('Automated pharmacovigilance adverse event triage with Gemini 3.1 Pro reasoning, GxP audit ledgers, and human-in-the-loop safety board review.');
                         }}
                         className={`p-2 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
                           isLight ? 'bg-slate-50 hover:bg-teal-50 border-slate-200' : 'bg-slate-900 hover:bg-teal-950/30 border-slate-800'
@@ -3472,7 +3468,7 @@ function DocGenContent() {
                                   </div>
                                   <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
                                     <span>Inference &amp; Grounding</span>
-                                    <span>Gemini 2.5 Flash / 3.1 Pro</span>
+                                    <span>Gemini 3 Flash / 3.1 Pro</span>
                                     <span className="text-purple-600 font-bold">Toxicity &lt; 0.01</span>
                                   </div>
                                 </div>
@@ -3577,7 +3573,7 @@ function DocGenContent() {
                   }`}>
                     <span className="flex items-center gap-1.5 text-teal-700 dark:text-teal-400 font-bold">
                       <Sparkles className="w-3.5 h-3.5 text-teal-500" />
-                      100% Collision-Free Google Cloud Architecture
+                      Editable Vector Google Cloud Architecture
                     </span>
                     <span>Aspect Ratio: 16:9 (1600x960)</span>
                   </div>
@@ -3654,7 +3650,7 @@ function DocGenContent() {
                         </span>
                       </div>
                       <p className="text-xs text-slate-400">
-                        Synthesized {diagramSlotsList.length} architectural diagram{diagramSlotsList.length > 1 ? 's' : ''} with domain flavoring and 100% collision-free geometry.
+                        Synthesized {diagramSlotsList.length} architectural diagram{diagramSlotsList.length > 1 ? 's' : ''} with domain flavoring and AST geometry validation.
                       </p>
                     </div>
                   </div>

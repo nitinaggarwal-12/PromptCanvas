@@ -1,5 +1,5 @@
-import { GoogleGenAI } from '@google/genai';
 import {
+  createGeminiClient,
   resolveLatestGeminiModelChain,
   GEMINI_FLASH_MODEL_ID,
   getGenConfig,
@@ -9,7 +9,6 @@ import { generateContentWithRetry } from './geminiRetryHelper';
 import { generateGCPFunctionalFlowchart } from './gcpFunctionalFlowchart';
 import { validateAndHealDrawioXml } from './xmlHealer';
 import { validateDrawioXml } from './validate/validator';
-import { OmniAuditReport, MultiAgentExecutionStep } from './omniDirector/types';
 import { enrichDrawioXmlWithVectorIcons } from './vectorIcons/visionIconEnricher';
 import { generateGoogleMultiagentArchitectureXml } from './masterBuilders/build_master_google_multiagent_ai_system';
 import { generateGeminiEnterpriseArchitectureXml } from './masterBuilders/build_master_gemini_enterprise_agent_platform';
@@ -39,8 +38,6 @@ interface DecompileResult {
   attribution: string;
   fallbackReason?: string;
   isCertified?: boolean;
-  auditReport?: OmniAuditReport;
-  steps?: MultiAgentExecutionStep[];
   matchedBlueprintId?: string;
   detectedTitle?: string;
   validationReport?: {
@@ -51,7 +48,11 @@ interface DecompileResult {
 }
 
 function getAiClient(apiKey: string) {
-  return new GoogleGenAI({ apiKey });
+  const client = createGeminiClient(apiKey);
+  if (!client) {
+    throw new Error('No Gemini API key or Vertex AI credentials configured.');
+  }
+  return client;
 }
 
 function sanitizeXmlOutput(rawText: string): string {
@@ -686,11 +687,11 @@ CRITICAL XML & STYLING RULES:
 
       return {
         xml: iconEnrichedXml,
-        summary: `Successfully decompiled "${detectedTitle}" using Gemini Vision (${usedModel}) with 100% vector icon parity and zero architectural defects.`,
+        summary: `Decompiled "${detectedTitle}" using Gemini Vision (${usedModel}) (${validation.errors.length} AST errors, ${validation.warnings.length} warnings).`,
         extractedZones: dynamicZones,
         componentCount: (iconEnrichedXml.match(/<mxCell/g) || []).length,
         isFallback: false,
-        isCertified: true,
+        isCertified: validation.valid,
         modelUsed: usedModel,
         attribution: `Google Gemini API (${usedModel})`,
         detectedTitle,
@@ -723,7 +724,7 @@ CRITICAL XML & STYLING RULES:
       extractedZones: extractZonesFromDrawioXml(healedSynth.xml),
       componentCount: (healedSynth.xml.match(/<mxCell/g) || []).length,
       isFallback: false,
-      isCertified: true,
+      isCertified: synthValidation.valid,
       modelUsed: `${probedModelUsed} + Zero-Template Vision Vector Synthesizer`,
       attribution: 'Gemini Frontier OCR + Zero-Template Vector AST Synthesizer',
       detectedTitle: effectiveTitle,

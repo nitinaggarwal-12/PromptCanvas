@@ -201,8 +201,8 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('compositional_chain_architecture') ||
     inputXml.includes('data-compositional-chain="true"') ||
     inputXml.includes('PromptCanvas-CompositionalChainCompiler') ||
-    inputXml.includes('data-nano-banana-decompiled="true"') ||
-    inputXml.includes('nano_banana_vision_decompiled') ||
+    inputXml.includes('data-vision-decompiled="true"') ||
+    inputXml.includes('vision_poster_decompiled') ||
     inputXml.includes('data-compound-freeform="true"') ||
     inputXml.includes('data-prompt-to-diagram="true"') ||
     inputXml.includes('data-user-drawio="true"') ||
@@ -286,30 +286,11 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     isHealed = true;
     healingLog.push('Missing outer <mxfile> wrapper. Wrapping in standard Draw.io container.');
     if (cleaned.includes('<mxGraphModel')) {
-      cleaned = `<mxfile host="PromptCanvas" modified="${new Date().toISOString()}" agent="PromptCanvas-AutoHealer">
-  <diagram id="healed-diagram" name="Architecture">
-    ${cleaned}
-  </diagram>
-</mxfile>`;
+      cleaned = `<mxfile host="PromptCanvas" modified="${new Date().toISOString()}" agent="PromptCanvas-AutoHealer"><diagram id="healed-diagram" name="Architecture">${cleaned.trim()}</diagram></mxfile>`;
     } else if (cleaned.includes('<root')) {
-      cleaned = `<mxfile host="PromptCanvas" modified="${new Date().toISOString()}" agent="PromptCanvas-AutoHealer">
-  <diagram id="healed-diagram" name="Architecture">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="none">
-      ${cleaned}
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
+      cleaned = `<mxfile host="PromptCanvas" modified="${new Date().toISOString()}" agent="PromptCanvas-AutoHealer"><diagram id="healed-diagram" name="Architecture"><mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="none">${cleaned.trim()}</mxGraphModel></diagram></mxfile>`;
     } else {
-      cleaned = `<mxfile host="PromptCanvas" modified="${new Date().toISOString()}" agent="PromptCanvas-AutoHealer">
-  <diagram id="healed-diagram" name="Architecture">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="none">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
+      cleaned = `<mxfile host="PromptCanvas" modified="${new Date().toISOString()}" agent="PromptCanvas-AutoHealer"><diagram id="healed-diagram" name="Architecture"><mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="none"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel></diagram></mxfile>`;
     }
   }
 

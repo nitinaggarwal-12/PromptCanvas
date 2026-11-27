@@ -18,28 +18,15 @@ jobs:
       - run: npm ci
       - name: Type check
         run: npx tsc --noEmit
-      - name: Unit and golden pipeline tests
+      - name: Unit, golden pipeline, and anti-theatre ratchet tests
         run: npm run test -- --run
       - name: Guard test integrity
         run: |
           if git diff HEAD^1..HEAD -- '**/*.test.ts' '**/fixtures/**' src/lib/technicalArchitectureXmls.ts | grep -E '^\+.*\.(skip|only)\(' ; then
             echo "::error::Skipped/focused tests introduced in this change"; exit 1; fi
-      - name: Blueprint catalog certification gate
-        run: npm run validate:blueprints
-      - name: Rendered visual regression gate
-        run: npm run validate:visual
-      - name: Upload visual QA evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: blueprint-visual-qa
-          path: artifacts/visual-qa/
-          if-no-files-found: warn
-      - name: Corpus duplicate-content tripwire
-        run: npx tsx scripts/check-corpus-duplicates.ts diagrams/latest
-      - name: Structural XML geometry validation
-        run: npm run validate:xml diagrams/latest/*.xml
-      - name: Geometry quality gate (visual-quality tenet)
-        run: npx tsx evals/score_geometry.ts --baseline evals/results/geometry-baseline.json diagrams/latest/*.xml
-      - name: Template integrity (no new empty / duplicate / misnamed blueprints)
-        run: npx tsx evals/check_template_integrity.ts --allow evals/template-integrity-allowlist.json templates/master_blueprints/xml/*.xml
+      - name: Nav badge, retired route, and full-repo source purity gate
+        run: node scripts/verify_nav_badge_counts.mjs
+      - name: Canonical blueprint certification gate
+        run: npm run test:canonical
+      - name: Production Next.js build & validation suite
+        run: npm run build

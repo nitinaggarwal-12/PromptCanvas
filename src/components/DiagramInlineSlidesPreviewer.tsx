@@ -9,6 +9,7 @@ import {
   resolveOrSynthesizeDocGuideForDiagram,
 } from '@/lib/export/editablePptxCompiler';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
+import { SafeSvgMarkup } from '@/components/SafeSvgMarkup';
 import cloudViewerManifestData from '@/data/cloud_viewer_manifest.json';
 
 interface CloudSlidesEntryClient {
@@ -982,9 +983,9 @@ export default function DiagramInlineSlidesPreviewer({
               </div>
               <div className="flex-1 p-2 flex items-center justify-center overflow-hidden bg-white">
                 {svgContent ? (
-                  <div
+                  <SafeSvgMarkup
+                    svg={svgContent}
                     className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:max-h-[340px] [&>svg]:object-contain"
-                    dangerouslySetInnerHTML={{ __html: svgContent }}
                   />
                 ) : (
                   <div className="w-full h-full pointer-events-none flex items-center justify-center">
@@ -1456,9 +1457,9 @@ export default function DiagramInlineSlidesPreviewer({
             ) : renderRightDiagramPane ? (
               renderRightDiagramPane()
             ) : svgContent ? (
-              <div
+              <SafeSvgMarkup
+                svg={svgContent}
                 className="w-full p-3 bg-[#F8F9FA] flex items-center justify-center [&>svg]:w-full [&>svg]:h-auto [&>svg]:max-h-[620px]"
-                dangerouslySetInnerHTML={{ __html: svgContent }}
               />
             ) : (
               <div className="h-[540px] w-full">

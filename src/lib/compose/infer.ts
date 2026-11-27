@@ -1,5 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
-import { GEMINI_FLASH_MODEL_ID, getGenConfig, getEffectiveGeminiApiKey } from '../geminiConfig';
+import { GEMINI_FLASH_MODEL_ID, createGeminiClient, getGenConfig } from '../geminiConfig';
 import { SystemModel } from './extract';
 import { buildInferredPrompt } from '../../prompts/compose/prompts';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
@@ -41,13 +40,12 @@ export async function fillInferredSections(
 
   if (sections.length === 0) return result;
 
-  const apiKey = getEffectiveGeminiApiKey();
-  if (!apiKey) {
+  const ai = createGeminiClient();
+  if (!ai) {
     return result;
   }
 
   try {
-    const ai = new GoogleGenAI({ apiKey });
     const prompt = buildInferredPrompt(model, sections);
     const config = getGenConfig('narrative');
     const modelName = GEMINI_FLASH_MODEL_ID;

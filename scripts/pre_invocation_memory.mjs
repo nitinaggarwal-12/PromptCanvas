@@ -2,12 +2,12 @@
 /**
  * Jetski Lifecycle Hook: PreInvocation
  * Protocol: JSON on stdin -> { "injectSteps": [ ... ] } on stdout
- * Standards: Gemini 2.5 Pro Architecture Blueprint Engine & Rules 53–54
+ * Standards: Orthogonal Multi-Model Judge (gemini-3.1-pro-preview + gemma-4-31b-it) & Zero-Theatre Invariants
  */
 console.log(JSON.stringify({
   injectSteps: [
     {
-      ephemeralMessage: "[Gemini 2.5 Pro Governance] Architecture Quality Gate Active: Strict 16:9 Aspect Ratio | Zero Visual Collision Gate | Universal Light Theme Default (Rule 54) | Official Google Cloud Arch Center Template (#78) Only (Rule 53) | 100% Real GCP Console & Gemini Enterprise Screenshots Only | Zero Surrounding Empty Space."
+      ephemeralMessage: "[PromptCanvas Governance] Active Standards: Server-Side Orthogonal Multi-Model Judge (gemini-3.1-pro-preview + gemma-4-31b-it) | Zero Fake Score Floors or Unverified 100% Badges | 84 Certified Templates + 35 Blueprints + 15 Infographics | Executive Light Theme Default (Rule 54) | SafeSvgMarkup DOMParser Rendering Only (Zero innerHTML / dangerouslySetInnerHTML / document.write)."
     }
   ]
 }));

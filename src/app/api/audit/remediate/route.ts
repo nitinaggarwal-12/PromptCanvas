@@ -1,15 +1,13 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
 import { getDiagram, getLatestDiagramVersion, saveDiagramVersion } from '@/lib/db';
-import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/geminiLock';
 import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
-import { preflightVerifyAndHealXmlAcrossAll6Audits, applyOmniAndGeminiAutoFixRemediation } from '@/lib/preflightAuditEngine';
-import { GEMINI_MODEL_ID, getEffectiveGeminiApiKey } from '@/lib/geminiConfig';
-import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { applyDeterministicGeometryAndContrastFixes } from '@/lib/preflightAuditEngine';
 import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
+import { mutateDrawioXmlDirectly } from '@/lib/freeform/directDrawioSpatialMutator';
+import { runTruthfulnessAndGroundingCertification } from '@/lib/truthfulnessGroundingEngine';
 import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
@@ -26,107 +24,125 @@ export async function POST(request: Request) {
   const lockAcquired = acquireGeminiLock(lockKey);
 
   try {
-    const { diagramId, selectedGaps, architectureType } = await request.json();
-    if (!diagramId || !Array.isArray(selectedGaps) || selectedGaps.length === 0) {
-      return NextResponse.json({ error: 'diagramId and selectedGaps array are required' }, { status: 400 });
+    const body = await request.json();
+    const {
+      diagramId,
+      xmlContent: directXmlContent,
+      prompt: directPrompt,
+      selectedGaps,
+      architectureType,
+    } = body;
+
+    if ((!diagramId && !directXmlContent) || !Array.isArray(selectedGaps) || selectedGaps.length === 0) {
+      return NextResponse.json(
+        { error: 'Either diagramId or xmlContent plus a non-empty selectedGaps array are required.' },
+        { status: 400 }
+      );
     }
 
-    const diagram = await getDiagram(diagramId, user?.id);
-    if (!diagram) {
-      return NextResponse.json({ error: `Diagram with ID ${diagramId} not found or access denied` }, { status: 404 });
+    let diagram = null;
+    let latestVersion = null;
+    if (diagramId) {
+      diagram = await getDiagram(diagramId, user?.id);
+      if (!diagram && !directXmlContent) {
+        return NextResponse.json(
+          { error: `Diagram with ID ${diagramId} not found or access denied` },
+          { status: 404 }
+        );
+      }
+      if (diagram?.access_level === 'Viewer') {
+        return NextResponse.json(
+          { error: 'Forbidden: You have read-only access to this diagram.' },
+          { status: 403 }
+        );
+      }
+      latestVersion = await getLatestDiagramVersion(diagramId, architectureType);
     }
 
-    if (diagram.access_level === 'Viewer') {
-      return NextResponse.json({ error: 'Forbidden: You have read-only access to this diagram.' }, { status: 403 });
+    let currentXml =
+      typeof directXmlContent === 'string' && directXmlContent.includes('<mxCell')
+        ? directXmlContent
+        : latestVersion?.xml_content || '';
+
+    if (!currentXml || currentXml.length < 200 || !currentXml.includes('<mxCell')) {
+      currentXml = getTechnicalArchitectureXml(
+        architectureType || latestVersion?.architecture_type || 'unified_system_view'
+      );
     }
 
-    const latestVersion = await getLatestDiagramVersion(diagramId, architectureType);
-    if (!latestVersion) {
-      return NextResponse.json({ error: 'Diagram has no versions to remediate' }, { status: 404 });
-    }
+    const remediationInstruction = selectedGaps
+      .slice(0, 8)
+      .map(
+        (gap: { title?: string; component?: string; remediation?: string }, idx: number) =>
+          `${idx + 1}. [${gap.title || 'Gap'}${gap.component ? ` on ${gap.component}` : ''}]: ${gap.remediation || 'Fix issue cleanly'}`
+      )
+      .join('\n');
 
-    let currentXml = latestVersion.xml_content;
-    if (!currentXml || currentXml.length < 300 || !currentXml.includes('<mxCell')) {
-      currentXml = getTechnicalArchitectureXml(architectureType || latestVersion.architecture_type || 'unified_system_view');
-    }
-
-    let rawXml = '';
+    let remediatedXml = currentXml;
+    let summaryOfChanges = `Applied deterministic geometry & contrast healing across ${selectedGaps.length} finding(s).`;
+    let modelUsed = 'deterministic-geometry-healer';
+    let precomputedJudgeReport: any = undefined;
 
     if (lockAcquired) {
-      const remediationInstructions = selectedGaps.map((gap: { title: string; remediation: string }, idx: number) => 
-        `${idx + 1}. [${gap.title}]: ${gap.remediation}`
-      ).join('\n');
-
-      const prompt = `
-You are Gemini 2.5 Pro, Principal Cloud Security & Enterprise Systems Architect.
-You are given an existing Draw.io XML architecture diagram.
-
-### Task:
-Modify the Draw.io XML to fully remediate and resolve all of the following architectural and security gaps while preserving the diagram's domain context, visual hierarchy, and layout coordinates:
-
-${remediationInstructions}
-
-### Strict Rules:
-1. Preserve the overall domain topology, existing containers, and nodes of the architecture.
-2. Position any newly added security, resilience, or observability components cleanly in open space (>= 30px clearance from existing nodes) within their appropriate architectural tier.
-3. Route any new connectors orthogonally with zero text collisions.
-4. Return ONLY valid, well-formed Draw.io XML wrapped inside <mxfile>...</mxfile>. Do NOT wrap in markdown code blocks or text outside XML.
-`;
-
-      const userApiKey = guard.effectiveApiKey || getEffectiveGeminiApiKey() || '';
-      if (userApiKey) {
-        try {
-          const ai = new GoogleGenAI({ apiKey: userApiKey });
-          const response = await generateContentWithRetry(ai, {
-            model: GEMINI_MODEL_ID,
-            contents: [
-              { text: `Here is the current Draw.io XML:\n\n${currentXml}` },
-            ],
-            config: {
-              systemInstruction: prompt,
-            },
-          });
-
-          rawXml = response.text?.trim() || '';
-        } catch (remErr) {
-          console.warn('[Audit Remediate] Upstream Gemini fallback to preflight healer:', remErr);
-          rawXml = currentXml;
-        }
+      try {
+        const mutated = await mutateDrawioXmlDirectly({
+          currentXml,
+          userPrompt: directPrompt || latestVersion?.prompt || diagram?.name || 'Architecture Remediation',
+          modificationPrompt: `Surgically remediate these verified architecture/layout gaps without adding fake compliance banners:\n${remediationInstruction}`,
+          explicitApiKey: guard.effectiveApiKey,
+        });
+        remediatedXml = mutated.xml;
+        summaryOfChanges = mutated.summaryOfChanges;
+        modelUsed = mutated.modelUsed;
+        precomputedJudgeReport = mutated.judgeReport;
+      } catch (mutErr) {
+        console.warn('[/api/audit/remediate] Spatial LLM mutator unavailable; applying honest deterministic geometry & contrast fixes:', mutErr);
       }
     }
 
-    // Apply Pre-Flight 6-Audit Pre-Compiler + Omni/Gemini Auto-Fix Remediation Pass to guarantee zero visual collisions & 100% posture
-    rawXml = applyOmniAndGeminiAutoFixRemediation(
-      preflightVerifyAndHealXmlAcrossAll6Audits(
-        rawXml || currentXml,
-        architectureType || latestVersion.architecture_type || 'unified_system_view'
-      ),
-      architectureType || latestVersion.architecture_type || 'unified_system_view'
+    // Apply pure deterministic contrast & sibling-overlap healing (ZERO fake banners, ZERO rigged 100% stamps!)
+    remediatedXml = applyDeterministicGeometryAndContrastFixes(
+      remediatedXml,
+      architectureType || latestVersion?.architecture_type || 'custom'
     );
 
-    const comment = `Remediated ${selectedGaps.length} security & visual gap(s)`;
+    const truthfulnessDossier = await runTruthfulnessAndGroundingCertification({
+      prompt: directPrompt || latestVersion?.prompt || diagram?.name || 'Architecture Remediation',
+      modificationPrompt: remediationInstruction,
+      xmlContent: remediatedXml,
+      beforeXml: currentXml,
+      generatorModel: modelUsed,
+      explicitApiKey: guard.effectiveApiKey,
+      precomputedJudgeReport,
+    });
 
-    const newVersion = await saveDiagramVersion(
-      diagramId,
-      rawXml,
-      comment,
-      'Audit Remediation Engine',
-      null,
-      null,
-      null,
-      null,
-      architectureType || latestVersion.architecture_type || 'unified_system_view'
-    );
+    let newVersion = null;
+    if (diagramId && diagram) {
+      newVersion = await saveDiagramVersion(
+        diagramId,
+        remediatedXml,
+        summaryOfChanges,
+        modelUsed,
+        null,
+        null,
+        null,
+        null,
+        architectureType || latestVersion?.architecture_type || 'unified_system_view'
+      );
+    }
 
     return NextResponse.json({
       success: true,
+      xml: remediatedXml,
+      modelUsed,
+      summaryOfChanges,
+      truthfulnessDossier,
       newVersion,
-      comment,
-      message: `Successfully remediated ${selectedGaps.length} gap(s)!`
+      comment: summaryOfChanges,
+      message: summaryOfChanges,
     });
   } catch (error: unknown) {
     console.error('Audit remediation failed:', error);
-    // `error.message` from @google/genai is a raw JSON envelope; never echo it.
     return NextResponse.json(
       {
         error: 'Remediation Failed',

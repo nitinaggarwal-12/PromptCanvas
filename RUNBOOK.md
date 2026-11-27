@@ -15,8 +15,8 @@ Welcome to the **PromptCanvas** Operational Runbook. This document provides deve
 ## 2. Canonical Development Commands
 
 ```bash
-# 0. Run Master Omni 1.1 Architecture Quality Gate (Mandatory Pre-Commit)
-npm run quality-gate
+# 0. Run Nav Badge, Source Purity & Vitest Quality Gates (Mandatory Pre-Commit)
+node scripts/verify_nav_badge_counts.mjs && npx vitest run
 
 # 1. Start Local Development Server (Port 3000)
 npm run dev
@@ -144,23 +144,17 @@ All development follows a strict 3-step sequence:
 
 ---
 
-## 5. Synchronous 2-Project Cloud Run & BeyondCorp Deployment Verification (`Rule 56`)
+## 5. Cloud Run OCI Overlay & BeyondCorp Deployment Verification (`ramp-portal-dev` / `us-west1`)
 
-Whenever code is pushed to `origin/main` and deployed to Google Cloud Run (`ramp-portal-dev`, `us-west1`), always execute the **2-Project Build + Image Update Pipeline** (never run single-project `--source .` against `ramp-portal-dev`):
-1. **Step 1 (Build Image in Sandbox Project)**:
-   ```bash
-   TAG="v$(date +%Y%m%d-%H%M%S)"
-   gcloud builds submit --project=nitina-ggarwal-sandbox-647724 \
-     --tag="us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/promptcanvas:${TAG}" .
-   ```
-2. **Step 2 (Update Cloud Run Service in Runtime Project)**:
+Whenever code is pushed to `origin/main` and deployed to Google Cloud Run (`ramp-portal-dev`, `us-west1`), build `npm run build` locally, push the deterministic OCI overlay layer to `us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/promptcanvas`, and update the Cloud Run service:
+1. **Update Cloud Run Service in Runtime Project (`ramp-portal-dev`)**:
    ```bash
    gcloud run services update promptcanvas \
      --project=ramp-portal-dev \
      --region=us-west1 \
-     --image="us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/promptcanvas:${TAG}"
+     --image="us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/promptcanvas@${MANIFEST_DIGEST}"
    ```
-3. **Health, 4-Gate Readiness & BeyondCorp Endpoint Verification**: Verify `latestReadyRevisionName === latestCreatedRevisionName`, `Ready=True`, `traffic=100%`, and poll the canonical BeyondCorp endpoint:
+2. **Health, Readiness & BeyondCorp Endpoint Verification**: Verify `latestReadyRevisionName === latestCreatedRevisionName`, `Ready=True`, `traffic=100%`, and poll the canonical BeyondCorp endpoint:
    ```bash
    curl -sI https://promptcanvas-248990048888.cr.gclb.goog
    ```

@@ -132,9 +132,9 @@ export default function SuperAdminDashboard() {
               <Link
                 href="/changelog"
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-colors"
-                title="Open Unified Changelog & 2-Way Google Sheets Sync"
+                title="Open Governance Changelog & Audit Ledger"
               >
-                <span>Changelog &amp; 2-Way Sheet Sync</span>
+                <span>Governance Changelog</span>
               </Link>
 
               <Link

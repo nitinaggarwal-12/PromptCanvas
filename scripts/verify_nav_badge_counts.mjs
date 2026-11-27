@@ -110,6 +110,7 @@ const retiredPaths = [
   'src/lib/gcpConceptualPharma.ts',
   'src/lib/validate/contrast.ts',
   'src/prompts/repairXml.ts',
+  'src/lib/omniDirector',
 ];
 const existingRetiredPaths = retiredPaths.filter((d) => fs.existsSync(path.join(ROOT, d)));
 if (

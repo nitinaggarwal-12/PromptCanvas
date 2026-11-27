@@ -1,6 +1,6 @@
-import { GoogleGenAI } from '@google/genai';
+import type { GoogleGenAI } from '@google/genai';
 import { injectUseCaseFlavor } from './diagramCleaner';
-import { GEMINI_MODEL_ID, getEffectiveGeminiApiKey, resolveLatestGeminiModelChain } from './geminiConfig';
+import { GEMINI_MODEL_ID, createGeminiClient, getEffectiveGeminiApiKey, resolveLatestGeminiModelChain } from './geminiConfig';
 import { generateContentWithRetry } from './geminiRetryHelper';
 import { toUserFacingMessage } from './ai/modelErrors';
 import { healFosterParentedHtmlInXml, normalizeModernGcpCopy } from './htmlTableSanitizer';
@@ -20,8 +20,11 @@ export interface CustomizationResult {
 }
 
 function getAiClient(customKey?: string): GoogleGenAI {
-  const apiKey = getEffectiveGeminiApiKey(customKey);
-  return new GoogleGenAI({ apiKey });
+  const client = createGeminiClient(customKey);
+  if (!client) {
+    throw new Error('No Gemini API key or Vertex AI credentials configured.');
+  }
+  return client;
 }
 
 export type CustomizerNodeRole = 'card' | 'lane_header' | 'note' | 'edge_label' | 'label';

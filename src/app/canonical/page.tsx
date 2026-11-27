@@ -560,8 +560,8 @@ function CanonicalContent() {
               </div>
               <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
               <div className="text-center px-1.5">
-                <div className="text-base sm:text-lg font-black text-emerald-500">100%</div>
-                <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Full-Page</div>
+                <div className="text-base sm:text-lg font-black text-emerald-500">L2–L4</div>
+                <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Depth</div>
               </div>
             </div>
           </div>

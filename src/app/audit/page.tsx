@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { computeHonestDiagramHealth } from '@/lib/diagramAstHealth';
 import {
   Shield,
   ShieldCheck,
@@ -93,7 +94,7 @@ export const AUDIT_CATEGORIES: CategoryMeta[] = [
     icon: '📐',
     badgeBg: 'from-teal-500/10 to-emerald-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20',
     description: '140px column pitch, 80px channel clearance, zero line slicing, and high-contrast label pills.',
-    standards: 'Draw.io AST Geometry Engine • 100% Collision-Free Spec'
+    standards: 'Draw.io AST Geometry Engine • Zero-Overlap Validation'
   },
   {
     id: 'topology',
@@ -206,17 +207,18 @@ function AuditHubContent() {
   // Custom XML State
   const [customXmlInput, setCustomXmlInput] = useState<string>('');
 
-  // Live Audit Scores & Gaps
+  // Live Audit Scores & Gaps (zero hardcoded score floors; dynamically synchronized from currentXml AST + Multi-Model Judge)
   const [auditScores, setAuditScores] = useState<Record<AuditCategory, number>>({
-    security: 96,
-    visual: 98,
-    topology: 94,
-    responsive: 100,
-    accessibility: 96,
-    vendor: 92
+    security: 0,
+    visual: 0,
+    topology: 0,
+    responsive: 0,
+    accessibility: 0,
+    vendor: 0
   });
   const [auditGaps, setAuditGaps] = useState<AuditGap[]>([]);
   const [auditReportMarkdown, setAuditReportMarkdown] = useState<string>('');
+  const [auditJudgeModel, setAuditJudgeModel] = useState<string | null>(null);
   const [isAuditing, setIsAuditing] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -403,6 +405,25 @@ function AuditHubContent() {
     return CANONICAL_TEMPLATES[0].generateXml(selectedDomain, isLight ? 'light' : 'dark');
   }, [scopeTab, activeArtifact, activeCanonicalTemplate, customXmlInput, selectedDomain, isLight]);
 
+  // Live Honest AST Health synchronized whenever currentXml changes
+  const liveAstHealth = useMemo(() => computeHonestDiagramHealth(currentXml), [currentXml]);
+
+  useEffect(() => {
+    setAuditScores(liveAstHealth.scores);
+    setAuditGaps(
+      liveAstHealth.issues.map((iss, idx) => ({
+        id: `ast_${iss.category}_${iss.code}_${idx}`,
+        severity: iss.severity === 'ERROR' ? 'HIGH' : 'MEDIUM',
+        title: iss.code.replace(/_/g, ' '),
+        component: iss.cellId || 'Diagram AST',
+        description: iss.message,
+        remediation: 'Resolve via 1-Click Auto-Remediate or adjust component geometry/labels in Studio.',
+      }))
+    );
+    setAuditJudgeModel(null);
+    setAuditReportMarkdown('');
+  }, [liveAstHealth]);
+
   // Overall Health Score Calculation
   const overallScore = useMemo(() => {
     const values = Object.values(auditScores);
@@ -411,62 +432,26 @@ function AuditHubContent() {
   }, [auditScores]);
 
   const scoreGrade = useMemo(() => {
-    if (overallScore >= 95) return { grade: 'A+', label: 'Certified Enterprise Ready', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/30' };
+    if (overallScore >= 95) return { grade: 'A+', label: 'Verified High Readiness', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/30' };
     if (overallScore >= 90) return { grade: 'A', label: 'Compliant & Verified', color: 'text-teal-600 dark:text-teal-400', bg: 'bg-teal-500/10 border-teal-500/30' };
     if (overallScore >= 80) return { grade: 'B', label: 'Minor Gaps Identified', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-500/10 border-amber-500/30' };
     return { grade: 'C', label: 'Action Required', color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-500/10 border-rose-500/30' };
   }, [overallScore]);
 
-  // Deterministic Local Structural & Security Evaluator (prevents false-negative 96% score on API failure)
+  // Deterministic Zero-Floor Local AST Category Evaluator
   const evaluateLocalXmlCategory = (xml: string, cat: AuditCategory): { score: number; gaps: AuditGap[] } => {
-    const upper = (xml || '').toUpperCase();
-    const gaps: AuditGap[] = [];
-    if (cat === 'security') {
-      const hasWaf = upper.includes('ARMOR') || upper.includes('WAF') || upper.includes('IAP');
-      const hasKms = upper.includes('KMS') || upper.includes('CMEK') || upper.includes('SECRET');
-      const hasVpc = upper.includes('VPC') || upper.includes('PERIMETER') || upper.includes('GUARD');
-      if (!hasWaf) {
-        gaps.push({
-          id: `gap_sec_waf_${Date.now()}`,
-          severity: 'HIGH',
-          title: 'Missing L7 Edge WAF / Cloud Armor Perimeter',
-          component: 'Ingress Tier',
-          description: 'Public endpoints lack OWASP Top 10 & DDoS inspection.',
-          remediation: 'Inject Google Cloud Armor WAF & IAP perimeter policy.'
-        });
-      }
-      if (!hasKms) {
-        gaps.push({
-          id: `gap_sec_kms_${Date.now()}`,
-          severity: 'MEDIUM',
-          title: 'Missing Cloud KMS / Secret Manager CMEK',
-          component: 'Data & Storage Tier',
-          description: 'Stateful stores rely on default encryption keys.',
-          remediation: 'Attach Cloud KMS HSM CMEK envelope encryption.'
-        });
-      }
-      const score = Math.min(100, 86 + (hasWaf ? 5 : 0) + (hasKms ? 5 : 0) + (hasVpc ? 4 : 0));
-      return { score, gaps };
-    }
-    if (cat === 'visual') {
-      const hasBrokenImg = /&lt;img\b(?![^&]*data:image\/svg\+xml)/i.test(xml);
-      if (hasBrokenImg) {
-        gaps.push({
-          id: `gap_vis_img_${Date.now()}`,
-          severity: 'MEDIUM',
-          title: 'External Unverified <img> Tag in Vertex Label',
-          component: 'Canvas Nodes',
-          description: 'External raster URLs may fail CSP or render broken icons.',
-          remediation: 'Replace external <img> tags with inline W3C SVG vector glyphs.'
-        });
-      }
-      return { score: hasBrokenImg ? 88 : 98, gaps };
-    }
-    if (cat === 'accessibility') {
-      const hasLowContrastOrange = /#EA580C|#F97316/i.test(xml);
-      return { score: hasLowContrastOrange ? 90 : 98, gaps };
-    }
-    return { score: 96, gaps };
+    const health = computeHonestDiagramHealth(xml);
+    const gaps: AuditGap[] = health.issues
+      .filter((iss) => iss.category === cat)
+      .map((iss, idx) => ({
+        id: `gap_${cat}_${iss.code}_${idx}`,
+        severity: iss.severity === 'ERROR' ? 'HIGH' : 'MEDIUM',
+        title: iss.code.replace(/_/g, ' '),
+        component: iss.cellId || 'Diagram AST',
+        description: iss.message,
+        remediation: 'Resolve via 1-Click Auto-Remediate or adjust component geometry/labels in Studio.',
+      }));
+    return { score: health.scores[cat], gaps };
   };
 
   // Run Real-time Category Audit on Active Generated Artifact
@@ -486,10 +471,13 @@ function AuditHubContent() {
       });
       if (res.ok) {
         const data = await res.json();
-        setAuditScores((prev) => ({ ...prev, [cat]: data.score || 96 }));
-        setAuditGaps(data.gaps || []);
+        const fallbackLocal = evaluateLocalXmlCategory(currentXml, cat);
+        const resolvedScore = typeof data.score === 'number' ? data.score : fallbackLocal.score;
+        setAuditScores((prev) => ({ ...prev, [cat]: resolvedScore }));
+        setAuditGaps(Array.isArray(data.gaps) ? data.gaps : fallbackLocal.gaps);
         setAuditReportMarkdown(data.report || '');
-        showToast(`✅ ${AUDIT_CATEGORIES.find(c => c.id === cat)?.name} Audit Completed!`);
+        if (data.judgeModel) setAuditJudgeModel(String(data.judgeModel));
+        showToast(`✅ ${AUDIT_CATEGORIES.find(c => c.id === cat)?.name} Audit Completed (${resolvedScore}%)!`);
       } else {
         const localEval = evaluateLocalXmlCategory(currentXml, cat);
         setAuditScores((prev) => ({ ...prev, [cat]: localEval.score }));
@@ -509,11 +497,13 @@ function AuditHubContent() {
   // Run Full 6-Tier Suite Audit on Active Artifact
   const handleRunFullSuite = async () => {
     setIsAuditing(true);
-    showToast(`⚡ Scanning generated artifact against 6-tier compliance rules...`);
+    showToast(`⚡ Scanning generated artifact against 6-tier compliance & multi-model judge rules...`);
     try {
       const categories: AuditCategory[] = ['security', 'visual', 'topology', 'responsive', 'accessibility', 'vendor'];
       const newScores: Partial<Record<AuditCategory, number>> = {};
       let combinedGaps: AuditGap[] = [];
+      let detectedJudgeModel: string | null = null;
+      let latestReport = '';
 
       for (const cat of categories) {
         const res = await fetch('/api/audit', {
@@ -528,8 +518,11 @@ function AuditHubContent() {
         });
         if (res.ok) {
           const data = await res.json();
-          newScores[cat] = data.score || 96;
-          if (data.gaps && data.gaps.length > 0) {
+          const localEval = evaluateLocalXmlCategory(currentXml, cat);
+          newScores[cat] = typeof data.score === 'number' ? data.score : localEval.score;
+          if (data.judgeModel) detectedJudgeModel = String(data.judgeModel);
+          if (data.report) latestReport = String(data.report);
+          if (Array.isArray(data.gaps) && data.gaps.length > 0) {
             combinedGaps = [...combinedGaps, ...data.gaps];
           }
         } else {
@@ -542,7 +535,12 @@ function AuditHubContent() {
       }
       setAuditScores(newScores as Record<AuditCategory, number>);
       setAuditGaps(combinedGaps);
-      showToast(`🎉 6-Tier Audit Complete! Readiness Score: ${Math.round(Object.values(newScores).reduce((a,b)=>a+(b||96), 0)/6)}%`);
+      if (detectedJudgeModel) setAuditJudgeModel(detectedJudgeModel);
+      if (latestReport) setAuditReportMarkdown(latestReport);
+      const avgScore = Math.round(
+        categories.reduce((acc, c) => acc + (typeof newScores[c] === 'number' ? (newScores[c] as number) : 0), 0) / categories.length
+      );
+      showToast(`🎉 6-Tier Audit Complete! Readiness Score: ${avgScore}%`);
     } catch {
       showToast(`⚡ Evaluated against deterministic CIS Google Cloud & 2D Collision Benchmarks.`);
     } finally {
@@ -616,52 +614,34 @@ function AuditHubContent() {
       );
     }
 
-    // 5. Inject Zero-Trust Security, Cloud Armor WAF, Secret Manager CMEK & Private VPC Subnet bar if not already present
-    if (!healed.includes('audit_remediated_security_bar')) {
-      // Find max Y coordinate in the diagram so we place the remediation banner cleanly below existing tiers
-      let maxY = 760;
-      const geoRegex = /<mxGeometry\s+[^>]*?y="(\d+)"\s+[^>]*?height="(\d+)"/gi;
-      let m;
-      while ((m = geoRegex.exec(healed)) !== null) {
-        const bottom = parseInt(m[1], 10) + parseInt(m[2], 10);
-        if (bottom > maxY && bottom < 1800) {
-          maxY = bottom;
-        }
-      }
-      const barY = maxY + 18;
-      const securityBarXml =
-        `<mxCell id="audit_remediated_security_bar" value="&lt;div style=&quot;display:flex;align-items:center;justify-content:space-between;padding:6px 14px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;&quot;&gt;&lt;div style=&quot;display:flex;align-items:center;gap:8px;&quot;&gt;&lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#059669&quot; stroke-width=&quot;2.5&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;/svg&gt;&lt;span style=&quot;font-size:11px;font-weight:800;color:#065F46;letter-spacing:0.4px;&quot;&gt;ZERO-TRUST REMEDIATED PERIMETER • CLOUD ARMOR L7 WAF • GOOGLE SECRET MANAGER &amp;amp; KMS CMEK • PRIVATE VPC SUBNET (10.200.0.0/16)&lt;/span&gt;&lt;/div&gt;&lt;span style=&quot;font-size:10px;font-weight:800;color:#047857;background:#D1FAE5;padding:2px 8px;border-radius:4px;border:1px solid #6EE7B7;&quot;&gt;CIS BENCHMARK &amp;amp; WCAG AA VERIFIED&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;shadow=1;arcSize=8;" vertex="1" parent="1">` +
-        `<mxGeometry x="40" y="${barY}" width="1520" height="44" as="geometry"/>` +
-        `</mxCell>`;
-
-      healed = healed.replace('</root>', `${securityBarXml}\n</root>`);
-    }
-
     return healed;
   };
 
   // 1-Click Auto Remediation on Generated Artifact
   const handleAutoRemediateGaps = async () => {
     setIsAuditing(true);
-    showToast(`✨ Repairing broken icons, enforcing WCAG contrast, and injecting Cloud Armor WAF + KMS Secrets + Private VPC perimeter...`);
+    showToast(`✨ Remediating detected architecture, WCAG contrast, and spatial geometry gaps via server mutator...`);
 
     let healedXml = remediateDiagramXml(currentXml);
 
-    // Invoke backend /api/audit/remediate if this is a persisted diagram with active gaps
-    if (activeArtifact && auditGaps.length > 0) {
+    // Invoke backend /api/audit/remediate with either persisted diagramId OR live xmlContent
+    if (auditGaps.length > 0 || healedXml) {
       try {
         const remRes = await fetch('/api/audit/remediate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            diagramId: activeArtifact.id,
-            selectedGaps: auditGaps,
-            architectureType: activeArtifact.architecture_type || 'canonical_00'
+            diagramId: activeArtifact?.id,
+            xmlContent: healedXml,
+            selectedGaps: auditGaps.length > 0 ? auditGaps : [{ title: 'Geometry & Contrast Normalization', remediation: 'Resolve any overlaps, low contrast text, or disconnected flows.' }],
+            architectureType: activeArtifact?.architecture_type || 'custom'
           })
         });
         if (remRes.ok) {
           const remData = await remRes.json();
-          if (remData?.newVersion?.xml_content) {
+          if (typeof remData?.xml === 'string' && remData.xml.includes('<mxCell')) {
+            healedXml = remData.xml;
+          } else if (remData?.newVersion?.xml_content) {
             healedXml = remData.newVersion.xml_content;
           }
         }
@@ -696,18 +676,23 @@ function AuditHubContent() {
       }
     }
 
-    setAuditGaps([]);
-    setAuditScores({
-      security: 100,
-      visual: 100,
-      topology: 98,
-      responsive: 100,
-      accessibility: 98,
-      vendor: 96,
-    });
+    const postHealth = computeHonestDiagramHealth(healedXml);
+    setAuditScores(postHealth.scores);
+    setAuditGaps(
+      postHealth.issues.map((iss, idx) => ({
+        id: `post_rem_${iss.category}_${iss.code}_${idx}`,
+        severity: iss.severity === 'ERROR' ? 'HIGH' : 'MEDIUM',
+        title: iss.code.replace(/_/g, ' '),
+        component: iss.cellId || 'Diagram AST',
+        description: iss.message,
+        remediation: 'Inspect remaining geometry or contrast findings in Blueprint Studio.',
+      }))
+    );
     setIsAuditing(false);
     setActiveViewTab('diagram');
-    showToast(`🎉 Remediated & Saved! Broken icons replaced, WCAG contrast fixed, and Zero-Trust WAF/KMS/VPC bar added to diagram.`);
+    showToast(
+      `✨ Remediated & Saved! Post-remediation AST health: ${postHealth.overall}% (${postHealth.inventory.overlapCount} overlaps, ${postHealth.issues.length} remaining findings).`
+    );
   };
 
   // Filtered Artifacts List
@@ -1016,8 +1001,24 @@ function AuditHubContent() {
                     <span className={`text-[9.5px] font-bold px-2 py-0.2 rounded-full border ${scoreGrade.bg} ${scoreGrade.color}`}>
                       {scoreGrade.label}
                     </span>
-                    <span className="hidden sm:inline-flex text-[10px] text-emerald-600 dark:text-emerald-400 font-bold items-center gap-1 font-mono">
-                      <CheckCheck className="w-3 h-3" aria-hidden="true" /> 100% Collision-Free
+                    <span
+                      className={`hidden sm:inline-flex text-[10px] font-bold items-center gap-1 font-mono ${
+                        liveAstHealth.inventory.cardCount === 0
+                          ? 'text-slate-400'
+                          : liveAstHealth.inventory.overlapCount === 0
+                            ? 'text-emerald-600 dark:text-emerald-400'
+                            : 'text-amber-600 dark:text-amber-400'
+                      }`}
+                    >
+                      <CheckCheck className="w-3 h-3" aria-hidden="true" />{' '}
+                      {liveAstHealth.inventory.cardCount === 0
+                        ? 'Unpopulated Canvas'
+                        : liveAstHealth.inventory.overlapCount === 0
+                          ? '0 Collisions Verified'
+                          : `${liveAstHealth.inventory.overlapCount} Overlap(s)`}
+                    </span>
+                    <span className="hidden md:inline-flex text-[9.5px] font-mono px-2 py-0.2 rounded border bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300">
+                      {auditJudgeModel ? `Judge: ${auditJudgeModel}` : 'AST Inspector'}
                     </span>
                   </div>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 max-w-2xl truncate">
@@ -1029,7 +1030,7 @@ function AuditHubContent() {
               {/* Right: 6 Category Radar Pills (Compact Horizontal Strip) */}
               <div role="group" aria-label="Audit Categories" className="flex flex-wrap items-center gap-1.5 shrink-0">
                 {AUDIT_CATEGORIES.map((cat) => {
-                  const score = auditScores[cat.id] ?? 96;
+                  const score = auditScores[cat.id] ?? 0;
                   const isActive = activeCategory === cat.id;
                   return (
                     <button
@@ -1210,15 +1211,24 @@ function AuditHubContent() {
                                 </div>
                               </div>
 
-                              {/* Readiness Score Tag */}
-                              <div className="text-right shrink-0">
-                                <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 block">
-                                  {isSelected ? `${overallScore}%` : '96%'}
-                                </span>
-                                <span className="text-[9px] font-bold text-slate-400 uppercase">
-                                  Audited
-                                </span>
-                              </div>
+                              {/* Readiness Score Tag (Deterministic AST or Live Judge — Zero Hardcoded 96%) */}
+                              {(() => {
+                                const itemScore = isSelected
+                                  ? overallScore
+                                  : art.xml_content
+                                    ? computeHonestDiagramHealth(art.xml_content).overall
+                                    : 0;
+                                return (
+                                  <div className="text-right shrink-0">
+                                    <span className={`text-xs font-black block tabular-nums ${itemScore >= 90 ? 'text-emerald-600 dark:text-emerald-400' : itemScore >= 75 ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400'}`}>
+                                      {itemScore}%
+                                    </span>
+                                    <span className="text-[9px] font-bold text-slate-400 uppercase">
+                                      {isSelected && auditJudgeModel ? 'Judged' : 'AST'}
+                                    </span>
+                                  </div>
+                                );
+                              })()}
                             </button>
                           );
                         })
@@ -1255,7 +1265,7 @@ function AuditHubContent() {
                     </div>
                   )}
 
-                  {/* TAB 3: 50 REFERENCE BLUEPRINTS (BASELINE) */}
+                  {/* TAB 3: CERTIFIED REFERENCE BLUEPRINTS (BASELINE) */}
                   {scopeTab === 'canonical' && (
                     <div className="space-y-2 max-h-[640px] overflow-y-auto pr-1">
                       {CANONICAL_TEMPLATES.map((tpl) => {
@@ -1294,8 +1304,8 @@ function AuditHubContent() {
                               </p>
                             </div>
 
-                            <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 shrink-0 tabular-nums">
-                              98%
+                            <span className="text-[10px] font-mono font-bold text-sky-600 dark:text-sky-400 shrink-0 tabular-nums">
+                              {isSelected ? `${overallScore}%` : tpl.level}
                             </span>
                           </button>
                         );
@@ -1415,7 +1425,7 @@ function AuditHubContent() {
                         </h3>
                       </div>
                       <span className="text-[11px] font-mono text-slate-400 tabular-nums">
-                        1600 &times; 960 &bull; 100% Vector Certified
+                        1600 &times; 960 &bull; Native Draw.io Vector SVG
                       </span>
                     </div>
 
@@ -1424,32 +1434,47 @@ function AuditHubContent() {
                       isLight ? 'bg-white border-slate-200/90 shadow-inner' : 'bg-[#060a12] border-slate-800 shadow-inner'
                     }`}>
                       <DiagramViewerRenderSafe
-                        key={`audit_canvas_${activeArtifactId}_${currentXml.length}_${currentXml.includes('audit_remediated_security_bar') ? 'healed' : 'raw'}`}
+                        key={`audit_canvas_${activeArtifactId}_${currentXml.length}_${currentXml.slice(-48)}`}
                         xml={currentXml}
                         aspectRatioId="16:9"
                         bgTheme={isLight ? 'light' : 'dark'}
                       />
                     </div>
 
-                    {/* Bottom Feature Badges */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/60 text-center">
-                      <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/60">
-                        <span className="text-[9.5px] font-bold uppercase text-slate-400 block">VPC Service Perimeter</span>
-                        <span className="text-xs font-black text-teal-600 dark:text-teal-400">Protected</span>
-                      </div>
-                      <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/60">
-                        <span className="text-[9.5px] font-bold uppercase text-slate-400 block">CMEK Encryption</span>
-                        <span className="text-xs font-black text-teal-600 dark:text-teal-400">Enforced</span>
-                      </div>
-                      <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/60">
-                        <span className="text-[9.5px] font-bold uppercase text-slate-400 block">Column Gap Pitch</span>
-                        <span className="text-xs font-black text-teal-600 dark:text-teal-400 tabular-nums">140px Clean</span>
-                      </div>
-                      <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/60">
-                        <span className="text-[9.5px] font-bold uppercase text-slate-400 block">WCAG Contrast</span>
-                        <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 tabular-nums">4.8:1 (AA)</span>
-                      </div>
-                    </div>
+                    {/* Live Verified AST Metrics Strip (Zero Hardcoded Claims) */}
+                    {(() => {
+                      const liveHealth = computeHonestDiagramHealth(currentXml);
+                      return (
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/60 text-center">
+                          <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/60">
+                            <span className="text-[9.5px] font-bold uppercase text-slate-400 block">Composite Cards</span>
+                            <span className="text-xs font-black text-teal-600 dark:text-teal-400 tabular-nums">
+                              {liveHealth.inventory.cardCount} ({liveHealth.inventory.zoneCount} Zones)
+                            </span>
+                          </div>
+                          <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/60">
+                            <span className="text-[9.5px] font-bold uppercase text-slate-400 block">Directed Edges</span>
+                            <span className="text-xs font-black text-teal-600 dark:text-teal-400 tabular-nums">
+                              {liveHealth.inventory.edgeCount} ({liveHealth.inventory.danglingEdgeCount} Dangling)
+                            </span>
+                          </div>
+                          <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/60">
+                            <span className="text-[9.5px] font-bold uppercase text-slate-400 block">Card Overlaps</span>
+                            <span className={`text-xs font-black tabular-nums ${liveHealth.inventory.overlapCount === 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+                              {liveHealth.inventory.overlapCount === 0 ? '0 Collisions' : `${liveHealth.inventory.overlapCount} Overlap(s)`}
+                            </span>
+                          </div>
+                          <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/60">
+                            <span className="text-[9.5px] font-bold uppercase text-slate-400 block">WCAG &amp; Asset Gate</span>
+                            <span className={`text-xs font-black tabular-nums ${liveHealth.inventory.contrastErrorCount === 0 && liveHealth.inventory.brokenImageCount === 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                              {liveHealth.inventory.contrastErrorCount === 0 && liveHealth.inventory.brokenImageCount === 0
+                                ? 'AA Verified'
+                                : `${liveHealth.inventory.contrastErrorCount + liveHealth.inventory.brokenImageCount} Issue(s)`}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
                 )}
 
@@ -1564,6 +1589,24 @@ function AuditHubContent() {
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                           {[...DEFAULT_CONTROLS.security, ...DEFAULT_CONTROLS.topology, ...DEFAULT_CONTROLS.visual].map((ctrl) => {
+                            const upperXml = currentXml.toUpperCase();
+                            const isNonCloudSchema =
+                              liveAstHealth.domainKind === 'uml_erd_schema' ||
+                              liveAstHealth.domainKind === 'sequence_state_flow' ||
+                              liveAstHealth.domainKind === 'executive_overview';
+                            const controlVerifiedInXml = (() => {
+                              if (ctrl.controlId === 'CC7.1') {
+                                return liveAstHealth.inventory.cardCount > 0 && liveAstHealth.inventory.overlapCount === 0;
+                              }
+                              if (ctrl.controlId === 'CIS-GCP-1.4') return /KMS|CMEK|SECRET|HSM|VAULT/.test(upperXml);
+                              if (ctrl.controlId === 'CIS-GCP-3.1') return /VPC|PSC|PRIVATE|PERIMETER|ISOLAT/.test(upperXml);
+                              if (ctrl.controlId === 'NIST-AC-3') return /IAM|OIDC|OAUTH|WORKLOAD|IDENTITY|IAP|MTLS|RLS/.test(upperXml);
+                              if (ctrl.controlId === 'CC6.6') return /ARMOR|WAF|CLOUDFLARE|LOAD BALANC|GCLB|GATEWAY|APIGEE|ENVOY/.test(upperXml);
+                              if (ctrl.controlId === '§164.312(a)') return /AUDIT|LOGGING|TELEMETRY|OTEL|TRACE|CHRONICLE|SIEM/.test(upperXml);
+                              if (ctrl.controlId === 'NIST-CP-9') return /SPANNER|ALLOYDB|MULTI-REGION|REPLICA|FAILOVER|BACKUP|HA\b|DR\b/.test(upperXml);
+                              if (ctrl.controlId === 'CIS-GCP-2.8') return /DLQ|DEAD.LETTER|PUB\/SUB|KAFKA|EVENTARC|RETRY/.test(upperXml);
+                              return false;
+                            })();
                             const hasMatchingGap = auditGaps.some(
                               (g) => g.component.toLowerCase().includes(ctrl.component.split(' ')[0].toLowerCase()) || g.title.toLowerCase().includes(ctrl.component.split(' ')[0].toLowerCase()) || g.description.toLowerCase().includes(ctrl.framework.toLowerCase())
                             );
@@ -1576,11 +1619,19 @@ function AuditHubContent() {
                                 <td className="p-3">
                                   {hasMatchingGap ? (
                                     <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                                      <AlertTriangle className="w-3 h-3" aria-hidden="true" /> MITIGATION READY
+                                      <AlertTriangle className="w-3 h-3" aria-hidden="true" /> OPEN FINDING
+                                    </span>
+                                  ) : controlVerifiedInXml ? (
+                                    <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                      <Check className="w-3 h-3" aria-hidden="true" /> VERIFIED IN XML
+                                    </span>
+                                  ) : isNonCloudSchema && ctrl.controlId !== 'CC7.1' ? (
+                                    <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/20">
+                                      DOMAIN N/A
                                     </span>
                                   ) : (
-                                    <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                                      <Check className="w-3 h-3" aria-hidden="true" /> PASS
+                                    <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                                      NOT DETECTED
                                     </span>
                                   )}
                                 </td>
@@ -1618,39 +1669,63 @@ function AuditHubContent() {
                       </button>
                     </div>
 
-                    {/* Summary Matrix */}
+                    {/* Summary Matrix (Computed Live from Active XML AST & Multi-Model Judge) */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
                         <span className="text-[10px] uppercase font-bold text-slate-400 block">Overall Readiness</span>
-                        <span className="text-xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{overallScore}% ({scoreGrade.grade})</span>
-                        <p className="text-[11px] text-slate-500 mt-1">Certified for enterprise production deployment.</p>
+                        <span className={`text-xl font-black tabular-nums ${scoreGrade.color}`}>{overallScore}% ({scoreGrade.grade})</span>
+                        <p className="text-[11px] text-slate-500 mt-1">{scoreGrade.label} &bull; {auditGaps.length} open finding(s).</p>
                       </div>
                       <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Zero-Trust Boundaries</span>
-                        <span className="text-xl font-black text-teal-600 dark:text-teal-400 tabular-nums">100% Enforced</span>
-                        <p className="text-[11px] text-slate-500 mt-1">VPC-SC and Workload Identity compliant.</p>
+                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Security &amp; Domain Posture</span>
+                        <span className="text-xl font-black text-teal-600 dark:text-teal-400 tabular-nums">{auditScores.security}%</span>
+                        <p className="text-[11px] text-slate-500 mt-1">
+                          Domain class: {liveAstHealth.domainKind.replace(/_/g, ' ')}.
+                        </p>
                       </div>
                       <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Draw.io Geometry</span>
-                        <span className="text-xl font-black text-sky-600 dark:text-sky-400 tabular-nums">100% Collision-Free</span>
-                        <p className="text-[11px] text-slate-500 mt-1">16:9 ratio with zero line-node collisions.</p>
+                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Draw.io 2D Geometry</span>
+                        <span className={`text-xl font-black tabular-nums ${liveAstHealth.inventory.overlapCount === 0 && liveAstHealth.inventory.cardCount > 0 ? 'text-sky-600 dark:text-sky-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                          {liveAstHealth.inventory.cardCount === 0
+                            ? '0 Cards'
+                            : liveAstHealth.inventory.overlapCount === 0
+                              ? '0 Overlaps'
+                              : `${liveAstHealth.inventory.overlapCount} Overlap(s)`}
+                        </span>
+                        <p className="text-[11px] text-slate-500 mt-1">
+                          {liveAstHealth.inventory.cardCount} composite cards &bull; {liveAstHealth.inventory.edgeCount} directed flows.
+                        </p>
                       </div>
                     </div>
 
-                    {/* Report Text */}
+                    {/* Grounded Report Text (Zero Invented Cloud Armor / 90-Day KMS Claims) */}
                     <div className="prose prose-sm dark:prose-invert max-w-none text-xs text-slate-600 dark:text-slate-300 space-y-3 leading-relaxed">
                       <p>
-                        This generated architecture specification (<code>{activeArtifact?.name || 'Active Architecture'}</code>) has been comprehensively scanned by PromptCanvas Maestro-Audit engine against the <b>NIST SP 800-53 Rev 5</b>, <b>CIS Google Cloud Foundations Benchmark v3.0</b>, and <b>SOC 2 Type II Security Trust Principles</b>.
+                        Active specification (<code>{scopeTab === 'canonical' ? `#${activeCanonicalTemplate.id} • ${activeCanonicalTemplate.name}` : (activeArtifact?.name || 'Custom XML Specification')}</code>) was inspected across{' '}
+                        <b>{liveAstHealth.inventory.zoneCount} boundary zone(s)</b>,{' '}
+                        <b>{liveAstHealth.inventory.cardCount} composite component card(s)</b>, and{' '}
+                        <b>{liveAstHealth.inventory.edgeCount} directed connector flow(s)</b> (detected domain: <code>{liveAstHealth.domainKind}</code>).
                       </p>
-                      <p>
-                        All ingress connections route through Layer 7 DDoS scrubbing policies (Cloud Armor). Relational databases and object storage buckets are protected using Customer-Managed Encryption Keys (CMEK) managed in Google Cloud KMS with 90-day automated rotation.
-                      </p>
+                      {auditReportMarkdown ? (
+                        <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 whitespace-pre-wrap font-sans text-xs">
+                          {auditReportMarkdown}
+                        </div>
+                      ) : (
+                        <p>
+                          Deterministic AST geometry inspection recorded <b>{liveAstHealth.inventory.overlapCount} node overlap(s)</b>,{' '}
+                          <b>{liveAstHealth.inventory.danglingEdgeCount} dangling edge(s)</b>,{' '}
+                          <b>{liveAstHealth.inventory.contrastErrorCount} WCAG contrast issue(s)</b>, and{' '}
+                          <b>{liveAstHealth.inventory.brokenImageCount} unverified external image asset(s)</b>. Click <b>Run 6-Tier Audit</b> above to invoke the server-side Orthogonal Multi-Model Judge (<code>gemini-3.1-pro-preview</code> + <code>gemma-4-31b-it</code>) for semantic &amp; security critique.
+                        </p>
+                      )}
                     </div>
 
                     {/* Sign-off Block */}
-                    <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400 font-mono">
-                      <span>Auditor: PromptCanvas Enterprise AI Core</span>
-                      <span>Verified: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                    <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400 font-mono">
+                      <span>
+                        Evaluator: {auditJudgeModel || 'Deterministic Draw.io XML AST Inspector'}
+                      </span>
+                      <span>Inspected: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
                     </div>
                   </div>
                 )}

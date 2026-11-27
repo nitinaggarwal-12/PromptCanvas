@@ -42,6 +42,21 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 function normalizeThinkingConfigForFrontierModel(modelId: string, config: any): any {
   if (!config) return config;
   const modelStr = String(modelId || '').toLowerCase();
+  if (modelStr.startsWith('gemma-')) {
+    const {
+      thinkingConfig: rawTc,
+      tools: _tools,
+      ...rest
+    } = config;
+    const gemmaThinkingLevel = String(rawTc?.thinkingLevel || '').toUpperCase();
+    return {
+      ...rest,
+      ...(gemmaThinkingLevel === 'MINIMAL' || gemmaThinkingLevel === 'HIGH'
+        ? { thinkingConfig: { thinkingLevel: gemmaThinkingLevel } }
+        : {}),
+      maxOutputTokens: Math.min(config.maxOutputTokens || 8192, 8192),
+    };
+  }
   if (/^gemini-[345]/i.test(modelStr) && config.thinkingConfig) {
     return {
       ...config,
@@ -177,11 +192,13 @@ export async function generateContentWithRetry(
       ) {
         if (!resolvedLiveFallbackModels) {
           const currentNorm = String(activeParams?.model || '').toLowerCase();
-          const preferredTier = currentNorm.includes('flash')
-            ? 'chat'
-            : currentNorm.includes('pro')
-              ? 'pro'
-              : 'latest';
+          const preferredTier = currentNorm.startsWith('gemma-')
+            ? 'cross_family_critic'
+            : currentNorm.includes('flash')
+              ? 'chat'
+              : currentNorm.includes('pro')
+                ? 'pro'
+                : 'latest';
           const chain = await resolveLatestGeminiModelChain(ai, preferredTier);
           resolvedLiveFallbackModels = chain.filter((m) => m.toLowerCase() !== currentNorm);
         }

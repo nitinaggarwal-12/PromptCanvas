@@ -2,18 +2,18 @@
  * Hybrid Gemini Vision Reference Poster -> Editable Draw.io & Google Slides Spatial Decompiler
  *
  * Implements the 2-stage Hybrid Visual-to-Vector Architecture Synthesis pipeline:
- *   Stage A: Reference Poster Generation (`gemini-2.5-flash-image` / `imagen-3.0-generate-002`)
+ *   Stage A: Reference Poster Generation (`gemini-3-pro-image-preview` / `gemini-2.5-flash-image`)
  *            synthesizes the canonical visual topology poster with swimlanes, hero logos,
  *            nested sub-cards, and directional arrows.
- *   Stage B: Multimodal Vision Spatial Decompilation (`gemini-2.5-flash` / `gemini-2.5-pro`)
+ *   Stage B: Multimodal Vision Spatial Decompilation (`gemini-3.1-pro-preview` / `gemini-3-flash-preview`)
  *            extracts normalized [ymin, xmin, ymax, xmax] (0..1000) bounding boxes for every
  *            tier swimlane, component card, nested sub-card, and directional connector, then
  *            compiles them into 100% vector-editable Draw.io mxGraphModel XML (1600x585) and
  *            decomposed 6-slide Editable Google Slides (.pptx).
  */
 
-import { GoogleGenAI } from '@google/genai';
 import {
+  createGeminiClient,
   getEffectiveGeminiApiKey,
   getGeminiModel,
   resolveLatestDistinctJudgeChain,
@@ -91,10 +91,10 @@ export function normalizedBoxToCanvasRect(
 }
 
 /**
- * Verified Gemini Vision Spatial Decompilation of the Nano Banana 2.1 Reference Poster
+ * Verified Gemini Vision Spatial Decompilation of the Reference Architecture Poster
  * (`hybrid_3tier_gemini_poster_1792348616598.jpg`) for the 3-Tier Cloud-Native Web Application.
  */
-export const NANO_BANANA_3TIER_VISION_DECOMPILED_SPEC: VisionDecompiledPosterSpec = {
+export const REFERENCE_3TIER_VISION_DECOMPILED_SPEC: VisionDecompiledPosterSpec = {
   posterTitle: '3-Tier Cloud-Native Web Application',
   brandHeader: 'Google Cloud Architecture Center',
   canvasWidth: 1600,
@@ -347,12 +347,12 @@ export const NANO_BANANA_3TIER_VISION_DECOMPILED_SPEC: VisionDecompiledPosterSpe
 };
 
 /**
- * Verified Gemini Vision Spatial Decompilation of the Nano Banana 2.1 Reference Poster
+ * Verified Gemini Vision Spatial Decompilation of the Reference Architecture Poster
  * (`hybrid_ecommerce_microservices_poster_1792358165753.jpg`) for the E-Commerce Microservices
  * Architecture (Next.js Storefront, API Gateway, Separate Catalog, Cart, and Checkout
  * Microservices, and Database-per-Service Pattern using MongoDB, Redis, and PostgreSQL).
  */
-export const NANO_BANANA_ECOMMERCE_MICROSERVICES_VISION_DECOMPILED_SPEC: VisionDecompiledPosterSpec = {
+export const REFERENCE_ECOMMERCE_MICROSERVICES_VISION_DECOMPILED_SPEC: VisionDecompiledPosterSpec = {
   posterTitle: 'E-Commerce Microservices Architecture (Database-per-Service Pattern)',
   brandHeader: 'Google Cloud',
   canvasWidth: 1380,
@@ -661,7 +661,7 @@ export function verifyDrawioXmlMatchesVisionPosterSpec(
 }
 
 // ============================================================================
-// LIVE 5-STAGE NANO BANANA -> VISION DECOMPILER -> DRAW.IO -> JUDGE -> FIXER
+// LIVE 5-STAGE REFERENCE POSTER -> VISION DECOMPILER -> DRAW.IO -> JUDGE -> FIXER
 // ============================================================================
 
 export interface DeterministicDiagramAuditReport {
@@ -709,8 +709,8 @@ export interface CrossModelJudgeReport {
   strengths: string[];
 }
 
-export interface NanoBananaPipelineStageLog {
-  stage: 'nano_banana_image' | 'vision_decompile' | 'geometry_audit' | 'llm_judge' | 'auto_fix';
+export interface VisionPosterPipelineStageLog {
+  stage: 'reference_poster_image' | 'vision_decompile' | 'geometry_audit' | 'llm_judge' | 'auto_fix';
   title: string;
   modelUsed: string;
   status: 'success' | 'healed' | 'warning';
@@ -718,7 +718,7 @@ export interface NanoBananaPipelineStageLog {
   summary: string;
 }
 
-export interface NanoBananaPromptToDrawioResult {
+export interface VisionPosterPromptToDrawioResult {
   success: boolean;
   action: 'create' | 'modify' | 'audit_and_fix';
   userPrompt: string;
@@ -734,7 +734,7 @@ export interface NanoBananaPromptToDrawioResult {
   judgeReport: CrossModelJudgeReport;
   autoFixed: boolean;
   fixesApplied: string[];
-  stageLogs: NanoBananaPipelineStageLog[];
+  stageLogs: VisionPosterPipelineStageLog[];
 }
 
 function escXml(str: string): string {
@@ -1969,17 +1969,13 @@ export function compileVisionPosterSpecToDrawioXml(rawSpec: VisionDecompiledPost
 
   const specJsonEsc = escXml(JSON.stringify(spec));
   return [
-    `<mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" agent="PromptCanvas-NanoBananaVisionDecompiler" version="24.0.0">`,
-    `  <diagram id="nano_banana_vision_diagram" name="${escXml(spec.posterTitle)}" data-nano-banana-decompiled="true" data-vision-poster-spec-json="${specJsonEsc}">`,
-    `    <mxGraphModel dx="${pw}" dy="${ph}" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="${pw}" pageHeight="${ph}" background="#FFFFFF" math="0" shadow="0" data-arch-type="nano_banana_vision_decompiled">`,
+    `<mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" agent="PromptCanvas-VisionDecompiler" version="24.0.0"><diagram id="vision_decompiled_diagram" name="${escXml(spec.posterTitle)}" data-vision-decompiled="true" data-vision-poster-spec-json="${specJsonEsc}"><mxGraphModel dx="${pw}" dy="${ph}" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="${pw}" pageHeight="${ph}" background="#FFFFFF" math="0" shadow="0" data-arch-type="vision_poster_decompiled">`,
     `      <root>`,
     `        <mxCell id="0"/>`,
     `        <mxCell id="1" parent="0"/>`,
     ...cells,
     `      </root>`,
-    `    </mxGraphModel>`,
-    `  </diagram>`,
-    `</mxfile>`,
+    `    </mxGraphModel></diagram></mxfile>`,
   ].join('\n');
 }
 
@@ -2326,7 +2322,10 @@ export async function synthesizeCanonicalVisionSpecFromPrompt(params: {
 }> {
   const apiKey = getEffectiveGeminiApiKey(params.explicitApiKey);
   const t0 = Date.now();
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = createGeminiClient(apiKey);
+  if (!ai) {
+    throw new Error('No Gemini API key or Vertex AI credentials configured.');
+  }
 
   let liveGroundingBrief = '';
   if (apiKey && process.env.ENABLE_LIVE_GOOGLE_SEARCH_GROUNDING !== 'false') {
@@ -2418,7 +2417,7 @@ Return strictly valid JSON with top-level keys:
  * Step 2: Dynamically discovers the latest Gemini multimodal image model to generate an accurate,
  * spell-checked, 1:1 matched reference architecture poster image.
  */
-export async function generateNanoBananaReferencePoster(
+export async function generateVisionReferencePoster(
   userPrompt: string,
   explicitApiKey?: string,
   canonicalSpec?: VisionDecompiledPosterSpec | null
@@ -2460,7 +2459,10 @@ export async function generateNanoBananaReferencePoster(
     tierBlueprintText = `\nARCHITECTURAL ZONES & COMPONENTS:\n${lines.join('\n')}\n`;
   }
 
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = createGeminiClient(apiKey);
+  if (!ai) {
+    throw new Error('No Gemini API key or Vertex AI credentials configured.');
+  }
   const imagePrompt = `Create a clean, high-resolution, publication-grade Technical System Architecture Diagram (16:9 widescreen, crisp white background) for:
 Title: "${canonicalSpec?.posterTitle || userPrompt}"
 ${tierBlueprintText}
@@ -2493,7 +2495,7 @@ VISUAL ACCURACY & TYPOGRAPHY GUIDELINES:
         };
       }
     } catch (err) {
-      console.warn(`[generateNanoBananaReferencePoster] ${imageModelId} error:`, err);
+      console.warn(`[generateVisionReferencePoster] ${imageModelId} error:`, err);
     }
   }
 
@@ -2525,7 +2527,10 @@ export async function decompilePosterAndPromptWithGeminiVision(params: {
   const apiKey = getEffectiveGeminiApiKey(params.explicitApiKey);
   const t0 = Date.now();
 
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = createGeminiClient(apiKey);
+  if (!ai) {
+    throw new Error('No Gemini API key or Vertex AI credentials configured.');
+  }
 
   const canonicalHint = params.canonicalSpec
     ? `\nARCHITECTURAL PLAN REFERENCE (Preserve accurate component names while extracting faithful 2D spatial layout from the image):\n${JSON.stringify(params.canonicalSpec, null, 2)}\n`
@@ -2609,7 +2614,10 @@ export async function evaluateWithCrossModelLlmJudge(params: {
 }): Promise<CrossModelJudgeReport> {
   const apiKey = getEffectiveGeminiApiKey(params.explicitApiKey);
   const t0 = Date.now();
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = createGeminiClient(apiKey);
+  if (!ai) {
+    throw new Error('No Gemini API key or Vertex AI credentials configured.');
+  }
 
   // Strict Cross-Model Separation via dynamic latest-frontier discovery
   const judgeModels = await resolveLatestDistinctJudgeChain(ai, params.generatorModelUsed);
@@ -2687,11 +2695,18 @@ Return strictly valid JSON matching:
       if (rawText) {
         const parsed = JSON.parse(rawText);
         const dims = parsed.dimensions || {};
-        const acc = Math.min(100, Math.max(0, Number(dims.accuracy?.score ?? 94)));
-        const comp = Math.min(100, Math.max(0, Number(dims.completeness?.score ?? 94)));
-        const faith = Math.min(100, Math.max(0, Number(dims.faithfulness?.score ?? 94)));
-        const rel = Math.min(100, Math.max(0, Number(dims.relevance?.score ?? 94)));
-        const rawVis = Math.min(100, Math.max(0, Number(dims.noVisualDefects?.score ?? 95)));
+        const parseRequiredDim = (rawScore: unknown, dimName: string): number => {
+          const n = typeof rawScore === 'number' ? rawScore : Number(rawScore);
+          if (rawScore === undefined || rawScore === null || !Number.isFinite(n)) {
+            throw new Error(`Judge response omitted numeric score for dimension "${dimName}".`);
+          }
+          return Math.min(100, Math.max(0, Math.round(n)));
+        };
+        const acc = parseRequiredDim(dims.accuracy?.score, 'accuracy');
+        const comp = parseRequiredDim(dims.completeness?.score, 'completeness');
+        const faith = parseRequiredDim(dims.faithfulness?.score, 'faithfulness');
+        const rel = parseRequiredDim(dims.relevance?.score, 'relevance');
+        const rawVis = parseRequiredDim(dims.noVisualDefects?.score, 'noVisualDefects');
         const vis = Math.min(rawVis, params.geometryAudit.score);
 
         const overallScore = Math.round((acc + comp + faith + rel + vis) / 5);
@@ -2781,7 +2796,10 @@ export async function modifyVisionPosterDiagramWithGemini(params: {
 }> {
   const apiKey = getEffectiveGeminiApiKey(params.explicitApiKey);
   const t0 = Date.now();
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = createGeminiClient(apiKey);
+  if (!ai) {
+    throw new Error('No Gemini API key or Vertex AI credentials configured.');
+  }
 
   const modSystemPrompt = `You are the Principal Enterprise Cloud Architecture Co-Pilot.
 You are given the user's current Draw.io architecture specification (VisionDecompiledPosterSpec JSON) and a follow-up natural language modification instruction.
@@ -2850,7 +2868,10 @@ export async function fixVisionPosterDiagramWithJudgeFeedback(params: {
 }> {
   const apiKey = getEffectiveGeminiApiKey(params.explicitApiKey);
   const t0 = Date.now();
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = createGeminiClient(apiKey);
+  if (!ai) {
+    throw new Error('No Gemini API key or Vertex AI credentials configured.');
+  }
 
   const dimFeedback: string[] = [];
   for (const [dimName, dimVal] of Object.entries(params.judgeReport.dimensions || {})) {
@@ -2938,9 +2959,9 @@ Return strictly valid JSON:
 }
 
 /**
- * End-to-End Orchestrator for Freeform (No-Template) Prompt -> Spec Lock -> Nano Banana -> Vision Decompiler -> Draw.io -> Cross-Model Judge -> Auto-Fix
+ * End-to-End Orchestrator for Freeform (No-Template) Prompt -> Spec Lock -> Reference Poster -> Vision Decompiler -> Draw.io -> Cross-Model Judge -> Auto-Fix
  */
-export async function runNanoBananaPromptToDrawioPipeline(params: {
+export async function runVisionPosterPromptToDrawioPipeline(params: {
   action: 'create' | 'modify' | 'audit_and_fix';
   userPrompt: string;
   modificationPrompt?: string;
@@ -2951,8 +2972,8 @@ export async function runNanoBananaPromptToDrawioPipeline(params: {
   regeneratePoster?: boolean;
   autoFix?: boolean;
   explicitApiKey?: string;
-}): Promise<NanoBananaPromptToDrawioResult> {
-  const stageLogs: NanoBananaPipelineStageLog[] = [];
+}): Promise<VisionPosterPromptToDrawioResult> {
+  const stageLogs: VisionPosterPipelineStageLog[] = [];
   const modHistory = [...(params.modificationHistory || [])];
   let posterDataUrl = params.currentPosterDataUrl || null;
   let posterBase64: string | null = null;
@@ -2984,8 +3005,8 @@ export async function runNanoBananaPromptToDrawioPipeline(params: {
     });
     const canonicalSpec = specSynthRes.spec;
 
-    // Step 2: Spec-Locked Nano Banana Image Generation (zero tiny-font typos, 1:1 matched tiers & cards)
-    const posterRes = await generateNanoBananaReferencePoster(
+    // Step 2: Spec-Locked Reference Architecture Image Generation (zero tiny-font typos, 1:1 matched tiers & cards)
+    const posterRes = await generateVisionReferencePoster(
       combinedPrompt,
       params.explicitApiKey,
       canonicalSpec
@@ -2997,14 +3018,14 @@ export async function runNanoBananaPromptToDrawioPipeline(params: {
     posterLatencyMs = posterRes.latencyMs;
 
     stageLogs.push({
-      stage: 'nano_banana_image',
-      title: 'Stage 1A: Spec-Locked Nano Banana Reference Image Generation',
+      stage: 'reference_poster_image',
+      title: 'Stage 1A: Spec-Locked Reference Architecture Image Generation',
       modelUsed: posterModelUsed,
       status: posterDataUrl ? 'success' : 'warning',
       latencyMs: posterLatencyMs,
       summary: posterDataUrl
         ? `Generated 1:1 matched 16:9 reference architecture image (${Math.round((posterBase64?.length || 0) / 1024)} KB) via ${posterModelUsed} locked to ${canonicalSpec.nodes.length} spell-checked nodes.`
-        : `Nano Banana image generation skipped; proceeding with canonical spatial specification.`,
+        : `Reference image generation skipped; proceeding with canonical spatial specification.`,
     });
 
     // Step 3: Multimodal Vision 1:1 Verification & Draw.io XML Compilation
@@ -3070,7 +3091,7 @@ export async function runNanoBananaPromptToDrawioPipeline(params: {
 
     if (params.regeneratePoster) {
       const fullPromptForPoster = `${params.userPrompt}. Modifications: ${modHistory.join('; ')}`;
-      const posterRes = await generateNanoBananaReferencePoster(
+      const posterRes = await generateVisionReferencePoster(
         fullPromptForPoster,
         params.explicitApiKey,
         spec
@@ -3082,12 +3103,12 @@ export async function runNanoBananaPromptToDrawioPipeline(params: {
         posterModelUsed = posterRes.modelUsed;
         posterLatencyMs = posterRes.latencyMs;
         stageLogs.push({
-          stage: 'nano_banana_image',
-          title: 'Stage 1A: Nano Banana Reference Poster Regeneration',
+          stage: 'reference_poster_image',
+          title: 'Stage 1A: Reference Architecture Poster Regeneration',
           modelUsed: posterModelUsed,
           status: 'success',
           latencyMs: posterLatencyMs,
-          summary: `Regenerated 1:1 Nano Banana reference image incorporating modification: "${modInstr}".`,
+          summary: `Regenerated 1:1 reference architecture image incorporating modification: "${modInstr}".`,
         });
       }
     }

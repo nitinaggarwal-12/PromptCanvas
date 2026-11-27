@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
-import { getEffectiveGeminiApiKey, getGeminiModel } from '@/lib/geminiConfig';
+import { createGeminiClient, getGeminiModel } from '@/lib/geminiConfig';
 import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 
@@ -99,8 +98,8 @@ export async function POST(req: NextRequest) {
 
     const fallbackChips = getDomainContextualChips(projectTitle, selectedDomain, archetypeId, userPrompt);
 
-    const apiKey = guard.effectiveApiKey || getEffectiveGeminiApiKey();
-    if (!apiKey) {
+    const ai = createGeminiClient(guard.effectiveApiKey);
+    if (!ai) {
       // Offline fallback heuristic parser for testing and development
       const lower = userPrompt.toLowerCase();
       if (lower.includes('diagram') || lower.includes('template') || lower.includes('figure') || lower.includes('xml')) {
@@ -135,7 +134,6 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const ai = new GoogleGenAI({ apiKey });
     const model = getGeminiModel('pro');
 
     const systemInstruction = `You are PromptCanvas AI Assist, an elite Principal Enterprise Systems Architect.

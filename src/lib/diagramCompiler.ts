@@ -574,8 +574,8 @@ function getExactAgenticRagReferenceXml(): string {
           <mxGeometry x="710" y="210" width="210" height="110" as="geometry" />
         </mxCell>
 
-        <!-- THE REASONER: GEMINI 3.6 PRO AND REACT LOOP -->
-        <mxCell id="reasoner_box" value="The Reasoner: Gemini 2.5 Flash (LLM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=2;verticalAlign=top;align=center;spacingTop=15;fontFamily=Helvetica;fontSize=16;fontStyle=1;fontColor=#0F172A;shadow=1;" vertex="1" parent="1">
+        <!-- THE REASONER: GEMINI 3.1 PRO AND REACT LOOP -->
+        <mxCell id="reasoner_box" value="The Reasoner: Gemini 3.1 Pro (LLM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=2;verticalAlign=top;align=center;spacingTop=15;fontFamily=Helvetica;fontSize=16;fontStyle=1;fontColor=#0F172A;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="460" y="360" width="460" height="320" as="geometry" />
         </mxCell>
 
@@ -3240,7 +3240,7 @@ function getExactEvalSafetyBenchmarkingReferenceXml(): string {
         <mxCell id="trackB_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#475569;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="500" y="415" width="380" height="260" as="geometry" />
         </mxCell>
-        <mxCell id="trackB_title" value="B. NLI Claim Verification (Powered by Gemini 3.6)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#A855F7;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+        <mxCell id="trackB_title" value="B. NLI Claim Verification (Powered by Gemini 3.1 Pro)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#A855F7;fontStyle=1;fontSize=12;" vertex="1" parent="1">
           <mxGeometry x="505" y="422" width="370" height="25" as="geometry" />
         </mxCell>
         <mxCell id="nli1" value="&lt;b&gt;1. Isolate Claims&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9px;color:#94A3B8;'&gt;Decompose output&lt;br/&gt;into atomic&lt;br/&gt;factual statements&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#A855F7;fontColor=#F8FAFC;fontSize=11;spacingTop=6;" vertex="1" parent="1">

@@ -101,7 +101,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         stepNumber: 1,
         title: 'Architecture Studio Orientation',
         whereToClick: 'Architecture Studio / Blueprint Catalog',
-        description: 'PromptCanvas provides a streamlined architecture workspace. Access 36 Zero-Bento Architecture Templates, 35 Certified Blueprints in the Blueprint Catalog, and 8 surviving archetypes in Document Studio directly from the sidebar.',
+        description: 'PromptCanvas provides a streamlined architecture workspace. Access 84 Certified Architecture Templates (L200–L400), 35 Certified Blueprints in the Blueprint Catalog, 15 Infographics, and 8 archetypes in Document Studio directly from the sidebar.',
         validationChecklist: [
           'Left Studio is ready for prompt input or blueprint selection',
           'Canvas is set to high-DPI 1600px 16:9 desktop grid'
@@ -589,7 +589,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         title: 'Committing Hardened Version v2',
         whereToClick: 'Header -> Version Tag (v2)',
         description: 'Version v2 hardened and ready for formal compliance auditing.',
-        validationChecklist: ['Security scorecard reaches 100% compliance'],
+        validationChecklist: ['Review deterministic AST & Multi-Model Judge security findings'],
         tip: 'Attach the version diff to your change management ticket.'
       },
       {
@@ -1632,7 +1632,7 @@ export default function GuidePage() {
           <div className={`p-3.5 rounded-xl border space-y-1 ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
             <span className="w-6 h-6 rounded-md bg-teal-500/10 text-teal-600 border border-teal-500/20 flex items-center justify-center font-bold text-xs">2</span>
             <b className={`text-xs block ${isLight ? 'text-slate-900' : 'text-white'}`}>Templates Matrix</b>
-            <p className={`text-[10px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>36 Zero-Bento templates &amp; 35 certified blueprints.</p>
+            <p className={`text-[10px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>84 architecture templates &amp; 35 certified blueprints.</p>
           </div>
 
           <div className={`p-3.5 rounded-xl border space-y-1 ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>

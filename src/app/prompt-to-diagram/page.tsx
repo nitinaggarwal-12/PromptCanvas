@@ -1189,9 +1189,39 @@ export default function PurePromptToDiagramPage() {
                     <span className="px-2 py-0.5 rounded bg-white border border-slate-200">
                       {activeResult.audit.edgeCount} Flows
                     </span>
+                    {typeof activeResult.audit.siblingOverlaps === 'number' && (
+                      <span
+                        className={`px-2 py-0.5 rounded border ${
+                          activeResult.audit.siblingOverlaps === 0
+                            ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                            : 'bg-amber-50 border-amber-200 text-amber-800'
+                        }`}
+                      >
+                        {activeResult.audit.siblingOverlaps === 0
+                          ? '0 Overlaps'
+                          : `${activeResult.audit.siblingOverlaps} Overlap(s)`}
+                      </span>
+                    )}
+                    {activeResult.truthfulnessDossier && (
+                      <span
+                        data-testid="p2d-multimodel-judge-badge"
+                        title={`Judge: ${activeResult.truthfulnessDossier.criticJudgeModel}`}
+                        className={`px-2 py-0.5 rounded border font-bold ${
+                          activeResult.truthfulnessDossier.isLiveModelEvaluated
+                            ? activeResult.truthfulnessDossier.scores?.overallCompositeScore >= 85
+                              ? 'bg-teal-50 border-teal-200 text-teal-800'
+                              : 'bg-amber-50 border-amber-200 text-amber-800'
+                            : 'bg-slate-100 border-slate-300 text-slate-700'
+                        }`}
+                      >
+                        {activeResult.truthfulnessDossier.isLiveModelEvaluated
+                          ? `Multi-Model Judge ${activeResult.truthfulnessDossier.scores?.overallCompositeScore}%`
+                          : `AST Only ${activeResult.truthfulnessDossier.scores?.overallCompositeScore}%`}
+                      </span>
+                    )}
                   </div>
 
-                  {(activeResult.pipelineStages || groundingSources.length > 0 || webSearchQueries.length > 0) && (
+                  {(activeResult.pipelineStages || activeResult.truthfulnessDossier || groundingSources.length > 0 || webSearchQueries.length > 0) && (
                     <div className="pt-1 border-t border-slate-200/80">
                       <button
                         type="button"
@@ -1200,7 +1230,7 @@ export default function PurePromptToDiagramPage() {
                         className="w-full flex items-center justify-between text-[10.5px] font-bold text-blue-700 hover:text-blue-900 cursor-pointer py-0.5"
                       >
                         <span>
-                          Research &amp; Plan Provenance
+                          Research &amp; Judge Provenance
                           {groundingSources.length > 0
                             ? ` (${groundingSources.length} Web Sources)`
                             : webSearchQueries.length > 0
@@ -1216,15 +1246,25 @@ export default function PurePromptToDiagramPage() {
 
                       {showPlanDetails && (
                         <div className="mt-2 space-y-2 text-[10.5px] text-slate-600">
-                          {activeResult.pipelineStages && (
+                          {(activeResult.pipelineStages || activeResult.truthfulnessDossier) && (
                             <div className="p-2 rounded-lg bg-white border border-slate-200 font-mono text-[10px] space-y-0.5 text-slate-600">
-                              <div>Research: {activeResult.pipelineStages.researchModel}</div>
-                              <div>Plan: {activeResult.pipelineStages.planModel}</div>
-                              {activeResult.pipelineStages.imageModel && (
-                                <div>Image: {activeResult.pipelineStages.imageModel}</div>
+                              {activeResult.pipelineStages && (
+                                <>
+                                  <div>Research: {activeResult.pipelineStages.researchModel}</div>
+                                  <div>Plan: {activeResult.pipelineStages.planModel}</div>
+                                  {activeResult.pipelineStages.imageModel && (
+                                    <div>Image: {activeResult.pipelineStages.imageModel}</div>
+                                  )}
+                                  {activeResult.pipelineStages.visionToXmlModel && (
+                                    <div>Vision→XML: {activeResult.pipelineStages.visionToXmlModel}</div>
+                                  )}
+                                </>
                               )}
-                              {activeResult.pipelineStages.visionToXmlModel && (
-                                <div>Vision→XML: {activeResult.pipelineStages.visionToXmlModel}</div>
+                              {activeResult.truthfulnessDossier && (
+                                <>
+                                  <div>Generator: {activeResult.truthfulnessDossier.generatorModel}</div>
+                                  <div>Orthogonal Judge: {activeResult.truthfulnessDossier.criticJudgeModel}</div>
+                                </>
                               )}
                             </div>
                           )}

@@ -84,6 +84,8 @@ export interface CompoundPromptToDiagramResult {
   graph: CompoundArchitectureGraph;
   audit: CompoundGeometryAudit;
   pipelineStages?: PipelineStagesReport;
+  truthfulnessDossier?: any;
+  repairAttempts?: number;
   modelUsed: string;
   latencyMs: number;
 }
@@ -222,7 +224,7 @@ async function groundPromptWithGoogleSearch(
   userPrompt: string
 ): Promise<Stage1ResearchOutput> {
   const flashChain = await resolveLatestGeminiModelChain(ai, 'chat');
-  const researchModel = flashChain[0] || 'gemini-2.5-flash';
+  const researchModel = flashChain[0] || 'gemini-3-flash-preview';
 
   const systemInstruction = `You are a Principal Systems & Cloud Architecture Researcher.
 Use Google Search grounding to verify exact official product names, APIs, open standards, protocols, storage formats, security/governance primitives, and real-world reference architecture patterns relevant to the user's prompt.
@@ -280,7 +282,7 @@ async function planArchitectureAndVisualPrompt(
   research: Stage1ResearchOutput
 ): Promise<Stage2PlanOutput> {
   const proChain = await resolveLatestGeminiModelChain(ai, 'pro');
-  const planModel = proChain[0] || 'gemini-2.5-pro';
+  const planModel = proChain[0] || 'gemini-3.1-pro-preview';
 
   const systemInstruction = `You are a Principal Enterprise Architecture Diagram Planner.
 Your job is to design a technically accurate, complete, faithful architecture plan for the user's prompt (grounded in Stage 1 research) AND write a complete, crystal-clear 16:9 flat-2D vector diagram image prompt for Stage 3 image generation.
@@ -357,7 +359,7 @@ async function decompileReferenceImageToScene(
   plan: Stage2PlanOutput
 ): Promise<{ scene: VisionDecompiledScene; modelUsed: string }> {
   const visionChain = await resolveLatestGeminiModelChain(ai, 'vision');
-  const visionModel = visionChain[0] || 'gemini-2.5-pro';
+  const visionModel = visionChain[0] || 'gemini-3.1-pro-preview';
 
   const systemInstruction = `You are a precision Multimodal Architecture Image-to-Draw.io Vector Decompiler.
 Inspect the provided 16:9 reference architecture image carefully and extract 100% of its visual elements so it can be rendered as an exact 1:1 editable Draw.io (<mxGraphModel>) twin.
@@ -1210,6 +1212,17 @@ export async function runCompoundPromptToDiagram(params: {
       bidirectional: e.style.includes('startArrow=') && !e.style.includes('startArrow=none'),
     }));
 
+    const { runTruthfulnessAndGroundingCertification } = await import('@/lib/truthfulnessGroundingEngine');
+    const truthfulnessDossier = await runTruthfulnessAndGroundingCertification({
+      prompt: params.userPrompt,
+      modificationPrompt: params.modificationPrompt,
+      xmlContent: mutated.xml,
+      beforeXml: params.currentXml,
+      generatorModel: mutated.modelUsed,
+      explicitApiKey: params.explicitApiKey,
+      precomputedJudgeReport: mutated.judgeReport,
+    });
+
     const nextHistory = [...(params.modificationHistory || []), params.modificationPrompt];
     return {
       success: true,
@@ -1235,6 +1248,8 @@ export async function runCompoundPromptToDiagram(params: {
         siblingOverlaps: mutated.stats.siblingOverlaps,
         childContainmentViolations: mutated.stats.childContainmentViolations,
       },
+      truthfulnessDossier,
+      repairAttempts: mutated.repairAttempts,
       modelUsed: mutated.modelUsed,
       latencyMs: Date.now() - startedAt,
     };
@@ -1281,6 +1296,15 @@ export async function runCompoundPromptToDiagram(params: {
     visualImagePrompt: plan.visualImagePrompt,
   };
 
+  const { runTruthfulnessAndGroundingCertification } = await import('@/lib/truthfulnessGroundingEngine');
+  const truthfulnessDossier = await runTruthfulnessAndGroundingCertification({
+    prompt: params.userPrompt,
+    xmlContent: compiled.xml,
+    generatorModel: decompiled.modelUsed,
+    imageBase64: generatedImage.base64Data,
+    explicitApiKey: params.explicitApiKey,
+  });
+
   return {
     success: true,
     action: 'create',
@@ -1293,6 +1317,7 @@ export async function runCompoundPromptToDiagram(params: {
     graph: compiled.graph,
     audit: compiled.audit,
     pipelineStages,
+    truthfulnessDossier,
     modelUsed: decompiled.modelUsed,
     latencyMs: Date.now() - startedAt,
   };

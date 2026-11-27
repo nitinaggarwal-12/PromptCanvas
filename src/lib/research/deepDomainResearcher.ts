@@ -3,7 +3,7 @@
  *
  * Eradicates the generic template string-interpolation blindspot (Rule 42).
  * Before generating a diagram for ANY brand-new domain or topic, this engine
- * invokes Gemini 2.5 Pro + Gemini 3.1 Pro (`gemini-2.5-pro` / `gemini-2.5-flash`)
+ * invokes Gemini 3.1 Pro + Gemini 3 Flash (`gemini-3.1-pro-preview` / `gemini-3-flash-preview`)
  * to research and ground 6 mandatory architectural dimensions:
  *   1. True Domain Ontology & Canonical 4-Stage Lifecycle Spine (01..04)
  *   2. Authentic Wire Protocols, RFCs, File Formats & Regulatory Standards
@@ -13,8 +13,9 @@
  *   6. Actionable Non-Negotiable Standing Engineering Laws (Rule 01..04)
  */
 
-import { GoogleGenAI, Type } from '@google/genai';
+import { Type, type GoogleGenAI } from '@google/genai';
 import {
+  createGeminiClient,
   getEffectiveGeminiApiKey,
   resolveLatestGeminiModelChain,
   GEMINI_PRO_MODEL_ID,
@@ -109,10 +110,10 @@ export async function researchAndCompileDomainInfographic(
   customApiKey?: string
 ): Promise<DeepResearchInfographicResult> {
   const normalizedPrompt = normalizeLatestGoogleAndCloudNomenclature(prompt);
-  const apiKey = getEffectiveGeminiApiKey(customApiKey) || process.env.GOOGLE_API_KEY || '';
+  const ai = createGeminiClient(customApiKey || process.env.GOOGLE_API_KEY);
   let modelName = GEMINI_PRO_MODEL_ID;
 
-  if (!apiKey) {
+  if (!ai) {
     const fallbackSpec = buildDynamicInfographicTiers(prompt);
     return {
       xml: renderInfographicSpecToXml(fallbackSpec),
@@ -136,10 +137,9 @@ export async function researchAndCompileDomainInfographic(
   }
 
   try {
-    const ai = new GoogleGenAI({ apiKey });
     const candidateModels = await resolveLatestGeminiModelChain(ai, 'pro');
 
-    const systemInstruction = `You are Gemini 2.5 Pro, Chief Enterprise & Systems Architect.
+    const systemInstruction = `You are a Principal Enterprise & Cloud Systems Architect (${GEMINI_PRO_MODEL_ID}).
 Your task is to perform rigorous 6-Dimension Domain Engineering Research for the user's requested topic BEFORE compiling a 4-Tier Architectural Infographic.
 
 CRITICAL ANTI-GENERIC RULES (STRICT ZERO-PLACEHOLDER LAW):

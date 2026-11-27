@@ -198,8 +198,8 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
         [/Compliance Agent/gi, escHtml(truncateAtWord(t40.agents[6].name, 20))],
         [/Policy check, PII, regulatory compliance/gi, escHtml(truncateAtWord(t40.agents[6].role, 46))],
         [/1\.5 Pro \/ 1\.5 Flash/gi, escHtml(truncateAtWord(t40.models?.primaryPro || 'Gemini 3.1 Pro', 22))],
-        [/1\.5 Pro \(Vision\)/gi, escHtml(truncateAtWord(t40.models?.visionModel || 'Gemini 2.5 Flash', 22))],
-        [/Gemma/gi, escHtml(truncateAtWord(t40.models?.specializedModel || 'Gemma 3 27B', 18))],
+        [/1\.5 Pro \(Vision\)/gi, escHtml(truncateAtWord(t40.models?.visionModel || 'Gemini 3 Flash', 22))],
+        [/Gemma/gi, escHtml(truncateAtWord(t40.models?.specializedModel || 'Gemma 4 31B', 18))],
         [/\(7B \/ 28B\)/gi, escHtml(truncateAtWord(t40.models?.specializedSub || '(Vertex TPU v5p)', 18))],
         [/Customer CRM/gi, escHtml(truncateAtWord(t40.enterpriseSystems?.[0] || 'Salesforce CRM', 18))],
         [/Core ERP/gi, escHtml(truncateAtWord(t40.enterpriseSystems?.[1] || 'SAP / Oracle ERP', 18))],
@@ -210,7 +210,7 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
     }
     return [
       [/1\.5 Pro \/ 1\.5 Flash/gi, 'Gemini 3.1 Pro'],
-      [/1\.5 Pro \(Vision\)/gi, 'Gemini 2.5 Flash'],
+      [/1\.5 Pro \(Vision\)/gi, 'Gemini 3 Flash'],
     ];
   };
 
@@ -309,10 +309,10 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
     modifiedXml = modifiedXml.replace(pattern, replacement);
   }
 
-  // Ensure any remaining Gemini 1.5 references in adapted templates use latest Gemini 3.1 Pro / 2.5 Flash labels
+  // Ensure any remaining Gemini 1.5 references in adapted templates use latest Gemini 3.1 Pro / 3 Flash labels
   modifiedXml = modifiedXml
     .replace(/Gemini 1\.5&lt;br\/&gt;Pro/gi, 'Gemini 3.1&lt;br/&gt;Pro')
-    .replace(/Gemini 1\.5&lt;br\/&gt;Flash/gi, 'Gemini 3.8&lt;br/&gt;Flash')
+    .replace(/Gemini 1\.5&lt;br\/&gt;Flash/gi, 'Gemini 3&lt;br/&gt;Flash')
     .replace(/Gemini 1\.5 Pro/gi, 'Gemini 3.1 Pro');
 
   // Scrub any residual CLINICAL AI / Bio-Pharma / Veeva Vault / Pharmacovigilance strings

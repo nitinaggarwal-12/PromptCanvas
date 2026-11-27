@@ -33,8 +33,8 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     xmlInput.includes('Google Cloud Multiagent AI System') ||
     xmlInput.includes('azure_landing_zone') ||
     xmlInput.includes('agentic_ai_architecture') ||
-    xmlInput.includes('data-nano-banana-decompiled="true"') ||
-    xmlInput.includes('nano_banana_vision_decompiled') ||
+    xmlInput.includes('data-vision-decompiled="true"') ||
+    xmlInput.includes('vision_poster_decompiled') ||
     xmlInput.includes('data-compositional-chain="true"') ||
     xmlInput.includes('data-compound-freeform="true"') ||
     xmlInput.includes('data-prompt-to-diagram="true"') ||
@@ -177,100 +177,31 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   // 1b. Fix double/triple-escaped ampersands: &amp;amp; -> &amp;
   xml = xml.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
 
-  // 1c. Scrub generic legacy ITACS brand names & dark black box overlays
-  xml = xml
-    .replace(/<mxCell\s+id="(?:exec_dash_foot|exec_dash_stand|exec_dash_bezel|exec_dash_chin|comp_view_bezel|comp_view_cam|advisory_bezel|advisory_notch)"[\s\S]*?<\/mxCell>/gi, '')
-    .replace(/ITACS Integrated Insights Platform - TOTAL UNIFIED SYSTEM VIEW/g, 'Unified Architecture Platform - System View')
-    .replace(/ITACS Integrated Insights Platform/g, 'Enterprise Architecture Platform')
-    .replace(/ITACS SECURE GOVERNED CLOUD TENANT/g, 'SECURE GOVERNED CLOUD TENANT')
-    .replace(/ITACS Governing Cloud Tenant/g, 'Governing Cloud Tenant')
-    .replace(/ITACS Primary VPC Network/g, 'Primary VPC Network')
-    .replace(/ITACS Agent Orchestrator/g, 'Agent Orchestrator')
-    .replace(/ITACS Oncology Platform/g, 'Enterprise AI Platform')
-    .replace(/Core ITACS Synthesis Engine/g, 'Core AI Synthesis Engine')
-    .replace(/ITACS Target/g, 'Enterprise Target')
-    .replace(/\bITACS\b/g, 'Enterprise')
-    // 1d. Scrub legacy OCR typos
-    .replace(/Entire ultra-diate in organizing across major phases/g, 'End-to-End Enterprise Architecture across major phases')
-    .replace(/Poots &amp; Pl[aa]nnin[cg] Phases/gi, 'Planning &amp; Ingestion Phases')
-    .replace(/Poots &amp; Plonning/gi, 'Planning &amp; Ingestion')
-    .replace(/Poots/gi, 'Planning')
-    .replace(/insograto4 MLOps\(L\)MLOps State Machine &amp; Pipalinos/gi, 'Integrated MLOps State Machine &amp; Pipelines')
-    .replace(/insograto4/gi, 'integrated')
-    .replace(/Pipalinos/gi, 'Pipelines')
-    .replace(/DEYIRBMENT/gi, 'RETIREMENT')
-    .replace(/Yavates/gi, 'Nodes')
-    .replace(/incogporating/gi, 'incorporating')
-    .replace(/Metripls metica/gi, 'Metrics &amp; Audits')
-    .replace(/Regeslation/gi, 'Regulation')
-    .replace(/fiennon nao integration/gi, 'detailed role integration')
-    .replace(/Noman-in-the-Loop/gi, 'Human-in-the-Loop')
-    .replace(/dhified Soromance Beant/gi, 'Unified Governance Board')
-    .replace(/analists aplioad rao osss/gi, 'analysts upload raw data')
-    .replace(/Modsl\/Prompt/gi, 'Model/Prompt')
-    .replace(/offhoe Metrics/gi, 'offline metrics')
-    .replace(/Pairoess Audit/gi, 'Fairness Audit')
-    .replace(/Accursay\/P1/gi, 'Accuracy/F1')
-    .replace(/Zonss 2/gi, 'Zones 2')
-    .replace(/Eaterprise Nnowledge/gi, 'Enterprise Knowledge')
-    .replace(/Danaged RiAG/gi, 'Managed RAG')
-    .replace(/GCS\?Vertes A\? Search/gi, 'GCS / Vertex AI Search')
-    .replace(/Boslouss Avalytics/gi, 'Business Analytics')
-    .replace(/Auakehce/gi, 'Analytics')
-    .replace(/Agenlic/gi, 'Agentic')
-    .replace(/Orchestratien 5 Analytics/gi, 'Orchestration &amp; Analytics')
-    .replace(/leference/gi, 'Inference')
-    .replace(/ML lnference/gi, 'ML Inference')
-    .replace(/Betlict Theoghd loop/gi, 'ReAct Thought loop')
-    .replace(/Actien deoision Tbnoglt/gi, 'Action decision Thought')
-    .replace(/Actien deesion Memery/gi, 'Action decision Memory')
-    .replace(/Private Dete\/AI Subwet/gi, 'Private Data/AI Subnet')
-    .replace(/ACTION gRP\/HTTP/gi, 'ACTION gRPC/HTTP')
-    .replace(/Priocla call/gi, 'Private call');
+  // 1c. Remove obsolete mock device bezel cells if present
+  xml = xml.replace(
+    /<mxCell\s+id="(?:exec_dash_foot|exec_dash_stand|exec_dash_bezel|exec_dash_chin|comp_view_bezel|comp_view_cam|advisory_bezel|advisory_notch)"[\s\S]*?<\/mxCell>/gi,
+    ''
+  );
 
-  // 1e. Enforce clean 2-line Enterprise Governance Header across ALL diagram templates (content-based & ID-based matching)
-  const defaultHeaderHtml = `&lt;table style='width:100%;border-collapse:collapse;color:#0F172A;font-family:Helvetica,Arial,sans-serif;padding:2px 8px;table-layout:fixed;'&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:14px;font-weight:bold;color:#0F172A;padding-bottom:5px;border-bottom:1px solid #CBD5E1;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;span style='color:#0284C7;margin-right:6px;'&gt;❖ USE CASE:&lt;/span&gt;Enterprise Governed Agentic AI Platform&lt;/td&gt;&lt;td style='text-align:right;font-size:13px;font-weight:bold;color:#0F172A;padding-bottom:5px;border-bottom:1px solid #CBD5E1;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;Unified Architecture System View &lt;span style='color:#0284C7;font-weight:normal;'&gt;(v1.0.0)&lt;/span&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background:#ECFDF5;border:1px solid #10B981;color:#047857;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:bold;'&gt;🟢 Production Approved&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align:left;font-size:11px;color:#475569;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#0F172A;'&gt;Definition:&lt;/b&gt; Unified Logical Flow, Technology Stack, Security Boundaries, &amp;amp; Operational Lifecycles&lt;/td&gt;&lt;td style='text-align:right;font-size:11px;color:#475569;padding-top:5px;width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'&gt;&lt;b style='color:#0F172A;'&gt;Personas:&lt;/b&gt; Enterprise Architect, AI Engineer&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;b style='color:#0F172A;'&gt;Stakeholders:&lt;/b&gt; Governance Board, SRE&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#0284C7;font-weight:bold;'&gt;SLA: 99.99% Uptime&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;`;
-
-  if (!xml.includes('USE CASE:')) {
-    const hasHeaderCell = /(?:main_title_bar_uv|main_title_bar|macro_hdr_title|top_header|header_title|Enterprise Architecture Platform|UNIFIED SYSTEM VIEW)/i.test(xml);
-    if (hasHeaderCell) {
-      // 1) Match by legacy title strings in cell value attribute
-      xml = xml.replace(
-        /(<mxCell\s+[^>]*\bvalue=")(?:[^"]*?(?:Enterprise Architecture Platform|TOTAL UNIFIED SYSTEM VIEW|UNIFIED SYSTEM VIEW|एकीकृत सिस्टम दृश्य|Unified Logical Flow)[^"]*?)("\s+style="[^"]*"[^>]*vertex="1"[^>]*>)/gi,
-        `$1${defaultHeaderHtml}$2`
-      );
-      // 2) Match by ID fallback
-      xml = xml.replace(
-        /(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar|macro_hdr_title|top_header|header_title)"\s+value=")[\s\S]*?("\s+style="[^"]*"[^>]*vertex="1"[^>]*>)/gi,
-        `$1${defaultHeaderHtml}$2`
-      );
-    } else if (archType === 'unified_system_view') {
-      // 3) Inject clean 2-line Enterprise Governance Header for unified_system_view only
-      const injectedHeaderCell = `\n        <mxCell id="main_title_bar_uv" value="${defaultHeaderHtml}" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;fontFamily=Helvetica;" vertex="1" parent="1">\n          <mxGeometry x="15" y="15" width="1570" height="60" as="geometry" />\n        </mxCell>`;
-      xml = xml.replace(/(<mxCell\s+id="1"\s+parent="0"\s*\/>)/i, `$1${injectedHeaderCell}`);
-    }
-  }
-
+  // 1d. Normalize legacy header contrast if present
   xml = xml
     .replace(/(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar)"[\s\S]*?<mxGeometry\b[^>]*\bheight=")(?:45|50)(")/gi, `$160$2`)
-    .replace(/(<mxCell\s+[^>]*\bvalue=")[^"]*?(?:End-to-End Enterprise Architecture across major phases|सभी प्रमुख चरणों)[^"]*?("\s+style=")/gi, `$1$2`) // Blank colliding secondary subheaders
     .replace(/(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar)"[^>]*style=")[^"]*(")/gi, '$1rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;fontFamily=Helvetica;$2')
-    .replace(/(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar)"[^>]*value=")([\s\S]*?)(")/gi, (m, p1, p2, p3) => {
+    .replace(/(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar)"[^>]*value=")([\s\S]*?)(")/gi, (_m, p1, p2, p3) => {
       const lightVal = p2
-        .replace(/color:#FFFFFF/gi, 'color:#0F172A')
         .replace(/color:\s*#FFFFFF/gi, 'color:#0F172A')
-        .replace(/color:#F8FAFC/gi, 'color:#0F172A')
-        .replace(/color:#F1F5F9/gi, 'color:#0F172A')
-        .replace(/color:#CBD5E1/gi, 'color:#475569')
-        .replace(/color:#E2E8F0/gi, 'color:#0F172A')
-        .replace(/color:#38BDF8/gi, 'color:#0284C7')
-        .replace(/color:#93C5FD/gi, 'color:#0284C7')
+        .replace(/color:\s*#F8FAFC/gi, 'color:#0F172A')
+        .replace(/color:\s*#F1F5F9/gi, 'color:#0F172A')
+        .replace(/color:\s*#CBD5E1/gi, 'color:#475569')
+        .replace(/color:\s*#E2E8F0/gi, 'color:#0F172A')
+        .replace(/color:\s*#38BDF8/gi, 'color:#0284C7')
+        .replace(/color:\s*#93C5FD/gi, 'color:#0284C7')
         .replace(/rgba\(255,\s*255,\s*255,\s*0\.2\d*\)/gi, '#CBD5E1');
       return `${p1}${lightVal}${p3}`;
     })
     .replace(/(<mxCell\s+id="sw[1-5]_tab"[^>]*style=")[^"]*(")/gi, '$1rounded=1;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#94A3B8;fontColor=#0F172A;fontStyle=1;align=center;verticalAlign=middle;$2')
-    .replace(/(<mxCell\s+id="sw[1-5]_tab"[^>]*value=")([\s\S]*?)(")/gi, (m, p1, p2, p3) => {
-      const updatedVal = p2.replace(/color:#FFFFFF/gi, 'color:#0F172A').replace(/color:\s*#FFF/gi, 'color:#0F172A');
+    .replace(/(<mxCell\s+id="sw[1-5]_tab"[^>]*value=")([\s\S]*?)(")/gi, (_m, p1, p2, p3) => {
+      const updatedVal = p2.replace(/color:\s*#FFFFFF/gi, 'color:#0F172A').replace(/color:\s*#FFF/gi, 'color:#0F172A');
       return `${p1}${updatedVal}${p3}`;
     });
 
@@ -713,32 +644,30 @@ function runZeroDefectTextAndTechnicalAccuracyPreflight(
 }
 
 /**
- * 🔧 OMNI 1.1 & GEMINI AUTO-FIX REMEDIATION ENGINE
- * Deterministically heals canonical and custom Draw.io XML diagrams so that:
- * 1. Genuine leaf-card sibling overlaps are resolved with >=14px clearance (preserving outer swimlane containers).
- * 2. WCAG 2.1 AA contrast (#EA580C -> #9A3412) and sub-9px micro-typography are normalized.
- * 3. Cloud KMS CMEK (90-Day Key Rotation), Cloud Armor L7 WAF/IAP, and VPC-SC security governance footer bar is injected.
- * 4. <mxGraphModel> is stamped with data-omni-autofix-certified="true".
+ * Deterministic 2D Geometry & WCAG Contrast Healer (Zero Fake Banners, Zero Rigged Certification Stamps)
+ * Resolves genuine sibling card overlaps and normalizes low-contrast typography without injecting
+ * synthetic security banners or bypassing downstream validators.
  */
-export function applyOmniAndGeminiAutoFixRemediation(
+export function applyDeterministicGeometryAndContrastFixes(
   xmlInput: string,
   archType: string = 'custom'
 ): string {
   if (!xmlInput || typeof xmlInput !== 'string') return xmlInput;
 
-  // Step 1: Run baseline preflight healer (safe for both custom and canonical)
   let xml = preflightVerifyAndHealXmlAcrossAll6Audits(xmlInput, archType);
 
-  // Step 2: Normalize WCAG 2.1 AA contrast & minimum 10px typography
+  // Normalize WCAG 2.1 AA contrast & minimum 10px typography
   xml = xml
     .replace(/fontColor=#EA580C/gi, 'fontColor=#9A3412')
     .replace(/fontColor=#F97316/gi, 'fontColor=#C2410C')
-    .replace(/fontSize=[1-8](?=[;"\s])/g, 'fontSize=10');
+    .replace(/fontColor=#000000;([^"]*fillColor=#(?:0F172A|1E293B|090D16))/gi, 'fontColor=#FFFFFF;$1')
+    .replace(/fontSize=[1-8](?=[;"\s])/g, 'fontSize=10')
+    .replace(/<mxfile\b([^>]*?)>\s*<diagram\b([^>]*?)>\s*<mxGraphModel\b/gi, '<mxfile$1><diagram$2><mxGraphModel');
 
-  // Step 3: Parse all vertex geometries to find maxY and resolve any genuine leaf-card sibling overlaps
   interface ParsedCellBox {
     id: string;
     parent: string;
+    style: string;
     x: number;
     y: number;
     w: number;
@@ -748,13 +677,13 @@ export function applyOmniAndGeminiAutoFixRemediation(
 
   const cellRegex = /<mxCell\b[^>]*\bvertex="1"[^>]*>[\s\S]*?<\/mxCell>/g;
   const parsedCells: ParsedCellBox[] = [];
-  let maxBottomY = 920;
 
   let m: RegExpExecArray | null;
   while ((m = cellRegex.exec(xml)) !== null) {
     const block = m[0];
     const idMatch = block.match(/\bid="([^"]+)"/);
     const parentMatch = block.match(/\bparent="([^"]+)"/);
+    const styleMatch = block.match(/\bstyle="([^"]*)"/);
     const geoMatch = block.match(/<mxGeometry\b[^>]*>/);
     if (!idMatch || !geoMatch) continue;
     const geoTag = geoMatch[0];
@@ -764,27 +693,32 @@ export function applyOmniAndGeminiAutoFixRemediation(
     const hMatch = geoTag.match(/\bheight="(\d+(?:\.\d+)?)"/);
     if (!xMatch || !yMatch || !wMatch || !hMatch) continue;
 
-    const x = parseFloat(xMatch[1]);
-    const y = parseFloat(yMatch[1]);
-    const w = parseFloat(wMatch[1]);
-    const h = parseFloat(hMatch[1]);
-    if (y + h > maxBottomY && h < 950) {
-      maxBottomY = Math.round(y + h);
-    }
     parsedCells.push({
       id: idMatch[1],
       parent: parentMatch ? parentMatch[1] : '1',
-      x,
-      y,
-      w,
-      h,
+      style: styleMatch ? styleMatch[1] : '',
+      x: parseFloat(xMatch[1]),
+      y: parseFloat(yMatch[1]),
+      w: parseFloat(wMatch[1]),
+      h: parseFloat(hMatch[1]),
       fullMatch: block,
     });
   }
 
-  // Filter leaf cards and nudge any genuine sibling overlaps (excluding container-child containment)
+  // Nudge genuine sibling card shells (excluding floating text/icon primitives & containers)
   const leafCards = parsedCells.filter(
-    (b) => b.w >= 48 && b.w <= 380 && b.h >= 34 && b.h <= 160 && b.id !== 'audit_remediated_security_bar'
+    (b) =>
+      b.w >= 56 &&
+      b.w <= 420 &&
+      b.h >= 38 &&
+      b.h <= 180 &&
+      !b.style.includes('text;') &&
+      !b.style.includes('shape=text') &&
+      !b.style.includes('shape=image') &&
+      !b.style.includes('container=1') &&
+      !b.style.includes('swimlane') &&
+      !b.id.includes('shadow') &&
+      !b.id.endsWith('_sh')
   );
   for (let i = 0; i < leafCards.length; i++) {
     for (let j = i + 1; j < leafCards.length; j++) {
@@ -796,11 +730,9 @@ export function applyOmniAndGeminiAutoFixRemediation(
       if (ix > 8 && iy > 8) {
         const interArea = ix * iy;
         const minArea = Math.min(a.w * a.h, b.w * b.h);
-        // Skip visual containment where an outer card encloses an inner card
         if (interArea / minArea >= 0.7) continue;
-        // Shift lower card down by iy + 12px to eliminate sibling overlap
         const target = b.y >= a.y ? b : a;
-        const newY = Math.round(target.y + iy + 12);
+        const newY = Math.round(target.y + iy + 14);
         const updatedBlock = target.fullMatch.replace(
           /(<mxGeometry\b[^>]*\by=")(-?\d+(?:\.\d+)?)(")/,
           `$1${newY}$3`
@@ -808,29 +740,8 @@ export function applyOmniAndGeminiAutoFixRemediation(
         xml = xml.replace(target.fullMatch, updatedBlock);
         target.y = newY;
         target.fullMatch = updatedBlock;
-        if (newY + target.h > maxBottomY) {
-          maxBottomY = Math.round(newY + target.h);
-        }
       }
     }
-  }
-
-  // Step 4: Inject visible Cloud KMS CMEK + Zero-Trust Security & Geometry Compliance Bar if missing
-  if (!xml.includes('id="audit_remediated_security_bar"')) {
-    const barY = maxBottomY + 16;
-    const securityBarCell = `
-        <mxCell id="audit_remediated_security_bar" value="🛡️ OMNI 1.1 &amp; GEMINI AUTO-FIX CERTIFIED • CLOUD KMS CMEK (90-DAY KEY ROTATION) • CLOUD ARMOR L7 WAF / IAP • VPC-SC PERIMETER • ZERO SIBLING OVERLAPS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;fontColor=#065F46;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="40" y="${barY}" width="1440" height="34" as="geometry" />
-        </mxCell>`;
-    xml = xml.replace(/<\/root>/i, `${securityBarCell}\n      </root>`);
-  }
-
-  // Step 5: Stamp data-omni-autofix-certified="true" on <mxGraphModel>
-  if (!xml.includes('data-omni-autofix-certified="true"')) {
-    xml = xml.replace(
-      /<mxGraphModel\b([^>]*)>/i,
-      '<mxGraphModel$1 data-omni-autofix-certified="true">'
-    );
   }
 
   return xml;

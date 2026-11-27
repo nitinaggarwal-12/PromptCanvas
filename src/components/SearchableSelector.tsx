@@ -87,12 +87,12 @@ export const EXTENDED_PROMPT_LIBRARY: PromptOption[] = [
   {
     id: 'bio-5',
     label: 'FHIR / HL7 Clinical Interoperability Hub',
-    prompt: 'Enterprise FHIR R4 and HL7 v2 clinical data exchange gateway using Apigee X, Cloud Healthcare API, and HIPAA consent tracking.',
+    prompt: 'Enterprise FHIR R4 and HL7 v2 clinical data exchange gateway using Apigee, Cloud Healthcare API, and HIPAA consent tracking.',
     domainId: 'healthcare',
     domainName: 'Healthcare & Clinical EHR',
     category: 'Life Sciences',
     icon: '🩺',
-    tags: ['FHIR', 'HL7', 'HIPAA', 'Apigee X', 'EHR'],
+    tags: ['FHIR', 'HL7', 'HIPAA', 'Apigee', 'EHR'],
   },
 
   // FinTech & Banking
@@ -234,7 +234,7 @@ export const EXTENDED_PROMPT_LIBRARY: PromptOption[] = [
     domainName: 'Enterprise SaaS Cloud Platform',
     category: 'Enterprise Software',
     icon: '🧠',
-    tags: ['Multi-Agent', 'Gemini 3.8', 'Tool Protocol', 'ScaNN', 'Redis'],
+    tags: ['Multi-Agent', 'Gemini 3.1 Pro', 'Tool Protocol', 'ScaNN', 'Redis'],
   },
   {
     id: 'ai-2',
@@ -483,7 +483,7 @@ export const CURATED_PROJECT_PRESETS: ProjectPreset[] = [
     icon: '🩺',
     description: 'HIPAA compliant FHIR R4 ingestion, ICU telemetry & medical imaging AI',
     useCases: [
-      'FHIR R4 & HL7 v2 Clinical Ingestion Gateway on Apigee X',
+      'FHIR R4 & HL7 v2 Clinical Ingestion Gateway on Apigee',
       'Sub-15ms ICU Patient Telemetry Streaming on Dataflow',
       'HIPAA Medical Diagnostic Image Classification on Vertex AI',
       'Automated Insurance Prior Authorization & Clinical Rules Engine'

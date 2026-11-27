@@ -370,4 +370,126 @@ describe('Certified Architecture Templates (L200-L400, Zero-Bento, Immutable Clo
     expect(xml162).toContain('startArrow=ERmandOne');
     expect(xml162).toContain('endArrow=ERmany');
   });
+
+  it('enforces v5 visual-geometry & copy hygiene ratchet across all 84 templates (0 scaleX distortion, 0 concatenated levels, bidirectional level-badge parity, 0 halo-icon text collisions, 0 Airy legend overlaps, and 0 z-order line strikes)', () => {
+    const decodeBasic = (s: string) =>
+      s
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&apos;/g, "'")
+        .replace(/&amp;/g, '&');
+    const stripTags = (s: string) =>
+      decodeBasic(s)
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/<[^>]+>/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    for (const tpl of CERTIFIED_ARCHITECTURE_TEMPLATES) {
+      const xml = loadImmutableServerTemplateXml(tpl.id)!;
+      const decodedPlain = stripTags(xml);
+
+      // 1. Zero CSS horizontal text squishing & zero concatenated level typos (e.g. L200L200, L300L400)
+      expect(xml, `CSS scaleX text distortion in #${tpl.id}`).not.toMatch(/scaleX\([0-9.]+\)/);
+      expect(decodedPlain, `Concatenated level typo in #${tpl.id}`).not.toMatch(/L[1-4]00\s*L[1-4]00/);
+      expect(decodedPlain, `Truncated Split-Horiz label in #${tpl.id}`).not.toContain('Split-Horiz ');
+
+      // 2. Bidirectional header/pill level-badge parity (catches both "TECHNICAL · L300" and "L200 · TECHNICAL")
+      const revBadge = xml.match(/\b(L[1-4]00)\b[^<]{0,24}(?:TECHNICAL|LOGICAL|PROCESS|CONCEPTUAL)\b/);
+      if (revBadge) {
+        expect(revBadge[1], `Reverse-order level pill mismatch on #${tpl.id}`).toBe(tpl.level);
+      }
+
+      // Parse mxCells for geometric invariants
+      const cellRe = /<mxCell\b([^>]*?)(?:\/>|>([\s\S]*?)<\/mxCell>)/g;
+      const byId = new Map<
+        string,
+        { id: string; idx: number; style: string; value: string; inner: string; x: number; y: number; w: number; h: number }
+      >();
+      let m: RegExpExecArray | null;
+      let idx = 0;
+      while ((m = cellRe.exec(xml)) !== null) {
+        const attrs = m[1];
+        const inner = m[2] || '';
+        const idM = attrs.match(/\bid="([^"]+)"/);
+        if (!idM) continue;
+        const styleM = attrs.match(/\bstyle="([^"]*)"/);
+        const valM = attrs.match(/\bvalue="([^"]*)"/);
+        const gx = inner.match(/\bx="([^"]+)"/);
+        const gy = inner.match(/\by="([^"]+)"/);
+        const gw = inner.match(/\bwidth="([^"]+)"/);
+        const gh = inner.match(/\bheight="([^"]+)"/);
+        byId.set(idM[1], {
+          id: idM[1],
+          idx: idx++,
+          style: styleM ? styleM[1] : '',
+          value: valM ? valM[1] : '',
+          inner,
+          x: gx ? parseFloat(gx[1]) : 0,
+          y: gy ? parseFloat(gy[1]) : 0,
+          w: gw ? parseFloat(gw[1]) : 0,
+          h: gh ? parseFloat(gh[1]) : 0,
+        });
+      }
+
+      // 3. Every halo_<id> triplet with verticalAlign=bottom must leave >= 38px vertical clearance below halo box
+      for (const [cid, halo] of byId.entries()) {
+        if (!cid.startsWith('halo_')) continue;
+        const base = byId.get(cid.slice(5));
+        if (!base || !base.style.includes('verticalAlign=bottom')) continue;
+        const clearance = base.y + base.h - (halo.y + halo.h);
+        expect(clearance, `Insufficient text clearance below ${cid} on #${tpl.id}`).toBeGreaterThanOrEqual(34);
+      }
+
+      // 4. Every Airy V4 bottom legend bar must keep non-overlapping spacing between leg_tx_k and next arrow/swatch
+      if (byId.has('leg_bg') && byId.has('leg_tx_0')) {
+        for (let k = 0; k < 6; k++) {
+          const tx = byId.get(`leg_tx_${k}`);
+          const nextLn = byId.get(`leg_ln_${k + 1}`);
+          const nextSw = byId.get(`leg_sw_${k + 1}`);
+          if (!tx || (!nextLn && !nextSw)) break;
+          let nextStartX = Infinity;
+          if (nextLn) {
+            const spM = nextLn.inner.match(/<mxPoint[^>]*\bx="([^"]+)"[^>]*as="sourcePoint"/);
+            if (spM) nextStartX = parseFloat(spM[1]);
+          } else if (nextSw) {
+            nextStartX = nextSw.x;
+          }
+          expect(tx.x + tx.w, `Legend item leg_tx_${k} collides with item ${k + 1} on #${tpl.id}`).toBeLessThanOrEqual(
+            nextStartX
+          );
+        }
+      }
+    }
+
+    // 5. Targeted regression guards for #78 (16:9 + 7-Step Block), Exec 25x12 ARCH-01..25 parity, #134, #139, #69, and #160 pastel headers
+    const xml78 = loadImmutableServerTemplateXml('78')!;
+    expect(xml78).not.toContain('(#78)] Enterprise');
+    expect(xml78).toMatch(/id="lbl_step7_mid"[\s\S]{0,600}width="90"/);
+    expect(xml78).toContain('pageWidth="2520" pageHeight="1418"');
+    for (let s = 1; s <= 7; s++) {
+      expect(xml78, `Missing Step ${s} card on #78`).toContain(`id="step_card_${s}"`);
+      expect(xml78).toContain(`Step ${s} ·`);
+    }
+
+    for (let k = 1; k <= 25; k++) {
+      const tid = String(132 + k);
+      const archTag = `ARCH-${String(k).padStart(2, '0')}`;
+      const xmlExec = loadImmutableServerTemplateXml(tid)!;
+      expect(xmlExec, `Residual ID XX token in #${tid}`).not.toMatch(/\bID\s+\d{2}\b/);
+      expect(xmlExec, `Missing ${archTag} header in #${tid}`).toContain(archTag);
+    }
+
+    const xml139 = loadImmutableServerTemplateXml('139')!;
+    expect(xml139).toMatch(/id="c_44"[\s\S]{0,450}x="502"/);
+    expect(xml139).toMatch(/id="c_49"[\s\S]{0,450}x="502"/);
+
+    const xml69 = loadImmutableServerTemplateXml('69')!;
+    expect(xml69.indexOf('id="fl_9"')).toBeLessThan(xml69.indexOf('id="pl_8"'));
+
+    const xml160 = loadImmutableServerTemplateXml('160')!;
+    expect(xml160).toContain('L200');
+    expect(xml160).toContain('fillColor=#DBEAFE');
+  });
 });

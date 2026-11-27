@@ -55,7 +55,7 @@ const nextConfig: NextConfig = {
               "frame-ancestors 'self' https://embed.diagrams.net https://app.diagrams.net https://docs.google.com https://drive.google.com https://*.google.com https://*.googleusercontent.com",
               "child-src 'self' blob: data:",
               "worker-src 'self' blob: data:",
-              "connect-src 'self' ws: wss: https://*.proxy.googlers.com https://generativelanguage.googleapis.com https://*.googleapis.com https://api.iconify.design https://raw.githubusercontent.com"
+              "connect-src 'self' ws: wss: https://*.proxy.googlers.com https://generativelanguage.googleapis.com https://*.googleapis.com"
             ].join('; ')
           }
         ]

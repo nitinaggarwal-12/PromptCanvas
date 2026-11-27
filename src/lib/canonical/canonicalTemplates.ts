@@ -302,10 +302,10 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     theme: 'light',
     tags: ['L400 GCP'],
     primaryPurpose: 'L400 physical network, subnet CIDR, BGP ASN 64512, WAF policy (mt-prod-waf-v4), PSC attachment (10.200.1.0/28), and VPC-SC perimeter specification for Multi-Tenant Hub-and-Spoke Agentic AI',
-    examples: 'Hub VPC 10.100.0.0/16, BGP ASN 64512, Global Ext ALB VIP 34.120.55.10, Tenant Pool Shared VPC 10.110.0.0/20, Dedicated Sovereign Silo Spoke VPC 10.200.0.0/20, p-finvault-silo',
+    examples: 'Hub VPC 10.100.0.0/16, BGP ASN 64512, Global Ext GCLB VIP 34.120.55.10, Tenant Pool Shared VPC 10.110.0.0/20, Dedicated Sovereign Silo Spoke VPC 10.200.0.0/20, p-finvault-silo',
     defaultDomain: 'L400 Multi-Tenant Hub-and-Spoke Network & VPC-SC Specification',
     previewImage: '/templates/canonical_79.png',
-    keyComponents: ['Hub VPC 10.100.0.0/16 (BGP ASN 64512)', 'Cloud Armor WAF (mt-prod-waf-v4)', 'Global External ALB VIP (34.120.55.10 :443 HTTP/3)', 'Apigee X / AgentGateway PSC (10.100.1.0/28 :8443 gRPC)', 'Central KMS HSM & BigQuery FinOps Hub (10.100.8.0/24)', 'Pattern A Pooled Subnet (10.110.0.0/20) with AlloyDB FORCE RLS', 'Pattern B/C Dedicated Sovereign Silo VPC (10.200.0.0/20 • p-finvault-silo)'],
+    keyComponents: ['Hub VPC 10.100.0.0/16 (BGP ASN 64512)', 'Cloud Armor WAF (mt-prod-waf-v4)', 'Global External GCLB VIP (34.120.55.10 :443 HTTP/3)', 'Apigee / AgentGateway PSC (10.100.1.0/28 :8443 gRPC)', 'Central KMS HSM & BigQuery FinOps Hub (10.100.8.0/24)', 'Pattern A Pooled Subnet (10.110.0.0/20) with AlloyDB FORCE RLS', 'Pattern B/C Dedicated Sovereign Silo VPC (10.200.0.0/20 • p-finvault-silo)'],
     generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => generateTemplate79L400MultiTenantHubSpokeNetworkSpecXml(domainFlavor, theme)
   },
   {

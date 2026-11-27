@@ -224,9 +224,7 @@ function VisionPageContent() {
   const [validationReport, setValidationReport] = useState<{ valid: boolean; errorCount: number; warningCount: number } | null>(null);
   const [auditReport, setAuditReport] = useState<any | null>(null);
   const [agentSteps, setAgentSteps] = useState<any[]>([]);
-  // Must be earned from a passing Omni audit. Defaulting to `true` previously meant
-  // the static fallback template (which returns no audit at all) rendered a green
-  // "Omni 1.1 Certified (100% Parity)" badge.
+  // Must be earned from a passing source-parity audit; defaults to false.
   const [isCertified, setIsCertified] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -2419,12 +2417,12 @@ function VisionPageContent() {
                 {isCertified && auditReport ? (
                   <span className="text-[9.5px] px-2 py-0.2 rounded bg-emerald-50 text-emerald-800 font-mono font-bold border border-emerald-300 flex items-center gap-1 shadow-2xs">
                     <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                    Omni 1.1 Certified ({auditReport.parityScore}% Parity)
+                    Source Parity Verified ({auditReport.parityScore}% Parity)
                   </span>
                 ) : auditReport ? (
                   <span
                     className="text-[9.5px] px-2 py-0.2 rounded bg-amber-50 text-amber-900 font-mono font-bold border border-amber-300 flex items-center gap-1 shadow-2xs"
-                    title={auditReport?.gaps?.find((g: any) => g.category === 'SOURCE_PARITY')?.description || 'Omni 1.1 did not certify this output.'}
+                    title={auditReport?.gaps?.find((g: any) => g.category === 'SOURCE_PARITY')?.description || 'Source parity audit flagged discrepancies.'}
                   >
                     <ShieldCheck className="w-3 h-3 text-amber-600" />
                     {auditReport?.verdict === 'BLOCKED'
@@ -2475,24 +2473,24 @@ function VisionPageContent() {
                 <div className="absolute inset-0 bg-slate-900/95 z-20 flex flex-col items-center justify-center gap-3 p-6 text-center">
                   <div className="flex items-center gap-2 text-teal-400">
                     <Loader2 className="w-6 h-6 animate-spin" />
-                    <span className="text-xs font-mono font-bold uppercase tracking-wider">Omni 1.1 Multi-Agent Engine</span>
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider">Multi-Model Vision Decompiler</span>
                   </div>
                   <div className="w-full max-w-sm bg-slate-800/80 border border-slate-700 rounded-lg p-3 text-left space-y-1.5 shadow-xl">
                     <div className="flex items-center gap-2 text-[10px] text-teal-300 font-mono">
                       <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
-                      <span>🎬 Omni 1.1 (Director): Intake & Crew Dispatch</span>
+                      <span>🎬 Stage 1 (Intake): Image &amp; Context Dispatch</span>
                     </div>
                     <div className="flex items-center gap-2 text-[10px] text-blue-300 font-mono">
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-                      <span>⚡ Flash (Topology Planner): OCR & Signature Match</span>
+                      <span>⚡ Stage 2 (Flash): OCR &amp; Spatial Zoning</span>
                     </div>
                     <div className="flex items-center gap-2 text-[10px] text-purple-300 font-mono">
                       <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
-                      <span>🛠️ Pro (AST Builder): Draw.io Graph Synthesis</span>
+                      <span>🛠️ Stage 3 (Pro): Draw.io Graph Synthesis</span>
                     </div>
                     <div className="flex items-center gap-2 text-[10px] text-emerald-300 font-mono">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      <span>🛡️ Omni 1.1 (QC Chief): 8-Dimension Forensic Audit</span>
+                      <span>🛡️ Stage 4 (Multi-Model QC): Source Parity &amp; AST Gate</span>
                     </div>
                   </div>
                   <p className="text-[10px] text-slate-400">Zero-bypass parity verification with automated closed-loop healing.</p>
@@ -2661,7 +2659,7 @@ function VisionPageContent() {
                     Import Architecture Diagram from Web URL
                   </h3>
                   <p id="vision-url-modal-desc" className="text-xs text-slate-500 mt-0.5">
-                    Enter any documentation, blog post, or article URL. Omni 1.1 will scan the page, identify all diagrams and images, and let you preview and convert them to Draw.io.
+                    Enter any documentation, blog post, or article URL. PromptCanvas will scan the page, identify diagrams and images, and let you preview and convert them to Draw.io.
                   </p>
                 </div>
               </div>

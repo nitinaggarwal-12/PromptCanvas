@@ -1,7 +1,7 @@
-import { GoogleGenAI } from '@google/genai';
 import { CANONICAL_TEMPLATES, CanonicalTemplate } from './canonical/canonicalTemplates';
 import type { GeminiHubSpoke78DynamicSpec } from './canonical/templateOfficialGcpArchCenterHubSpoke';
 import {
+  createGeminiClient,
   getEffectiveGeminiApiKey,
   getGeminiModel,
   resolveLatestGeminiModelChain,
@@ -139,9 +139,9 @@ export async function analyzePromptWithGeminiArchitect(
     return `#${t.id} "${t.name}" [Perspective=${persp}, Level=${t.level}, Family=${t.family}] — Purpose: ${t.primaryPurpose}`;
   }).join('\n');
 
-  if (apiKey && cleanPrompt.length >= 4) {
+  const ai = cleanPrompt.length >= 4 ? createGeminiClient(explicitApiKey) : null;
+  if (ai && cleanPrompt.length >= 4) {
     try {
-      const ai = new GoogleGenAI({ apiKey });
       const candidateModels = await resolveLatestGeminiModelChain(ai, 'latest');
       const modelName = candidateModels[0] || getGeminiModel('latest');
       const systemInstruction = `You are the Principal Enterprise Cloud Architect & Blueprint Decision Engine for PromptCanvas.
@@ -503,12 +503,12 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
     recommendedDomain: 'enterprise',
     recommendedBlueprintId: '00',
     blueprintReasoning:
-      'Blueprint #00 (2026 GCP & Gemini Enterprise Multi-Agent Native Technical Architecture) provides the clean, uncluttered L2/L3 reference topology with Edge Layer (Cloud Armor, Apigee X, Envoy AI), Identity Platform, Cloud Run Gen2 API Gateway, Model Armor & SDP, AI Cluster (Coordinator + Specialist Agents on Gemini Enterprise, ADK & A2A), Vertex AI & GKE LLM Layer, Vector Search 2.0, and Cloud Databases via MCP.',
+      'Blueprint #00 (2026 GCP & Gemini Enterprise Multi-Agent Native Technical Architecture) provides the clean, uncluttered L2/L3 reference topology with Edge Layer (Cloud Armor, Apigee, Envoy AI), Identity Platform, Cloud Run Gen2 API Gateway, Model Armor & SDP, AI Cluster (Coordinator + Specialist Agents on Gemini Enterprise, ADK & A2A), Vertex AI & GKE LLM Layer, Vector Search 2.0, and Cloud Databases via MCP.',
     plannedModificationsSummary: [
       `Customize scope to "${cleanTitle}" on Google Cloud & Gemini Enterprise`,
-      'Configure Edge Layer (Cloud Armor WAF, Apigee X, Envoy AI) & Identity Platform (Firebase Auth & Passkeys)',
+      'Configure Edge Layer (Cloud Armor WAF, Apigee, Envoy AI) & Identity Platform (Firebase Auth & Passkeys)',
       'Orchestrate Coordinator Agent & 3 Specialist Agents via Gemini Enterprise, Google ADK, LangGraph & A2A',
-      'Bind LLM Layer (Gemini 2.5 Pro / Gemini 3.1 Pro / Gemini 2.5 Flash + Gemma 3 on GKE vLLM), Vector Search 2.0 & Cloud Spanner/Bigtable/Firestore via MCP',
+      'Bind LLM Layer (Gemini 3.1 Pro / Gemini 3 Flash + Gemma 4 on GKE vLLM), Vector Search 2.0 & Cloud Spanner/Bigtable/Firestore via MCP',
     ],
     topCandidates: [
       {
@@ -548,7 +548,7 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
         score: 92,
         whyChosen: 'Best Technical/L3 match for physical GCP regional zones, Shared VPC, GKE/TPU clusters, Cloud Armor WAF, and Spanner HA replication.',
         plannedModifications: [
-          'Map ingress tier to Global Cloud Load Balancing, Apigee X, and Cloud Armor WAF',
+          'Map ingress tier to Global Cloud Load Balancing, Apigee, and Cloud Armor WAF',
           'Configure GKE Autopilot & Vertex AI TPU/GPU compute pools inside private VPC subnets',
           'Wire multi-region Cloud Spanner ACID state commitment and CMEK encryption',
         ],
@@ -599,10 +599,10 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
         blueprintName: 'GCP Enterprise Architecture',
         recommendedLevel: 'L3',
         tailoredTitle: `L3 GCP Native Technical Architecture: ${cleanTitle}`,
-        whyChosen: 'Default uncluttered 2026 Google Cloud & Gemini Enterprise Native Technical Architecture with Cloud Armor, Apigee X, Envoy AI, Cloud Run Gen2, Model Armor & SDP, Google ADK, A2A, MCP, Vertex AI & GKE vLLM, Vector Search 2.0, and Spanner/Bigtable/Firestore.',
+        whyChosen: 'Default uncluttered 2026 Google Cloud & Gemini Enterprise Native Technical Architecture with Cloud Armor, Apigee, Envoy AI, Cloud Run Gen2, Model Armor & SDP, Google ADK, A2A, MCP, Vertex AI & GKE vLLM, Vector Search 2.0, and Spanner/Bigtable/Firestore.',
         plannedModifications: [
           'Configure Edge Layer, Identity Platform (OAuth 2.1 / Passkeys), and IAM WIF authorisation',
-          'Detail Gemini 3.1 Pro / 2.5 Flash + Gemma 3 / Llama 4 on GKE vLLM and MCP database tool servers',
+          'Detail Gemini 3.1 Pro / Gemini 3 Flash + Gemma 4 on GKE vLLM and MCP database tool servers',
         ],
       },
       Process: {
@@ -648,7 +648,7 @@ export function buildStructuredFallbackDecision(prompt: string): GeminiArchitect
       decisionGateQuestion: 'Policy & Invariant Contract Valid?',
       customSubsystems: [
         'Enterprise Client & Edge Ingress',
-        'Cloud LB & Apigee X Gateway',
+        'Cloud LB & Apigee Gateway',
         'Cloud Armor WAF & KMS CMEK',
         'Gemini Enterprise Supervisor',
         'GKE Autopilot & Cloud Workflows',
@@ -698,11 +698,10 @@ export async function synthesizeLiveGeminiCopilotModification(
     return copilotModCache.get(cacheKey)!;
   }
 
-  const apiKey = getEffectiveGeminiApiKey(explicitApiKey);
-  if (!apiKey) return null;
+  const ai = createGeminiClient(explicitApiKey);
+  if (!ai) return null;
 
   try {
-    const ai = new GoogleGenAI({ apiKey });
     const candidateModels = await resolveLatestGeminiModelChain(ai, 'latest');
     let response: any = null;
     let modelName = candidateModels[0] || getGeminiModel('latest');

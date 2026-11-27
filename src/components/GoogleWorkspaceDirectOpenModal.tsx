@@ -31,6 +31,7 @@ import {
 } from '@/lib/export/editablePptxCompiler';
 import { exportDrawioToEditableDocx } from '@/lib/export/editableDocxCompiler';
 import { exportDiagramPng } from '@/lib/export/diagramRaster';
+import { SafeSvgMarkup, sanitizeParsedDomSubtree } from '@/components/SafeSvgMarkup';
 import {
   DEFAULT_GOOGLE_OAUTH_CLIENT_ID,
   GoogleDriveDirectOpenError,
@@ -604,58 +605,101 @@ export default function GoogleWorkspaceDirectOpenModal({
         return;
       }
 
-      const rowsHtml = sortedVertices
+      const doc = printWin.document;
+      doc.title = `${diagramName} (${blueprintId}) — Executive Architecture PDF`;
+      doc.head.replaceChildren();
+      doc.body.replaceChildren();
+
+      const styleEl = doc.createElement('style');
+      styleEl.textContent = `
+        @page { size: landscape; margin: 14mm; }
+        body { font-family: system-ui, -apple-system, sans-serif; padding: 24px 32px; color: #0f172a; margin: 0; background: #ffffff; }
+        .hdr { border-bottom: 2px solid #0d9488; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+        h1 { font-size: 22px; margin: 4px 0 0 0; color: #0f172a; }
+        .badge { font-family: monospace; font-size: 12px; font-weight: 700; color: #0d9488; text-transform: uppercase; }
+        img { width: 100%; max-height: 520px; object-fit: contain; border: 1px solid #cbd5e1; border-radius: 10px; margin-bottom: 24px; background: #ffffff; }
+        table { width: 100%; border-collapse: collapse; page-break-inside: auto; }
+        tr { page-break-inside: avoid; page-break-after: auto; }
+        th { text-align: left; padding: 8px 10px; background: #0f172a; color: #ffffff; font-size: 11px; text-transform: uppercase; }
+      `;
+      doc.head.appendChild(styleEl);
+
+      const hdrDiv = doc.createElement('div');
+      hdrDiv.className = 'hdr';
+      const hdrLeft = doc.createElement('div');
+      const badgeDiv = doc.createElement('div');
+      badgeDiv.className = 'badge';
+      badgeDiv.textContent = `BLUEPRINT ${blueprintId} • 1:1 MASTER ARCHITECTURE DOSSIER`;
+      const h1 = doc.createElement('h1');
+      h1.textContent = diagramName;
+      hdrLeft.append(badgeDiv, h1);
+
+      const hdrRight = doc.createElement('div');
+      hdrRight.style.cssText = 'font-size:11px;color:#64748b;font-weight:600;';
+      hdrRight.textContent = `Vector Nodes: ${sortedVertices.length} • Connectors: ${edges.length}`;
+      hdrDiv.append(hdrLeft, hdrRight);
+      doc.body.appendChild(hdrDiv);
+
+      let imgEl: HTMLImageElement | null = null;
+      if (imgUrl) {
+        imgEl = doc.createElement('img');
+        imgEl.src = imgUrl;
+        imgEl.alt = diagramName;
+        doc.body.appendChild(imgEl);
+      }
+
+      const h2 = doc.createElement('h2');
+      h2.style.cssText = 'font-size:15px;margin-bottom:8px;';
+      h2.textContent = `Component Inventory & Technical Specification (${sortedVertices.length} Objects)`;
+      doc.body.appendChild(h2);
+
+      const table = doc.createElement('table');
+      const thead = doc.createElement('thead');
+      const headRow = doc.createElement('tr');
+      const mkTh = (label: string, width?: string) => {
+        const th = doc.createElement('th');
+        if (width) th.style.width = width;
+        th.textContent = label;
+        return th;
+      };
+      headRow.append(
+        mkTh('Object ID', '90px'),
+        mkTh('Component Name', '260px'),
+        mkTh('Technical Role & Specification')
+      );
+      thead.appendChild(headRow);
+
+      const tbody = doc.createElement('tbody');
+      sortedVertices
         .filter((v) => cleanHtmlToPlainText(v.value).title.length > 0)
         .slice(0, 80)
-        .map((node, idx) => {
+        .forEach((node, idx) => {
           const parsed = cleanHtmlToPlainText(node.value);
           const ov = editableOverrides[node.id];
-          const t = escapeXmlText(ov ? ov.title : parsed.title || node.id);
-          const s = escapeXmlText(ov ? ov.subtitle : parsed.subtitle || 'Enterprise Cloud Architecture Component');
-          return `<tr>
-            <td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:11px;color:#475569;">OBJ-${String(
-              idx + 1
-            ).padStart(2, '0')}</td>
-            <td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;font-weight:700;font-size:12px;color:#0f172a;">${t}</td>
-            <td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;font-size:11.5px;color:#334155;">${s}</td>
-          </tr>`;
-        })
-        .join('');
+          const t = ov ? ov.title : parsed.title || node.id;
+          const s = ov ? ov.subtitle : parsed.subtitle || 'Enterprise Cloud Architecture Component';
+          const tr = doc.createElement('tr');
+          const tdId = doc.createElement('td');
+          tdId.style.cssText = 'padding:6px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:11px;color:#475569;';
+          tdId.textContent = `OBJ-${String(idx + 1).padStart(2, '0')}`;
+          const tdTitle = doc.createElement('td');
+          tdTitle.style.cssText = 'padding:6px 10px;border-bottom:1px solid #e2e8f0;font-weight:700;font-size:12px;color:#0f172a;';
+          tdTitle.textContent = t;
+          const tdSub = doc.createElement('td');
+          tdSub.style.cssText = 'padding:6px 10px;border-bottom:1px solid #e2e8f0;font-size:11.5px;color:#334155;';
+          tdSub.textContent = s;
+          tr.append(tdId, tdTitle, tdSub);
+          tbody.appendChild(tr);
+        });
+      table.append(thead, tbody);
+      doc.body.appendChild(table);
 
-      printWin.document.write(`<!DOCTYPE html>
-        <html>
-          <head>
-            <title>${escapeXmlText(diagramName)} (${escapeXmlText(blueprintId)}) — Executive Architecture PDF</title>
-            <style>
-              @page { size: landscape; margin: 14mm; }
-              body { font-family: system-ui, -apple-system, sans-serif; padding: 24px 32px; color: #0f172a; margin: 0; background: #ffffff; }
-              .hdr { border-bottom: 2px solid #0d9488; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
-              h1 { font-size: 22px; margin: 4px 0 0 0; color: #0f172a; }
-              .badge { font-family: monospace; font-size: 12px; font-weight: 700; color: #0d9488; text-transform: uppercase; }
-              img { width: 100%; max-height: 520px; object-fit: contain; border: 1px solid #cbd5e1; border-radius: 10px; margin-bottom: 24px; background: #ffffff; }
-              table { width: 100%; border-collapse: collapse; page-break-inside: auto; }
-              tr { page-break-inside: avoid; page-break-after: auto; }
-              th { text-align: left; padding: 8px 10px; background: #0f172a; color: #ffffff; font-size: 11px; text-transform: uppercase; }
-            </style>
-          </head>
-          <body>
-            <div class="hdr">
-              <div>
-                <div class="badge">BLUEPRINT ${escapeXmlText(blueprintId)} • 1:1 MASTER ARCHITECTURE DOSSIER</div>
-                <h1>${escapeXmlText(diagramName)}</h1>
-              </div>
-              <div style="font-size:11px;color:#64748b;font-weight:600;">Vector Nodes: ${sortedVertices.length} • Connectors: ${edges.length}</div>
-            </div>
-            ${imgUrl ? `<img src="${imgUrl}" alt="${escapeXmlText(diagramName)}" />` : ''}
-            <h2 style="font-size:15px;margin-bottom:8px;">Component Inventory &amp; Technical Specification (${sortedVertices.length} Objects)</h2>
-            <table>
-              <thead><tr><th style="width:90px;">Object ID</th><th style="width:260px;">Component Name</th><th>Technical Role &amp; Specification</th></tr></thead>
-              <tbody>${rowsHtml}</tbody>
-            </table>
-            <script>window.onload = function() { setTimeout(function() { window.print(); }, 200); };</script>
-          </body>
-        </html>`);
-      printWin.document.close();
+      const triggerPrint = () => setTimeout(() => printWin.print(), 200);
+      if (!imgEl || imgEl.complete) {
+        triggerPrint();
+      } else {
+        imgEl.addEventListener('load', triggerPrint, { once: true });
+      }
       setStatusMessage({
         type: 'success',
         text: `🖨️ Opened Printable Executive PDF Dossier for ${diagramName} (${blueprintId})!`,
@@ -850,7 +894,13 @@ export default function GoogleWorkspaceDirectOpenModal({
           tempEl.contentEditable = 'true';
           tempEl.style.position = 'fixed';
           tempEl.style.left = '-9999px';
-          tempEl.innerHTML = richHtml;
+          const parsedHtmlDoc = new DOMParser().parseFromString(richHtml, 'text/html');
+          if (parsedHtmlDoc.body) {
+            sanitizeParsedDomSubtree(parsedHtmlDoc.body);
+            for (const child of Array.from(parsedHtmlDoc.body.childNodes)) {
+              tempEl.appendChild(document.importNode(child, true));
+            }
+          }
           document.body.appendChild(tempEl);
           const range = document.createRange();
           range.selectNodeContents(tempEl);
@@ -2431,9 +2481,9 @@ export default function GoogleWorkspaceDirectOpenModal({
                                           } flex items-center justify-center [&>svg]:w-full [&>svg]:h-full`}
                                         >
                                           {iconMarkupOrUrl.startsWith('<svg') ? (
-                                            <div
+                                            <SafeSvgMarkup
+                                              svg={iconMarkupOrUrl}
                                               className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full"
-                                              dangerouslySetInnerHTML={{ __html: iconMarkupOrUrl }}
                                             />
                                           ) : (
                                             <img
@@ -2717,7 +2767,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                     </div>
 
                     <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500">
-                      <span>Generated by PromptCanvas Enterprise Architecture Engine (Omni 1.1)</span>
+                      <span>Generated by PromptCanvas Enterprise Architecture Engine</span>
                       <span>Page 1 of 2</span>
                     </div>
                   </div>
@@ -3140,9 +3190,9 @@ export default function GoogleWorkspaceDirectOpenModal({
                                       } flex items-center justify-center [&>svg]:w-full [&>svg]:h-full`}
                                     >
                                       {iconMarkupOrUrl.startsWith('<svg') ? (
-                                        <div
+                                        <SafeSvgMarkup
+                                          svg={iconMarkupOrUrl}
                                           className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full"
-                                          dangerouslySetInnerHTML={{ __html: iconMarkupOrUrl }}
                                         />
                                       ) : (
                                         <img

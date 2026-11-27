@@ -357,7 +357,7 @@ export default function LandingPage() {
       <section className="relative w-full max-w-8xl mx-auto px-4 sm:px-6 md:px-12 pt-8 sm:pt-12 md:pt-20 pb-16 md:pb-20 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-center z-10">
         <div className="lg:col-span-7 flex flex-col items-start text-left space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-600 dark:text-teal-300 text-sm font-semibold tracking-wide animate-pulse">
-            <Sparkles className="w-4 h-4" aria-hidden="true" /> Powered by Gemini 2.5 Pro, 2.5 Flash &amp; Draw.io
+            <Sparkles className="w-4 h-4" aria-hidden="true" /> Powered by Gemini 3.1 Pro, Gemini 3 Flash &amp; Gemma 4 Judge
           </div>
           
           <h1 className={`text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] ${isLight ? 'text-slate-900' : 'text-white'}`}>
@@ -398,8 +398,8 @@ export default function LandingPage() {
             <div className={`rounded-xl p-4 transition-all duration-300 border ${
               isLight ? 'bg-white border-slate-200 shadow-md text-slate-800' : 'glass-panel border-panel-border/30 text-white'
             }`}>
-              <p className={`text-4xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>100%</p>
-              <p className={`text-sm mt-1 font-semibold ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>Interactive Vector SVG</p>
+              <p className={`text-4xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>84</p>
+              <p className={`text-sm mt-1 font-semibold ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>Certified Templates (L200–L400)</p>
             </div>
             <div className={`rounded-xl p-4 transition-all duration-300 border ${
               isLight ? 'bg-white border-slate-200 shadow-md text-slate-800' : 'glass-panel border-panel-border/30 text-white'
@@ -665,7 +665,7 @@ export default function LandingPage() {
               </div>
               <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>GCP + Gemini Enterprise + ADK + A2A + MCP Mesh (#00)</h4>
               <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                End-to-end multi-agent reference architecture featuring Cloud Armor, Apigee X, Model Armor, Vertex AI Agent Engine (ADK), A2A Coordinator, MCP Tool Bus, and Cloud Spanner.
+                End-to-end multi-agent reference architecture featuring Cloud Armor, Apigee, Model Armor, Vertex AI Agent Engine (ADK), A2A Coordinator, MCP Tool Bus, and Cloud Spanner.
               </p>
             </div>
             <Link
@@ -717,7 +717,7 @@ export default function LandingPage() {
               </div>
               <h4 className={`font-bold text-lg mb-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>L400 Multi-Tenant Hub &amp; Spoke Network Spec (#79)</h4>
               <p className={`text-sm leading-relaxed mb-6 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                Physical VPC CIDR blocks, BGP ASN 64512, Cloud Armor WAF, Global External ALB VIP, Private Service Connect attachments, AlloyDB FORCE RLS pools, and sovereign VPC-SC silos.
+                Physical VPC CIDR blocks, BGP ASN 64512, Cloud Armor WAF, Global External GCLB VIP, Private Service Connect attachments, AlloyDB FORCE RLS pools, and sovereign VPC-SC silos.
               </p>
             </div>
             <Link
@@ -818,7 +818,7 @@ export default function LandingPage() {
               </div>
               <h4 className={`font-bold text-xl md:text-2xl ${isLight ? 'text-slate-900' : 'text-white'}`}>Gemini Generates XML</h4>
               <p className={`text-base max-w-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                Our backend compiler calls Gemini 2.5 Pro &amp; 2.5 Flash, generating a valid XML diagram with sequential node numbering, structured tiers, and descriptive connections.
+                Our backend compiler calls Gemini 3.1 Pro &amp; Gemini 3 Flash, generating editable Draw.io XML audited by an orthogonal Gemma 4 31B + Gemini 3.1 Pro judge panel.
               </p>
             </div>
 

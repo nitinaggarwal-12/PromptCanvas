@@ -69,8 +69,7 @@ export async function POST(req: NextRequest) {
       attribution: result.attribution,
       fallbackReason: result.fallbackReason,
       isCertified: result.isCertified,
-      auditReport: result.auditReport,
-      steps: result.steps,
+      validationReport: result.validationReport,
       matchedBlueprintId: result.matchedBlueprintId,
       detectedTitle: result.detectedTitle,
     });

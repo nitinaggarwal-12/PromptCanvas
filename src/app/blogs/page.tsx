@@ -38,6 +38,7 @@ import {
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { AppHeader, btnClass } from '@/components/AppHeader';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
+import { SafeSvgMarkup } from '@/components/SafeSvgMarkup';
 import DiagramInlineSlidesPreviewer, {
   openDiagramInGoogleWorkspace,
   InteractiveDrawioInlineEditor,
@@ -1378,7 +1379,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                 className="px-2.5 py-1 rounded-lg text-xs font-medium border bg-white hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-200 border-slate-200/90 dark:border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
               >
                 <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
-                <span>GCP Verified ({gcpVerification?.passedChecks || 20}/{gcpVerification?.totalChecks || 20} PASS)</span>
+                <span>Reference Receipt ({gcpVerification?.passedChecks || 20}/{gcpVerification?.totalChecks || 20})</span>
               </button>
 
               {studioLayoutMode === 'pdf-doc-reader' ? (
@@ -1586,7 +1587,7 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
               <div>
                 <div className="flex items-center gap-2">
                   <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/40 text-[10px] font-extrabold uppercase">
-                    LIVE GCP CONSOLE & 20/20 WORKSTREAM VERIFICATION
+                    RECORDED GCP ARCHITECTURE RECEIPT &amp; LIVE SVG/AST AUDIT
                   </span>
                   <span className="text-[11px] font-mono text-slate-500">
                     {gcpVerification?.passedChecks || 20}/{gcpVerification?.totalChecks || 20} PASS
@@ -1952,10 +1953,10 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                           onClick={() => handleOpenDocGuide(doc)}
                           className="relative h-48 bg-white dark:bg-slate-950 border-b border-slate-100 dark:border-slate-800 p-2.5 flex items-center justify-center overflow-hidden cursor-pointer"
                         >
-                          <div
-                            data-testid={`tile-svg-preview-${doc.docId}`}
+                          <SafeSvgMarkup
+                            svg={tileSvgStr}
+                            testId={`tile-svg-preview-${doc.docId}`}
                             className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:object-contain group-hover:scale-[1.015] transition-transform duration-300"
-                            dangerouslySetInnerHTML={{ __html: tileSvgStr }}
                           />
                         </div>
 
@@ -2238,10 +2239,10 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
                                   />
                                 </div>
                               ) : (
-                                <div
-                                  data-testid={`doc-inline-svg-canvas-${sec.id}`}
+                                <SafeSvgMarkup
+                                  svg={secSvgStr}
+                                  testId={`doc-inline-svg-canvas-${sec.id}`}
                                   className="p-4 bg-white flex items-center justify-center overflow-x-auto [&>svg]:w-full [&>svg]:h-auto [&>svg]:max-h-[680px]"
-                                  dangerouslySetInnerHTML={{ __html: secSvgStr }}
                                 />
                               )}
 
@@ -3293,10 +3294,10 @@ export function TechnicalBlogStudioContent({ initialDocId }: { initialDocId?: st
 
                     <div className="w-full bg-white overflow-hidden">
                       {archCenterRenderMode === 'svg' && activeOfficialArchCenterSvg ? (
-                        <div
-                          data-testid="official-arch-center-svg-panel"
+                        <SafeSvgMarkup
+                          svg={activeOfficialArchCenterSvg}
+                          testId="official-arch-center-svg-panel"
                           className="w-full p-3 bg-[#F8F9FA] flex items-center justify-center [&>svg]:w-full [&>svg]:h-auto [&>svg]:max-h-[620px]"
-                          dangerouslySetInnerHTML={{ __html: activeOfficialArchCenterSvg }}
                         />
                       ) : (
                         <InteractiveDrawioInlineEditor

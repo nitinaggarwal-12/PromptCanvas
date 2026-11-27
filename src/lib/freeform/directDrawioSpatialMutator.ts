@@ -5,6 +5,7 @@ import {
   resolveLatestGeminiModelChain,
 } from '@/lib/geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { validateDrawioXml } from '@/lib/validate/validator';
 import { resolveFreeformIconDataUri } from './freeformIconRegistry';
 
 export interface SpatialCellRecord {
@@ -42,6 +43,30 @@ export interface ParsedDrawioSpatialState {
   title: string;
   cells: SpatialCellRecord[];
   edges: SpatialEdgeRecord[];
+}
+
+export interface CompositeCardCluster {
+  id: string;
+  label: string;
+  parentZoneId: string;
+  rect: [number, number, number, number];
+  isMultiPrimitive: boolean;
+  memberIds: string[];
+  textMemberIds: string[];
+  iconMemberIds: string[];
+  shadowMemberIds: string[];
+}
+
+export interface ClusteredCanvasSummary {
+  zones: Array<{
+    id: string;
+    label: string;
+    parent: string;
+    rect: [number, number, number, number];
+  }>;
+  cards: CompositeCardCluster[];
+  memberToCardId: Map<string, string>;
+  cardById: Map<string, CompositeCardCluster>;
 }
 
 interface AddZoneOp {
@@ -134,10 +159,6 @@ function sanitizeHex(raw: string | undefined, fallback: string): string {
   return h.toUpperCase();
 }
 
-/**
- * Parses live `<mxCell>` coordinates, styles, containers, leaf cards, and edges directly from Draw.io XML
- * without altering or discarding any existing colors, dimensions, or connectors.
- */
 export function parseDrawioXmlSpatialState(xml: string): ParsedDrawioSpatialState {
   const parser = new XMLParser({
     ignoreAttributes: false,
@@ -309,7 +330,15 @@ export function isFooterBarCell(
 }
 
 export function isIconOverlayBadgeCell(c: SpatialCellRecord): boolean {
-  return !c.plainLabel && c.w <= 48 && c.h <= 48;
+  return (!c.plainLabel && c.w <= 52 && c.h <= 52) || c.style.includes('shape=image');
+}
+
+export function isFloatingTextPrimitiveCell(c: SpatialCellRecord): boolean {
+  return (
+    c.style.includes('text;') ||
+    c.style.includes('shape=text') ||
+    (c.style.includes('fillColor=none') && c.style.includes('strokeColor=none') && c.plainLabel.length > 0)
+  );
 }
 
 export function isHeaderBannerOrPillCell(c: SpatialCellRecord): boolean {
@@ -329,12 +358,13 @@ export function isVisualZoneFrameCell(
   }
   if (c.isContainer) return true;
   if (c.w < 250 || c.h < 200) return false;
-  let enclosedLeaves = 0;
+  let enclosedBoxes = 0;
   for (const other of allCells) {
     if (
       other.id === c.id ||
       other.isContainer ||
       isIconOverlayBadgeCell(other) ||
+      isFloatingTextPrimitiveCell(other) ||
       isHeaderBannerOrPillCell(other) ||
       other.w >= c.w - 8 ||
       other.h >= c.h - 8 ||
@@ -349,8 +379,8 @@ export function isVisualZoneFrameCell(
       other.absY >= c.absY - 4 &&
       other.absY + other.h <= c.absY + c.h + 4
     ) {
-      enclosedLeaves++;
-      if (enclosedLeaves >= 2) return true;
+      enclosedBoxes++;
+      if (enclosedBoxes >= 2) return true;
     }
   }
   return false;
@@ -374,6 +404,232 @@ export function inferVisualZoneLabel(
     )
     .sort((a, b) => a.absY - b.absY || b.w - a.w);
   return candidates[0]?.plainLabel.trim() || zone.id;
+}
+
+/**
+ * Clusters multi-primitive flat cards (`#118..#157` Calm & Executive Visual templates where 1 visual card =
+ * shadow rect + empty white card rect + icon badge + 1..5 floating `style="text;..."` lines) alongside
+ * standard single-cell labeled cards so mutators and judges always operate on atomic visual cards!
+ */
+export function clusterCompositeCards(state: ParsedDrawioSpatialState): ClusteredCanvasSummary {
+  const fullWrapperIds = new Set(
+    state.cells
+      .filter((c) => isFullCanvasWrapperCell(c, state.canvasW, state.canvasH))
+      .map((c) => c.id)
+  );
+  const visualZones = state.cells.filter(
+    (c) => !fullWrapperIds.has(c.id) && isVisualZoneFrameCell(c, state.cells, state.canvasW, state.canvasH)
+  );
+  const visualZoneIds = new Set(visualZones.map((z) => z.id));
+
+  const zones = visualZones.map((z) => ({
+    id: z.id,
+    label: inferVisualZoneLabel(z, state.cells),
+    parent: z.parent,
+    rect: [Math.round(z.absX), Math.round(z.absY), Math.round(z.w), Math.round(z.h)] as [
+      number,
+      number,
+      number,
+      number,
+    ],
+  }));
+
+  // Identify zone header text cells so we don't misclassify zone titles as standalone cards
+  const zoneHeaderTextIds = new Set<string>();
+  for (const z of visualZones) {
+    if (!z.plainLabel.trim()) {
+      const hdr = state.cells
+        .filter(
+          (c) =>
+            c.id !== z.id &&
+            isFloatingTextPrimitiveCell(c) &&
+            c.h <= 56 &&
+            c.absX >= z.absX - 6 &&
+            c.absX + c.w <= z.absX + z.w + 6 &&
+            c.absY >= z.absY - 2 &&
+            c.absY <= z.absY + 52
+        )
+        .sort((a, b) => a.absY - b.absY)[0];
+      if (hdr) zoneHeaderTextIds.add(hdr.id);
+    }
+  }
+
+  const memberToCardId = new Map<string, string>();
+  const cardById = new Map<string, CompositeCardCluster>();
+  const cards: CompositeCardCluster[] = [];
+
+  // Candidate empty outer card shells (sorted smallest-area first so inner cards claim their own text before outer frames)
+  const shellCandidates = state.cells
+    .filter(
+      (c) =>
+        !fullWrapperIds.has(c.id) &&
+        !visualZoneIds.has(c.id) &&
+        !isFooterBarCell(c, state.canvasW, state.canvasH) &&
+        !isIconOverlayBadgeCell(c) &&
+        !isFloatingTextPrimitiveCell(c) &&
+        !isHeaderBannerOrPillCell(c) &&
+        !c.plainLabel.trim() &&
+        c.w >= 72 &&
+        c.w <= 660 &&
+        c.h >= 34 &&
+        c.h <= 360 &&
+        !c.id.includes('shadow') &&
+        !c.id.endsWith('_sh')
+    )
+    .sort((a, b) => a.w * a.h - b.w * b.h);
+
+  const inferEnclosingZoneId = (box: SpatialCellRecord): string => {
+    if (box.parent && box.parent !== '1' && box.parent !== '0') return box.parent;
+    const enclosing = visualZones
+      .filter(
+        (z) =>
+          box.absX >= z.absX - 4 &&
+          box.absX + box.w <= z.absX + z.w + 4 &&
+          box.absY >= z.absY - 4 &&
+          box.absY + box.h <= z.absY + z.h + 4
+      )
+      .sort((a, b) => a.w * a.h - b.w * b.h)[0];
+    return enclosing ? enclosing.id : '1';
+  };
+
+  // Pass A: Multi-primitive composite cards (empty card rect enclosing >=1 floating text cell)
+  for (const shell of shellCandidates) {
+    if (memberToCardId.has(shell.id)) continue;
+
+    // Skip offset drop-shadow underlays where an identical-sized shell sits 2..8px top-left of it
+    const isShadowUnderlay = shellCandidates.some(
+      (other) =>
+        other.id !== shell.id &&
+        Math.abs(other.w - shell.w) <= 6 &&
+        Math.abs(other.h - shell.h) <= 6 &&
+        shell.absX - other.absX >= 1 &&
+        shell.absX - other.absX <= 10 &&
+        shell.absY - other.absY >= 1 &&
+        shell.absY - other.absY <= 10
+    );
+    if (isShadowUnderlay) continue;
+
+    const enclosedTexts = state.cells
+      .filter(
+        (t) =>
+          t.id !== shell.id &&
+          !memberToCardId.has(t.id) &&
+          !zoneHeaderTextIds.has(t.id) &&
+          t.plainLabel.trim().length > 0 &&
+          (isFloatingTextPrimitiveCell(t) || (t.w <= shell.w + 4 && t.h <= 48)) &&
+          t.absX + t.w / 2 >= shell.absX - 4 &&
+          t.absX + t.w / 2 <= shell.absX + shell.w + 4 &&
+          t.absY + t.h / 2 >= shell.absY - 4 &&
+          t.absY + t.h / 2 <= shell.absY + shell.h + 4
+      )
+      .sort((a, b) => a.absY - b.absY || a.absX - b.absX);
+
+    if (enclosedTexts.length === 0) continue;
+
+    const enclosedIcons = state.cells.filter(
+      (ic) =>
+        ic.id !== shell.id &&
+        !memberToCardId.has(ic.id) &&
+        isIconOverlayBadgeCell(ic) &&
+        ic.absX + ic.w / 2 >= shell.absX - 6 &&
+        ic.absX + ic.w / 2 <= shell.absX + shell.w + 6 &&
+        ic.absY + ic.h / 2 >= shell.absY - 6 &&
+        ic.absY + ic.h / 2 <= shell.absY + shell.h + 6
+    );
+
+    const shadowAndAccents = state.cells.filter(
+      (sh) =>
+        sh.id !== shell.id &&
+        !memberToCardId.has(sh.id) &&
+        !sh.plainLabel.trim() &&
+        !visualZoneIds.has(sh.id) &&
+        !fullWrapperIds.has(sh.id) &&
+        ((Math.abs(sh.w - shell.w) <= 8 &&
+          Math.abs(sh.h - shell.h) <= 8 &&
+          Math.abs(sh.absX - shell.absX) <= 10 &&
+          Math.abs(sh.absY - shell.absY) <= 10) ||
+          ((sh.w <= 12 || sh.h <= 28) &&
+            sh.absX >= shell.absX - 2 &&
+            sh.absX + sh.w <= shell.absX + shell.w + 2 &&
+            sh.absY >= shell.absY - 2 &&
+            sh.absY + sh.h <= shell.absY + shell.h + 2))
+    );
+
+    const textMemberIds = enclosedTexts.map((t) => t.id);
+    const iconMemberIds = enclosedIcons.map((i) => i.id);
+    const shadowMemberIds = shadowAndAccents.map((s) => s.id);
+    const memberIds = [shell.id, ...textMemberIds, ...iconMemberIds, ...shadowMemberIds];
+    for (const mid of memberIds) memberToCardId.set(mid, shell.id);
+
+    const joinedLabel = enclosedTexts
+      .map((t) => t.plainLabel.trim())
+      .filter(Boolean)
+      .join(' — ');
+
+    const cluster: CompositeCardCluster = {
+      id: shell.id,
+      label: joinedLabel,
+      parentZoneId: inferEnclosingZoneId(shell),
+      rect: [Math.round(shell.absX), Math.round(shell.absY), Math.round(shell.w), Math.round(shell.h)],
+      isMultiPrimitive: true,
+      memberIds,
+      textMemberIds,
+      iconMemberIds,
+      shadowMemberIds,
+    };
+    cards.push(cluster);
+    cardById.set(shell.id, cluster);
+  }
+
+  // Pass B: Standard single-cell labeled cards (`value="Service Name"` directly on the shape)
+  for (const c of state.cells) {
+    if (
+      memberToCardId.has(c.id) ||
+      fullWrapperIds.has(c.id) ||
+      visualZoneIds.has(c.id) ||
+      zoneHeaderTextIds.has(c.id) ||
+      isFooterBarCell(c, state.canvasW, state.canvasH) ||
+      isIconOverlayBadgeCell(c) ||
+      isHeaderBannerOrPillCell(c) ||
+      !c.plainLabel.trim()
+    ) {
+      continue;
+    }
+    // Skip tiny standalone floating annotations/axis ticks (`h <= 24 && fillColor=none`) unless no cards exist
+    if (isFloatingTextPrimitiveCell(c) && c.h <= 26 && cards.length > 0) {
+      continue;
+    }
+
+    const attachedIcons = state.cells.filter(
+      (ic) =>
+        ic.id !== c.id &&
+        !memberToCardId.has(ic.id) &&
+        isIconOverlayBadgeCell(ic) &&
+        ic.absX + ic.w / 2 >= c.absX - 6 &&
+        ic.absX + ic.w / 2 <= c.absX + c.w + 6 &&
+        ic.absY + ic.h / 2 >= c.absY - 6 &&
+        ic.absY + ic.h / 2 <= c.absY + c.h + 6
+    );
+    const iconMemberIds = attachedIcons.map((i) => i.id);
+    const memberIds = [c.id, ...iconMemberIds];
+    for (const mid of memberIds) memberToCardId.set(mid, c.id);
+
+    const cluster: CompositeCardCluster = {
+      id: c.id,
+      label: c.plainLabel.trim(),
+      parentZoneId: inferEnclosingZoneId(c),
+      rect: [Math.round(c.absX), Math.round(c.absY), Math.round(c.w), Math.round(c.h)],
+      isMultiPrimitive: false,
+      memberIds,
+      textMemberIds: [],
+      iconMemberIds,
+      shadowMemberIds: [],
+    };
+    cards.push(cluster);
+    cardById.set(c.id, cluster);
+  }
+
+  return { zones, cards, memberToCardId, cardById };
 }
 
 export function buildCardValueHtml(
@@ -447,21 +703,34 @@ export function serializeSpatialStateToDrawioXml(state: ParsedDrawioSpatialState
   );
   const iconBadgeIds = new Set(iconBadges.map((c) => c.id));
 
+  const textOverlays = state.cells.filter(
+    (c) =>
+      !fullWrapperIds.has(c.id) &&
+      !zoneFrameIds.has(c.id) &&
+      !iconBadgeIds.has(c.id) &&
+      isFloatingTextPrimitiveCell(c)
+  );
+  const textOverlayIds = new Set(textOverlays.map((c) => c.id));
+
   const leaves = state.cells.filter(
-    (c) => !fullWrapperIds.has(c.id) && !zoneFrameIds.has(c.id) && !iconBadgeIds.has(c.id)
+    (c) =>
+      !fullWrapperIds.has(c.id) &&
+      !zoneFrameIds.has(c.id) &&
+      !iconBadgeIds.has(c.id) &&
+      !textOverlayIds.has(c.id)
   );
 
   const cellMap = new Map<string, SpatialCellRecord>();
   for (const c of state.cells) cellMap.set(c.id, c);
 
   const lines: string[] = [];
-  // Zero whitespace text nodes between <mxfile>, <diagram>, and <mxGraphModel> so viewer-static.min.js
-  // never mistakes <diagram> text content for base64-deflated data.
+  // Zero whitespace text nodes between <mxfile>, <diagram>, and <mxGraphModel>
   lines.push(
     `<mxfile host="app.diagrams.net" agent="PromptCanvas-DirectSpatial" version="24.7.17" data-prompt-to-diagram="true"><diagram id="p2d_canvas" name="${escapeXmlAttr(state.title)}"><mxGraphModel dx="${state.canvasW}" dy="${state.canvasH}" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="${state.canvasW}" pageHeight="${state.canvasH}" background="#FFFFFF" math="0" shadow="0" data-prompt-to-diagram="true"><root><mxCell id="0"/><mxCell id="1" parent="0"/>`
   );
 
-  for (const c of [...fullWrappers, ...zoneFrames, ...leaves, ...iconBadges]) {
+  // Render z-order back-to-front: wrappers -> zones -> card shells/shadows -> floating text -> icon badges
+  for (const c of [...fullWrappers, ...zoneFrames, ...leaves, ...textOverlays, ...iconBadges]) {
     const parentCell = c.parent && c.parent !== '1' ? cellMap.get(c.parent) : undefined;
     const parentId = parentCell ? parentCell.id : '1';
     const relX = parentCell ? Math.round(c.absX - parentCell.absX) : Math.round(c.absX);
@@ -574,6 +843,7 @@ function computeSimpleOrthogonalEdgeStyle(
       !isVisualZoneFrameCell(obs, allCells, canvasW, canvasH) &&
       !isFooterBarCell(obs, canvasW, canvasH) &&
       !isIconOverlayBadgeCell(obs) &&
+      !isFloatingTextPrimitiveCell(obs) &&
       obs.w >= 44 &&
       obs.w < 700 &&
       obs.h >= 28 &&
@@ -629,7 +899,6 @@ function computeSimpleOrthogonalEdgeStyle(
     );
 
     if (blockingCard || (opts.hasLabel && verticalGap < 42)) {
-      // Route cleanly around the right gutter instead of slicing vertically through cards or cramping a label into a <42px gap
       const laneOffset = (opts.laneIndex || 0) * 18;
       const baseRight = Math.max(
         src.absX + src.w,
@@ -704,26 +973,33 @@ export function computeSpatialAuditMetrics(state: ParsedDrawioSpatialState): {
   childContainmentViolations: number;
 } {
   const byId = new Map(state.cells.map((c) => [c.id, c]));
-  const containers = state.cells.filter((c) =>
-    isVisualZoneFrameCell(c, state.cells, state.canvasW, state.canvasH)
-  );
-  const zoneIds = new Set(containers.map((c) => c.id));
-  const leaves = state.cells.filter(
-    (c) =>
-      !zoneIds.has(c.id) &&
-      !isFullCanvasWrapperCell(c, state.canvasW, state.canvasH) &&
-      !isFooterBarCell(c, state.canvasW, state.canvasH) &&
-      !isIconOverlayBadgeCell(c) &&
-      !isHeaderBannerOrPillCell(c)
-  );
+  const clustered = clusterCompositeCards(state);
+  const cards = clustered.cards;
 
   let siblingOverlaps = 0;
-  for (let i = 0; i < leaves.length; i++) {
-    for (let j = i + 1; j < leaves.length; j++) {
-      const a = leaves[i];
-      const b = leaves[j];
-      const ix = Math.max(0, Math.min(a.absX + a.w, b.absX + b.w) - Math.max(a.absX, b.absX));
-      const iy = Math.max(0, Math.min(a.absY + a.h, b.absY + b.h) - Math.max(a.absY, b.absY));
+  for (let i = 0; i < cards.length; i++) {
+    for (let j = i + 1; j < cards.length; j++) {
+      const a = cards[i].rect;
+      const b = cards[j].rect;
+      // Exclude deliberate full containment (inner sub-card inside a larger card)
+      const aEnclosesB =
+        a[2] > b[2] + 8 &&
+        a[3] > b[3] + 8 &&
+        a[0] <= b[0] + 4 &&
+        a[1] <= b[1] + 4 &&
+        a[0] + a[2] >= b[0] + b[2] - 4 &&
+        a[1] + a[3] >= b[1] + b[3] - 4;
+      const bEnclosesA =
+        b[2] > a[2] + 8 &&
+        b[3] > a[3] + 8 &&
+        b[0] <= a[0] + 4 &&
+        b[1] <= a[1] + 4 &&
+        b[0] + b[2] >= a[0] + a[2] - 4 &&
+        b[1] + b[3] >= a[1] + a[3] - 4;
+      if (aEnclosesB || bEnclosesA) continue;
+
+      const ix = Math.max(0, Math.min(a[0] + a[2], b[0] + b[2]) - Math.max(a[0], b[0]));
+      const iy = Math.max(0, Math.min(a[1] + a[3], b[1] + b[3]) - Math.max(a[1], b[1]));
       if (ix * iy > 16) siblingOverlaps++;
     }
   }
@@ -743,6 +1019,9 @@ export function computeSpatialAuditMetrics(state: ParsedDrawioSpatialState): {
     }
   }
 
+  const containers = state.cells.filter((c) =>
+    isVisualZoneFrameCell(c, state.cells, state.canvasW, state.canvasH)
+  );
   const depthOf = (c: SpatialCellRecord, seen = new Set<string>()): number => {
     if (!c.parent || c.parent === '1' || c.parent === '0' || seen.has(c.id)) return 1;
     seen.add(c.id);
@@ -755,8 +1034,8 @@ export function computeSpatialAuditMetrics(state: ParsedDrawioSpatialState): {
   );
 
   return {
-    groupCount: containers.length,
-    nodeCount: leaves.length,
+    groupCount: clustered.zones.length,
+    nodeCount: cards.length,
     edgeCount: state.edges.length,
     maxNestingDepth,
     siblingOverlaps,
@@ -766,8 +1045,8 @@ export function computeSpatialAuditMetrics(state: ParsedDrawioSpatialState): {
 
 /**
  * Surgically mutates an existing Draw.io XML diagram in place (`action: 'modify'`)
- * while preserving 100% of untouched `<mxCell>` styles, colors, dimensions, and connectors.
- * Zero `e_auto_*` synthetic edges and zero `#FFFFFF` nested zone color wipes.
+ * with full Composite-Card awareness (`#118..#157` multi-primitive cards + standard cards)
+ * AND a closed-loop Validator + Orthogonal Multi-Model Judge self-repair pass.
  */
 export async function mutateDrawioXmlDirectly(params: {
   currentXml: string;
@@ -780,6 +1059,8 @@ export async function mutateDrawioXmlDirectly(params: {
   title: string;
   summaryOfChanges: string;
   modelUsed: string;
+  repairAttempts: number;
+  judgeReport?: any;
   stats: {
     groupCount: number;
     nodeCount: number;
@@ -795,51 +1076,38 @@ export async function mutateDrawioXmlDirectly(params: {
   }
 
   const state = parseDrawioXmlSpatialState(params.currentXml);
-  const modelChain = await resolveLatestGeminiModelChain(ai, 'chat');
-  const modelToUse = modelChain[0] || 'gemini-2.5-flash';
+  const clustered = clusterCompositeCards(state);
+  const flashChain = await resolveLatestGeminiModelChain(ai, 'chat');
+  const primaryMutatorModel = flashChain[0] || 'gemini-3-flash-preview';
 
-  const visualZones = state.cells.filter((c) =>
-    isVisualZoneFrameCell(c, state.cells, state.canvasW, state.canvasH)
-  );
-  const visualZoneIds = new Set(visualZones.map((z) => z.id));
-
-  const compactZones = visualZones.map((z) => ({
-    id: z.id,
-    label: inferVisualZoneLabel(z, state.cells),
-    parent: z.parent,
-    rect: [Math.round(z.absX), Math.round(z.absY), Math.round(z.w), Math.round(z.h)],
-  }));
-
-  const compactNodes = state.cells
-    .filter(
-      (c) =>
-        !visualZoneIds.has(c.id) &&
-        !isFullCanvasWrapperCell(c, state.canvasW, state.canvasH) &&
-        !isFooterBarCell(c, state.canvasW, state.canvasH) &&
-        !isIconOverlayBadgeCell(c) &&
-        !isHeaderBannerOrPillCell(c) &&
-        c.plainLabel.trim().length > 0
-    )
-    .map((n) => ({
-      id: n.id,
-      label: n.plainLabel,
-      parent: n.parent,
-      rect: [Math.round(n.absX), Math.round(n.absY), Math.round(n.w), Math.round(n.h)],
-    }));
+  const resolveEndpointId = (id: string, pt?: { x: number; y: number }): string => {
+    if (id) return clustered.memberToCardId.get(id) || id;
+    if (pt) {
+      const hit = clustered.cards.find(
+        (c) =>
+          pt.x >= c.rect[0] - 10 &&
+          pt.x <= c.rect[0] + c.rect[2] + 10 &&
+          pt.y >= c.rect[1] - 10 &&
+          pt.y <= c.rect[1] + c.rect[3] + 10
+      );
+      if (hit) return hit.id;
+    }
+    return id || '';
+  };
 
   const compactEdges = state.edges.map((e) => ({
     id: e.id,
-    source: e.source,
-    target: e.target,
+    source: resolveEndpointId(e.source, e.sourcePoint),
+    target: resolveEndpointId(e.target, e.targetPoint),
     label: e.plainLabel,
   }));
 
   const systemPrompt = `You are a surgical Draw.io XML Spatial Architect.
-Given the live Draw.io canvas inventory (containers, leaf nodes, edges with exact [x, y, w, h] coordinates) and a user's follow-up change instruction, return ONLY a JSON object matching SpatialMutationPlan:
+Given the live Draw.io canvas inventory (zones, composite/leaf cards with exact outer [x, y, w, h] coordinates, and directed edges) and a user's follow-up change instruction, return ONLY a JSON object matching SpatialMutationPlan:
 {
   "title": "Optional updated diagram title if scope changed",
   "summaryOfChanges": "1-2 sentence factual summary of what was added, modified, connected, or removed",
-  "removeCellIds": ["ids of zones or nodes to delete"],
+  "removeCellIds": ["ids of zones or cards to delete"],
   "removeEdgeIds": ["ids of edges to delete"],
   "addZones": [
     {
@@ -857,83 +1125,177 @@ Given the live Draw.io canvas inventory (containers, leaf nodes, edges with exac
     {
       "id": "n_new_slug",
       "label": "Exact Component Name",
-      "sublabel": "",
+      "sublabel": "Optional concise technical subtitle (protocol, SKU, SLA)",
       "parentZoneId": "existing or newly added zone id, or '1'",
       "placement": "below | above | right_of | left_of | between | inside",
-      "anchorId": "existing node or zone id",
-      "secondAnchorId": "optional second node id when placement='between'",
-      "iconKey": "short product/tech token e.g. cloud_armor, redis, kafka, bigquery",
+      "anchorId": "existing card or zone id",
+      "secondAnchorId": "optional second card id when placement='between'",
+      "iconKey": "short product/tech token e.g. cloud_armor, spanner, redis, kafka, bigquery, gke",
       "fillHex": "#FFFFFF",
       "strokeHex": "#CBD5E1"
     }
   ],
   "modifyCells": [
     {
-      "id": "existing cell id",
-      "newLabel": "optional renamed label",
-      "newSublabel": "optional sublabel",
+      "id": "existing card or zone id",
+      "newLabel": "optional renamed title",
+      "newSublabel": "optional updated subtitle",
       "fillHex": "optional #RRGGBB",
       "strokeHex": "optional #RRGGBB",
       "movePlacement": "optional: below | above | right_of | left_of | inside",
-      "moveAnchorId": "optional target node or zone id when moving this cell"
+      "moveAnchorId": "optional target card or zone id when moving this cell"
     }
   ],
   "addEdges": [
     {
-      "source": "source node or zone id",
-      "target": "target node or zone id",
-      "label": "optional short protocol/flow label",
+      "source": "source card or zone id",
+      "target": "target card or zone id",
+      "label": "optional short protocol/flow label (<= 3 words)",
       "dashed": false,
       "bidirectional": false,
       "strokeHex": "#475569"
     }
   ]
 }
-STRICT RULES:
-1. Do NOT touch, recreate, or delete existing zones/nodes/edges unless requested by the user's change instruction.
-2. When inserting a component "between A and B", remove the old direct A->B edge in removeEdgeIds and add A->New and New->B in addEdges.
-3. VERTICAL STACK DISCIPLINE: When adding a node inside a vertical stack of cards, add AT MOST ONE clean vertical step edge from its immediate adjacent stack neighbor (with label="" if existing stack arrows are unlabelled) — NEVER add multiple skip-level internal cross-edges across the same stack.
-4. Keep any external edge label concise (<= 3 words) and never invent fake disconnected edges.`;
+STRICT ENGINEERING & TOPOLOGY RULES:
+1. Preserve all untouched zones, cards, and edges intact. Never add unrequested security-theatre banners.
+2. When inserting a component "between A and B", list the old direct A->B edge in removeEdgeIds and add A->New and New->B in addEdges.
+3. Ensure every newly added component is wired into the architecture with accurate causal arrow direction (never leave added nodes disconnected, and never wire clients directly to databases bypassing gateways/services).
+4. VERTICAL STACK DISCIPLINE: When adding a node inside a vertical stack of cards, add AT MOST ONE clean vertical step edge from its immediate adjacent stack neighbor.
+5. Never invent non-existent cloud SKUs, invalid region witness combinations, or unescaped HTML angle brackets (<Foo>) in labels.`;
 
-  const userPayload = JSON.stringify(
-    {
-      originalPrompt: params.userPrompt,
-      previousModifications: params.modificationHistory || [],
-      currentCanvas: {
-        width: state.canvasW,
-        height: state.canvasH,
-        title: state.title,
-        zones: compactZones,
-        nodes: compactNodes,
-        edges: compactEdges,
-      },
-      modificationInstruction: params.modificationPrompt,
+  const baseInventoryPayload = {
+    originalPrompt: params.userPrompt,
+    previousModifications: params.modificationHistory || [],
+    currentCanvas: {
+      width: state.canvasW,
+      height: state.canvasH,
+      title: state.title,
+      zones: clustered.zones,
+      nodes: clustered.cards.map((c) => ({
+        id: c.id,
+        label: c.label,
+        parent: c.parentZoneId,
+        rect: c.rect,
+      })),
+      edges: compactEdges,
     },
-    null,
-    2
-  );
+    modificationInstruction: params.modificationPrompt,
+  };
 
   const response = await generateContentWithRetry(
     ai,
     {
-      model: modelToUse,
-      contents: userPayload,
+      model: primaryMutatorModel,
+      contents: JSON.stringify(baseInventoryPayload, null, 2),
       config: {
         systemInstruction: systemPrompt,
         responseMimeType: 'application/json',
         temperature: 0.15,
         maxOutputTokens: 16384,
-        thinkingConfig: getGenConfigForModel('edit', modelToUse).thinkingConfig,
+        thinkingConfig: getGenConfigForModel('edit', primaryMutatorModel).thinkingConfig,
       },
     },
-    { label: 'Stage Modify: Direct Spatial Draw.io Mutation', perAttemptTimeoutMs: 45_000, totalBudgetMs: 65_000 }
+    { label: 'Stage Modify Pass 1: Direct Spatial Mutation', perAttemptTimeoutMs: 40_000, totalBudgetMs: 55_000 }
   );
 
-  const rawText = String(response?.text || '').trim();
-  const plan: SpatialMutationPlan = extractJsonBlock(rawText);
-  const actualModel = String((response as any)?.__resolvedModelId || modelToUse);
+  const plan1: SpatialMutationPlan = extractJsonBlock(String(response?.text || '').trim());
+  const actualModel1 = String((response as any)?.__resolvedModelId || primaryMutatorModel);
+  let bestResult = applySpatialMutationPlan(state, plan1, actualModel1, params.modificationPrompt);
+  let repairAttempts = 0;
 
-  return applySpatialMutationPlan(state, plan, actualModel, params.modificationPrompt);
+  // Closed-Loop Verification Gate: Deterministic Validator + Orthogonal Multi-Model Judge (`gemini-3.1-pro-preview` + `gemma-4-31b-it`)
+  const baselineValidation = validateDrawioXml(params.currentXml);
+  const baselineErrCount = baselineValidation.errors.length;
+  const pass1Validation = validateDrawioXml(bestResult.xml);
+
+  const { runOrthogonalMultiModelJudge } = await import('@/lib/orthogonalMultiModelJudge');
+  let judgeReport = await runOrthogonalMultiModelJudge({
+    userPrompt: params.userPrompt,
+    modificationPrompt: params.modificationPrompt,
+    xmlContent: bestResult.xml,
+    beforeXml: params.currentXml,
+    generatorModel: actualModel1,
+    explicitApiKey: params.explicitApiKey,
+  });
+
+  const introducedHardErrors = pass1Validation.errors.length > baselineErrCount;
+  const criticalJudgeDefects = judgeReport.actionableDefects.filter(
+    (d) => d.severity === 'CRITICAL' || d.severity === 'HIGH'
+  );
+
+  // If Pass 1 introduced geometric/wiring errors or Judge flagged CRITICAL/HIGH mutation flaws, run 1 Pro Repair Pass!
+  if (introducedHardErrors || bestResult.stats.siblingOverlaps > 0 || criticalJudgeDefects.length > 0) {
+    try {
+      repairAttempts = 1;
+      const proChain = await resolveLatestGeminiModelChain(ai, 'pro');
+      const repairModel = proChain[0] || 'gemini-3.1-pro-preview';
+
+      const defectBrief = [
+        ...pass1Validation.errors.slice(0, 6).map((e) => `[VALIDATOR ${e.code}] cells=${e.cells.join(',')}: ${e.detail}`),
+        ...criticalJudgeDefects
+          .slice(0, 5)
+          .map((d) => `[JUDGE ${d.severity} ${d.category}] cells=${d.cellIds.join(',')}: ${d.title} — ${d.repairInstruction}`),
+      ].join('\n');
+
+      const repairPayload = {
+        ...baseInventoryPayload,
+        previousAttemptPlan: plan1,
+        defectsToFixInRevisedPlan: defectBrief,
+        repairMandate:
+          'Return a revised SpatialMutationPlan against currentCanvas that fulfills modificationInstruction while eliminating ALL listed validator & judge defects (zero overlaps, zero disconnected nodes, accurate technical SKUs & causal arrow directions).',
+      };
+
+      const repairRes = await generateContentWithRetry(
+        ai,
+        {
+          model: repairModel,
+          contents: JSON.stringify(repairPayload, null, 2),
+          config: {
+            systemInstruction: systemPrompt,
+            responseMimeType: 'application/json',
+            temperature: 0.1,
+            maxOutputTokens: 16384,
+            thinkingConfig: getGenConfigForModel('repair', repairModel).thinkingConfig,
+          },
+        },
+        { label: 'Stage Modify Pass 2: Closed-Loop Pro Repair', perAttemptTimeoutMs: 35_000, totalBudgetMs: 45_000 }
+      );
+
+      const repairedPlan: SpatialMutationPlan = extractJsonBlock(String(repairRes?.text || '').trim());
+      const actualRepairModel = String((repairRes as any)?.__resolvedModelId || repairModel);
+      const candidateResult = applySpatialMutationPlan(
+        state,
+        repairedPlan,
+        `${actualModel1} -> repaired by ${actualRepairModel}`,
+        params.modificationPrompt
+      );
+      const candidateVal = validateDrawioXml(candidateResult.xml);
+
+      if (
+        candidateResult.stats.siblingOverlaps <= bestResult.stats.siblingOverlaps &&
+        candidateVal.errors.length <= pass1Validation.errors.length
+      ) {
+        bestResult = candidateResult;
+        judgeReport = await runOrthogonalMultiModelJudge({
+          userPrompt: params.userPrompt,
+          modificationPrompt: params.modificationPrompt,
+          xmlContent: bestResult.xml,
+          beforeXml: params.currentXml,
+          generatorModel: actualRepairModel,
+          explicitApiKey: params.explicitApiKey,
+        });
+      }
+    } catch (repairErr: any) {
+      console.warn('[DirectSpatialMutator] Closed-loop repair pass skipped:', repairErr?.message || repairErr);
+    }
+  }
+
+  return {
+    ...bestResult,
+    repairAttempts,
+    judgeReport,
+  };
 }
 
 export function applySpatialMutationPlan(
@@ -973,8 +1335,29 @@ export function applySpatialMutationPlan(
     state.title = plan.title.trim();
   }
 
-  // 1. Removals (cascade children if a container is removed)
-  const removeSet = new Set<string>(plan.removeCellIds || []);
+  // Snapshot composite card clusters BEFORE mutation so removals, renames, moves, and edge anchors
+  // operate atomically on multi-primitive cards (`#118..#157`) as well as standard single-cell cards!
+  const initialClusters = clusterCompositeCards(state);
+  const resolveCanonicalCardId = (rawId?: string | null): string | undefined => {
+    if (!rawId) return undefined;
+    return initialClusters.memberToCardId.get(rawId) || rawId;
+  };
+
+  // 1. Atomic Removals (cascade children of containers AND all primitives of composite cards + touching coordinate edges!)
+  const removeSet = new Set<string>();
+  const removedRects: Array<[number, number, number, number]> = [];
+
+  for (const rawId of plan.removeCellIds || []) {
+    const canonId = resolveCanonicalCardId(rawId) || rawId;
+    removeSet.add(rawId);
+    removeSet.add(canonId);
+    const comp = initialClusters.cardById.get(canonId);
+    if (comp) {
+      removedRects.push(comp.rect);
+      for (const mid of comp.memberIds) removeSet.add(mid);
+    }
+  }
+
   let cascaded = true;
   while (cascaded) {
     cascaded = false;
@@ -985,19 +1368,39 @@ export function applySpatialMutationPlan(
       }
     }
   }
+
+  const pointTouchesRemovedCard = (pt?: { x: number; y: number }): boolean => {
+    if (!pt) return false;
+    return removedRects.some(
+      (r) =>
+        pt.x >= r[0] - 8 &&
+        pt.x <= r[0] + r[2] + 8 &&
+        pt.y >= r[1] - 8 &&
+        pt.y <= r[1] + r[3] + 8
+    );
+  };
+
   const removeEdgeSet = new Set<string>(plan.removeEdgeIds || []);
   state.cells = state.cells.filter((c) => !removeSet.has(c.id));
   state.edges = state.edges.filter(
-    (e) => !removeEdgeSet.has(e.id) && !removeSet.has(e.source) && !removeSet.has(e.target)
+    (e) =>
+      !removeEdgeSet.has(e.id) &&
+      !removeSet.has(e.source) &&
+      !removeSet.has(e.target) &&
+      !pointTouchesRemovedCard(e.sourcePoint) &&
+      !pointTouchesRemovedCard(e.targetPoint)
   );
 
-  const findCell = (id?: string | null) =>
-    id ? state.cells.find((c) => c.id === id) : undefined;
+  const findCell = (id?: string | null) => {
+    if (!id) return undefined;
+    const canon = resolveCanonicalCardId(id) || id;
+    return state.cells.find((c) => c.id === canon) || state.cells.find((c) => c.id === id);
+  };
 
   // 2. Add new zones
   for (const zOp of plan.addZones || []) {
     const id = zOp.id || `z_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
-    if (findCell(id)) continue;
+    if (state.cells.some((c) => c.id === id)) continue;
     const anchor = findCell(zOp.anchorId);
     const parentZone = zOp.parentId && zOp.parentId !== '1' ? findCell(zOp.parentId) : undefined;
     let absX = 60;
@@ -1029,20 +1432,21 @@ export function applySpatialMutationPlan(
 
     const fill = sanitizeHex(zOp.fillHex, '#F1F5F9');
     const stroke = sanitizeHex(zOp.strokeHex, '#64748B');
-    const style = [
-      'rounded=1',
-      'arcSize=4',
-      'whiteSpace=wrap',
-      'html=1',
-      'container=1',
-      'collapsible=0',
-      'verticalAlign=top',
-      'align=left',
-      `fillColor=${fill}`,
-      `strokeColor=${stroke}`,
-      'strokeWidth=1.5',
-      zOp.dashed ? 'dashed=1;dashPattern=6 4' : 'dashed=0',
-    ].join(';') + ';';
+    const style =
+      [
+        'rounded=1',
+        'arcSize=4',
+        'whiteSpace=wrap',
+        'html=1',
+        'container=1',
+        'collapsible=0',
+        'verticalAlign=top',
+        'align=left',
+        `fillColor=${fill}`,
+        `strokeColor=${stroke}`,
+        'strokeWidth=1.5',
+        zOp.dashed ? 'dashed=1;dashPattern=6 4' : 'dashed=0',
+      ].join(';') + ';';
 
     state.cells.push({
       id,
@@ -1060,13 +1464,13 @@ export function applySpatialMutationPlan(
     });
   }
 
-  // 3. Add new leaf nodes
+  // 3. Add new leaf nodes (sizing from composite outer card shells, NEVER from 22px floating text lines!)
   const origCanvasW = state.canvasW;
   const origCanvasH = state.canvasH;
 
   for (const nOp of plan.addNodes || []) {
     const id = nOp.id || `n_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
-    if (findCell(id)) continue;
+    if (state.cells.some((c) => c.id === id)) continue;
     const rawZone =
       nOp.parentZoneId && nOp.parentZoneId !== '1' ? findCell(nOp.parentZoneId) : undefined;
     const rawAnchor = findCell(nOp.anchorId);
@@ -1075,7 +1479,6 @@ export function applySpatialMutationPlan(
       : false;
 
     const effectiveZone = rawZone || (anchorIsZone ? rawAnchor : undefined);
-    // Only bind Draw.io `parent` to true container=1 / swimlane cells; flat background zones keep parent='1'
     const parentZone =
       effectiveZone && /\bcontainer=1\b|\bswimlane\b/i.test(effectiveZone.style)
         ? effectiveZone
@@ -1087,7 +1490,6 @@ export function applySpatialMutationPlan(
     const anchor = anchorIsZone ? undefined : rawAnchor;
     const secondAnchor = findCell(nOp.secondAnchorId);
 
-    // Match existing sibling dimensions in the same zone when available
     const siblings = state.cells.filter((c) => {
       if (
         c.isContainer ||
@@ -1095,9 +1497,11 @@ export function applySpatialMutationPlan(
         isVisualZoneFrameCell(c, state.cells, origCanvasW, origCanvasH) ||
         isFooterBarCell(c, origCanvasW, origCanvasH) ||
         isIconOverlayBadgeCell(c) ||
+        isFloatingTextPrimitiveCell(c) ||
         isHeaderBannerOrPillCell(c) ||
         c.w >= 700 ||
-        c.h >= 240
+        c.h >= 240 ||
+        c.h < 38
       ) {
         return false;
       }
@@ -1112,16 +1516,16 @@ export function applySpatialMutationPlan(
       }
       return c.parent === '1';
     });
-    const refSibling = anchor && !anchor.isContainer && anchor.w < 700 ? anchor : siblings[0];
+
+    const refSibling = anchor && !anchor.isContainer && anchor.w < 700 && anchor.h >= 38 ? anchor : siblings[0];
     const w = refSibling ? Math.min(540, Math.round(refSibling.w)) : 220;
     const h = refSibling
       ? refSibling.h >= 100
-        ? Math.min(120, Math.max(104, Math.round(refSibling.h)))
-        : Math.min(96, Math.max(54, Math.round(refSibling.h)))
-      : 68;
+        ? Math.min(124, Math.max(100, Math.round(refSibling.h)))
+        : Math.min(96, Math.max(58, Math.round(refSibling.h)))
+      : 72;
     const stackGap = w >= 340 ? 24 : 18;
 
-    // Detect inner flat parent="1" visual background frames enclosing `anchor` or `visualZone` (excluding full-canvas wrappers)
     const refBox = anchor && anchor.w < 700 ? anchor : visualZone;
     const innerEnclosingFrames =
       !parentZone && refBox
@@ -1180,9 +1584,9 @@ export function applySpatialMutationPlan(
       }
     }
 
-    // Nudge locally if overlapping an existing sibling leaf card (ignoring visual zone frames, wrappers & footers)
+    // Nudge locally if overlapping an existing card shell (ignoring floating text overlays inside cards)
     const innerEnclosingIds = new Set(innerEnclosingFrames.map((f) => f.id));
-    for (let guard = 0; guard < 12; guard++) {
+    for (let guard = 0; guard < 14; guard++) {
       const hit = state.cells.find(
         (c) =>
           !c.isContainer &&
@@ -1191,6 +1595,7 @@ export function applySpatialMutationPlan(
           !isVisualZoneFrameCell(c, state.cells, origCanvasW, origCanvasH) &&
           !isFooterBarCell(c, origCanvasW, origCanvasH) &&
           !isIconOverlayBadgeCell(c) &&
+          !isFloatingTextPrimitiveCell(c) &&
           absX < c.absX + c.w + 8 &&
           absX + w + 8 > c.absX &&
           absY < c.absY + c.h + 8 &&
@@ -1200,8 +1605,6 @@ export function applySpatialMutationPlan(
       absY = hit.absY + hit.h + stackGap;
     }
 
-    // Expand inner enclosing flat visual frames (innermost -> outermost), keep parallel columns aligned,
-    // push footer bars cleanly below them, and then expand full-canvas wrapper frames around everything.
     if (innerEnclosingFrames.length > 0) {
       const sortedInner = [...innerEnclosingFrames].sort((a, b) => a.w * a.h - b.w * b.h);
       const prevInnerBottom = Math.max(...sortedInner.map((f) => f.absY + f.h));
@@ -1214,7 +1617,6 @@ export function applySpatialMutationPlan(
         if (neededBottom > frame.absY + frame.h) {
           const newH = Math.ceil(neededBottom - frame.absY);
           frame.h = newH;
-          // Keep parallel sibling column frames with identical [absY, h] aligned flush
           for (const sibCol of state.cells) {
             if (
               sibCol.id !== frame.id &&
@@ -1247,7 +1649,6 @@ export function applySpatialMutationPlan(
       }
     }
 
-    // Expand immediate parent container if the new node extends below/right of its bounds
     if (parentZone) {
       if (absX + w + 14 > parentZone.absX + parentZone.w) {
         parentZone.w = absX + w + 14 - parentZone.absX;
@@ -1257,8 +1658,10 @@ export function applySpatialMutationPlan(
       }
     }
 
+    const inheritedStroke =
+      refSibling?.style.match(/strokeColor=(#[0-9a-fA-F]{6})/)?.[1] || '#CBD5E1';
     const fill = sanitizeHex(nOp.fillHex, '#FFFFFF');
-    const stroke = sanitizeHex(nOp.strokeHex, '#0F172A');
+    const stroke = sanitizeHex(nOp.strokeHex, inheritedStroke);
     const iconUri = resolveFreeformIconDataUri(nOp.label, nOp.iconKey);
     const useNativeOverlaidBadge = Boolean(!parentZone && w >= 340 && h >= 88 && iconUri);
     const fontSize = w >= 340 ? 13.5 : 12;
@@ -1321,13 +1724,12 @@ export function applySpatialMutationPlan(
     }
   }
 
-  // Helper to recursively expand ancestor containers so child moves/additions never escape parent bounds
   const expandAncestorsToContain = (cell: SpatialCellRecord) => {
     let curr: SpatialCellRecord | undefined = cell;
     const visited = new Set<string>();
     while (curr && curr.parent && curr.parent !== '1' && curr.parent !== '0' && !visited.has(curr.parent)) {
       visited.add(curr.parent);
-      const p = findCell(curr.parent);
+      const p = state.cells.find((x) => x.id === curr!.parent);
       if (!p) break;
       const neededRight = curr.absX + curr.w + 18;
       const neededBottom = curr.absY + curr.h + 18;
@@ -1352,19 +1754,38 @@ export function applySpatialMutationPlan(
     }
   };
 
-  // 4. Modify existing cells in place (including movePlacement / moveAnchorId + edge waypoint refresh!)
+  // 4. Modify existing cells in place — atomically updating composite multi-primitive cards when applicable!
   const movedCellIds = new Set<string>();
   for (const mOp of plan.modifyCells || []) {
     const target = findCell(mOp.id);
     if (!target) continue;
+    const compositeCluster = initialClusters.cardById.get(target.id);
+
     if (mOp.newLabel && mOp.newLabel.trim()) {
-      target.plainLabel = mOp.newLabel.trim();
-      if (target.isContainer) {
+      const cleanTitle = mOp.newLabel.trim();
+      if (compositeCluster && compositeCluster.isMultiPrimitive && compositeCluster.textMemberIds.length > 0) {
+        // Update enclosed floating title/subtitle text primitives cleanly without overwriting the outer card shell!
+        const primaryText = state.cells.find((c) => c.id === compositeCluster.textMemberIds[0]);
+        if (primaryText) {
+          primaryText.plainLabel = cleanTitle;
+          primaryText.value = /<b\b/i.test(primaryText.value)
+            ? `<b>${escapeHtmlText(cleanTitle)}</b>`
+            : escapeHtmlText(cleanTitle);
+        }
+        if (mOp.newSublabel !== undefined && compositeCluster.textMemberIds.length >= 2) {
+          const secondaryText = state.cells.find((c) => c.id === compositeCluster.textMemberIds[1]);
+          if (secondaryText) {
+            secondaryText.plainLabel = mOp.newSublabel.trim();
+            secondaryText.value = escapeHtmlText(mOp.newSublabel.trim());
+          }
+        }
+      } else if (target.isContainer) {
+        target.plainLabel = cleanTitle;
         const strokeMatch = target.style.match(/strokeColor=(#[0-9a-fA-F]{6})/);
         const stroke = mOp.strokeHex || strokeMatch?.[1] || '#64748B';
         target.value = buildZoneHeaderHtml(target.plainLabel, stroke);
       } else {
-        // Detect if target already has a dedicated overlaid icon badge (`sys_gov_i`, `mc1_i`, `l1_i`, `ic_*`)
+        target.plainLabel = cleanTitle;
         const overlaidIcon = state.cells.find(
           (b) =>
             b.id !== target.id &&
@@ -1377,12 +1798,11 @@ export function applySpatialMutationPlan(
         const hasNativeSpacingLeft = /\bspacingLeft=[1-9]\d*/.test(target.style);
         let overlayLayout: 'none' | 'left' | 'top' | 'native_spacing' = 'none';
         if (overlaidIcon) {
-          if (hasNativeSpacingLeft) {
-            overlayLayout = 'native_spacing';
-          } else {
-            overlayLayout =
-              overlaidIcon.absX - target.absX < target.w * 0.28 ? 'left' : 'top';
-          }
+          overlayLayout = hasNativeSpacingLeft
+            ? 'native_spacing'
+            : overlaidIcon.absX - target.absX < target.w * 0.28
+            ? 'left'
+            : 'top';
         }
         const iconUri = overlaidIcon ? null : resolveFreeformIconDataUri(target.plainLabel);
         target.value = buildCardValueHtml(
@@ -1394,6 +1814,7 @@ export function applySpatialMutationPlan(
         );
       }
     }
+
     if (mOp.fillHex) {
       const f = sanitizeHex(mOp.fillHex, '#FFFFFF');
       target.style = /fillColor=[^;]+/.test(target.style)
@@ -1407,7 +1828,6 @@ export function applySpatialMutationPlan(
         : `${target.style}strokeColor=${s};`;
     }
 
-    // Spatial movePlacement / moveAnchorId implementation
     if (mOp.movePlacement) {
       const anchor = mOp.moveAnchorId ? findCell(mOp.moveAnchorId) : undefined;
       const gap = 28;
@@ -1453,20 +1873,24 @@ export function applySpatialMutationPlan(
           }
         }
       } else {
-        // Fallback directional shift when anchor is omitted
         if (mOp.movePlacement === 'right_of') newAbsX += target.w + gap;
         else if (mOp.movePlacement === 'left_of') newAbsX = Math.max(24, newAbsX - target.w - gap);
         else if (mOp.movePlacement === 'below') newAbsY += target.h + gap;
         else if (mOp.movePlacement === 'above') newAbsY = Math.max(24, newAbsY - target.h - gap);
       }
 
-      // Collision-avoidance nudge against other leaf cells
+      const selfMemberIds = new Set(compositeCluster ? compositeCluster.memberIds : [target.id]);
       if (!target.isContainer) {
         for (let guard = 0; guard < 10; guard++) {
           const hit = state.cells.find(
             (c) =>
-              c.id !== target.id &&
+              !selfMemberIds.has(c.id) &&
               !c.isContainer &&
+              !isFullCanvasWrapperCell(c, origCanvasW, origCanvasH) &&
+              !isVisualZoneFrameCell(c, state.cells, origCanvasW, origCanvasH) &&
+              !isFooterBarCell(c, origCanvasW, origCanvasH) &&
+              !isIconOverlayBadgeCell(c) &&
+              !isFloatingTextPrimitiveCell(c) &&
               newAbsX < c.absX + c.w + 10 &&
               newAbsX + target.w + 10 > c.absX &&
               newAbsY < c.absY + c.h + 10 &&
@@ -1482,11 +1906,25 @@ export function applySpatialMutationPlan(
       target.absX = newAbsX;
       target.absY = newAbsY;
       target.parent = newParentId;
-      const parentObj = newParentId && newParentId !== '1' ? findCell(newParentId) : undefined;
+      const parentObj = newParentId && newParentId !== '1' ? state.cells.find((x) => x.id === newParentId) : undefined;
       target.relX = parentObj ? Math.round(target.absX - parentObj.absX) : target.absX;
       target.relY = parentObj ? Math.round(target.absY - parentObj.absY) : target.absY;
 
-      // If moving a container, translate its descendants' absolute coordinates in lockstep
+      // Translate all attached composite card primitives (shadow, accent stripe, icon, floating text) in lockstep!
+      if (compositeCluster && (deltaX !== 0 || deltaY !== 0)) {
+        for (const mid of compositeCluster.memberIds) {
+          if (mid === target.id) continue;
+          const mCell = state.cells.find((x) => x.id === mid);
+          if (!mCell) continue;
+          mCell.absX += deltaX;
+          mCell.absY += deltaY;
+          const mp = mCell.parent && mCell.parent !== '1' ? state.cells.find((x) => x.id === mCell.parent) : undefined;
+          mCell.relX = mp ? Math.round(mCell.absX - mp.absX) : mCell.absX;
+          mCell.relY = mp ? Math.round(mCell.absY - mp.absY) : mCell.absY;
+          movedCellIds.add(mCell.id);
+        }
+      }
+
       if (target.isContainer && (deltaX !== 0 || deltaY !== 0)) {
         const shiftDescendants = (parentId: string) => {
           for (const kid of state.cells) {
@@ -1506,7 +1944,6 @@ export function applySpatialMutationPlan(
     }
   }
 
-  // Re-route any edges incident to moved cells so waypoints never point to stale coordinates
   if (movedCellIds.size > 0) {
     for (const edge of state.edges) {
       if (movedCellIds.has(edge.source) || movedCellIds.has(edge.target)) {
@@ -1536,8 +1973,7 @@ export function applySpatialMutationPlan(
     }
   }
 
-  // 5. Add explicitly requested edges — mechanically normalizing vertical-stack skip-loops
-  // into single clean adjacent stack connectors (zero right-border spaghetti or piled-up labels!)
+  // 5. Add explicitly requested edges — anchoring cleanly to outer composite card borders
   let rightGutterLane = 0;
   const seenDirectedPairs = new Set<string>(
     state.edges
@@ -1553,9 +1989,6 @@ export function applySpatialMutationPlan(
     const sCx = src.absX + src.w / 2;
     const tCx = tgt.absX + tgt.w / 2;
 
-    // Vertical stack normalization: if src & tgt sit in the same vertical column,
-    // snap any skip-level loop (`mc2 -> eu_ai_act`) to the immediate adjacent neighbor (`sys_gov -> eu_ai_act`)
-    // and draw a clean straight center-line vertical arrow matching native C4 stack connectors!
     if (Math.abs(sCx - tCx) < 60 && Math.abs(src.w - tgt.w) < 80) {
       const colCards = state.cells
         .filter(
@@ -1565,6 +1998,7 @@ export function applySpatialMutationPlan(
             !isVisualZoneFrameCell(c, state.cells, origCanvasW, origCanvasH) &&
             !isFooterBarCell(c, origCanvasW, origCanvasH) &&
             !isIconOverlayBadgeCell(c) &&
+            !isFloatingTextPrimitiveCell(c) &&
             !isHeaderBannerOrPillCell(c) &&
             Math.abs(c.absX + c.w / 2 - sCx) < 60 &&
             Math.abs(c.w - src!.w) < 80
@@ -1586,7 +2020,6 @@ export function applySpatialMutationPlan(
       }
       seenDirectedPairs.add(pairKey);
 
-      // Detect if stack sits inside a dark/saturated blue container (`#2563EB`, `#1D4ED8`, `#1E40AF`)
       const darkBlueFrame = state.cells.find(
         (f) =>
           f.id !== src!.id &&
@@ -1618,24 +2051,33 @@ export function applySpatialMutationPlan(
       continue;
     }
 
-    // Skip redundant cross-column connector if either endpoint is an external C4 actor/sink that
-    // ALREADY has a dedicated point-to-point C4 boundary interface arrow (`e_l1..e_l4`, `e_r1..e_r3`)
-    const alreadyWiredViaPointBoundary = [src, tgt].some((card) =>
-      state.edges.some((pe) => {
-        if (!pe.sourcePoint || !pe.targetPoint) return false;
-        const srcTouches =
-          (Math.abs(pe.sourcePoint.x - card.absX) <= 8 ||
-            Math.abs(pe.sourcePoint.x - (card.absX + card.w)) <= 8) &&
-          pe.sourcePoint.y >= card.absY - 6 &&
-          pe.sourcePoint.y <= card.absY + card.h + 6;
-        const tgtTouches =
-          (Math.abs(pe.targetPoint.x - card.absX) <= 8 ||
-            Math.abs(pe.targetPoint.x - (card.absX + card.w)) <= 8) &&
-          pe.targetPoint.y >= card.absY - 6 &&
-          pe.targetPoint.y <= card.absY + card.h + 6;
-        return srcTouches || tgtTouches;
-      })
-    );
+    // Suppress duplicate C4 cross-boundary connectors ONLY when an external actor card already has
+    // a horizontal coordinate-bound arrow terminating on the system container enclosing the other card
+    const pointTouchesHorizSide = (pt: { x: number; y: number }, card: SpatialCellRecord) =>
+      (Math.abs(pt.x - card.absX) <= 8 || Math.abs(pt.x - (card.absX + card.w)) <= 8) &&
+      pt.y >= card.absY - 6 &&
+      pt.y <= card.absY + card.h + 6;
+    const pointTouchesEnclosingFrameOf = (pt: { x: number; y: number }, innerCard: SpatialCellRecord) =>
+      state.cells.some(
+        (f) =>
+          f.id !== innerCard.id &&
+          f.w > innerCard.w + 20 &&
+          f.h > innerCard.h + 20 &&
+          innerCard.absX >= f.absX - 6 &&
+          innerCard.absX + innerCard.w <= f.absX + f.w + 6 &&
+          innerCard.absY >= f.absY - 6 &&
+          innerCard.absY + innerCard.h <= f.absY + f.h + 6 &&
+          pointTouchesHorizSide(pt, f)
+      );
+    const alreadyWiredViaPointBoundary = state.edges.some((pe) => {
+      if (!pe.sourcePoint || !pe.targetPoint) return false;
+      return (
+        (pointTouchesHorizSide(pe.sourcePoint, src!) && pointTouchesEnclosingFrameOf(pe.targetPoint, tgt!)) ||
+        (pointTouchesHorizSide(pe.targetPoint, src!) && pointTouchesEnclosingFrameOf(pe.sourcePoint, tgt!)) ||
+        (pointTouchesHorizSide(pe.sourcePoint, tgt!) && pointTouchesEnclosingFrameOf(pe.targetPoint, src!)) ||
+        (pointTouchesHorizSide(pe.targetPoint, tgt!) && pointTouchesEnclosingFrameOf(pe.sourcePoint, src!))
+      );
+    });
     if (alreadyWiredViaPointBoundary) {
       continue;
     }
@@ -1683,14 +2125,12 @@ export function applySpatialMutationPlan(
     });
   }
 
-  // Ensure every cell's ancestor containers enclose it cleanly before serializing
   for (const c of state.cells) {
     if (c.parent && c.parent !== '1' && c.parent !== '0') {
       expandAncestorsToContain(c);
     }
   }
 
-  // Expand full-canvas wrapper frames (`bg_frame`, `canvas_frame`) around all content + shifted footers
   const fullWrappers = state.cells.filter((c) =>
     isFullCanvasWrapperCell(c, origCanvasW, origCanvasH)
   );
@@ -1713,7 +2153,6 @@ export function applySpatialMutationPlan(
     }
   }
 
-  // Expand canvas bounds if any added/moved cell or wrapper exceeded pageWidth/pageHeight
   for (const c of state.cells) {
     if (c.absX + c.w + 16 > state.canvasW) state.canvasW = Math.ceil(c.absX + c.w + 16);
     if (c.absY + c.h + 16 > state.canvasH) state.canvasH = Math.ceil(c.absY + c.h + 16);
