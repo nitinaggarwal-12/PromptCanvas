@@ -5,29 +5,29 @@
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "promptcanvas-00104-sx4",
-  "latestCreatedRevisionName": "promptcanvas-00104-sx4",
+  "latestReadyRevisionName": "promptcanvas-00105-5h9",
+  "latestCreatedRevisionName": "promptcanvas-00105-5h9",
   "readyStatus": "True",
   "trafficPercent": 100,
   "gcsStateBucket": "ramp-portal-dev-promptcanvas-state",
-  "gitCommit": "bc0cce67",
+  "gitCommit": "f5e0ffaa",
   "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"promptcanvas-1\" on port 8080.",
   "beyondCorpHttpStatus": 302,
   "liveHttpVerification": {
-    "verifiedAt": "2026-11-27T18:35:51.715Z",
+    "verifiedAt": "2026-11-27T20:35:52.869Z",
     "verificationMode": "cloud_run_revision_pre_traffic_live_http_dom_probe",
     "project": "ramp-portal-dev",
     "region": "us-west1",
     "service": "promptcanvas",
-    "revision": "promptcanvas-00104-sx4",
+    "revision": "promptcanvas-00105-5h9",
     "overallPassed": true,
     "routes": [
       {
         "path": "/templates",
         "httpStatus": 200,
         "responseBytes": 724627,
-        "bodySha256Short": "7e1178c8648bbb64",
-        "latencyMs": 3364,
+        "bodySha256Short": "5bc85a69f2d61f6f",
+        "latencyMs": 2669,
         "markersMatched": [
           "Templates",
           "L200"
@@ -40,8 +40,8 @@
         "path": "/infographics",
         "httpStatus": 200,
         "responseBytes": 9188,
-        "bodySha256Short": "716a4004e6fb5ca9",
-        "latencyMs": 23,
+        "bodySha256Short": "659e2aa24fe12ccf",
+        "latencyMs": 24,
         "markersMatched": [
           "Infographics"
         ],
@@ -53,8 +53,8 @@
         "path": "/blogs",
         "httpStatus": 200,
         "responseBytes": 10994,
-        "bodySha256Short": "c0fda59d92e095fe",
-        "latencyMs": 20,
+        "bodySha256Short": "10caebe4a6641036",
+        "latencyMs": 21,
         "markersMatched": [
           "Architecture",
           "blogs"
@@ -66,9 +66,9 @@
       {
         "path": "/api/blogs/gcp-verify",
         "httpStatus": 200,
-        "responseBytes": 1117638,
-        "bodySha256Short": "41610f910dc2146c",
-        "latencyMs": 175,
+        "responseBytes": 1114879,
+        "bodySha256Short": "b94dd4fd0230fe6a",
+        "latencyMs": 150,
         "markersMatched": [
           "ramp-portal-dev",
           "bbar-138hf0"
@@ -79,12 +79,16 @@
       }
     ]
   },
-  "verifiedAt": "2026-11-27T18:35:51.715Z",
+  "verifiedAt": "2026-11-27T20:35:52.869Z",
+  "runtimeTsModuleCount": 270,
+  "orphanSrcModulesCount": 0,
+  "activePageCount": 21,
+  "activeApiCount": 43,
   "canonicalBlueprintsCount": 35,
   "certifiedArchitectureTemplatesCount": 84,
   "infographicBlueprintsCount": 15,
   "leanDocArchetypesCount": 8,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/promptcanvas:v20261127-183520-multimodel-judge",
-  "imageDigest": "sha256:01b837207ce5e1760089545edc37e9a782047ed7cfd149ac4c5a2d9d45343a0e",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/promptcanvas:v20261127-203535-multimodel-judge",
+  "imageDigest": "sha256:69fe4a93aade05aea894a5c9790c5da3eef7fb7ab4021612357ac54353a96923",
   "nextjsVersion": "16.4.6"
 }
